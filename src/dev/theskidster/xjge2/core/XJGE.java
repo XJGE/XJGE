@@ -9,11 +9,10 @@ import static org.lwjgl.glfw.GLFW.glfwInit;
 
 public final class XJGE {
     
-    public static final String VERSION = "0.0.0";
-    
     private static boolean initCalled;
     
-    private static String filepath;
+    public static final String VERSION = "0.0.0";
+    private static String filepath     = "/dev/theskidster/xjge2/assets/";
     
     /*
     XJGE.init(String filepath);
@@ -34,8 +33,6 @@ public final class XJGE {
     
     public static void init(String filepath) {
         if(!initCalled) {
-            XJGE.filepath = filepath;
-            
             if(System.getProperty("java.version").compareTo("15.0.2") < 0) {
                 Logger.logSevere("Unsupported Java version. Required 15.0.2, " + 
                                  "found: " + System.getProperty("java.version"), 
@@ -44,7 +41,14 @@ public final class XJGE {
             
             if(!glfwInit()) Logger.logSevere("Failed to initialize GLFW.", null);
             
+            WinKit.getConnectedMonitors();
             
+            Window.setDimensions(0, 0);
+            Window.setPositionCentered();
+            Window.setIcon("img_null.png");
+            Window.setMonitor(WinKit.getConnectedMonitors().get(1));
+            
+            XJGE.filepath = filepath;
         } else {
             Logger.setDomain("core");
             Logger.logWarning("XJGE has already been initialized.", null);

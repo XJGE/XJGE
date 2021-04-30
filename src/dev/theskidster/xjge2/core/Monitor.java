@@ -2,6 +2,7 @@ package dev.theskidster.xjge2.core;
 
 import java.util.Map.Entry;
 import java.util.TreeMap;
+import static org.lwjgl.glfw.GLFW.glfwGetMonitorName;
 import org.lwjgl.glfw.GLFWVidMode;
 
 /**
@@ -11,9 +12,9 @@ import org.lwjgl.glfw.GLFWVidMode;
 
 public final class Monitor {
 
-    final long handle;
+    public final long handle;
     
-    private String name;
+    public final String name;
     private String aspect;
     
     Entry<Integer, GLFWVidMode> videoMode;
@@ -21,6 +22,9 @@ public final class Monitor {
     
     Monitor(long handle) {
         this.handle = handle;
+        name        = glfwGetMonitorName(handle);
+        
+        
     }
     
 }

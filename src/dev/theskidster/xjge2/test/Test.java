@@ -1,5 +1,6 @@
 package dev.theskidster.xjge2.test;
 
+import dev.theskidster.xjge2.core.Window;
 import dev.theskidster.xjge2.core.XJGE;
 
 /**
@@ -18,6 +19,8 @@ public class Test {
     public static void main(String args[]) {
         
         XJGE.init("/dev/theskidster/xjge2/assets/");
+        
+        
         
         /*
         The windows default settings are as follows;
