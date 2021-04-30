@@ -5,6 +5,7 @@ import java.io.FileWriter;
 import java.io.PrintWriter;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import static org.lwjgl.glfw.GLFW.glfwGetVersionString;
 
 /**
  * @author J Hoffman
@@ -29,14 +30,14 @@ public final class Logger {
     
     void printSystemInfo() {
         horizontalLine();
-        logInfo("OS NAME:");
-        logInfo("JAVA VER:");
-        logInfo("GLFW VER:");
-        logInfo("OPENAL VER:");
-        logInfo("OPENGL VER:");
-        logInfo("MONITORS:");
-        logInfo("SPEAKERS:");
-        logInfo("GAMEPADS:");
+        logInfo("OS NAME:\t\t" + System.getProperty("os.name"));
+        logInfo("JAVA VER:\t\t" + System.getProperty("java.version"));
+        logInfo("GLFW VER:\t\t" + glfwGetVersionString());
+        logInfo("OPENAL VER:\t" );
+        logInfo("OPENGL VER:\t" );
+        logInfo("MONITORS:\t\t" );
+        logInfo("SPEAKERS:\t\t" );
+        logInfo("GAMEPADS:\t\t" );
         horizontalLine();
     }
     
