@@ -43,10 +43,20 @@ public final class XJGE {
             
             WinKit.getConnectedMonitors();
             
-            Window.setDimensions(0, 0);
-            Window.setPositionCentered();
-            Window.setIcon("img_null.png");
-            Window.setMonitor(WinKit.getConnectedMonitors().get(1));
+            {
+                Monitor monitor = WinKit.getConnectedMonitors().get(1);
+                
+                Window.setMonitor(monitor);
+                
+                
+                
+                Window.setDimensions(0, 0); //TODO: find 60% size
+                Window.setPositionCentered();
+                Window.setIcon("img_null.png");
+                Window.setMonitor(monitor);
+            }
+            
+            //TODO: init AL and GL
             
             XJGE.filepath = filepath;
         } else {

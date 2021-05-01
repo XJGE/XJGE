@@ -1,6 +1,8 @@
 package dev.theskidster.xjge2.core;
 
+import java.nio.IntBuffer;
 import static org.lwjgl.glfw.GLFW.*;
+import org.lwjgl.system.MemoryStack;
 import static org.lwjgl.system.MemoryUtil.NULL;
 
 /**
@@ -94,7 +96,16 @@ public final class Window {
     }
     
     public static void setPositionCentered() {
-        //TODO:
+        try(MemoryStack stack = MemoryStack.stackPush()) {
+            IntBuffer xPosBuf = stack.mallocInt(1);
+            IntBuffer yPosBuf = stack.mallocInt(1);
+            
+            glfwGetMonitorPos(monitor.handle, xPosBuf, yPosBuf);
+            
+            //int centerX = Math.round(monitor.);
+            
+            //setPosition()
+        }
     }
     
     public static int getPositionX() {

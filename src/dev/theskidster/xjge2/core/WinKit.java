@@ -18,7 +18,7 @@ public final class WinKit {
         
         if(monitorBuf != null) {
             for(int i = 0; i < monitorBuf.limit(); i++) {
-                monitors.put(i + 1, new Monitor(monitorBuf.get(i)));
+                monitors.put(i + 1, new Monitor(i + 1, monitorBuf.get(i)));
             }
         } else {
             Logger.setDomain("winkit");
