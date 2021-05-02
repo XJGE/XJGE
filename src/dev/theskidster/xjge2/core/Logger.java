@@ -47,7 +47,7 @@ public final class Logger {
     }
     
     public static void setDomain(String domain) {
-        Logger.domain = (domain != null) ? " (" + domain + ") " : "";
+        Logger.domain = (domain != null) ? " (" + domain + ")" : "";
     }
     
     public static void logInfo(String message) {

@@ -1,6 +1,6 @@
 package dev.theskidster.xjge2.core;
 
-import static org.lwjgl.glfw.GLFW.glfwInit;
+import static org.lwjgl.glfw.GLFW.*;
 
 /**
  * @author J Hoffman
@@ -31,7 +31,7 @@ public final class XJGE {
     used to set the initial scene the engine will enter upon startup.
     */
     
-    public static void init(String filepath) {
+    public static void init(String filepath, boolean windowResizable) {
         if(!initCalled) {
             if(System.getProperty("java.version").compareTo("15.0.2") < 0) {
                 Logger.logSevere("Unsupported Java version. Required 15.0.2, " + 
@@ -44,16 +44,12 @@ public final class XJGE {
             WinKit.getConnectedMonitors();
             
             {
-                Monitor monitor = WinKit.getConnectedMonitors().get(1);
+                glfwWindowHint(GLFW_RESIZABLE, windowResizable ? GLFW_TRUE : GLFW_FALSE);
+                glfwWindowHint(GLFW_VISIBLE, GLFW_FALSE);
                 
-                Window.setMonitor(monitor);
-                
-                
-                
-                Window.setDimensions(0, 0); //TODO: find 60% size
-                Window.setPositionCentered();
+                Window.monitor = WinKit.getConnectedMonitors().get(1);
+                Window.reconfigure();
                 Window.setIcon("img_null.png");
-                Window.setMonitor(monitor);
             }
             
             //TODO: init AL and GL
@@ -69,7 +65,11 @@ public final class XJGE {
     }
     
     public static void start() {
+        Window.show();
         
+        while(!glfwWindowShouldClose(Window.HANDLE)) {
+            glfwPollEvents();
+        }
     }
     
     public static String getFilepath() {

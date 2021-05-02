@@ -14,7 +14,7 @@ import org.lwjgl.glfw.GLFWVidMode;
 
 public final class Monitor {
     
-    private final int id;
+    final int id;
     
     public final long handle;
     
@@ -51,7 +51,7 @@ public final class Monitor {
         } else {
             Logger.setDomain("winkit");
             Logger.logWarning("Unable to find any additional video " +
-                              "modes for monitor: \"" + name + "\"", 
+                              "modes for monitor " + id + " \"" + name + "\"", 
                               null);
             Logger.setDomain(null);
         }
@@ -105,8 +105,8 @@ public final class Monitor {
                 }
                 
                 Logger.setDomain("winkit");
-                Logger.logInfo("Changed video mode of monitor \"" + name +
-                               "\" (ID:" + id + ") to (" + getInfo() + ").");
+                Logger.logInfo("Changed the current video mode of monitor " + 
+                               id + "\"" + name + "\" to (" + getInfo() + ")");
                 Logger.setDomain(null);
             } 
             
@@ -118,8 +118,8 @@ public final class Monitor {
                 }
                 
                 Logger.setDomain("winkit");
-                Logger.logInfo("Changed video mode of monitor \"" + name +
-                               "\" (ID:" + id + ") to (" + getInfo() + ").");
+                Logger.logInfo("Changed the current video mode of monitor " + 
+                               id + "\"" + name + "\" to (" + getInfo() + ")");
                 Logger.setDomain(null);
             }
             
@@ -139,18 +139,23 @@ public final class Monitor {
                         videoMode = tempValues.get(index);
                         
                         Logger.setDomain("winkit");
-                        Logger.logInfo("Changed video mode of monitor \"" + name +
-                                       "\" (ID:" + id + ") to (" + getInfo() + ").");
+                        Logger.logInfo("Changed the current video mode of monitor " + 
+                                       id + "\"" + name + "\" to (" + getInfo() + ")");
                         Logger.setDomain(null);
                     } else {
                         Logger.setDomain("winkit");
-                        Logger.logWarning("Failed to change video mode of monitor \"" + name + "\" (ID:" + 
-                                          id + "). Could not find video mode at index " + index + ".", 
-                                           null);
+                        Logger.logWarning("Failed to change the current video mode of monitor " + 
+                                          id + " \"" + name + "\". Could not find a video mode " + 
+                                          "object at index " + index + ".", 
+                                          null);
                         Logger.setDomain(null);
                     }
                 } catch(NumberFormatException | IndexOutOfBoundsException e) {
-                    Logger.logWarning("Failed to set video mode for monitor \"" + name + "", e);
+                    Logger.setDomain("winkit");
+                    Logger.logWarning("Failed to change the current video mode for monitor " + 
+                                      id + " \"" + name + "\". Invalid index used.", 
+                                      e);
+                    Logger.setDomain(null);
                 }
             }
         }

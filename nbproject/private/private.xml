@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project-private xmlns="http://www.netbeans.org/ns/project-private/1">
-    <editor-bookmarks xmlns="http://www.netbeans.org/ns/editor-bookmarks/2" lastBookmarkId="6">
+    <editor-bookmarks xmlns="http://www.netbeans.org/ns/editor-bookmarks/2" lastBookmarkId="8">
         <file>
             <url>src/dev/theskidster/xjge2/core/XJGE2.java</url>
             <bookmark id="1">
@@ -11,24 +11,27 @@
         </file>
         <file>
             <url>src/dev/theskidster/xjge2/core/Window.java</url>
-            <bookmark id="4">
-                <name/>
-                <line>148</line>
-                <key/>
-            </bookmark>
-            <bookmark id="3">
-                <name/>
-                <line>96</line>
-                <key/>
-            </bookmark>
             <bookmark id="5">
                 <name/>
-                <line>96</line>
+                <line>100</line>
+                <key/>
+            </bookmark>
+            <bookmark id="4">
+                <name/>
+                <line>162</line>
                 <key/>
             </bookmark>
             <bookmark id="6">
                 <name/>
-                <line>148</line>
+                <line>162</line>
+                <key/>
+            </bookmark>
+        </file>
+        <file>
+            <url>src/dev/theskidster/xjge2/core/Monitor.java</url>
+            <bookmark id="8">
+                <name/>
+                <line>162</line>
                 <key/>
             </bookmark>
         </file>

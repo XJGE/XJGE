@@ -1,8 +1,11 @@
 package dev.theskidster.xjge2.test;
 
 import dev.theskidster.xjge2.core.Monitor;
+import dev.theskidster.xjge2.core.WinKit;
 import dev.theskidster.xjge2.core.Window;
 import dev.theskidster.xjge2.core.XJGE;
+import java.util.TreeMap;
+import static org.lwjgl.glfw.GLFW.*;
 
 /**
  * @author J Hoffman
@@ -19,7 +22,37 @@ public class Test {
     
     public static void main(String args[]) {
         
-        XJGE.init("/dev/theskidster/xjge2/assets/");
+        XJGE.init("/dev/theskidster/xjge2/assets/", false);
+        
+        TreeMap<Integer, Monitor> monitors = WinKit.getConnectedMonitors();
+        
+        glfwSetKeyCallback(Window.HANDLE, (window, key, scancode, action, mods) -> {
+            if(action == GLFW_PRESS) {
+                switch(key) {
+                    case GLFW_KEY_F1 -> {
+                        Window.setFullscreen(!Window.getFullscreen());
+                    }
+                    
+                    case GLFW_KEY_1 -> {
+                        Window.setMonitor(monitors.get(1));
+                    }
+
+                    case GLFW_KEY_2 -> {
+                        Window.setMonitor(monitors.get(2));
+                    }
+                    
+                    case GLFW_KEY_LEFT -> {
+                        Window.setMonitor("prev");
+                    }
+                    
+                    case GLFW_KEY_RIGHT -> {
+                        Window.setMonitor("next");
+                    }
+                }
+            }
+        });
+        
+        XJGE.start();
         
         /*
         The windows default settings are as follows;
