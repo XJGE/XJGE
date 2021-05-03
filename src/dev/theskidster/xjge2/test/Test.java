@@ -33,20 +33,20 @@ public class Test {
                         Window.setFullscreen(!Window.getFullscreen());
                     }
                     
-                    case GLFW_KEY_1 -> {
-                        Window.setMonitor(monitors.get(1));
-                    }
-
-                    case GLFW_KEY_2 -> {
-                        Window.setMonitor(monitors.get(2));
-                    }
-                    
                     case GLFW_KEY_LEFT -> {
                         Window.setMonitor("prev");
                     }
                     
                     case GLFW_KEY_RIGHT -> {
                         Window.setMonitor("next");
+                    }
+                    
+                    case GLFW_KEY_UP -> {
+                        Window.getMonitor().setVideoMode("-1ty");
+                    }
+                    
+                    case GLFW_KEY_DOWN -> {
+                        Window.getMonitor().setVideoMode("prev");
                     }
                 }
             }

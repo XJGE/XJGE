@@ -1,6 +1,7 @@
 package dev.theskidster.xjge2.core;
 
 import static org.lwjgl.glfw.GLFW.*;
+import org.lwjgl.opengl.GL;
 
 /**
  * @author J Hoffman
@@ -41,9 +42,7 @@ public final class XJGE {
             
             if(!glfwInit()) Logger.logSevere("Failed to initialize GLFW.", null);
             
-            WinKit.getConnectedMonitors();
-            
-            {
+            { //Initialize window.
                 glfwWindowHint(GLFW_RESIZABLE, windowResizable ? GLFW_TRUE : GLFW_FALSE);
                 glfwWindowHint(GLFW_VISIBLE, GLFW_FALSE);
                 
@@ -52,7 +51,10 @@ public final class XJGE {
                 Window.setIcon("img_null.png");
             }
             
-            //TODO: init AL and GL
+            glfwMakeContextCurrent(Window.HANDLE);
+            GL.createCapabilities();
+            
+            Logger.printSystemInfo();
             
             XJGE.filepath = filepath;
         } else {
@@ -70,6 +72,9 @@ public final class XJGE {
         while(!glfwWindowShouldClose(Window.HANDLE)) {
             glfwPollEvents();
         }
+        
+        GL.destroy();
+        glfwTerminate();
     }
     
     public static String getFilepath() {

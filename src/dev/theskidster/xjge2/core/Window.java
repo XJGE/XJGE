@@ -19,46 +19,6 @@ import static org.lwjgl.system.MemoryUtil.NULL;
 
 public final class Window {
     
-    /*
-    The windows default settings are as follows;
-        - Centered on the screen.
-        - 60% the size of the monitor its on.
-        - Not resizable.
-        - Will have "XJGE 2 (v1.0.0)" as its title.
-        - Will have the nullchicken as its icon.
-        - Will be located on the "primary" monitor.
-    
-    the Window class is available statically.
-        
-    //WINDOW GETTERS (static)
-        Window.getTitle();              String
-        Window.getMonitor();            Monitor
-        Window.getWidth();              int
-        Window.getHeight();             int
-        Window.getPositionX();          int
-        Window.getPositionY();          int
-        Window.getResizable();          boolean
-        Window.getFullscreenEnabled();  boolean
-
-    //WINDOW SETTERS (static)
-        Window.setTitle(String title);
-        Window.setMonitor(Monitor monitor);
-        Window.setDimensions(int width, int height);
-        Window.setWidth(int width);
-        Window.setHeight(int height);
-        Window.setPosition(int xPos, int yPos);
-        Window.setPositionCentered();
-        Window.setPositionX(int xPos);
-        Window.setPositionY(int yPos);
-        Window.setResizable(boolean resizable);
-        Window.setFullScreenEnabled(boolean fullscreenEnabled);
-        Window.setIcon(String filename);
-            
-    //WINDOW MISC
-        Window.handle
-        Window.show() //package access only.
-    */
-    
     public static final long HANDLE = glfwCreateWindow(640, 480, "XJGE 2 (v" + XJGE.VERSION + ")", NULL, NULL);
     
     private static int xPos;
@@ -154,6 +114,10 @@ public final class Window {
         Window.xPos = xPos;
         Window.yPos = yPos;
         
+        Logger.setDomain("winkit");
+        Logger.logInfo("Moved window to (" + xPos + ", " + yPos + ")");
+        Logger.setDomain(null);
+        
         glfwSetWindowPos(HANDLE, xPos, yPos);
     }
     
@@ -164,10 +128,10 @@ public final class Window {
             
             glfwGetMonitorPos(monitor.handle, xPosBuf, yPosBuf);
             
-            int centerX = Math.round((monitor.getWidth() - width) / 2) + xPosBuf.get();
-            int centerY = Math.round((monitor.getHeight() - height) / 2) + yPosBuf.get();
-            
-            setPosition(centerX, centerY);
+            xPos = Math.round((monitor.getWidth() - width) / 2) + xPosBuf.get();
+            yPos = Math.round((monitor.getHeight() - height) / 2) + yPosBuf.get();
+        
+            glfwSetWindowPos(HANDLE, xPos, yPos);
         }
     }
     
@@ -184,6 +148,10 @@ public final class Window {
     public static void setDimensions(int width, int height) {
         Window.width  = width;
         Window.height = height;
+        
+        Logger.setDomain("winkit");
+        Logger.logInfo("Changed window dimensions: (" + width + ", " + height + ")");
+        Logger.setDomain(null);
         
         glfwSetWindowSize(HANDLE, width, height);
     }
@@ -203,6 +171,11 @@ public final class Window {
             
     public static void setTitle(String title) {
         Window.title = title;
+        
+        Logger.setDomain("winkit");
+        Logger.logInfo("Changed window title to \"" + title + "\"");
+        Logger.setDomain(null);
+        
         glfwSetWindowTitle(HANDLE, title);
     }
     
@@ -214,8 +187,7 @@ public final class Window {
             reconfigure();
             
             Logger.setDomain("winkit");
-            Logger.logInfo("Moved the window to monitor " + 
-                            monitor.id + " \"" + monitor.name + "\"");
+            Logger.logInfo("Moved the window to monitor " + monitor.id + " \"" + monitor.name + "\"");
             Logger.setDomain(null);
             
             enableFullscreen(!fullscreen);

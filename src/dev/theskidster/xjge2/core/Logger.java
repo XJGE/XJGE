@@ -6,6 +6,8 @@ import java.io.PrintWriter;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import static org.lwjgl.glfw.GLFW.glfwGetVersionString;
+import static org.lwjgl.opengl.GL11.GL_VERSION;
+import static org.lwjgl.opengl.GL11.glGetString;
 
 /**
  * @author J Hoffman
@@ -13,29 +15,28 @@ import static org.lwjgl.glfw.GLFW.glfwGetVersionString;
  */
 
 public final class Logger {
-
-    private static final int MAX_OUTPUT_LENGTH = 0x75300; //480,000
     
     private static String domain = "";
     
     private static PrintWriter logText;
     private static final StringBuilder output = new StringBuilder();
     
-    private void horizontalLine() {
+    private static void horizontalLine() {
         String line = "--------------------------------------------------------------------------------";
         System.out.println(line);
         output.append(line)
               .append(System.lineSeparator());
     }
     
-    void printSystemInfo() {
+    static void printSystemInfo() {
         horizontalLine();
         logInfo("OS NAME:\t\t" + System.getProperty("os.name"));
         logInfo("JAVA VER:\t\t" + System.getProperty("java.version"));
         logInfo("GLFW VER:\t\t" + glfwGetVersionString());
         logInfo("OPENAL VER:\t" );
-        logInfo("OPENGL VER:\t" );
-        logInfo("MONITORS:\t\t" );
+        logInfo("OPENGL VER:\t" + glGetString(GL_VERSION));
+        logInfo("MONITORS:\t\t" + "Found: " + WinKit.getNumMonitors() + 
+                ", Primary: \"" + Window.monitor.name + "\" (" + Window.monitor.getInfo() + ")");
         logInfo("SPEAKERS:\t\t" );
         logInfo("GAMEPADS:\t\t" );
         horizontalLine();
@@ -145,8 +146,8 @@ public final class Logger {
 
         try(FileWriter logFile = new FileWriter(file.getName())) {
             //Check size make sure we dont produce a crazy large file.
-            String text = (output.toString().length() >= MAX_OUTPUT_LENGTH) 
-                        ? output.substring(0, MAX_OUTPUT_LENGTH) 
+            String text = (output.toString().length() >= Integer.MAX_VALUE) 
+                        ? output.substring(0, Integer.MAX_VALUE) 
                         : output.toString();
             
             logText = new PrintWriter(logFile);

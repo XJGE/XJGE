@@ -106,7 +106,7 @@ public final class Monitor {
                 
                 Logger.setDomain("winkit");
                 Logger.logInfo("Changed the current video mode of monitor " + 
-                               id + "\"" + name + "\" to (" + getInfo() + ")");
+                               id + " \"" + name + "\" to (" + getInfo() + ")");
                 Logger.setDomain(null);
             } 
             
@@ -119,7 +119,7 @@ public final class Monitor {
                 
                 Logger.setDomain("winkit");
                 Logger.logInfo("Changed the current video mode of monitor " + 
-                               id + "\"" + name + "\" to (" + getInfo() + ")");
+                               id + " \"" + name + "\" to (" + getInfo() + ")");
                 Logger.setDomain(null);
             }
             
@@ -140,7 +140,7 @@ public final class Monitor {
                         
                         Logger.setDomain("winkit");
                         Logger.logInfo("Changed the current video mode of monitor " + 
-                                       id + "\"" + name + "\" to (" + getInfo() + ")");
+                                       id + " \"" + name + "\" to (" + getInfo() + ")");
                         Logger.setDomain(null);
                     } else {
                         Logger.setDomain("winkit");
@@ -160,7 +160,8 @@ public final class Monitor {
             }
         }
         
-        //TODO: update window and viewports. Refer to legacy project.
+        Window.reconfigure();
+        //TODO: viewports. Refer to legacy project.
     }
     
 }

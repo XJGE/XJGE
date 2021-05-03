@@ -32,6 +32,10 @@ public final class WinKit {
         return monitors;
     }
     
+    public static int getNumMonitors() {
+        return monitors.size();
+    }
+    
     public static boolean getVSyncEnabled() {
         return vSyncEnabled;
     }
