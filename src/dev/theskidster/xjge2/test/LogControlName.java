@@ -18,6 +18,14 @@ public class LogControlName extends Command {
     public void execute() {
         if(buttonPressedOnce()) {
             Logger.logInfo(action + " pressed.");
+        } 
+        
+        if(axisMoved()) {
+            Logger.logInfo(action + " moved. " + getInputValue());
+        }
+        
+        if(triggerPulled()) {
+            Logger.logInfo(action + " pulled." + getInputValue());
         }
     }
 

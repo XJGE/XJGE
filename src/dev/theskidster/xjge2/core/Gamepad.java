@@ -1,6 +1,7 @@
 package dev.theskidster.xjge2.core;
 
 import static dev.theskidster.xjge2.core.Control.*;
+import java.nio.FloatBuffer;
 import java.util.HashMap;
 import static org.lwjgl.glfw.GLFW.*;
 import org.lwjgl.glfw.GLFWGamepadState;
@@ -15,8 +16,8 @@ final class Gamepad extends InputDevice {
 
     private GLFWGamepadState state;
     
-    private final HashMap<Control, Integer> buttons = new HashMap<>();
-    private final HashMap<Control, Integer> axes    = new HashMap<>();
+    private final HashMap<Control, Integer> buttons  = new HashMap<>();
+    private final HashMap<Control, Integer> axes     = new HashMap<>();
     
     Gamepad(int id) {
         super(id);
@@ -75,17 +76,17 @@ final class Gamepad extends InputDevice {
     @Override
     protected void poll() {
         if(glfwGetGamepadState(id, state) && !puppets.empty() && puppets.peek() != null) {
-            puppets.peek().commands.forEach((widget, command) -> {
-                switch(widget) {
+            puppets.peek().commands.forEach((control, command) -> {
+                switch(control) {
                     case LEFT_STICK_X, LEFT_STICK_Y, RIGHT_STICK_X, RIGHT_STICK_Y -> {
-                        if(Math.abs(state.axes(axes.get(widget))) >= sensitivity) {
-                            command.execute(state.axes(axes.get(widget)), this);
+                        if(Math.abs(state.axes(axes.get(control))) >= sensitivity) {
+                            command.execute(state.axes(axes.get(control)), this, control);
                         }
                     }
                     
-                    case L2, R2 -> command.execute(state.axes(axes.get(widget)), this);
+                    case L2, R2 -> command.execute(state.axes(axes.get(control)), this, control);
                     
-                    default -> command.execute(state.buttons(buttons.get(widget)), this);
+                    default -> command.execute(state.buttons(buttons.get(control)), this, control);
                 }
             });
         }

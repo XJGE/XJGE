@@ -1,12 +1,8 @@
 package dev.theskidster.xjge2.test;
 
 import dev.theskidster.xjge2.core.Input;
-import dev.theskidster.xjge2.core.Monitor;
-import dev.theskidster.xjge2.core.WinKit;
-import dev.theskidster.xjge2.core.Window;
 import dev.theskidster.xjge2.core.XJGE;
-import java.util.TreeMap;
-import static org.lwjgl.glfw.GLFW.*;
+import static org.lwjgl.glfw.GLFW.GLFW_JOYSTICK_1;
 
 /**
  * @author J Hoffman
@@ -28,6 +24,7 @@ public class Test {
         Entity e = new Entity();
         
         Input.setDevicePuppet(GLFW_JOYSTICK_1, e.puppet);
+        //Input.setDevicePuppet(KEY_MOUSE_COMBO, e.puppet);
         
         /*
         glfwSetKeyCallback(Window.HANDLE, (window, key, scancode, action, mods) -> {

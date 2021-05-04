@@ -28,6 +28,10 @@ public class Entity {
         puppet.commands.put(DPAD_DOWN, new LogControlName("D-Pad down"));
         puppet.commands.put(DPAD_LEFT, new LogControlName("D-Pad left"));
         puppet.commands.put(DPAD_RIGHT, new LogControlName("D-Pad right"));
+        puppet.commands.put(RIGHT_STICK_X, new LogControlName("Right stick x"));
+        puppet.commands.put(RIGHT_STICK_Y, new LogControlName("Right stick y"));
+        puppet.commands.put(LEFT_STICK_X, new LogControlName("Left stick x"));
+        puppet.commands.put(LEFT_STICK_Y, new LogControlName("Left stick y"));
         puppet.commands.put(L2, new LogControlName("L2"));
         puppet.commands.put(R2, new LogControlName("R2"));
     }
