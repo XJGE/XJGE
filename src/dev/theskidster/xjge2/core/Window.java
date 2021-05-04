@@ -19,6 +19,7 @@ import static org.lwjgl.system.MemoryUtil.NULL;
 
 public final class Window {
     
+    //TODO: this is only temporarily public for testing purposes.
     public static final long HANDLE = glfwCreateWindow(640, 480, "XJGE 2 (v" + XJGE.VERSION + ")", NULL, NULL);
     
     private static int xPos;
@@ -204,7 +205,7 @@ public final class Window {
             Logger.logSevere(e.getMessage(), e);
         }
         
-        TreeMap<Integer, Monitor> monitors = WinKit.getConnectedMonitors();
+        TreeMap<Integer, Monitor> monitors = WinKit.findMonitors();
         Monitor newMonitor = null;
         
         if(monitors.size() > 0) {

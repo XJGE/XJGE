@@ -38,7 +38,7 @@ public final class Logger {
         logInfo("MONITORS:\t\t" + "Found: " + WinKit.getNumMonitors() + 
                 ", Primary: \"" + Window.monitor.name + "\" (" + Window.monitor.getInfo() + ")");
         logInfo("SPEAKERS:\t\t" );
-        logInfo("GAMEPADS:\t\t" );
+        logInfo("GAMEPADS:\t\t" + "Found: " + Input.getNumDevices());
         horizontalLine();
     }
     

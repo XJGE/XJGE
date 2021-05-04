@@ -46,10 +46,12 @@ public final class XJGE {
                 glfwWindowHint(GLFW_RESIZABLE, windowResizable ? GLFW_TRUE : GLFW_FALSE);
                 glfwWindowHint(GLFW_VISIBLE, GLFW_FALSE);
                 
-                Window.monitor = WinKit.getConnectedMonitors().get(1);
+                Window.monitor = WinKit.findMonitors().get(1);
                 Window.reconfigure();
                 Window.setIcon("img_null.png");
             }
+            
+            Input.findInputDevices();
             
             glfwMakeContextCurrent(Window.HANDLE);
             GL.createCapabilities();
@@ -71,6 +73,7 @@ public final class XJGE {
         
         while(!glfwWindowShouldClose(Window.HANDLE)) {
             glfwPollEvents();
+            Input.pollInput();
         }
         
         GL.destroy();

@@ -16,7 +16,7 @@ public final class WinKit {
     
     private static final TreeMap<Integer, Monitor> monitors = new TreeMap<>();
     
-    public static final TreeMap<Integer, Monitor> getConnectedMonitors() {
+    public static final TreeMap<Integer, Monitor> findMonitors() {
         monitors.clear();
         PointerBuffer monitorBuf = glfwGetMonitors();
         
