@@ -1,5 +1,6 @@
 package dev.theskidster.xjge2.core;
 
+import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.Queue;
 import java.util.Stack;
@@ -13,7 +14,7 @@ abstract class InputDevice {
 
     final int id;
     
-    float sensitivity = 0.15f;
+    float sensitivity;
     
     boolean enabled = true;
     
@@ -23,8 +24,12 @@ abstract class InputDevice {
     Stack<Puppet> puppets         = new Stack<>();
     Queue<Puppet> puppetSetEvents = new LinkedList<>();
     
-    InputDevice(int id) {
-        this.id = id;
+    final HashMap<Control, Integer> config;
+    
+    InputDevice(int id, float sensitivity, HashMap<Control, Integer> config) {
+        this.id          = id;
+        this.sensitivity = sensitivity;
+        this.config      = config;
     }
     
     InputDevice(InputDevice inputDevice) {
@@ -34,13 +39,10 @@ abstract class InputDevice {
         enabledStates   = inputDevice.enabledStates;
         puppets         = inputDevice.puppets;
         puppetSetEvents = inputDevice.puppetSetEvents;
+        config          = inputDevice.config;
     }
     
     protected abstract void poll();
-    
-    protected abstract void importControlConfig(String filename);
-    
-    protected abstract void exportControlConfig();
     
     protected void resolvePuppetSetRequest() {
         if(puppetSetEvents.size() > 0) {

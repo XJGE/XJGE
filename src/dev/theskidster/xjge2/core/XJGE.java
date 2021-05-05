@@ -1,5 +1,6 @@
 package dev.theskidster.xjge2.core;
 
+import java.nio.file.Path;
 import static org.lwjgl.glfw.GLFW.*;
 import org.lwjgl.opengl.GL;
 
@@ -14,6 +15,8 @@ public final class XJGE {
     
     public static final String VERSION = "0.0.0";
     private static String filepath     = "/dev/theskidster/xjge2/assets/";
+    
+    public static final Path PWD = Path.of("").toAbsolutePath();
     
     /*
     XJGE.init(String filepath);
@@ -51,6 +54,7 @@ public final class XJGE {
                 Window.setIcon("img_null.png");
             }
             
+            Input.importControls();
             Input.findInputDevices();
             
             glfwMakeContextCurrent(Window.HANDLE);
@@ -76,6 +80,7 @@ public final class XJGE {
             Input.pollInput();
         }
         
+        Input.exportControls();
         GL.destroy();
         glfwTerminate();
     }
