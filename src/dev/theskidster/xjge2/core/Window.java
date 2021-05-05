@@ -197,11 +197,11 @@ public final class Window {
     
     public static void setMonitor(String operation) {
         enableFullscreen(!fullscreen);
+        Logger.setDomain("winkit");
         
         try {
             Thread.sleep(100);
         } catch(InterruptedException e) {
-            Logger.setDomain("winkit");
             Logger.logSevere(e.getMessage(), e);
         }
         
@@ -229,18 +229,14 @@ public final class Window {
                         if(monitors.containsKey(index)) {
                             newMonitor = monitors.get(index);
                         } else {
-                            Logger.setDomain("winkit");
                             Logger.logWarning("Failed to change the windows current monitor. Could " + 
                                               "not find a monitor object at index " + index + ".", 
                                               null);
-                            Logger.setDomain(null);
                         }
                     } catch(NumberFormatException e) {
-                        Logger.setDomain("winkit");
                         Logger.logWarning("Failed to change the windows current " + 
                                           "monitor. Invalid index used.", 
                                           e);
-                        Logger.setDomain(null);
                     }
                 }
             }
@@ -250,13 +246,12 @@ public final class Window {
                 //TODO: reset viewports
             }
         } else {
-            Logger.setDomain("winkit");
             Logger.logWarning("Failed to change windows current monitor." + 
                               " No monitors are currently connected.", 
                               null);
-            Logger.setDomain(null);
         }
         
+        Logger.setDomain(null);
         enableFullscreen(!fullscreen);
     }
     

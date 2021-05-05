@@ -7,6 +7,7 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.PrintWriter;
+import java.util.EmptyStackException;
 import java.util.HashMap;
 import javax.xml.stream.XMLInputFactory;
 import javax.xml.stream.XMLStreamConstants;
@@ -197,43 +198,160 @@ public final class Input {
     }
     
     public static boolean getDevicePresent(int id) {
+        if(inputDevices.containsKey(id)) {
+            //TODO: this requires a boolean[] array
+        } else {
+            
+        }
+        
         return false;
     }
     
     public static float getDeviceSensitivity(int id) {
-        return 0;
+        if(inputDevices.containsKey(id)) {
+            return inputDevices.get(id).sensitivity;
+        } else {
+            Logger.setDomain("input");
+            Logger.logWarning("Failed to get the sensitivity of input device " + 
+                              id + "Could not find an input device at this index.",
+                              null);
+            Logger.setDomain(null);
+            
+            return -1;
+        }
     }
     
     public static boolean getDeviceEnabled(int id) {
-        return false;
+        if(inputDevices.containsKey(id)) {
+            return inputDevices.get(id).enabled;
+        } else {
+            Logger.setDomain("input");
+            Logger.logWarning("Failed to get the enabled state of input device " + 
+                              id + "Could not find an input device at this index.",
+                              null);
+            Logger.setDomain(null);
+            
+            return false;
+        }
     }
     
     public static HashMap<Control, Integer> getDeviceControls(int id) {
-        return null;
+        if(inputDevices.containsKey(id)) {
+            return controlConfigs.get(id);
+        } else {
+            Logger.setDomain("input");
+            Logger.logWarning("Failed to get the button configuration of input device " + 
+                              id + ". Could not find an input device at this index.", 
+                              null);
+            Logger.setDomain(null);
+            
+            return null;
+        }
     }
     
     public static int[] getKeyMouseAxisValues() {
-        return null;
+        return ((KeyMouseCombo) inputDevices.get(KEY_MOUSE_COMBO)).axisValues;
     }
     
-    public static Puppet getInputDevicePuppet(int id) {
-        return null;
+    public static Puppet getDevicePuppet(int id) {
+        if(inputDevices.containsKey(id)) {
+            try {
+                return inputDevices.get(id).puppets.peek();
+            } catch(EmptyStackException e) {
+                Logger.setDomain("input");
+                Logger.logWarning("Input device " + id + " \"" + inputDevices.get(id).name + 
+                                  "\" has no currently bound puppet object.", 
+                                  e);
+                Logger.setDomain(null);
+                
+                return null;
+            }
+        } else {
+            Logger.setDomain("input");
+            Logger.logWarning("Failed to get the current puppet of input device " + id + 
+                              ". Could not find an input device at this index.", 
+                              null);
+            Logger.setDomain(null);
+            
+            return null;
+        }
     }
     
     public static void setDeviceSensitivity(int id, float sensitivity) {
+        Logger.setDomain("input");
         
+        if(inputDevices.containsKey(id)) {
+            sensitivityConfigs.put(id, sensitivity);
+            
+            Logger.logInfo("Changed the sensitivity of input device " + id + " \"" + 
+                           inputDevices.get(id).name + "\" to (" + sensitivity + ")");
+        } else {
+            Logger.logWarning("Failed to change the devices sensitivity. Could " + 
+                              "not find an input device at index " + id + ".",
+                              null);
+        }
+        
+        Logger.setDomain(null);
     }
     
     public static void setDeviceEnabled(int id, boolean enabled) {
+        Logger.setDomain("input");
         
+        if(inputDevices.containsKey(id)) {
+            InputDevice device = inputDevices.get(id);
+            
+            device.enabledStates.add(enabled);
+            device.enabled = device.enabledStates.peek();
+            
+            if(device.enabled) Logger.logInfo("Enabled input device " + id + " \"" + device.name + "\"");
+            else               Logger.logInfo("Disabled input device " + id + " \"" + device.name + "\"");
+        } else {
+            Logger.logWarning("Failed to change the enabled state of input device " + 
+                              id + "Could not find an input device at this index.",
+                              null);
+        }
+        
+        Logger.setDomain(null);
+    }
+    
+    public static void revertEnabledState(int id) {
+        Logger.setDomain("input");
+        
+        if(inputDevices.containsKey(id)) {
+            InputDevice device = inputDevices.get(id);
+            
+            try {
+                device.enabledStates.pop();
+                device.enabled = device.enabledStates.peek();
+                Logger.logInfo("Reverted the enabled state of input device " + id + 
+                               " \"" + device.name + "\" to (" + device.enabled + ")");
+            } catch(EmptyStackException e) {
+                device.enabled = true;
+            }
+        } else {
+            Logger.logWarning("Failed to revert the enabled state of input device " + 
+                              id + "Could not find an input device at this index.",
+                              null);
+        }
+        
+        Logger.setDomain(null);
     }
     
     public static void setDeviceControls(int id, HashMap<Control, Integer> config) {
+        Logger.setDomain("input");
+        
         if(inputDevices.containsKey(id)) {
-            inputDevices.get(id).config.putAll(config);
+            controlConfigs.get(id).putAll(config);
+            
+            Logger.logInfo("Changed the button configuration of input device " + 
+                           id + " \"" + inputDevices.get(id).name + "\"");
         } else {
-            //todo log
+            Logger.logWarning("Failed to change the button configuration of input device " + 
+                              id + "Could not find an input device at this index.",
+                              null);
         }
+        
+        Logger.setDomain(null);
     }
     
     public static void setKeyMouseAxisValues(int x1, int x2, int y1, int y2) {
@@ -248,16 +366,43 @@ public final class Input {
     }
     
     public static void setDevicePuppet(int id, Puppet puppet) {
+        Logger.setDomain("input");
+        
         if(inputDevices.containsKey(id)) {
-            InputDevice device = inputDevices.get(id);
-            device.puppetSetEvents.add(puppet);
+            inputDevices.get(id).puppetSetEvents.add(puppet);
+            
+            Logger.logInfo("Changed the current puppet object of input device " + id + " \"" + 
+                            inputDevices.get(id).name + "\" to (" + puppet.object.getClass().getCanonicalName() + ")");
         } else {
-            //TODO: log warning
+            Logger.logWarning("Failed to change the devices current puppet object. " + 
+                              "Could not find an input device at index " + id + ".",
+                              null);
         }
+        
+        Logger.setDomain(null);
     }
     
     public static void bindPreviousPuppet(int id) {
+        Logger.setDomain("input");
         
+        if(inputDevices.containsKey(id)) {
+            InputDevice device = inputDevices.get(id);
+            
+            if(device.puppets.size() > 1) {
+                device.puppets.pop();
+                setDevicePuppet(id, device.puppets.peek());
+            } else {
+                Logger.logWarning("Failed to bind the previous puppet object for input device " + id + 
+                                  " \"" + device.name + "\". This device has no prior puppet objects.", 
+                                  null);
+            }
+        } else {
+            Logger.logWarning("Failed to bind previous puppet for input device " + id + 
+                              ". Could not find an input device at this index.",
+                              null);
+        }
+        
+        Logger.setDomain(null);
     }
     
 }
