@@ -40,6 +40,7 @@ public final class Logger {
         logInfo("SPEAKERS:\t\t" );
         logInfo("GAMEPADS:\t\t" + "Found: " + Input.getNumDevices());
         horizontalLine();
+        newLine();
     }
     
     public static void newLine() {
