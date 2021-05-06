@@ -71,6 +71,50 @@ public final class Window {
             
             //TODO: gl viewport resizing
         });
+        
+        glfwSetMonitorCallback((monHandle, event) -> {
+            Logger.setDomain("winkit");
+            
+            switch(event) {
+                case GLFW_CONNECTED -> {
+                    WinKit.findMonitors();
+                    Monitor conMon = WinKit.getMonitor(monHandle);
+                    Logger.logInfo("Monitor " + conMon.id + " \"" + conMon.name + "\" has been connected.");
+                    
+                }
+                
+                /*
+                I think there's a driver issue here with some monitors which
+                causes the window to disappear if it attempts to enter 
+                fullscreen again after a monitor is disconnected.
+                */
+                case GLFW_DISCONNECTED -> {
+                    if(monitor.handle == monHandle) {
+                        Logger.logWarning("The windows current monitor (ID:" + monitor.id + ", \"" + 
+                                          monitor.name + "\") has been disconnected. Attempting " + 
+                                          "to move the window to the next available monitor...", 
+                                          null);
+                        
+                        WinKit.removeMonitor(monHandle);
+                        monitor = WinKit.getAnyMonitor();
+                        enableFullscreen(false);
+                        
+                        Logger.logInfo("Moved the window to monitor " + monitor.id + " \"" + monitor.name + "\"");
+                    } else {
+                        Monitor disconMon = WinKit.getMonitor(monHandle);
+                        
+                        Logger.logInfo("Monitor " + disconMon.id + " \"" + disconMon.name + "\" has been disconnected.");
+                        WinKit.removeMonitor(monHandle);
+                    }
+                }
+            }
+            
+            Logger.setDomain(null);
+        });
+        
+        glfwSetJoystickCallback((jid, event) -> {
+            //TODO: need to add gl stuff first...
+        });
     }
     
     public static int getPositionX() {
@@ -181,18 +225,16 @@ public final class Window {
     }
     
     public static void setMonitor(Monitor monitor) {
-        if(Window.monitor != monitor) {
-            enableFullscreen(!fullscreen);
-            
-            Window.monitor = monitor;
-            reconfigure();
-            
-            Logger.setDomain("winkit");
-            Logger.logInfo("Moved the window to monitor " + monitor.id + " \"" + monitor.name + "\"");
-            Logger.setDomain(null);
-            
-            enableFullscreen(!fullscreen);
-        }
+        enableFullscreen(!fullscreen);
+
+        Window.monitor = monitor;
+        reconfigure();
+
+        Logger.setDomain("winkit");
+        Logger.logInfo("Moved the window to monitor " + monitor.id + " \"" + monitor.name + "\"");
+        Logger.setDomain(null);
+
+        enableFullscreen(!fullscreen);
     }
     
     public static void setMonitor(String operation) {

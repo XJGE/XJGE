@@ -1,8 +1,14 @@
 package dev.theskidster.xjge2.test;
 
-import dev.theskidster.xjge2.core.Input;
+import dev.theskidster.xjge2.core.Window;
 import dev.theskidster.xjge2.core.XJGE;
-import static org.lwjgl.glfw.GLFW.GLFW_JOYSTICK_1;
+import static org.lwjgl.glfw.GLFW.GLFW_KEY_DOWN;
+import static org.lwjgl.glfw.GLFW.GLFW_KEY_F1;
+import static org.lwjgl.glfw.GLFW.GLFW_KEY_LEFT;
+import static org.lwjgl.glfw.GLFW.GLFW_KEY_RIGHT;
+import static org.lwjgl.glfw.GLFW.GLFW_KEY_UP;
+import static org.lwjgl.glfw.GLFW.GLFW_PRESS;
+import static org.lwjgl.glfw.GLFW.glfwSetKeyCallback;
 
 /**
  * @author J Hoffman
@@ -23,10 +29,9 @@ public class Test {
         
         Entity e = new Entity();
         
-        Input.setDevicePuppet(GLFW_JOYSTICK_1, e.puppet);
+        //Input.setDevicePuppet(GLFW_JOYSTICK_1, e.puppet);
         //Input.setDevicePuppet(KEY_MOUSE_COMBO, e.puppet);
         
-        /*
         glfwSetKeyCallback(Window.HANDLE, (window, key, scancode, action, mods) -> {
             if(action == GLFW_PRESS) {
                 switch(key) {
@@ -43,7 +48,7 @@ public class Test {
                     }
                     
                     case GLFW_KEY_UP -> {
-                        Window.getMonitor().setVideoMode("-1ty");
+                        Window.setMonitor("1");
                     }
                     
                     case GLFW_KEY_DOWN -> {
@@ -52,7 +57,6 @@ public class Test {
                 }
             }
         });
-        */
         
         XJGE.start();
         

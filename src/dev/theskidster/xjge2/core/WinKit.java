@@ -16,13 +16,29 @@ public final class WinKit {
     
     private static final TreeMap<Integer, Monitor> monitors = new TreeMap<>();
     
+    static void removeMonitor(long handle) {
+        monitors.values().removeIf(monitor -> monitor.handle == handle);
+    }
+    
+    static Monitor getMonitor(long handle) {
+        return monitors.values().stream()
+                .filter(monitor -> monitor.handle == handle)
+                .findFirst()
+                .get();
+    }
+    
+    static Monitor getAnyMonitor() {
+        return monitors.values().stream().findAny().get();
+    }
+    
     public static final TreeMap<Integer, Monitor> findMonitors() {
-        monitors.clear();
         PointerBuffer monitorBuf = glfwGetMonitors();
         
         if(monitorBuf != null) {
             for(int i = 0; i < monitorBuf.limit(); i++) {
-                monitors.put(i + 1, new Monitor(i + 1, monitorBuf.get(i)));
+                if(!monitors.containsKey(i + 1)) {
+                    monitors.put(i + 1, new Monitor(i + 1, monitorBuf.get(i)));
+                }
             }
         } else {
             Logger.setDomain("winkit");
