@@ -1,6 +1,5 @@
 package dev.theskidster.xjge2.core;
 
-import dev.theskidster.xjge2.gameutils.Puppet;
 import static dev.theskidster.xjge2.core.Control.*;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;

@@ -13,8 +13,8 @@ import static org.lwjgl.opengl.GL30.*;
 public final class XJGE {
     
     private static int fbo;
-    private static int tickCount = 0;
     private static int fps;
+    static int tickCount = 0;
     
     private static double deltaMetric = 0;
     
@@ -115,28 +115,40 @@ public final class XJGE {
         double delta = 0;
         
         while(!glfwWindowShouldClose(Window.HANDLE)) {
+            glfwPollEvents();
+            
             currTime = glfwGetTime();
             delta    += currTime - prevTime;
-            
             if(delta < TARGET_DELTA && WinKit.getVSyncEnabled()) delta = TARGET_DELTA;
-            
             prevTime = currTime;
             ticked   = false;
             
             while(delta >= TARGET_DELTA) {
+                Input.pollInput();
+                
                 deltaMetric = delta;
                 
                 delta     -= TARGET_DELTA;
                 ticked    = true;
                 tickCount = (tickCount == Integer.MAX_VALUE) ? 0 : tickCount + 1;
                 
-                glfwPollEvents();
-                
-                
+                if(Timer.tick(60)) {
+                    fps    = cycles;
+                    cycles = 0;
+                }
             }
             
-            glfwPollEvents();
-            Input.pollInput();
+            glfwSwapBuffers(Window.HANDLE);
+            
+            if(!ticked) {
+                try {
+                    Thread.sleep(1);
+                } catch(InterruptedException e) {
+                    Logger.logSevere(e.getMessage(), e);
+                }
+            } else {
+                cycles++;
+            }
         }
         
         Input.exportControls();
