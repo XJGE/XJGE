@@ -3,6 +3,7 @@ package dev.theskidster.xjge2.core;
 import java.nio.file.Path;
 import static org.lwjgl.glfw.GLFW.*;
 import org.lwjgl.opengl.GL;
+import static org.lwjgl.opengl.GL30.*;
 
 /**
  * @author J Hoffman
@@ -11,7 +12,14 @@ import org.lwjgl.opengl.GL;
 
 public final class XJGE {
     
+    private static int fbo;
+    private static int tickCount = 0;
+    private static int fps;
+    
+    private static double deltaMetric = 0;
+    
     private static boolean initCalled;
+    private static boolean ticked;
     
     public static final String VERSION = "0.0.0";
     private static String filepath     = "/dev/theskidster/xjge2/assets/";
@@ -45,7 +53,7 @@ public final class XJGE {
             
             if(!glfwInit()) Logger.logSevere("Failed to initialize GLFW.", null);
             
-            { //Initialize window.
+            { //Initialize the window.
                 glfwWindowHint(GLFW_RESIZABLE, windowResizable ? GLFW_TRUE : GLFW_FALSE);
                 glfwWindowHint(GLFW_VISIBLE, GLFW_FALSE);
                 
@@ -59,6 +67,31 @@ public final class XJGE {
             
             glfwMakeContextCurrent(Window.HANDLE);
             GL.createCapabilities();
+            
+            int texHandle = glGenTextures();
+            glBindTexture(GL_TEXTURE_2D, texHandle);
+                glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+                glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+                glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, Window.getWidth(), Window.getHeight(), 0, GL_RGB, GL_UNSIGNED_BYTE, 0);
+            glBindTexture(GL_TEXTURE_2D, 0);
+            
+            fbo = glGenFramebuffers();
+            glBindFramebuffer(GL_FRAMEBUFFER, fbo);
+                glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, texHandle, 0);
+            glBindFramebuffer(GL_FRAMEBUFFER, 0);
+            
+            /*
+            TODO: 
+            - implement split screen
+            
+            We can use the old splitscreen system, but remeber to recreate the 
+            renderbuffer anytime the windows size is changed otherwise we'll end
+            up with some goofy viewport cropping.
+            */
+            
+            { //Initialize the default shaders.
+                
+            }
             
             Logger.printSystemInfo();
             
@@ -75,7 +108,33 @@ public final class XJGE {
     public static void start() {
         Window.show();
         
+        int cycles = 0;
+        final double TARGET_DELTA = 1 / 60.0;
+        double prevTime = glfwGetTime();
+        double currTime;
+        double delta = 0;
+        
         while(!glfwWindowShouldClose(Window.HANDLE)) {
+            currTime = glfwGetTime();
+            delta    += currTime - prevTime;
+            
+            if(delta < TARGET_DELTA && WinKit.getVSyncEnabled()) delta = TARGET_DELTA;
+            
+            prevTime = currTime;
+            ticked   = false;
+            
+            while(delta >= TARGET_DELTA) {
+                deltaMetric = delta;
+                
+                delta     -= TARGET_DELTA;
+                ticked    = true;
+                tickCount = (tickCount == Integer.MAX_VALUE) ? 0 : tickCount + 1;
+                
+                glfwPollEvents();
+                
+                
+            }
+            
             glfwPollEvents();
             Input.pollInput();
         }

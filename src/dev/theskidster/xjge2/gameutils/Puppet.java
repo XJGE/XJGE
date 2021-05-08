@@ -1,5 +1,7 @@
-package dev.theskidster.xjge2.core;
+package dev.theskidster.xjge2.gameutils;
 
+import dev.theskidster.xjge2.core.Command;
+import dev.theskidster.xjge2.core.Control;
 import java.util.HashMap;
 
 /**

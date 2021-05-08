@@ -1,7 +1,7 @@
 package dev.theskidster.xjge2.test;
 
 import static dev.theskidster.xjge2.core.Control.*;
-import dev.theskidster.xjge2.core.Puppet;
+import dev.theskidster.xjge2.gameutils.Puppet;
 
 /**
  * @author J Hoffman
