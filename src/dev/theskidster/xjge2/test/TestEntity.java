@@ -2,17 +2,18 @@ package dev.theskidster.xjge2.test;
 
 import static dev.theskidster.xjge2.core.Control.*;
 import dev.theskidster.xjge2.core.Puppet;
+import dev.theskidster.xjge2.scene.Entity;
 
 /**
  * @author J Hoffman
  * Created: May 3, 2021
  */
 
-public class Entity {
+public class TestEntity extends Entity {
 
     Puppet puppet = new Puppet(this);
     
-    Entity() {
+    TestEntity() {
         puppet.commands.put(CROSS, new LogControlName("Cross"));
         puppet.commands.put(CIRCLE, new LogControlName("Circle"));
         puppet.commands.put(SQUARE, new LogControlName("Square"));
@@ -34,6 +35,16 @@ public class Entity {
         puppet.commands.put(LEFT_STICK_Y, new LogControlName("Left stick y"));
         puppet.commands.put(L2, new LogControlName("L2"));
         puppet.commands.put(R2, new LogControlName("R2"));
+        
+        
+    }
+
+    @Override
+    public void update() {
+    }
+
+    @Override
+    public void render() {
     }
     
 }

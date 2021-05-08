@@ -1,5 +1,6 @@
 package dev.theskidster.xjge2.test;
 
+import dev.theskidster.xjge2.core.WinKit;
 import dev.theskidster.xjge2.core.Window;
 import dev.theskidster.xjge2.core.XJGE;
 import static org.lwjgl.glfw.GLFW.GLFW_KEY_DOWN;
@@ -27,7 +28,9 @@ public class Test {
         
         XJGE.init("/dev/theskidster/xjge2/assets/", false);
         
-        Entity e = new Entity();
+        TestEntity e = new TestEntity();
+        
+        //TODO: draw triangle.
         
         //Input.setDevicePuppet(GLFW_JOYSTICK_1, e.puppet);
         //Input.setDevicePuppet(KEY_MOUSE_COMBO, e.puppet);
@@ -40,7 +43,7 @@ public class Test {
                     }
                     
                     case GLFW_KEY_LEFT -> {
-                        Window.setMonitor("prev");
+                        WinKit.setVSyncEnabled(!WinKit.getVSyncEnabled());
                     }
                     
                     case GLFW_KEY_RIGHT -> {
