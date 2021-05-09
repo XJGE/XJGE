@@ -23,4 +23,6 @@ public abstract class Entity {
     
     public abstract void render(HashMap<String, GLProgram> glPrograms);
     
+    //TODO: add removal stuff.
+    
 }

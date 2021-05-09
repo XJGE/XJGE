@@ -27,6 +27,7 @@ public final class XJGE {
     
     private static boolean initCalled;
     private static boolean ticked;
+    static boolean debugAllowed;
     
     public static final String VERSION = "0.0.0";
     private static String filepath     = "/dev/theskidster/xjge2/assets/";
@@ -55,7 +56,7 @@ public final class XJGE {
     used to set the initial scene the engine will enter upon startup.
     */
     
-    public static void init(String filepath, boolean windowResizable) {
+    public static void init(String filepath, boolean windowResizable, boolean debugAllowed) {
         if(!initCalled) {
             if(System.getProperty("java.version").compareTo("15.0.2") < 0) {
                 Logger.logSevere("Unsupported Java version. Required 15.0.2, " + 
@@ -64,6 +65,8 @@ public final class XJGE {
             }
             
             if(!glfwInit()) Logger.logSevere("Failed to initialize GLFW.", null);
+            
+            XJGE.debugAllowed = debugAllowed;
             
             { //Initialize the window.
                 glfwWindowHint(GLFW_RESIZABLE, windowResizable ? GLFW_TRUE : GLFW_FALSE);
