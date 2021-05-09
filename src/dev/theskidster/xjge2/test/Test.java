@@ -1,5 +1,6 @@
 package dev.theskidster.xjge2.test;
 
+import dev.theskidster.xjge2.core.Logger;
 import dev.theskidster.xjge2.core.WinKit;
 import dev.theskidster.xjge2.core.Window;
 import dev.theskidster.xjge2.core.XJGE;
@@ -53,7 +54,7 @@ public class Test {
                     }
                     
                     case GLFW_KEY_UP -> {
-                        Window.setMonitor("1");
+                        Logger.logInfo(Window.getMonitor().getInfo());
                     }
                     
                     case GLFW_KEY_DOWN -> {

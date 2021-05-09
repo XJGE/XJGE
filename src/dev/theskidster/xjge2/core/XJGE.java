@@ -1,5 +1,6 @@
 package dev.theskidster.xjge2.core;
 
+import dev.theskidster.xjge2.graphics.Color;
 import dev.theskidster.xjge2.scene.Scene;
 import dev.theskidster.xjge2.shaderutils.BufferType;
 import dev.theskidster.xjge2.shaderutils.GLProgram;
@@ -31,6 +32,7 @@ public final class XJGE {
     private static String filepath     = "/dev/theskidster/xjge2/assets/";
     public static final Path PWD       = Path.of("").toAbsolutePath();
     
+    static Color clearColor = Color.BLACK;
     private static Scene scene;
     
     private static final HashMap<String, GLProgram> glPrograms = new HashMap<>();
@@ -150,7 +152,7 @@ public final class XJGE {
                 }
             }
             
-            glClearColor(1, 0, 0, 0);
+            glClearColor(clearColor.r, clearColor.g, clearColor.b, 0);
             glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
             scene.render(glPrograms);
             glfwSwapBuffers(Window.HANDLE);
@@ -199,6 +201,10 @@ public final class XJGE {
         
         if(XJGE.scene != null) scene.exit();
         XJGE.scene = scene;
+    }
+    
+    public static void setClearColor(Color color) {
+        clearColor = color;
     }
     
 }
