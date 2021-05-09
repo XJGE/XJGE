@@ -1,10 +1,15 @@
 package dev.theskidster.xjge2.test;
 
 import static dev.theskidster.xjge2.core.Control.*;
+import dev.theskidster.xjge2.core.ErrorUtils;
 import dev.theskidster.xjge2.core.Puppet;
+import dev.theskidster.xjge2.graphics.Graphics;
 import dev.theskidster.xjge2.scene.Entity;
 import dev.theskidster.xjge2.shaderutils.GLProgram;
 import java.util.HashMap;
+import org.joml.Vector3f;
+import static org.lwjgl.opengl.GL30.*;
+import org.lwjgl.system.MemoryStack;
 
 /**
  * @author J Hoffman
@@ -14,8 +19,11 @@ import java.util.HashMap;
 public class TestEntity extends Entity {
 
     Puppet puppet = new Puppet(this);
+    Graphics g    = new Graphics();
     
-    TestEntity() {
+    TestEntity(float x, float y, float z) {
+        super(new Vector3f(x, y, z));
+        
         puppet.commands.put(CROSS, new LogControlName("Cross"));
         puppet.commands.put(CIRCLE, new LogControlName("Circle"));
         puppet.commands.put(SQUARE, new LogControlName("Square"));
@@ -38,16 +46,43 @@ public class TestEntity extends Entity {
         puppet.commands.put(L2, new LogControlName("L2"));
         puppet.commands.put(R2, new LogControlName("R2"));
         
+        try(MemoryStack stack = MemoryStack.stackPush()) {
+            g.vertices = stack.mallocFloat(18);
+            
+            //(vec3 position), (vec3 color)
+            g.vertices.put(-1).put(-1).put(0)   .put(1).put(0).put(0);
+            g.vertices .put(0) .put(1).put(0)   .put(0).put(1).put(0);
+            g.vertices .put(1).put(-1).put(0)   .put(0).put(0).put(1);
+            
+            g.vertices.flip();
+        }
         
+        g.bindBuffers();
+        
+        glVertexAttribPointer(0, 3, GL_FLOAT, false, (6 * Float.BYTES), 0);
+        glVertexAttribPointer(1, 3, GL_FLOAT, false, (6 * Float.BYTES), (3 * Float.BYTES));
+        
+        glEnableVertexAttribArray(0);
+        glEnableVertexAttribArray(1);
     }
 
     @Override
     public void update(double targetDelta) {
+        g.modelMatrix.translation(position);
     }
 
     @Override
     public void render(GLProgram glProgram) {
+        glProgram.use();
         
+        glBindVertexArray(g.vao);
+        
+        glProgram.setUniform("uType", 1);
+        glProgram.setUniform("uModel", false, g.modelMatrix);
+        
+        glDrawArrays(GL_TRIANGLES, 0, 3);
+        
+        ErrorUtils.checkGLError();
     }
     
     @Override

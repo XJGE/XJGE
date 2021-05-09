@@ -34,8 +34,9 @@ public final class XJGE {
     
     static Color clearColor = Color.BLACK;
     private static Scene scene;
+    private static Camera camera;
     
-    private static final HashMap<String, GLProgram> glPrograms = new HashMap<>();
+    static final HashMap<String, GLProgram> glPrograms = new HashMap<>();
     
     /*
     XJGE.init(String filepath);
@@ -118,6 +119,8 @@ public final class XJGE {
     }
     
     public static void start() {
+        camera = new FreeCam(); //this will be removed eventually- just here for testing purposes.
+        
         Window.show();
         
         int cycles = 0;
@@ -144,6 +147,7 @@ public final class XJGE {
                 ticked    = true;
                 tickCount = (tickCount == Integer.MAX_VALUE) ? 0 : tickCount + 1;
                 
+                camera.update();
                 scene.update(TARGET_DELTA);
                 
                 if(tick(60)) {
@@ -154,6 +158,7 @@ public final class XJGE {
             
             glClearColor(clearColor.r, clearColor.g, clearColor.b, 0);
             glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+            camera.render(glPrograms);
             scene.render(glPrograms);
             glfwSwapBuffers(Window.HANDLE);
             
@@ -195,7 +200,7 @@ public final class XJGE {
     
     public static void setScene(Scene scene) {
         Logger.setDomain("core");
-        Logger.logInfo("Scene changed to \"" + scene.name + "\"");
+        Logger.logInfo("Current scene changed to \"" + scene.name + "\"");
         Logger.newLine();
         Logger.setDomain(null);
         

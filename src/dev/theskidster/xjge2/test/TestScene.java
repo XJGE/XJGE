@@ -13,6 +13,8 @@ public class TestScene extends Scene {
 
     public TestScene() {
         super("test");
+        
+        entities.put("test", new TestEntity(0, 0, -5));
     }
     
     @Override

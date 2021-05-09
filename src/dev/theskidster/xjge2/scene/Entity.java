@@ -13,6 +13,10 @@ public abstract class Entity {
 
     public Vector3f position;
     
+    protected Entity(Vector3f position) {
+        this.position = position;
+    }
+    
     public abstract void update(double targetDelta);
     
     public abstract void render(GLProgram glProgram);

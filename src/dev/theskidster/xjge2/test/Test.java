@@ -4,13 +4,7 @@ import dev.theskidster.xjge2.core.Logger;
 import dev.theskidster.xjge2.core.WinKit;
 import dev.theskidster.xjge2.core.Window;
 import dev.theskidster.xjge2.core.XJGE;
-import static org.lwjgl.glfw.GLFW.GLFW_KEY_DOWN;
-import static org.lwjgl.glfw.GLFW.GLFW_KEY_F1;
-import static org.lwjgl.glfw.GLFW.GLFW_KEY_LEFT;
-import static org.lwjgl.glfw.GLFW.GLFW_KEY_RIGHT;
-import static org.lwjgl.glfw.GLFW.GLFW_KEY_UP;
-import static org.lwjgl.glfw.GLFW.GLFW_PRESS;
-import static org.lwjgl.glfw.GLFW.glfwSetKeyCallback;
+import static org.lwjgl.glfw.GLFW.*;
 
 /**
  * @author J Hoffman
@@ -29,11 +23,7 @@ public class Test {
         
         XJGE.init("/dev/theskidster/xjge2/assets/", false);
         
-        TestEntity e = new TestEntity();
-        
         XJGE.setScene(new TestScene());
-        
-        //TODO: draw triangle.
         
         //Input.setDevicePuppet(GLFW_JOYSTICK_1, e.puppet);
         //Input.setDevicePuppet(KEY_MOUSE_COMBO, e.puppet);
@@ -41,6 +31,10 @@ public class Test {
         glfwSetKeyCallback(Window.HANDLE, (window, key, scancode, action, mods) -> {
             if(action == GLFW_PRESS) {
                 switch(key) {
+                    case GLFW_KEY_ESCAPE -> {
+                        Window.close();
+                    }
+                    
                     case GLFW_KEY_F1 -> {
                         Window.setFullscreen(!Window.getFullscreen());
                     }
