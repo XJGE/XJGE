@@ -4,7 +4,7 @@ in vec3 ioColor;
 
 uniform int uType;
 
-out ioResult;
+out vec4 ioResult;
 
 void main() {
     switch(uType) {

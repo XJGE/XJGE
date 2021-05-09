@@ -1,7 +1,6 @@
 package dev.theskidster.xjge2.scene;
 
 import dev.theskidster.xjge2.shaderutils.GLProgram;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 

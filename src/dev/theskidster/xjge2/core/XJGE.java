@@ -1,6 +1,7 @@
 package dev.theskidster.xjge2.core;
 
 import dev.theskidster.xjge2.scene.Scene;
+import dev.theskidster.xjge2.shaderutils.BufferType;
 import dev.theskidster.xjge2.shaderutils.GLProgram;
 import dev.theskidster.xjge2.shaderutils.Shader;
 import java.nio.file.Path;
@@ -91,7 +92,15 @@ public final class XJGE {
                     add(new Shader("defaultFragment.glsl", GL_FRAGMENT_SHADER));
                 }};
                 
+                GLProgram defaultProgram = new GLProgram(shaderSourceFiles, "default");
                 
+                defaultProgram.use();
+                defaultProgram.addUniform(BufferType.INT,  "uType");
+                defaultProgram.addUniform(BufferType.MAT4, "uModel");
+                defaultProgram.addUniform(BufferType.MAT4, "uView");
+                defaultProgram.addUniform(BufferType.MAT4, "uProjection");
+                
+                glPrograms.put("default", defaultProgram);
             }
             
             Logger.printSystemInfo();
@@ -133,12 +142,17 @@ public final class XJGE {
                 ticked    = true;
                 tickCount = (tickCount == Integer.MAX_VALUE) ? 0 : tickCount + 1;
                 
+                scene.update(TARGET_DELTA);
+                
                 if(tick(60)) {
                     fps    = cycles;
                     cycles = 0;
                 }
             }
             
+            glClearColor(1, 0, 0, 0);
+            glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+            scene.render(glPrograms);
             glfwSwapBuffers(Window.HANDLE);
             
             if(!ticked) {

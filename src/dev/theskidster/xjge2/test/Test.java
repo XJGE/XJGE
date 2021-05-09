@@ -30,6 +30,8 @@ public class Test {
         
         TestEntity e = new TestEntity();
         
+        XJGE.setScene(new TestScene());
+        
         //TODO: draw triangle.
         
         //Input.setDevicePuppet(GLFW_JOYSTICK_1, e.puppet);
