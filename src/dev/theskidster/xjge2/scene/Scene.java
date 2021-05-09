@@ -1,6 +1,9 @@
 package dev.theskidster.xjge2.scene;
 
+import dev.theskidster.xjge2.shaderutils.GLProgram;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.LinkedHashMap;
 
 /**
  * @author J Hoffman
@@ -9,16 +12,18 @@ import java.util.ArrayList;
 
 public abstract class Scene {
 
-    //TODO: this is real basic, we'll come back and spice it up later.
+    public final String name;
     
-    protected static final ArrayList<Entity> entityList = new ArrayList<>();
+    protected final LinkedHashMap<String, Entity> entities = new LinkedHashMap<>();
     
-    public static void addEntity(Entity e) {
-        entityList.add(e);
+    public Scene(String name) {
+        this.name = name;
     }
     
-    public abstract void update();
+    public abstract void update(double targetDelta);
     
-    public abstract void render();
+    public abstract void render(HashMap<String, GLProgram> glPrograms);
+    
+    public abstract void exit();
     
 }

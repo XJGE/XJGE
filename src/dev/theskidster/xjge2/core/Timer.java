@@ -6,9 +6,5 @@ package dev.theskidster.xjge2.core;
  */
 
 public class Timer {
-
-    public static boolean tick(int cycles) {
-        return XJGE.tickCount % cycles == 0;
-    }
     
 }

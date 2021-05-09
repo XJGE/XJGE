@@ -3,6 +3,8 @@ package dev.theskidster.xjge2.test;
 import static dev.theskidster.xjge2.core.Control.*;
 import dev.theskidster.xjge2.core.Puppet;
 import dev.theskidster.xjge2.scene.Entity;
+import dev.theskidster.xjge2.shaderutils.GLProgram;
+import java.util.HashMap;
 
 /**
  * @author J Hoffman
@@ -40,11 +42,16 @@ public class TestEntity extends Entity {
     }
 
     @Override
-    public void update() {
+    public void update(double targetDelta) {
     }
 
     @Override
-    public void render() {
+    public void render(GLProgram glProgram) {
+        
+    }
+    
+    @Override
+    public void render(HashMap<String, GLProgram> glPrograms) {
     }
     
 }

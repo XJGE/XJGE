@@ -117,7 +117,7 @@ public final class Input {
     
     static void importControls() {
         try {
-            InputStream stream = new FileInputStream(XJGE.PWD.toString() + "\\controls.cfg");
+            InputStream stream = new FileInputStream(XJGE.PWD.toString() + "/controls.cfg");
             XMLStreamReader xmlReader = XMLInputFactory.newInstance().createXMLStreamReader(stream);
             
             int id = 0;

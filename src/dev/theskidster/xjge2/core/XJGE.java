@@ -1,6 +1,11 @@
 package dev.theskidster.xjge2.core;
 
+import dev.theskidster.xjge2.scene.Scene;
+import dev.theskidster.xjge2.shaderutils.GLProgram;
+import dev.theskidster.xjge2.shaderutils.Shader;
 import java.nio.file.Path;
+import java.util.HashMap;
+import java.util.LinkedList;
 import static org.lwjgl.glfw.GLFW.*;
 import org.lwjgl.opengl.GL;
 import static org.lwjgl.opengl.GL30.*;
@@ -14,7 +19,7 @@ public final class XJGE {
     
     private static int fbo;
     private static int fps;
-    static int tickCount = 0;
+    private static int tickCount = 0;
     
     private static double deltaMetric = 0;
     
@@ -23,8 +28,11 @@ public final class XJGE {
     
     public static final String VERSION = "0.0.0";
     private static String filepath     = "/dev/theskidster/xjge2/assets/";
+    public static final Path PWD       = Path.of("").toAbsolutePath();
     
-    public static final Path PWD = Path.of("").toAbsolutePath();
+    private static Scene scene;
+    
+    private static final HashMap<String, GLProgram> glPrograms = new HashMap<>();
     
     /*
     XJGE.init(String filepath);
@@ -68,18 +76,6 @@ public final class XJGE {
             glfwMakeContextCurrent(Window.HANDLE);
             GL.createCapabilities();
             
-            int texHandle = glGenTextures();
-            glBindTexture(GL_TEXTURE_2D, texHandle);
-                glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-                glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-                glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, Window.getWidth(), Window.getHeight(), 0, GL_RGB, GL_UNSIGNED_BYTE, 0);
-            glBindTexture(GL_TEXTURE_2D, 0);
-            
-            fbo = glGenFramebuffers();
-            glBindFramebuffer(GL_FRAMEBUFFER, fbo);
-                glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, texHandle, 0);
-            glBindFramebuffer(GL_FRAMEBUFFER, 0);
-            
             /*
             TODO: 
             - implement split screen
@@ -90,6 +86,11 @@ public final class XJGE {
             */
             
             { //Initialize the default shaders.
+                var shaderSourceFiles = new LinkedList<Shader>() {{
+                    add(new Shader("defaultVertex.glsl", GL_VERTEX_SHADER));
+                    add(new Shader("defaultFragment.glsl", GL_FRAGMENT_SHADER));
+                }};
+                
                 
             }
             
@@ -132,7 +133,7 @@ public final class XJGE {
                 ticked    = true;
                 tickCount = (tickCount == Integer.MAX_VALUE) ? 0 : tickCount + 1;
                 
-                if(Timer.tick(60)) {
+                if(tick(60)) {
                     fps    = cycles;
                     cycles = 0;
                 }
@@ -158,6 +159,32 @@ public final class XJGE {
     
     public static String getFilepath() {
         return filepath;
+    }
+    
+    public static boolean tick(int cycles) {
+        return tickCount % cycles == 0;
+    }
+    
+    public static void addGLProgram(String name, GLProgram glProgram) {
+        if(!name.equals("default")) {
+            glPrograms.put(name, glProgram);
+        } else {
+            Logger.setDomain("core");
+            Logger.logWarning("Failed to add program \"" + name + "\". This " + 
+                              " name is reserved for engine use- pick another.", 
+                              null);
+            Logger.setDomain(null);
+        }
+    }
+    
+    public static void setScene(Scene scene) {
+        Logger.setDomain("core");
+        Logger.logInfo("Scene changed to \"" + scene.name + "\"");
+        Logger.newLine();
+        Logger.setDomain(null);
+        
+        if(XJGE.scene != null) scene.exit();
+        XJGE.scene = scene;
     }
     
 }

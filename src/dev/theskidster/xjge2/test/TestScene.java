@@ -1,6 +1,8 @@
 package dev.theskidster.xjge2.test;
 
 import dev.theskidster.xjge2.scene.Scene;
+import dev.theskidster.xjge2.shaderutils.GLProgram;
+import java.util.HashMap;
 
 /**
  * @author J Hoffman
@@ -9,13 +11,25 @@ import dev.theskidster.xjge2.scene.Scene;
 
 public class TestScene extends Scene {
 
+    public TestScene() {
+        super("test");
+    }
+    
     @Override
-    public void update() {
-        entityList.forEach(entity -> entity.update());
+    public void update(double targetDelta) {
+        entities.values().forEach(entity -> entity.update(targetDelta));
     }
 
     @Override
-    public void render() {
+    public void render(HashMap<String, GLProgram> glPrograms) {
+        GLProgram defaultProgram = glPrograms.get("default");
+        defaultProgram.use();
+        
+        entities.values().forEach(entity -> entity.render(defaultProgram));
+    }
+
+    @Override
+    public void exit() {
     }
 
 }

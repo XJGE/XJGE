@@ -1,5 +1,7 @@
 package dev.theskidster.xjge2.scene;
 
+import dev.theskidster.xjge2.shaderutils.GLProgram;
+import java.util.HashMap;
 import org.joml.Vector3f;
 
 /**
@@ -11,8 +13,10 @@ public abstract class Entity {
 
     public Vector3f position;
     
-    public abstract void update();
+    public abstract void update(double targetDelta);
     
-    public abstract void render();
+    public abstract void render(GLProgram glProgram);
+    
+    public abstract void render(HashMap<String, GLProgram> glPrograms);
     
 }
