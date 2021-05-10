@@ -1,6 +1,7 @@
 package dev.theskidster.xjge2.test;
 
-import dev.theskidster.xjge2.scene.Scene;
+import dev.theskidster.xjge2.core.Camera;
+import dev.theskidster.xjge2.core.Scene;
 import dev.theskidster.xjge2.shaderutils.GLProgram;
 import java.util.Map;
 
@@ -23,11 +24,11 @@ public class TestScene extends Scene {
     }
 
     @Override
-    public void render(Map<String, GLProgram> glPrograms) {
+    public void render(Map<String, GLProgram> glPrograms, Camera camera) {
         GLProgram defaultProgram = glPrograms.get("default");
         defaultProgram.use();
         
-        entities.values().forEach(entity -> entity.render(defaultProgram));
+        entities.values().forEach(entity -> entity.render(defaultProgram, camera));
     }
 
     @Override

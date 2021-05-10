@@ -1,7 +1,6 @@
 package dev.theskidster.xjge2.core;
 
 import dev.theskidster.xjge2.graphics.Color;
-import dev.theskidster.xjge2.scene.Scene;
 import dev.theskidster.xjge2.shaderutils.BufferType;
 import dev.theskidster.xjge2.shaderutils.GLProgram;
 import dev.theskidster.xjge2.shaderutils.Shader;
@@ -170,7 +169,7 @@ public final class XJGE {
             glClearColor(clearColor.r, clearColor.g, clearColor.b, 0);
             glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
             camera.render(glPrograms);
-            scene.render(glPrograms);
+            scene.render(glPrograms, camera);
             glfwSwapBuffers(Window.HANDLE);
             
             if(!ticked) {
@@ -211,6 +210,10 @@ public final class XJGE {
                               null);
             Logger.setDomain(null);
         }
+    }
+    
+    public static final void addEntity(String name, Entity entity) {
+        scene.entities.put(name, entity);
     }
     
     public static boolean tick(int cycles) {

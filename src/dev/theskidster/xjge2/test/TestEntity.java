@@ -1,10 +1,11 @@
 package dev.theskidster.xjge2.test;
 
+import dev.theskidster.xjge2.core.Camera;
 import static dev.theskidster.xjge2.core.Control.*;
 import dev.theskidster.xjge2.core.ErrorUtils;
 import dev.theskidster.xjge2.core.Puppet;
 import dev.theskidster.xjge2.graphics.Graphics;
-import dev.theskidster.xjge2.scene.Entity;
+import dev.theskidster.xjge2.core.Entity;
 import dev.theskidster.xjge2.shaderutils.GLProgram;
 import java.util.Map;
 import org.joml.Vector3f;
@@ -72,7 +73,7 @@ public class TestEntity extends Entity {
     }
 
     @Override
-    public void render(GLProgram glProgram) {
+    public void render(GLProgram glProgram, Camera camera) {
         glProgram.use();
         
         glBindVertexArray(g.vao);
@@ -86,7 +87,10 @@ public class TestEntity extends Entity {
     }
     
     @Override
-    public void render(Map<String, GLProgram> glPrograms) {
+    public void render(Map<String, GLProgram> glPrograms, Camera camera) {}
+
+    @Override
+    protected void destroy() {
     }
     
 }

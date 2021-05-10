@@ -83,7 +83,7 @@ public final class Window {
             if(action == GLFW_PRESS) {
                 switch(key) {
                     case GLFW_KEY_ESCAPE -> {
-                        close();
+                        close(); //TODO: temp
                     }
                     
                     case GLFW_KEY_F1 -> {
