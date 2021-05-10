@@ -6,8 +6,10 @@ import dev.theskidster.xjge2.shaderutils.BufferType;
 import dev.theskidster.xjge2.shaderutils.GLProgram;
 import dev.theskidster.xjge2.shaderutils.Shader;
 import java.nio.file.Path;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.LinkedList;
+import java.util.Map;
 import static org.lwjgl.glfw.GLFW.*;
 import org.lwjgl.opengl.GL;
 import static org.lwjgl.opengl.GL30.*;
@@ -33,11 +35,11 @@ public final class XJGE {
     private static String filepath     = "/dev/theskidster/xjge2/assets/";
     public static final Path PWD       = Path.of("").toAbsolutePath();
     
-    static Color clearColor = Color.BLACK;
+    private static Color clearColor = Color.BLACK;
     private static Scene scene;
     private static Camera camera;
     
-    static final HashMap<String, GLProgram> glPrograms = new HashMap<>();
+    static Map<String, GLProgram> glPrograms = new HashMap<>();
     
     /*
     XJGE.init(String filepath);
@@ -122,6 +124,8 @@ public final class XJGE {
     }
     
     public static void start() {
+        glPrograms = Collections.unmodifiableMap(glPrograms);
+        
         camera = new FreeCam(); //this will be removed eventually- just here for testing purposes.
         
         Window.show();
@@ -181,14 +185,6 @@ public final class XJGE {
         glfwTerminate();
     }
     
-    public static String getFilepath() {
-        return filepath;
-    }
-    
-    public static boolean tick(int cycles) {
-        return tickCount % cycles == 0;
-    }
-    
     public static void addGLProgram(String name, GLProgram glProgram) {
         if(!name.equals("default")) {
             glPrograms.put(name, glProgram);
@@ -199,6 +195,14 @@ public final class XJGE {
                               null);
             Logger.setDomain(null);
         }
+    }
+    
+    public static boolean tick(int cycles) {
+        return tickCount % cycles == 0;
+    }
+    
+    public static String getFilepath() {
+        return filepath;
     }
     
     public static void setScene(Scene scene) {

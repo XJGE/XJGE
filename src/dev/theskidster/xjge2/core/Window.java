@@ -1,8 +1,10 @@
 package dev.theskidster.xjge2.core;
 
+import dev.theskidster.xjge2.shaderutils.GLProgram;
 import java.io.InputStream;
 import java.nio.ByteBuffer;
 import java.nio.IntBuffer;
+import java.util.HashMap;
 import java.util.TreeMap;
 import static org.lwjgl.glfw.GLFW.*;
 import org.lwjgl.glfw.GLFWImage;
@@ -75,6 +77,20 @@ public final class Window {
             
             //TODO: we'll need to change this eventaully for individual viewports
             glViewport(0, 0, width, height);
+        });
+        
+        glfwSetKeyCallback(Window.HANDLE, (window, key, scancode, action, mods) -> {
+            if(action == GLFW_PRESS) {
+                switch(key) {
+                    case GLFW_KEY_ESCAPE -> {
+                        close();
+                    }
+                    
+                    case GLFW_KEY_F1 -> {
+                        
+                    }
+                }
+            }
         });
         
         glfwSetMonitorCallback((monHandle, event) -> {

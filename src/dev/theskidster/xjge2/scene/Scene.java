@@ -1,8 +1,8 @@
 package dev.theskidster.xjge2.scene;
 
 import dev.theskidster.xjge2.shaderutils.GLProgram;
-import java.util.HashMap;
 import java.util.LinkedHashMap;
+import java.util.Map;
 
 /**
  * @author J Hoffman
@@ -21,7 +21,7 @@ public abstract class Scene {
     
     public abstract void update(double targetDelta);
     
-    public abstract void render(HashMap<String, GLProgram> glPrograms);
+    public abstract void render(Map<String, GLProgram> glPrograms);
     
     public abstract void exit();
     

@@ -6,7 +6,7 @@ import dev.theskidster.xjge2.core.Puppet;
 import dev.theskidster.xjge2.graphics.Graphics;
 import dev.theskidster.xjge2.scene.Entity;
 import dev.theskidster.xjge2.shaderutils.GLProgram;
-import java.util.HashMap;
+import java.util.Map;
 import org.joml.Vector3f;
 import static org.lwjgl.opengl.GL30.*;
 import org.lwjgl.system.MemoryStack;
@@ -86,7 +86,7 @@ public class TestEntity extends Entity {
     }
     
     @Override
-    public void render(HashMap<String, GLProgram> glPrograms) {
+    public void render(Map<String, GLProgram> glPrograms) {
     }
     
 }

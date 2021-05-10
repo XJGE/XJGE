@@ -1,7 +1,7 @@
 package dev.theskidster.xjge2.scene;
 
 import dev.theskidster.xjge2.shaderutils.GLProgram;
-import java.util.HashMap;
+import java.util.Map;
 import org.joml.Vector3f;
 
 /**
@@ -21,7 +21,7 @@ public abstract class Entity {
     
     public abstract void render(GLProgram glProgram);
     
-    public abstract void render(HashMap<String, GLProgram> glPrograms);
+    public abstract void render(Map<String, GLProgram> glPrograms);
     
     //TODO: add removal stuff.
     

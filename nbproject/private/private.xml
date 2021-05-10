@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project-private xmlns="http://www.netbeans.org/ns/project-private/1">
-    <editor-bookmarks xmlns="http://www.netbeans.org/ns/editor-bookmarks/2" lastBookmarkId="16">
+    <editor-bookmarks xmlns="http://www.netbeans.org/ns/editor-bookmarks/2" lastBookmarkId="18">
         <file>
             <url>src/dev/theskidster/xjge2/core/XJGE2.java</url>
             <bookmark id="1">
@@ -18,18 +18,10 @@
             </bookmark>
         </file>
         <file>
-            <url>src/dev/theskidster/xjge2/scene/Scene.java</url>
-            <bookmark id="15">
+            <url>src/dev/theskidster/xjge2/core/XJGE.java</url>
+            <bookmark id="18">
                 <name/>
-                <line>11</line>
-                <key/>
-            </bookmark>
-        </file>
-        <file>
-            <url>src/dev/theskidster/xjge2/graphics/Graphics.java</url>
-            <bookmark id="16">
-                <name/>
-                <line>10</line>
+                <line>124</line>
                 <key/>
             </bookmark>
         </file>
@@ -41,24 +33,12 @@
                 <key/>
             </bookmark>
         </file>
-        <file>
-            <url>src/dev/theskidster/xjge2/test/Test.java</url>
-            <bookmark id="14">
-                <name/>
-                <line>32</line>
-                <key/>
-            </bookmark>
-        </file>
     </editor-bookmarks>
     <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
         <group>
+            <file>file:/C:/Users/thesk/Documents/Projects/XJGE/XJGE-2/src/dev/theskidster/xjge2/test/TestScene.java</file>
             <file>file:/C:/Users/thesk/Documents/Projects/XJGE/XJGE-2/src/dev/theskidster/xjge2/test/Test.java</file>
-            <file>file:/C:/Users/thesk/Documents/Projects/XJGE/XJGE-2/src/dev/theskidster/xjge2/assets/defaultFragment.glsl</file>
-            <file>file:/C:/Users/thesk/Documents/Projects/XJGE/XJGE-2/src/dev/theskidster/xjge2/graphics/Graphics.java</file>
             <file>file:/C:/Users/thesk/Documents/Projects/XJGE/XJGE-2/src/dev/theskidster/xjge2/core/XJGE.java</file>
-            <file>file:/C:/Users/thesk/Documents/Projects/XJGE/XJGE-2/src/dev/theskidster/xjge2/scene/Scene.java</file>
-            <file>file:/C:/Users/thesk/Documents/Projects/XJGE/XJGE-2/src/dev/theskidster/xjge2/scene/Entity.java</file>
-            <file>file:/C:/Users/thesk/Documents/Projects/XJGE/XJGE-2/src/dev/theskidster/xjge2/assets/defaultVertex.glsl</file>
         </group>
     </open-files>
 </project-private>

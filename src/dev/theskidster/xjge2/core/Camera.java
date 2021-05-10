@@ -1,7 +1,7 @@
 package dev.theskidster.xjge2.core;
 
 import dev.theskidster.xjge2.shaderutils.GLProgram;
-import java.util.HashMap;
+import java.util.Map;
 import org.joml.Matrix4f;
 import org.joml.Vector3f;
 
@@ -38,7 +38,7 @@ public abstract class Camera {
     
     abstract void update();
     
-    abstract void render(HashMap<String, GLProgram> glPrograms);
+    abstract void render(Map<String, GLProgram> glPrograms);
     
     public int getFieldOfView() {
         return fov;

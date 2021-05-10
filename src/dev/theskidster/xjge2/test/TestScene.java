@@ -2,7 +2,7 @@ package dev.theskidster.xjge2.test;
 
 import dev.theskidster.xjge2.scene.Scene;
 import dev.theskidster.xjge2.shaderutils.GLProgram;
-import java.util.HashMap;
+import java.util.Map;
 
 /**
  * @author J Hoffman
@@ -23,7 +23,7 @@ public class TestScene extends Scene {
     }
 
     @Override
-    public void render(HashMap<String, GLProgram> glPrograms) {
+    public void render(Map<String, GLProgram> glPrograms) {
         GLProgram defaultProgram = glPrograms.get("default");
         defaultProgram.use();
         

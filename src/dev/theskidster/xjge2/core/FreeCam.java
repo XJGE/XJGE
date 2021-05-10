@@ -1,7 +1,7 @@
 package dev.theskidster.xjge2.core;
 
 import dev.theskidster.xjge2.shaderutils.GLProgram;
-import java.util.HashMap;
+import java.util.Map;
 import org.joml.Vector3f;
 
 /**
@@ -22,7 +22,7 @@ final class FreeCam extends Camera {
     }
 
     @Override
-    void render(HashMap<String, GLProgram> glPrograms) {
+    void render(Map<String, GLProgram> glPrograms) {
         glPrograms.values().forEach(glProgram -> {
             glProgram.use();
             
