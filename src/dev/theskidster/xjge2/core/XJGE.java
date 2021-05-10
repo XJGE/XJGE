@@ -7,9 +7,12 @@ import dev.theskidster.xjge2.shaderutils.GLProgram;
 import dev.theskidster.xjge2.shaderutils.Shader;
 import java.nio.file.Path;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.Map;
+import java.util.PriorityQueue;
+import java.util.Queue;
 import static org.lwjgl.glfw.GLFW.*;
 import org.lwjgl.opengl.GL;
 import static org.lwjgl.opengl.GL30.*;
@@ -40,6 +43,8 @@ public final class XJGE {
     private static Camera camera;
     
     static Map<String, GLProgram> glPrograms = new HashMap<>();
+    
+    private static final Queue<Event> events = new PriorityQueue<>(Comparator.comparing(Event::getPriority));
     
     /*
     XJGE.init(String filepath);
@@ -154,8 +159,7 @@ public final class XJGE {
                 ticked    = true;
                 tickCount = (tickCount == Integer.MAX_VALUE) ? 0 : tickCount + 1;
                 
-                camera.update();
-                scene.update(TARGET_DELTA);
+                processEvents(TARGET_DELTA);
                 
                 if(tick(60)) {
                     fps    = cycles;
@@ -183,6 +187,18 @@ public final class XJGE {
         Input.exportControls();
         GL.destroy();
         glfwTerminate();
+    }
+    
+    private static void processEvents(double targetDelta) {
+        if(events.size() > 0) {
+            Event event = events.peek();
+            
+            if(!event.resolved) event.resolve();
+            else                events.poll();
+        } else {
+            camera.update(); //TODO: temp
+            scene.update(targetDelta);
+        }
     }
     
     public static void addGLProgram(String name, GLProgram glProgram) {
