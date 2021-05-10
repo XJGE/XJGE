@@ -9,9 +9,9 @@ import static org.lwjgl.glfw.GLFW.glfwJoystickPresent;
 
 final class EventGamepad extends Event {
 
-    private int jid;
+    private final int jid;
     
-    public EventGamepad(int jid) {
+    EventGamepad(int jid) {
         super(0);
         this.jid = jid;
     }
