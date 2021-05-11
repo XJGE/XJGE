@@ -25,13 +25,7 @@ public abstract class Scene {
     
     public abstract void exit();
     
-    protected void updateEntities(double targetDelta) {
-        entities.values().forEach(entity -> entity.update(targetDelta));
-        entities.entrySet().removeIf(entry -> entry.getValue().removalRequested());
-    }
-    
-    protected void destroyEntities() {
-        entities.values().forEach(entity -> entity.remove());
+    void processRemoveRequests() {
         entities.entrySet().removeIf(entry -> entry.getValue().removalRequested());
     }
     

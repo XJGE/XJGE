@@ -25,6 +25,8 @@ public abstract class Entity {
     
     public abstract void render(Map<String, GLProgram> glPrograms, Camera camera);
     
+    //Should ONLY be used to deallocate memory, death animations and other effects should be included in the own 
+    //games logic via update method.
     protected abstract void destroy();
     
     protected void remove() {

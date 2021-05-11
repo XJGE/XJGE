@@ -52,7 +52,7 @@ public class Timer {
     public void update() {
         if(start) {
             if(time != 0) {
-                if(XJGE.tick(speed)) time--;
+                if(Game.tick(speed)) time--;
             } else {
                 finished = true;
                 observable.notifyObservers("finished", finished);

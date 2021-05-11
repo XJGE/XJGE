@@ -1,5 +1,6 @@
 package dev.theskidster.xjge2.test;
 
+import dev.theskidster.xjge2.core.Game;
 import dev.theskidster.xjge2.core.XJGE;
 
 /**
@@ -19,7 +20,7 @@ public class Test {
         
         XJGE.init("/dev/theskidster/xjge2/assets/", false, true);
         
-        XJGE.setScene(new TestScene());
+        Game.setScene(new TestScene());
         
         XJGE.start();
         

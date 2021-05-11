@@ -1,7 +1,9 @@
 package dev.theskidster.xjge2.test;
 
 import dev.theskidster.xjge2.core.Camera;
+import dev.theskidster.xjge2.core.Game;
 import dev.theskidster.xjge2.core.Scene;
+import dev.theskidster.xjge2.graphics.Color;
 import dev.theskidster.xjge2.shaderutils.GLProgram;
 import java.util.Map;
 
@@ -14,6 +16,8 @@ public class TestScene extends Scene {
 
     public TestScene() {
         super("test");
+        
+        Game.setClearColor(Color.RETRO_BLUE);
         
         entities.put("test", new TestEntity(0, 0, -5));
     }
