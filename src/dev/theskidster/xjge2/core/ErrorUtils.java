@@ -1,6 +1,6 @@
 package dev.theskidster.xjge2.core;
 
-import static org.lwjgl.opengl.GL11.*;
+import static org.lwjgl.opengl.GL30.*;
 
 /**
  * @author J Hoffman
@@ -25,6 +25,25 @@ public final class ErrorUtils {
             }
             
             Logger.logSevere("OpenGL Error: (" + glError + ") " + desc, null);
+        }
+    }
+    
+    static void checkFBStatus(int target) {
+        int status  = glCheckFramebufferStatus(target);
+        String desc = "";
+        
+        if(status != GL_FRAMEBUFFER_COMPLETE) {
+            switch(status) {
+                case GL_FRAMEBUFFER_INCOMPLETE_ATTACHMENT         -> desc = "incomplete attachment";
+                case GL_FRAMEBUFFER_INCOMPLETE_MISSING_ATTACHMENT -> desc = "missing attachment";
+                case GL_FRAMEBUFFER_INCOMPLETE_DRAW_BUFFER        -> desc = "incomplete draw buffer";
+                case GL_FRAMEBUFFER_INCOMPLETE_READ_BUFFER        -> desc = "incomplete read buffer";
+                case GL_FRAMEBUFFER_UNSUPPORTED                   -> desc = "unsupported";
+                case GL_FRAMEBUFFER_INCOMPLETE_MULTISAMPLE        -> desc = "incomplete multisample";
+                case GL_FRAMEBUFFER_UNDEFINED                     -> desc = "undefined";
+            }
+            
+            Logger.logSevere("Framebuffer Error: (" + status + ") " + desc, null);
         }
     }
     

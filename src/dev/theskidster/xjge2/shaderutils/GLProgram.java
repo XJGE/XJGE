@@ -50,9 +50,11 @@ public class GLProgram {
             Logger.setDomain("shaderutils");
             Logger.logSevere("Failed to link shader program \"" + name + "\". " + glGetProgramInfoLog(handle), null);
         } else {
-            Logger.setDomain("shaderutils");
-            Logger.logInfo("Shader program \"" + name + "\" linked successfully.");
-            Logger.setDomain(null);
+            if(!name.equals("default")) {
+                Logger.setDomain("shaderutils");
+                Logger.logInfo("Shader program \"" + name + "\" linked successfully.");
+                Logger.setDomain(null);
+            }
         }
     }
     

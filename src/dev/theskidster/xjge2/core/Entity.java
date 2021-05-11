@@ -21,6 +21,8 @@ public abstract class Entity {
     
     public abstract void update(double targetDelta);
     
+    //Included legacy render method in case we just need one shader- this will likely be the case
+    //for most things anyway.
     public abstract void render(GLProgram glProgram, Camera camera);
     
     public abstract void render(Map<String, GLProgram> glPrograms, Camera camera);

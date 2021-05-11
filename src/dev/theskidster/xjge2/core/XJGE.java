@@ -9,6 +9,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.Map;
+import org.joml.Matrix4f;
 import static org.lwjgl.glfw.GLFW.*;
 import org.lwjgl.opengl.GL;
 import static org.lwjgl.opengl.GL30.*;
@@ -29,7 +30,8 @@ public final class XJGE {
     private static String filepath     = "/dev/theskidster/xjge2/assets/";
     public static final Path PWD       = Path.of("").toAbsolutePath();
     
-    static Map<String, GLProgram> glPrograms = new HashMap<>();
+    static Map<String, GLProgram> glPrograms  = new HashMap<>();
+    private static final Viewport[] viewports = new Viewport[4];
     
     /*
     XJGE.init(String filepath);
@@ -84,6 +86,21 @@ public final class XJGE {
             up with some goofy viewport cropping.
             */
             
+            WinKit.setResolution(Window.getWidth(), Window.getHeight());
+            
+            for(int i = 0; i < viewports.length; i++) viewports[i] = new Viewport(i);
+            
+            fbo = glGenFramebuffers();
+            glBindFramebuffer(GL_FRAMEBUFFER, fbo);
+                glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, viewports[0].texHandle, 0);
+                glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT1, GL_TEXTURE_2D, viewports[1].texHandle, 0);
+                glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT2, GL_TEXTURE_2D, viewports[2].texHandle, 0);
+                glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT3, GL_TEXTURE_2D, viewports[3].texHandle, 0);
+                createRenderbuffer();
+            glBindFramebuffer(GL_FRAMEBUFFER, 0);
+            
+            ErrorUtils.checkFBStatus(GL_FRAMEBUFFER);
+            
             { //Initialize the default shaders.
                 var shaderSourceFiles = new LinkedList<Shader>() {{
                     add(new Shader("defaultVertex.glsl", GL_VERTEX_SHADER));
@@ -117,11 +134,77 @@ public final class XJGE {
         glPrograms = Collections.unmodifiableMap(glPrograms);
         
         Window.show();
+        
+        //TODO: temp, make initial call to split type
+        viewports[0].setBounds(WinKit.getResolutionWidth(), WinKit.getResolutionHeight(), 
+                               0, 0, 
+                               Window.getWidth(), Window.getHeight());
+        
         Game.loop();
         
         Input.exportControls();
         GL.destroy();
         glfwTerminate();
+    }
+    
+    static void createRenderbuffer() {
+        int rbo = glGenRenderbuffers();
+        glBindRenderbuffer(GL_RENDERBUFFER, rbo);
+        
+        glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH_COMPONENT, WinKit.getResolutionWidth(), WinKit.getResolutionHeight());
+        glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_RENDERBUFFER, rbo);
+        
+        ErrorUtils.checkGLError();
+    }
+    
+    static void updateViewports() {
+        for(Viewport viewport : viewports) {
+            if(viewport.active && viewport.currCamera != null) {
+                viewport.currCamera.update();
+                //viewport.ui.forEach((name, component) -> component.update());
+                
+                //ServiceLocator.getAudio().setViewportCamData(viewport.id, viewport.currCamera.position, viewport.currCamera.direction);
+            }
+        }
+        
+        //ServiceLocator.getAudio().updateSourcePositions();
+    }
+    
+    static void renderViewports(Scene scene, Matrix4f proj, Color clearColor) {
+        for(Viewport viewport : viewports) {
+            if(viewport.active) {
+                if(viewport.id == 0) {
+                    glClearColor(0, 0, 0, 0);
+                    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+                }
+                
+                glBindFramebuffer(GL_FRAMEBUFFER, fbo);
+                    glViewport(0, 0, viewport.width, viewport.height);
+                    glClearColor(clearColor.r, clearColor.g, clearColor.b, 0);
+                    switch(viewport.id) {
+                        case 0 -> glDrawBuffer(GL_COLOR_ATTACHMENT0);
+                        case 1 -> glDrawBuffer(GL_COLOR_ATTACHMENT1);
+                        case 2 -> glDrawBuffer(GL_COLOR_ATTACHMENT2);
+                        case 3 -> glDrawBuffer(GL_COLOR_ATTACHMENT3);
+                    }
+                    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+                    
+                    viewport.resetCamera(glPrograms);
+                    
+                    viewport.render(glPrograms, "camera");
+                    scene.render(glPrograms, viewport.currCamera);
+                    viewport.render(glPrograms, "ui");
+                glBindFramebuffer(GL_FRAMEBUFFER, 0);
+                
+                glViewport(viewport.botLeft.x, viewport.botLeft.y, viewport.topRight.x, viewport.topRight.y);
+                proj.setOrtho(viewport.width, 0, 0, viewport.height, 0, 1);
+                
+                glPrograms.get("default").use();
+                glPrograms.get("default").setUniform("uProjection", false, proj);
+                
+                viewport.render(glPrograms, "texture");
+            }
+        }
     }
     
     public static void addGLProgram(String name, GLProgram glProgram) {

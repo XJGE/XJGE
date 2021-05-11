@@ -1,12 +1,11 @@
 package dev.theskidster.xjge2.core;
 
-import static dev.theskidster.xjge2.core.XJGE.glPrograms;
 import dev.theskidster.xjge2.graphics.Color;
 import java.util.Comparator;
 import java.util.PriorityQueue;
 import java.util.Queue;
+import org.joml.Matrix4f;
 import static org.lwjgl.glfw.GLFW.*;
-import static org.lwjgl.opengl.GL11.*;
 
 /**
  * @author J Hoffman
@@ -24,18 +23,16 @@ public final class Game {
     
     private static Color clearColor = Color.BLACK;
     private static Scene scene;
-    private static Camera camera;
     
     private static final Queue<Event> events = new PriorityQueue<>(Comparator.comparing(Event::getPriority));
     
     static void loop() {
-        camera = new FreeCam(); //this will be removed eventually- just here for testing purposes.
-        
         int cycles = 0;
         final double TARGET_DELTA = 1 / 60.0;
         double prevTime = glfwGetTime();
         double currTime;
         double delta = 0;
+        Matrix4f proj = new Matrix4f();
         
         while(!glfwWindowShouldClose(Window.HANDLE)) {
             glfwPollEvents();
@@ -62,10 +59,11 @@ public final class Game {
                     if(!event.resolved) event.resolve();
                     else                events.poll();
                 } else {
-                    camera.update(); //TODO: temp
                     scene.update(TARGET_DELTA);
                     scene.processRemoveRequests();
                 }
+                
+                XJGE.updateViewports();
                 
                 if(tick(60)) {
                     fps    = cycles;
@@ -73,10 +71,7 @@ public final class Game {
                 }
             }
             
-            glClearColor(clearColor.r, clearColor.g, clearColor.b, 0);
-            glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-            camera.render(glPrograms);
-            scene.render(glPrograms, camera);
+            XJGE.renderViewports(scene, proj, clearColor);
             glfwSwapBuffers(Window.HANDLE);
             
             if(!ticked) {
