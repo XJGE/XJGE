@@ -200,6 +200,10 @@ public final class XJGE {
         }
     }
     
+    public static boolean tick(int cycles) {
+        return tickCount % cycles == 0;
+    }
+    
     public static void addGLProgram(String name, GLProgram glProgram) {
         if(!name.equals("default")) {
             glPrograms.put(name, glProgram);
@@ -216,8 +220,8 @@ public final class XJGE {
         scene.entities.put(name, entity);
     }
     
-    public static boolean tick(int cycles) {
-        return tickCount % cycles == 0;
+    public static final void addEvent(Event event) {
+        events.add(event);
     }
     
     public static String getFilepath() {
