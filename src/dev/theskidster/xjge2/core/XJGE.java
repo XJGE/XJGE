@@ -10,6 +10,7 @@ import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.Map;
 import org.joml.Matrix4f;
+import org.joml.Vector2i;
 import static org.lwjgl.glfw.GLFW.*;
 import org.lwjgl.opengl.GL;
 import static org.lwjgl.opengl.GL30.*;
@@ -22,13 +23,18 @@ import static org.lwjgl.opengl.GL30.*;
 public final class XJGE {
     
     private static int fbo;
+    static int resWidth;
+    static int resHeight;
     
     private static boolean initCalled;
-    static boolean debugAllowed;
+    private static boolean debugEnabled;
+    private static boolean windowResizable;
+    static boolean matchWindowResolution;
     
     public static final String VERSION = "0.0.0";
     private static String filepath     = "/dev/theskidster/xjge2/assets/";
     public static final Path PWD       = Path.of("").toAbsolutePath();
+    private static Split split;
     
     static Map<String, GLProgram> glPrograms  = new HashMap<>();
     private static final Viewport[] viewports = new Viewport[4];
@@ -50,7 +56,7 @@ public final class XJGE {
     used to set the initial scene the engine will enter upon startup.
     */
     
-    public static void init(String filepath, boolean windowResizable, boolean debugAllowed) {
+    public static void init(String filepath, boolean debugEnabled, boolean windowResizable, Vector2i resolution) {
         if(!initCalled) {
             if(System.getProperty("java.version").compareTo("15.0.2") < 0) {
                 Logger.logSevere("Unsupported Java version. Required 15.0.2, " + 
@@ -60,7 +66,7 @@ public final class XJGE {
             
             if(!glfwInit()) Logger.logSevere("Failed to initialize GLFW.", null);
             
-            XJGE.debugAllowed = debugAllowed;
+            XJGE.debugEnabled = debugEnabled;
             
             { //Initialize the window.
                 glfwWindowHint(GLFW_RESIZABLE, windowResizable ? GLFW_TRUE : GLFW_FALSE);
@@ -77,16 +83,15 @@ public final class XJGE {
             glfwMakeContextCurrent(Window.HANDLE);
             GL.createCapabilities();
             
-            /*
-            TODO: 
-            - implement split screen
-            
-            We can use the old splitscreen system, but remeber to recreate the 
-            renderbuffer anytime the windows size is changed otherwise we'll end
-            up with some goofy viewport cropping.
-            */
-            
-            WinKit.setResolution(Window.getWidth(), Window.getHeight());
+            if(resolution == null) {
+                matchWindowResolution = true;
+                
+                resWidth  = Window.getWidth();
+                resHeight = Window.getHeight();
+            } else {
+                resWidth  = resolution.x;
+                resHeight = resolution.y;
+            }
             
             for(int i = 0; i < viewports.length; i++) viewports[i] = new Viewport(i);
             
@@ -96,8 +101,9 @@ public final class XJGE {
                 glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT1, GL_TEXTURE_2D, viewports[1].texHandle, 0);
                 glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT2, GL_TEXTURE_2D, viewports[2].texHandle, 0);
                 glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT3, GL_TEXTURE_2D, viewports[3].texHandle, 0);
-                createRenderbuffer();
             glBindFramebuffer(GL_FRAMEBUFFER, 0);
+            
+            createRenderbuffer();
             
             ErrorUtils.checkFBStatus(GL_FRAMEBUFFER);
             
@@ -134,12 +140,7 @@ public final class XJGE {
         glPrograms = Collections.unmodifiableMap(glPrograms);
         
         Window.show();
-        
-        //TODO: temp, make initial call to split type
-        viewports[0].setBounds(WinKit.getResolutionWidth(), WinKit.getResolutionHeight(), 
-                               0, 0, 
-                               Window.getWidth(), Window.getHeight());
-        
+        splitScreen(Split.NONE);
         Game.loop();
         
         Input.exportControls();
@@ -148,13 +149,23 @@ public final class XJGE {
     }
     
     static void createRenderbuffer() {
+        glBindFramebuffer(GL_FRAMEBUFFER, fbo);
         int rbo = glGenRenderbuffers();
         glBindRenderbuffer(GL_RENDERBUFFER, rbo);
         
-        glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH_COMPONENT, WinKit.getResolutionWidth(), WinKit.getResolutionHeight());
+        glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH_COMPONENT, resWidth, resHeight);
         glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_RENDERBUFFER, rbo);
         
         ErrorUtils.checkGLError();
+        glBindFramebuffer(GL_FRAMEBUFFER, 0);
+    }
+    
+    static void transferViewportState() {
+        for(int i = 0; i < viewports.length; i++) {
+            viewports[i] = new Viewport(viewports[i]);
+        }
+        
+        splitScreen(split);
     }
     
     static void updateViewports() {
@@ -207,6 +218,26 @@ public final class XJGE {
         }
     }
     
+    static boolean matchWindowResolution() {
+        return matchWindowResolution;
+    }
+    
+    static boolean getDebugEnabled() {
+        return debugEnabled;
+    }
+    
+    static boolean getWindowResizable() {
+        return windowResizable;
+    }
+    
+    public static String getFilepath() {
+        return filepath;
+    }
+    
+    static Split getSplit() {
+        return split;
+    }
+    
     public static void addGLProgram(String name, GLProgram glProgram) {
         if(!name.equals("default")) {
             glPrograms.put(name, glProgram);
@@ -219,8 +250,94 @@ public final class XJGE {
         }
     }
     
-    public static String getFilepath() {
-        return filepath;
+    public static void splitScreen(Split split) {
+        XJGE.split = split;
+        
+        for(Viewport viewport : viewports) {
+            switch(split) {
+                case NONE -> {
+                    viewport.active = (viewport.id == 0);
+                    viewport.setBounds(resWidth, resHeight, 
+                                       0, 0, 
+                                       Window.getWidth(), Window.getHeight());
+                }
+                
+                case HORIZONTAL -> {
+                    viewport.active = (viewport.id == 0 || viewport.id == 1);
+                    switch(viewport.id) {
+                        case 0 -> viewport.setBounds(
+                                    resWidth, resHeight / 2,
+                                    0, Window.getHeight() / 2, 
+                                    Window.getWidth(), Window.getHeight() / 2);
+                            
+                        case 1 -> viewport.setBounds(
+                                    resWidth, resHeight / 2,
+                                    0, 0, 
+                                    Window.getWidth(), Window.getHeight() / 2);
+                    }
+                }
+                
+                case VERTICAL -> {
+                    viewport.active = (viewport.id == 0 || viewport.id == 1);
+                    switch(viewport.id) {
+                        case 0 -> viewport.setBounds(
+                                    resWidth / 2, resHeight,
+                                    0, 0, 
+                                    Window.getWidth() / 2, Window.getHeight());
+                            
+                        case 1 -> viewport.setBounds(
+                                    resWidth / 2, resHeight,
+                                    Window.getWidth() / 2, 0, 
+                                    Window.getWidth() / 2, Window.getHeight());
+                    }
+                }
+                
+                case TRISECT -> {
+                    viewport.active = (viewport.id != 3);
+                    switch(viewport.id) {
+                        case 0 -> viewport.setBounds(
+                                    resWidth / 2, resHeight / 2,
+                                    0, Window.getHeight() / 2, 
+                                    Window.getWidth() / 2, Window.getHeight() / 2);
+                            
+                        case 1 -> viewport.setBounds(
+                                    resWidth / 2, resHeight / 2,
+                                    Window.getWidth() / 2, Window.getHeight() / 2, 
+                                    Window.getWidth() / 2, Window.getHeight() / 2);
+                            
+                        case 2 -> viewport.setBounds(
+                                    resWidth / 2, resHeight / 2,
+                                    Window.getWidth() / 4, 0, 
+                                    Window.getWidth() / 2, Window.getHeight() / 2);
+                    }
+                }
+                
+                case QUARTER -> {
+                    viewport.active = true;
+                    switch(viewport.id) {
+                        case 0 -> viewport.setBounds(
+                                    resWidth / 2, resHeight / 2,
+                                    0, Window.getHeight() / 2, 
+                                    Window.getWidth() / 2, Window.getHeight() / 2);
+                            
+                        case 1 -> viewport.setBounds(
+                                    resWidth / 2, resHeight / 2,
+                                    Window.getWidth() / 2, Window.getHeight() / 2, 
+                                    Window.getWidth() / 2, Window.getHeight() / 2);
+                            
+                        case 2 -> viewport.setBounds(
+                                    resWidth / 2, resHeight / 2,
+                                    0, 0, 
+                                    Window.getWidth() / 2, Window.getHeight() / 2);
+                            
+                        case 3 -> viewport.setBounds(
+                                    resWidth / 2, resHeight / 2,
+                                    Window.getWidth() / 2, 0, 
+                                    Window.getWidth() / 2, Window.getHeight() / 2);
+                    }
+                }
+            }
+        }
     }
     
 }

@@ -30,8 +30,8 @@ final class Viewport {
     Viewport(int id) {
         this.id = id;
         
-        width     = WinKit.getResolutionWidth();
-        height    = WinKit.getResolutionHeight();
+        width     = XJGE.resWidth;
+        height    = XJGE.resHeight;
         texHandle = glGenTextures();
         
         createTextureAttachment();

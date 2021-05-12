@@ -6,7 +6,6 @@ import java.nio.IntBuffer;
 import java.util.TreeMap;
 import static org.lwjgl.glfw.GLFW.*;
 import org.lwjgl.glfw.GLFWImage;
-import static org.lwjgl.opengl.GL11.glViewport;
 import static org.lwjgl.stb.STBImage.STBI_rgb_alpha;
 import static org.lwjgl.stb.STBImage.stbi_image_free;
 import static org.lwjgl.stb.STBImage.stbi_load_from_memory;
@@ -60,23 +59,22 @@ public final class Window {
     }
     
     static void show() {
-        glfwSetWindowMonitor(HANDLE, NULL, xPos, yPos, width, height, monitor.getRefreshRate());
-        glfwSetWindowPos(HANDLE, xPos, yPos);
-        glfwSwapInterval(1);
         glfwSetInputMode(HANDLE, GLFW_CURSOR, GLFW_CURSOR_NORMAL);
         glfwShowWindow(HANDLE);
+        glfwFocusWindow(HANDLE);
         
-        //TODO: temp- set initial viewport size
-        glViewport(0, 0, width, height);
-        
-        /*
         glfwSetWindowSizeCallback(HANDLE, (window, w, h) -> {
             width  = w;
             height = h;
             
-            //TODO: we'll need to change this eventaully for individual viewports
-            glViewport(0, 0, width, height);
-        });*/
+            if(XJGE.matchWindowResolution && width != 0 && height != 0) {
+                XJGE.resWidth  = width;
+                XJGE.resHeight = height;
+                XJGE.createRenderbuffer();
+            }
+            
+            XJGE.splitScreen(XJGE.getSplit());
+        });
         
         glfwSetKeyCallback(Window.HANDLE, (window, key, scancode, action, mods) -> {
             if(action == GLFW_PRESS) {
@@ -86,8 +84,14 @@ public final class Window {
                     }
                     
                     case GLFW_KEY_F1 -> {
-                        
+                        setFullscreen(!fullscreen);
                     }
+                    
+                    case GLFW_KEY_1 -> XJGE.splitScreen(Split.NONE);
+                    case GLFW_KEY_2 -> XJGE.splitScreen(Split.HORIZONTAL);
+                    case GLFW_KEY_3 -> XJGE.splitScreen(Split.VERTICAL);
+                    case GLFW_KEY_4 -> XJGE.splitScreen(Split.TRISECT);
+                    case GLFW_KEY_5 -> XJGE.splitScreen(Split.QUARTER);
                 }
             }
         });
@@ -186,7 +190,7 @@ public final class Window {
         glfwSetWindowPos(HANDLE, xPos, yPos);
     }
     
-    static void setPositionCentered() {
+    public static void setPositionCentered() {
         try(MemoryStack stack = MemoryStack.stackPush()) {
             IntBuffer xPosBuf = stack.mallocInt(1);
             IntBuffer yPosBuf = stack.mallocInt(1);

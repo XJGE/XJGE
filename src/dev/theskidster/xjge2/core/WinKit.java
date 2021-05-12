@@ -11,9 +11,6 @@ import static org.lwjgl.glfw.GLFW.glfwSwapInterval;
  */
 
 public final class WinKit {
-
-    private static int resWidth;
-    private static int resHeight;
     
     private static boolean vSyncEnabled = true;
     
@@ -32,14 +29,6 @@ public final class WinKit {
     
     static Monitor getAnyMonitor() {
         return monitors.values().stream().findAny().get();
-    }
-    
-    static int getResolutionWidth() {
-        return resWidth;
-    }
-    
-    static int getResolutionHeight() {
-        return resHeight;
     }
     
     public static final TreeMap<Integer, Monitor> findMonitors() {
@@ -74,11 +63,6 @@ public final class WinKit {
         Logger.setDomain("winkit");
         Logger.logInfo("Toggled VSync (" + vSyncEnabled + ")");
         Logger.setDomain(null);
-    }
-    
-    public static void setResolution(int width, int height) {
-        resWidth  = width;
-        resHeight = height;
     }
     
 }

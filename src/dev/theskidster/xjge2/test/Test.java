@@ -18,7 +18,7 @@ public class Test {
     
     public static void main(String args[]) {
         
-        XJGE.init("/dev/theskidster/xjge2/assets/", true, true);
+        XJGE.init("/dev/theskidster/xjge2/assets/", true, false, null);
         
         Game.setScene(new TestScene());
         
