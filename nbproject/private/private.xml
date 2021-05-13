@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project-private xmlns="http://www.netbeans.org/ns/project-private/1">
-    <editor-bookmarks xmlns="http://www.netbeans.org/ns/editor-bookmarks/2" lastBookmarkId="18">
+    <editor-bookmarks xmlns="http://www.netbeans.org/ns/editor-bookmarks/2" lastBookmarkId="24">
         <file>
             <url>src/dev/theskidster/xjge2/core/XJGE2.java</url>
             <bookmark id="1">
@@ -19,9 +19,14 @@
         </file>
         <file>
             <url>src/dev/theskidster/xjge2/core/XJGE.java</url>
-            <bookmark id="18">
+            <bookmark id="23">
                 <name/>
-                <line>132</line>
+                <line>62</line>
+                <key/>
+            </bookmark>
+            <bookmark id="24">
+                <name/>
+                <line>91</line>
                 <key/>
             </bookmark>
         </file>
@@ -36,9 +41,13 @@
     </editor-bookmarks>
     <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
         <group>
+            <file>file:/C:/Users/thesk/Documents/Projects/XJGE/XJGE-2/src/dev/theskidster/xjge2/core/Game.java</file>
             <file>file:/C:/Users/thesk/Documents/Projects/XJGE/XJGE-2/src/dev/theskidster/xjge2/test/TestScene.java</file>
             <file>file:/C:/Users/thesk/Documents/Projects/XJGE/XJGE-2/src/dev/theskidster/xjge2/test/Test.java</file>
+            <file>file:/C:/Users/thesk/Documents/Projects/XJGE/XJGE-2/src/dev/theskidster/xjge2/core/Camera.java</file>
             <file>file:/C:/Users/thesk/Documents/Projects/XJGE/XJGE-2/src/dev/theskidster/xjge2/core/XJGE.java</file>
+            <file>file:/C:/Users/thesk/Documents/Projects/XJGE/XJGE-2/src/dev/theskidster/xjge2/core/Viewport.java</file>
+            <file>file:/C:/Users/thesk/Documents/Projects/XJGE/XJGE-2/src/dev/theskidster/xjge2/core/Window.java</file>
         </group>
     </open-files>
 </project-private>

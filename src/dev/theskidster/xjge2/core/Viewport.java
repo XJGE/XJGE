@@ -30,8 +30,8 @@ final class Viewport {
     Viewport(int id) {
         this.id = id;
         
-        width     = XJGE.resWidth;
-        height    = XJGE.resHeight;
+        width     = XJGE.getResolutionX();
+        height    = XJGE.getResolutionY();
         texHandle = glGenTextures();
         
         createTextureAttachment();
