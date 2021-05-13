@@ -23,18 +23,19 @@ import static org.lwjgl.opengl.GL30.*;
 public final class XJGE {
     
     private static int fbo;
-    static int resWidth;
-    static int resHeight;
+    private static int resolutionX;
+    private static int resolutionY;
     
     private static boolean initCalled;
+    private static boolean matchWindowResolution;
     private static boolean debugEnabled;
     private static boolean windowResizable;
-    static boolean matchWindowResolution;
     
-    public static final String VERSION = "0.0.0";
-    private static String filepath     = "/dev/theskidster/xjge2/assets/";
     public static final Path PWD       = Path.of("").toAbsolutePath();
+    public static final String VERSION = "0.0.0";
+    
     private static Split split;
+    private static String filepath = "/dev/theskidster/xjge2/assets/";
     
     static Map<String, GLProgram> glPrograms  = new HashMap<>();
     private static final Viewport[] viewports = new Viewport[4];
@@ -56,7 +57,7 @@ public final class XJGE {
     used to set the initial scene the engine will enter upon startup.
     */
     
-    public static void init(String filepath, boolean debugEnabled, boolean windowResizable, Vector2i resolution) {
+    public static void init(String filepath, boolean debugEnabled, Vector2i resolution, boolean windowResizable) {        
         if(!initCalled) {
             if(System.getProperty("java.version").compareTo("15.0.2") < 0) {
                 Logger.logSevere("Unsupported Java version. Required 15.0.2, " + 
@@ -69,7 +70,9 @@ public final class XJGE {
             XJGE.debugEnabled = debugEnabled;
             
             { //Initialize the window.
-                glfwWindowHint(GLFW_RESIZABLE, windowResizable ? GLFW_TRUE : GLFW_FALSE);
+                //TODO: mention in documentation that the windowResize flag will be overruled if
+                //an internal resolution is supplied.
+                glfwWindowHint(GLFW_RESIZABLE, (windowResizable && resolution == null) ? GLFW_TRUE : GLFW_FALSE);
                 glfwWindowHint(GLFW_VISIBLE, GLFW_FALSE);
                 
                 Window.monitor = WinKit.findMonitors().get(1);
@@ -85,12 +88,11 @@ public final class XJGE {
             
             if(resolution == null) {
                 matchWindowResolution = true;
-                
-                resWidth  = Window.getWidth();
-                resHeight = Window.getHeight();
+                resolutionX = Window.getWidth();
+                resolutionY = Window.getHeight();
             } else {
-                resWidth  = resolution.x;
-                resHeight = resolution.y;
+                resolutionX = resolution.x;
+                resolutionY = resolution.y;
             }
             
             for(int i = 0; i < viewports.length; i++) viewports[i] = new Viewport(i);
@@ -153,7 +155,7 @@ public final class XJGE {
         int rbo = glGenRenderbuffers();
         glBindRenderbuffer(GL_RENDERBUFFER, rbo);
         
-        glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH_COMPONENT, resWidth, resHeight);
+        glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH_COMPONENT, resolutionX, resolutionY);
         glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_RENDERBUFFER, rbo);
         
         ErrorUtils.checkGLError();
@@ -218,6 +220,14 @@ public final class XJGE {
         }
     }
     
+    static int getResolutionX() {
+        return resolutionX;
+    }
+    
+    static int getResolutionY() {
+        return resolutionY;
+    }
+    
     static boolean matchWindowResolution() {
         return matchWindowResolution;
     }
@@ -230,12 +240,17 @@ public final class XJGE {
         return windowResizable;
     }
     
+    static Split getSplit() {
+        return split;
+    }
+    
     public static String getFilepath() {
         return filepath;
     }
     
-    static Split getSplit() {
-        return split;
+    static void setResolution(int x, int y) {
+        resolutionX = x;
+        resolutionY = y;
     }
     
     public static void addGLProgram(String name, GLProgram glProgram) {
@@ -257,7 +272,7 @@ public final class XJGE {
             switch(split) {
                 case NONE -> {
                     viewport.active = (viewport.id == 0);
-                    viewport.setBounds(resWidth, resHeight, 
+                    viewport.setBounds(resolutionX, resolutionY, 
                                        0, 0, 
                                        Window.getWidth(), Window.getHeight());
                 }
@@ -266,12 +281,12 @@ public final class XJGE {
                     viewport.active = (viewport.id == 0 || viewport.id == 1);
                     switch(viewport.id) {
                         case 0 -> viewport.setBounds(
-                                    resWidth, resHeight / 2,
+                                    resolutionX, resolutionY / 2,
                                     0, Window.getHeight() / 2, 
                                     Window.getWidth(), Window.getHeight() / 2);
                             
                         case 1 -> viewport.setBounds(
-                                    resWidth, resHeight / 2,
+                                    resolutionX, resolutionY / 2,
                                     0, 0, 
                                     Window.getWidth(), Window.getHeight() / 2);
                     }
@@ -281,12 +296,12 @@ public final class XJGE {
                     viewport.active = (viewport.id == 0 || viewport.id == 1);
                     switch(viewport.id) {
                         case 0 -> viewport.setBounds(
-                                    resWidth / 2, resHeight,
+                                    resolutionX / 2, resolutionY,
                                     0, 0, 
                                     Window.getWidth() / 2, Window.getHeight());
                             
                         case 1 -> viewport.setBounds(
-                                    resWidth / 2, resHeight,
+                                    resolutionX / 2, resolutionY,
                                     Window.getWidth() / 2, 0, 
                                     Window.getWidth() / 2, Window.getHeight());
                     }
@@ -296,17 +311,17 @@ public final class XJGE {
                     viewport.active = (viewport.id != 3);
                     switch(viewport.id) {
                         case 0 -> viewport.setBounds(
-                                    resWidth / 2, resHeight / 2,
+                                    resolutionX / 2, resolutionY / 2,
                                     0, Window.getHeight() / 2, 
                                     Window.getWidth() / 2, Window.getHeight() / 2);
                             
                         case 1 -> viewport.setBounds(
-                                    resWidth / 2, resHeight / 2,
+                                    resolutionX / 2, resolutionY / 2,
                                     Window.getWidth() / 2, Window.getHeight() / 2, 
                                     Window.getWidth() / 2, Window.getHeight() / 2);
                             
                         case 2 -> viewport.setBounds(
-                                    resWidth / 2, resHeight / 2,
+                                    resolutionX / 2, resolutionY / 2,
                                     Window.getWidth() / 4, 0, 
                                     Window.getWidth() / 2, Window.getHeight() / 2);
                     }
@@ -316,22 +331,22 @@ public final class XJGE {
                     viewport.active = true;
                     switch(viewport.id) {
                         case 0 -> viewport.setBounds(
-                                    resWidth / 2, resHeight / 2,
+                                    resolutionX / 2, resolutionY / 2,
                                     0, Window.getHeight() / 2, 
                                     Window.getWidth() / 2, Window.getHeight() / 2);
                             
                         case 1 -> viewport.setBounds(
-                                    resWidth / 2, resHeight / 2,
+                                    resolutionX / 2, resolutionY / 2,
                                     Window.getWidth() / 2, Window.getHeight() / 2, 
                                     Window.getWidth() / 2, Window.getHeight() / 2);
                             
                         case 2 -> viewport.setBounds(
-                                    resWidth / 2, resHeight / 2,
+                                    resolutionX / 2, resolutionY / 2,
                                     0, 0, 
                                     Window.getWidth() / 2, Window.getHeight() / 2);
                             
                         case 3 -> viewport.setBounds(
-                                    resWidth / 2, resHeight / 2,
+                                    resolutionX / 2, resolutionY / 2,
                                     Window.getWidth() / 2, 0, 
                                     Window.getWidth() / 2, Window.getHeight() / 2);
                     }

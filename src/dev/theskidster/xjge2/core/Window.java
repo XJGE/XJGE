@@ -67,9 +67,8 @@ public final class Window {
             width  = w;
             height = h;
             
-            if(XJGE.matchWindowResolution && width != 0 && height != 0) {
-                XJGE.resWidth  = width;
-                XJGE.resHeight = height;
+            if(XJGE.matchWindowResolution() && width != 0 && height != 0) {
+                XJGE.setResolution(width, height);
                 XJGE.createRenderbuffer();
             }
             
