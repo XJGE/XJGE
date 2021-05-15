@@ -28,6 +28,7 @@ public final class Window {
     private static int height;
     
     private static boolean fullscreen;
+    private static boolean firstMouse = true;
     
     private static String title;
     static Monitor monitor;
@@ -76,6 +77,19 @@ public final class Window {
         });
         
         glfwSetKeyCallback(Window.HANDLE, (window, key, scancode, action, mods) -> {
+            if(XJGE.getDebugEnabled() && key == GLFW_KEY_F2 && action == GLFW_PRESS) {
+                XJGE.setFreeCamEnabled(!XJGE.getFreeCamEnabled());
+            }
+            
+            if(XJGE.getFreeCamEnabled()) {
+                if(key == GLFW_KEY_W) XJGE.freeCam.pressed[0] = (action != GLFW_RELEASE);
+                if(key == GLFW_KEY_A) XJGE.freeCam.pressed[1] = (action != GLFW_RELEASE);
+                if(key == GLFW_KEY_S) XJGE.freeCam.pressed[2] = (action != GLFW_RELEASE);
+                if(key == GLFW_KEY_D) XJGE.freeCam.pressed[3] = (action != GLFW_RELEASE);
+                
+                XJGE.freeCam.setSpeedBoostEnabled(mods == GLFW_MOD_SHIFT);
+            }
+            
             if(action == GLFW_PRESS) {
                 switch(key) {
                     case GLFW_KEY_ESCAPE -> {
@@ -92,6 +106,20 @@ public final class Window {
                     case GLFW_KEY_4 -> XJGE.splitScreen(Split.TRISECT);
                     case GLFW_KEY_5 -> XJGE.splitScreen(Split.QUARTER);
                 }
+            }
+        });
+        
+        glfwSetCursorPosCallback(HANDLE, (window, xpos, ypos) -> {
+            if(XJGE.getFreeCamEnabled()) {
+                if(firstMouse) {
+                    XJGE.freeCam.prevX = xpos;
+                    XJGE.freeCam.prevY = ypos;
+                    firstMouse = false;
+                }
+                
+                XJGE.freeCam.setDirection(xpos, ypos);
+            } else {
+                firstMouse = true;
             }
         });
         

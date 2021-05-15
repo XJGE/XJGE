@@ -88,8 +88,11 @@ public final class Font {
             float scaleX = scaleXBuf.get();
             float scaleY = scaleYBuf.get();
             
-            int imageWidth  = Math.round(512 * scaleX);
-            int imageHeight = Math.round(512 * scaleY);
+            //TODO: maybe parse a fonts desired texture atlas size if possible?
+            int desiredSize = 256;
+            
+            int imageWidth  = Math.round(desiredSize * scaleX);
+            int imageHeight = Math.round(desiredSize * scaleY);
             
             ByteBuffer imageBuf = BufferUtils.createByteBuffer(imageWidth * imageHeight); //why bufferutils?
             
@@ -130,7 +133,7 @@ public final class Font {
         }
     }
     
-    private Vector3f pos = new Vector3f(0, -300, -1200);
+    private Vector3f pos = new Vector3f(0, -300, -1000);
     
     public void update() {
         g.modelMatrix.translation(pos);

@@ -30,12 +30,14 @@ public final class XJGE {
     private static boolean matchWindowResolution;
     private static boolean debugEnabled;
     private static boolean windowResizable;
+    private static boolean freeCamEnabled;
     
     public static final Path PWD       = Path.of("").toAbsolutePath();
     public static final String VERSION = "0.0.0";
     
     private static Split split;
     private static String filepath = "/dev/theskidster/xjge2/assets/";
+    static FreeCam freeCam;
     
     static Map<String, GLProgram> glPrograms  = new HashMap<>();
     private static final Viewport[] viewports = new Viewport[4];
@@ -141,6 +143,8 @@ public final class XJGE {
     public static void start() {
         glPrograms = Collections.unmodifiableMap(glPrograms);
         
+        freeCam = new FreeCam();
+        
         Window.show();
         splitScreen(Split.NONE);
         Game.loop();
@@ -240,6 +244,10 @@ public final class XJGE {
         return windowResizable;
     }
     
+    static boolean getFreeCamEnabled() {
+        return freeCamEnabled;
+    }
+    
     static Split getSplit() {
         return split;
     }
@@ -251,6 +259,27 @@ public final class XJGE {
     static void setResolution(int x, int y) {
         resolutionX = x;
         resolutionY = y;
+    }
+    
+    static void setFreeCamEnabled(boolean freeCamEnabled) {
+        XJGE.freeCamEnabled = freeCamEnabled;
+        
+        //TODO: make this a public and have it behave like the legacy one.
+        
+        Logger.setDomain("core");
+        
+        if(freeCamEnabled) {
+            glfwSetInputMode(Window.HANDLE, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
+            Logger.logInfo("Freecam enabled.");
+            viewports[0].prevCamera = viewports[0].currCamera;
+            viewports[0].currCamera = freeCam;
+        } else {
+            glfwSetInputMode(Window.HANDLE, GLFW_CURSOR, GLFW_CURSOR_NORMAL);
+            Logger.logInfo("Freecam disabled.");
+            viewports[0].currCamera = viewports[0].prevCamera;
+        }
+        
+        Logger.setDomain(null);
     }
     
     public static void addGLProgram(String name, GLProgram glProgram) {
