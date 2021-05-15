@@ -5,6 +5,7 @@ import dev.theskidster.xjge2.core.Game;
 import dev.theskidster.xjge2.core.Scene;
 import dev.theskidster.xjge2.graphics.Color;
 import dev.theskidster.xjge2.shaderutils.GLProgram;
+import dev.theskidster.xjge2.ui.Font;
 import java.util.Map;
 
 /**
@@ -14,8 +15,12 @@ import java.util.Map;
 
 public class TestScene extends Scene {
 
+    Font font;
+    
     public TestScene() {
         super("test");
+        
+        font = new Font("fnt_inconsolata_regular.ttf");
         
         Game.setClearColor(Color.RETRO_BLUE);
         
@@ -25,6 +30,8 @@ public class TestScene extends Scene {
     @Override
     public void update(double targetDelta) {
         entities.values().forEach(entity -> entity.update(targetDelta));
+        
+        font.update();
     }
 
     @Override
@@ -33,6 +40,8 @@ public class TestScene extends Scene {
         defaultProgram.use();
         
         entities.values().forEach(entity -> entity.render(defaultProgram, camera));
+        
+        font.render(defaultProgram);
     }
 
     @Override

@@ -1,14 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project-private xmlns="http://www.netbeans.org/ns/project-private/1">
-    <editor-bookmarks xmlns="http://www.netbeans.org/ns/editor-bookmarks/2" lastBookmarkId="24">
-        <file>
-            <url>src/dev/theskidster/xjge2/core/XJGE2.java</url>
-            <bookmark id="1">
-                <name/>
-                <line>13</line>
-                <key/>
-            </bookmark>
-        </file>
+    <editor-bookmarks xmlns="http://www.netbeans.org/ns/editor-bookmarks/2" lastBookmarkId="26">
         <file>
             <url>src/dev/theskidster/xjge2/input/Input.java</url>
             <bookmark id="9">
@@ -18,15 +10,18 @@
             </bookmark>
         </file>
         <file>
-            <url>src/dev/theskidster/xjge2/core/XJGE.java</url>
-            <bookmark id="23">
+            <url>src/dev/theskidster/xjge2/hud/BitmapFont.java</url>
+            <bookmark id="26">
                 <name/>
-                <line>62</line>
+                <line>9</line>
                 <key/>
             </bookmark>
-            <bookmark id="24">
+        </file>
+        <file>
+            <url>src/dev/theskidster/xjge2/core/XJGE.java</url>
+            <bookmark id="25">
                 <name/>
-                <line>91</line>
+                <line>72</line>
                 <key/>
             </bookmark>
         </file>
@@ -41,13 +36,14 @@
     </editor-bookmarks>
     <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
         <group>
-            <file>file:/C:/Users/thesk/Documents/Projects/XJGE/XJGE-2/src/dev/theskidster/xjge2/core/Game.java</file>
+            <file>file:/C:/Users/thesk/Documents/Projects/XJGE/XJGE-2/src/dev/theskidster/xjge2/ui/Glyph.java</file>
             <file>file:/C:/Users/thesk/Documents/Projects/XJGE/XJGE-2/src/dev/theskidster/xjge2/test/TestScene.java</file>
+            <file>file:/C:/Users/thesk/Documents/Projects/XJGE/XJGE-2/src/dev/theskidster/xjge2/ui/Font.java</file>
             <file>file:/C:/Users/thesk/Documents/Projects/XJGE/XJGE-2/src/dev/theskidster/xjge2/test/Test.java</file>
+            <file>jar:file:/C:/Users/thesk/Documents/Projects/XJGE/XJGE-2/dependencies/lwjgl-stb-sources.jar!/org/lwjgl/stb/STBTruetype.java</file>
             <file>file:/C:/Users/thesk/Documents/Projects/XJGE/XJGE-2/src/dev/theskidster/xjge2/core/Camera.java</file>
-            <file>file:/C:/Users/thesk/Documents/Projects/XJGE/XJGE-2/src/dev/theskidster/xjge2/core/XJGE.java</file>
+            <file>file:/C:/Users/thesk/Documents/Projects/XJGE/XJGE-2/src/dev/theskidster/xjge2/graphics/Texture.java</file>
             <file>file:/C:/Users/thesk/Documents/Projects/XJGE/XJGE-2/src/dev/theskidster/xjge2/core/Viewport.java</file>
-            <file>file:/C:/Users/thesk/Documents/Projects/XJGE/XJGE-2/src/dev/theskidster/xjge2/core/Window.java</file>
         </group>
     </open-files>
 </project-private>

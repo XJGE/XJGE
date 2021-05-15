@@ -2,6 +2,8 @@ package dev.theskidster.xjge2.core;
 
 import dev.theskidster.xjge2.graphics.Graphics;
 import dev.theskidster.xjge2.shaderutils.GLProgram;
+import dev.theskidster.xjge2.ui.Widget;
+import java.util.LinkedHashMap;
 import java.util.Map;
 import org.joml.Vector2i;
 import static org.lwjgl.opengl.GL30.*;
@@ -26,6 +28,8 @@ final class Viewport {
     Vector2i topRight  = new Vector2i();
     Camera prevCamera  = new FreeCam();
     Camera currCamera  = new FreeCam();
+    
+    LinkedHashMap<String, Widget> ui = new LinkedHashMap<>();
     
     Viewport(int id) {
         this.id = id;
@@ -93,6 +97,8 @@ final class Viewport {
             }
             
             case "ui" -> {
+                currCamera.setOrtho(glPrograms.get("default"), width, height);
+                ui.values().forEach(widget -> widget.render(glPrograms));
                 resetCamera(glPrograms);
             }
             
@@ -111,11 +117,8 @@ final class Viewport {
     
     void resetCamera(Map<String, GLProgram> glPrograms) {
         XJGE.glPrograms.values().forEach(glProgram -> {
-            if(currCamera.ortho) {
-                currCamera.setOrtho(glProgram, width, height);
-            } else {
-                currCamera.setPerspective(glProgram, width, height);
-            }
+            if(currCamera.ortho) currCamera.setOrtho(glProgram, width, height);
+            else                 currCamera.setPerspective(glProgram, width, height);
         });
     }
     
@@ -127,7 +130,7 @@ final class Viewport {
         
         createTextureAttachment();
         
-        //ui.forEach((name, component) -> component.setSplitPosition());
+        ui.values().forEach(widget -> widget.setSplitPosition());
     }
     
     

@@ -49,11 +49,13 @@ public abstract class Camera {
     }
     
     public void setOrtho(GLProgram glProgram, int width, int height) {
+        glProgram.use();
         projMatrix.setOrtho(0, width, 0, height, 0, Integer.MAX_VALUE);
         glProgram.setUniform("uProjection", false, projMatrix);
     }
     
     public void setPerspective(GLProgram glProgram, int width, int height) {
+        glProgram.use();
         projMatrix.setPerspective((float) Math.toRadians(fov), (float) width / height, 0.1f, Float.POSITIVE_INFINITY);
         glProgram.setUniform("uProjection", false, projMatrix);
     }

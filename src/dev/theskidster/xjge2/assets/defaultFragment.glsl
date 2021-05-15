@@ -15,6 +15,10 @@ float sharpen(float pixArray) {
     return floor(pixArray) + normal * pow(normal2, 2.0) / 2.0 + 0.5;
 }
 
+void makeTransparent(float a) {
+    if(a == 0) discard;
+}
+
 void main() {
     switch(uType) {
         case 0: //Used for viewport framebuffer texture attachments.
@@ -28,6 +32,11 @@ void main() {
 
         case 1:
             ioResult = vec4(ioColor, 0);
+            break;
+
+        case 2:
+            makeTransparent(texture(uTexture, ioTexCoords).a);
+            ioResult = texture(uTexture, ioTexCoords);
             break;
     }
 }

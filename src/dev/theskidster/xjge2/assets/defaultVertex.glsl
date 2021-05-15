@@ -23,5 +23,10 @@ void main() {
             ioColor     = aColor;
             gl_Position = uProjection * uView * uModel * vec4(aPosition, 1);
             break;
+
+        case 2:
+            ioTexCoords = aTexCoords;
+            gl_Position = uProjection * uView * uModel * vec4(aPosition, 1);
+            break;
     }
 }

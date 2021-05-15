@@ -1,4 +1,4 @@
-package dev.theskidster.xjge2.hud;
+package dev.theskidster.xjge2.ui;
 
 import dev.theskidster.xjge2.core.Command;
 import dev.theskidster.xjge2.shaderutils.GLProgram;
