@@ -6,6 +6,7 @@ import dev.theskidster.xjge2.core.Scene;
 import dev.theskidster.xjge2.graphics.Color;
 import dev.theskidster.xjge2.shaderutils.GLProgram;
 import dev.theskidster.xjge2.ui.Font;
+import dev.theskidster.xjge2.ui.Font2;
 import java.util.Map;
 
 /**
@@ -15,12 +16,14 @@ import java.util.Map;
 
 public class TestScene extends Scene {
 
-    Font font;
+    Font2 font;
     
     public TestScene() {
         super("test");
         
-        font = new Font("fnt_inconsolata_regular.ttf");
+        font = new Font2("fnt_source_code_pro_regular.ttf");
+        
+        Font f = new Font("fnt_source_code_pro_regular.ttf", 24);
         
         Game.setClearColor(Color.RETRO_BLUE);
         

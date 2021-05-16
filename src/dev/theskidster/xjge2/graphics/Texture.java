@@ -34,10 +34,10 @@ public final class Texture {
             loadTexture(file);
         } catch(Exception e) {
             Logger.setDomain("graphics");
-            Logger.logWarning(filename, e);
+            Logger.logWarning("Failed to load texture \"" + filename + "\"", e);
             Logger.setDomain(null);
             
-            loadTexture(Texture.class.getResourceAsStream(XJGE.getFilepath() + "img_null.png"));
+            loadTexture(Texture.class.getResourceAsStream("/dev/theskidster/xjge2/assets/img_null.png"));
         }
         
         ErrorUtils.checkGLError();
@@ -51,6 +51,8 @@ public final class Texture {
             IntBuffer widthBuf   = stack.mallocInt(1);
             IntBuffer heightBuf  = stack.mallocInt(1);
             IntBuffer channelBuf = stack.mallocInt(1);
+            
+            
             
             ByteBuffer texture = stbi_load_from_memory(imageBuf, widthBuf, heightBuf, channelBuf, STBI_rgb_alpha);
             
@@ -69,8 +71,7 @@ public final class Texture {
             
         } catch(IOException e) {
             Logger.setDomain("graphics");
-            Logger.logSevere("Failed to load fallback texture.", e);
-            Logger.setDomain(null);
+            Logger.logSevere("Failed to parse texture image data.", e);
         }
     }
     

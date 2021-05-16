@@ -1,5 +1,6 @@
 package dev.theskidster.xjge2.core;
 
+import static dev.theskidster.xjge2.core.Window.HANDLE;
 import dev.theskidster.xjge2.graphics.Color;
 import dev.theskidster.xjge2.shaderutils.BufferType;
 import dev.theskidster.xjge2.shaderutils.GLProgram;
@@ -28,16 +29,16 @@ public final class XJGE {
     
     private static boolean initCalled;
     private static boolean matchWindowResolution;
-    private static boolean debugEnabled;
     private static boolean windowResizable;
     private static boolean freeCamEnabled;
+    private static boolean firstMouse = true;
     
     public static final Path PWD       = Path.of("").toAbsolutePath();
     public static final String VERSION = "0.0.0";
     
     private static Split split;
     private static String filepath = "/dev/theskidster/xjge2/assets/";
-    static FreeCam freeCam;
+    private static FreeCam freeCam;
     
     static Map<String, GLProgram> glPrograms  = new HashMap<>();
     private static final Viewport[] viewports = new Viewport[4];
@@ -68,8 +69,6 @@ public final class XJGE {
             }
             
             if(!glfwInit()) Logger.logSevere("Failed to initialize GLFW.", null);
-            
-            XJGE.debugEnabled = debugEnabled;
             
             { //Initialize the window.
                 //TODO: mention in documentation that the windowResize flag will be overruled if
@@ -129,8 +128,54 @@ public final class XJGE {
             }
             
             Logger.printSystemInfo();
-            
             XJGE.filepath = filepath;
+            
+            glfwSetKeyCallback(Window.HANDLE, (window, key, scancode, action, mods) -> {
+                if(debugEnabled && key == GLFW_KEY_F2 && action == GLFW_PRESS) {
+                    setFreeCamEnabled(!freeCamEnabled);
+                }
+
+                if(freeCamEnabled) {
+                    if(key == GLFW_KEY_W) freeCam.pressed[0] = (action != GLFW_RELEASE);
+                    if(key == GLFW_KEY_A) freeCam.pressed[1] = (action != GLFW_RELEASE);
+                    if(key == GLFW_KEY_S) freeCam.pressed[2] = (action != GLFW_RELEASE);
+                    if(key == GLFW_KEY_D) freeCam.pressed[3] = (action != GLFW_RELEASE);
+
+                    freeCam.setSpeedBoostEnabled(mods == GLFW_MOD_SHIFT);
+                }
+
+                if(action == GLFW_PRESS) {
+                    switch(key) {
+                        case GLFW_KEY_ESCAPE -> {
+                            Window.close(); //TODO: temp
+                        }
+
+                        case GLFW_KEY_F1 -> {
+                            Window.setFullscreen(!Window.getFullscreen());
+                        }
+
+                        case GLFW_KEY_1 -> splitScreen(Split.NONE);
+                        case GLFW_KEY_2 -> splitScreen(Split.HORIZONTAL);
+                        case GLFW_KEY_3 -> splitScreen(Split.VERTICAL);
+                        case GLFW_KEY_4 -> splitScreen(Split.TRISECT);
+                        case GLFW_KEY_5 -> splitScreen(Split.QUARTER);
+                    }
+                }
+            });
+
+            glfwSetCursorPosCallback(HANDLE, (window, xpos, ypos) -> {
+                if(freeCamEnabled) {
+                    if(firstMouse) {
+                        freeCam.prevX = xpos;
+                        freeCam.prevY = ypos;
+                        firstMouse = false;
+                    }
+
+                    freeCam.setDirection(xpos, ypos);
+                } else {
+                    firstMouse = true;
+                }
+            });
         } else {
             Logger.setDomain("core");
             Logger.logWarning("XJGE has already been initialized.", null);
@@ -236,16 +281,8 @@ public final class XJGE {
         return matchWindowResolution;
     }
     
-    static boolean getDebugEnabled() {
-        return debugEnabled;
-    }
-    
     static boolean getWindowResizable() {
         return windowResizable;
-    }
-    
-    static boolean getFreeCamEnabled() {
-        return freeCamEnabled;
     }
     
     static Split getSplit() {
@@ -261,10 +298,10 @@ public final class XJGE {
         resolutionY = y;
     }
     
-    static void setFreeCamEnabled(boolean freeCamEnabled) {
+    private static void setFreeCamEnabled(boolean freeCamEnabled) {
         XJGE.freeCamEnabled = freeCamEnabled;
         
-        //TODO: make this a public and have it behave like the legacy one.
+        //TODO: replace this with a public method?
         
         Logger.setDomain("core");
         

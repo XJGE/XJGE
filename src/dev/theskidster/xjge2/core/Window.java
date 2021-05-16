@@ -2,6 +2,7 @@ package dev.theskidster.xjge2.core;
 
 import java.io.InputStream;
 import java.nio.ByteBuffer;
+import java.nio.FloatBuffer;
 import java.nio.IntBuffer;
 import java.util.TreeMap;
 import static org.lwjgl.glfw.GLFW.*;
@@ -27,8 +28,10 @@ public final class Window {
     private static int width;
     private static int height;
     
+    private static float contentScaleX;
+    private static float contentScaleY;
+    
     private static boolean fullscreen;
-    private static boolean firstMouse = true;
     
     private static String title;
     static Monitor monitor;
@@ -64,6 +67,16 @@ public final class Window {
         glfwShowWindow(HANDLE);
         glfwFocusWindow(HANDLE);
         
+        try(MemoryStack stack = MemoryStack.stackPush()) {
+            FloatBuffer initialContentScaleXBuf = stack.mallocFloat(1);
+            FloatBuffer initialContentScaleYBuf = stack.mallocFloat(1);
+            
+            glfwGetWindowContentScale(HANDLE, initialContentScaleXBuf, initialContentScaleYBuf);
+            
+            contentScaleX = initialContentScaleXBuf.get();
+            contentScaleY = initialContentScaleYBuf.get();
+        }
+        
         glfwSetWindowSizeCallback(HANDLE, (window, w, h) -> {
             width  = w;
             height = h;
@@ -76,51 +89,10 @@ public final class Window {
             XJGE.splitScreen(XJGE.getSplit());
         });
         
-        glfwSetKeyCallback(Window.HANDLE, (window, key, scancode, action, mods) -> {
-            if(XJGE.getDebugEnabled() && key == GLFW_KEY_F2 && action == GLFW_PRESS) {
-                XJGE.setFreeCamEnabled(!XJGE.getFreeCamEnabled());
-            }
-            
-            if(XJGE.getFreeCamEnabled()) {
-                if(key == GLFW_KEY_W) XJGE.freeCam.pressed[0] = (action != GLFW_RELEASE);
-                if(key == GLFW_KEY_A) XJGE.freeCam.pressed[1] = (action != GLFW_RELEASE);
-                if(key == GLFW_KEY_S) XJGE.freeCam.pressed[2] = (action != GLFW_RELEASE);
-                if(key == GLFW_KEY_D) XJGE.freeCam.pressed[3] = (action != GLFW_RELEASE);
-                
-                XJGE.freeCam.setSpeedBoostEnabled(mods == GLFW_MOD_SHIFT);
-            }
-            
-            if(action == GLFW_PRESS) {
-                switch(key) {
-                    case GLFW_KEY_ESCAPE -> {
-                        close(); //TODO: temp
-                    }
-                    
-                    case GLFW_KEY_F1 -> {
-                        setFullscreen(!fullscreen);
-                    }
-                    
-                    case GLFW_KEY_1 -> XJGE.splitScreen(Split.NONE);
-                    case GLFW_KEY_2 -> XJGE.splitScreen(Split.HORIZONTAL);
-                    case GLFW_KEY_3 -> XJGE.splitScreen(Split.VERTICAL);
-                    case GLFW_KEY_4 -> XJGE.splitScreen(Split.TRISECT);
-                    case GLFW_KEY_5 -> XJGE.splitScreen(Split.QUARTER);
-                }
-            }
-        });
-        
-        glfwSetCursorPosCallback(HANDLE, (window, xpos, ypos) -> {
-            if(XJGE.getFreeCamEnabled()) {
-                if(firstMouse) {
-                    XJGE.freeCam.prevX = xpos;
-                    XJGE.freeCam.prevY = ypos;
-                    firstMouse = false;
-                }
-                
-                XJGE.freeCam.setDirection(xpos, ypos);
-            } else {
-                firstMouse = true;
-            }
+        glfwSetWindowContentScaleCallback(HANDLE, (window, xscale, yscale) -> {
+            contentScaleX = xscale;
+            contentScaleY = yscale;
+            System.out.println("asdg");
         });
         
         glfwSetMonitorCallback((monHandle, event) -> {
@@ -131,7 +103,6 @@ public final class Window {
                     WinKit.findMonitors();
                     Monitor conMon = WinKit.getMonitor(monHandle);
                     Logger.logInfo("Monitor " + conMon.id + " \"" + conMon.name + "\" has been connected.");
-                    
                 }
                 
                 /*
@@ -162,10 +133,6 @@ public final class Window {
             
             Logger.setDomain(null);
         });
-        
-        glfwSetJoystickCallback((jid, event) -> {
-            //TODO: need to add gl stuff first...
-        });
     }
     
     public static int getPositionX() {
@@ -182,6 +149,14 @@ public final class Window {
     
     public static int getHeight() {
         return height;
+    }
+    
+    public static float getContentScaleX() {
+        return contentScaleX;
+    }
+    
+    public static float getContentScaleY() {
+        return contentScaleY;
     }
     
     public static boolean getFullscreen() {

@@ -92,6 +92,10 @@ public final class Input {
             
             controlConfigs.put(i, gamepadConfig);
         }
+        
+        glfwSetJoystickCallback((jid, event) -> {
+            //TODO: need to add gl stuff first...
+        });
     }
     
     static void findInputDevices() {
