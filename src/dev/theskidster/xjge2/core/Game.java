@@ -26,6 +26,7 @@ public final class Game {
     
     private static final Queue<Event> events = new PriorityQueue<>(Comparator.comparing(Event::getPriority));
     
+    //TODO: runs like ass? wtf?
     static void loop() {
         int cycles = 0;
         final double TARGET_DELTA = 1 / 60.0;
@@ -55,7 +56,7 @@ public final class Game {
                 //Process any unresolved events otherwise update the scene normally.
                 if(events.size() > 0) {
                     Event event = events.peek();
-
+                    
                     if(!event.resolved) event.resolve();
                     else                events.poll();
                 } else {

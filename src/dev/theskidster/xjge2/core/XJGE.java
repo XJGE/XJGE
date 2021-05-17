@@ -77,7 +77,6 @@ public final class XJGE {
                 glfwWindowHint(GLFW_VISIBLE, GLFW_FALSE);
                 
                 Window.monitor = WinKit.findMonitors().get(1);
-                Window.reconfigure();
                 Window.setIcon("img_null.png");
             }
             
@@ -86,6 +85,7 @@ public final class XJGE {
             
             glfwMakeContextCurrent(Window.HANDLE);
             GL.createCapabilities();
+            Window.reconfigure();
             
             if(resolution == null) {
                 matchWindowResolution = true;
@@ -151,7 +151,8 @@ public final class XJGE {
                         }
 
                         case GLFW_KEY_F1 -> {
-                            Window.setFullscreen(!Window.getFullscreen());
+                            //Window.setFullscreen(!Window.getFullscreen());
+                            WinKit.setVSyncEnabled(!WinKit.getVSyncEnabled());
                         }
 
                         case GLFW_KEY_1 -> splitScreen(Split.NONE);
@@ -223,7 +224,7 @@ public final class XJGE {
         for(Viewport viewport : viewports) {
             if(viewport.active && viewport.currCamera != null) {
                 viewport.currCamera.update();
-                //viewport.ui.forEach((name, component) -> component.update());
+                viewport.ui.forEach((name, component) -> component.update());
                 
                 //ServiceLocator.getAudio().setViewportCamData(viewport.id, viewport.currCamera.position, viewport.currCamera.direction);
             }
