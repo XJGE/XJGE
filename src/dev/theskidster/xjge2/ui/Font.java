@@ -33,6 +33,7 @@ public final class Font {
         glBindTexture(GL_TEXTURE_2D, texHandle);
         
         try(InputStream file = Font.class.getResourceAsStream(XJGE.getFilepath() + filename)) {
+            if(size <= 0) throw new IllegalStateException("Invalid font size " + size + " used.");
             loadFont(file, size);
         } catch(Exception e) {
             Logger.setDomain("ui");
@@ -123,38 +124,50 @@ public final class Font {
             glEnableVertexAttribArray(0);
             glEnableVertexAttribArray(2);
             
-            STBTTBakedChar glyph = charBuf.get(0); //0 should be the ! mark.
+            char[] charArray = charset.toCharArray();
             
-            float xStart  = (float) (glyph.x0()) / imageWidth;
-            float yStart  = (float) (glyph.y0()) / imageWidth;
-            float advance = glyph.xadvance();
-            
-            System.out.println("tex X: " + xStart);
-            System.out.println("tex Y: " + yStart);
-            System.out.println("advance: " + advance); //monospaced fonts will all have the same value here.
-            System.out.println();
-            
-            MemoryUtil.memFree(charBuf);
-            MemoryUtil.memFree(imageBuf);
+            for(int i = 0; i < charset.length(); i++) {
+                STBTTBakedChar glyph = charBuf.get(i);
+                
+                float xStart  = (float) (glyph.x0()) / imageWidth;
+                float yStart  = (float) (glyph.y0()) / imageHeight;
+                float xEnd    = (float) (glyph.x1()) / imageWidth;
+                float yEnd    = (float) (glyph.y1()) / imageHeight;
+                float advance = glyph.xadvance();
+                
+                /*
+                TODO:
+                
+                the quad each glyph will be rendering to is likely going to be
+                larger than the visible character itself- maybe we can use the 
+                xEnd and yEnd coordinates to discard fragments that exend beyond
+                this point?
+                
+                The worry here of course is that the rendered glyph will contain
+                other parts of glyphs in the bitmap image.
+                
+                include the data parsed here into collections and start rendering
+                strings, fix whatever issues arise after
+                */
+                
+                System.out.println("char: " + charArray[i]);
+                System.out.println("tex start X: " + xStart);
+                System.out.println("tex start Y: " + yStart);
+                System.out.println("tex end X: " + xEnd);
+                System.out.println("tex end Y: " + yEnd);
+                System.out.println("off X: " + glyph.xoff());
+                System.out.println("off Y: " + glyph.yoff());
+                System.out.println("advance: " + advance); //monospaced fonts will all have the same value here.
+                System.out.println();
+            }
             
             /*
-            IntBuffer glyphWidth = stack.mallocInt(10);
-            IntBuffer glyphHeight = stack.mallocInt(10);
-            IntBuffer xOffset = stack.mallocInt(10);
-            IntBuffer yOffset = stack.mallocInt(10);
-            
-            stbtt_GetGlyphBitmap(info, 1, 1, '!', glyphWidth, glyphHeight, xOffset, yOffset);
-            
-            System.out.println("width: " + glyphWidth.get());
-            System.out.println("height: " + glyphWidth.get());
-            System.out.println("offset X: " + xOffset.get());
-            System.out.println("offset Y: " + yOffset.get());
+            use the largest advance value to determine the glyph quad size.
             */
             
-            
-            
-            //stbtt_FreeBitmap(fontBuf, 0);
-            //free bitmap
+            MemoryUtil.memFree(fontBuf);
+            MemoryUtil.memFree(charBuf);
+            MemoryUtil.memFree(imageBuf);
             
         } catch(IOException e) {
             Logger.setDomain("ui");
