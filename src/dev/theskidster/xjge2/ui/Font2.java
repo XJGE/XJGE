@@ -85,7 +85,7 @@ public final class Font2 {
             float scaleY = scaleYBuf.get();
             
             //TODO: maybe parse a fonts desired texture atlas size if possible?
-            int desiredSize = 128;
+            int desiredSize = 144;
             
             int imageWidth  = Math.round(desiredSize * scaleX);
             int imageHeight = Math.round(desiredSize * scaleY);
@@ -96,7 +96,9 @@ public final class Font2 {
             
             int status = stbtt_BakeFontBitmap(fontBuf, 24 * scaleY, imageBuf, imageWidth, imageHeight, 32, charBuf);
             
-            System.out.println(Math.abs(status) - 96);
+            //System.out.println("s" + imageWidth);
+            
+            //System.out.println(Math.abs(status) - 96);
             
             //TODO: create atlas from baked bitmap- display just like we did in the legacy version
             

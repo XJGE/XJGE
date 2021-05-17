@@ -52,8 +52,6 @@ public final class Texture {
             IntBuffer heightBuf  = stack.mallocInt(1);
             IntBuffer channelBuf = stack.mallocInt(1);
             
-            
-            
             ByteBuffer texture = stbi_load_from_memory(imageBuf, widthBuf, heightBuf, channelBuf, STBI_rgb_alpha);
             
             width    = widthBuf.get();

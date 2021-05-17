@@ -26,7 +26,6 @@ public final class Game {
     
     private static final Queue<Event> events = new PriorityQueue<>(Comparator.comparing(Event::getPriority));
     
-    //TODO: runs like ass? wtf?
     static void loop() {
         int cycles = 0;
         final double TARGET_DELTA = 1 / 60.0;

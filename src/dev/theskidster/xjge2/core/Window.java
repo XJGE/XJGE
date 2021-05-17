@@ -57,16 +57,6 @@ public final class Window {
                     monitor.getRefreshRate());
         }
         
-        setPositionCentered();
-        
-        glfwSwapInterval(WinKit.getVSyncEnabled() ? 1 : 0);
-    }
-    
-    static void show() {
-        glfwSetInputMode(HANDLE, GLFW_CURSOR, GLFW_CURSOR_NORMAL);
-        glfwShowWindow(HANDLE);
-        glfwFocusWindow(HANDLE);
-        
         try(MemoryStack stack = MemoryStack.stackPush()) {
             FloatBuffer initialContentScaleXBuf = stack.mallocFloat(1);
             FloatBuffer initialContentScaleYBuf = stack.mallocFloat(1);
@@ -76,6 +66,16 @@ public final class Window {
             contentScaleX = initialContentScaleXBuf.get();
             contentScaleY = initialContentScaleYBuf.get();
         }
+        
+        setPositionCentered();
+        
+        glfwSwapInterval(WinKit.getVSyncEnabled() ? 1 : 0);
+    }
+    
+    static void show() {
+        glfwSetInputMode(HANDLE, GLFW_CURSOR, GLFW_CURSOR_NORMAL);
+        glfwShowWindow(HANDLE);
+        glfwFocusWindow(HANDLE);
         
         glfwSetWindowSizeCallback(HANDLE, (window, w, h) -> {
             width  = w;
@@ -92,7 +92,7 @@ public final class Window {
         glfwSetWindowContentScaleCallback(HANDLE, (window, xscale, yscale) -> {
             contentScaleX = xscale;
             contentScaleY = yscale;
-            System.out.println("asdg");
+            //TODO: update UI to reflect new scale- bake new bitmaps, etc.
         });
         
         glfwSetMonitorCallback((monHandle, event) -> {
