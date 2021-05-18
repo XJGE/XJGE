@@ -20,8 +20,6 @@ public class TestScene extends Scene {
     public TestScene() {
         super("test");
         
-        font = new Font("fnt_source_code_pro_regular.ttf", 24);
-        
         Game.setClearColor(Color.RETRO_BLUE);
         
         entities.put("test", new TestEntity(0, 0, -5));
@@ -30,8 +28,6 @@ public class TestScene extends Scene {
     @Override
     public void update(double targetDelta) {
         entities.values().forEach(entity -> entity.update(targetDelta));
-        
-        font.update();
     }
 
     @Override
@@ -40,8 +36,6 @@ public class TestScene extends Scene {
         defaultProgram.use();
         
         entities.values().forEach(entity -> entity.render(defaultProgram, camera));
-        
-        font.render(defaultProgram);
     }
 
     @Override

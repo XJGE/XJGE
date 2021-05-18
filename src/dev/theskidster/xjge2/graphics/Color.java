@@ -9,7 +9,7 @@ import org.joml.Vector3f;
 
 public final class Color {
 
-    //System colors
+    //Functional
     public static final Color WHITE     = new Color(1);
     public static final Color SILVER    = new Color(0.75f);
     public static final Color GRAY      = new Color(0.5f);
@@ -28,7 +28,7 @@ public final class Color {
     public static final Color TEAL      = new Color(0, 128, 128);
     public static final Color BROWN     = new Color(64, 32, 0);
     
-    //Irregular colors
+    //Fancy
     public static final Color RETRO_BLUE = new Color(92, 148, 252);
     public static final Color VIOLET     = new Color(141, 97, 156);
     public static final Color MIDNIGHT   = new Color(16, 21, 36);

@@ -36,7 +36,7 @@ void main() {
 
         case 2:
             makeTransparent(texture(uTexture, ioTexCoords).a);
-            ioResult = texture(uTexture, ioTexCoords);
+            ioResult = texture(uTexture, ioTexCoords) * vec4(ioColor, 0);
             break;
     }
 }

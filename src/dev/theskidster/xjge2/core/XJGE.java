@@ -189,6 +189,9 @@ public final class XJGE {
     public static void start() {
         glPrograms = Collections.unmodifiableMap(glPrograms);
         
+        //TODO: delete the viewport ui test code here when finished.
+        viewports[0].addUIWidget("test", new TestWidget());
+        
         freeCam = new FreeCam();
         
         Window.show();

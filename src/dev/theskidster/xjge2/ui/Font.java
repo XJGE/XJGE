@@ -9,9 +9,10 @@ import dev.theskidster.xjge2.shaderutils.GLProgram;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.ByteBuffer;
-import org.joml.Vector3f;
-import static org.lwjgl.opengl.GL20.*;
-import static org.lwjgl.opengl.GL30.glBindVertexArray;
+import java.nio.FloatBuffer;
+import java.util.HashMap;
+import org.joml.Vector2f;
+import static org.lwjgl.opengl.GL33C.*;
 import org.lwjgl.stb.STBTTBakedChar;
 import org.lwjgl.stb.STBTTFontinfo;
 import org.lwjgl.stb.STBTTPackContext;
@@ -29,8 +30,16 @@ import static org.lwjgl.system.MemoryUtil.NULL;
 
 public final class Font {
 
+    private final int vboPosOffset = glGenBuffers();
+    private final int vboTexOffset = glGenBuffers();
+    private final int vboColOffset = glGenBuffers();
     private final int texHandle;
+    
     private Graphics g;
+    
+    private HashMap<Character, Vector2f> posOffsets = new HashMap<>();
+    private HashMap<Character, Vector2f> texOffsets = new HashMap<>();
+    private HashMap<Character, Float> advanceValues = new HashMap<>();
     
     public Font(String filename, int size) {
         texHandle = glGenTextures();
@@ -121,7 +130,6 @@ public final class Font {
             }
             
             MemoryUtil.memFree(bakedCharBuf);
-            
             int largestGlyphWidth = 0;
             
             for(int i = 0; i < charset.length(); i++) {
@@ -160,17 +168,13 @@ public final class Font {
             for(int i = 0; i < charset.length(); i++) {
                 STBTTPackedchar glyph = packedCharBuf.get(i);
                 
+                char character = charArray[i];
                 float texCoordX  = (float) (glyph.x0()) / imageWidth;
                 float texCoordY  = (float) (glyph.y0()) / imageHeight;
-                float advance = glyph.xadvance();
                 
-                System.out.println("char: " + charArray[i]);
-                System.out.println("tex coord X: " + texCoordX);
-                System.out.println("tex coord Y: " + texCoordY);
-                System.out.println("off X: " + glyph.xoff());
-                System.out.println("off Y: " + glyph.yoff());
-                System.out.println("advance: " + advance); //monospaced fonts will all have the same value here.
-                System.out.println();
+                posOffsets.put(character, new Vector2f(glyph.xoff(), (glyph.yoff() - glyph.yoff2()) * -1));
+                texOffsets.put(character, new Vector2f(texCoordX, texCoordY));
+                advanceValues.put(character, glyph.xadvance());
             }
             
             glTexImage2D(GL_TEXTURE_2D, 0, GL_ALPHA, imageWidth, imageHeight, 0, GL_ALPHA, GL_UNSIGNED_BYTE, imageBuf);
@@ -183,11 +187,14 @@ public final class Font {
             
             g.vertices = stack.mallocFloat(20);
             g.indices  = stack.mallocInt(6);
-
-            g.vertices.put(-imageWidth) .put(imageHeight).put(0)  .put(0).put(0);
-            g.vertices .put(imageWidth) .put(imageHeight).put(0)  .put(1).put(0);
-            g.vertices .put(imageWidth).put(-imageHeight).put(0)  .put(1).put(1);
-            g.vertices.put(-imageWidth).put(-imageHeight).put(0)  .put(0).put(1);
+            
+            float subImageWidth  = (float) largestGlyphWidth / imageWidth;
+            float subImageHeight = (float) size / imageHeight;
+            
+            g.vertices.put(0)                .put(size).put(0)  .put(0)            .put(0);
+            g.vertices.put(largestGlyphWidth).put(size).put(0)  .put(subImageWidth).put(0);
+            g.vertices.put(largestGlyphWidth).put(0).put(0)     .put(subImageWidth).put(subImageHeight);
+            g.vertices.put(0)                .put(0).put(0)     .put(0)            .put(subImageHeight);
 
             g.indices.put(0).put(1).put(2);
             g.indices.put(2).put(3).put(0);
@@ -203,34 +210,6 @@ public final class Font {
             glEnableVertexAttribArray(0);
             glEnableVertexAttribArray(2);
             
-            /*
-            
-            char[] charArray = charset.toCharArray();
-            
-            for(int i = 0; i < charset.length(); i++) {
-                STBTTBakedChar glyph = bakedCharBuf.get(i);
-                
-                float xStart  = (float) (glyph.x0()) / imageWidth;
-                float yStart  = (float) (glyph.y0()) / imageHeight;
-                float xEnd    = (float) (glyph.x1()) / imageWidth;
-                float yEnd    = (float) (glyph.y1()) / imageHeight;
-                float advance = glyph.xadvance();
-                
-                System.out.println("char: " + charArray[i]);
-                System.out.println("tex start X: " + xStart);
-                System.out.println("tex start Y: " + yStart);
-                System.out.println("tex end X: " + xEnd);
-                System.out.println("tex end Y: " + yEnd);
-                System.out.println("off X: " + glyph.xoff());
-                System.out.println("off Y: " + glyph.yoff());
-                System.out.println("advance: " + advance); //monospaced fonts will all have the same value here.
-                System.out.println();
-            }
-            
-            /*
-            use the largest advance value to determine the glyph quad size.
-            */
-            
             MemoryUtil.memFree(fontBuf);
             MemoryUtil.memFree(bakedCharBuf);
             MemoryUtil.memFree(imageBuf);
@@ -241,23 +220,90 @@ public final class Font {
         }
     }
     
-    private Vector3f pos = new Vector3f(0, -100, -1000);
-    
-    public void update() {
-        g.modelMatrix.translation(pos);
+    private void offsetPosition(HashMap<Integer, Glyph> glyphs) {
+        try(MemoryStack stack = MemoryStack.stackPush()) {
+            FloatBuffer positions = stack.mallocFloat(glyphs.size() * Float.BYTES);
+            
+            glyphs.forEach((index, glyph) -> {
+                positions.put(glyph.position.x).put(glyph.position.y).put(glyph.position.z);
+            });
+            
+            positions.flip();
+            
+            glBindBuffer(GL_ARRAY_BUFFER, vboPosOffset);
+            glBufferData(GL_ARRAY_BUFFER, positions, GL_STATIC_DRAW);
+        }
+        
+        glVertexAttribPointer(4, 3, GL_FLOAT, false, (3 * Float.BYTES), 0);
+        glEnableVertexAttribArray(4);
+        glVertexAttribDivisor(4, 1);
     }
     
-    public void render(GLProgram program) {
+    private void offsetTexture(HashMap<Integer, Glyph> glyphs) {
+        try(MemoryStack stack = MemoryStack.stackPush()) {
+            FloatBuffer cells = stack.mallocFloat(glyphs.size() * Float.BYTES);
+            
+            glyphs.forEach((index, glyph) -> {
+                cells.put(texOffsets.get(glyph.c).x).put(texOffsets.get(glyph.c).y);
+            });
+            
+            cells.flip();
+            
+            glBindBuffer(GL_ARRAY_BUFFER, vboTexOffset);
+            glBufferData(GL_ARRAY_BUFFER, cells, GL_STATIC_DRAW);
+        }
+        
+        glVertexAttribPointer(5, 2, GL_FLOAT, false, (2 * Float.BYTES), 0);
+        glEnableVertexAttribArray(5);
+        glVertexAttribDivisor(5, 1);
+    }
+    
+    private void offsetColor(HashMap<Integer, Glyph> glyphs) {
+        try(MemoryStack stack = MemoryStack.stackPush()) {
+            FloatBuffer colors = stack.mallocFloat(glyphs.size() * Float.BYTES);
+            
+            glyphs.forEach((index, glyph) -> {
+                colors.put(glyph.color.r).put(glyph.color.g).put(glyph.color.b);
+            });
+            
+            colors.flip();
+            
+            glBindBuffer(GL_ARRAY_BUFFER, vboColOffset);
+            glBufferData(GL_ARRAY_BUFFER, colors, GL_STATIC_DRAW);
+        }
+        
+        glVertexAttribPointer(6, 3, GL_FLOAT, false, (3 * Float.BYTES), 0);
+        glEnableVertexAttribArray(6);
+        glVertexAttribDivisor(6, 1);
+    }
+    
+    float getGlyphAdvance(char c) {
+        return advanceValues.get(c);
+    }
+    
+    float getGlyphXOffset(char c) {
+        return posOffsets.get(c).x;
+    }
+    
+    float getGlyphDescent(char c) {
+        return posOffsets.get(c).y;
+    }
+    
+    void draw(GLProgram program, HashMap<Integer, Glyph> glyphs, boolean changed) {
         program.use();
         
         glBindTexture(GL_TEXTURE_2D, texHandle);
         glBindVertexArray(g.vao);
         
+        if(changed) {
+            offsetPosition(glyphs);
+            offsetTexture(glyphs);
+            offsetColor(glyphs);
+        }
+        
         program.setUniform("uType", 2);
-        program.setUniform("uModel", false, g.modelMatrix);
         
-        glDrawElements(GL_TRIANGLES, g.indices.capacity(), GL_UNSIGNED_INT, 0);
-        
+        glDrawElementsInstanced(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0, glyphs.size());
         ErrorUtils.checkGLError();
     }
     

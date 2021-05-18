@@ -3,7 +3,10 @@ package dev.theskidster.xjge2.core;
 import dev.theskidster.xjge2.graphics.Graphics;
 import dev.theskidster.xjge2.shaderutils.GLProgram;
 import dev.theskidster.xjge2.ui.Widget;
+import java.util.Collections;
 import java.util.LinkedHashMap;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.Map;
 import org.joml.Vector2i;
 import static org.lwjgl.opengl.GL30.*;
@@ -133,6 +136,24 @@ final class Viewport {
         ui.values().forEach(widget -> widget.setSplitPosition());
     }
     
+    void addUIWidget(String name, Widget component) {
+        ui.put(name, component);
+        
+        List<Map.Entry<String, Widget>> compList = new LinkedList<>(ui.entrySet());
+        
+        Collections.sort(compList, (var o1, var o2) -> {
+            return (o2.getValue()).compareTo(o1.getValue());
+        });
+        
+        var temp = new LinkedHashMap<String, Widget>();
+        compList.forEach(comp2 -> temp.put(comp2.getKey(), comp2.getValue()));
+        
+        ui.clear();
+        ui.putAll(temp);
+    }
     
+    void removeUIWidget(String name) {
+        ui.remove(name);
+    }
     
 }
