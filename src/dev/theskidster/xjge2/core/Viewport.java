@@ -136,17 +136,17 @@ final class Viewport {
         ui.values().forEach(widget -> widget.setSplitPosition());
     }
     
-    void addUIWidget(String name, Widget component) {
-        ui.put(name, component);
+    void addUIWidget(String name, Widget widget) {
+        ui.put(name, widget);
         
-        List<Map.Entry<String, Widget>> compList = new LinkedList<>(ui.entrySet());
+        List<Map.Entry<String, Widget>> widgetList = new LinkedList<>(ui.entrySet());
         
-        Collections.sort(compList, (var o1, var o2) -> {
+        Collections.sort(widgetList, (var o1, var o2) -> {
             return (o2.getValue()).compareTo(o1.getValue());
         });
         
         var temp = new LinkedHashMap<String, Widget>();
-        compList.forEach(comp2 -> temp.put(comp2.getKey(), comp2.getValue()));
+        widgetList.forEach(comp2 -> temp.put(comp2.getKey(), comp2.getValue()));
         
         ui.clear();
         ui.putAll(temp);

@@ -151,7 +151,7 @@ public final class Font {
                 imageBuf    = MemoryUtil.memAlloc(imageWidth * imageHeight);
                 
                 try(STBTTPackContext pc = STBTTPackContext.malloc()) {
-                    stbtt_PackBegin(pc, imageBuf, imageWidth, imageHeight, 0, largestGlyphWidth, NULL);
+                    stbtt_PackBegin(pc, imageBuf, imageWidth, imageHeight, 0, (int) (largestGlyphWidth * Window.getContentScaleY()), NULL);
                     stbtt_PackSetOversampling(pc, 1, 1);
                     containsAllGlyphs = stbtt_PackFontRange(pc, fontBuf, 0, size, 32, packedCharBuf);
                     stbtt_PackEnd(pc);
@@ -163,16 +163,14 @@ public final class Font {
                 sizeInPixels += 16;
             }
             
-            char[] charArray = charset.toCharArray();
-            
             for(int i = 0; i < charset.length(); i++) {
                 STBTTPackedchar glyph = packedCharBuf.get(i);
                 
-                char character = charArray[i];
-                float texCoordX  = (float) (glyph.x0()) / imageWidth;
-                float texCoordY  = (float) (glyph.y0()) / imageHeight;
+                char character = charset.charAt(i);
+                float texCoordX = (float) (glyph.x0()) / imageWidth;
+                float texCoordY = (float) (glyph.y0()) / imageHeight;
                 
-                posOffsets.put(character, new Vector2f(glyph.xoff(), (glyph.yoff() - glyph.yoff2()) * -1));
+                posOffsets.put(character, new Vector2f(glyph.xoff(), -glyph.yoff() - size));
                 texOffsets.put(character, new Vector2f(texCoordX, texCoordY));
                 advanceValues.put(character, glyph.xadvance());
             }
@@ -180,8 +178,8 @@ public final class Font {
             glTexImage2D(GL_TEXTURE_2D, 0, GL_ALPHA, imageWidth, imageHeight, 0, GL_ALPHA, GL_UNSIGNED_BYTE, imageBuf);
             glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
             glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_BORDER);
-            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_BORDER);
+            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
             
             g = new Graphics();
             
@@ -210,9 +208,10 @@ public final class Font {
             glEnableVertexAttribArray(0);
             glEnableVertexAttribArray(2);
             
-            MemoryUtil.memFree(fontBuf);
-            MemoryUtil.memFree(bakedCharBuf);
-            MemoryUtil.memFree(imageBuf);
+            //causes java to return -1073740940
+            //MemoryUtil.memFree(fontBuf);
+            //MemoryUtil.memFree(bakedCharBuf);
+            //MemoryUtil.memFree(imageBuf);
             
         } catch(IOException e) {
             Logger.setDomain("ui");
@@ -281,12 +280,8 @@ public final class Font {
         return advanceValues.get(c);
     }
     
-    float getGlyphXOffset(char c) {
-        return posOffsets.get(c).x;
-    }
-    
-    float getGlyphDescent(char c) {
-        return posOffsets.get(c).y;
+    Vector2f getGlyphPosOffset(char c) {
+        return posOffsets.get(c);
     }
     
     void draw(GLProgram program, HashMap<Integer, Glyph> glyphs, boolean changed) {

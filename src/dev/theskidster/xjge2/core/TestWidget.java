@@ -6,6 +6,7 @@ import dev.theskidster.xjge2.ui.Font;
 import dev.theskidster.xjge2.ui.Text;
 import dev.theskidster.xjge2.ui.Widget;
 import java.util.Map;
+import org.joml.Vector3f;
 import org.joml.Vector3i;
 
 /**
@@ -16,7 +17,7 @@ import org.joml.Vector3i;
 class TestWidget extends Widget {
 
     private Text text;
-    private Vector3i textPos = new Vector3i(0, 0, 0);
+    private Vector3f textPos = new Vector3f(0, 100, 0);
     
     public TestWidget() {
         super(new Vector3i(), 300, 200);
@@ -25,7 +26,7 @@ class TestWidget extends Widget {
         String file2 = "fnt_inconsolata_regular.ttf";
         String file3 = "fnt_black_metal.ttf";
         
-        text = new Text(new Font(file3, 48));
+        text = new Text(new Font(file2, 48));
     }
 
     @Override
@@ -35,7 +36,8 @@ class TestWidget extends Widget {
 
     @Override
     public void render(Map<String, GLProgram> glPrograms) {
-        text.draw(glPrograms.get("default"), "weedle!69", textPos, Color.BLACK);
+        //text.draw(glPrograms.get("default"), "the quick brown fox jumps over the lazy dog.", textPos, Color.BLACK);
+        text.draw(glPrograms.get("default"), "0123456789!@#$%^&*()-=_+,.<>/?'`~;:\\|[{}]", textPos, Color.BLACK);
     }
 
     @Override

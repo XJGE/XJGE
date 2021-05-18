@@ -4,7 +4,6 @@ import dev.theskidster.xjge2.graphics.Color;
 import dev.theskidster.xjge2.shaderutils.GLProgram;
 import java.util.HashMap;
 import org.joml.Vector3f;
-import org.joml.Vector3i;
 
 /**
  * @author J Hoffman
@@ -14,7 +13,7 @@ import org.joml.Vector3i;
 public class Text {
 
     private String prevText        = "";
-    private final Vector3i prevPos = new Vector3i();
+    private final Vector3f prevPos = new Vector3f();
     private Color prevCol          = Color.WHITE;
     private Font font;
     
@@ -24,7 +23,7 @@ public class Text {
         this.font = font;
     }
     
-    public void draw(GLProgram program, String text, Vector3i position, Color color) {
+    public void draw(GLProgram program, String text, Vector3f position, Color color) {
         boolean changed = !prevText.equals(text) || !prevPos.equals(position.x, position.y, position.z) || !prevCol.equals(color);
         
         if(changed) {
@@ -36,12 +35,10 @@ public class Text {
             for(int i = 0; i < text.length(); i++) {
                 char c = text.charAt(i);
                 
-                System.out.println(c + " " + font.getGlyphDescent(c));
-                
-                Vector3f pos = new Vector3f(position.x + advance + font.getGlyphXOffset(c), 
-                                            position.y + font.getGlyphDescent(c),
+                Vector3f pos = new Vector3f(position.x + advance + font.getGlyphPosOffset(c).x, 
+                                            position.y + font.getGlyphPosOffset(c).y,
                                             position.z);
-                
+
                 glyphs.put(i, new Glyph(c, pos, color));
                 
                 advance += font.getGlyphAdvance(c);
