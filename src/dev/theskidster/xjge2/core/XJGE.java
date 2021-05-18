@@ -151,8 +151,8 @@ public final class XJGE {
                         }
 
                         case GLFW_KEY_F1 -> {
-                            //Window.setFullscreen(!Window.getFullscreen());
-                            WinKit.setVSyncEnabled(!WinKit.getVSyncEnabled());
+                            Window.setFullscreen(!Window.getFullscreen());
+                            //WinKit.setVSyncEnabled(!WinKit.getVSyncEnabled());
                         }
 
                         case GLFW_KEY_1 -> splitScreen(Split.NONE);

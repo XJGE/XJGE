@@ -14,9 +14,13 @@ import static org.lwjgl.opengl.GL20.*;
 import static org.lwjgl.opengl.GL30.glBindVertexArray;
 import org.lwjgl.stb.STBTTBakedChar;
 import org.lwjgl.stb.STBTTFontinfo;
+import org.lwjgl.stb.STBTTPackContext;
+import org.lwjgl.stb.STBTTPackRange;
+import org.lwjgl.stb.STBTTPackedchar;
 import static org.lwjgl.stb.STBTruetype.*;
 import org.lwjgl.system.MemoryStack;
 import org.lwjgl.system.MemoryUtil;
+import static org.lwjgl.system.MemoryUtil.NULL;
 
 /**
  * @author J Hoffman
@@ -47,11 +51,32 @@ public final class Font {
     }
     
     private void loadFont(InputStream file, int size) {
+        /*
+        This is a long and complicated process so I'll do my best to explain it
+        succinctly here.
+        
+        The old system was bunk- this new one generates bitmap textures from 
+        .ttf files- it needs to go through two stages first before it can be
+        utilized properly.
+        
+        STAGE 1:
+        this stage generates a rough bitmap image- it crushes all the quads into
+        the single smallest image it can. This would be fine had we not made use
+        of instanced rendering...
+        
+        STAGE 2:
+        during this stage we utilize the width of the largest glyph provided by 
+        the previous step to determine the length of the quad mesh data that will
+        be shared between all glyph instances. The bitmap texture will be 
+        regenerated, this time packing glyphs with additional padding to avoid 
+        texture bleeding.
+        */
+        
         try(MemoryStack stack = MemoryStack.stackPush()) {
             byte[] data = file.readAllBytes();
             
             ByteBuffer fontBuf = MemoryUtil.memAlloc(data.length).put(data).flip();
-            STBTTFontinfo info = STBTTFontinfo.create();
+            STBTTFontinfo info = STBTTFontinfo.mallocStack(stack);
             
             if(!stbtt_InitFont(info, fontBuf)) {
                 throw new IllegalStateException("Failed to parse font information.");
@@ -71,7 +96,7 @@ public final class Font {
             int imageWidth      = 0;
             int imageHeight     = 0;
             ByteBuffer imageBuf = MemoryUtil.memAlloc(imageWidth * imageHeight);
-            STBTTBakedChar.Buffer charBuf = STBTTBakedChar.malloc(charset.length());
+            STBTTBakedChar.Buffer bakedCharBuf = STBTTBakedChar.malloc(charset.length());
             
             /*
             Here we continuously generate a bitmap image until it contains every
@@ -82,23 +107,77 @@ public final class Font {
                 imageHeight = Math.round(sizeInPixels * Window.getContentScaleY());
                 imageBuf    = MemoryUtil.memAlloc(imageWidth * imageHeight);
                 
-                charBuf = STBTTBakedChar.malloc(charset.length());
+                bakedCharBuf = STBTTBakedChar.malloc(charset.length());
                 
-                extraCells = stbtt_BakeFontBitmap(fontBuf, size * Window.getContentScaleY(), imageBuf, imageWidth, imageHeight, 32, charBuf);
+                extraCells = stbtt_BakeFontBitmap(fontBuf, size * Window.getContentScaleY(), imageBuf, imageWidth, imageHeight, 32, bakedCharBuf);
                 status     = Math.abs(extraCells) - charset.length();
                 
-                if(extraCells > 0) {
-                    glTexImage2D(GL_TEXTURE_2D, 0, GL_ALPHA, imageWidth, imageHeight, 0, GL_ALPHA, GL_UNSIGNED_BYTE, imageBuf);
-                    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-                    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-                    break;
-                }
+                if(extraCells > 0) break;
                 
-                MemoryUtil.memFree(charBuf);
+                MemoryUtil.memFree(bakedCharBuf);
                 MemoryUtil.memFree(imageBuf);
                 
                 sizeInPixels += 16;
             }
+            
+            MemoryUtil.memFree(bakedCharBuf);
+            
+            int largestGlyphWidth = 0;
+            
+            for(int i = 0; i < charset.length(); i++) {
+                int glyphWidth = Math.round(bakedCharBuf.get(i).xadvance());
+                if(glyphWidth > largestGlyphWidth) largestGlyphWidth = glyphWidth;
+            }
+            
+            STBTTPackedchar.Buffer packedCharBuf = STBTTPackedchar.malloc(charset.length());
+            STBTTPackRange.Buffer rangeBuf       = STBTTPackRange.malloc(1);
+            
+            rangeBuf.put(STBTTPackRange.malloc().set(size, 32, null, 96, packedCharBuf, (byte) 1, (byte) 1));
+            rangeBuf.flip();
+            
+            boolean containsAllGlyphs = false;
+            
+            while(!containsAllGlyphs) {
+                imageWidth  = Math.round(sizeInPixels * Window.getContentScaleX());
+                imageHeight = Math.round(sizeInPixels * Window.getContentScaleY());
+                imageBuf    = MemoryUtil.memAlloc(imageWidth * imageHeight);
+                
+                try(STBTTPackContext pc = STBTTPackContext.malloc()) {
+                    stbtt_PackBegin(pc, imageBuf, imageWidth, imageHeight, 0, largestGlyphWidth, NULL);
+                    stbtt_PackSetOversampling(pc, 1, 1);
+                    containsAllGlyphs = stbtt_PackFontRange(pc, fontBuf, 0, size, 32, packedCharBuf);
+                    stbtt_PackEnd(pc);
+                }
+                
+                if(containsAllGlyphs) break;
+                
+                MemoryUtil.memFree(imageBuf);
+                sizeInPixels += 16;
+            }
+            
+            char[] charArray = charset.toCharArray();
+            
+            for(int i = 0; i < charset.length(); i++) {
+                STBTTPackedchar glyph = packedCharBuf.get(i);
+                
+                float texCoordX  = (float) (glyph.x0()) / imageWidth;
+                float texCoordY  = (float) (glyph.y0()) / imageHeight;
+                float advance = glyph.xadvance();
+                
+                System.out.println("char: " + charArray[i]);
+                System.out.println("tex coord X: " + texCoordX);
+                System.out.println("tex coord Y: " + texCoordY);
+                System.out.println("off X: " + glyph.xoff());
+                System.out.println("off Y: " + glyph.yoff());
+                System.out.println("advance: " + advance); //monospaced fonts will all have the same value here.
+                System.out.println();
+            }
+            
+            glTexImage2D(GL_TEXTURE_2D, 0, GL_ALPHA, imageWidth, imageHeight, 0, GL_ALPHA, GL_UNSIGNED_BYTE, imageBuf);
+            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_BORDER);
+            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_BORDER);
             
             g = new Graphics();
             
@@ -124,31 +203,18 @@ public final class Font {
             glEnableVertexAttribArray(0);
             glEnableVertexAttribArray(2);
             
+            /*
+            
             char[] charArray = charset.toCharArray();
             
             for(int i = 0; i < charset.length(); i++) {
-                STBTTBakedChar glyph = charBuf.get(i);
+                STBTTBakedChar glyph = bakedCharBuf.get(i);
                 
                 float xStart  = (float) (glyph.x0()) / imageWidth;
                 float yStart  = (float) (glyph.y0()) / imageHeight;
                 float xEnd    = (float) (glyph.x1()) / imageWidth;
                 float yEnd    = (float) (glyph.y1()) / imageHeight;
                 float advance = glyph.xadvance();
-                
-                /*
-                TODO:
-                
-                the quad each glyph will be rendering to is likely going to be
-                larger than the visible character itself- maybe we can use the 
-                xEnd and yEnd coordinates to discard fragments that exend beyond
-                this point?
-                
-                The worry here of course is that the rendered glyph will contain
-                other parts of glyphs in the bitmap image.
-                
-                include the data parsed here into collections and start rendering
-                strings, fix whatever issues arise after
-                */
                 
                 System.out.println("char: " + charArray[i]);
                 System.out.println("tex start X: " + xStart);
@@ -166,7 +232,7 @@ public final class Font {
             */
             
             MemoryUtil.memFree(fontBuf);
-            MemoryUtil.memFree(charBuf);
+            MemoryUtil.memFree(bakedCharBuf);
             MemoryUtil.memFree(imageBuf);
             
         } catch(IOException e) {
