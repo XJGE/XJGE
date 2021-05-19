@@ -25,15 +25,15 @@ void main() {
             gl_Position = uProjection * vec4(aPosition, 1);
             break;
 
-        case 1:
-            ioColor     = aColor;
-            gl_Position = uProjection * uView * uModel * vec4(aPosition, 1);
-            break;
-
-        case 2:
+        case 1: //Used for rendering text.
             ioTexCoords = aTexCoords + aTexOffset;
             ioColor     = aColOffset;
             gl_Position = uProjection * vec4(aPosition + aPosOffset, 1);
+            break;
+
+        case 2:
+            ioColor     = aColor;
+            gl_Position = uProjection * uView * uModel * vec4(aPosition, 1);
             break;
     }
 }

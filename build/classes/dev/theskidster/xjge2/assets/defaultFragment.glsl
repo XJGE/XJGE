@@ -30,13 +30,12 @@ void main() {
             ));
             break;
 
-        case 1:
-            ioResult = vec4(ioColor, 0);
+        case 1: //Used for rendering text.
+            ioResult = vec4(ioColor, texture(uTexture, ioTexCoords).a);
             break;
 
         case 2:
-            makeTransparent(texture(uTexture, ioTexCoords).a);
-            ioResult = texture(uTexture, ioTexCoords) * vec4(ioColor, 0);
+            ioResult = vec4(ioColor, 0);
             break;
     }
 }

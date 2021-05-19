@@ -78,7 +78,7 @@ public class TestEntity extends Entity {
         
         glBindVertexArray(g.vao);
         
-        glProgram.setUniform("uType", 1);
+        glProgram.setUniform("uType", 2);
         glProgram.setUniform("uModel", false, g.modelMatrix);
         
         glDrawArrays(GL_TRIANGLES, 0, 3);

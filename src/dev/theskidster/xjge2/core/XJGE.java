@@ -297,6 +297,10 @@ public final class XJGE {
         return filepath;
     }
     
+    public static GLProgram getDefaultProgram() {
+        return glPrograms.get("default");
+    }
+    
     static void setResolution(int x, int y) {
         resolutionX = x;
         resolutionY = y;

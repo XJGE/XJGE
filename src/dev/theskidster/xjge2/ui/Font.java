@@ -2,10 +2,8 @@ package dev.theskidster.xjge2.ui;
 
 import dev.theskidster.xjge2.core.ErrorUtils;
 import dev.theskidster.xjge2.core.Logger;
-import dev.theskidster.xjge2.core.Window;
 import dev.theskidster.xjge2.core.XJGE;
 import dev.theskidster.xjge2.graphics.Graphics;
-import dev.theskidster.xjge2.shaderutils.GLProgram;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.ByteBuffer;
@@ -34,6 +32,8 @@ public final class Font {
     private final int vboTexOffset = glGenBuffers();
     private final int vboColOffset = glGenBuffers();
     private final int texHandle;
+    
+    private final float SCALE = 1.5f;
     
     private Graphics g;
     
@@ -112,13 +112,13 @@ public final class Font {
             glyph in the font.
             */
             while(status <= 0) {
-                imageWidth  = Math.round(sizeInPixels * Window.getContentScaleX());
-                imageHeight = Math.round(sizeInPixels * Window.getContentScaleY());
+                imageWidth  = Math.round(sizeInPixels * SCALE);
+                imageHeight = Math.round(sizeInPixels * SCALE);
                 imageBuf    = MemoryUtil.memAlloc(imageWidth * imageHeight);
                 
                 bakedCharBuf = STBTTBakedChar.malloc(charset.length());
                 
-                extraCells = stbtt_BakeFontBitmap(fontBuf, size * Window.getContentScaleY(), imageBuf, imageWidth, imageHeight, 32, bakedCharBuf);
+                extraCells = stbtt_BakeFontBitmap(fontBuf, size * SCALE, imageBuf, imageWidth, imageHeight, 32, bakedCharBuf);
                 status     = Math.abs(extraCells) - charset.length();
                 
                 if(extraCells > 0) break;
@@ -146,12 +146,12 @@ public final class Font {
             boolean containsAllGlyphs = false;
             
             while(!containsAllGlyphs) {
-                imageWidth  = Math.round(sizeInPixels * Window.getContentScaleX());
-                imageHeight = Math.round(sizeInPixels * Window.getContentScaleY());
+                imageWidth  = Math.round(sizeInPixels * SCALE);
+                imageHeight = Math.round(sizeInPixels * SCALE);
                 imageBuf    = MemoryUtil.memAlloc(imageWidth * imageHeight);
                 
                 try(STBTTPackContext pc = STBTTPackContext.malloc()) {
-                    stbtt_PackBegin(pc, imageBuf, imageWidth, imageHeight, 0, (int) (largestGlyphWidth * Window.getContentScaleY()), NULL);
+                    stbtt_PackBegin(pc, imageBuf, imageWidth, imageHeight, 0, (int) (largestGlyphWidth * SCALE), NULL);
                     stbtt_PackSetOversampling(pc, 1, 1);
                     containsAllGlyphs = stbtt_PackFontRange(pc, fontBuf, 0, size, 32, packedCharBuf);
                     stbtt_PackEnd(pc);
@@ -276,17 +276,11 @@ public final class Font {
         glVertexAttribDivisor(6, 1);
     }
     
-    float getGlyphAdvance(char c) {
-        return advanceValues.get(c);
-    }
-    
-    Vector2f getGlyphPosOffset(char c) {
-        return posOffsets.get(c);
-    }
-    
-    void draw(GLProgram program, HashMap<Integer, Glyph> glyphs, boolean changed) {
-        program.use();
+    void draw(HashMap<Integer, Glyph> glyphs, boolean changed) {
+        XJGE.getDefaultProgram().use();
         
+        glEnable(GL_BLEND);
+        glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);  
         glBindTexture(GL_TEXTURE_2D, texHandle);
         glBindVertexArray(g.vao);
         
@@ -296,10 +290,23 @@ public final class Font {
             offsetColor(glyphs);
         }
         
-        program.setUniform("uType", 2);
+        XJGE.getDefaultProgram().setUniform("uType", 1);
         
         glDrawElementsInstanced(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0, glyphs.size());
+        glDisable(GL_BLEND);
         ErrorUtils.checkGLError();
+    }
+    
+    public float getGlyphAdvance(char c) {
+        return advanceValues.get(c);
+    }
+    
+    public float getGlyphBearingLeft(char c) {
+        return posOffsets.get(c).x;
+    }
+    
+    public float getGlyphDescent(char c) {
+        return posOffsets.get(c).y;
     }
     
 }
