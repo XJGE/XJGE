@@ -32,6 +32,7 @@ public final class Font {
     private final int vboTexOffset = glGenBuffers();
     private final int vboColOffset = glGenBuffers();
     private final int texHandle;
+    private final int size;
     
     private final float SCALE = 1.5f;
     
@@ -44,6 +45,8 @@ public final class Font {
     public Font(String filename, int size) {
         texHandle = glGenTextures();
         glBindTexture(GL_TEXTURE_2D, texHandle);
+        
+        this.size = size;
         
         try(InputStream file = Font.class.getResourceAsStream(XJGE.getFilepath() + filename)) {
             if(size <= 0) throw new IllegalStateException("Invalid font size " + size + " used.");
@@ -178,8 +181,6 @@ public final class Font {
             glTexImage2D(GL_TEXTURE_2D, 0, GL_ALPHA, imageWidth, imageHeight, 0, GL_ALPHA, GL_UNSIGNED_BYTE, imageBuf);
             glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
             glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
-            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
             
             g = new Graphics();
             
@@ -276,7 +277,7 @@ public final class Font {
         glVertexAttribDivisor(6, 1);
     }
     
-    void draw(HashMap<Integer, Glyph> glyphs, boolean changed) {
+    public void draw(HashMap<Integer, Glyph> glyphs, boolean changed) {
         XJGE.getDefaultProgram().use();
         
         glEnable(GL_BLEND);
@@ -295,6 +296,10 @@ public final class Font {
         glDrawElementsInstanced(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0, glyphs.size());
         glDisable(GL_BLEND);
         ErrorUtils.checkGLError();
+    }
+    
+    public int getSize() {
+        return size;
     }
     
     public float getGlyphAdvance(char c) {

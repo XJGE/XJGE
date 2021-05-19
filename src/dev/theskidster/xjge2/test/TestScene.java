@@ -6,6 +6,7 @@ import dev.theskidster.xjge2.core.Scene;
 import dev.theskidster.xjge2.graphics.Color;
 import dev.theskidster.xjge2.shaderutils.GLProgram;
 import dev.theskidster.xjge2.ui.Font;
+import dev.theskidster.xjge2.ui.Text;
 import java.util.Map;
 
 /**
@@ -16,6 +17,7 @@ import java.util.Map;
 public class TestScene extends Scene {
 
     Font font;
+    Text text;
     
     public TestScene() {
         super("test");

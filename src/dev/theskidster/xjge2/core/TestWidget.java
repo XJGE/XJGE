@@ -16,6 +16,8 @@ import org.joml.Vector3i;
 
 class TestWidget extends Widget {
 
+    private String wrapped;
+    
     private Text text;
     private Vector3f textPos1 = new Vector3f(0, 300, 0);
     private Vector3f textPos2 = new Vector3f(0, 252, 0);
@@ -35,7 +37,10 @@ class TestWidget extends Widget {
         String file6 = "fnt_pattaya_regular.ttf";
         String file7 = "fnt_share_tech_regular.ttf";
         
-        text = new Text(new Font(file5, 32));
+        Font font = new Font(file5, 32);
+        
+        text = new Text(font);
+        wrapped = Text.wrap("The quick brown fox jumps over the lazy dog.", 200, font);
     }
 
     @Override
@@ -45,14 +50,16 @@ class TestWidget extends Widget {
 
     @Override
     public void render(Map<String, GLProgram> glPrograms) {
-        //text.draw("The quick brown fox jumps over the lazy dog.", textPos1, Color.SILVER);
+        text.drawString(wrapped, textPos1, Color.BLACK);
         
-        text.draw(" !\"#$%&\'()*+,-./", textPos1, Color.RED);
-        text.draw("0123456789:;<=>?", textPos2, Color.BLACK);
-        text.draw("@ABCDEFGHIJKLMNO", textPos3, Color.BLACK);
-        text.draw("PQRSTUVWXYZ[\\]^_", textPos4, Color.BLACK);
-        text.draw("`abcdefghijklmno", textPos5, Color.BLACK);
-        text.draw("pqrstuvwxyz{|}~", textPos6, Color.BLACK);
+        /*
+        text.drawString(" !\"#$%&\'()*+,-./", textPos1, Color.RED);
+        text.drawString("0123456789:;<=>?", textPos2, Color.BLACK);
+        text.drawString("@ABCDEFGHIJKLMNO", textPos3, Color.BLACK);
+        text.drawString("PQRSTUVWXYZ[\\]^_", textPos4, Color.BLACK);
+        text.drawString("`abcdefghijklmno", textPos5, Color.BLACK);
+        text.drawString("pqrstuvwxyz{|}~", textPos6, Color.BLACK);
+        */
     }
 
     @Override
