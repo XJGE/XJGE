@@ -56,7 +56,7 @@ public final class Font {
             Logger.logWarning("Failed to load font \"" + filename + "\"", e);
             Logger.setDomain(null);
             
-            loadFont(Font.class.getResourceAsStream("/dev/theskidster/xjge2/assets/fnt_source_code_pro_regular.ttf"), 24);
+            loadFont(Font.class.getResourceAsStream("/dev/theskidster/xjge2/assets/fnt_debug_mono.ttf"), 32);
         }
         
         ErrorUtils.checkGLError();

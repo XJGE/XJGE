@@ -29,15 +29,7 @@ class TestWidget extends Widget {
     public TestWidget() {
         super(new Vector3i(), 300, 200);
         
-        String file1 = "fnt_source_code_pro_regular.ttf";
-        String file2 = "fnt_inconsolata_regular.ttf";
-        String file3 = "fnt_black_metal.ttf";
-        String file4 = "fnt_goblin_one_regular.ttf";
-        String file5 = "fnt_open_sans_regular.ttf";
-        String file6 = "fnt_pattaya_regular.ttf";
-        String file7 = "fnt_share_tech_regular.ttf";
-        
-        Font font = new Font(file5, 32);
+        Font font = new Font("fnt_debug_mono.ttf", 32);
         
         text = new Text(font);
         wrapped = Text.wrap("The quick brown fox jumps over the lazy dog.", 200, font);
