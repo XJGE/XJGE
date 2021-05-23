@@ -26,6 +26,7 @@ public final class XJGE {
     private static int fbo;
     private static int resolutionX;
     private static int resolutionY;
+    private static int fontSize = 32;
     
     private static boolean initCalled;
     private static boolean matchWindowResolution;
@@ -293,6 +294,10 @@ public final class XJGE {
         return split;
     }
     
+    public static int getFontSize() {
+        return fontSize;
+    }
+    
     public static String getFilepath() {
         return filepath;
     }
@@ -325,6 +330,14 @@ public final class XJGE {
         }
         
         Logger.setDomain(null);
+    }
+    
+    public static void setFontSize(int size) {
+        fontSize = size;
+        /*
+        Sets the font size the engine will use when displaying debug information.
+        TODO: move this to another class?
+        */
     }
     
     public static void addGLProgram(String name, GLProgram glProgram) {
