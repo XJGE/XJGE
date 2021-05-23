@@ -154,7 +154,7 @@ public final class XJGE {
                             Window.setFullscreen(!Window.getFullscreen());
                             //WinKit.setVSyncEnabled(!WinKit.getVSyncEnabled());
                         }
-
+                        
                         case GLFW_KEY_1 -> splitScreen(Split.NONE);
                         case GLFW_KEY_2 -> splitScreen(Split.HORIZONTAL);
                         case GLFW_KEY_3 -> splitScreen(Split.VERTICAL);
@@ -190,7 +190,7 @@ public final class XJGE {
         glPrograms = Collections.unmodifiableMap(glPrograms);
         
         //TODO: delete the viewport ui test code here when finished.
-        viewports[0].addUIWidget("test", new TestWidget());
+        //viewports[0].addUIWidget("test", new TestWidget());
         
         freeCam = new FreeCam();
         
