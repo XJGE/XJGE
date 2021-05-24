@@ -32,6 +32,7 @@ public final class XJGE {
     private static boolean matchWindowResolution;
     private static boolean windowResizable;
     private static boolean freeCamEnabled;
+    private static boolean terminalEnabled;
     private static boolean firstMouse = true;
     
     public static final Path PWD       = Path.of("").toAbsolutePath();
@@ -40,6 +41,7 @@ public final class XJGE {
     private static Split split;
     private static String filepath = "/dev/theskidster/xjge2/assets/";
     private static FreeCam freeCam;
+    private static Terminal commandLine;
     
     static Map<String, GLProgram> glPrograms  = new HashMap<>();
     private static final Viewport[] viewports = new Viewport[4];
@@ -330,6 +332,12 @@ public final class XJGE {
         }
         
         Logger.setDomain(null);
+    }
+    
+    private static void setTerminalEnabled(boolean terminalEnabled) {
+        XJGE.terminalEnabled = terminalEnabled;
+        
+        
     }
     
     public static void setFontSize(int size) {
