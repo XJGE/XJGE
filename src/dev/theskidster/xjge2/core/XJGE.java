@@ -138,15 +138,23 @@ public final class XJGE {
                 }
                 
                 if(debugEnabled && key == GLFW_KEY_F2 && action == GLFW_PRESS) {
-                    XJGE.freeCamEnabled = !freeCamEnabled;
-                    
-                    if(freeCamEnabled) {
-                        glfwSetInputMode(Window.HANDLE, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
-                        viewports[0].prevCamera = viewports[0].currCamera;
-                        viewports[0].currCamera = freeCam;
+                    if(!terminalEnabled) {
+                        XJGE.freeCamEnabled = !freeCamEnabled;
+                        
+                        if(freeCamEnabled) {
+                            glfwSetInputMode(Window.HANDLE, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
+                            viewports[0].prevCamera = viewports[0].currCamera;
+                            viewports[0].currCamera = freeCam;
+                        } else {
+                            glfwSetInputMode(Window.HANDLE, GLFW_CURSOR, GLFW_CURSOR_NORMAL);
+                            viewports[0].currCamera = viewports[0].prevCamera;
+                        }
                     } else {
-                        glfwSetInputMode(Window.HANDLE, GLFW_CURSOR, GLFW_CURSOR_NORMAL);
-                        viewports[0].currCamera = viewports[0].prevCamera;
+                        Logger.setDomain("core");
+                        Logger.logInfo("Freecam access denied, command terminal " + 
+                                       "is currently in use, Close the command " + 
+                                       "terminal and try again.");
+                        Logger.setDomain(null);
                     }
                 }
 
@@ -169,14 +177,13 @@ public final class XJGE {
             });
 
             glfwSetCursorPosCallback(HANDLE, (window, xpos, ypos) -> {
-                if(freeCamEnabled) {
+                if(freeCamEnabled && !terminalEnabled) {
                     if(firstMouse) {
                         freeCam.prevX = xpos;
                         freeCam.prevY = ypos;
                         firstMouse = false;
                     }
                     
-                    //TODO: fix bug where direction changes when fullscreen is toggled.
                     freeCam.setDirection(xpos, ypos);
                 } else {
                     firstMouse = true;

@@ -93,17 +93,18 @@ final class Terminal {
             put(GLFW_KEY_RIGHT_BRACKET, new Key(']', '}'));
             put(GLFW_KEY_GRAVE_ACCENT,  new Key('`', '~'));
         }};
+        
+        
     }
     
     static void update() {
-        
-        
+        projMatrix.setOrtho(0, XJGE.getResolutionX(), 0, XJGE.getResolutionY(), 0, Integer.MAX_VALUE);
     }
     
     static void render() {
         XJGE.getDefaultGLProgram().use();
         
-        //XJGE.getDefaultGLProgram().setUniform("uProjection", false, projMatrix);
+        XJGE.getDefaultGLProgram().setUniform("uProjection", false, projMatrix);
         
         text[0].drawString("test", textPos, Color.WHITE);
         
