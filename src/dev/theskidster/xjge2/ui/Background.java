@@ -5,7 +5,7 @@ package dev.theskidster.xjge2.ui;
  * Created: May 24, 2021
  */
 
-public class Background {
+public final class Background {
 
     //TODO: implement backgrounds with optional opacity/blending
     
