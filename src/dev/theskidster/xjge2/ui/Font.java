@@ -28,12 +28,13 @@ import static org.lwjgl.system.MemoryUtil.NULL;
 
 public final class Font {
 
+    public static int DEFAULT_SIZE = 32;
+    
     private final int vboPosOffset = glGenBuffers();
     private final int vboTexOffset = glGenBuffers();
     private final int vboColOffset = glGenBuffers();
     private final int texHandle;
     private final int size;
-    private static int DEFAULT_SIZE = 32;
     
     private final float SCALE = 1.5f;
     
@@ -107,7 +108,7 @@ public final class Font {
                              "pqrstuvwxyz{|}~";
             
             int sizeInPixels = 128;
-            int status       = -1;
+            int exitStatus   = -1;
             int extraCells   = -1;
             
             int imageWidth      = 0;
@@ -119,7 +120,7 @@ public final class Font {
             Here we continuously generate a bitmap image until it contains every
             glyph in the font.
             */
-            while(status <= 0) {
+            while(exitStatus <= 0) {
                 imageWidth  = Math.round(sizeInPixels * SCALE);
                 imageHeight = Math.round(sizeInPixels * SCALE);
                 imageBuf    = MemoryUtil.memAlloc(imageWidth * imageHeight);
@@ -127,7 +128,7 @@ public final class Font {
                 bakedCharBuf = STBTTBakedChar.malloc(charset.length());
                 
                 extraCells = stbtt_BakeFontBitmap(fontBuf, size * SCALE, imageBuf, imageWidth, imageHeight, 32, bakedCharBuf);
-                status     = Math.abs(extraCells) - charset.length();
+                exitStatus = Math.abs(extraCells) - charset.length();
                 
                 if(extraCells > 0) break;
                 
@@ -153,6 +154,10 @@ public final class Font {
             
             boolean containsAllGlyphs = false;
             
+            /*
+            Similiar to the previous stage, here we pack the glyphs until they're
+            spaced acccording to the largest one.
+            */
             while(!containsAllGlyphs) {
                 imageWidth  = Math.round(sizeInPixels * SCALE);
                 imageHeight = Math.round(sizeInPixels * SCALE);
@@ -184,8 +189,8 @@ public final class Font {
             }
             
             glTexImage2D(GL_TEXTURE_2D, 0, GL_ALPHA, imageWidth, imageHeight, 0, GL_ALPHA, GL_UNSIGNED_BYTE, imageBuf);
-            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
             
             g = new Graphics();
             
@@ -317,16 +322,6 @@ public final class Font {
     
     public float getGlyphDescent(char c) {
         return posOffsets.get(c).y;
-    }
-    
-    public static void setDefaultFontSize(int size) {
-        /*
-        TODO:
-        mention this method was included for smaller resolutions in the 
-        documentation.
-        */
-        
-        DEFAULT_SIZE = size;
     }
     
 }

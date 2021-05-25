@@ -4,6 +4,7 @@ in vec3 ioColor;
 in vec2 ioTexCoords;
 
 uniform int uType;
+uniform vec3 uColor;
 uniform sampler2D uTexture;
 
 out vec4 ioResult;
@@ -34,8 +35,12 @@ void main() {
             ioResult = vec4(ioColor, texture(uTexture, ioTexCoords).a);
             break;
 
-        case 2:
+        case 2: //TEMP: for drawing the test entity.
             ioResult = vec4(ioColor, 0);
+            break;
+
+        case 3: //Used for rendering background rectangles.
+            ioResult = vec4(uColor, 0);
             break;
     }
 }

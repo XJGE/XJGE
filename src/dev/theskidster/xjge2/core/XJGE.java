@@ -119,6 +119,7 @@ public final class XJGE {
                 
                 defaultProgram.use();
                 defaultProgram.addUniform(BufferType.INT,  "uType");
+                defaultProgram.addUniform(BufferType.VEC3, "uColor");
                 defaultProgram.addUniform(BufferType.MAT4, "uModel");
                 defaultProgram.addUniform(BufferType.MAT4, "uView");
                 defaultProgram.addUniform(BufferType.MAT4, "uProjection");

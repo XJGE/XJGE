@@ -1,0 +1,10 @@
+
+05-25-2021 10:28AM
+ERROR (shaderutils): Failed to find uniform "uModel". Check variable name or GLSL source file where it is declared.
+
+java.lang.RuntimeException
+	dev.theskidster.xjge2.core.Logger.logSevere(Logger.java:122)
+	dev.theskidster.xjge2.shaderutils.GLProgram.addUniform(GLProgram.java:68)
+	dev.theskidster.xjge2.core.XJGE.init(XJGE.java:123)
+	dev.theskidster.xjge2.test.Test.main(Test.java:21)
+

@@ -133,7 +133,7 @@ final class Viewport {
         
         createTextureAttachment();
         
-        ui.values().forEach(widget -> widget.setSplitPosition());
+        ui.values().forEach(widget -> widget.setSplitPosition()); //TODO: provide split type, width, height, x1/2.. etc.?
     }
     
     void addUIWidget(String name, Widget widget) {

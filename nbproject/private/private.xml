@@ -1,37 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project-private xmlns="http://www.netbeans.org/ns/project-private/1">
-    <editor-bookmarks xmlns="http://www.netbeans.org/ns/editor-bookmarks/2" lastBookmarkId="34">
+    <editor-bookmarks xmlns="http://www.netbeans.org/ns/editor-bookmarks/2" lastBookmarkId="36">
         <file>
             <url>src/dev/theskidster/xjge2/input/Input.java</url>
             <bookmark id="9">
                 <name/>
                 <line>16</line>
-                <key/>
-            </bookmark>
-        </file>
-        <file>
-            <url>src/dev/theskidster/xjge2/core/XJGE.java</url>
-            <bookmark id="25">
-                <name/>
-                <line>76</line>
-                <key/>
-            </bookmark>
-            <bookmark id="33">
-                <name/>
-                <line>194</line>
-                <key/>
-            </bookmark>
-            <bookmark id="34">
-                <name/>
-                <line>346</line>
-                <key/>
-            </bookmark>
-        </file>
-        <file>
-            <url>src/dev/theskidster/xjge2/core/Input.java</url>
-            <bookmark id="12">
-                <name/>
-                <line>205</line>
                 <key/>
             </bookmark>
         </file>
@@ -43,13 +17,39 @@
                 <key/>
             </bookmark>
         </file>
+        <file>
+            <url>src/dev/theskidster/xjge2/ui/Background.java</url>
+            <bookmark id="35">
+                <name/>
+                <line>9</line>
+                <key/>
+            </bookmark>
+        </file>
+        <file>
+            <url>src/dev/theskidster/xjge2/core/XJGE.java</url>
+            <bookmark id="36">
+                <name/>
+                <line>72</line>
+                <key/>
+            </bookmark>
+        </file>
+        <file>
+            <url>src/dev/theskidster/xjge2/core/Input.java</url>
+            <bookmark id="12">
+                <name/>
+                <line>205</line>
+                <key/>
+            </bookmark>
+        </file>
     </editor-bookmarks>
     <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
         <group>
-            <file>file:/C:/Users/thesk/Documents/Projects/XJGE/XJGE-2/src/dev/theskidster/xjge2/ui/Font.java</file>
-            <file>file:/C:/Users/thesk/Documents/Projects/XJGE/XJGE-2/src/dev/theskidster/xjge2/test/TestScene.java</file>
-            <file>file:/C:/Users/thesk/Documents/Projects/XJGE/XJGE-2/src/dev/theskidster/xjge2/core/TestWidget.java</file>
+            <file>file:/C:/Users/thesk/Documents/Projects/XJGE/XJGE-2/src/dev/theskidster/xjge2/core/Input.java</file>
+            <file>file:/C:/Users/thesk/Documents/Projects/XJGE/XJGE-2/src/dev/theskidster/xjge2/core/Game.java</file>
+            <file>file:/C:/Users/thesk/Documents/Projects/XJGE/XJGE-2/src/dev/theskidster/xjge2/ui/Background.java</file>
+            <file>file:/C:/Users/thesk/Documents/Projects/XJGE/XJGE-2/src/dev/theskidster/xjge2/test/Test.java</file>
             <file>file:/C:/Users/thesk/Documents/Projects/XJGE/XJGE-2/src/dev/theskidster/xjge2/assets/defaultFragment.glsl</file>
+            <file>file:/C:/Users/thesk/Documents/Projects/XJGE/XJGE-2/src/dev/theskidster/xjge2/core/Terminal.java</file>
             <file>file:/C:/Users/thesk/Documents/Projects/XJGE/XJGE-2/src/dev/theskidster/xjge2/core/XJGE.java</file>
             <file>file:/C:/Users/thesk/Documents/Projects/XJGE/XJGE-2/src/dev/theskidster/xjge2/assets/defaultVertex.glsl</file>
         </group>
