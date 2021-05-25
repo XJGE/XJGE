@@ -58,23 +58,10 @@ public final class Window {
         glfwSwapInterval(WinKit.getVSyncEnabled() ? 1 : 0);
     }
     
-    static void show(boolean matchWindowResolution) {
+    static void show() {
         glfwSetInputMode(HANDLE, GLFW_CURSOR, GLFW_CURSOR_NORMAL);
         glfwShowWindow(HANDLE);
         glfwFocusWindow(HANDLE);
-        
-        glfwSetWindowSizeCallback(HANDLE, (window, w, h) -> {
-            width  = w;
-            height = h;
-            
-            if(matchWindowResolution && width != 0 && height != 0) {
-                XJGE.setResolution(width, height);
-                XJGE.createRenderbuffer();
-            }
-            
-            XJGE.setScreenSplit(XJGE.getScreenSplit());
-            Terminal.updateMatrix();
-        });
         
         glfwSetMonitorCallback((monHandle, event) -> {
             Logger.setDomain("winkit");
@@ -144,23 +131,9 @@ public final class Window {
         return monitor;
     }
     
-    public static void setPositionX(int xPos) {
-        Window.xPos = xPos;
-        setPosition(xPos, yPos);
-    }
-    
-    public static void setPositionY(int yPos) {
-        Window.yPos = yPos;
-        setPosition(xPos, yPos);
-    }
-    
     public static void setPosition(int xPos, int yPos) {
         Window.xPos = xPos;
         Window.yPos = yPos;
-        
-        Logger.setDomain("winkit");
-        Logger.logInfo("Moved window to (" + xPos + ", " + yPos + ")");
-        Logger.setDomain(null);
         
         glfwSetWindowPos(HANDLE, xPos, yPos);
     }
@@ -179,23 +152,9 @@ public final class Window {
         }
     }
     
-    public static void setWidth(int width) {
-        Window.width = width;
-        setDimensions(width, height);
-    }
-    
-    public static void setHeight(int height) {
-        Window.height = height;
-        setDimensions(width, height);
-    }
-    
     public static void setDimensions(int width, int height) {
         Window.width  = width;
         Window.height = height;
-        
-        Logger.setDomain("winkit");
-        Logger.logInfo("Changed window dimensions: (" + width + ", " + height + ")");
-        Logger.setDomain(null);
         
         glfwSetWindowSize(HANDLE, width, height);
     }
@@ -215,11 +174,6 @@ public final class Window {
             
     public static void setTitle(String title) {
         Window.title = title;
-        
-        Logger.setDomain("winkit");
-        Logger.logInfo("Changed window title to \"" + title + "\"");
-        Logger.setDomain(null);
-        
         glfwSetWindowTitle(HANDLE, title);
     }
     

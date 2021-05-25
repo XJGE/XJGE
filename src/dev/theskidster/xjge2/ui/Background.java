@@ -4,6 +4,12 @@ import dev.theskidster.xjge2.core.ErrorUtils;
 import dev.theskidster.xjge2.core.XJGE;
 import dev.theskidster.xjge2.graphics.Color;
 import java.nio.FloatBuffer;
+import static org.lwjgl.opengl.GL11C.GL_BLEND;
+import static org.lwjgl.opengl.GL11C.GL_ONE_MINUS_SRC_ALPHA;
+import static org.lwjgl.opengl.GL11C.GL_SRC_ALPHA;
+import static org.lwjgl.opengl.GL11C.glBlendFunc;
+import static org.lwjgl.opengl.GL11C.glDisable;
+import static org.lwjgl.opengl.GL11C.glEnable;
 import static org.lwjgl.opengl.GL30.*;
 import org.lwjgl.system.MemoryStack;
 
@@ -30,12 +36,16 @@ public final class Background {
         glEnableVertexAttribArray(0);
     }
     
-    public void drawRectangle(float xPos, float yPos, float width, float height, Color color) {
+    public void drawRectangle(float xPos, float yPos, float width, float height, Color color, float opacity) {
         XJGE.getDefaultGLProgram().use();
+        
+        glEnable(GL_BLEND);
+        glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
         glBindVertexArray(vao);
         
-        XJGE.getDefaultGLProgram().setUniform("uType", 3);
-        XJGE.getDefaultGLProgram().setUniform("uColor", color.asVec3());
+        XJGE.getDefaultGLProgram().setUniform("uType",    3);
+        XJGE.getDefaultGLProgram().setUniform("uOpacity", opacity);
+        XJGE.getDefaultGLProgram().setUniform("uColor",   color.asVec3());
         
         try(MemoryStack stack = MemoryStack.stackPush()) {
             FloatBuffer vertexBuf = stack.mallocFloat(FLOATS_PER_RECTANGLE);
@@ -55,11 +65,12 @@ public final class Background {
         }
         
         glDrawArrays(GL_TRIANGLES, 0, 6);
+        glDisable(GL_BLEND);
         ErrorUtils.checkGLError();
     }
     
-    public void drawRectangle(Rectangle rectangle, Color color) {
-        drawRectangle(rectangle.xPos, rectangle.yPos, rectangle.width, rectangle.height, color);
+    public void drawRectangle(Rectangle rectangle, Color color, float opacity) {
+        drawRectangle(rectangle.xPos, rectangle.yPos, rectangle.width, rectangle.height, color, opacity);
     }
     
     public void freeBuffers() {

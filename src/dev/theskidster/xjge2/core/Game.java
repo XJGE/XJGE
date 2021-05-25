@@ -28,7 +28,7 @@ public final class Game {
     
     private static final Queue<Event> events = new PriorityQueue<>(Comparator.comparing(Event::getPriority));
     
-    static void loop(int fbo, Viewport[] viewports) {
+    static void loop(int fbo, Viewport[] viewports, Terminal terminal) {
         int cycles = 0;
         final double TARGET_DELTA = 1 / 60.0;
         double prevTime = glfwGetTime();
@@ -47,7 +47,7 @@ public final class Game {
             
             while(delta >= TARGET_DELTA) {
                 Input.pollInput();
-                if(XJGE.getTerminalEnabled()) Terminal.update();
+                if(XJGE.getTerminalEnabled()) terminal.update();
                 
                 deltaMetric = delta;
                 
@@ -121,7 +121,7 @@ public final class Game {
             }
             
             if(XJGE.getTerminalEnabled()) {
-                Terminal.render();
+                terminal.render();
             }
             
             glfwSwapBuffers(Window.HANDLE);

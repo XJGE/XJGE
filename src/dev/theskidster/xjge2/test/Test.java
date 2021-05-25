@@ -22,7 +22,7 @@ public class Test {
         
         Vector2i res = new Vector2i(384, 216);
         
-        XJGE.init("/dev/theskidster/xjge2/assets/", true, null, false);
+        XJGE.init("/dev/theskidster/xjge2/assets/", true, null, true);
         
         //Font.DEFAULT_SIZE = 12;
         

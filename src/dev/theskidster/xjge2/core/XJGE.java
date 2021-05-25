@@ -38,6 +38,7 @@ public final class XJGE {
     private static Split split;
     private static String filepath = "/dev/theskidster/xjge2/assets/";
     private static FreeCam freeCam;
+    private static Terminal terminal;
     
     static Map<String, GLProgram> glPrograms  = new HashMap<>();
     private static final Viewport[] viewports = new Viewport[4];
@@ -118,11 +119,12 @@ public final class XJGE {
                 GLProgram defaultProgram = new GLProgram(shaderSourceFiles, "default");
                 
                 defaultProgram.use();
-                defaultProgram.addUniform(BufferType.INT,  "uType");
-                defaultProgram.addUniform(BufferType.VEC3, "uColor");
-                defaultProgram.addUniform(BufferType.MAT4, "uModel");
-                defaultProgram.addUniform(BufferType.MAT4, "uView");
-                defaultProgram.addUniform(BufferType.MAT4, "uProjection");
+                defaultProgram.addUniform(BufferType.INT,   "uType");
+                defaultProgram.addUniform(BufferType.FLOAT, "uOpacity");
+                defaultProgram.addUniform(BufferType.VEC3,  "uColor");
+                defaultProgram.addUniform(BufferType.MAT4,  "uModel");
+                defaultProgram.addUniform(BufferType.MAT4,  "uView");
+                defaultProgram.addUniform(BufferType.MAT4,  "uProjection");
                 
                 glPrograms.put("default", defaultProgram);
             }
@@ -170,7 +172,7 @@ public final class XJGE {
 
                 if(action == GLFW_PRESS) {
                     if(XJGE.terminalEnabled) {
-                        Terminal.processKeyInput(key, action);
+                        terminal.processKeyInput(key, action);
                     } else {
                         //TODO: pass key input to ui widget
                     }
@@ -202,17 +204,33 @@ public final class XJGE {
     public static void start() {
         glPrograms = Collections.unmodifiableMap(glPrograms);
         freeCam    = new FreeCam();
+        terminal   = new Terminal();
         
-        Window.show(matchWindowResolution);
+        Window.show();
         setScreenSplit(Split.NONE);
-        Game.loop(fbo, viewports);
+        
+        glfwSetWindowSizeCallback(HANDLE, (window, w, h) -> {
+            Window.setDimensions(w, h);
+
+            if(matchWindowResolution && Window.getWidth() != 0 && Window.getHeight() != 0) {
+                resolutionX = w;
+                resolutionY = h;
+
+                createRenderbuffer();
+            }
+
+            setScreenSplit(getScreenSplit());
+            terminal.updateMatrix();
+        });
+        
+        Game.loop(fbo, viewports, terminal);
         
         Input.exportControls();
         GL.destroy();
         glfwTerminate();
     }
     
-    static void createRenderbuffer() {
+    private static void createRenderbuffer() {
         glBindFramebuffer(GL_FRAMEBUFFER, fbo);
         int rbo = glGenRenderbuffers();
         glBindRenderbuffer(GL_RENDERBUFFER, rbo);
@@ -266,11 +284,6 @@ public final class XJGE {
     
     public static GLProgram getDefaultGLProgram() {
         return glPrograms.get("default");
-    }
-    
-    static void setResolution(int x, int y) {
-        resolutionX = x;
-        resolutionY = y;
     }
     
     public static void setScreenSplit(Split split) {

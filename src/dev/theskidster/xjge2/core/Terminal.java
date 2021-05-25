@@ -3,9 +3,10 @@ package dev.theskidster.xjge2.core;
 import dev.theskidster.xjge2.graphics.Color;
 import dev.theskidster.xjge2.ui.Background;
 import dev.theskidster.xjge2.ui.Font;
-import dev.theskidster.xjge2.ui.Rectangle;
 import dev.theskidster.xjge2.ui.Text;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import org.joml.Matrix4f;
 import org.joml.Vector3f;
 import static org.lwjgl.glfw.GLFW.*;
@@ -18,11 +19,17 @@ import static org.lwjgl.glfw.GLFW.*;
 final class Terminal {
 
     private static Vector3f textPos = new Vector3f(0, 0, 0);
-    private static final Matrix4f projMatrix = new Matrix4f();
+    private final Matrix4f projMatrix = new Matrix4f();
     
-    private static Rectangle rectangle = new Rectangle(0, 0, 200, 32);
-    private static Background background;
-    private static final Text[] text = new Text[9]; 
+    private String suggestion = "";
+    private String prevTyped  = "";
+    
+    private final Text[] text             = new Text[9]; 
+    private final StringBuilder typed     = new StringBuilder();
+    private final List<String> cmdHistory = new ArrayList<>();
+    
+    private Background background;
+    //private final Timer timer = new Timer(1, 20, this);
     
     private static final HashMap<Integer, Key> keyChars;
     
@@ -41,12 +48,6 @@ final class Terminal {
     }
     
     static {
-        background = new Background();
-        
-        for(int i = 0; i < text.length; i++) {
-            text[i] = new Text(new Font());
-        }
-        
         keyChars = new HashMap<>() {{
             put(GLFW_KEY_SPACE,      new Key(' ', ' '));
             put(GLFW_KEY_APOSTROPHE, new Key('\'', '\"'));
@@ -97,30 +98,38 @@ final class Terminal {
             put(GLFW_KEY_RIGHT_BRACKET, new Key(']', '}'));
             put(GLFW_KEY_GRAVE_ACCENT,  new Key('`', '~'));
         }};
-        
+    }
+    
+    Terminal() {
         updateMatrix();
+        
+        background = new Background();
+        
+        for(int i = 0; i < text.length; i++) {
+            text[i] = new Text(new Font());
+        }
     }
     
     static void update() {
         
     }
     
-    static void updateMatrix() {
+    void updateMatrix() {
         projMatrix.setOrtho(0, XJGE.getResolutionX(), 0, XJGE.getResolutionY(), 0, Integer.MAX_VALUE);
     }
     
-    static void render() {
+    void render() {
         XJGE.getDefaultGLProgram().use();
         XJGE.getDefaultGLProgram().setUniform("uProjection", false, projMatrix);
         
-        background.drawRectangle(0, 0, XJGE.getResolutionX(), Font.DEFAULT_SIZE + 4, Color.BLACK);
+        background.drawRectangle(0, 0, XJGE.getResolutionX(), Font.DEFAULT_SIZE + 4, Color.BLACK, 0.5f);
         
         text[0].drawString("test", textPos, Color.WHITE);
         
         ErrorUtils.checkGLError();
     }
     
-    static void processKeyInput(int key, int action) {
+    void processKeyInput(int key, int action) {
         if(action == GLFW_PRESS || action == GLFW_REPEAT) {
             
         }
