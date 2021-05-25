@@ -21,7 +21,7 @@ final class Terminal {
     private static final Matrix4f projMatrix = new Matrix4f();
     
     private static Rectangle rectangle = new Rectangle(0, 0, 200, 32);
-    private static Background bg;
+    private static Background background;
     private static final Text[] text = new Text[9]; 
     
     private static final HashMap<Integer, Key> keyChars;
@@ -41,10 +41,10 @@ final class Terminal {
     }
     
     static {
-        Font font = new Font();
+        background = new Background();
         
         for(int i = 0; i < text.length; i++) {
-            text[i] = new Text(font);
+            text[i] = new Text(new Font());
         }
         
         keyChars = new HashMap<>() {{
@@ -98,8 +98,6 @@ final class Terminal {
             put(GLFW_KEY_GRAVE_ACCENT,  new Key('`', '~'));
         }};
         
-        bg = new Background();
-        
         updateMatrix();
     }
     
@@ -115,7 +113,7 @@ final class Terminal {
         XJGE.getDefaultGLProgram().use();
         XJGE.getDefaultGLProgram().setUniform("uProjection", false, projMatrix);
         
-        bg.drawRectangle(0, 0, XJGE.getResolutionX(), Font.DEFAULT_SIZE + 4, Color.BLACK);
+        background.drawRectangle(0, 0, XJGE.getResolutionX(), Font.DEFAULT_SIZE + 4, Color.BLACK);
         
         text[0].drawString("test", textPos, Color.WHITE);
         
