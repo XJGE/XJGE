@@ -33,6 +33,7 @@ public final class Font {
     private final int vboColOffset = glGenBuffers();
     private final int texHandle;
     private final int size;
+    private static int DEFAULT_SIZE = 32;
     
     private final float SCALE = 1.5f;
     
@@ -41,6 +42,10 @@ public final class Font {
     private HashMap<Character, Vector2f> posOffsets = new HashMap<>();
     private HashMap<Character, Vector2f> texOffsets = new HashMap<>();
     private HashMap<Character, Float> advanceValues = new HashMap<>();
+    
+    public Font() {
+        this("fnt_debug_mono.ttf", DEFAULT_SIZE);
+    }
     
     public Font(String filename, int size) {
         texHandle = glGenTextures();
@@ -56,7 +61,7 @@ public final class Font {
             Logger.logWarning("Failed to load font \"" + filename + "\"", e);
             Logger.setDomain(null);
             
-            loadFont(Font.class.getResourceAsStream("/dev/theskidster/xjge2/assets/fnt_debug_mono.ttf"), XJGE.getFontSize());
+            loadFont(Font.class.getResourceAsStream("/dev/theskidster/xjge2/assets/fnt_debug_mono.ttf"), DEFAULT_SIZE);
         }
         
         ErrorUtils.checkGLError();
@@ -278,7 +283,7 @@ public final class Font {
     }
     
     public void draw(HashMap<Integer, Glyph> glyphs, boolean changed) {
-        XJGE.getDefaultProgram().use();
+        XJGE.getDefaultGLProgram().use();
         
         glEnable(GL_BLEND);
         glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);  
@@ -291,7 +296,7 @@ public final class Font {
             offsetColor(glyphs);
         }
         
-        XJGE.getDefaultProgram().setUniform("uType", 1);
+        XJGE.getDefaultGLProgram().setUniform("uType", 1);
         
         glDrawElementsInstanced(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0, glyphs.size());
         glDisable(GL_BLEND);
@@ -312,6 +317,16 @@ public final class Font {
     
     public float getGlyphDescent(char c) {
         return posOffsets.get(c).y;
+    }
+    
+    public static void setDefaultFontSize(int size) {
+        /*
+        TODO:
+        mention this method was included for smaller resolutions in the 
+        documentation.
+        */
+        
+        DEFAULT_SIZE = size;
     }
     
 }

@@ -1,11 +1,13 @@
 package dev.theskidster.xjge2.core;
 
+import static dev.theskidster.xjge2.core.XJGE.glPrograms;
 import dev.theskidster.xjge2.graphics.Color;
 import java.util.Comparator;
 import java.util.PriorityQueue;
 import java.util.Queue;
 import org.joml.Matrix4f;
 import static org.lwjgl.glfw.GLFW.*;
+import static org.lwjgl.opengl.GL30.*;
 
 /**
  * @author J Hoffman
@@ -26,7 +28,7 @@ public final class Game {
     
     private static final Queue<Event> events = new PriorityQueue<>(Comparator.comparing(Event::getPriority));
     
-    static void loop() {
+    static void loop(int fbo, Viewport[] viewports) {
         int cycles = 0;
         final double TARGET_DELTA = 1 / 60.0;
         double prevTime = glfwGetTime();
@@ -63,7 +65,17 @@ public final class Game {
                     scene.processRemoveRequests();
                 }
                 
-                XJGE.updateViewports();
+                //Update viewport camera objects
+                for(Viewport viewport : viewports) {
+                    if(viewport.active && viewport.currCamera != null) {
+                        viewport.currCamera.update();
+                        viewport.ui.forEach((name, component) -> component.update());
+
+                        //ServiceLocator.getAudio().setViewportCamData(viewport.id, viewport.currCamera.position, viewport.currCamera.direction);
+                    }
+                }
+
+                //ServiceLocator.getAudio().updateSourcePositions();
                 
                 if(tick(60)) {
                     fps    = cycles;
@@ -71,7 +83,42 @@ public final class Game {
                 }
             }
             
-            XJGE.renderViewports(scene, proj, clearColor);
+            //Render perspective from each active viewports camera.
+            for(Viewport viewport : viewports) {
+                if(viewport.active) {
+                    if(viewport.id == 0) {
+                        glClearColor(0, 0, 0, 0);
+                        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+                    }
+
+                    glBindFramebuffer(GL_FRAMEBUFFER, fbo);
+                        glViewport(0, 0, viewport.width, viewport.height);
+                        glClearColor(clearColor.r, clearColor.g, clearColor.b, 0);
+                        switch(viewport.id) {
+                            case 0 -> glDrawBuffer(GL_COLOR_ATTACHMENT0);
+                            case 1 -> glDrawBuffer(GL_COLOR_ATTACHMENT1);
+                            case 2 -> glDrawBuffer(GL_COLOR_ATTACHMENT2);
+                            case 3 -> glDrawBuffer(GL_COLOR_ATTACHMENT3);
+                        }
+                        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
+                        viewport.resetCamera(glPrograms);
+
+                        viewport.render(glPrograms, "camera");
+                        scene.render(glPrograms, viewport.currCamera);
+                        viewport.render(glPrograms, "ui");
+                    glBindFramebuffer(GL_FRAMEBUFFER, 0);
+
+                    glViewport(viewport.botLeft.x, viewport.botLeft.y, viewport.topRight.x, viewport.topRight.y);
+                    proj.setOrtho(viewport.width, 0, 0, viewport.height, 0, 1);
+
+                    glPrograms.get("default").use();
+                    glPrograms.get("default").setUniform("uProjection", false, proj);
+
+                    viewport.render(glPrograms, "texture");
+                }
+            }
+            
             glfwSwapBuffers(Window.HANDLE);
             
             if(!ticked) {

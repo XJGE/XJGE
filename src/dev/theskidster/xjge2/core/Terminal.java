@@ -31,7 +31,7 @@ final class Terminal {
     }
     
     static {
-        Font font = new Font("fnt_debug_mono.ttf", XJGE.getFontSize());
+        Font font = new Font();
         
         for(int i = 0; i < text.length; i++) {
             text[i] = new Text(font);

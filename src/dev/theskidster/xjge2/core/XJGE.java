@@ -1,8 +1,6 @@
 package dev.theskidster.xjge2.core;
 
-import static dev.theskidster.xjge2.core.Input.KEY_MOUSE_COMBO;
 import static dev.theskidster.xjge2.core.Window.HANDLE;
-import dev.theskidster.xjge2.graphics.Color;
 import dev.theskidster.xjge2.shaderutils.BufferType;
 import dev.theskidster.xjge2.shaderutils.GLProgram;
 import dev.theskidster.xjge2.shaderutils.Shader;
@@ -11,7 +9,6 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.Map;
-import org.joml.Matrix4f;
 import org.joml.Vector2i;
 import static org.lwjgl.glfw.GLFW.*;
 import org.lwjgl.opengl.GL;
@@ -27,11 +24,9 @@ public final class XJGE {
     private static int fbo;
     private static int resolutionX;
     private static int resolutionY;
-    private static int fontSize = 32;
     
     private static boolean initCalled;
     private static boolean matchWindowResolution;
-    private static boolean windowResizable;
     private static boolean freeCamEnabled;
     private static boolean terminalEnabled;
     private static boolean firstMouse = true;
@@ -42,7 +37,7 @@ public final class XJGE {
     private static Split split;
     private static String filepath = "/dev/theskidster/xjge2/assets/";
     private static FreeCam freeCam;
-    private static Terminal commandLine;
+    private static Terminal terminal;
     
     static Map<String, GLProgram> glPrograms  = new HashMap<>();
     private static final Viewport[] viewports = new Viewport[4];
@@ -136,7 +131,22 @@ public final class XJGE {
             
             glfwSetKeyCallback(Window.HANDLE, (window, key, scancode, action, mods) -> {
                 if(debugEnabled && key == GLFW_KEY_F2 && action == GLFW_PRESS) {
-                    setFreeCamEnabled(!freeCamEnabled);
+                    XJGE.freeCamEnabled = !freeCamEnabled;
+                    
+                    Logger.setDomain("core");
+                    
+                    if(freeCamEnabled) {
+                        glfwSetInputMode(Window.HANDLE, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
+                        Logger.logInfo("Freecam enabled.");
+                        viewports[0].prevCamera = viewports[0].currCamera;
+                        viewports[0].currCamera = freeCam;
+                    } else {
+                        glfwSetInputMode(Window.HANDLE, GLFW_CURSOR, GLFW_CURSOR_NORMAL);
+                        Logger.logInfo("Freecam disabled.");
+                        viewports[0].currCamera = viewports[0].prevCamera;
+                    }
+
+                    Logger.setDomain(null);
                 }
 
                 if(freeCamEnabled) {
@@ -159,11 +169,11 @@ public final class XJGE {
                             //WinKit.setVSyncEnabled(!WinKit.getVSyncEnabled());
                         }
                         
-                        case GLFW_KEY_1 -> splitScreen(Split.NONE);
-                        case GLFW_KEY_2 -> splitScreen(Split.HORIZONTAL);
-                        case GLFW_KEY_3 -> splitScreen(Split.VERTICAL);
-                        case GLFW_KEY_4 -> splitScreen(Split.TRISECT);
-                        case GLFW_KEY_5 -> splitScreen(Split.QUARTER);
+                        case GLFW_KEY_1 -> setScreenSplit(Split.NONE);
+                        case GLFW_KEY_2 -> setScreenSplit(Split.HORIZONTAL);
+                        case GLFW_KEY_3 -> setScreenSplit(Split.VERTICAL);
+                        case GLFW_KEY_4 -> setScreenSplit(Split.TRISECT);
+                        case GLFW_KEY_5 -> setScreenSplit(Split.QUARTER);
                     }
                 }
             });
@@ -175,7 +185,8 @@ public final class XJGE {
                         freeCam.prevY = ypos;
                         firstMouse = false;
                     }
-
+                    
+                    //TODO: fix bug where direction changes when fullscreen is toggled.
                     freeCam.setDirection(xpos, ypos);
                 } else {
                     firstMouse = true;
@@ -198,9 +209,9 @@ public final class XJGE {
         
         freeCam = new FreeCam();
         
-        Window.show();
-        splitScreen(Split.NONE);
-        Game.loop();
+        Window.show(matchWindowResolution);
+        setScreenSplit(Split.NONE);
+        Game.loop(fbo, viewports);
         
         Input.exportControls();
         GL.destroy();
@@ -224,129 +235,7 @@ public final class XJGE {
             viewports[i] = new Viewport(viewports[i]);
         }
         
-        splitScreen(split);
-    }
-    
-    static void updateViewports() {
-        for(Viewport viewport : viewports) {
-            if(viewport.active && viewport.currCamera != null) {
-                viewport.currCamera.update();
-                viewport.ui.forEach((name, component) -> component.update());
-                
-                //ServiceLocator.getAudio().setViewportCamData(viewport.id, viewport.currCamera.position, viewport.currCamera.direction);
-            }
-        }
-        
-        //ServiceLocator.getAudio().updateSourcePositions();
-    }
-    
-    static void renderViewports(Scene scene, Matrix4f proj, Color clearColor) {
-        for(Viewport viewport : viewports) {
-            if(viewport.active) {
-                if(viewport.id == 0) {
-                    glClearColor(0, 0, 0, 0);
-                    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-                }
-                
-                glBindFramebuffer(GL_FRAMEBUFFER, fbo);
-                    glViewport(0, 0, viewport.width, viewport.height);
-                    glClearColor(clearColor.r, clearColor.g, clearColor.b, 0);
-                    switch(viewport.id) {
-                        case 0 -> glDrawBuffer(GL_COLOR_ATTACHMENT0);
-                        case 1 -> glDrawBuffer(GL_COLOR_ATTACHMENT1);
-                        case 2 -> glDrawBuffer(GL_COLOR_ATTACHMENT2);
-                        case 3 -> glDrawBuffer(GL_COLOR_ATTACHMENT3);
-                    }
-                    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-                    
-                    viewport.resetCamera(glPrograms);
-                    
-                    viewport.render(glPrograms, "camera");
-                    scene.render(glPrograms, viewport.currCamera);
-                    viewport.render(glPrograms, "ui");
-                glBindFramebuffer(GL_FRAMEBUFFER, 0);
-                
-                glViewport(viewport.botLeft.x, viewport.botLeft.y, viewport.topRight.x, viewport.topRight.y);
-                proj.setOrtho(viewport.width, 0, 0, viewport.height, 0, 1);
-                
-                glPrograms.get("default").use();
-                glPrograms.get("default").setUniform("uProjection", false, proj);
-                
-                viewport.render(glPrograms, "texture");
-            }
-        }
-    }
-    
-    static int getResolutionX() {
-        return resolutionX;
-    }
-    
-    static int getResolutionY() {
-        return resolutionY;
-    }
-    
-    static boolean matchWindowResolution() {
-        return matchWindowResolution;
-    }
-    
-    static boolean getWindowResizable() {
-        return windowResizable;
-    }
-    
-    static Split getSplit() {
-        return split;
-    }
-    
-    public static int getFontSize() {
-        return fontSize;
-    }
-    
-    public static String getFilepath() {
-        return filepath;
-    }
-    
-    public static GLProgram getDefaultProgram() {
-        return glPrograms.get("default");
-    }
-    
-    static void setResolution(int x, int y) {
-        resolutionX = x;
-        resolutionY = y;
-    }
-    
-    private static void setFreeCamEnabled(boolean freeCamEnabled) {
-        XJGE.freeCamEnabled = freeCamEnabled;
-        
-        //TODO: replace this with a public method?
-        
-        Logger.setDomain("core");
-        
-        if(freeCamEnabled) {
-            glfwSetInputMode(Window.HANDLE, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
-            Logger.logInfo("Freecam enabled.");
-            viewports[0].prevCamera = viewports[0].currCamera;
-            viewports[0].currCamera = freeCam;
-        } else {
-            glfwSetInputMode(Window.HANDLE, GLFW_CURSOR, GLFW_CURSOR_NORMAL);
-            Logger.logInfo("Freecam disabled.");
-            viewports[0].currCamera = viewports[0].prevCamera;
-        }
-        
-        Logger.setDomain(null);
-    }
-    
-    private static void setTerminalEnabled(boolean terminalEnabled) {
-        XJGE.terminalEnabled = terminalEnabled;
-        if(terminalEnabled) Input.setDeviceEnabled(KEY_MOUSE_COMBO, false);
-        else                Input.revertEnabledState(KEY_MOUSE_COMBO);
-    }
-    
-    public static void setFontSize(int size) {
-        fontSize = size;
-        /*
-        Sets the font size the engine will use when displaying debug information.
-        TODO: move this to another class?
-        */
+        setScreenSplit(split);
     }
     
     public static void addGLProgram(String name, GLProgram glProgram) {
@@ -361,7 +250,32 @@ public final class XJGE {
         }
     }
     
-    public static void splitScreen(Split split) {
+    static int getResolutionX() {
+        return resolutionX;
+    }
+    
+    static int getResolutionY() {
+        return resolutionY;
+    }
+    
+    static Split getScreenSplit() {
+        return split;
+    }
+    
+    public static String getFilepath() {
+        return filepath;
+    }
+    
+    public static GLProgram getDefaultGLProgram() {
+        return glPrograms.get("default");
+    }
+    
+    static void setResolution(int x, int y) {
+        resolutionX = x;
+        resolutionY = y;
+    }
+    
+    public static void setScreenSplit(Split split) {
         XJGE.split = split;
         
         for(Viewport viewport : viewports) {

@@ -58,7 +58,7 @@ public final class Window {
         glfwSwapInterval(WinKit.getVSyncEnabled() ? 1 : 0);
     }
     
-    static void show() {
+    static void show(boolean matchWindowResolution) {
         glfwSetInputMode(HANDLE, GLFW_CURSOR, GLFW_CURSOR_NORMAL);
         glfwShowWindow(HANDLE);
         glfwFocusWindow(HANDLE);
@@ -67,12 +67,12 @@ public final class Window {
             width  = w;
             height = h;
             
-            if(XJGE.matchWindowResolution() && width != 0 && height != 0) {
+            if(matchWindowResolution && width != 0 && height != 0) {
                 XJGE.setResolution(width, height);
                 XJGE.createRenderbuffer();
             }
             
-            XJGE.splitScreen(XJGE.getSplit());
+            XJGE.setScreenSplit(XJGE.getScreenSplit());
         });
         
         glfwSetMonitorCallback((monHandle, event) -> {
