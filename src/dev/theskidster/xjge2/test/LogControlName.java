@@ -29,8 +29,4 @@ public class LogControlName extends Command {
         }
     }
 
-    @Override
-    public void undo() {
-    }
-
 }

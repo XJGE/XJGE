@@ -47,11 +47,7 @@ public final class Game {
             
             while(delta >= TARGET_DELTA) {
                 Input.pollInput();
-                
-                if(XJGE.getTerminalEnabled()) {
-                    Command command = Terminal.update();
-                    //if(command != null) cmdHistory.execute(command);
-                }
+                if(XJGE.getTerminalEnabled()) Terminal.update();
                 
                 deltaMetric = delta;
                 

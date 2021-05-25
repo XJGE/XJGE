@@ -95,10 +95,9 @@ final class Terminal {
         }};
     }
     
-    static Command update() {
+    static void update() {
         
         
-        return null;
     }
     
     static void render() {
