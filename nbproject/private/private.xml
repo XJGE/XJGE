@@ -13,17 +13,17 @@
             <url>src/dev/theskidster/xjge2/core/XJGE.java</url>
             <bookmark id="25">
                 <name/>
-                <line>75</line>
+                <line>76</line>
                 <key/>
             </bookmark>
             <bookmark id="33">
                 <name/>
-                <line>193</line>
+                <line>194</line>
                 <key/>
             </bookmark>
             <bookmark id="34">
                 <name/>
-                <line>343</line>
+                <line>346</line>
                 <key/>
             </bookmark>
         </file>
@@ -48,7 +48,6 @@
         <group>
             <file>file:/C:/Users/thesk/Documents/Projects/XJGE/XJGE-2/src/dev/theskidster/xjge2/ui/Font.java</file>
             <file>file:/C:/Users/thesk/Documents/Projects/XJGE/XJGE-2/src/dev/theskidster/xjge2/test/TestScene.java</file>
-            <file>file:/C:/Users/thesk/Documents/Projects/XJGE/XJGE-2/src/dev/theskidster/xjge2/core/CommandLine.java</file>
             <file>file:/C:/Users/thesk/Documents/Projects/XJGE/XJGE-2/src/dev/theskidster/xjge2/core/TestWidget.java</file>
             <file>file:/C:/Users/thesk/Documents/Projects/XJGE/XJGE-2/src/dev/theskidster/xjge2/assets/defaultFragment.glsl</file>
             <file>file:/C:/Users/thesk/Documents/Projects/XJGE/XJGE-2/src/dev/theskidster/xjge2/core/XJGE.java</file>

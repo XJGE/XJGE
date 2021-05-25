@@ -1,5 +1,6 @@
 package dev.theskidster.xjge2.core;
 
+import static dev.theskidster.xjge2.core.Input.KEY_MOUSE_COMBO;
 import static dev.theskidster.xjge2.core.Window.HANDLE;
 import dev.theskidster.xjge2.graphics.Color;
 import dev.theskidster.xjge2.shaderutils.BufferType;
@@ -336,8 +337,8 @@ public final class XJGE {
     
     private static void setTerminalEnabled(boolean terminalEnabled) {
         XJGE.terminalEnabled = terminalEnabled;
-        
-        
+        if(terminalEnabled) Input.setDeviceEnabled(KEY_MOUSE_COMBO, false);
+        else                Input.revertEnabledState(KEY_MOUSE_COMBO);
     }
     
     public static void setFontSize(int size) {

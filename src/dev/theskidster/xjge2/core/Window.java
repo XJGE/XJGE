@@ -2,7 +2,6 @@ package dev.theskidster.xjge2.core;
 
 import java.io.InputStream;
 import java.nio.ByteBuffer;
-import java.nio.FloatBuffer;
 import java.nio.IntBuffer;
 import java.util.TreeMap;
 import static org.lwjgl.glfw.GLFW.*;
@@ -27,9 +26,6 @@ public final class Window {
     private static int yPos;
     private static int width;
     private static int height;
-    
-    private static float contentScaleX;
-    private static float contentScaleY;
     
     private static boolean fullscreen;
     
@@ -57,16 +53,6 @@ public final class Window {
                     monitor.getRefreshRate());
         }
         
-        try(MemoryStack stack = MemoryStack.stackPush()) {
-            FloatBuffer initialContentScaleXBuf = stack.mallocFloat(1);
-            FloatBuffer initialContentScaleYBuf = stack.mallocFloat(1);
-            
-            glfwGetWindowContentScale(HANDLE, initialContentScaleXBuf, initialContentScaleYBuf);
-            
-            contentScaleX = initialContentScaleXBuf.get();
-            contentScaleY = initialContentScaleYBuf.get();
-        }
-        
         setPositionCentered();
         
         glfwSwapInterval(WinKit.getVSyncEnabled() ? 1 : 0);
@@ -87,12 +73,6 @@ public final class Window {
             }
             
             XJGE.splitScreen(XJGE.getSplit());
-        });
-        
-        glfwSetWindowContentScaleCallback(HANDLE, (window, xscale, yscale) -> {
-            contentScaleX = xscale;
-            contentScaleY = yscale;
-            //TODO: update UI to reflect new scale- bake new bitmaps, etc.
         });
         
         glfwSetMonitorCallback((monHandle, event) -> {
@@ -149,14 +129,6 @@ public final class Window {
     
     public static int getHeight() {
         return height;
-    }
-    
-    public static float getContentScaleX() {
-        return contentScaleX;
-    }
-    
-    public static float getContentScaleY() {
-        return contentScaleY;
     }
     
     public static boolean getFullscreen() {
