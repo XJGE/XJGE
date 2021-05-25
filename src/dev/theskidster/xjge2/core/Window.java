@@ -73,6 +73,7 @@ public final class Window {
             }
             
             XJGE.setScreenSplit(XJGE.getScreenSplit());
+            Terminal.updateMatrix();
         });
         
         glfwSetMonitorCallback((monHandle, event) -> {

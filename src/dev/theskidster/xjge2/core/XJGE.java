@@ -152,7 +152,7 @@ public final class XJGE {
                     } else {
                         Logger.setDomain("core");
                         Logger.logInfo("Freecam access denied, command terminal " + 
-                                       "is currently in use, Close the command " + 
+                                       "is currently in use. Close the command " + 
                                        "terminal and try again.");
                         Logger.setDomain(null);
                     }
@@ -200,11 +200,7 @@ public final class XJGE {
     
     public static void start() {
         glPrograms = Collections.unmodifiableMap(glPrograms);
-        
-        //TODO: delete the viewport ui test code here when finished.
-        //viewports[0].addUIWidget("test", new TestWidget());
-        
-        freeCam = new FreeCam();
+        freeCam    = new FreeCam();
         
         Window.show(matchWindowResolution);
         setScreenSplit(Split.NONE);

@@ -66,7 +66,7 @@ public final class Game {
                     scene.processRemoveRequests();
                 }
                 
-                //Update viewport camera objects
+                //Update viewport camera objects.
                 for(Viewport viewport : viewports) {
                     if(viewport.active && viewport.currCamera != null) {
                         viewport.currCamera.update();
@@ -84,7 +84,7 @@ public final class Game {
                 }
             }
             
-            //Render perspective from each active viewports camera.
+            //Render scene from the perspective of each active viewport.
             for(Viewport viewport : viewports) {
                 if(viewport.active) {
                     if(viewport.id == 0) {
