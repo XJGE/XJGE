@@ -1,5 +1,6 @@
 package dev.theskidster.xjge2.core;
 
+import static dev.theskidster.xjge2.core.Input.KEY_MOUSE_COMBO;
 import static dev.theskidster.xjge2.core.Window.HANDLE;
 import dev.theskidster.xjge2.shaderutils.BufferType;
 import dev.theskidster.xjge2.shaderutils.GLProgram;
@@ -37,7 +38,6 @@ public final class XJGE {
     private static Split split;
     private static String filepath = "/dev/theskidster/xjge2/assets/";
     private static FreeCam freeCam;
-    private static Terminal terminal;
     
     static Map<String, GLProgram> glPrograms  = new HashMap<>();
     private static final Viewport[] viewports = new Viewport[4];
@@ -130,26 +130,27 @@ public final class XJGE {
             XJGE.filepath = filepath;
             
             glfwSetKeyCallback(Window.HANDLE, (window, key, scancode, action, mods) -> {
+                if(debugEnabled && key == GLFW_KEY_F1 && action == GLFW_PRESS) {
+                    XJGE.terminalEnabled = !terminalEnabled;
+                    
+                    if(terminalEnabled) Input.setDeviceEnabled(KEY_MOUSE_COMBO, false);
+                    else                Input.revertEnabledState(KEY_MOUSE_COMBO);
+                }
+                
                 if(debugEnabled && key == GLFW_KEY_F2 && action == GLFW_PRESS) {
                     XJGE.freeCamEnabled = !freeCamEnabled;
                     
-                    Logger.setDomain("core");
-                    
                     if(freeCamEnabled) {
                         glfwSetInputMode(Window.HANDLE, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
-                        Logger.logInfo("Freecam enabled.");
                         viewports[0].prevCamera = viewports[0].currCamera;
                         viewports[0].currCamera = freeCam;
                     } else {
                         glfwSetInputMode(Window.HANDLE, GLFW_CURSOR, GLFW_CURSOR_NORMAL);
-                        Logger.logInfo("Freecam disabled.");
                         viewports[0].currCamera = viewports[0].prevCamera;
                     }
-
-                    Logger.setDomain(null);
                 }
 
-                if(freeCamEnabled) {
+                if(freeCamEnabled && !terminalEnabled) {
                     if(key == GLFW_KEY_W) freeCam.pressed[0] = (action != GLFW_RELEASE);
                     if(key == GLFW_KEY_A) freeCam.pressed[1] = (action != GLFW_RELEASE);
                     if(key == GLFW_KEY_S) freeCam.pressed[2] = (action != GLFW_RELEASE);
@@ -159,21 +160,10 @@ public final class XJGE {
                 }
 
                 if(action == GLFW_PRESS) {
-                    switch(key) {
-                        case GLFW_KEY_ESCAPE -> {
-                            Window.close(); //TODO: temp
-                        }
-
-                        case GLFW_KEY_F1 -> {
-                            Window.setFullscreen(!Window.getFullscreen());
-                            //WinKit.setVSyncEnabled(!WinKit.getVSyncEnabled());
-                        }
-                        
-                        case GLFW_KEY_1 -> setScreenSplit(Split.NONE);
-                        case GLFW_KEY_2 -> setScreenSplit(Split.HORIZONTAL);
-                        case GLFW_KEY_3 -> setScreenSplit(Split.VERTICAL);
-                        case GLFW_KEY_4 -> setScreenSplit(Split.TRISECT);
-                        case GLFW_KEY_5 -> setScreenSplit(Split.QUARTER);
+                    if(XJGE.terminalEnabled) {
+                        Terminal.processKeyInput(key, action);
+                    } else {
+                        //TODO: pass key input to ui widget
                     }
                 }
             });
@@ -250,15 +240,19 @@ public final class XJGE {
         }
     }
     
-    static int getResolutionX() {
+    public static int getResolutionX() {
         return resolutionX;
     }
     
-    static int getResolutionY() {
+    public static int getResolutionY() {
         return resolutionY;
     }
     
-    static Split getScreenSplit() {
+    static boolean getTerminalEnabled() {
+        return terminalEnabled;
+    }
+    
+    public static Split getScreenSplit() {
         return split;
     }
     

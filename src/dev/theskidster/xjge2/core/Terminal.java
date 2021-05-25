@@ -1,8 +1,11 @@
 package dev.theskidster.xjge2.core;
 
+import dev.theskidster.xjge2.graphics.Color;
 import dev.theskidster.xjge2.ui.Font;
 import dev.theskidster.xjge2.ui.Text;
 import java.util.HashMap;
+import org.joml.Matrix4f;
+import org.joml.Vector3f;
 import static org.lwjgl.glfw.GLFW.*;
 
 /**
@@ -12,6 +15,9 @@ import static org.lwjgl.glfw.GLFW.*;
 
 final class Terminal {
 
+    private static Vector3f textPos = new Vector3f(10, 10, 0);
+    private static final Matrix4f projMatrix = new Matrix4f();
+    
     private static final Text[] text = new Text[9]; 
     
     private static final HashMap<Integer, Key> keyChars;
@@ -89,10 +95,26 @@ final class Terminal {
         }};
     }
     
-    Command update() {
+    static Command update() {
         
         
         return null;
+    }
+    
+    static void render() {
+        XJGE.getDefaultGLProgram().use();
+        
+        //XJGE.getDefaultGLProgram().setUniform("uProjection", false, projMatrix);
+        
+        text[0].drawString("test", textPos, Color.WHITE);
+        
+        ErrorUtils.checkGLError();
+    }
+    
+    static void processKeyInput(int key, int action) {
+        if(action == GLFW_PRESS || action == GLFW_REPEAT) {
+            
+        }
     }
     
 }

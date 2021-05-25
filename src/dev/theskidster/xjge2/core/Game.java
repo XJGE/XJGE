@@ -34,7 +34,7 @@ public final class Game {
         double prevTime = glfwGetTime();
         double currTime;
         double delta = 0;
-        Matrix4f proj = new Matrix4f();
+        Matrix4f projMatrix = new Matrix4f();
         
         while(!glfwWindowShouldClose(Window.HANDLE)) {
             glfwPollEvents();
@@ -47,6 +47,11 @@ public final class Game {
             
             while(delta >= TARGET_DELTA) {
                 Input.pollInput();
+                
+                if(XJGE.getTerminalEnabled()) {
+                    Command command = Terminal.update();
+                    //if(command != null) cmdHistory.execute(command);
+                }
                 
                 deltaMetric = delta;
                 
@@ -110,13 +115,17 @@ public final class Game {
                     glBindFramebuffer(GL_FRAMEBUFFER, 0);
 
                     glViewport(viewport.botLeft.x, viewport.botLeft.y, viewport.topRight.x, viewport.topRight.y);
-                    proj.setOrtho(viewport.width, 0, 0, viewport.height, 0, 1);
+                    projMatrix.setOrtho(viewport.width, 0, 0, viewport.height, 0, 1);
 
                     glPrograms.get("default").use();
-                    glPrograms.get("default").setUniform("uProjection", false, proj);
+                    glPrograms.get("default").setUniform("uProjection", false, projMatrix);
 
                     viewport.render(glPrograms, "texture");
                 }
+            }
+            
+            if(XJGE.getTerminalEnabled()) {
+                Terminal.render();
             }
             
             glfwSwapBuffers(Window.HANDLE);
