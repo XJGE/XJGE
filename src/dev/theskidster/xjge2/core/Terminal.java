@@ -122,8 +122,9 @@ final class Terminal implements PropertyChangeListener {
         commands = new TreeMap<>() {{
             //put("beep", new TCBeep());
             //put("cls", new TCCLS());
-            put("setFullscreen", new TCSetFullscreen());
-            put("terminate",     new TCTerminate());
+            put("setFullscreen",  new TCSetFullscreen());
+            put("setScreenSplit", new TCScreenSplit());
+            put("terminate",      new TCTerminate());
         }};
     }
     
@@ -354,7 +355,7 @@ final class Terminal implements PropertyChangeListener {
             commands.get(name).execute(args);
             output = commands.get(name).getOutput();
         } else {
-            output = new TerminalOutput("WARNING: Command not recognized. Check syntax or use help.\n", Color.YELLOW);
+            output = new TerminalOutput("ERROR: Command not recognized. Check syntax or use help.\n", Color.YELLOW);
         }
         
         if(output != null) {

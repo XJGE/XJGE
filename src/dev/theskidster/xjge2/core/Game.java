@@ -121,6 +121,7 @@ public final class Game {
             }
             
             if(XJGE.getTerminalEnabled()) {
+                glViewport(0, 0, XJGE.getResolutionX(), XJGE.getResolutionY());
                 terminal.render();
             }
             

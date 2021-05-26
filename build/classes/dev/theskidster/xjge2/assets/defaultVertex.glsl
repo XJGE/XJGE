@@ -36,7 +36,7 @@ void main() {
             gl_Position = uProjection * uView * uModel * vec4(aPosition, 1);
             break;
 
-        case 3: ////Used for rendering background rectangles.
+        case 3: //Used for rendering background rectangles.
             gl_Position = uProjection * vec4(aPosition, 1);
             break;
     }

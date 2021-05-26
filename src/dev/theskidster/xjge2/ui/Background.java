@@ -4,12 +4,6 @@ import dev.theskidster.xjge2.core.ErrorUtils;
 import dev.theskidster.xjge2.core.XJGE;
 import dev.theskidster.xjge2.graphics.Color;
 import java.nio.FloatBuffer;
-import static org.lwjgl.opengl.GL11C.GL_BLEND;
-import static org.lwjgl.opengl.GL11C.GL_ONE_MINUS_SRC_ALPHA;
-import static org.lwjgl.opengl.GL11C.GL_SRC_ALPHA;
-import static org.lwjgl.opengl.GL11C.glBlendFunc;
-import static org.lwjgl.opengl.GL11C.glDisable;
-import static org.lwjgl.opengl.GL11C.glEnable;
 import static org.lwjgl.opengl.GL30.*;
 import org.lwjgl.system.MemoryStack;
 
