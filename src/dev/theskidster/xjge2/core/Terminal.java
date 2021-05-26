@@ -3,10 +3,13 @@ package dev.theskidster.xjge2.core;
 import dev.theskidster.xjge2.graphics.Color;
 import dev.theskidster.xjge2.ui.Background;
 import dev.theskidster.xjge2.ui.Font;
+import static dev.theskidster.xjge2.ui.Font.DEFAULT_SIZE;
 import dev.theskidster.xjge2.ui.Text;
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
+import java.util.TreeMap;
 import org.joml.Matrix4f;
 import org.joml.Vector3f;
 import static org.lwjgl.glfw.GLFW.*;
@@ -16,22 +19,38 @@ import static org.lwjgl.glfw.GLFW.*;
  * Created: May 23, 2021
  */
 
-final class Terminal {
+final class Terminal implements PropertyChangeListener {
 
-    private static Vector3f textPos = new Vector3f(0, 0, 0);
+    private int xIndex;
+    private int yIndex;
+    private int shiftElements = -1;
+    private final int glyphAdvance;
+    
+    private boolean cursorIdle;
+    private boolean cursorBlink;
+    private boolean suggest;
+    private boolean executed = true;
+    
+    private final Vector3f caretPos   = new Vector3f(0, DEFAULT_SIZE / 4, 0);
+    private final Vector3f cursorPos  = new Vector3f(0, DEFAULT_SIZE / 4, 0);
+    private final Vector3f commandPos = new Vector3f(0, DEFAULT_SIZE / 4, -1);
     private final Matrix4f projMatrix = new Matrix4f();
     
     private String suggestion = "";
     private String prevTyped  = "";
     
-    private final Text[] text             = new Text[9]; 
-    private final StringBuilder typed     = new StringBuilder();
-    private final List<String> cmdHistory = new ArrayList<>();
+    private final Font font             = new Font();
+    private final TerminalText[] text   = new TerminalText[9]; 
+    private final StringBuilder typed   = new StringBuilder();
+    private final Background background = new Background();
+    private final Timer timer           = new Timer(1, 20, this);
     
-    private Background background;
-    //private final Timer timer = new Timer(1, 20, this);
+    private final ArrayList<String> cmdHistory      = new ArrayList<>();
+    private final TerminalOutput[] cmdOutput        = new TerminalOutput[5];
+    private final HashMap<Integer, Integer> charPos = new HashMap<>();
     
     private static final HashMap<Integer, Key> keyChars;
+    private static final TreeMap<String, TerminalCommand> commands;
     
     private static class Key {
         private final char c;
@@ -98,20 +117,44 @@ final class Terminal {
             put(GLFW_KEY_RIGHT_BRACKET, new Key(']', '}'));
             put(GLFW_KEY_GRAVE_ACCENT,  new Key('`', '~'));
         }};
+        
+        //TODO: add more commands
+        commands = new TreeMap<>() {{
+            //put("beep", new TCBeep());
+            //put("cls", new TCCLS());
+            put("setFullscreen", new TCSetFullscreen());
+            put("terminate",     new TCTerminate());
+        }};
     }
     
     Terminal() {
         updateMatrix();
         
-        background = new Background();
-        
         for(int i = 0; i < text.length; i++) {
-            text[i] = new Text(new Font());
+            text[i] = new TerminalText(new Font());
         }
+        
+        glyphAdvance = (int) font.getGlyphAdvance('>');
+        cursorPos.x  = glyphAdvance;
+        commandPos.x = glyphAdvance;
     }
     
-    static void update() {
+    void update() {
+        timer.update();
+        if(Game.tick(20) && cursorIdle) cursorBlink = !cursorBlink; 
         
+        if(!prevTyped.equals(typed.toString())) {
+            suggest = commands.keySet().stream().anyMatch(name -> name.regionMatches(0, typed.toString(), 0, typed.length())) && typed.length() > 0;
+            
+            if(suggest) {
+                suggestion = commands.keySet().stream()
+                        .filter(name -> name.regionMatches(0, typed.toString(), 0, typed.length()))
+                        .findFirst()
+                        .get();
+            }
+        }
+        
+        prevTyped = typed.toString();
     }
     
     void updateMatrix() {
@@ -122,17 +165,218 @@ final class Terminal {
         XJGE.getDefaultGLProgram().use();
         XJGE.getDefaultGLProgram().setUniform("uProjection", false, projMatrix);
         
-        background.drawRectangle(0, 0, XJGE.getResolutionX(), Font.DEFAULT_SIZE + 4, Color.BLACK, 0.5f);
+        background.drawRectangle(0, 0, XJGE.getResolutionX(), Font.DEFAULT_SIZE + 4, Color.BLACK, 1);
         
-        text[0].drawString("test", textPos, Color.WHITE);
+        for(int i = 0; i <= shiftElements; i++) {
+            text[i].drawOutput(cmdOutput, cmdOutput[i], i, executed, background);   
+        }
+        
+        text[5].drawString(">", caretPos, Color.WHITE);
+        if(suggest) text[6].drawString(suggestion, commandPos, Color.GRAY);
+        if(cursorBlink) text[7].drawString("_", cursorPos, Color.WHITE);
+        
+        if(validate()) text[8].drawCommand(typed.toString(), commandPos);
+        else           text[8].drawString(typed.toString(), commandPos, Color.WHITE);
         
         ErrorUtils.checkGLError();
     }
     
-    void processKeyInput(int key, int action) {
+    void processKeyInput(int key, int action, int mods) {
         if(action == GLFW_PRESS || action == GLFW_REPEAT) {
+            cursorIdle  = false;
+            cursorBlink = true;
+            timer.restart();
             
+            keyChars.forEach((k, c) -> {
+                if(key == k) insertChar(c.getChar((mods == GLFW_MOD_SHIFT)));
+            });
+            
+            switch(key) {
+                case GLFW_KEY_BACKSPACE -> {
+                    if(xIndex > 0) {
+                        xIndex--;
+                        typed.deleteCharAt(xIndex);
+                        cursorPos.x = charPos.get(xIndex);
+                        scrollX();
+                    }
+                }
+                
+                case GLFW_KEY_RIGHT -> {
+                    xIndex++;
+                    
+                    if(xIndex < typed.length()) {
+                        cursorPos.x = charPos.get(xIndex);
+                        scrollX();
+                    } else {
+                        xIndex = typed.length();
+                        if(typed.length() > 0) {
+                            cursorPos.x = charPos.get(xIndex - 1) + glyphAdvance;
+                            scrollX();
+                        } else {
+                            cursorPos.x = glyphAdvance;
+                        }
+                    }
+                }
+                
+                case GLFW_KEY_LEFT -> {
+                    xIndex--;
+                    
+                    if(xIndex > 0) {
+                        cursorPos.x = charPos.get(xIndex);
+                        scrollX();
+                    } else {
+                        xIndex      = 0;
+                        cursorPos.x = glyphAdvance;
+                    }
+                }
+                
+                case GLFW_KEY_DOWN -> {
+                    if(cmdHistory.size() > 0) {
+                        yIndex = (yIndex >= cmdHistory.size() - 1) ? cmdHistory.size() - 1 : yIndex + 1;
+                        charPos.clear();
+                        if(cmdHistory.get(yIndex) != null) autoComplete(cmdHistory.get(yIndex));
+                    }
+                }
+                
+                case GLFW_KEY_UP -> {
+                    if(cmdHistory.size() > 0) {
+                        yIndex = (yIndex == 0) ? 0 : yIndex - 1;
+                        charPos.clear();
+                        if(cmdHistory.get(yIndex) != null) autoComplete(cmdHistory.get(yIndex));
+                    }
+                }
+                
+                case GLFW_KEY_ENTER -> {
+                    execute(typed.toString());
+                    typed.delete(0, typed.length());
+                    xIndex      = 0;
+                    yIndex      = cmdHistory.size();
+                    caretPos.x  = 0;
+                    cursorPos.x = glyphAdvance;
+                    charPos.clear();
+                }
+                
+                case GLFW_KEY_TAB -> {
+                    if(suggest) autoComplete(suggestion);
+                }
+            }
+        } else {
+            timer.start();
         }
+    }
+    
+    private void insertChar(char c) {
+        typed.insert(xIndex, c);
+        charPos.put(xIndex, (xIndex * glyphAdvance) + glyphAdvance);
+        cursorPos.x = charPos.get(xIndex) + glyphAdvance;
+        
+        xIndex++;
+        
+        if(xIndex != typed.length()) {
+            for(int i = xIndex; i < typed.length(); i++) {
+                charPos.put(i, (i * glyphAdvance) + glyphAdvance);
+            }
+        }
+        
+        scrollX();
+    }
+    
+    private boolean validate() {
+        if((typed.toString().length() > suggestion.length())) {
+            return typed.toString().regionMatches(0, suggestion, 0, suggestion.length()) &&
+                   typed.toString().charAt(suggestion.length()) == ' ';
+        } else {
+            return typed.toString().regionMatches(0, suggestion, 0, suggestion.length());
+        }
+    }
+    
+    private void autoComplete(String s) {
+        typed.delete(0, typed.length());
+        xIndex = 0;
+        
+        for(Character c : s.toCharArray()) {    
+            insertChar(c);
+        }
+    }
+    
+    private void scrollX() {
+        if(typed.length() > 0) {
+            int xOffset = 0;
+            
+            if(charPos.get(charPos.size() - 1) + glyphAdvance > XJGE.getResolutionX() - (glyphAdvance * 2)) {
+                xOffset = (XJGE.getResolutionX() - glyphAdvance) - (charPos.get(charPos.size() - 1) + glyphAdvance);
+                
+                if(cursorPos.x - 8 <= Math.abs(xOffset)) {
+                    int x = (xIndex < 1) ? 0 : glyphAdvance;
+                    
+                    xOffset -= ((cursorPos.x - (glyphAdvance + x)) - Math.abs(xOffset));
+                }
+            }
+            
+            cursorPos.x += xOffset;
+            caretPos.x   = xOffset;
+            commandPos.x = xOffset + glyphAdvance;
+        } else {
+            charPos.clear();
+        }
+    }
+    
+    private void execute(String command) {
+        String name = "";
+        ArrayList<String> args = new ArrayList<>();
+        
+        cmdHistory.add(command);
+        if(cmdHistory.size() == 33) cmdHistory.remove(0);
+        
+        if(suggestion.length() > 0 && command.regionMatches(0, suggestion, 0, suggestion.length())) {
+            name = command.substring(0, suggestion.length());
+        }
+        
+        if(command.contains(" ")) {
+            String s1 = command.substring(command.indexOf(" "), command.length()).replaceAll(" ", "");
+            String s2 = "";
+            
+            for(int i = 0; i < s1.length(); i++) {
+                char c = s1.charAt(i);
+                
+                if(c != ',') s2 += c;
+                
+                if(c == ',' || i == s1.length() - 1) {
+                    args.add(s2);
+                    s2 = "";
+                }
+            }
+        }
+        
+        TerminalOutput output;
+        
+        if(commands.containsKey(name)) {
+            commands.get(name).execute(args);
+            output = commands.get(name).getOutput();
+        } else {
+            output = new TerminalOutput("WARNING: Command not recognized. Check syntax or use help.\n", Color.YELLOW);
+        }
+        
+        if(output != null) {
+            shiftElements = (shiftElements == 4) ? 4 : shiftElements + 1;
+            
+            for(int i = shiftElements; i > -1; i--) {
+                if(i > 0) {
+                    if(cmdOutput[i - 1] != null) {
+                        cmdOutput[i] = cmdOutput[i - 1];
+                    }
+                } else {
+                    cmdOutput[i] = new TerminalOutput(Text.wrap(output.text, XJGE.getResolutionX(), font), output.color);
+                }
+            }
+        }
+        
+        executed = true;
+    }
+    
+    @Override
+    public void propertyChange(PropertyChangeEvent evt) {
+        cursorIdle = (Boolean) evt.getNewValue();
     }
     
 }

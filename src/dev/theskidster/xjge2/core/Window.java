@@ -152,10 +152,13 @@ public final class Window {
         }
     }
     
-    public static void setDimensions(int width, int height) {
+    static void updateDimensions(int width, int height) {
         Window.width  = width;
         Window.height = height;
-        
+    }
+    
+    public static void setDimensions(int width, int height) {
+        updateDimensions(width, height);
         glfwSetWindowSize(HANDLE, width, height);
     }
     

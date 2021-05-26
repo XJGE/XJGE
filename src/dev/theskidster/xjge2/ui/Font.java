@@ -179,7 +179,7 @@ public final class Font {
             for(int i = 0; i < charset.length(); i++) {
                 STBTTPackedchar glyph = packedCharBuf.get(i);
                 
-                char character = charset.charAt(i);
+                char character  = charset.charAt(i);
                 float texCoordX = (float) (glyph.x0()) / imageWidth;
                 float texCoordY = (float) (glyph.y0()) / imageHeight;
                 

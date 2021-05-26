@@ -170,12 +170,10 @@ public final class XJGE {
                     freeCam.setSpeedBoostEnabled(mods == GLFW_MOD_SHIFT);
                 }
 
-                if(action == GLFW_PRESS) {
-                    if(XJGE.terminalEnabled) {
-                        terminal.processKeyInput(key, action);
-                    } else {
-                        //TODO: pass key input to ui widget
-                    }
+                if(XJGE.terminalEnabled) {
+                    terminal.processKeyInput(key, action, mods);
+                } else {
+                    //TODO: pass key input to ui widget
                 }
             });
 
@@ -184,7 +182,7 @@ public final class XJGE {
                     if(firstMouse) {
                         freeCam.prevX = xpos;
                         freeCam.prevY = ypos;
-                        firstMouse = false;
+                        firstMouse    = false;
                     }
                     
                     freeCam.setDirection(xpos, ypos);
@@ -210,7 +208,7 @@ public final class XJGE {
         setScreenSplit(Split.NONE);
         
         glfwSetWindowSizeCallback(HANDLE, (window, w, h) -> {
-            Window.setDimensions(w, h);
+            Window.updateDimensions(w, h);
 
             if(matchWindowResolution && Window.getWidth() != 0 && Window.getHeight() != 0) {
                 resolutionX = w;
@@ -260,6 +258,10 @@ public final class XJGE {
                               null);
             Logger.setDomain(null);
         }
+    }
+    
+    public static void addTerminalCommand(String name, TerminalCommand command) {
+        //TODO: add this.
     }
     
     public static int getResolutionX() {
