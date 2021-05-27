@@ -1,8 +1,10 @@
 package dev.theskidster.xjge2.test;
 
 import dev.theskidster.xjge2.core.Game;
+import dev.theskidster.xjge2.core.TerminalCommand;
 import dev.theskidster.xjge2.core.XJGE;
 import dev.theskidster.xjge2.ui.Font;
+import java.util.List;
 import org.joml.Vector2i;
 
 /**
@@ -26,9 +28,23 @@ public class Test {
         
         //Font.DEFAULT_SIZE = 12;
         
+        XJGE.addTerminalCommand("bleh", new C());
+        
         Game.setScene(new TestScene());
         
         XJGE.start();
+        
+    }
+    
+    private static class C extends TerminalCommand {
+
+        public C() {
+            super("", "", "");
+        }
+
+        @Override
+        public void execute(List<String> args) {
+        }
         
     }
     

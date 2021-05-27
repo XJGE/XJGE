@@ -1,7 +1,10 @@
 package dev.theskidster.xjge2.core;
 
 import dev.theskidster.xjge2.graphics.Color;
+import java.util.Collections;
 import java.util.List;
+import java.util.Map;
+import java.util.TreeMap;
 
 /**
  * @author J Hoffman
@@ -15,6 +18,8 @@ public abstract class TerminalCommand {
     private final String syntax;
     
     protected TerminalOutput output;
+    
+    protected Map<String, TerminalCommand> commands;
     
     public TerminalCommand(String description, String usage, String syntax) {
         this.description = description;
@@ -42,6 +47,10 @@ public abstract class TerminalCommand {
     
     protected void setOutput(String text, Color color) {
         output = new TerminalOutput(text + "\n", color);
+    }
+    
+    protected void setCommands(Map<String, TerminalCommand> commands) {
+        this.commands = Collections.unmodifiableMap(commands);
     }
     
     public static String useGenericSetter(String diff) {

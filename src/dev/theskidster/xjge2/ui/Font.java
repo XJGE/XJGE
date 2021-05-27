@@ -219,6 +219,13 @@ public final class Font {
             glEnableVertexAttribArray(0);
             glEnableVertexAttribArray(2);
             
+            /*
+            TODO:
+            might still need to free some buffers here since im getting an odd 
+            bug where the text has flickering white spots- almost like an old
+            CRT.
+            */
+            
             //causes java to return -1073740940
             //MemoryUtil.memFree(fontBuf);
             //MemoryUtil.memFree(bakedCharBuf);

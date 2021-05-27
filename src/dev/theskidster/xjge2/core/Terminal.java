@@ -41,7 +41,7 @@ final class Terminal implements PropertyChangeListener {
     private String suggestion = "";
     private String prevTyped  = "";
     
-    private final Font font             = new Font();
+    private final Font font;
     private final TerminalText[] text   = new TerminalText[9]; 
     private final StringBuilder typed   = new StringBuilder();
     private final Timer timer           = new Timer(1, 20, this);
@@ -50,12 +50,12 @@ final class Terminal implements PropertyChangeListener {
     RectangleBatch rectBatch2;
     private static final TreeMap<Integer, Rectangle> opaqueRectangles = new TreeMap<>();
     
+    TreeMap<String, TerminalCommand> commands;
     private final ArrayList<String> cmdHistory      = new ArrayList<>();
     private final TerminalOutput[] cmdOutput        = new TerminalOutput[5];
     private final HashMap<Integer, Integer> charPos = new HashMap<>();
     
     private static final HashMap<Integer, Key> keyChars;
-    final TreeMap<String, TerminalCommand> commands;
     
     private static class Key {
         private final char c;
@@ -124,26 +124,16 @@ final class Terminal implements PropertyChangeListener {
         }};
     }
     
-    Terminal() {
+    Terminal(TreeMap<String, TerminalCommand> commands) {
+        this.commands = commands;
+        
         updateMatrix();
-        
-        //TODO: add more commands
-        commands = new TreeMap<>() {{
-            //put("beep", new TCBeep());
-            put("cls",            new TCCLS());
-            put("setFullscreen",  new TCSetFullscreen());
-            put("setMonitor",     new TCSetMonitor());
-            put("setScreenSplit", new TCScreenSplit());
-            put("setVSync",       new TCSetVSync());
-            put("terminate",      new TCTerminate());
-        }};
-        
-        commands.put("help",         new TCHelp(this));
-        commands.put("showCommands", new TCShowCommands(this));
         
         for(int i = 0; i < text.length; i++) {
             text[i] = new TerminalText(new Font());
         }
+        
+        font = new Font();
         
         glyphAdvance = (int) font.getGlyphAdvance('>');
         cursorPos.x  = glyphAdvance;
@@ -400,7 +390,7 @@ final class Terminal implements PropertyChangeListener {
         cursorIdle = (Boolean) evt.getNewValue();
     }
     
-    private static class TCCLS extends TerminalCommand {
+    static class TCCLS extends TerminalCommand {
         
         public TCCLS() {
             super("Clears the terminal output.",

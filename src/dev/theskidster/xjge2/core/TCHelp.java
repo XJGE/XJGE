@@ -2,6 +2,7 @@ package dev.theskidster.xjge2.core;
 
 import dev.theskidster.xjge2.graphics.Color;
 import java.util.List;
+import java.util.TreeMap;
 
 /**
  * @author J Hoffman
@@ -9,10 +10,8 @@ import java.util.List;
  */
 
 final class TCHelp extends TerminalCommand {
-
-    private final Terminal terminal;
     
-    public TCHelp(Terminal terminal) {
+    public TCHelp() {
         super("Supplies information about commands.",
 
               "Using help without arguments will provide basic information " + 
@@ -21,8 +20,6 @@ final class TCHelp extends TerminalCommand {
               "command name to view its usage or syntax.",
 
               "help [-u|-s], [<command name>]");
-        
-        this.terminal = terminal;
     }
 
     @Override
@@ -43,8 +40,8 @@ final class TCHelp extends TerminalCommand {
             case 1 -> {
                 command = args.get(0);
 
-                if(terminal.commands.keySet().stream().anyMatch(name -> name.equals(command))) {
-                    setOutput(command + " - " + terminal.commands.get(command).getDescription(), Color.WHITE);
+                if(commands.keySet().stream().anyMatch(name -> name.equals(command))) {
+                    setOutput(command + " - " + commands.get(command).getDescription(), Color.WHITE);
                 } else {
                     setOutput(commandNotFound(command), Color.YELLOW);
                 }
@@ -56,16 +53,16 @@ final class TCHelp extends TerminalCommand {
 
                 switch(wildcard) {
                     case "-u" -> {
-                        if(terminal.commands.keySet().stream().anyMatch(name -> name.equals(command))) {
-                            setOutput(terminal.commands.get(command).getUsage(), Color.WHITE);
+                        if(commands.keySet().stream().anyMatch(name -> name.equals(command))) {
+                            setOutput(commands.get(command).getUsage(), Color.WHITE);
                         } else {
                             setOutput(commandNotFound(command), Color.YELLOW);
                         }
                     }
                     
                     case "-s" -> {
-                        if(terminal.commands.keySet().stream().anyMatch(name -> name.equals(command))) {
-                            setOutput(terminal.commands.get(command).getSyntax(), Color.YELLOW);
+                        if(commands.keySet().stream().anyMatch(name -> name.equals(command))) {
+                            setOutput(commands.get(command).getSyntax(), Color.YELLOW);
                         } else {
                             setOutput(commandNotFound(command), Color.YELLOW);
                         }

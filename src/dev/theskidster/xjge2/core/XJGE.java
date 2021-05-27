@@ -1,16 +1,19 @@
 package dev.theskidster.xjge2.core;
 
 import static dev.theskidster.xjge2.core.Input.KEY_MOUSE_COMBO;
+import dev.theskidster.xjge2.core.Terminal.TCCLS;
 import static dev.theskidster.xjge2.core.Window.HANDLE;
 import dev.theskidster.xjge2.shaderutils.BufferType;
 import dev.theskidster.xjge2.shaderutils.GLProgram;
 import dev.theskidster.xjge2.shaderutils.Shader;
 import dev.theskidster.xjge2.ui.RectangleBatch;
 import java.nio.file.Path;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.Map;
+import java.util.TreeMap;
 import org.joml.Vector2i;
 import static org.lwjgl.glfw.GLFW.*;
 import org.lwjgl.opengl.GL;
@@ -41,7 +44,10 @@ public final class XJGE {
     private static FreeCam freeCam;
     private static Terminal terminal;
     
-    static Map<String, GLProgram> glPrograms  = new HashMap<>();
+    private static TreeMap<String, TerminalCommand> engineCommands     = new TreeMap<>();
+    private static final TreeMap<String, TerminalCommand> userCommands = new TreeMap<>();
+    
+    static Map<String, GLProgram> glPrograms   = new HashMap<>();
     private static final Viewport[] viewports = new Viewport[4];
     
     /*
@@ -132,6 +138,18 @@ public final class XJGE {
             Logger.printSystemInfo();
             XJGE.filepath = filepath;
             
+            //TODO: add more commands
+            engineCommands = new TreeMap<>() {{
+                put("cls",            new TCCLS());
+                put("help",           new TCHelp());
+                put("setFullscreen",  new TCSetFullscreen());
+                put("setMonitor",     new TCSetMonitor());
+                put("setScreenSplit", new TCScreenSplit());
+                put("setVSync",       new TCSetVSync());
+                put("showCommands",   new TCShowCommands());
+                put("terminate",      new TCTerminate());
+            }};
+            
             glfwSetKeyCallback(Window.HANDLE, (window, key, scancode, action, mods) -> {
                 if(debugEnabled && key == GLFW_KEY_F1 && action == GLFW_PRESS) {
                     XJGE.terminalEnabled = !terminalEnabled;
@@ -206,9 +224,12 @@ public final class XJGE {
     }
     
     public static void start() {
+        engineCommands.putAll(userCommands);
+        engineCommands.values().forEach(command -> command.setCommands(engineCommands));
+        
         glPrograms = Collections.unmodifiableMap(glPrograms);
         freeCam    = new FreeCam();
-        terminal   = new Terminal();
+        terminal   = new Terminal(engineCommands);
         
         Window.show();
         setScreenSplit(Split.NONE);
@@ -267,7 +288,16 @@ public final class XJGE {
     }
     
     public static void addTerminalCommand(String name, TerminalCommand command) {
-        //TODO: add this.
+        if(engineCommands.containsKey(name)) {
+            Logger.setDomain("core");
+            Logger.logWarning("Failed to add command \"" + name + "\". A command " + 
+                              "by this name already exists as a part of the engines " +
+                              "core features.", 
+                              null);
+            Logger.setDomain(null);
+        } else {
+            userCommands.put(name, command);
+        }
     }
     
     public static int getResolutionX() {
