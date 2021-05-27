@@ -8,7 +8,7 @@ import java.util.List;
  * Created: May 25, 2021
  */
 
-class TCScreenSplit extends TerminalCommand {
+final class TCScreenSplit extends TerminalCommand {
 
     public TCScreenSplit() {
         super("Changes what kind of split is used for splitscreen play. Otherwise hidden " +

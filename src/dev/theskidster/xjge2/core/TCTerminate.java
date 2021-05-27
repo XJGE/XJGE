@@ -9,7 +9,7 @@ import static org.lwjgl.glfw.GLFW.glfwSetWindowShouldClose;
  * Created: May 25, 2021
  */
 
-class TCTerminate extends TerminalCommand {
+final class TCTerminate extends TerminalCommand {
 
     public TCTerminate() {
         super("Ceases execution and gracefully exits the application.",

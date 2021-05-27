@@ -8,7 +8,7 @@ import java.util.List;
  * Created: May 26, 2021
  */
 
-class TCHelp extends TerminalCommand {
+final class TCHelp extends TerminalCommand {
 
     private final Terminal terminal;
     

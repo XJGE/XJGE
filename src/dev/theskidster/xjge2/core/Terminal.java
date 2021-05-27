@@ -132,11 +132,14 @@ final class Terminal implements PropertyChangeListener {
             //put("beep", new TCBeep());
             put("cls",            new TCCLS());
             put("setFullscreen",  new TCSetFullscreen());
+            put("setMonitor",     new TCSetMonitor());
             put("setScreenSplit", new TCScreenSplit());
+            put("setVSync",       new TCSetVSync());
             put("terminate",      new TCTerminate());
         }};
         
-        commands.put("help", new TCHelp(this));
+        commands.put("help",         new TCHelp(this));
+        commands.put("showCommands", new TCShowCommands(this));
         
         for(int i = 0; i < text.length; i++) {
             text[i] = new TerminalText(new Font());
