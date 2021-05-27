@@ -5,7 +5,6 @@ in vec2 ioTexCoords;
 
 uniform int uType;
 uniform float uOpacity;
-uniform vec3 uColor;
 uniform sampler2D uTexture;
 
 out vec4 ioResult;
@@ -41,7 +40,7 @@ void main() {
             break;
 
         case 3: //Used for rendering background rectangles.
-            ioResult = vec4(uColor, uOpacity);
+            ioResult = vec4(ioColor, uOpacity);
             break;
     }
 }

@@ -1,6 +1,14 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project-private xmlns="http://www.netbeans.org/ns/project-private/1">
-    <editor-bookmarks xmlns="http://www.netbeans.org/ns/editor-bookmarks/2" lastBookmarkId="36">
+    <editor-bookmarks xmlns="http://www.netbeans.org/ns/editor-bookmarks/2" lastBookmarkId="38">
+        <file>
+            <url>src/dev/theskidster/xjge2/core/Terminal.java</url>
+            <bookmark id="38">
+                <name/>
+                <line>120</line>
+                <key/>
+            </bookmark>
+        </file>
         <file>
             <url>src/dev/theskidster/xjge2/input/Input.java</url>
             <bookmark id="9">
@@ -18,18 +26,10 @@
             </bookmark>
         </file>
         <file>
-            <url>src/dev/theskidster/xjge2/ui/Background.java</url>
-            <bookmark id="35">
-                <name/>
-                <line>9</line>
-                <key/>
-            </bookmark>
-        </file>
-        <file>
             <url>src/dev/theskidster/xjge2/core/XJGE.java</url>
             <bookmark id="36">
                 <name/>
-                <line>72</line>
+                <line>73</line>
                 <key/>
             </bookmark>
         </file>
@@ -44,14 +44,9 @@
     </editor-bookmarks>
     <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
         <group>
-            <file>file:/C:/Users/thesk/Documents/Projects/XJGE/XJGE-2/src/dev/theskidster/xjge2/core/Input.java</file>
-            <file>file:/C:/Users/thesk/Documents/Projects/XJGE/XJGE-2/src/dev/theskidster/xjge2/core/Game.java</file>
-            <file>file:/C:/Users/thesk/Documents/Projects/XJGE/XJGE-2/src/dev/theskidster/xjge2/ui/Background.java</file>
             <file>file:/C:/Users/thesk/Documents/Projects/XJGE/XJGE-2/src/dev/theskidster/xjge2/test/Test.java</file>
-            <file>file:/C:/Users/thesk/Documents/Projects/XJGE/XJGE-2/src/dev/theskidster/xjge2/assets/defaultFragment.glsl</file>
             <file>file:/C:/Users/thesk/Documents/Projects/XJGE/XJGE-2/src/dev/theskidster/xjge2/core/Terminal.java</file>
             <file>file:/C:/Users/thesk/Documents/Projects/XJGE/XJGE-2/src/dev/theskidster/xjge2/core/XJGE.java</file>
-            <file>file:/C:/Users/thesk/Documents/Projects/XJGE/XJGE-2/src/dev/theskidster/xjge2/assets/defaultVertex.glsl</file>
         </group>
     </open-files>
 </project-private>

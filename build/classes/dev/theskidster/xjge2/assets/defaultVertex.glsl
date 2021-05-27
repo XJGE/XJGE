@@ -37,6 +37,7 @@ void main() {
             break;
 
         case 3: //Used for rendering background rectangles.
+            ioColor = aColor;
             gl_Position = uProjection * vec4(aPosition, 1);
             break;
     }

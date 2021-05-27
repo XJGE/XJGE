@@ -1,10 +1,10 @@
 package dev.theskidster.xjge2.core;
 
 import dev.theskidster.xjge2.graphics.Color;
-import dev.theskidster.xjge2.ui.Background;
 import dev.theskidster.xjge2.ui.Font;
 import static dev.theskidster.xjge2.ui.Font.DEFAULT_SIZE;
 import dev.theskidster.xjge2.ui.Glyph;
+import dev.theskidster.xjge2.ui.Rectangle;
 import dev.theskidster.xjge2.ui.Text;
 import org.joml.Vector3f;
 
@@ -16,6 +16,8 @@ import org.joml.Vector3f;
 class TerminalText extends Text {
 
     private final int PADDING = 4;
+    
+    Rectangle background = new Rectangle();
     
     TerminalText(Font font) {
         super(font);
@@ -54,7 +56,7 @@ class TerminalText extends Text {
         updateChangeValues(text, position, Color.WHITE);
     }
     
-    void drawOutput(TerminalOutput[] o1, TerminalOutput o2, int index, boolean executed, Background background) {
+    Rectangle drawOutput(TerminalOutput[] o1, TerminalOutput o2, int index, boolean executed) {
         if(executed) {
             glyphs.clear();
             
@@ -84,12 +86,13 @@ class TerminalText extends Text {
                 }
             }
             
-            background.drawRectangle(0, yOffset + descent + DEFAULT_SIZE + PADDING, 
-                                     XJGE.getResolutionX(), Math.abs(descent), 
-                                     Color.BLACK, 0.4f);
+            background = new Rectangle(0, yOffset + descent + DEFAULT_SIZE + PADDING, 
+                                       XJGE.getResolutionX(), Math.abs(descent));
         }
         
         font.draw(glyphs, executed);
-    } 
+        
+        return background;
+    }
 
 }

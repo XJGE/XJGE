@@ -5,6 +5,7 @@ import static dev.theskidster.xjge2.core.Window.HANDLE;
 import dev.theskidster.xjge2.shaderutils.BufferType;
 import dev.theskidster.xjge2.shaderutils.GLProgram;
 import dev.theskidster.xjge2.shaderutils.Shader;
+import dev.theskidster.xjge2.ui.RectangleBatch;
 import java.nio.file.Path;
 import java.util.Collections;
 import java.util.HashMap;
@@ -121,7 +122,6 @@ public final class XJGE {
                 defaultProgram.use();
                 defaultProgram.addUniform(BufferType.INT,   "uType");
                 defaultProgram.addUniform(BufferType.FLOAT, "uOpacity");
-                defaultProgram.addUniform(BufferType.VEC3,  "uColor");
                 defaultProgram.addUniform(BufferType.MAT4,  "uModel");
                 defaultProgram.addUniform(BufferType.MAT4,  "uView");
                 defaultProgram.addUniform(BufferType.MAT4,  "uProjection");
@@ -136,8 +136,14 @@ public final class XJGE {
                 if(debugEnabled && key == GLFW_KEY_F1 && action == GLFW_PRESS) {
                     XJGE.terminalEnabled = !terminalEnabled;
                     
-                    if(terminalEnabled) Input.setDeviceEnabled(KEY_MOUSE_COMBO, false);
-                    else                Input.revertEnabledState(KEY_MOUSE_COMBO);
+                    if(terminalEnabled) {
+                        Input.setDeviceEnabled(KEY_MOUSE_COMBO, false);
+                        terminal.rectBatch1 = new RectangleBatch(1);
+                        terminal.rectBatch2 = new RectangleBatch(5);
+                    } else {
+                        //TODO: free terminal batches?
+                        Input.revertEnabledState(KEY_MOUSE_COMBO);
+                    }
                 }
                 
                 if(debugEnabled && key == GLFW_KEY_F2 && action == GLFW_PRESS) {

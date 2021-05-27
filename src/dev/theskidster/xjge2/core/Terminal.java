@@ -1,14 +1,16 @@
 package dev.theskidster.xjge2.core;
 
 import dev.theskidster.xjge2.graphics.Color;
-import dev.theskidster.xjge2.ui.Background;
 import dev.theskidster.xjge2.ui.Font;
 import static dev.theskidster.xjge2.ui.Font.DEFAULT_SIZE;
+import dev.theskidster.xjge2.ui.Rectangle;
+import dev.theskidster.xjge2.ui.RectangleBatch;
 import dev.theskidster.xjge2.ui.Text;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.TreeMap;
 import org.joml.Matrix4f;
 import org.joml.Vector3f;
@@ -23,7 +25,7 @@ final class Terminal implements PropertyChangeListener {
 
     private int xIndex;
     private int yIndex;
-    private int shiftElements = -1;
+    private static int shiftElements = -1;
     private final int glyphAdvance;
     
     private boolean cursorIdle;
@@ -42,15 +44,18 @@ final class Terminal implements PropertyChangeListener {
     private final Font font             = new Font();
     private final TerminalText[] text   = new TerminalText[9]; 
     private final StringBuilder typed   = new StringBuilder();
-    private final Background background = new Background();
     private final Timer timer           = new Timer(1, 20, this);
+    
+    RectangleBatch rectBatch1;
+    RectangleBatch rectBatch2;
+    private static final TreeMap<Integer, Rectangle> opaqueRectangles = new TreeMap<>();
     
     private final ArrayList<String> cmdHistory      = new ArrayList<>();
     private final TerminalOutput[] cmdOutput        = new TerminalOutput[5];
     private final HashMap<Integer, Integer> charPos = new HashMap<>();
     
     private static final HashMap<Integer, Key> keyChars;
-    private static final TreeMap<String, TerminalCommand> commands;
+    final TreeMap<String, TerminalCommand> commands;
     
     private static class Key {
         private final char c;
@@ -117,19 +122,21 @@ final class Terminal implements PropertyChangeListener {
             put(GLFW_KEY_RIGHT_BRACKET, new Key(']', '}'));
             put(GLFW_KEY_GRAVE_ACCENT,  new Key('`', '~'));
         }};
-        
-        //TODO: add more commands
-        commands = new TreeMap<>() {{
-            //put("beep", new TCBeep());
-            //put("cls", new TCCLS());
-            put("setFullscreen",  new TCSetFullscreen());
-            put("setScreenSplit", new TCScreenSplit());
-            put("terminate",      new TCTerminate());
-        }};
     }
     
     Terminal() {
         updateMatrix();
+        
+        //TODO: add more commands
+        commands = new TreeMap<>() {{
+            //put("beep", new TCBeep());
+            put("cls",            new TCCLS());
+            put("setFullscreen",  new TCSetFullscreen());
+            put("setScreenSplit", new TCScreenSplit());
+            put("terminate",      new TCTerminate());
+        }};
+        
+        commands.put("help", new TCHelp(this));
         
         for(int i = 0; i < text.length; i++) {
             text[i] = new TerminalText(new Font());
@@ -166,11 +173,21 @@ final class Terminal implements PropertyChangeListener {
         XJGE.getDefaultGLProgram().use();
         XJGE.getDefaultGLProgram().setUniform("uProjection", false, projMatrix);
         
-        background.drawRectangle(0, 0, XJGE.getResolutionX(), Font.DEFAULT_SIZE + 4, Color.BLACK, 1);
+        rectBatch1.batchStart(1);
+            rectBatch1.drawRectangle(0, 0, XJGE.getResolutionX(), Font.DEFAULT_SIZE + 4, Color.BLACK);
+        rectBatch1.batchEnd();
+        
+        rectBatch2.batchStart(0.4f);
+            opaqueRectangles.forEach((index, rect) -> {
+                rectBatch2.drawRectangle(rect, Color.BLACK);
+            });
+        rectBatch2.batchEnd();
         
         for(int i = 0; i <= shiftElements; i++) {
-            text[i].drawOutput(cmdOutput, cmdOutput[i], i, executed, background);   
+            opaqueRectangles.put(i, text[i].drawOutput(cmdOutput, cmdOutput[i], i, executed));
         }
+        
+        executed = false;
         
         text[5].drawString(">", caretPos, Color.WHITE);
         if(suggest) text[6].drawString(suggestion, commandPos, Color.GRAY);
@@ -378,6 +395,24 @@ final class Terminal implements PropertyChangeListener {
     @Override
     public void propertyChange(PropertyChangeEvent evt) {
         cursorIdle = (Boolean) evt.getNewValue();
+    }
+    
+    private static class TCCLS extends TerminalCommand {
+        
+        public TCCLS() {
+            super("Clears the terminal output.",
+
+                  "Simply type cls to use. This command contains no additional " + 
+                  "arguments.",
+
+                  "cls");
+        }
+
+        @Override
+        public void execute(List<String> args) {
+            shiftElements = -1;
+            opaqueRectangles.clear();
+        }
     }
     
 }
