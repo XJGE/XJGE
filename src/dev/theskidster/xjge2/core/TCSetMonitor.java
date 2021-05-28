@@ -11,7 +11,7 @@ import java.util.List;
 final class TCSetMonitor extends TerminalCommand {
 
     public TCSetMonitor() {
-        super("Changes the current visual display device.", 
+        super("Changes the current monitor the game window use.", 
 
               useGenericSetter("device"),
 
@@ -26,10 +26,10 @@ final class TCSetMonitor extends TerminalCommand {
             try {
                 int value = Integer.parseInt(args.get(0));
 
-                if(value > -1 && value < WinKit.getNumMonitors()) {
+                if(value > 0 && value < WinKit.getNumMonitors() + 1) {
                     Window.setMonitor(args.get(0));
                 } else {
-                    setOutput("ERROR: Could not find a display device by the ID of " + value, Color.YELLOW);
+                    setOutput("ERROR: Could not find a monitor with an ID of " + value, Color.YELLOW);
                 }
             } catch(NumberFormatException e) {
                 if(args.get(0).equals("next") || args.get(0).equals("prev")) {

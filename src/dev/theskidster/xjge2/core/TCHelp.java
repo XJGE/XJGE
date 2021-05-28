@@ -2,7 +2,6 @@ package dev.theskidster.xjge2.core;
 
 import dev.theskidster.xjge2.graphics.Color;
 import java.util.List;
-import java.util.TreeMap;
 
 /**
  * @author J Hoffman

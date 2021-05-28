@@ -146,6 +146,7 @@ public final class XJGE {
                 put("setMonitor",     new TCSetMonitor());
                 put("setScreenSplit", new TCScreenSplit());
                 put("setVSync",       new TCSetVSync());
+                put("setVideoMode",   new TCSetVideoMode());
                 put("showCommands",   new TCShowCommands());
                 put("terminate",      new TCTerminate());
             }};
@@ -287,7 +288,7 @@ public final class XJGE {
         }
     }
     
-    public static void addTerminalCommand(String name, TerminalCommand command) {
+    public static void addCommand(String name, TerminalCommand command) {
         if(engineCommands.containsKey(name)) {
             Logger.setDomain("core");
             Logger.logWarning("Failed to add command \"" + name + "\". A command " + 
