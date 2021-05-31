@@ -23,7 +23,7 @@ public abstract class Widget {
         this.height   = height;
     }
     
-    public abstract Command update(); //TODO: cursorX/Y?
+    public abstract void update(); //TODO: cursorX/Y?
     
     public abstract void render(Map<String, GLProgram> glPrograms);
     

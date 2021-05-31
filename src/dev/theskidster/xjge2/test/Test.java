@@ -24,6 +24,8 @@ public class Test {
         
         XJGE.init("/dev/theskidster/xjge2/assets/", true, null, true);
         
+        
+        
         //Font.DEFAULT_SIZE = 12;
         
         Game.setScene(new TestScene());

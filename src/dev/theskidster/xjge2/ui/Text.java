@@ -75,6 +75,13 @@ public class Text {
         updateChangeValues(text, position, color);
     }
     
+    public void drawString2(String text, Vector3f position, Color color) {
+        /*
+        TODO:
+        look into ways to optimize this.
+        */
+    }
+    
     public static String wrap(String text, int advanceLimit, Font font) {
         var words        = new ArrayList<String>();
         StringBuilder sb = new StringBuilder();

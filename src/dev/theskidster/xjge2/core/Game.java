@@ -22,9 +22,14 @@ public final class Game {
     private static double deltaMetric = 0;
     
     private static boolean ticked;
+    private static boolean showInputInfo;
+    private static boolean showRuntimeInfo;
+    private static boolean showSystemInfo;
     
     private static Color clearColor = Color.BLACK;
     private static Scene scene;
+    
+    private static InfoRuntime runtimeInfo = new InfoRuntime();
     
     private static final Queue<Event> events = new PriorityQueue<>(Comparator.comparing(Event::getPriority));
     
@@ -125,6 +130,14 @@ public final class Game {
                 terminal.render();
             }
             
+            if(showInputInfo) {
+                
+            } else if(showRuntimeInfo) {
+                runtimeInfo.render();
+            } else if(showSystemInfo) {
+                //render sysinfo
+            }
+            
             glfwSwapBuffers(Window.HANDLE);
             
             if(!ticked) {
@@ -163,8 +176,53 @@ public final class Game {
         return ticked;
     }
     
+    static boolean getInputInfoVisible() {
+        return showInputInfo;
+    }
+    
+    static boolean getRuntimeInfoVisible() {
+        return showRuntimeInfo;
+    }
+    
+    static boolean getSystemInfoVisible() {
+        return showSystemInfo;
+    }
+    
     public static void setClearColor(Color color) {
         clearColor = color;
+    }
+    
+    static void setInputInfoVisible(boolean showInputInfo) {
+        /*
+        TODO:
+        - add icons to UI utilities
+        - add controller disconnect event
+        */
+        
+        Game.showInputInfo = showInputInfo;
+        
+        if(showRuntimeInfo) {
+            if(showRuntimeInfo) setRuntimeInfoVisible(false);
+            if(showSystemInfo)  setSystemInfoVisible(false);
+        }
+    }
+    
+    static void setRuntimeInfoVisible(boolean showRuntimeInfo) {
+        Game.showRuntimeInfo = showRuntimeInfo;
+        
+        if(showRuntimeInfo) {
+            if(showInputInfo)  setInputInfoVisible(false);
+            if(showSystemInfo) setSystemInfoVisible(false);
+        }
+    }
+    
+    static void setSystemInfoVisible(boolean showSystemInfo) {
+        Game.showSystemInfo = showSystemInfo;
+        
+        if(showSystemInfo) {
+            if(showInputInfo)   setInputInfoVisible(false);
+            if(showRuntimeInfo) setRuntimeInfoVisible(false);
+        }
     }
     
     public static void setScene(Scene scene) {

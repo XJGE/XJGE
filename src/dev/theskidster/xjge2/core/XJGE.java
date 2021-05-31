@@ -6,9 +6,9 @@ import static dev.theskidster.xjge2.core.Window.HANDLE;
 import dev.theskidster.xjge2.shaderutils.BufferType;
 import dev.theskidster.xjge2.shaderutils.GLProgram;
 import dev.theskidster.xjge2.shaderutils.Shader;
+import dev.theskidster.xjge2.test.TestWidget;
 import dev.theskidster.xjge2.ui.RectangleBatch;
 import java.nio.file.Path;
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.LinkedList;
@@ -140,15 +140,16 @@ public final class XJGE {
             
             //TODO: add more commands
             engineCommands = new TreeMap<>() {{
-                put("cls",            new TCCLS());
-                put("help",           new TCHelp());
-                put("setFullscreen",  new TCSetFullscreen());
-                put("setMonitor",     new TCSetMonitor());
-                put("setScreenSplit", new TCScreenSplit());
-                put("setVSync",       new TCSetVSync());
-                put("setVideoMode",   new TCSetVideoMode());
-                put("showCommands",   new TCShowCommands());
-                put("terminate",      new TCTerminate());
+                put("cls",             new TCCLS());
+                put("help",            new TCHelp());
+                put("setFullscreen",   new TCSetFullscreen());
+                put("setMonitor",      new TCSetMonitor());
+                put("setScreenSplit",  new TCScreenSplit());
+                put("setVSync",        new TCSetVSync());
+                put("setVideoMode",    new TCSetVideoMode());
+                put("showCommands",    new TCShowCommands());
+                put("showRuntimeInfo", new TCShowRuntimeInfo());
+                put("terminate",       new TCTerminate());
             }};
             
             glfwSetKeyCallback(Window.HANDLE, (window, key, scancode, action, mods) -> {
@@ -227,6 +228,9 @@ public final class XJGE {
     public static void start() {
         engineCommands.putAll(userCommands);
         engineCommands.values().forEach(command -> command.setCommands(engineCommands));
+        
+        //TODO: temp
+        viewports[0].addUIWidget("bleh", new TestWidget());
         
         glPrograms = Collections.unmodifiableMap(glPrograms);
         freeCam    = new FreeCam();
