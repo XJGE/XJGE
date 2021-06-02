@@ -2,7 +2,6 @@ package dev.theskidster.xjge2.core;
 
 import dev.theskidster.xjge2.graphics.Graphics;
 import dev.theskidster.xjge2.shaderutils.GLProgram;
-import dev.theskidster.xjge2.ui.Widget;
 import java.util.Collections;
 import java.util.LinkedHashMap;
 import java.util.LinkedList;
@@ -102,6 +101,7 @@ final class Viewport {
             case "ui" -> {
                 currCamera.setOrtho(glPrograms.get("default"), width, height);
                 ui.values().forEach(widget -> widget.render(glPrograms));
+                ui.values().forEach(widget -> widget.resetStringIndex());
                 resetCamera(glPrograms);
             }
             
