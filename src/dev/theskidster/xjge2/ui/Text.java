@@ -2,7 +2,7 @@ package dev.theskidster.xjge2.ui;
 
 import dev.theskidster.xjge2.graphics.Color;
 import java.util.ArrayList;
-import java.util.HashMap;
+import java.util.TreeMap;
 import org.joml.Vector3f;
 
 /**
@@ -16,8 +16,9 @@ public class Text {
     private final Vector3f prevPosition;
     private Color prevColor;
     protected final Font font;
+    protected Glyph prevGlyph;
     
-    protected final HashMap<Integer, Glyph> glyphs = new HashMap<>();
+    protected final TreeMap<Integer, Glyph> glyphs = new TreeMap<>();
     
     public Text(Font font) {
         this.font = font;
@@ -76,10 +77,48 @@ public class Text {
     }
     
     public void drawString2(String text, Vector3f position, Color color) {
-        /*
-        TODO:
-        look into ways to optimize this.
-        */
+        int advance = 0;
+        int descent = 0;
+
+        for(int i = 0; i < text.length(); i++) {
+            char c = text.charAt(i);
+
+            if(c != '\n') {
+                Vector3f pos = new Vector3f(position.x + advance + font.getGlyphBearingLeft(c), 
+                                            position.y + descent + font.getGlyphDescent(c),
+                                            position.z);
+                
+                Glyph glyph = new Glyph(c, pos, color);
+                
+                boolean addGlyph = false;
+                
+                if(glyphs.size() > 0) {
+                    for(int g = 0; g < glyphs.size(); g++) {
+                        if(!glyph.equals(glyphs.get(g))) {
+                            addGlyph = true;
+                            
+                            //System.out.println(glyphs.containsValue(prevGlyph));
+                            
+                            System.out.println(glyphs.get(g).c + " " + c + ": " + g);
+                            break;
+                        }
+                    }
+                } else {
+                    addGlyph = true;
+                }
+                
+                if(addGlyph) {
+                    prevGlyph = glyph;
+                    glyphs.put(glyphs.size(), glyph);
+                }
+
+                advance += font.getGlyphAdvance(c);
+            } else {
+                advance = 0;
+                descent -= font.getSize();
+            }
+        }
+        
     }
     
     public static String wrap(String text, int advanceLimit, Font font) {

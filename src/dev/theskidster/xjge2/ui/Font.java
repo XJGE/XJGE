@@ -9,6 +9,7 @@ import java.io.InputStream;
 import java.nio.ByteBuffer;
 import java.nio.FloatBuffer;
 import java.util.HashMap;
+import java.util.TreeMap;
 import org.joml.Vector2f;
 import static org.lwjgl.opengl.GL33C.*;
 import org.lwjgl.stb.STBTTBakedChar;
@@ -237,7 +238,7 @@ public final class Font {
         }
     }
     
-    private void offsetPosition(HashMap<Integer, Glyph> glyphs) {
+    private void offsetPosition(TreeMap<Integer, Glyph> glyphs) {
         try(MemoryStack stack = MemoryStack.stackPush()) {
             FloatBuffer positions = stack.mallocFloat(glyphs.size() * Float.BYTES);
             
@@ -256,7 +257,7 @@ public final class Font {
         glVertexAttribDivisor(4, 1);
     }
     
-    private void offsetTexture(HashMap<Integer, Glyph> glyphs) {
+    private void offsetTexture(TreeMap<Integer, Glyph> glyphs) {
         try(MemoryStack stack = MemoryStack.stackPush()) {
             FloatBuffer cells = stack.mallocFloat(glyphs.size() * Float.BYTES);
             
@@ -275,7 +276,7 @@ public final class Font {
         glVertexAttribDivisor(5, 1);
     }
     
-    private void offsetColor(HashMap<Integer, Glyph> glyphs) {
+    private void offsetColor(TreeMap<Integer, Glyph> glyphs) {
         try(MemoryStack stack = MemoryStack.stackPush()) {
             FloatBuffer colors = stack.mallocFloat(glyphs.size() * Float.BYTES);
             
@@ -294,7 +295,7 @@ public final class Font {
         glVertexAttribDivisor(6, 1);
     }
     
-    public void draw(HashMap<Integer, Glyph> glyphs, boolean changed) {
+    public void draw(TreeMap<Integer, Glyph> glyphs, boolean changed) {
         XJGE.getDefaultGLProgram().use();
         
         glEnable(GL_BLEND);

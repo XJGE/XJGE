@@ -65,4 +65,14 @@ public final class Color {
         return conversion;
     }
     
+    public boolean equals(Color other) {
+        if(this == other) {
+            return true;
+        } else {
+            return this.r == other.r && 
+                    this.g == other.g && 
+                    this.b == other.b;
+        }
+    }
+    
 }

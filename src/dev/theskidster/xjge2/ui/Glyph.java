@@ -21,4 +21,10 @@ public final class Glyph {
         this.color    = color;
     }
     
+    public boolean equals(Glyph other) {
+        return (this.c == other.c) &&
+                (this.position.equals(other.position)) &&
+                (this.color.equals(other.color));
+    }
+    
 }
