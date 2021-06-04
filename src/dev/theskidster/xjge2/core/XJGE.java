@@ -67,6 +67,8 @@ public final class XJGE {
     used to set the initial scene the engine will enter upon startup.
     */
     
+    private XJGE() {}
+    
     public static void init(String filepath, boolean debugEnabled, Vector2i resolution, boolean windowResizable) {        
         if(!initCalled) {
             if(System.getProperty("java.version").compareTo("15.0.2") < 0) {

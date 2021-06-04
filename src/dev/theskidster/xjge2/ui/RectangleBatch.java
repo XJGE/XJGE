@@ -3,6 +3,8 @@ package dev.theskidster.xjge2.ui;
 import dev.theskidster.xjge2.core.ErrorUtils;
 import dev.theskidster.xjge2.core.XJGE;
 import dev.theskidster.xjge2.graphics.Color;
+import dev.theskidster.xjge2.graphics.Color;
+import dev.theskidster.xjge2.graphics.Graphics;
 import dev.theskidster.xjge2.graphics.Graphics;
 import org.joml.Vector3f;
 import static org.lwjgl.opengl.GL30.*;
