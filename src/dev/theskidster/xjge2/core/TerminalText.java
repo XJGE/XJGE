@@ -1,7 +1,6 @@
 package dev.theskidster.xjge2.core;
 
 import dev.theskidster.xjge2.graphics.Rectangle;
-import dev.theskidster.xjge2.ui.Text;
 import org.joml.Vector3f;
 
 /**
@@ -9,7 +8,7 @@ import org.joml.Vector3f;
  * Created: May 25, 2021
  */
 
-class TerminalText extends Text {
+class TerminalText {
 
     private final int PADDING = 4;
     
