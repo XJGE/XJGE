@@ -1,6 +1,6 @@
 package dev.theskidster.xjge2.core;
 
-import dev.theskidster.xjge2.ui.Rectangle;
+import dev.theskidster.xjge2.graphics.Rectangle;
 import dev.theskidster.xjge2.ui.Text;
 import org.joml.Vector3f;
 

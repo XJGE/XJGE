@@ -2,8 +2,8 @@ package dev.theskidster.xjge2.core;
 
 import static dev.theskidster.xjge2.core.Font2.DEFAULT_SIZE;
 import dev.theskidster.xjge2.graphics.Color;
-import dev.theskidster.xjge2.ui.Rectangle;
-import dev.theskidster.xjge2.ui.RectangleBatch;
+import dev.theskidster.xjge2.graphics.Rectangle;
+import dev.theskidster.xjge2.graphics.RectangleBatch;
 import dev.theskidster.xjge2.ui.Text;
 import java.awt.Font;
 import java.beans.PropertyChangeEvent;
