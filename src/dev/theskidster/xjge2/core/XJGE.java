@@ -1,13 +1,11 @@
 package dev.theskidster.xjge2.core;
 
-import static dev.theskidster.xjge2.core.Input.KEY_MOUSE_COMBO;
 import dev.theskidster.xjge2.core.Terminal.TCCLS;
 import static dev.theskidster.xjge2.core.Window.HANDLE;
 import dev.theskidster.xjge2.shaderutils.BufferType;
 import dev.theskidster.xjge2.shaderutils.GLProgram;
 import dev.theskidster.xjge2.shaderutils.Shader;
 import dev.theskidster.xjge2.test.TestWidget;
-import dev.theskidster.xjge2.ui.RectangleBatch;
 import java.nio.file.Path;
 import java.util.Collections;
 import java.util.HashMap;
@@ -43,6 +41,8 @@ public final class XJGE {
     private static String filepath = "/dev/theskidster/xjge2/assets/";
     private static FreeCam freeCam;
     private static Terminal terminal;
+    
+    private static TestWidget testWidget; //TODO: temp
     
     private static TreeMap<String, TerminalCommand> engineCommands     = new TreeMap<>();
     private static final TreeMap<String, TerminalCommand> userCommands = new TreeMap<>();
@@ -154,6 +154,8 @@ public final class XJGE {
             
             glfwSetKeyCallback(Window.HANDLE, (window, key, scancode, action, mods) -> {
                 if(debugEnabled && key == GLFW_KEY_F1 && action == GLFW_PRESS) {
+                    //TODO: terminal disabled until new font utilities are in place.
+                    /*
                     XJGE.terminalEnabled = !terminalEnabled;
                     
                     if(terminalEnabled) {
@@ -164,6 +166,7 @@ public final class XJGE {
                         //TODO: free terminal batches?
                         Input.revertEnabledState(KEY_MOUSE_COMBO);
                     }
+                    */
                 }
                 
                 if(debugEnabled && key == GLFW_KEY_F2 && action == GLFW_PRESS) {
@@ -200,6 +203,7 @@ public final class XJGE {
                     terminal.processKeyInput(key, action, mods);
                 } else {
                     //TODO: pass key input to ui widget
+                    testWidget.processKeyInput(key, action, mods);
                 }
             });
 
@@ -230,7 +234,8 @@ public final class XJGE {
         engineCommands.values().forEach(command -> command.setCommands(engineCommands));
         
         //TODO: temp
-        viewports[0].addUIWidget("bleh", new TestWidget());
+        testWidget = new TestWidget();
+        viewports[0].addUIWidget("bleh", testWidget);
         
         glPrograms = Collections.unmodifiableMap(glPrograms);
         freeCam    = new FreeCam();

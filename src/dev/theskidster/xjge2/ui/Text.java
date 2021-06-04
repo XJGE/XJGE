@@ -1,10 +1,5 @@
 package dev.theskidster.xjge2.ui;
 
-import dev.theskidster.xjge2.graphics.Color;
-import java.util.ArrayList;
-import java.util.HashMap;
-import org.joml.Vector3f;
-
 /**
  * @author J Hoffman
  * Created: May 18, 2021
@@ -12,6 +7,7 @@ import org.joml.Vector3f;
 
 public class Text {
 
+    /*
     private String prevText;
     private final Vector3f prevPosition;
     private Color prevColor;
@@ -181,6 +177,6 @@ public class Text {
         int count = (text.charAt(index) == c) ? 1 : 0;
         
         return count + numCharOccurences(text, c, index + 1);
-    }
+    }*/
     
 }

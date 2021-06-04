@@ -2,8 +2,6 @@ package dev.theskidster.xjge2.core;
 
 import dev.theskidster.xjge2.graphics.Color;
 import dev.theskidster.xjge2.shaderutils.GLProgram;
-import dev.theskidster.xjge2.ui.Font;
-import dev.theskidster.xjge2.ui.Glyph;
 import java.util.HashMap;
 import java.util.Map;
 import org.joml.Vector3f;

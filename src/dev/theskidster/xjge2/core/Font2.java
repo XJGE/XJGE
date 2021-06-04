@@ -22,7 +22,7 @@ import static org.lwjgl.system.MemoryUtil.NULL;
  * Created: Jun 3, 2021
  */
 
-public final class Font2 {
+public final class Font2 { //TODO: rename
     
     public static int DEFAULT_SIZE = 32;
     

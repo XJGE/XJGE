@@ -1,6 +1,5 @@
 package dev.theskidster.xjge2.core;
 
-import dev.theskidster.xjge2.ui.Font;
 import dev.theskidster.xjge2.ui.Text;
 import org.joml.Vector3f;
 
@@ -18,13 +17,13 @@ final class InfoRuntime {
     
     InfoRuntime() {
         for(int i = 0; i < text.length; i++) {
-            text[i] = new Text(new Font()); //TODO; find a way to use existing font data
+            //text[i] = new Text(new Font()); //TODO; find a way to use existing font data
             //maybe by providing multiple glyph collections?
         }
     }
     
     void render() {
-        widgetPos.y = Window.getHeight() - Font.DEFAULT_SIZE;
+        //widgetPos.y = Window.getHeight() - Font.DEFAULT_SIZE;
         
         
     }

@@ -1,9 +1,5 @@
 package dev.theskidster.xjge2.core;
 
-import dev.theskidster.xjge2.graphics.Color;
-import dev.theskidster.xjge2.ui.Font;
-import static dev.theskidster.xjge2.ui.Font.DEFAULT_SIZE;
-import dev.theskidster.xjge2.ui.Glyph;
 import dev.theskidster.xjge2.ui.Rectangle;
 import dev.theskidster.xjge2.ui.Text;
 import org.joml.Vector3f;
@@ -19,11 +15,11 @@ class TerminalText extends Text {
     
     Rectangle background = new Rectangle();
     
-    TerminalText(Font font) {
-        super(font);
+    TerminalText() {
     }
     
     void drawCommand(String text, Vector3f position) {
+        /*
         boolean changed = textChanged(text) || positionChanged(position);
         
         if(changed) {
@@ -54,9 +50,10 @@ class TerminalText extends Text {
         font.draw(glyphs, changed);
         
         updateChangeValues(text, position, Color.WHITE);
+        */
     }
     
-    Rectangle drawOutput(TerminalOutput[] o1, TerminalOutput o2, int index, boolean executed) {
+    Rectangle drawOutput(TerminalOutput[] o1, TerminalOutput o2, int index, boolean executed) {/*
         if(executed) {
             glyphs.clear();
             
@@ -91,7 +88,7 @@ class TerminalText extends Text {
         }
         
         font.draw(glyphs, executed);
-        
+        */
         return background;
     }
 

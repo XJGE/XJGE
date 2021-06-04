@@ -1,6 +1,5 @@
 package dev.theskidster.xjge2.core;
 
-import dev.theskidster.xjge2.ui.Glyph;
 import java.nio.FloatBuffer;
 import java.nio.IntBuffer;
 import java.util.HashMap;
