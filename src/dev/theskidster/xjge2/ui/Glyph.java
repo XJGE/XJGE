@@ -10,10 +10,12 @@ import org.joml.Vector3f;
 
 public final class Glyph {
 
-    char c;
+    //TODO: remove public modifiers once moved
     
-    Vector3f position;
-    Color color;
+    public char c;
+    
+    public Vector3f position;
+    public Color color;
     
     public Glyph(char c, Vector3f position, Color color) {
         this.c        = c;

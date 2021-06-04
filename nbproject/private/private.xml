@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project-private xmlns="http://www.netbeans.org/ns/project-private/1">
-    <editor-bookmarks xmlns="http://www.netbeans.org/ns/editor-bookmarks/2" lastBookmarkId="42">
+    <editor-bookmarks xmlns="http://www.netbeans.org/ns/editor-bookmarks/2" lastBookmarkId="43">
         <file>
             <url>src/dev/theskidster/xjge2/core/Game.java</url>
             <bookmark id="42">
@@ -52,13 +52,15 @@
             <file>file:/C:/Users/thesk/Documents/Projects/XJGE/XJGE-2/src/dev/theskidster/xjge2/ui/Glyph.java</file>
             <file>file:/C:/Users/thesk/Documents/Projects/XJGE/XJGE-2/src/dev/theskidster/xjge2/core/Game.java</file>
             <file>file:/C:/Users/thesk/Documents/Projects/XJGE/XJGE-2/src/dev/theskidster/xjge2/ui/Font.java</file>
+            <file>file:/C:/Users/thesk/Documents/Projects/XJGE/XJGE-2/src/dev/theskidster/xjge2/test/TestScene.java</file>
             <file>file:/C:/Users/thesk/Documents/Projects/XJGE/XJGE-2/src/dev/theskidster/xjge2/test/TestWidget.java</file>
+            <file>file:/C:/Users/thesk/Documents/Projects/XJGE/XJGE-2/src/dev/theskidster/xjge2/core/Widget.java</file>
             <file>file:/C:/Users/thesk/Documents/Projects/XJGE/XJGE-2/src/dev/theskidster/xjge2/test/Test.java</file>
             <file>file:/C:/Users/thesk/Documents/Projects/XJGE/XJGE-2/src/dev/theskidster/xjge2/ui/Text.java</file>
             <file>file:/C:/Users/thesk/Documents/Projects/XJGE/XJGE-2/src/dev/theskidster/xjge2/core/TerminalText.java</file>
-            <file>file:/C:/Users/thesk/Documents/Projects/XJGE/XJGE-2/src/dev/theskidster/xjge2/core/Terminal.java</file>
+            <file>file:/C:/Users/thesk/Documents/Projects/XJGE/XJGE-2/src/dev/theskidster/xjge2/ui/FontBitmap.java</file>
+            <file>file:/C:/Users/thesk/Documents/Projects/XJGE/XJGE-2/src/dev/theskidster/xjge2/graphics/Graphics.java</file>
             <file>file:/C:/Users/thesk/Documents/Projects/XJGE/XJGE-2/src/dev/theskidster/xjge2/core/XJGE.java</file>
-            <file>file:/C:/Users/thesk/Documents/Projects/XJGE/XJGE-2/src/dev/theskidster/xjge2/graphics/Color.java</file>
         </group>
     </open-files>
 </project-private>

@@ -9,7 +9,6 @@ import java.io.InputStream;
 import java.nio.ByteBuffer;
 import java.nio.FloatBuffer;
 import java.util.HashMap;
-import java.util.TreeMap;
 import org.joml.Vector2f;
 import static org.lwjgl.opengl.GL33C.*;
 import org.lwjgl.stb.STBTTBakedChar;
@@ -34,8 +33,8 @@ public final class Font {
     private final int vboPosOffset = glGenBuffers();
     private final int vboTexOffset = glGenBuffers();
     private final int vboColOffset = glGenBuffers();
-    private final int texHandle;
-    private final int size;
+    public final int texHandle;
+    public final int size;
     
     private final float SCALE = 1.5f;
     
@@ -148,10 +147,7 @@ public final class Font {
             }
             
             STBTTPackedchar.Buffer packedCharBuf = STBTTPackedchar.malloc(charset.length());
-            STBTTPackRange.Buffer rangeBuf       = STBTTPackRange.malloc(1);
             
-            rangeBuf.put(STBTTPackRange.malloc().set(size, 32, null, 96, packedCharBuf, (byte) 1, (byte) 1));
-            rangeBuf.flip();
             
             boolean containsAllGlyphs = false;
             
@@ -177,6 +173,8 @@ public final class Font {
                 sizeInPixels += 16;
             }
             
+            MemoryUtil.memFree(fontBuf);
+            
             for(int i = 0; i < charset.length(); i++) {
                 STBTTPackedchar glyph = packedCharBuf.get(i);
                 
@@ -188,6 +186,8 @@ public final class Font {
                 texOffsets.put(character, new Vector2f(texCoordX, texCoordY));
                 advanceValues.put(character, glyph.xadvance());
             }
+            
+            MemoryUtil.memFree(packedCharBuf);
             
             glTexImage2D(GL_TEXTURE_2D, 0, GL_ALPHA, imageWidth, imageHeight, 0, GL_ALPHA, GL_UNSIGNED_BYTE, imageBuf);
             glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
@@ -228,9 +228,9 @@ public final class Font {
             */
             
             //causes java to return -1073740940
-            //MemoryUtil.memFree(fontBuf);
+            
             //MemoryUtil.memFree(bakedCharBuf);
-            //MemoryUtil.memFree(imageBuf);
+            MemoryUtil.memFree(imageBuf);
             
         } catch(IOException e) {
             Logger.setDomain("ui");
@@ -238,7 +238,12 @@ public final class Font {
         }
     }
     
-    private void offsetPosition(TreeMap<Integer, Glyph> glyphs) {
+    public int getVao() {
+        //TODO: Probably will ditch the graphics object here.
+        return g.vao;
+    }
+    
+    private void offsetPosition(HashMap<Integer, Glyph> glyphs) {
         try(MemoryStack stack = MemoryStack.stackPush()) {
             FloatBuffer positions = stack.mallocFloat(glyphs.size() * Float.BYTES);
             
@@ -257,7 +262,7 @@ public final class Font {
         glVertexAttribDivisor(4, 1);
     }
     
-    private void offsetTexture(TreeMap<Integer, Glyph> glyphs) {
+    private void offsetTexture(HashMap<Integer, Glyph> glyphs) {
         try(MemoryStack stack = MemoryStack.stackPush()) {
             FloatBuffer cells = stack.mallocFloat(glyphs.size() * Float.BYTES);
             
@@ -276,7 +281,7 @@ public final class Font {
         glVertexAttribDivisor(5, 1);
     }
     
-    private void offsetColor(TreeMap<Integer, Glyph> glyphs) {
+    private void offsetColor(HashMap<Integer, Glyph> glyphs) {
         try(MemoryStack stack = MemoryStack.stackPush()) {
             FloatBuffer colors = stack.mallocFloat(glyphs.size() * Float.BYTES);
             
@@ -295,7 +300,7 @@ public final class Font {
         glVertexAttribDivisor(6, 1);
     }
     
-    public void draw(TreeMap<Integer, Glyph> glyphs, boolean changed) {
+    public void draw(HashMap<Integer, Glyph> glyphs, boolean changed) {
         XJGE.getDefaultGLProgram().use();
         
         glEnable(GL_BLEND);

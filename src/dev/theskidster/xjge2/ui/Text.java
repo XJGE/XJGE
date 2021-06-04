@@ -2,7 +2,7 @@ package dev.theskidster.xjge2.ui;
 
 import dev.theskidster.xjge2.graphics.Color;
 import java.util.ArrayList;
-import java.util.TreeMap;
+import java.util.HashMap;
 import org.joml.Vector3f;
 
 /**
@@ -18,7 +18,7 @@ public class Text {
     protected final Font font;
     protected Glyph prevGlyph;
     
-    protected final TreeMap<Integer, Glyph> glyphs = new TreeMap<>();
+    protected final HashMap<Integer, Glyph> glyphs = new HashMap<>();
     
     public Text(Font font) {
         this.font = font;
@@ -99,7 +99,7 @@ public class Text {
                             
                             //System.out.println(glyphs.containsValue(prevGlyph));
                             
-                            System.out.println(glyphs.get(g).c + " " + c + ": " + g);
+                            //System.out.println(glyphs.get(g).c + " " + c + ": " + g);
                             break;
                         }
                     }

@@ -3,6 +3,8 @@ package dev.theskidster.xjge2.core;
 import dev.theskidster.xjge2.graphics.Color;
 import dev.theskidster.xjge2.shaderutils.GLProgram;
 import dev.theskidster.xjge2.ui.Font;
+import dev.theskidster.xjge2.ui.Glyph;
+import java.util.HashMap;
 import java.util.Map;
 import org.joml.Vector3f;
 import org.joml.Vector3i;
@@ -14,12 +16,19 @@ import org.joml.Vector3i;
 
 public abstract class Widget {
 
-    protected int stringIndex;
-    
+    private int drawOrder;
     protected int width;
     protected int height;
     
     public Vector3i position = new Vector3i();
+    
+    private final HashMap<Integer, FontVertexData> fontData = new HashMap<>();
+    private final HashMap<Integer, Font2> prevFont          = new HashMap<>();
+    private final HashMap<Integer, String> prevText         = new HashMap<>();
+    private final HashMap<Integer, Vector3f> prevPosition   = new HashMap<>();
+    private final HashMap<Integer, Color>  prevColor        = new HashMap<>();
+    
+    private final HashMap<Integer, HashMap<Integer, Glyph>> glyphs = new HashMap<>();
     
     public Widget(Vector3i position, int width, int height) {
         this.position = position;
@@ -33,47 +42,65 @@ public abstract class Widget {
     
     public abstract void setSplitPosition();
     
-    public int compareTo(Widget widget) {
+    int compareTo(Widget widget) {
         return this.position.z - widget.position.z;
     }
     
-    protected void drawString(Font font, String text, Vector3f position, Color color) {
-        /*
-        I've decided it would be best to move the functionality of the Text 
-        class into this one and reduce the need for extra objects altogether.
-        
-        I suspect there's a performance bottleneck pertaining to the current
-        implementations failure to tightly control calls to glBufferData(). As
-        such, all subsequent calls to drawString() will be assigned index 
-        numbers denoting to the order in which they were called. This number 
-        will be used to organize various collections containing the previous 
-        values of the methods parameters as they were in the prior frame.
-        
-        Using this saved state we can better determine whether a memory 
-        allocation will need to be performed upon the change of one or more of 
-        these values.
-        
-        
-        
-        int stringIndex;
-        
-        TreeMap<Integer, Font>     prevFont;
-        TreeMap<Integer, String>   prevText;
-        TreeMap<Integer, Vector3f> prevPos;
-        TreeMap<Integer, Color>    prevCol;
-        
-        */
-        
-        stringIndex++;
+    private <T> boolean valueChanged(HashMap<Integer, T> prevValue, T currValue) {
+        if(prevValue.containsKey(drawOrder)) {
+            return !prevValue.get(drawOrder).equals(currValue);
+        } else {
+            return true;
+        }
     }
     
-    protected void setFont(Font font) {
-        //maybe just include in drawString()?
-        stringIndex = 0;
+    private <T> void updateValue(HashMap<Integer, T> prevValue, T currValue) {
+        if(valueChanged(prevValue, currValue)) prevValue.put(drawOrder, currValue);
+    }
+    
+    protected void drawString(Font2 font, String text, Vector3f position, Color color) {
+        drawOrder++;
+        
+        boolean changed = valueChanged(prevFont, font) || valueChanged(prevText, text) || 
+                           valueChanged(prevPosition, position) || valueChanged(prevColor, color);
+        
+        if(changed) {
+            if(glyphs.containsKey(drawOrder)) glyphs.get(drawOrder).clear();
+            else                              glyphs.put(drawOrder, new HashMap<>());
+            
+            if(valueChanged(prevFont, font)) {
+                fontData.put(drawOrder, new FontVertexData(font));
+            }
+            
+            int advance = 0;
+            int descent = 0;
+            
+            for(int i = 0; i < text.length(); i++) {
+                char c = text.charAt(i);
+                
+                if(c != '\n') {
+                    Vector3f pos = new Vector3f(position.x + advance + font.getGlyphBearing(c), 
+                                                position.y + descent + font.getGlyphDescent(c),
+                                                position.z);
+                    glyphs.get(drawOrder).put(i, new Glyph(c, pos, color));
+                    advance += font.getGlyphAdvance(c);
+                } else {
+                    advance = 0;
+                    descent -= font.size;
+                }
+            }
+        }
+        
+        fontData.get(drawOrder).render(font, glyphs.get(drawOrder), changed);
+        
+        updateValue(prevFont, font);
+        updateValue(prevText, text);
+        updateValue(prevPosition, position);
+        updateValue(prevColor, color);
     }
     
     void resetStringIndex() {
-        stringIndex = 0;
+        drawOrder = 0;
     }
     
 }

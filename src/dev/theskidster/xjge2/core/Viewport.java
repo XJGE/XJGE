@@ -71,10 +71,10 @@ final class Viewport {
             g.indices  = stack.mallocInt(6);
             
             //(vec3 position), (vec2 texCoords)
-            g.vertices.put(0)    .put(height) .put(0)  .put(1).put(1);
-            g.vertices.put(width).put(height) .put(0)  .put(0).put(1);
-            g.vertices.put(width).put(0)      .put(0)  .put(0).put(0);
-            g.vertices.put(0)    .put(0)      .put(0)  .put(1).put(0);
+            g.vertices.put(0)    .put(height).put(0)    .put(1).put(1);
+            g.vertices.put(width).put(height).put(0)    .put(0).put(1);
+            g.vertices.put(width).put(0)     .put(0)    .put(0).put(0);
+            g.vertices.put(0)    .put(0)     .put(0)    .put(1).put(0);
             
             g.indices.put(0).put(1).put(2);
             g.indices.put(3).put(2).put(0);
