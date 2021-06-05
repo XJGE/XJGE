@@ -198,7 +198,7 @@ public final class Input {
     }
     
     public static int getNumDevices() {
-        return inputDevices.size();
+        return inputDevices.size() - 1;
     }
     
     public static boolean getDevicePresent(int id) {

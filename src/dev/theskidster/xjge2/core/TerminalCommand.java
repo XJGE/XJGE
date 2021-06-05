@@ -4,7 +4,6 @@ import dev.theskidster.xjge2.graphics.Color;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
-import java.util.TreeMap;
 
 /**
  * @author J Hoffman
