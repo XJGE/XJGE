@@ -5,7 +5,6 @@ import static dev.theskidster.xjge2.core.Window.HANDLE;
 import dev.theskidster.xjge2.shaderutils.BufferType;
 import dev.theskidster.xjge2.shaderutils.GLProgram;
 import dev.theskidster.xjge2.shaderutils.Shader;
-import dev.theskidster.xjge2.test.TestWidget;
 import java.nio.file.Path;
 import java.util.Collections;
 import java.util.HashMap;
@@ -41,8 +40,6 @@ public final class XJGE {
     private static String filepath = "/dev/theskidster/xjge2/assets/";
     private static FreeCam freeCam;
     private static Terminal terminal;
-    
-    private static TestWidget testWidget; //TODO: temp
     
     private static TreeMap<String, TerminalCommand> engineCommands     = new TreeMap<>();
     private static final TreeMap<String, TerminalCommand> userCommands = new TreeMap<>();
@@ -205,7 +202,6 @@ public final class XJGE {
                     terminal.processKeyInput(key, action, mods);
                 } else {
                     //TODO: pass key input to ui widget
-                    testWidget.processKeyInput(key, action, mods);
                 }
             });
 
@@ -234,10 +230,6 @@ public final class XJGE {
     public static void start() {
         engineCommands.putAll(userCommands);
         engineCommands.values().forEach(command -> command.setCommands(engineCommands));
-        
-        //TODO: temp
-        testWidget = new TestWidget();
-        viewports[0].addUIWidget("bleh", testWidget);
         
         glPrograms = Collections.unmodifiableMap(glPrograms);
         freeCam    = new FreeCam();
