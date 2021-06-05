@@ -59,6 +59,8 @@ public abstract class Widget {
     protected void drawString(Font2 font, String text, Vector3f position, Color color) {
         drawOrder++;
         
+        if(!prevPosition.containsKey(drawOrder)) prevPosition.put(drawOrder, new Vector3f());
+        
         boolean changed = valueChanged(prevFont, font) || valueChanged(prevText, text) || 
                            valueChanged(prevPosition, position) || valueChanged(prevColor, color);
         
@@ -93,7 +95,7 @@ public abstract class Widget {
         
         updateValue(prevFont, font);
         updateValue(prevText, text);
-        updateValue(prevPosition, position);
+        updateValue(prevPosition, prevPosition.get(drawOrder).set(position));
         updateValue(prevColor, color);
     }
     

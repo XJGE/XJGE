@@ -7,6 +7,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 import org.joml.Vector2f;
+import static org.lwjgl.opengl.GL11.glDeleteTextures;
 import static org.lwjgl.opengl.GL11C.*;
 import org.lwjgl.stb.STBTTBakedChar;
 import org.lwjgl.stb.STBTTFontinfo;
@@ -202,6 +203,10 @@ public final class Font2 { //TODO: rename
     
     float getGlyphDescent(char c) {
         return posOffsets.get(c).y;
+    }
+    
+    public void freeTexture() {
+        glDeleteTextures(texHandle);
     }
     
 }
