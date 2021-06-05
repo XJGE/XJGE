@@ -1,5 +1,6 @@
 package dev.theskidster.xjge2.test;
 
+import dev.theskidster.xjge2.core.Font;
 import dev.theskidster.xjge2.core.Game;
 import dev.theskidster.xjge2.core.XJGE;
 import org.joml.Vector2i;
@@ -23,7 +24,7 @@ public class Test {
         
         XJGE.init("/dev/theskidster/xjge2/assets/", true, null, true);
         
-        //Font2.DEFAULT_SIZE = 12;
+        //Font.DEFAULT_SIZE = 12;
         
         Game.setScene(new TestScene());
         

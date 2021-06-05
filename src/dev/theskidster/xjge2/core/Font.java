@@ -23,7 +23,7 @@ import static org.lwjgl.system.MemoryUtil.NULL;
  * Created: Jun 3, 2021
  */
 
-public final class Font2 { //TODO: rename
+public final class Font { //TODO: rename
     
     public static int DEFAULT_SIZE = 32;
     
@@ -41,13 +41,20 @@ public final class Font2 { //TODO: rename
     private final HashMap<Character, Vector2f> posOffsets = new HashMap<>();
     private final HashMap<Character, Float> advanceValues = new HashMap<>();
     
-    public Font2(String filename, int size) {
+    Font() {
+        this.size = DEFAULT_SIZE;
+        texHandle = glGenTextures();
+        glBindTexture(GL_TEXTURE_2D, texHandle);
+        loadFont(Font.class.getResourceAsStream("/dev/theskidster/xjge2/assets/fnt_debug_mono.ttf"), size);
+    }
+    
+    public Font(String filename, int size) {
         this.size = size;
         
         texHandle = glGenTextures();
         glBindTexture(GL_TEXTURE_2D, texHandle);
         
-        try(InputStream file = Font2.class.getResourceAsStream(XJGE.getFilepath() + filename)) {
+        try(InputStream file = Font.class.getResourceAsStream(XJGE.getFilepath() + filename)) {
             if(size <= 0) throw new IllegalStateException("Invalid font size " + size + " used.");
             loadFont(file, size);
         } catch(Exception e) {
@@ -55,7 +62,7 @@ public final class Font2 { //TODO: rename
             Logger.logWarning("Failed to load font \"" + filename + "\"", e);
             Logger.setDomain(null);
             
-            loadFont(Font2.class.getResourceAsStream("/dev/theskidster/xjge2/assets/fnt_debug_mono.ttf"), DEFAULT_SIZE);
+            loadFont(Font.class.getResourceAsStream("/dev/theskidster/xjge2/assets/fnt_debug_mono.ttf"), DEFAULT_SIZE);
         }
         
         ErrorUtils.checkGLError();

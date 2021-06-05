@@ -23,7 +23,7 @@ final class FontVertexData {
     private final FloatBuffer vertices;
     private final IntBuffer indices;
     
-    FontVertexData(Font2 font) {
+    FontVertexData(Font font) {
         vao = glGenVertexArrays();
         vbo = glGenBuffers();
         ibo = glGenBuffers();
@@ -86,7 +86,7 @@ final class FontVertexData {
         glVertexAttribDivisor(4, 1);
     }
     
-    private void offsetTexture(Font2 font, HashMap<Integer, Glyph> glyphs) {
+    private void offsetTexture(Font font, HashMap<Integer, Glyph> glyphs) {
         try(MemoryStack stack = MemoryStack.stackPush()) {
             FloatBuffer cells = stack.mallocFloat(glyphs.size() * Float.BYTES);
             
@@ -124,7 +124,7 @@ final class FontVertexData {
         glVertexAttribDivisor(6, 1);
     }
     
-    void render(Font2 font, HashMap<Integer, Glyph> glyphs, boolean changed) {
+    void render(Font font, HashMap<Integer, Glyph> glyphs, boolean changed) {
         XJGE.getDefaultGLProgram().use();
         
         glEnable(GL_BLEND);

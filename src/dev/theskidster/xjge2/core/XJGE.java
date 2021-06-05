@@ -1,7 +1,9 @@
 package dev.theskidster.xjge2.core;
 
+import static dev.theskidster.xjge2.core.Input.KEY_MOUSE_COMBO;
 import dev.theskidster.xjge2.core.Terminal.TCCLS;
 import static dev.theskidster.xjge2.core.Window.HANDLE;
+import dev.theskidster.xjge2.graphics.RectangleBatch;
 import dev.theskidster.xjge2.shaderutils.BufferType;
 import dev.theskidster.xjge2.shaderutils.GLProgram;
 import dev.theskidster.xjge2.shaderutils.Shader;
@@ -153,8 +155,6 @@ public final class XJGE {
             
             glfwSetKeyCallback(Window.HANDLE, (window, key, scancode, action, mods) -> {
                 if(debugEnabled && key == GLFW_KEY_F1 && action == GLFW_PRESS) {
-                    //TODO: terminal disabled until new font utilities are in place.
-                    /*
                     XJGE.terminalEnabled = !terminalEnabled;
                     
                     if(terminalEnabled) {
@@ -165,7 +165,6 @@ public final class XJGE {
                         //TODO: free terminal batches?
                         Input.revertEnabledState(KEY_MOUSE_COMBO);
                     }
-                    */
                 }
                 
                 if(debugEnabled && key == GLFW_KEY_F2 && action == GLFW_PRESS) {

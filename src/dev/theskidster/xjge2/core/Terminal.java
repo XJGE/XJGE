@@ -1,6 +1,6 @@
 package dev.theskidster.xjge2.core;
 
-import static dev.theskidster.xjge2.core.Font2.DEFAULT_SIZE;
+import static dev.theskidster.xjge2.core.Font.DEFAULT_SIZE;
 import dev.theskidster.xjge2.graphics.Color;
 import dev.theskidster.xjge2.graphics.Rectangle;
 import dev.theskidster.xjge2.graphics.RectangleBatch;
@@ -8,6 +8,7 @@ import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.TreeMap;
 import org.joml.Matrix4f;
@@ -39,13 +40,14 @@ final class Terminal implements PropertyChangeListener {
     private String suggestion = "";
     private String prevTyped  = "";
     
-    private final TerminalText[] text   = new TerminalText[9]; 
-    private final StringBuilder typed   = new StringBuilder();
-    private final Timer timer           = new Timer(1, 20, this);
+    private final Font font;
+    private final Text text           = new Text();
+    private final StringBuilder typed = new StringBuilder();
+    private final Timer timer         = new Timer(1, 20, this);
     
     RectangleBatch rectBatch1;
     RectangleBatch rectBatch2;
-    private static final TreeMap<Integer, Rectangle> opaqueRectangles = new TreeMap<>();
+    private static final LinkedHashMap<Integer, Rectangle> opaqueRectangles = new LinkedHashMap<>();
     
     TreeMap<String, TerminalCommand> commands;
     private final ArrayList<String> cmdHistory      = new ArrayList<>();
@@ -119,6 +121,8 @@ final class Terminal implements PropertyChangeListener {
             put(GLFW_KEY_RIGHT_BRACKET, new Key(']', '}'));
             put(GLFW_KEY_GRAVE_ACCENT,  new Key('`', '~'));
         }};
+        
+        for(int i = 0; i < 5; i++) opaqueRectangles.put(i, new Rectangle());
     }
     
     Terminal(TreeMap<String, TerminalCommand> commands) {
@@ -126,13 +130,9 @@ final class Terminal implements PropertyChangeListener {
         
         updateMatrix();
         
-        for(int i = 0; i < text.length; i++) {
-            //text[i] = new TerminalText(new Font());
-        }
+        font = new Font();
         
-        //font = new Font();
-        
-        glyphAdvance = 0; //(int) font.getGlyphAdvance('>');
+        glyphAdvance = (int) font.getGlyphAdvance('>');
         cursorPos.x  = glyphAdvance;
         commandPos.x = glyphAdvance;
     }
@@ -164,7 +164,7 @@ final class Terminal implements PropertyChangeListener {
         XJGE.getDefaultGLProgram().setUniform("uProjection", false, projMatrix);
         
         rectBatch1.batchStart(1);
-            //rectBatch1.drawRectangle(0, 0, XJGE.getResolutionX(), Font.DEFAULT_SIZE + 4, Color.BLACK);
+            rectBatch1.drawRectangle(0, 0, XJGE.getResolutionX(), font.size + 4, Color.BLACK);
         rectBatch1.batchEnd();
         
         rectBatch2.batchStart(0.4f);
@@ -173,20 +173,23 @@ final class Terminal implements PropertyChangeListener {
             });
         rectBatch2.batchEnd();
         
+        text.drawString(font, ">", caretPos, Color.WHITE);
+        
         for(int i = 0; i <= shiftElements; i++) {
-            opaqueRectangles.put(i, text[i].drawOutput(cmdOutput, cmdOutput[i], i, executed));
+            text.drawOutput(font, cmdOutput, cmdOutput[i], i, executed, opaqueRectangles.get(i));
         }
         
         executed = false;
         
-        /*
-        text[5].drawString(">", caretPos, Color.WHITE);
-        if(suggest) text[6].drawString(suggestion, commandPos, Color.GRAY);
-        if(cursorBlink) text[7].drawString("_", cursorPos, Color.WHITE);
+        if(suggest) text.drawString(font, suggestion, commandPos, Color.GRAY);
+        if(cursorBlink) text.drawString(font, "_", cursorPos, Color.WHITE);
         
-        if(validate()) text[8].drawCommand(typed.toString(), commandPos);
-        else           text[8].drawString(typed.toString(), commandPos, Color.WHITE);
-        */
+        if(typed.length() > 0) {
+            if(validate()) text.drawCommand(font, typed.toString(), commandPos);
+            else           text.drawString(font, typed.toString(), commandPos, Color.WHITE);
+        }
+        
+        text.resetStringIndex();
         
         ErrorUtils.checkGLError();
     }
@@ -376,7 +379,7 @@ final class Terminal implements PropertyChangeListener {
                         cmdOutput[i] = cmdOutput[i - 1];
                     }
                 } else {
-                    //cmdOutput[i] = new TerminalOutput(Text.wrap(output.text, XJGE.getResolutionX(), font), output.color);
+                    cmdOutput[i] = new TerminalOutput(Text.wrap(output.text, XJGE.getResolutionX(), font), output.color);
                 }
             }
         }
@@ -403,7 +406,9 @@ final class Terminal implements PropertyChangeListener {
         @Override
         public void execute(List<String> args) {
             shiftElements = -1;
+            
             opaqueRectangles.clear();
+            for(int i = 0; i < 5; i++) opaqueRectangles.put(i, new Rectangle());
         }
     }
     

@@ -11,11 +11,13 @@ import java.util.List;
 final class TCHelp extends TerminalCommand {
     
     public TCHelp() {
-        super("Supplies information about commands.",
+        super("Supplies information about the terminal and its various " + 
+              "commands. Use -u, or -s, prior to the commands name to view " + 
+              "its usage or syntax.",
 
               "Using help without arguments will provide basic information " + 
               "about the command terminal. Passing a command name will provide " + 
-              "a description of that command. Use -u or -s to prior to the " + 
+              "a description of that command. Use -u, or -s, to prior to the " + 
               "command name to view its usage or syntax.",
 
               "help [-u|-s], [<command name>]");
