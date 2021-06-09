@@ -11,7 +11,6 @@ import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.TreeMap;
-import org.joml.Matrix4f;
 import org.joml.Vector3f;
 import static org.lwjgl.glfw.GLFW.*;
 
@@ -35,7 +34,6 @@ final class Terminal implements PropertyChangeListener {
     private final Vector3f caretPos   = new Vector3f(0, DEFAULT_SIZE / 4, 0);
     private final Vector3f cursorPos  = new Vector3f(0, DEFAULT_SIZE / 4, 0);
     private final Vector3f commandPos = new Vector3f(0, DEFAULT_SIZE / 4, -1);
-    private final Matrix4f projMatrix = new Matrix4f();
     
     private String suggestion = "";
     private String prevTyped  = "";
@@ -125,12 +123,9 @@ final class Terminal implements PropertyChangeListener {
         for(int i = 0; i < 5; i++) opaqueRectangles.put(i, new Rectangle());
     }
     
-    Terminal(TreeMap<String, TerminalCommand> commands) {
+    Terminal(TreeMap<String, TerminalCommand> commands, Font font) {
         this.commands = commands;
-        
-        updateMatrix();
-        
-        font = new Font();
+        this.font     = font;
         
         glyphAdvance = (int) font.getGlyphAdvance('>');
         cursorPos.x  = glyphAdvance;
@@ -155,14 +150,7 @@ final class Terminal implements PropertyChangeListener {
         prevTyped = typed.toString();
     }
     
-    void updateMatrix() {
-        projMatrix.setOrtho(0, XJGE.getResolutionX(), 0, XJGE.getResolutionY(), 0, Integer.MAX_VALUE);
-    }
-    
     void render() {
-        XJGE.getDefaultGLProgram().use();
-        XJGE.getDefaultGLProgram().setUniform("uProjection", false, projMatrix);
-        
         rectBatch1.batchStart(1);
             rectBatch1.drawRectangle(0, 0, XJGE.getResolutionX(), font.size + 4, Color.BLACK);
         rectBatch1.batchEnd();
@@ -385,6 +373,11 @@ final class Terminal implements PropertyChangeListener {
         }
         
         executed = true;
+    }
+    
+    void freeBuffers() {
+        rectBatch1.freeBuffers();
+        rectBatch2.freeBuffers();
     }
     
     @Override

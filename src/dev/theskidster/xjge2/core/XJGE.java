@@ -40,8 +40,11 @@ public final class XJGE {
     
     private static Split split;
     private static String filepath = "/dev/theskidster/xjge2/assets/";
+    
     private static FreeCam freeCam;
+    private static Font defaultFont;
     private static Terminal terminal;
+    private static InfoRuntime runtimeInfo;
     
     private static TreeMap<String, TerminalCommand> engineCommands     = new TreeMap<>();
     private static final TreeMap<String, TerminalCommand> userCommands = new TreeMap<>();
@@ -230,9 +233,11 @@ public final class XJGE {
         engineCommands.putAll(userCommands);
         engineCommands.values().forEach(command -> command.setCommands(engineCommands));
         
-        glPrograms = Collections.unmodifiableMap(glPrograms);
-        freeCam    = new FreeCam();
-        terminal   = new Terminal(engineCommands);
+        glPrograms  = Collections.unmodifiableMap(glPrograms);
+        freeCam     = new FreeCam();
+        defaultFont = new Font();
+        terminal    = new Terminal(engineCommands, defaultFont);
+        runtimeInfo = new InfoRuntime(defaultFont);
         
         Window.show();
         setScreenSplit(Split.NONE);
@@ -248,10 +253,14 @@ public final class XJGE {
             }
 
             setScreenSplit(getScreenSplit());
-            terminal.updateMatrix();
+            runtimeInfo.updatePosition();
         });
         
-        Game.loop(fbo, viewports, terminal);
+        Game.loop(fbo, viewports, terminal, runtimeInfo);
+        
+        defaultFont.freeTexture();
+        terminal.freeBuffers();
+        runtimeInfo.freeBuffers();
         
         Input.exportControls();
         GL.destroy();

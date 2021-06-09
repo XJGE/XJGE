@@ -29,11 +29,9 @@ public final class Game {
     private static Color clearColor = Color.BLACK;
     private static Scene scene;
     
-    private static InfoRuntime runtimeInfo = new InfoRuntime();
-    
     private static final Queue<Event> events = new PriorityQueue<>(Comparator.comparing(Event::getPriority));
     
-    static void loop(int fbo, Viewport[] viewports, Terminal terminal) {
+    static void loop(int fbo, Viewport[] viewports, Terminal terminal, InfoRuntime runtimeInfo) {
         int cycles = 0;
         final double TARGET_DELTA = 1 / 60.0;
         double prevTime = glfwGetTime();
@@ -125,17 +123,20 @@ public final class Game {
                 }
             }
             
-            if(XJGE.getTerminalEnabled()) {
+            if(XJGE.getTerminalEnabled() || showInputInfo || showRuntimeInfo || showSystemInfo) {
                 glViewport(0, 0, Window.getWidth(), Window.getHeight());
-                terminal.render();
-            }
-            
-            if(showInputInfo) {
+                projMatrix.setOrtho(0, XJGE.getResolutionX(), 0, XJGE.getResolutionY(), 0, Integer.MAX_VALUE);
+                glPrograms.get("default").setUniform("uProjection", false, projMatrix);
                 
-            } else if(showRuntimeInfo) {
-                runtimeInfo.render();
-            } else if(showSystemInfo) {
-                //render sysinfo
+                if(XJGE.getTerminalEnabled()) terminal.render();
+            
+                if(showInputInfo) {
+
+                } else if(showRuntimeInfo) {
+                    runtimeInfo.render();
+                } else if(showSystemInfo) {
+                    //render sysinfo
+                }
             }
             
             glfwSwapBuffers(Window.HANDLE);
