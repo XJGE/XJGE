@@ -20,7 +20,7 @@ public class Test {
     
     public static void main(String args[]) {
         
-        Vector2i res = new Vector2i(384, 216);
+        //Vector2i res = new Vector2i(384, 216);
         
         XJGE.init("/dev/theskidster/xjge2/assets/", true, null, true);
         

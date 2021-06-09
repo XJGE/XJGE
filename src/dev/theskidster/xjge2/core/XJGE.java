@@ -45,6 +45,7 @@ public final class XJGE {
     private static Font defaultFont;
     private static Terminal terminal;
     private static InfoRuntime runtimeInfo;
+    private static InfoSystem systemInfo;
     
     private static TreeMap<String, TerminalCommand> engineCommands     = new TreeMap<>();
     private static final TreeMap<String, TerminalCommand> userCommands = new TreeMap<>();
@@ -153,6 +154,7 @@ public final class XJGE {
                 put("setVideoMode",    new TCSetVideoMode());
                 put("showCommands",    new TCShowCommands());
                 put("showRuntimeInfo", new TCShowRuntimeInfo());
+                put("showSystemInfo",  new TCShowSystemInfo());
                 put("terminate",       new TCTerminate());
             }};
             
@@ -165,8 +167,8 @@ public final class XJGE {
                         terminal.rectBatch1 = new RectangleBatch(1);
                         terminal.rectBatch2 = new RectangleBatch(5);
                     } else {
-                        //TODO: free terminal batches?
                         Input.revertEnabledState(KEY_MOUSE_COMBO);
+                        terminal.freeBuffers();
                     }
                 }
                 
@@ -238,6 +240,7 @@ public final class XJGE {
         defaultFont = new Font();
         terminal    = new Terminal(engineCommands, defaultFont);
         runtimeInfo = new InfoRuntime(defaultFont);
+        systemInfo  = new InfoSystem(defaultFont);
         
         Window.show();
         setScreenSplit(Split.NONE);
@@ -254,13 +257,15 @@ public final class XJGE {
 
             setScreenSplit(getScreenSplit());
             runtimeInfo.updatePosition();
+            systemInfo.updatePosition();
         });
         
-        Game.loop(fbo, viewports, terminal, runtimeInfo);
+        Game.loop(fbo, viewports, terminal, runtimeInfo, systemInfo);
         
         defaultFont.freeTexture();
         terminal.freeBuffers();
         runtimeInfo.freeBuffers();
+        systemInfo.freeBuffers();
         
         Input.exportControls();
         GL.destroy();

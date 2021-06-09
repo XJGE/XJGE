@@ -376,8 +376,13 @@ final class Terminal implements PropertyChangeListener {
     }
     
     void freeBuffers() {
-        rectBatch1.freeBuffers();
-        rectBatch2.freeBuffers();
+        if(rectBatch1 != null && rectBatch2 != null) {
+            rectBatch1.freeBuffers();
+            rectBatch2.freeBuffers();
+            
+            rectBatch1 = null;
+            rectBatch2 = null;
+        }
     }
     
     @Override

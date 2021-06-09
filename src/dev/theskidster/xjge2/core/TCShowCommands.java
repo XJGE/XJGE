@@ -10,7 +10,7 @@ import java.util.List;
 
 final class TCShowCommands extends TerminalCommand {
     
-    public TCShowCommands() {
+    TCShowCommands() {
         super("Shows all commands available to the terminal.", 
               
               "Simply type showCommands to use. This command contains no " +

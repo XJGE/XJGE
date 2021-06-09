@@ -5,17 +5,17 @@ import java.util.List;
 
 /**
  * @author J Hoffman
- * Created: May 27, 2021
+ * Created: Jun 8, 2021
  */
 
-final class TCShowRuntimeInfo extends TerminalCommand {
+final class TCShowSystemInfo extends TerminalCommand {
 
-    TCShowRuntimeInfo() {
-        super("Provides information pertaining to the current state of the engine at runtime.", 
+    TCShowSystemInfo() {
+        super("Provides information about the architecture on which the engine is currently running.", 
 
               useGenericShowing("component visibility"),
 
-              "showRuntimeInfo [true|false]");
+              "showSystemInfo [true|false]");
     }
 
     @Override
@@ -27,13 +27,13 @@ final class TCShowRuntimeInfo extends TerminalCommand {
 
             if(parameter.equals("true") || parameter.equals("false")) {
                 boolean value = Boolean.parseBoolean(parameter);
-                Game.setRuntimeInfoVisible(value);
+                Game.setSystemInfoVisible(value);
             } else {
                 setOutput(errorInvalidArg(parameter, "(true) or (false)"), Color.YELLOW);
             }
         } else {
-            Game.setRuntimeInfoVisible(!Game.getRuntimeInfoVisible());
+            Game.setSystemInfoVisible(!Game.getSystemInfoVisible());
         }
     }
-
+    
 }

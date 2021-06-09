@@ -10,7 +10,7 @@ import java.util.List;
 
 final class TCSetMonitor extends TerminalCommand {
 
-    public TCSetMonitor() {
+    TCSetMonitor() {
         super("Changes the current monitor the game window use.", 
 
               useGenericSetter("device"),

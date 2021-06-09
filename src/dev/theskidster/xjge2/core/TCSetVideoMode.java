@@ -10,7 +10,7 @@ import java.util.List;
 
 final class TCSetVideoMode extends TerminalCommand {
 
-    public TCSetVideoMode() {
+    TCSetVideoMode() {
         super("Alters the video mode of the current monitor.", 
 
               useGenericSetter("video mode"),

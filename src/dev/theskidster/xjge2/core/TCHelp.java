@@ -10,7 +10,7 @@ import java.util.List;
 
 final class TCHelp extends TerminalCommand {
     
-    public TCHelp() {
+    TCHelp() {
         super("Supplies information about the terminal and its various " + 
               "commands. Use -u, or -s, prior to the commands name to view " + 
               "its usage or syntax.",

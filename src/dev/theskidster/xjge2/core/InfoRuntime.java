@@ -29,7 +29,7 @@ final class InfoRuntime {
         this.font = font;
         
         rectWidth  = (Text.lengthInPixels("DISPLAY: " + Window.monitor.getInfo(), font)) + PADDING;
-        rectHeight = (Font.DEFAULT_SIZE * 6) + PADDING;
+        rectHeight = (Font.DEFAULT_SIZE * textPos.length) + PADDING;
         rectangle  = new Rectangle(0, XJGE.getResolutionY() - rectHeight, rectWidth, rectHeight);
         
         for(int i = 0; i < textPos.length; i++) {

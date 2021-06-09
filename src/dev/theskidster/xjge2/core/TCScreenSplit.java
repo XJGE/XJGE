@@ -10,7 +10,7 @@ import java.util.List;
 
 final class TCScreenSplit extends TerminalCommand {
 
-    public TCScreenSplit() {
+    TCScreenSplit() {
         super("Changes what kind of split is used for splitscreen play. Otherwise hidden " +
               "viewports will use either the default camera or whichever was most " + 
               "recently set.", 
