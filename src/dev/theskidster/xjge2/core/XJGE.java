@@ -4,6 +4,7 @@ import static dev.theskidster.xjge2.core.Input.KEY_MOUSE_COMBO;
 import dev.theskidster.xjge2.core.Terminal.TCCLS;
 import static dev.theskidster.xjge2.core.Window.HANDLE;
 import dev.theskidster.xjge2.graphics.RectangleBatch;
+import dev.theskidster.xjge2.graphics.Texture;
 import dev.theskidster.xjge2.shaderutils.BufferType;
 import dev.theskidster.xjge2.shaderutils.GLProgram;
 import dev.theskidster.xjge2.shaderutils.Shader;
@@ -42,8 +43,10 @@ public final class XJGE {
     private static String filepath = "/dev/theskidster/xjge2/assets/";
     
     private static FreeCam freeCam;
-    private static Font defaultFont;
+    private static Font engineFont;
+    private static Texture engineIcons;
     private static Terminal terminal;
+    private static InfoInput inputInfo;
     private static InfoRuntime runtimeInfo;
     private static InfoSystem systemInfo;
     
@@ -133,12 +136,15 @@ public final class XJGE {
                 defaultProgram.use();
                 defaultProgram.addUniform(BufferType.INT,   "uType");
                 defaultProgram.addUniform(BufferType.FLOAT, "uOpacity");
+                defaultProgram.addUniform(BufferType.VEC2,  "uTexCoords");
                 defaultProgram.addUniform(BufferType.MAT4,  "uModel");
                 defaultProgram.addUniform(BufferType.MAT4,  "uView");
                 defaultProgram.addUniform(BufferType.MAT4,  "uProjection");
                 
                 glPrograms.put("default", defaultProgram);
             }
+            
+            engineIcons = new Texture("spr_engineicons.png");
             
             Logger.printSystemInfo();
             XJGE.filepath = filepath;
@@ -153,6 +159,7 @@ public final class XJGE {
                 put("setVSync",        new TCSetVSync());
                 put("setVideoMode",    new TCSetVideoMode());
                 put("showCommands",    new TCShowCommands());
+                put("showInputInfo",   new TCShowInputInfo());
                 put("showRuntimeInfo", new TCShowRuntimeInfo());
                 put("showSystemInfo",  new TCShowSystemInfo());
                 put("terminate",       new TCTerminate());
@@ -237,10 +244,11 @@ public final class XJGE {
         
         glPrograms  = Collections.unmodifiableMap(glPrograms);
         freeCam     = new FreeCam();
-        defaultFont = new Font();
-        terminal    = new Terminal(engineCommands, defaultFont);
-        runtimeInfo = new InfoRuntime(defaultFont);
-        systemInfo  = new InfoSystem(defaultFont);
+        engineFont  = new Font();
+        terminal    = new Terminal(engineCommands, engineFont);
+        inputInfo   = new InfoInput(engineFont, engineIcons);
+        runtimeInfo = new InfoRuntime(engineFont);
+        systemInfo  = new InfoSystem(engineFont);
         
         Window.show();
         setScreenSplit(Split.NONE);
@@ -260,9 +268,10 @@ public final class XJGE {
             systemInfo.updatePosition();
         });
         
-        Game.loop(fbo, viewports, terminal, runtimeInfo, systemInfo);
+        Game.loop(fbo, viewports, terminal, inputInfo, runtimeInfo, systemInfo);
         
-        defaultFont.freeTexture();
+        engineFont.freeTexture();
+        engineIcons.freeTexture();
         terminal.freeBuffers();
         runtimeInfo.freeBuffers();
         systemInfo.freeBuffers();

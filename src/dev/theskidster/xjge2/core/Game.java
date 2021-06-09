@@ -31,7 +31,7 @@ public final class Game {
     
     private static final Queue<Event> events = new PriorityQueue<>(Comparator.comparing(Event::getPriority));
     
-    static void loop(int fbo, Viewport[] viewports, Terminal terminal, InfoRuntime runtimeInfo, InfoSystem systemInfo) {
+    static void loop(int fbo, Viewport[] viewports, Terminal terminal, InfoInput inputInfo, InfoRuntime runtimeInfo, InfoSystem systemInfo) {
         int cycles = 0;
         final double TARGET_DELTA = 1 / 60.0;
         double prevTime = glfwGetTime();
@@ -129,14 +129,10 @@ public final class Game {
                 glPrograms.get("default").setUniform("uProjection", false, projMatrix);
                 
                 if(XJGE.getTerminalEnabled()) terminal.render();
-            
-                if(showInputInfo) {
-                    
-                } else if(showRuntimeInfo) {
-                    runtimeInfo.render();
-                } else if(showSystemInfo) {
-                    systemInfo.render();
-                }
+                
+                if(showInputInfo)        inputInfo.render();
+                else if(showRuntimeInfo) runtimeInfo.render();
+                else if(showSystemInfo)  systemInfo.render();
             }
             
             glfwSwapBuffers(Window.HANDLE);
@@ -202,7 +198,7 @@ public final class Game {
         
         Game.showInputInfo = showInputInfo;
         
-        if(showRuntimeInfo) {
+        if(showInputInfo) {
             if(showRuntimeInfo) setRuntimeInfoVisible(false);
             if(showSystemInfo)  setSystemInfoVisible(false);
         }

@@ -42,5 +42,9 @@ void main() {
         case 3: //Used for rendering background rectangles.
             ioResult = vec4(ioColor, uOpacity);
             break;
+
+        case 4: //Used for rendering icons.
+            ioResult = texture(uTexture, ioTexCoords);
+            break;
     }
 }
