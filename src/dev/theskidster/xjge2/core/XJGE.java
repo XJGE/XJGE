@@ -192,7 +192,7 @@ public final class XJGE {
                     }
                 }
                 
-                if(debugEnabled && key == GLFW_KEY_F3 && action == GLFW_PRESS) {
+                if(key == GLFW_KEY_F3 && action == GLFW_PRESS) {
                     debugInfo.show = !debugInfo.show;
                     if(debugInfo.show) debugInfo.updatePosition();
                 }
