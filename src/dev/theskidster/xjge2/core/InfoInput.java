@@ -55,10 +55,20 @@ final class InfoInput {
         icons[4].setSubImage(0, 1);
         icons[4].setPosition(PADDING, Window.getHeight() - 48, 0);
         
-        for(int i = 0; i < textPos.length; i++) {
-            float yPos = Window.getHeight() - (42 * (i + 1));
-            textPos[i] = new Vector3f(64 + (PADDING * 2), yPos, 0);
-        }
+        float xPos = 64 + (PADDING * 2);
+        float yPos = Window.getHeight();
+        
+        System.out.println((32 + (PADDING * 2)));
+        
+        textPos[0] = new Vector3f(xPos, yPos - (32 + (PADDING * 2)), 0);
+        textPos[1] = new Vector3f(xPos, yPos - ((32 * 2) + (PADDING * 2)), 0);
+        textPos[2] = new Vector3f(0, 0, 0);
+        textPos[3] = new Vector3f(0, 0, 0);
+        textPos[4] = new Vector3f(0, 0, 0);
+        textPos[5] = new Vector3f(0, 0, 0);
+        textPos[6] = new Vector3f(0, 0, 0);
+        textPos[7] = new Vector3f(0, 0, 0);
+        textPos[8] = new Vector3f(0, 0, 0);
     }
     
     void updatePosition() {

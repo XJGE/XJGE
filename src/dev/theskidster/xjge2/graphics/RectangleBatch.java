@@ -54,7 +54,7 @@ public final class RectangleBatch {
         XJGE.getDefaultGLProgram().setUniform("uType", 3);
         XJGE.getDefaultGLProgram().setUniform("uOpacity", opacity);
         
-        glDrawElements(GL_TRIANGLES, g.indices.limit() * (numVertices / 24), GL_UNSIGNED_INT, 0);
+        glDrawElements(GL_TRIANGLES, g.indices.capacity(), GL_UNSIGNED_INT, 0);
         glDisable(GL_BLEND);
         ErrorUtils.checkGLError();
     }

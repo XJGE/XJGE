@@ -130,6 +130,9 @@ final class Terminal implements PropertyChangeListener {
         glyphAdvance = (int) font.getGlyphAdvance('>');
         cursorPos.x  = glyphAdvance;
         commandPos.x = glyphAdvance;
+        
+        rectBatch1 = new RectangleBatch(1);
+        rectBatch2 = new RectangleBatch(5);
     }
     
     void update() {

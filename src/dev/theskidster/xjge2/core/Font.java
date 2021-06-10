@@ -25,7 +25,7 @@ import static org.lwjgl.system.MemoryUtil.NULL;
 
 public final class Font {
     
-    final static int DEFAULT_SIZE = 32;
+    final static int DEFAULT_SIZE = 28;
     
     final int texHandle;
     final int size;

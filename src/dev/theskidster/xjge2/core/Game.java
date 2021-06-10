@@ -22,16 +22,13 @@ public final class Game {
     private static double deltaMetric = 0;
     
     private static boolean ticked;
-    private static boolean showInputInfo;
-    private static boolean showRuntimeInfo;
-    private static boolean showSystemInfo;
     
     private static Color clearColor = Color.BLACK;
     private static Scene scene;
     
     private static final Queue<Event> events = new PriorityQueue<>(Comparator.comparing(Event::getPriority));
     
-    static void loop(int fbo, Viewport[] viewports, Terminal terminal, InfoInput inputInfo, InfoRuntime runtimeInfo, InfoSystem systemInfo) {
+    static void loop(int fbo, Viewport[] viewports, Terminal terminal, DebugInfo debugInfo) {
         int cycles = 0;
         final double TARGET_DELTA = 1 / 60.0;
         double prevTime = glfwGetTime();
@@ -123,16 +120,13 @@ public final class Game {
                 }
             }
             
-            if(XJGE.getTerminalEnabled() || showInputInfo || showRuntimeInfo || showSystemInfo) {
+            if(XJGE.getTerminalEnabled() || debugInfo.show) {
                 glViewport(0, 0, Window.getWidth(), Window.getHeight());
                 projMatrix.setOrtho(0,  Window.getWidth(), 0, Window.getHeight(), 0, Integer.MAX_VALUE);
                 glPrograms.get("default").setUniform("uProjection", false, projMatrix);
                 
                 if(XJGE.getTerminalEnabled()) terminal.render();
-                
-                if(showInputInfo)        inputInfo.render();
-                else if(showRuntimeInfo) runtimeInfo.render();
-                else if(showSystemInfo)  systemInfo.render();
+                if(debugInfo.show) debugInfo.render();
             }
             
             glfwSwapBuffers(Window.HANDLE);
@@ -173,53 +167,8 @@ public final class Game {
         return ticked;
     }
     
-    static boolean getInputInfoVisible() {
-        return showInputInfo;
-    }
-    
-    static boolean getRuntimeInfoVisible() {
-        return showRuntimeInfo;
-    }
-    
-    static boolean getSystemInfoVisible() {
-        return showSystemInfo;
-    }
-    
     public static void setClearColor(Color color) {
         clearColor = color;
-    }
-    
-    static void setInputInfoVisible(boolean showInputInfo) {
-        /*
-        TODO:
-        - add icons to UI utilities
-        - add controller disconnect event
-        */
-        
-        Game.showInputInfo = showInputInfo;
-        
-        if(showInputInfo) {
-            if(showRuntimeInfo) setRuntimeInfoVisible(false);
-            if(showSystemInfo)  setSystemInfoVisible(false);
-        }
-    }
-    
-    static void setRuntimeInfoVisible(boolean showRuntimeInfo) {
-        Game.showRuntimeInfo = showRuntimeInfo;
-        
-        if(showRuntimeInfo) {
-            if(showInputInfo)  setInputInfoVisible(false);
-            if(showSystemInfo) setSystemInfoVisible(false);
-        }
-    }
-    
-    static void setSystemInfoVisible(boolean showSystemInfo) {
-        Game.showSystemInfo = showSystemInfo;
-        
-        if(showSystemInfo) {
-            if(showInputInfo)   setInputInfoVisible(false);
-            if(showRuntimeInfo) setRuntimeInfoVisible(false);
-        }
     }
     
     public static void setScene(Scene scene) {

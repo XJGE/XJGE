@@ -3,7 +3,6 @@ package dev.theskidster.xjge2.core;
 import static dev.theskidster.xjge2.core.Input.KEY_MOUSE_COMBO;
 import dev.theskidster.xjge2.core.Terminal.TCCLS;
 import static dev.theskidster.xjge2.core.Window.HANDLE;
-import dev.theskidster.xjge2.graphics.RectangleBatch;
 import dev.theskidster.xjge2.graphics.Texture;
 import dev.theskidster.xjge2.shaderutils.BufferType;
 import dev.theskidster.xjge2.shaderutils.GLProgram;
@@ -42,13 +41,11 @@ public final class XJGE {
     private static Split split;
     private static String filepath = "/dev/theskidster/xjge2/assets/";
     
-    private static FreeCam freeCam;
     private static Font engineFont;
     private static Texture engineIcons;
+    private static FreeCam freeCam;
     private static Terminal terminal;
-    private static InfoInput inputInfo;
-    private static InfoRuntime runtimeInfo;
-    private static InfoSystem systemInfo;
+    private static DebugInfo debugInfo;
     
     private static TreeMap<String, TerminalCommand> engineCommands     = new TreeMap<>();
     private static final TreeMap<String, TerminalCommand> userCommands = new TreeMap<>();
@@ -144,6 +141,7 @@ public final class XJGE {
                 glPrograms.put("default", defaultProgram);
             }
             
+            engineFont  = new Font();
             engineIcons = new Texture("spr_engineicons.png");
             
             Logger.printSystemInfo();
@@ -159,9 +157,6 @@ public final class XJGE {
                 put("setVSync",        new TCSetVSync());
                 put("setVideoMode",    new TCSetVideoMode());
                 put("showCommands",    new TCShowCommands());
-                put("showInputInfo",   new TCShowInputInfo());
-                put("showRuntimeInfo", new TCShowRuntimeInfo());
-                put("showSystemInfo",  new TCShowSystemInfo());
                 put("terminate",       new TCTerminate());
             }};
             
@@ -171,11 +166,8 @@ public final class XJGE {
                     
                     if(terminalEnabled) {
                         Input.setDeviceEnabled(KEY_MOUSE_COMBO, false);
-                        terminal.rectBatch1 = new RectangleBatch(1);
-                        terminal.rectBatch2 = new RectangleBatch(5);
                     } else {
                         Input.revertEnabledState(KEY_MOUSE_COMBO);
-                        terminal.freeBuffers();
                     }
                 }
                 
@@ -198,6 +190,11 @@ public final class XJGE {
                                        "terminal and try again.");
                         Logger.setDomain(null);
                     }
+                }
+                
+                if(debugEnabled && key == GLFW_KEY_F3 && action == GLFW_PRESS) {
+                    debugInfo.show = !debugInfo.show;
+                    if(debugInfo.show) debugInfo.updatePosition();
                 }
 
                 if(freeCamEnabled && !terminalEnabled) {
@@ -244,11 +241,8 @@ public final class XJGE {
         
         glPrograms  = Collections.unmodifiableMap(glPrograms);
         freeCam     = new FreeCam();
-        engineFont  = new Font();
         terminal    = new Terminal(engineCommands, engineFont);
-        inputInfo   = new InfoInput(engineFont, engineIcons);
-        runtimeInfo = new InfoRuntime(engineFont);
-        systemInfo  = new InfoSystem(engineFont);
+        debugInfo   = new DebugInfo(engineFont, engineIcons);
         
         Window.show();
         setScreenSplit(Split.NONE);
@@ -264,20 +258,15 @@ public final class XJGE {
             }
 
             setScreenSplit(getScreenSplit());
-            
-            inputInfo.updatePosition();
-            runtimeInfo.updatePosition();
-            systemInfo.updatePosition();
+            debugInfo.updatePosition();
         });
         
-        Game.loop(fbo, viewports, terminal, inputInfo, runtimeInfo, systemInfo);
+        Game.loop(fbo, viewports, terminal, debugInfo);
         
         engineFont.freeTexture();
         engineIcons.freeTexture();
         terminal.freeBuffers();
-        inputInfo.freeBuffers();
-        runtimeInfo.freeBuffers();
-        systemInfo.freeBuffers();
+        debugInfo.freeBuffers();
         
         Input.exportControls();
         GL.destroy();
