@@ -1,6 +1,7 @@
 package dev.theskidster.xjge2.test;
 
 import dev.theskidster.xjge2.core.Game;
+import dev.theskidster.xjge2.core.Input;
 import dev.theskidster.xjge2.core.XJGE;
 import org.joml.Vector2i;
 
@@ -22,6 +23,8 @@ public class Test {
         Vector2i res = new Vector2i(384, 216);
         
         XJGE.init("/dev/theskidster/xjge2/assets/", true, null, true);
+        
+        //Input.setDeviceEnabled(0, false);
         
         Game.setScene(new TestScene());
         
