@@ -6,6 +6,7 @@ import java.io.PrintWriter;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import static org.lwjgl.glfw.GLFW.glfwGetVersionString;
+import static org.lwjgl.opengl.GL11.GL_RENDERER;
 import static org.lwjgl.opengl.GL11.GL_VERSION;
 import static org.lwjgl.opengl.GL11.glGetString;
 
@@ -35,6 +36,7 @@ public final class Logger {
         logInfo("GLFW VER:\t\t" + glfwGetVersionString());
         logInfo("OPENAL VER:\t" );
         logInfo("OPENGL VER:\t" + glGetString(GL_VERSION));
+        logInfo("GFX CARD:\t\t" + glGetString(GL_RENDERER));
         logInfo("MONITORS:\t\t" + "Found: " + WinKit.getNumMonitors() + 
                 ", Primary: \"" + Window.monitor.name + "\" (" + Window.monitor.getInfo() + ")");
         logInfo("SPEAKERS:\t\t" );
