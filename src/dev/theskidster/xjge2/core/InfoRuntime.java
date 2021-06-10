@@ -30,7 +30,7 @@ final class InfoRuntime {
         
         rectWidth  = (Text.lengthInPixels("DISPLAY: " + Window.monitor.getInfo(), font)) + PADDING;
         rectHeight = (Font.DEFAULT_SIZE * textPos.length) + PADDING;
-        rectangle  = new Rectangle(0, XJGE.getResolutionY() - rectHeight, rectWidth, rectHeight);
+        rectangle  = new Rectangle(0, Window.getHeight() - rectHeight, rectWidth, rectHeight);
         
         for(int i = 0; i < textPos.length; i++) {
             float yPos = (rectangle.yPos + rectangle.height) - (Font.DEFAULT_SIZE * (i + 1));            
@@ -39,7 +39,7 @@ final class InfoRuntime {
     }
     
     void updatePosition() {
-        rectangle.yPos  = XJGE.getResolutionY() - rectHeight;
+        rectangle.yPos  = Window.getHeight() - rectHeight;
         rectangle.width = (Text.lengthInPixels("DISPLAY: " + Window.monitor.getInfo(), font)) + PADDING;
         
         for(int i = 0; i < textPos.length; i++) {

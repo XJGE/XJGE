@@ -125,7 +125,7 @@ public final class Game {
             
             if(XJGE.getTerminalEnabled() || showInputInfo || showRuntimeInfo || showSystemInfo) {
                 glViewport(0, 0, Window.getWidth(), Window.getHeight());
-                projMatrix.setOrtho(0, XJGE.getResolutionX(), 0, XJGE.getResolutionY(), 0, Integer.MAX_VALUE);
+                projMatrix.setOrtho(0,  Window.getWidth(), 0, Window.getHeight(), 0, Integer.MAX_VALUE);
                 glPrograms.get("default").setUniform("uProjection", false, projMatrix);
                 
                 if(XJGE.getTerminalEnabled()) terminal.render();

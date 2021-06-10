@@ -159,7 +159,7 @@ public final class Text {
             
             rectangle.xPos   = 0;
             rectangle.yPos   = yOffset + descent + font.size + PADDING;
-            rectangle.width  = XJGE.getResolutionX();
+            rectangle.width  = Window.getWidth();
             rectangle.height = Math.abs(descent);
         }
         

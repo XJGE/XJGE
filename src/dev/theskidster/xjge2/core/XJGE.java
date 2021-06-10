@@ -95,12 +95,12 @@ public final class XJGE {
                 Window.setIcon("img_null.png");
             }
             
-            Input.importControls();
-            Input.findInputDevices();
-            
             glfwMakeContextCurrent(Window.HANDLE);
             GL.createCapabilities();
             Window.reconfigure();
+            
+            Input.importControls();
+            Input.findInputDevices();
             
             if(resolution == null) {
                 matchWindowResolution = true;
@@ -264,6 +264,8 @@ public final class XJGE {
             }
 
             setScreenSplit(getScreenSplit());
+            
+            inputInfo.updatePosition();
             runtimeInfo.updatePosition();
             systemInfo.updatePosition();
         });
@@ -273,6 +275,7 @@ public final class XJGE {
         engineFont.freeTexture();
         engineIcons.freeTexture();
         terminal.freeBuffers();
+        inputInfo.freeBuffers();
         runtimeInfo.freeBuffers();
         systemInfo.freeBuffers();
         

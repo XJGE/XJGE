@@ -152,7 +152,7 @@ final class Terminal implements PropertyChangeListener {
     
     void render() {
         rectBatch1.batchStart(1);
-            rectBatch1.drawRectangle(0, 0, XJGE.getResolutionX(), font.size + 4, Color.BLACK);
+            rectBatch1.drawRectangle(0, 0, Window.getWidth(), font.size + 4, Color.BLACK);
         rectBatch1.batchEnd();
         
         rectBatch2.batchStart(0.4f);
@@ -367,7 +367,7 @@ final class Terminal implements PropertyChangeListener {
                         cmdOutput[i] = cmdOutput[i - 1];
                     }
                 } else {
-                    cmdOutput[i] = new TerminalOutput(Text.wrap(output.text, XJGE.getResolutionX(), font), output.color);
+                    cmdOutput[i] = new TerminalOutput(Text.wrap(output.text, Window.getWidth(), font), output.color);
                 }
             }
         }

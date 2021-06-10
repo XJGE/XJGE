@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project-private xmlns="http://www.netbeans.org/ns/project-private/1">
-    <editor-bookmarks xmlns="http://www.netbeans.org/ns/editor-bookmarks/2" lastBookmarkId="43">
+    <editor-bookmarks xmlns="http://www.netbeans.org/ns/editor-bookmarks/2" lastBookmarkId="45">
         <file>
             <url>src/dev/theskidster/xjge2/core/Game.java</url>
             <bookmark id="42">
                 <name/>
-                <line>152</line>
+                <line>149</line>
                 <key/>
             </bookmark>
         </file>
@@ -18,15 +18,18 @@
             </bookmark>
         </file>
         <file>
-            <url>src/dev/theskidster/xjge2/core/XJGE.java</url>
-            <bookmark id="36">
+            <url>src/dev/theskidster/xjge2/hud/BitmapFont.java</url>
+            <bookmark id="26">
                 <name/>
-                <line>81</line>
+                <line>9</line>
                 <key/>
             </bookmark>
+        </file>
+        <file>
+            <url>src/dev/theskidster/xjge2/core/XJGE.java</url>
             <bookmark id="41">
                 <name/>
-                <line>141</line>
+                <line>151</line>
                 <key/>
             </bookmark>
         </file>
@@ -38,20 +41,12 @@
                 <key/>
             </bookmark>
         </file>
-        <file>
-            <url>src/dev/theskidster/xjge2/hud/BitmapFont.java</url>
-            <bookmark id="26">
-                <name/>
-                <line>9</line>
-                <key/>
-            </bookmark>
-        </file>
     </editor-bookmarks>
     <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
         <group>
             <file>file:/C:/Users/thesk/Documents/Projects/XJGE/XJGE-2/src/dev/theskidster/xjge2/core/Game.java</file>
+            <file>file:/C:/Users/thesk/Documents/Projects/XJGE/XJGE-2/src/dev/theskidster/xjge2/core/InfoInput.java</file>
             <file>file:/C:/Users/thesk/Documents/Projects/XJGE/XJGE-2/src/dev/theskidster/xjge2/test/Test.java</file>
-            <file>file:/C:/Users/thesk/Documents/Projects/XJGE/XJGE-2/src/dev/theskidster/xjge2/core/Logger.java</file>
             <file>file:/C:/Users/thesk/Documents/Projects/XJGE/XJGE-2/src/dev/theskidster/xjge2/core/XJGE.java</file>
         </group>
     </open-files>
