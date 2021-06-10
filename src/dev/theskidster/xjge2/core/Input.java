@@ -24,6 +24,8 @@ public final class Input {
 
     public static final int KEY_MOUSE_COMBO = -1;
     
+    private static final boolean connected[] = new boolean[4];
+    
     static final HashMap<Integer, InputDevice> inputDevices = new HashMap<>();
     
     private static final HashMap<Integer, HashMap<Control, Integer>> controlConfigs = new HashMap<>();
@@ -94,7 +96,32 @@ public final class Input {
         }
         
         glfwSetJoystickCallback((jid, event) -> {
-            //TODO: need to add gl stuff first...
+            switch(event) {
+                case GLFW_CONNECTED -> {
+                    findInputDevices();
+                    
+                    if(jid < GLFW_JOYSTICK_5) connected[jid] = true;
+                    
+                    Logger.setDomain("input");
+                    Logger.logInfo("Input device \"" + getDeviceName(jid) + "\" " +
+                                   "connected at position " + jid + ".");
+                    Logger.setDomain(null);
+                }
+                
+                case GLFW_DISCONNECTED -> {
+                    findInputDevices();
+                    
+                    Logger.setDomain("input");
+                    Logger.logInfo("Input device \"" + getDeviceName(jid) + "\" " +
+                                   "disconnected at position " + jid + ".");
+                    Logger.setDomain(null);
+                    
+                    //TODO: add event
+                    if(jid < GLFW_JOYSTICK_5) {
+                        connected[jid] = false;
+                    }
+                }
+            }
         });
     }
     
@@ -107,7 +134,7 @@ public final class Input {
             } else {
                 if(glfwJoystickPresent(i)) {
                     inputDevices.put(i, new Gamepad(i, sensitivityConfigs.get(i), controlConfigs.get(i)));
-                    //if(i < GLFW_JOYSTICK_5) window.connected[i] = true;
+                    if(i < GLFW_JOYSTICK_5) connected[i] = true;
                 }
             }
         }
@@ -203,12 +230,10 @@ public final class Input {
     
     public static boolean getDevicePresent(int id) {
         if(inputDevices.containsKey(id)) {
-            //TODO: this requires a boolean[] array
+            return connected[id];
         } else {
-            
+            return false;
         }
-        
-        return false;
     }
     
     public static float getDeviceSensitivity(int id) {
@@ -236,6 +261,20 @@ public final class Input {
             Logger.setDomain(null);
             
             return false;
+        }
+    }
+    
+    public static String getDeviceName(int id) {
+        if(inputDevices.containsKey(id)) {
+            return inputDevices.get(id).name;
+        } else {
+            Logger.setDomain("input");
+            Logger.logWarning("Failed to get the name of input device " + id + 
+                              ". Could not find an input device at this index.", 
+                              null);
+            Logger.setDomain(null);
+            
+            return null;
         }
     }
     

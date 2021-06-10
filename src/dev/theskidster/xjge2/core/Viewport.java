@@ -136,6 +136,7 @@ final class Viewport {
         ui.values().forEach(widget -> widget.setSplitPosition()); //TODO: provide split type, width, height, x1/2.. etc.?
     }
     
+    //TODO: expose to public
     void addUIWidget(String name, Widget widget) {
         ui.put(name, widget);
         

@@ -23,6 +23,8 @@ public class Test {
         
         XJGE.init("/dev/theskidster/xjge2/assets/", true, res, true);
         
+        
+        
         Game.setScene(new TestScene());
         
         XJGE.start();
