@@ -22,8 +22,8 @@ public final class Color {
     public static final Color GREEN     = new Color(0, 128, 0);
     public static final Color BLUE      = new Color(0, 0, 255);
     public static final Color NAVY      = new Color(0, 0, 128);
-    public static final Color PINK      = new Color(255, 0, 255);
-    public static final Color PURPLE    = new Color(128, 0, 128);
+    public static final Color PINK      = new Color(255, 128, 255);
+    public static final Color PURPLE    = new Color(96, 64, 128);
     public static final Color CYAN      = new Color(0, 255, 255);
     public static final Color TEAL      = new Color(0, 128, 128);
     public static final Color BROWN     = new Color(64, 32, 0);

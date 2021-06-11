@@ -27,10 +27,10 @@ final class DebugInfo {
     private final Font font;
     private final Text text = new Text();
     
-    private final RectangleBatch rectBatch = new RectangleBatch(5);
+    private final RectangleBatch rectBatch = new RectangleBatch(6);
     
-    private final Rectangle[] rectangles = new Rectangle[5];
-    private final Vector3f[] textPos     = new Vector3f[24];
+    private final Rectangle[] rectangles = new Rectangle[6];
+    private final Vector3f[] textPos     = new Vector3f[25];
     private final Icon[] icons           = new Icon[5];
     
     DebugInfo(Font font, Texture iconTexture) {
@@ -156,14 +156,24 @@ final class DebugInfo {
             icons[4].setPosition(PADDING, rectangles[4].yPos + rectangles[4].height - 48, 0);
             textPos[15].set(80, rectangles[4].yPos + rectangles[4].height - 36, 0);
             
-            for(int i = 16; i < textPos.length; i += 2) {
+            for(int i = 16; i < textPos.length - 1; i += 2) {
                 float yPos = (rectangles[4].yPos + rectangles[4].height) - (96 + PADDING);
                 int index  = (i % 16) / 2;
                 
                 textPos[i].set(60, yPos - (48 * index), 0);
                 textPos[i + 1].set(80, (yPos + 16) - (48 * index), 0);
             }
-        }    
+        }
+        
+        //Group 6: engine info.
+        {
+            rectangles[5].width  = Text.lengthInPixels("XJGE 2 ver " + XJGE.VERSION, font) + (PADDING * 2);
+            rectangles[5].height = 24 + PADDING;
+            rectangles[5].xPos   = Window.getWidth() - rectangles[5].width;
+            rectangles[5].yPos   = rectangles[3].yPos - (rectangles[5].height + PADDING);
+            
+            textPos[24].set(rectangles[5].xPos + PADDING, rectangles[5].yPos + PADDING, 0);
+        }
     }
     
     void render() {
@@ -205,12 +215,14 @@ final class DebugInfo {
         
         text.drawString(font, Input.getDeviceEnabled(KEY_MOUSE_COMBO) ? "Enabled" : "Disabled", textPos[15], Color.WHITE);
         
-        for(int i = 16; i < textPos.length; i += 2) {
+        for(int i = 16; i < textPos.length - 1; i += 2) {
             int jid = (i % 16) / 2;
             
             text.drawString(font, jid + "", textPos[i], Color.YELLOW);
             text.drawString(font, Input.getDevicePresent(jid) ? Input.getDeviceName(jid) : "N/A", textPos[i + 1], Color.WHITE);
         }
+        
+        text.drawString(font, "XJGE 2 ver " + XJGE.VERSION, textPos[24], Color.PINK);
         
         text.resetStringIndex();
     }

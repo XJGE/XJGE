@@ -27,7 +27,7 @@ final class TCShowCommands extends TerminalCommand {
                                     .map(name -> name + ", ")
                                     .reduce(commandList, String::concat);
 
-        setOutput(commandList.substring(0, commandList.length() - 2), Color.CYAN);
+        setOutput(commandList.substring(0, commandList.length() - 2), Color.PINK);
     }
 
 }

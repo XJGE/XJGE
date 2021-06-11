@@ -105,7 +105,7 @@ public final class Text {
                                             position.y + font.getGlyphDescent(c), 
                                             position.z);
                 
-                Color col = (start != 0 && i > start) ? Color.YELLOW : Color.CYAN;
+                Color col = (start != 0 && i > start) ? Color.YELLOW : Color.PINK;
                 
                 switch(c) {
                     case '(', ')', ',', '<', '>' -> col = Color.WHITE;
