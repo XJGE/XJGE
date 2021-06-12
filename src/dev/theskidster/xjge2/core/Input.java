@@ -1,6 +1,8 @@
 package dev.theskidster.xjge2.core;
 
-import static dev.theskidster.xjge2.core.Control.*;
+import dev.theskidster.xjge2.input.Puppet;
+import dev.theskidster.xjge2.input.Control;
+import static dev.theskidster.xjge2.input.Control.*;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileWriter;
@@ -26,7 +28,7 @@ public final class Input {
     
     private static final boolean connected[] = new boolean[4];
     
-    static final HashMap<Integer, InputDevice> inputDevices = new HashMap<>();
+    private static final HashMap<Integer, InputDevice> inputDevices = new HashMap<>();
     
     private static final HashMap<Integer, HashMap<Control, Integer>> controlConfigs = new HashMap<>();
     private static final HashMap<Integer, Float> sensitivityConfigs;
@@ -229,11 +231,8 @@ public final class Input {
     }
     
     public static boolean getDevicePresent(int id) {
-        if(inputDevices.containsKey(id)) {
-            return connected[id];
-        } else {
-            return false;
-        }
+        if(inputDevices.containsKey(id)) return connected[id];
+        else                             return false;
     }
     
     public static float getDeviceSensitivity(int id) {

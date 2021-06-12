@@ -1,7 +1,7 @@
 package dev.theskidster.xjge2.core;
 
 import dev.theskidster.xjge2.graphics.Color;
-import dev.theskidster.xjge2.graphics.Rectangle;
+import dev.theskidster.xjge2.ui.Rectangle;
 import java.util.ArrayList;
 import java.util.HashMap;
 import org.joml.Vector3f;

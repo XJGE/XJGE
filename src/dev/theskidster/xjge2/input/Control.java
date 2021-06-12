@@ -1,4 +1,4 @@
-package dev.theskidster.xjge2.core;
+package dev.theskidster.xjge2.input;
 
 /**
  * @author J Hoffman

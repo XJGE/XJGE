@@ -1,5 +1,6 @@
-package dev.theskidster.xjge2.core;
+package dev.theskidster.xjge2.input;
 
+import dev.theskidster.xjge2.core.Command;
 import java.util.HashMap;
 
 /**

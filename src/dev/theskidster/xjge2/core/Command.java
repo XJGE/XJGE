@@ -1,6 +1,7 @@
 package dev.theskidster.xjge2.core;
 
-import static dev.theskidster.xjge2.core.Control.*;
+import dev.theskidster.xjge2.input.Control;
+import static dev.theskidster.xjge2.input.Control.*;
 import static org.lwjgl.glfw.GLFW.GLFW_PRESS;
 import static org.lwjgl.glfw.GLFW.GLFW_RELEASE;
 
