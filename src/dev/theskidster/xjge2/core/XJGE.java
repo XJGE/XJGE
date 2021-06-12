@@ -162,18 +162,19 @@ public final class XJGE {
             
             glfwSetKeyCallback(Window.HANDLE, (window, key, scancode, action, mods) -> {
                 if(key == GLFW_KEY_F1 && action == GLFW_PRESS) {
-                    debugInfo.show = !debugInfo.show;
+                    if(debugEnabled && mods == GLFW_MOD_SHIFT) {
+                        XJGE.terminalEnabled = !terminalEnabled;
+                        
+                        if(terminalEnabled) Input.setDeviceEnabled(KEY_MOUSE_COMBO, false);
+                        else                Input.revertEnabledState(KEY_MOUSE_COMBO);
+                    } else {
+                        debugInfo.show = !debugInfo.show;
+                    }
+                    
                     if(debugInfo.show) debugInfo.updatePosition();
                 }
                 
                 if(debugEnabled && key == GLFW_KEY_F2 && action == GLFW_PRESS) {
-                    XJGE.terminalEnabled = !terminalEnabled;
-
-                    if(terminalEnabled) Input.setDeviceEnabled(KEY_MOUSE_COMBO, false);
-                    else                Input.revertEnabledState(KEY_MOUSE_COMBO);
-                }
-                
-                if(debugEnabled && key == GLFW_KEY_F3 && action == GLFW_PRESS) {
                     if(!terminalEnabled) {
                         XJGE.freeCamEnabled = !freeCamEnabled;
                         

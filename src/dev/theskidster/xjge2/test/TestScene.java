@@ -17,7 +17,7 @@ public class TestScene extends Scene {
     public TestScene() {
         super("test");
         
-        Game.setClearColor(Color.RETRO_BLUE);
+        Game.setClearColor(Color.create(92, 148, 252));
         
         entities.put("test", new TestEntity(0, 0, -5));
     }
