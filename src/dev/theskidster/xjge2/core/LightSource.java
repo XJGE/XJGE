@@ -15,26 +15,25 @@ import org.lwjgl.system.MemoryStack;
  */
 
 public final class LightSource {
-
-    boolean enabled = true;
-    private boolean isWorldLight;
+    
+    private final boolean isWorldLight;
     
     private final Light light;
     private final Graphics g;
     private final Texture iconTexture;
     private final Atlas atlas;
-    private final Vector2f currCell;
+    private final Vector2f texCoords;
     
     LightSource(boolean isWorldLight, Light light, Texture iconTexture) {
         this.isWorldLight = isWorldLight;
         this.light        = light;
         this.iconTexture  = iconTexture;
         
-        g        = new Graphics();
-        atlas    = new Atlas(iconTexture, 64, 64);
-        currCell = new Vector2f();
+        g         = new Graphics();
+        atlas     = new Atlas(iconTexture, 64, 64);
+        texCoords = new Vector2f();
         
-        setCurrCell();
+        setTexCoords();
         
         try(MemoryStack stack = MemoryStack.stackPush()) {
             g.vertices = stack.mallocFloat(20);
@@ -66,23 +65,21 @@ public final class LightSource {
         this.isWorldLight = isWorldLight;
         this.light        = light;
         
-        enabled     = source.enabled;
         g           = source.g;
         iconTexture = source.iconTexture;
         atlas       = source.atlas;
-        currCell    = source.currCell;
+        texCoords   = source.texCoords;
         
-        setCurrCell();
+        setTexCoords();
     }
     
-    private void setCurrCell() {
-        if(isWorldLight) currCell.set(atlas.subImageWidth, atlas.subImageHeight);
-        else             currCell.set(atlas.subImageWidth * 2, atlas.subImageHeight);
+    private void setTexCoords() {
+        if(isWorldLight) texCoords.set(atlas.subImageWidth, atlas.subImageHeight);
+        else             texCoords.set(atlas.subImageWidth * 2, atlas.subImageHeight);
     }
     
     void update() {
         g.modelMatrix.translation(light.position);
-        
     }
     
     void render(Vector3f camPos, Vector3f camDir, Vector3f camUp) {
@@ -99,11 +96,35 @@ public final class LightSource {
         XJGE.getDefaultGLProgram().setUniform("uType", 5);
         XJGE.getDefaultGLProgram().setUniform("uModel", false, g.modelMatrix);
         XJGE.getDefaultGLProgram().setUniform("uColor", light.ambientColor.asVec3());
-        XJGE.getDefaultGLProgram().setUniform("uTexCoords", currCell);
+        XJGE.getDefaultGLProgram().setUniform("uTexCoords", texCoords);
         
         glDrawElements(GL_TRIANGLES, g.indices.capacity(), GL_UNSIGNED_INT, 0);
         glDisable(GL_BLEND);
         ErrorUtils.checkGLError();
+    }
+    
+    public boolean getEnabled() {
+        return light.enabled;
+    }
+    
+    public float getBrightness() {
+        return light.brightness;
+    }
+    
+    public float getContrast() {
+        return light.contrast;
+    }
+    
+    public Vector3f getPosition() {
+        return light.position;
+    }
+    
+    public Vector3f getAmbientColor() {
+        return light.ambientColor.asVec3();
+    }
+    
+    public Vector3f getDiffuseColor() {
+        return light.diffuseColor.asVec3();
     }
     
 }

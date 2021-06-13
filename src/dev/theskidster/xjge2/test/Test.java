@@ -1,6 +1,5 @@
 package dev.theskidster.xjge2.test;
 
-import dev.theskidster.xjge2.core.Font;
 import dev.theskidster.xjge2.core.Game;
 import dev.theskidster.xjge2.core.XJGE;
 import org.joml.Vector2i;

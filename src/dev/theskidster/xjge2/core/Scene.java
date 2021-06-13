@@ -27,7 +27,7 @@ public abstract class Scene {
     
     public Scene(String name) {
         this.name = name;
-        lightSources[0] = new LightSource(true, Light.NOON, iconTexture);
+        lightSources[0] = new LightSource(true, Light.daylight(), iconTexture);
     }
     
     static void setIconTexture(Texture iconTexture) {
@@ -66,7 +66,7 @@ public abstract class Scene {
         for(int i = 1; search; i++) {
             if(i < MAX_LIGHTS) {
                 if(lightSources[i] != null) {
-                    if(!lightSources[i].enabled) {
+                    if(!lightSources[i].getEnabled()) {
                         lightSources[i] = new LightSource(false, light, lightSources[i]);
                     }
                 } else {
