@@ -1,4 +1,4 @@
-package dev.theskidster.xjge2.shaderutils;
+package dev.theskidster.xjge2.graphics;
 
 import java.nio.Buffer;
 import java.nio.FloatBuffer;

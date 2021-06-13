@@ -1,7 +1,6 @@
 package dev.theskidster.xjge2.core;
 
-import dev.theskidster.xjge2.input.Control;
-import static dev.theskidster.xjge2.input.Control.*;
+import static dev.theskidster.xjge2.core.Control.*;
 import java.util.HashMap;
 import static org.lwjgl.glfw.GLFW.*;
 import org.lwjgl.glfw.GLFWGamepadState;

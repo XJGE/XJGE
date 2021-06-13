@@ -1,7 +1,7 @@
-package dev.theskidster.xjge2.shaderutils;
+package dev.theskidster.xjge2.graphics;
 
 import dev.theskidster.xjge2.core.Logger;
-import static dev.theskidster.xjge2.shaderutils.BufferType.*;
+import static dev.theskidster.xjge2.graphics.BufferType.*;
 import java.nio.Buffer;
 import java.util.HashMap;
 import java.util.LinkedList;

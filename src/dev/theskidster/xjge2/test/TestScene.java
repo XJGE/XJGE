@@ -4,7 +4,7 @@ import dev.theskidster.xjge2.core.Camera;
 import dev.theskidster.xjge2.core.Game;
 import dev.theskidster.xjge2.core.Scene;
 import dev.theskidster.xjge2.graphics.Color;
-import dev.theskidster.xjge2.shaderutils.GLProgram;
+import dev.theskidster.xjge2.graphics.GLProgram;
 import java.util.Map;
 
 /**

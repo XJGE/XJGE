@@ -1,7 +1,5 @@
 package dev.theskidster.xjge2.core;
 
-import dev.theskidster.xjge2.input.Puppet;
-import dev.theskidster.xjge2.input.Control;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.Queue;

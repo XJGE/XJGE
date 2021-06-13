@@ -1,4 +1,4 @@
-package dev.theskidster.xjge2.ui;
+package dev.theskidster.xjge2.core;
 
 import org.joml.Vector2f;
 

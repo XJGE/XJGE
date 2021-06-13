@@ -1,4 +1,4 @@
-package dev.theskidster.xjge2.shaderutils;
+package dev.theskidster.xjge2.graphics;
 
 /**
  * @author J Hoffman

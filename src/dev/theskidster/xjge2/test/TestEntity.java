@@ -1,12 +1,12 @@
 package dev.theskidster.xjge2.test;
 
 import dev.theskidster.xjge2.core.Camera;
-import static dev.theskidster.xjge2.input.Control.*;
+import static dev.theskidster.xjge2.core.Control.*;
 import dev.theskidster.xjge2.core.ErrorUtils;
-import dev.theskidster.xjge2.input.Puppet;
+import dev.theskidster.xjge2.core.Puppet;
 import dev.theskidster.xjge2.graphics.Graphics;
 import dev.theskidster.xjge2.core.Entity;
-import dev.theskidster.xjge2.shaderutils.GLProgram;
+import dev.theskidster.xjge2.graphics.GLProgram;
 import java.util.Map;
 import org.joml.Vector3f;
 import static org.lwjgl.opengl.GL30.*;

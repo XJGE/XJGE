@@ -2,9 +2,6 @@ package dev.theskidster.xjge2.core;
 
 import static dev.theskidster.xjge2.core.Input.KEY_MOUSE_COMBO;
 import dev.theskidster.xjge2.graphics.Color;
-import dev.theskidster.xjge2.ui.Icon;
-import dev.theskidster.xjge2.ui.Rectangle;
-import dev.theskidster.xjge2.ui.RectangleBatch;
 import dev.theskidster.xjge2.graphics.Texture;
 import org.joml.Vector3f;
 import static org.lwjgl.glfw.GLFW.GLFW_JOYSTICK_5;

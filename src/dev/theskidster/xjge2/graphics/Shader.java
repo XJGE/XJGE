@@ -1,4 +1,4 @@
-package dev.theskidster.xjge2.shaderutils;
+package dev.theskidster.xjge2.graphics;
 
 import dev.theskidster.xjge2.core.Logger;
 import dev.theskidster.xjge2.core.XJGE;

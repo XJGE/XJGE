@@ -1,6 +1,6 @@
 package dev.theskidster.xjge2.core;
 
-import dev.theskidster.xjge2.shaderutils.GLProgram;
+import dev.theskidster.xjge2.graphics.GLProgram;
 import java.util.Map;
 import org.joml.Matrix4f;
 import org.joml.Vector3f;
