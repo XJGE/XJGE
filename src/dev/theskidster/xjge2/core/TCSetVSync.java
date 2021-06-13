@@ -28,13 +28,13 @@ final class TCSetVSync extends TerminalCommand {
             if(parameter.equals("true") || parameter.equals("false")) {
                 boolean value = Boolean.parseBoolean(parameter);
                 setOutput("VSync changed: (" + value + ")", Color.WHITE);
-                WinKit.setVSyncEnabled(value);
+                Hardware.setVSyncEnabled(value);
             } else {
                 setOutput(errorInvalidArg(parameter, "(true) or (false)"), Color.YELLOW);
             }
         } else {
-            WinKit.setVSyncEnabled(!WinKit.getVSyncEnabled());
-            setOutput("VSync changed: (" + WinKit.getVSyncEnabled() + ")", Color.WHITE);
+            Hardware.setVSyncEnabled(!Hardware.getVSyncEnabled());
+            setOutput("VSync changed: (" + Hardware.getVSyncEnabled() + ")", Color.WHITE);
         }
     }
 

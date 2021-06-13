@@ -37,7 +37,7 @@ public final class Logger {
         logInfo("OPENAL VER:\t" );
         logInfo("OPENGL VER:\t" + glGetString(GL_VERSION));
         logInfo("GFX CARD:\t\t" + glGetString(GL_RENDERER));
-        logInfo("MONITORS:\t\t" + "Found: " + WinKit.getNumMonitors() + 
+        logInfo("MONITORS:\t\t" + "Found: " + Hardware.getNumMonitors() + 
                 ", Primary: \"" + Window.monitor.name + "\" (" + Window.monitor.getInfo() + ")");
         logInfo("SPEAKERS:\t\t" );
         logInfo("GAMEPADS:\t\t" + "Found: " + Input.getNumDevices());

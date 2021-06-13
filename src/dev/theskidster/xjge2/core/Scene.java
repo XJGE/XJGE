@@ -1,6 +1,5 @@
 package dev.theskidster.xjge2.core;
 
-import dev.theskidster.xjge2.core.Camera;
 import dev.theskidster.xjge2.graphics.GLProgram;
 import java.util.LinkedHashMap;
 import java.util.Map;

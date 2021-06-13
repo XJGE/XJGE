@@ -1,5 +1,8 @@
 package dev.theskidster.xjge2.core;
 
+import dev.theskidster.xjge2.graphics.Rectangle;
+import dev.theskidster.xjge2.graphics.Icon;
+import dev.theskidster.xjge2.graphics.RectangleBatch;
 import static dev.theskidster.xjge2.core.Input.KEY_MOUSE_COMBO;
 import dev.theskidster.xjge2.graphics.Color;
 import dev.theskidster.xjge2.graphics.Texture;
@@ -109,7 +112,7 @@ final class DebugInfo {
             strings[0] = "OPENGL VER: " + glGetString(GL_VERSION);
             strings[1] = "GFX CARD: " + glGetString(GL_RENDERER);
             strings[2] = "DISPLAY: \"" + Window.monitor.name + "\" (" + Window.monitor.getInfo() + ")";
-            strings[3] = "VSYNC: " + WinKit.getVSyncEnabled();
+            strings[3] = "VSYNC: " + Hardware.getVSyncEnabled();
             
             for(String string : strings) {
                 if(string.length() > longestString.length()) longestString = string;
@@ -208,7 +211,7 @@ final class DebugInfo {
         text.drawString(font, "OPENGL VER: " + glGetString(GL_VERSION), textPos[11], Color.WHITE);
         text.drawString(font, "GFX CARD: " + glGetString(GL_RENDERER), textPos[12], Color.YELLOW);
         text.drawString(font, "DISPLAY: \"" + Window.monitor.name + "\" (" + Window.monitor.getInfo() + ")", textPos[13], Color.YELLOW);
-        text.drawString(font, "VSYNC: " + WinKit.getVSyncEnabled(), textPos[14], Color.CYAN);
+        text.drawString(font, "VSYNC: " + Hardware.getVSyncEnabled(), textPos[14], Color.CYAN);
         
         text.drawString(font, Input.getDeviceEnabled(KEY_MOUSE_COMBO) ? "Enabled" : "Disabled", textPos[15], Color.WHITE);
         

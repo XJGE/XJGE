@@ -26,7 +26,7 @@ final class TCSetMonitor extends TerminalCommand {
             try {
                 int value = Integer.parseInt(args.get(0));
 
-                if(value > 0 && value < WinKit.getNumMonitors() + 1) {
+                if(value > 0 && value < Hardware.getNumMonitors() + 1) {
                     Window.setMonitor(args.get(0));
                 } else {
                     setOutput("ERROR: Could not find a monitor with an ID of " + value, Color.YELLOW);

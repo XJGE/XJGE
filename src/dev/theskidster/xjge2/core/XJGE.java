@@ -33,6 +33,7 @@ public final class XJGE {
     private static boolean matchWindowResolution;
     private static boolean freeCamEnabled;
     private static boolean terminalEnabled;
+    private static boolean showLightSources;
     private static boolean firstMouse = true;
     
     public static final Path PWD       = Path.of("").toAbsolutePath();
@@ -88,7 +89,7 @@ public final class XJGE {
                 glfwWindowHint(GLFW_RESIZABLE, (windowResizable && resolution == null) ? GLFW_TRUE : GLFW_FALSE);
                 glfwWindowHint(GLFW_VISIBLE, GLFW_FALSE);
                 
-                Window.monitor = WinKit.findMonitors().get(1);
+                Window.monitor = Hardware.findMonitors().get(1);
                 Window.setIcon("img_null.png");
             }
             
@@ -193,6 +194,10 @@ public final class XJGE {
                                        "terminal and try again.");
                         Logger.setDomain(null);
                     }
+                }
+                
+                if(debugEnabled && key == GLFW_KEY_F3 && action == GLFW_PRESS) {
+                    showLightSources = !showLightSources;
                 }
 
                 if(freeCamEnabled && !terminalEnabled) {
@@ -326,6 +331,10 @@ public final class XJGE {
     
     static boolean getTerminalEnabled() {
         return terminalEnabled;
+    }
+    
+    static boolean getLightSourcesVisible() {
+        return showLightSources;
     }
     
     public static Split getScreenSplit() {

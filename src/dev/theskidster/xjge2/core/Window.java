@@ -55,7 +55,7 @@ public final class Window {
         
         setPositionCentered();
         
-        glfwSwapInterval(WinKit.getVSyncEnabled() ? 1 : 0);
+        glfwSwapInterval(Hardware.getVSyncEnabled() ? 1 : 0);
     }
     
     static void show() {
@@ -68,8 +68,8 @@ public final class Window {
             
             switch(event) {
                 case GLFW_CONNECTED -> {
-                    WinKit.findMonitors();
-                    Monitor conMon = WinKit.getMonitor(monHandle);
+                    Hardware.findMonitors();
+                    Monitor conMon = Hardware.getMonitor(monHandle);
                     Logger.logInfo("Monitor " + conMon.id + " \"" + conMon.name + "\" has been connected.");
                 }
                 
@@ -85,16 +85,16 @@ public final class Window {
                                           "to move the window to the next available monitor...", 
                                           null);
                         
-                        WinKit.removeMonitor(monHandle);
-                        monitor = WinKit.getAnyMonitor();
+                        Hardware.removeMonitor(monHandle);
+                        monitor = Hardware.getAnyMonitor();
                         enableFullscreen(false);
                         
                         Logger.logInfo("Moved the window to monitor " + monitor.id + " \"" + monitor.name + "\"");
                     } else {
-                        Monitor disconMon = WinKit.getMonitor(monHandle);
+                        Monitor disconMon = Hardware.getMonitor(monHandle);
                         
                         Logger.logInfo("Monitor " + disconMon.id + " \"" + disconMon.name + "\" has been disconnected.");
-                        WinKit.removeMonitor(monHandle);
+                        Hardware.removeMonitor(monHandle);
                     }
                 }
             }
@@ -203,7 +203,7 @@ public final class Window {
             Logger.logSevere(e.getMessage(), e);
         }
         
-        TreeMap<Integer, Monitor> monitors = WinKit.findMonitors();
+        TreeMap<Integer, Monitor> monitors = Hardware.findMonitors();
         Monitor newMonitor = null;
         
         if(monitors.size() > 0) {

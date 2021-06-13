@@ -10,7 +10,7 @@ import static org.lwjgl.glfw.GLFW.glfwSwapInterval;
  * Created: Apr 29, 2021
  */
 
-public final class WinKit {
+public final class Hardware {
     
     private static boolean vSyncEnabled = true;
     
@@ -57,7 +57,7 @@ public final class WinKit {
     }
     
     public static void setVSyncEnabled(boolean vSyncEnabled) {
-        WinKit.vSyncEnabled = vSyncEnabled;
+        Hardware.vSyncEnabled = vSyncEnabled;
         glfwSwapInterval(vSyncEnabled ? 1 : 0);
         
         Logger.setDomain("winkit");

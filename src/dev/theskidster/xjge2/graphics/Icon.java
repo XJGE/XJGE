@@ -1,11 +1,8 @@
-package dev.theskidster.xjge2.core;
+package dev.theskidster.xjge2.graphics;
 
 import dev.theskidster.xjge2.core.ErrorUtils;
 import dev.theskidster.xjge2.core.Logger;
 import dev.theskidster.xjge2.core.XJGE;
-import dev.theskidster.xjge2.graphics.Atlas;
-import dev.theskidster.xjge2.graphics.Graphics;
-import dev.theskidster.xjge2.graphics.Texture;
 import org.joml.Vector2f;
 import org.joml.Vector2i;
 import org.joml.Vector3f;

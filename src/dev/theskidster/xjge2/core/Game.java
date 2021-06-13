@@ -41,7 +41,7 @@ public final class Game {
             
             currTime = glfwGetTime();
             delta    += currTime - prevTime;
-            if(delta < TARGET_DELTA && WinKit.getVSyncEnabled()) delta = TARGET_DELTA;
+            if(delta < TARGET_DELTA && Hardware.getVSyncEnabled()) delta = TARGET_DELTA;
             prevTime = currTime;
             ticked   = false;
             
@@ -107,6 +107,11 @@ public final class Game {
 
                         viewport.render(glPrograms, "camera");
                         scene.render(glPrograms, viewport.currCamera);
+                        
+                        if(XJGE.getLightSourcesVisible()) {
+                            //TODO: add visible light
+                        }
+                        
                         viewport.render(glPrograms, "ui");
                     glBindFramebuffer(GL_FRAMEBUFFER, 0);
 
