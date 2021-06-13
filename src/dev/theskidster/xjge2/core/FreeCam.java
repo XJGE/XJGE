@@ -11,8 +11,7 @@ import org.joml.Vector3f;
 
 final class FreeCam extends Camera {
 
-    private int speed = 1;
-    
+    private float speed = 0.25f;
     private float pitch;
     private float yaw               = -90f;
     private final float sensitivity = 0.10f;
@@ -53,7 +52,7 @@ final class FreeCam extends Camera {
     }
     
     public void setSpeedBoostEnabled(boolean enable) {
-        speed = (enable) ? 3 : 1;
+        speed = (enable) ? 0.75f : 0.25f;
     }
     
     public void setDirection(double xpos, double ypos) {

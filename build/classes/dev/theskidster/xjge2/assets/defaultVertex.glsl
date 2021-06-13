@@ -12,6 +12,7 @@ layout (location = 6) in vec3 aColOffset;
 
 uniform int uType;
 uniform vec2 uTexCoords;
+uniform vec3 uColor;
 uniform mat4 uModel;
 uniform mat4 uView;
 uniform mat4 uProjection;
@@ -45,6 +46,12 @@ void main() {
         case 4: //Used for rendering icons.
             ioTexCoords = aTexCoords + uTexCoords;
             gl_Position = uProjection * uModel * vec4(aPosition, 1);
+            break;
+
+        case 5: //Used for light source icons.
+            ioTexCoords = aTexCoords + uTexCoords;
+            ioColor     = uColor;
+            gl_Position = uProjection * uView * uModel * vec4(aPosition, 1);
             break;
     }
 }

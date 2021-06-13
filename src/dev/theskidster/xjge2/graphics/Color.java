@@ -11,7 +11,7 @@ public final class Color {
     
     public static final Color WHITE   = new Color(1);
     public static final Color SILVER  = new Color(0.753f);
-    public static final Color GRAY    = new Color(0.312f);
+    public static final Color GRAY    = new Color(0.38f);
     public static final Color BLACK   = new Color(0);
     public static final Color RED     = new Color(255, 0, 0);
     public static final Color ORANGE  = new Color(255, 153, 0);
@@ -52,6 +52,13 @@ public final class Color {
     
     public static Color create(int r, int g, int b) {
         return new Color(r, g, b);
+    }
+    
+    public static Color random() {
+        return new Color(
+                (int) (Math.random() * 255),
+                (int) (Math.random() * 255),
+                (int) (Math.random() * 255));
     }
     
     public Vector3f asVec3() {

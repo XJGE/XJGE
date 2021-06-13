@@ -51,9 +51,9 @@ public class TestEntity extends Entity {
             g.vertices = stack.mallocFloat(18);
             
             //(vec3 position), (vec3 color)
-            g.vertices.put(-1).put(-1).put(0)   .put(1).put(0).put(0);
-            g.vertices .put(0) .put(1).put(0)   .put(0).put(1).put(0);
-            g.vertices .put(1).put(-1).put(0)   .put(0).put(0).put(1);
+            g.vertices.put(-0.5f).put(-0.5f).put(0) .put(1).put(0).put(0);
+            g.vertices    .put(0) .put(0.5f).put(0) .put(0).put(1).put(0);
+            g.vertices .put(0.5f).put(-0.5f).put(0) .put(0).put(0).put(1);
             
             g.vertices.flip();
         }

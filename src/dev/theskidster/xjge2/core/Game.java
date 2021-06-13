@@ -2,6 +2,7 @@ package dev.theskidster.xjge2.core;
 
 import static dev.theskidster.xjge2.core.XJGE.glPrograms;
 import dev.theskidster.xjge2.graphics.Color;
+import dev.theskidster.xjge2.graphics.Light;
 import java.util.Comparator;
 import java.util.PriorityQueue;
 import java.util.Queue;
@@ -63,6 +64,7 @@ public final class Game {
                     else                events.poll();
                 } else {
                     scene.update(TARGET_DELTA);
+                    scene.updateLightSources();
                     scene.processRemoveRequests();
                 }
                 
@@ -104,14 +106,10 @@ public final class Game {
                         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
                         viewport.resetCamera(glPrograms);
-
+                        
                         viewport.render(glPrograms, "camera");
-                        scene.render(glPrograms, viewport.currCamera);
-                        
-                        if(XJGE.getLightSourcesVisible()) {
-                            //TODO: add visible light
-                        }
-                        
+                        scene.render(glPrograms, viewport.id, viewport.currCamera);
+                        scene.renderLightsources(viewport.currCamera);
                         viewport.render(glPrograms, "ui");
                     glBindFramebuffer(GL_FRAMEBUFFER, 0);
 
@@ -184,6 +182,11 @@ public final class Game {
         
         if(Game.scene != null) scene.exit();
         Game.scene = scene;
+    }
+    
+    //Temp
+    static void addLightAtIndex(int index, Light light) {
+        scene.addLightAtIndex(index, light);
     }
     
 }

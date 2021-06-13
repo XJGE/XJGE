@@ -5,7 +5,9 @@ import dev.theskidster.xjge2.core.Terminal.TCCLS;
 import static dev.theskidster.xjge2.core.Window.HANDLE;
 import dev.theskidster.xjge2.graphics.Texture;
 import dev.theskidster.xjge2.graphics.BufferType;
+import dev.theskidster.xjge2.graphics.Color;
 import dev.theskidster.xjge2.graphics.GLProgram;
+import dev.theskidster.xjge2.graphics.Light;
 import dev.theskidster.xjge2.graphics.Shader;
 import java.nio.file.Path;
 import java.util.Collections;
@@ -14,6 +16,7 @@ import java.util.LinkedList;
 import java.util.Map;
 import java.util.TreeMap;
 import org.joml.Vector2i;
+import org.joml.Vector3f;
 import static org.lwjgl.glfw.GLFW.*;
 import org.lwjgl.opengl.GL;
 import static org.lwjgl.opengl.GL30.*;
@@ -135,6 +138,7 @@ public final class XJGE {
                 defaultProgram.addUniform(BufferType.INT,   "uType");
                 defaultProgram.addUniform(BufferType.FLOAT, "uOpacity");
                 defaultProgram.addUniform(BufferType.VEC2,  "uTexCoords");
+                defaultProgram.addUniform(BufferType.VEC3,  "uColor");
                 defaultProgram.addUniform(BufferType.MAT4,  "uModel");
                 defaultProgram.addUniform(BufferType.MAT4,  "uView");
                 defaultProgram.addUniform(BufferType.MAT4,  "uProjection");
@@ -145,6 +149,7 @@ public final class XJGE {
             engineFont  = new Font();
             engineIcons = new Texture("spr_engineicons.png");
             
+            Scene.setIconTexture(engineIcons);
             Logger.printSystemInfo();
             XJGE.filepath = filepath;
             
@@ -214,6 +219,16 @@ public final class XJGE {
                 } else {
                     //TODO: pass key input to ui widget
                 }
+                
+                if(key == GLFW_KEY_1 && action == GLFW_PRESS) {
+                    float x = (Math.random() > 0.5f) ? (float) -(Math.random() * 5) : (float) (Math.random() * 50);
+                    float y = (Math.random() > 0.5f) ? (float) -(Math.random() * 5) : (float) (Math.random() * 50);
+                    float z = (Math.random() > 0.5f) ? (float) -(Math.random() * 5) : (float) (Math.random() * 50);
+                    
+                    Vector3f pos = new Vector3f(x, y, z);
+                    
+                    Game.addLightAtIndex(1, new Light(1, 1, pos, Color.random(), Color.WHITE));
+                }
             });
 
             glfwSetCursorPosCallback(HANDLE, (window, xpos, ypos) -> {
@@ -242,10 +257,10 @@ public final class XJGE {
         engineCommands.putAll(userCommands);
         engineCommands.values().forEach(command -> command.setCommands(engineCommands));
         
-        glPrograms  = Collections.unmodifiableMap(glPrograms);
-        freeCam     = new FreeCam();
-        terminal    = new Terminal(engineCommands, engineFont);
-        debugInfo   = new DebugInfo(engineFont, engineIcons);
+        glPrograms = Collections.unmodifiableMap(glPrograms);
+        freeCam    = new FreeCam();
+        terminal   = new Terminal(engineCommands, engineFont);
+        debugInfo  = new DebugInfo(engineFont, engineIcons);
         
         Window.show();
         setScreenSplit(Split.NONE);

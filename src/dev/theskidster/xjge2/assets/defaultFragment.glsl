@@ -46,5 +46,10 @@ void main() {
         case 4: //Used for rendering icons.
             ioResult = texture(uTexture, ioTexCoords);
             break;
+
+        case 5: //Used for light source icons.
+            float opacity = texture(uTexture, ioTexCoords).a;
+            ioResult = texture(uTexture, ioTexCoords) * vec4(ioColor, opacity);
+            break;
     }
 }
