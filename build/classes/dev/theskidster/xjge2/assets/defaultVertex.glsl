@@ -53,5 +53,10 @@ void main() {
             ioColor     = uColor;
             gl_Position = uProjection * uView * uModel * vec4(aPosition, 1);
             break;
+
+        case 6: //Used for animated 2D sprites.
+            ioTexCoords = aTexCoords + uTexCoords;
+            gl_Position = uProjection * uView * uModel * vec4(aPosition, 1);
+            break;
     }
 }

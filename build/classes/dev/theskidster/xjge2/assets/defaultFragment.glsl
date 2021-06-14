@@ -43,7 +43,7 @@ void main() {
             ioResult = vec4(ioColor, uOpacity);
             break;
 
-        case 4: //Used for rendering icons.
+        case 4: case 6: //Used for rendering icons and animatied 2D sprites.
             ioResult = texture(uTexture, ioTexCoords);
             break;
 

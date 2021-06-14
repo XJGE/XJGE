@@ -24,7 +24,7 @@ public final class Game {
     
     private static boolean ticked;
     
-    private static Color clearColor = Color.BLACK;
+    private static Color clearColor = Color.create(92, 148, 252);
     private static Scene scene;
     
     private static final Queue<Event> events = new PriorityQueue<>(Comparator.comparing(Event::getPriority));

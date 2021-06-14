@@ -1,7 +1,6 @@
 package dev.theskidster.xjge2.test;
 
 import dev.theskidster.xjge2.core.Camera;
-import dev.theskidster.xjge2.core.Game;
 import dev.theskidster.xjge2.core.Scene;
 import dev.theskidster.xjge2.graphics.Color;
 import dev.theskidster.xjge2.graphics.GLProgram;
@@ -21,13 +20,11 @@ public class TestScene extends Scene {
     public TestScene() {
         super("test");
         
-        Game.setClearColor(Color.create(92, 148, 252));
-        
         light = new Light(1, 1, new Vector3f(-1, 0, -3), Color.random(), Color.WHITE);
-        
         addLight(light);
         
-        entities.put("test", new TestEntity(0, 0, -3));
+        entities.put("test",  new TestEntity(0, 0, -3));
+        //entities.put("test2", new TestEntity2(2, 1, -3));
     }
     
     @Override
