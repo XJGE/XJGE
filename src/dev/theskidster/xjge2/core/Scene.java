@@ -5,6 +5,7 @@ import dev.theskidster.xjge2.graphics.Light;
 import dev.theskidster.xjge2.graphics.Texture;
 import java.util.LinkedHashMap;
 import java.util.Map;
+import org.joml.Matrix4f;
 
 /**
  * @author J Hoffman
@@ -20,6 +21,7 @@ public abstract class Scene {
     
     public final String name;
     private static Texture iconTexture;
+    private Skybox skybox;
     
     protected final LinkedHashMap<String, Entity> entities = new LinkedHashMap<>();
     
@@ -28,6 +30,14 @@ public abstract class Scene {
     public Scene(String name) {
         this.name = name;
         lightSources[0] = new LightSource(true, Light.daylight(), iconTexture);
+    }
+    
+    private void findNumLights() {
+        numLights = 1;
+        
+        for(LightSource source : lightSources) {
+            if(source != null) numLights++;
+        }
     }
     
     static void setIconTexture(Texture iconTexture) {
@@ -44,6 +54,10 @@ public abstract class Scene {
         }
     }
     
+    void renderSkybox(Matrix4f viewMatrix) {
+        if(skybox != null) skybox.render(viewMatrix);
+    }
+    
     void renderLightsources(Camera camera) {
         if(XJGE.getLightSourcesVisible()) {
             for(LightSource source : lightSources) {
@@ -52,12 +66,8 @@ public abstract class Scene {
         }
     }
     
-    private void findNumLights() {
-        numLights = 1;
-        
-        for(LightSource source : lightSources) {
-            if(source != null) numLights++;
-        }
+    protected final void setSkybox(Skybox skybox) {
+        this.skybox = skybox;
     }
     
     protected final void addLight(Light light) {
@@ -91,7 +101,7 @@ public abstract class Scene {
                 lightSources[index] = new LightSource(index == 0, light, lightSources[index]);
                 findNumLights();
             }
-        } catch(Exception e) {
+        } catch(NullPointerException | IndexOutOfBoundsException e) {
             Logger.setDomain("core");
             Logger.logWarning("Failed to add light object at index " + index, e);
             Logger.setDomain(null);

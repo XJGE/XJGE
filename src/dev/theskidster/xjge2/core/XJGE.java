@@ -220,6 +220,7 @@ public final class XJGE {
                     //TODO: pass key input to ui widget
                 }
                 
+                //TODO: temp
                 if(key == GLFW_KEY_1 && action == GLFW_PRESS) {
                     float x = (Math.random() > 0.5f) ? (float) -(Math.random() * 5) : (float) (Math.random() * 50);
                     float y = (Math.random() > 0.5f) ? (float) -(Math.random() * 5) : (float) (Math.random() * 50);
@@ -227,7 +228,7 @@ public final class XJGE {
                     
                     Vector3f pos = new Vector3f(x, y, z);
                     
-                    Game.addLightAtIndex(1, new Light(1, 1, pos, Color.random(), Color.WHITE));
+                    Game.addLight(new Light(1, 1, pos, Color.random(), Color.WHITE));
                 }
             });
 

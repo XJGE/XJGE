@@ -93,7 +93,7 @@ public final class LightSource {
         glBindTexture(GL_TEXTURE_2D, iconTexture.handle);
         glBindVertexArray(g.vao);
         
-        XJGE.getDefaultGLProgram().setUniform("uType", 5);
+        XJGE.getDefaultGLProgram().setUniform("uType", 6);
         XJGE.getDefaultGLProgram().setUniform("uModel", false, g.modelMatrix);
         XJGE.getDefaultGLProgram().setUniform("uColor", light.ambientColor.asVec3());
         XJGE.getDefaultGLProgram().setUniform("uTexCoords", texCoords);

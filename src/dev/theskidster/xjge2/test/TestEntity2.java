@@ -92,7 +92,7 @@ public class TestEntity2 extends Entity {
         glBindTexture(GL_TEXTURE_2D, texture.handle);
         glBindVertexArray(g.vao);
         
-        XJGE.getDefaultGLProgram().setUniform("uType", 6);
+        XJGE.getDefaultGLProgram().setUniform("uType", 7);
         XJGE.getDefaultGLProgram().setUniform("uModel", false, g.modelMatrix);
         XJGE.getDefaultGLProgram().setUniform("uTexCoords", atlas.texCoords);
         

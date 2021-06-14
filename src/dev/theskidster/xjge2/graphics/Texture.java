@@ -27,23 +27,27 @@ public final class Texture {
     private int channels;
     
     public Texture(String filename) {
+        this(filename, GL_TEXTURE_2D);
+    }
+    
+    public Texture(String filename, int target) {
         handle = glGenTextures();
-        glBindTexture(GL_TEXTURE_2D, handle);
+        glBindTexture(target, handle);
         
         try(InputStream file = Texture.class.getResourceAsStream(XJGE.getFilepath() + filename)) {
-            loadTexture(file);
+            loadTexture(file, target);
         } catch(Exception e) {
             Logger.setDomain("graphics");
             Logger.logWarning("Failed to load texture \"" + filename + "\"", e);
             Logger.setDomain(null);
             
-            loadTexture(Texture.class.getResourceAsStream("/dev/theskidster/xjge2/assets/img_null.png"));
+            loadTexture(Texture.class.getResourceAsStream("/dev/theskidster/xjge2/assets/img_null.png"), target);
         }
         
         ErrorUtils.checkGLError();
     }
     
-    private void loadTexture(InputStream file) {
+    private void loadTexture(InputStream file, int target) {
         try(MemoryStack stack = MemoryStack.stackPush()) {
             byte[] data = file.readAllBytes();
             
@@ -59,7 +63,7 @@ public final class Texture {
             channels = channelBuf.get();
             
             if(texture != null) {
-                glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, texture);
+                glTexImage2D(target, 0, GL_RGBA, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, texture);
             } else {
                 throw new NullPointerException("STBI failed to parse texture image data.");
             }

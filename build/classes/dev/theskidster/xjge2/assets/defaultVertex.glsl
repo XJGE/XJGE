@@ -19,6 +19,7 @@ uniform mat4 uProjection;
 
 out vec3 ioColor;
 out vec2 ioTexCoords;
+out vec3 ioSkyTexCoords;
 
 void main() {
     switch(uType) {
@@ -48,15 +49,23 @@ void main() {
             gl_Position = uProjection * uModel * vec4(aPosition, 1);
             break;
 
-        case 5: //Used for light source icons.
+        case 5:
+            break;
+
+        case 6: //Used for light source icons.
             ioTexCoords = aTexCoords + uTexCoords;
             ioColor     = uColor;
             gl_Position = uProjection * uView * uModel * vec4(aPosition, 1);
             break;
 
-        case 6: //Used for animated 2D sprites.
+        case 7: //Used for animated 2D sprites.
             ioTexCoords = aTexCoords + uTexCoords;
             gl_Position = uProjection * uView * uModel * vec4(aPosition, 1);
+            break;
+
+        case 8: //Used for drawing skyboxes.
+            ioSkyTexCoords = aPosition;
+            gl_Position    = (uProjection * uView * vec4(aPosition, 1));
             break;
     }
 }

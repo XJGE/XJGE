@@ -2,10 +2,12 @@
 
 in vec3 ioColor;
 in vec2 ioTexCoords;
+in vec3 ioSkyTexCoords;
 
 uniform int uType;
 uniform float uOpacity;
 uniform sampler2D uTexture;
+uniform samplerCube uSkyTexture;
 
 out vec4 ioResult;
 
@@ -43,13 +45,21 @@ void main() {
             ioResult = vec4(ioColor, uOpacity);
             break;
 
-        case 4: case 6: //Used for rendering icons and animatied 2D sprites.
+        case 4: case 7: //Used for rendering icons and animatied 2D sprites.
             ioResult = texture(uTexture, ioTexCoords);
             break;
 
-        case 5: //Used for light source icons.
+        case 5:
+            break;
+
+        case 6: //Used for light source icons.
             float opacity = texture(uTexture, ioTexCoords).a;
             ioResult = texture(uTexture, ioTexCoords) * vec4(ioColor, opacity);
+            break;
+
+        case 8: //Used for drawing skyboxes.
+            makeTransparent(texture(uSkyTexture, ioSkyTexCoords).a);
+            ioResult = texture(uSkyTexture, ioSkyTexCoords);
             break;
     }
 }

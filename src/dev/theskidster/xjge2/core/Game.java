@@ -108,6 +108,7 @@ public final class Game {
                         viewport.resetCamera(glPrograms);
                         
                         viewport.render(glPrograms, "camera");
+                        scene.renderSkybox(viewport.currCamera.viewMatrix);
                         scene.render(glPrograms, viewport.id, viewport.currCamera);
                         scene.renderLightsources(viewport.currCamera);
                         viewport.render(glPrograms, "ui");
@@ -184,9 +185,9 @@ public final class Game {
         Game.scene = scene;
     }
     
-    //Temp
-    static void addLightAtIndex(int index, Light light) {
-        scene.addLightAtIndex(index, light);
+    //TODO: Temp
+    static void addLight(Light light) {
+        scene.addLight(light);
     }
     
 }
