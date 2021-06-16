@@ -150,10 +150,10 @@ final class DebugInfo {
             
             for(int i = 0; i < icons.length - 1; i++) {
                 float yPos = (rectangles[4].yPos + rectangles[4].height) - ((48 * (i + 1)) + 52);
-                icons[i].setPosition(PADDING, yPos, 0);
+                icons[i].setPosition(PADDING, (int) yPos);
             }
             
-            icons[4].setPosition(PADDING, rectangles[4].yPos + rectangles[4].height - 48, 0);
+            icons[4].setPosition(PADDING, rectangles[4].yPos + rectangles[4].height - 48);
             textPos[15].set(80, rectangles[4].yPos + rectangles[4].height - 36, 0);
             
             for(int i = 16; i < textPos.length - 1; i += 2) {

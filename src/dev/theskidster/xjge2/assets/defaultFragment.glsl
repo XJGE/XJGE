@@ -25,7 +25,7 @@ void makeTransparent(float a) {
 void main() {
     switch(uType) {
         case 0: //Used for viewport framebuffer texture attachments.
-            vec2 vRes = textureSize(uTexture, 0);
+            vec2 vRes = textureSize(uTexture, 1);
             
             ioResult = texture(uTexture, vec2(
                 sharpen(ioTexCoords.x * vRes.x) / vRes.x,
@@ -37,11 +37,7 @@ void main() {
             ioResult = vec4(ioColor, texture(uTexture, ioTexCoords).a);
             break;
 
-        case 2: //TEMP: for drawing the test entity.
-            ioResult = vec4(ioColor, 0);
-            break;
-
-        case 3: //Used for rendering background rectangles.
+        case 2: case 3: case -1: //Used for rendering polygons and rectangles.
             ioResult = vec4(ioColor, uOpacity);
             break;
 

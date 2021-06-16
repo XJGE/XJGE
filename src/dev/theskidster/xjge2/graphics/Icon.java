@@ -5,7 +5,6 @@ import dev.theskidster.xjge2.core.Logger;
 import dev.theskidster.xjge2.core.XJGE;
 import org.joml.Vector2f;
 import org.joml.Vector2i;
-import org.joml.Vector3f;
 import static org.lwjgl.opengl.GL30.*;
 import org.lwjgl.system.MemoryStack;
 
@@ -59,12 +58,12 @@ public final class Icon {
         glEnableVertexAttribArray(2);
     }
     
-    public void setPosition(Vector3f position) {
-        g.modelMatrix.translation(position);
+    public void setPosition(Vector2i position) {
+        g.modelMatrix.translation(position.x, position.y, 0);
     }
     
-    public void setPosition(float x, float y, float z) {
-        g.modelMatrix.translation(x, y, z);
+    public void setPosition(int x, int y) {
+        g.modelMatrix.translation(x, y, 0);
     }
     
     public void setSubImage(int cellX, int cellY) {

@@ -2,7 +2,7 @@ package dev.theskidster.xjge2.graphics;
 
 import dev.theskidster.xjge2.core.ErrorUtils;
 import dev.theskidster.xjge2.core.XJGE;
-import org.joml.Vector3f;
+import org.joml.Vector2i;
 import static org.lwjgl.opengl.GL30.*;
 import org.lwjgl.system.MemoryUtil;
 
@@ -78,7 +78,7 @@ public final class RectangleBatch {
         }
     }
     
-    public void drawRectangle(float x, float y, float width, float height, Color color) {
+    public void drawRectangle(int x, int y, int width, int height, Color color) {
         int startIndex = (numVertices / 24) * Float.BYTES;
         
         g.vertices.put(x)        .put(y + height).put(0).put(color.r).put(color.g).put(color.b);
@@ -92,7 +92,7 @@ public final class RectangleBatch {
         numVertices += 24;
     }
     
-    public void drawRectangle(Vector3f pos, float width, float height, Color color) {
+    public void drawRectangle(Vector2i pos, int width, int height, Color color) {
         drawRectangle(pos.x, pos.y, width, height, color);
     }
     
