@@ -26,10 +26,6 @@ public final class Texture {
     private int height;
     private int channels;
     
-    public Texture(String filename) {
-        this(filename, GL_TEXTURE_2D);
-    }
-    
     public Texture(String filename, int target) {
         handle = glGenTextures();
         glBindTexture(target, handle);
@@ -45,6 +41,10 @@ public final class Texture {
         }
         
         ErrorUtils.checkGLError();
+    }
+    
+    public Texture(String filename) {
+        this(filename, GL_TEXTURE_2D);
     }
     
     private void loadTexture(InputStream file, int target) {
