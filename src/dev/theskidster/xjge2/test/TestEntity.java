@@ -6,6 +6,7 @@ import dev.theskidster.xjge2.core.ErrorUtils;
 import dev.theskidster.xjge2.core.Puppet;
 import dev.theskidster.xjge2.graphics.Graphics;
 import dev.theskidster.xjge2.core.Entity;
+import dev.theskidster.xjge2.core.LightSource;
 import dev.theskidster.xjge2.graphics.GLProgram;
 import java.util.Map;
 import org.joml.Vector3f;
@@ -73,7 +74,7 @@ public class TestEntity extends Entity {
     }
 
     @Override
-    public void render(GLProgram glProgram, Camera camera) {
+    public void render(GLProgram glProgram, Camera camera, LightSource[] lights, int numLights) {
         glProgram.use();
         
         glBindVertexArray(g.vao);
@@ -87,7 +88,7 @@ public class TestEntity extends Entity {
     }
     
     @Override
-    public void render(Map<String, GLProgram> glPrograms, Camera camera) {}
+    public void render(Map<String, GLProgram> glPrograms, Camera camera, LightSource[] lights, int numLights) {}
 
     @Override
     protected void destroy() {

@@ -23,9 +23,9 @@ public abstract class Entity {
     
     //Included legacy render method in case we just need one shader- this will likely be the case
     //for most things anyway.
-    public abstract void render(GLProgram glProgram, Camera camera);
+    public abstract void render(GLProgram glProgram, Camera camera, LightSource[] lights, int numLights);
     
-    public abstract void render(Map<String, GLProgram> glPrograms, Camera camera);
+    public abstract void render(Map<String, GLProgram> glPrograms, Camera camera, LightSource[] lights, int numLights);
     
     //Should ONLY be used to deallocate memory, death animations and other effects should be included in the own 
     //games logic via update method.

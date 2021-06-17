@@ -108,6 +108,14 @@ public abstract class Scene {
         }
     }
     
+    protected int getNumLights() {
+        return numLights;
+    }
+    
+    protected LightSource[] getLightSources() {
+        return lightSources; //TODO: make immutable?
+    }
+    
     public abstract void update(double targetDelta);
     
     /*

@@ -3,6 +3,7 @@ package dev.theskidster.xjge2.test;
 import dev.theskidster.xjge2.core.Camera;
 import dev.theskidster.xjge2.core.Entity;
 import dev.theskidster.xjge2.core.ErrorUtils;
+import dev.theskidster.xjge2.core.LightSource;
 import dev.theskidster.xjge2.core.XJGE;
 import dev.theskidster.xjge2.graphics.Atlas;
 import dev.theskidster.xjge2.graphics.GLProgram;
@@ -83,7 +84,7 @@ public class TestEntity2 extends Entity {
     }
 
     @Override
-    public void render(GLProgram glProgram, Camera camera) {
+    public void render(GLProgram glProgram, Camera camera, LightSource[] lights, int numLights) {
         XJGE.getDefaultGLProgram().use();
         
         glEnable(GL_BLEND);
@@ -103,7 +104,7 @@ public class TestEntity2 extends Entity {
     }
 
     @Override
-    public void render(Map<String, GLProgram> glPrograms, Camera camera) {
+    public void render(Map<String, GLProgram> glPrograms, Camera camera, LightSource[] lights, int numLights) {
     }
 
     @Override
