@@ -136,12 +136,22 @@ public final class XJGE {
                 
                 defaultProgram.use();
                 defaultProgram.addUniform(BufferType.INT,   "uType");
+                defaultProgram.addUniform(BufferType.INT,   "uNumLights");
                 defaultProgram.addUniform(BufferType.FLOAT, "uOpacity");
                 defaultProgram.addUniform(BufferType.VEC2,  "uTexCoords");
                 defaultProgram.addUniform(BufferType.VEC3,  "uColor");
+                defaultProgram.addUniform(BufferType.MAT3,  "uNormal");
                 defaultProgram.addUniform(BufferType.MAT4,  "uModel");
                 defaultProgram.addUniform(BufferType.MAT4,  "uView");
                 defaultProgram.addUniform(BufferType.MAT4,  "uProjection");
+                
+                for(int i = 0; i < Scene.MAX_LIGHTS; i++) {
+                    defaultProgram.addUniform(BufferType.FLOAT, "uLights[" + i + "].brightness");
+                    defaultProgram.addUniform(BufferType.FLOAT, "uLights[" + i + "].contrast");
+                    defaultProgram.addUniform(BufferType.VEC3,  "uLights[" + i + "].position");
+                    defaultProgram.addUniform(BufferType.VEC3,  "uLights[" + i + "].ambient");
+                    defaultProgram.addUniform(BufferType.VEC3,  "uLights[" + i + "].diffuse");
+                }
                 
                 glPrograms.put("default", defaultProgram);
             }

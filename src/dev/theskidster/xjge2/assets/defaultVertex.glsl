@@ -14,12 +14,15 @@ layout (location = 6) in vec3 aColOffset;
 uniform int uType;
 uniform vec2 uTexCoords;
 uniform vec3 uColor;
+uniform mat3 uNormal;
 uniform mat4 uModel;
 uniform mat4 uView;
 uniform mat4 uProjection;
 
-out vec3 ioColor;
 out vec2 ioTexCoords;
+out vec3 ioColor;
+out vec3 ioNormal;
+out vec3 ioFragPos;
 out vec3 ioSkyTexCoords;
 
 void main() {
@@ -46,7 +49,7 @@ void main() {
             break;
 
         case 3: //Used for rendering rectangles.
-            ioColor = aColor;
+            ioColor     = aColor;
             gl_Position = uProjection * vec4(aPosition, 1);
             break;
 
@@ -55,7 +58,11 @@ void main() {
             gl_Position = uProjection * uModel * vec4(aPosition, 1);
             break;
 
-        case 5:
+        case 5: //Used for rendering 3D models.
+            ioTexCoords = aTexCoords;
+            ioNormal    = aNormal * uNormal;
+            ioFragPos   = vec3(uModel * vec4(aPosition, 1));
+            gl_Position = uProjection * uView * uModel * vec4(aPosition, 1);            
             break;
 
         case 6: //Used for light source icons.
