@@ -40,6 +40,8 @@ final class Viewport {
         height    = XJGE.getResolutionY();
         texHandle = glGenTextures();
         
+        System.out.println(width + " " + height);
+        
         createTextureAttachment();
         
         active = (id == 0);
@@ -56,7 +58,7 @@ final class Viewport {
         g          = viewport.g;
         prevCamera = viewport.prevCamera;
         currCamera = viewport.currCamera;
-        //TODO: add ui
+        ui         = viewport.ui;
     }
     
     private void createTextureAttachment() {

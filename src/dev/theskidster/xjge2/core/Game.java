@@ -113,10 +113,10 @@ public final class Game {
                         scene.renderLightsources(viewport.currCamera);
                         viewport.render(glPrograms, "ui");
                     glBindFramebuffer(GL_FRAMEBUFFER, 0);
-
+                    
                     glViewport(viewport.botLeft.x, viewport.botLeft.y, viewport.topRight.x, viewport.topRight.y);
                     projMatrix.setOrtho(viewport.width, 0, 0, viewport.height, 0, 1);
-
+                    
                     glPrograms.get("default").use();
                     glPrograms.get("default").setUniform("uProjection", false, projMatrix);
 

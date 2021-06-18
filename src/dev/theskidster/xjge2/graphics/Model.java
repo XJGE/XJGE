@@ -395,6 +395,8 @@ public class Model {
         glEnable(GL_DEPTH_TEST);
         glEnable(GL_CULL_FACE);
         
+        glProgram.use();
+        
         for(Mesh mesh : meshes) {
             glBindTexture(GL_TEXTURE_2D, textures[mesh.texIndex].handle);
             glBindVertexArray(mesh.vao);
@@ -434,6 +436,14 @@ public class Model {
         glDisable(GL_CULL_FACE);
         
         ErrorUtils.checkGLError();
+    }
+    
+    public void freeBuffers() {
+        for(Mesh mesh : meshes) mesh.freeBuffers();
+    }
+    
+    public void freeTextures() {
+        for(Texture texture : textures) texture.freeTexture();
     }
     
 }

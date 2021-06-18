@@ -1,0 +1,16 @@
+
+06-17-2021 11:00PM
+ERROR (shader-utils): Failed to parse GLSL file "defaultFragment.glsl". ERROR: 0:73: 'ioTexCoods' : undeclared identifier 
+ERROR: 0:74: 'texture' : no matching overloaded function found (using implicit conversion) 
+ERROR: 0:74: 'texture' : function is not known 
+ERROR: 0:73: 'assign' :  cannot convert from 'const highp float' to 'FragUserData 4-component vector of highp float'
+
+
+
+java.lang.RuntimeException
+	dev.theskidster.xjge2.core.Logger.logSevere(Logger.java:124)
+	dev.theskidster.xjge2.graphics.Shader.<init>(Shader.java:43)
+	dev.theskidster.xjge2.core.XJGE$1.<init>(XJGE.java:132)
+	dev.theskidster.xjge2.core.XJGE.init(XJGE.java:130)
+	dev.theskidster.xjge2.test.Test.main(Test.java:24)
+

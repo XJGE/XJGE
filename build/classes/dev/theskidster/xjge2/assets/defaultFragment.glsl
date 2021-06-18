@@ -66,7 +66,7 @@ vec3 calcPointLight(Light light, vec3 normal, vec3 fragPos) {
 void main() {
     switch(uType) {
         case 0: //Used for viewport framebuffer texture attachments.
-            vec2 vRes = textureSize(uTexture, 1);
+            vec2 vRes = textureSize(uTexture, 0);
             
             ioResult = texture(uTexture, vec2(
                 sharpen(ioTexCoords.x * vRes.x) / vRes.x,

@@ -22,9 +22,6 @@ public class TestEntity3 extends Entity {
         super(new Vector3f(x, y, z));
         
         model = new Model("mod_buster.fbx");
-        
-        model.listAnimations();
-        
         model.setAnimation("TPose", 0);
     }
     
