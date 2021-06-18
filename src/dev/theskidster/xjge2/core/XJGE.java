@@ -5,9 +5,7 @@ import dev.theskidster.xjge2.core.Terminal.TCCLS;
 import static dev.theskidster.xjge2.core.Window.HANDLE;
 import dev.theskidster.xjge2.graphics.Texture;
 import dev.theskidster.xjge2.graphics.BufferType;
-import dev.theskidster.xjge2.graphics.Color;
 import dev.theskidster.xjge2.graphics.GLProgram;
-import dev.theskidster.xjge2.graphics.Light;
 import dev.theskidster.xjge2.graphics.Shader;
 import java.nio.file.Path;
 import java.util.Collections;
@@ -16,7 +14,6 @@ import java.util.LinkedList;
 import java.util.Map;
 import java.util.TreeMap;
 import org.joml.Vector2i;
-import org.joml.Vector3f;
 import static org.lwjgl.glfw.GLFW.*;
 import org.lwjgl.opengl.GL;
 import static org.lwjgl.opengl.GL30.*;
@@ -229,17 +226,6 @@ public final class XJGE {
                     terminal.processKeyInput(key, action, mods);
                 } else {
                     //TODO: pass key input to ui widget
-                }
-                
-                //TODO: temp
-                if(key == GLFW_KEY_1 && action == GLFW_PRESS) {
-                    float x = (Math.random() > 0.5f) ? (float) -(Math.random() * 5) : (float) (Math.random() * 50);
-                    float y = (Math.random() > 0.5f) ? (float) -(Math.random() * 5) : (float) (Math.random() * 50);
-                    float z = (Math.random() > 0.5f) ? (float) -(Math.random() * 5) : (float) (Math.random() * 50);
-                    
-                    Vector3f pos = new Vector3f(x, y, z);
-                    
-                    Game.addLight(new Light((float) Math.random(), (float) Math.random(), pos, Color.random(), Color.random()));
                 }
             });
 

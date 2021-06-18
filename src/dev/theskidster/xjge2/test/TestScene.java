@@ -27,7 +27,7 @@ public class TestScene extends Scene {
         
         entities.put("test",  new TestEntity(0, 0, -3));
         //entities.put("test2", new TestEntity2(2, 1, -3));
-        entities.put("test3", new TestEntity3(6, -0.5f, -10));
+        entities.put("test3", new TestEntity3(2, -0.5f, -3));
     }
     
     @Override

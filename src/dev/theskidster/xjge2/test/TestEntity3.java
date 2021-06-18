@@ -21,15 +21,16 @@ public class TestEntity3 extends Entity {
     TestEntity3(float x, float y, float z) {
         super(new Vector3f(x, y, z));
         
-        model = new Model("mod_buster.fbx");
+        this.model = new Model("mod_buster.fbx");
         model.setAnimation("TPose", 0);
+        model.setAnimationSpeed(0.25f);
     }
     
     @Override
     public void update(double targetDelta) {
         model.delocalizeNormal();
         model.translate(position);
-        model.scale(0.04f);
+        model.scale(0.004f);
         
         model.updateAnimation();
     }
