@@ -144,6 +144,7 @@ public final class XJGE {
                 defaultProgram.addUniform(BufferType.MAT4,  "uModel");
                 defaultProgram.addUniform(BufferType.MAT4,  "uView");
                 defaultProgram.addUniform(BufferType.MAT4,  "uProjection");
+                defaultProgram.addUniform(BufferType.MAT4, "uBoneTransforms");
                 
                 for(int i = 0; i < Scene.MAX_LIGHTS; i++) {
                     defaultProgram.addUniform(BufferType.FLOAT, "uLights[" + i + "].brightness");

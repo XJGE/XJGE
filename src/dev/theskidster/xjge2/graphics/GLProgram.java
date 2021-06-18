@@ -3,8 +3,10 @@ package dev.theskidster.xjge2.graphics;
 import dev.theskidster.xjge2.core.Logger;
 import static dev.theskidster.xjge2.graphics.BufferType.*;
 import java.nio.Buffer;
+import java.nio.FloatBuffer;
 import java.util.HashMap;
 import java.util.LinkedList;
+import java.util.List;
 import org.joml.Matrix2f;
 import org.joml.Matrix3f;
 import org.joml.Matrix4f;
@@ -129,6 +131,19 @@ public class GLProgram {
                 uniforms.get(name).location,
                 transpose,
                 value.get(uniforms.get(name).asFloatBuffer()));
+    }
+    
+    public void setUniform(String name, boolean transpose, List<Matrix4f> values) {
+        try(MemoryStack stack = MemoryStack.stackPush()) {
+            FloatBuffer matBuf = stack.mallocFloat(16 * values.size() - 1);
+            
+            for(int i = 0; i < values.size() - 1; i++) values.get(i).get(16 * i, matBuf);
+            
+            glUniformMatrix4fv(
+                    uniforms.get(name).location,
+                    transpose,
+                    matBuf);
+        }
     }
     
 }

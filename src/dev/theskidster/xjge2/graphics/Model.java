@@ -8,9 +8,13 @@ import dev.theskidster.xjge2.core.XJGE;
 import java.io.InputStream;
 import java.nio.ByteBuffer;
 import java.nio.IntBuffer;
+import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
+import java.util.Map;
 import org.joml.Matrix3f;
 import org.joml.Matrix4f;
+import org.joml.Quaternionf;
 import org.joml.Vector3f;
 import org.lwjgl.PointerBuffer;
 import org.lwjgl.assimp.*;
@@ -26,19 +30,32 @@ import static org.lwjgl.system.MemoryUtil.NULL;
 
 public class Model {
 
-    public static final int MAX_TEXTURES = 4;
-    public static final int MAX_BONES    = 128;
+    public static final int MAX_TEXTURES   = 4;
+    public static final int MAX_BONES      = 128;
+    public static final int MAX_ANIM_SPEED = 5;
+    public static final int MAX_WEIGHTS    = 4;
+    
+    private int prevNumKeyFrames;
+    
+    private float speed = 1.5f;
+    
+    public boolean loopAnimation = true;
     
     public Color color = Color.WHITE;
     
     private AIScene aiScene;
     private Matrix4f rootTransform;
     private Node rootNode;
+    private SkeletalAnimation currAnimation;
     private final Vector3f noValue = new Vector3f();
     private final Matrix3f normal  = new Matrix3f();
     
     private Mesh[] meshes;
     private Texture[] textures;
+    
+    private final ArrayList<Bone> bones = new ArrayList<>();
+    
+    private Map<String, SkeletalAnimation> animations;
     
     public Model(String filename, int aiArgs) {
         try(InputStream file = Model.class.getResourceAsStream(XJGE.getFilepath() + filename)) {
@@ -131,6 +148,7 @@ public class Model {
             
             parseMeshData(aiScene.mMeshes());
             parseTextureData(aiScene.mMaterials());
+            parseAnimationData(aiScene.mAnimations());
         }
     }
     
@@ -157,17 +175,19 @@ public class Model {
         
         for(int i = 0; i < meshes.length; i++) {
             AIMesh aiMesh = AIMesh.create(meshBuf.get(i));
-            meshes[i]     = new Mesh(aiMesh); //TODO add bones.
+            meshes[i]     = new Mesh(aiMesh, bones);
         }
     }
     
     private void parseTextureData(PointerBuffer materialBuf) throws Exception {
         if(aiScene.mNumMaterials() > MAX_TEXTURES) {
             textures = new Texture[MAX_TEXTURES];
+            Logger.setDomain("graphics");
             Logger.logWarning(
                     "Invalid number of textures. Limit of " + MAX_TEXTURES + 
                     " permitted, found " + aiScene.mNumMaterials(), 
                     null);
+            Logger.setDomain(null);
         } else {
             textures = new Texture[aiScene.mNumMaterials()];
         }
@@ -198,6 +218,86 @@ public class Model {
         }
     }
     
+    private void parseAnimationData(PointerBuffer animationBuf) {
+        animations = new HashMap<>();
+        
+        for(int i = 0; i < aiScene.mNumAnimations(); i++) {
+            AIAnimation aiAnimation  = AIAnimation.create(animationBuf.get(i));
+            PointerBuffer channelBuf = aiAnimation.mChannels();
+            
+            for(int c = 0; c < aiAnimation.mNumChannels(); c++) {
+                AINodeAnim aiNodeAnim = AINodeAnim.create(channelBuf.get(c));
+                String nodeName       = aiNodeAnim.mNodeName().dataString();
+                Node node             = rootNode.getNodeByName(nodeName);
+                
+                genTransforms(aiNodeAnim, node);
+            }
+            
+            ArrayList<KeyFrame> keyFrames = genKeyFrames();
+            prevNumKeyFrames              += keyFrames.size();
+            
+            SkeletalAnimation animation = new SkeletalAnimation(aiAnimation, keyFrames);
+            animations.put(animation.name, animation);
+        }
+    }
+    
+    private void genTransforms(AINodeAnim aiNodeAnim, Node node) {
+        AIVectorKey.Buffer aiPosKeyBuf   = aiNodeAnim.mPositionKeys();
+        AIVectorKey.Buffer aiScaleKeyBuf = aiNodeAnim.mScalingKeys();
+        AIQuatKey.Buffer aiRotKeyBuf     = aiNodeAnim.mRotationKeys();
+        
+        for(int i = 0; i < aiNodeAnim.mNumPositionKeys(); i++) {
+            AIVectorKey aiVecKey = aiPosKeyBuf.get(i);
+            AIVector3D aiVec     = aiVecKey.mValue();
+            
+            Matrix4f transform = new Matrix4f().translate(aiVec.x(), aiVec.y(), aiVec.z());
+            
+            AIQuatKey aiQuatKey    = aiRotKeyBuf.get(i);
+            AIQuaternion aiQuat    = aiQuatKey.mValue();
+            Quaternionf quaternion = new Quaternionf(aiQuat.x(), aiQuat.y(), aiQuat.z(), aiQuat.w());
+            
+            transform.rotate(quaternion);
+            
+            if(i < aiNodeAnim.mNumScalingKeys()) {
+                aiVecKey = aiScaleKeyBuf.get(i);
+                aiVec    = aiVecKey.mValue();
+                
+                transform.scale(aiVec.x(), aiVec.y(), aiVec.z());
+            }
+            
+            node.transforms.add(transform);
+        }
+    }
+    
+    private ArrayList<KeyFrame> genKeyFrames() {
+        ArrayList<KeyFrame> frames = new ArrayList<>();
+        
+        /*
+        We provide the prevNumKeyFrames field here to offset the starting frame
+        of each animation since the keyframes specified by the model file are
+        stored sequentially regardless of animation.
+        */
+        
+        for(int i = prevNumKeyFrames; i < rootNode.getNumKeyFrames(); i++) {
+            KeyFrame frame = new KeyFrame();
+            frames.add(frame);
+            
+            for(int b = 0; b < bones.size(); b++) {
+                Bone bone = bones.get(b);
+                Node node = rootNode.getNodeByName(bone.name);
+
+                Matrix4f boneTransform = Node.getParentTransform(node, i);
+
+                boneTransform.mul(bone.offset);
+                boneTransform = new Matrix4f(rootTransform).mul(boneTransform);
+
+                frame.transforms.get(b).set(boneTransform);
+            }
+        }
+        
+        return frames;
+    }
+    
     public void delocalizeNormal() {
         for(Mesh mesh : meshes) normal.set(mesh.modelMatrix.invert());
     }
@@ -226,6 +326,71 @@ public class Model {
         for(Mesh mesh : meshes) mesh.modelMatrix.scale(factor);
     }
     
+    public void listAnimations() {
+        Logger.setDomain("graphics");
+        animations.forEach((name, anim) -> Logger.logInfo(name));
+        Logger.setDomain(null);
+    }
+    
+    public void setAnimation(String name, int numFrames) {
+        if(!animations.containsKey(name)) {
+            Logger.setDomain("graphics");
+            Logger.logWarning(
+                    "Failed to set animation: \"" + name + "\". Model contains " + 
+                    "no such animation.",
+                    null);
+            Logger.setDomain(null);
+            return;
+        }
+        
+        if(currAnimation != null && numFrames > 1) {
+            if(currAnimation.name.equals(name)) {
+                Logger.setDomain("graphics");
+                Logger.logInfo("Animation: \"" + name +"\" is already playing.");
+                Logger.setDomain(null);
+                return;
+            }
+            
+            var frames = new ArrayList<KeyFrame>();
+            
+            for(int f = 1; f <= numFrames; f++) {
+                KeyFrame frame = new KeyFrame();
+                
+                for(int b = 0; b < MAX_BONES; b++) {
+                    animations.get(name).setFrameTime(currAnimation.getFrameTime());
+                    animations.get(name).setSeekTime(currAnimation.getSeekTime());
+                    
+                    Matrix4f transforms = new Matrix4f();
+                    
+                    currAnimation.calcTransition(b).lerp(animations.get(name).calcTransition(b), f / ((float) numFrames), transforms);
+                    
+                    frame.transforms.get(b).set(transforms);
+                }
+                
+                frames.add(frame);
+            }
+            
+            currAnimation = new SkeletalAnimation(currAnimation.name, name, frames);
+        } else {
+            currAnimation = animations.get(name);
+        }
+    }
+    
+    public void setAnimationSpeed(float speed) {
+        if(speed > 1)      speed = 1;
+        else if(speed < 0) speed = 0;
+        
+        this.speed = speed * MAX_ANIM_SPEED;
+    }
+    
+    public void updateAnimation() {
+        if(currAnimation.transition && currAnimation.getFinished()) {
+            currAnimation = animations.get(currAnimation.nextAnim);
+        }
+        
+        currAnimation.genCurrFrame(speed, loopAnimation);
+    }
+    
     public void render(GLProgram glProgram, LightSource[] lights, int numLights) {
         glEnable(GL_DEPTH_TEST);
         glEnable(GL_CULL_FACE);
@@ -238,6 +403,7 @@ public class Model {
             glProgram.setUniform("uModel", false, mesh.modelMatrix);
             glProgram.setUniform("uNormal", true, normal);
             glProgram.setUniform("uNumLights", numLights);
+            glProgram.setUniform("uColor", color.asVec3());
             
             for(int i = 0; i < Scene.MAX_LIGHTS; i++) {
                 if(lights[i] != null) {
@@ -255,6 +421,10 @@ public class Model {
                         glProgram.setUniform("uLights[" + i + "].diffuse",    noValue);
                     }
                 }
+            }
+            
+            if(currAnimation != null) {
+                glProgram.setUniform("uBoneTransforms", false, currAnimation.getCurrFrame().transforms);
             }
             
             glDrawElements(GL_TRIANGLES, mesh.indices.capacity(), GL_UNSIGNED_INT, 0);

@@ -17,12 +17,15 @@ import org.joml.Vector3f;
 public class TestEntity3 extends Entity {
 
     private Model model;
-    private float angle = 0;
     
     TestEntity3(float x, float y, float z) {
         super(new Vector3f(x, y, z));
         
         model = new Model("mod_buster.fbx");
+        
+        model.listAnimations();
+        
+        model.setAnimation("TPose", 0);
     }
     
     @Override
@@ -30,6 +33,8 @@ public class TestEntity3 extends Entity {
         model.delocalizeNormal();
         model.translate(position);
         model.scale(0.04f);
+        
+        model.updateAnimation();
     }
 
     @Override

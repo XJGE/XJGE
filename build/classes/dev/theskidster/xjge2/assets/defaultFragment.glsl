@@ -89,13 +89,13 @@ void main() {
         case 5: //Used for rendering 3D models.
             vec3 normal = normalize(ioNormal);
             vec3 result = calcWorldLight(uLights[0], normal);
-            
+
             for(int i = 1; i < uNumLights; i++) {
                 result += calcPointLight(uLights[i], normal, ioFragPos);
             }
             
             makeTransparent(texture(uTexture, ioTexCoords).a);
-            ioResult = texture(uTexture, ioTexCoords) * vec4(result, 1.0);
+            ioResult = texture(uTexture, ioTexCoords) * vec4(result * ioColor, 1.0);
             break;
 
         case 6: //Used for light source icons.

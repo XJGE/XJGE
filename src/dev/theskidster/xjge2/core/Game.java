@@ -159,15 +159,15 @@ public final class Game {
         events.add(event);
     }
     
-    static int getFPS() {
+    public static int getFPS() {
         return fps;
     }
     
-    static float getDelta() {
+    public static float getDelta() {
         return (float) deltaMetric;
     }
     
-    static boolean getTicked() {
+    public static boolean getTicked() {
         return ticked;
     }
     

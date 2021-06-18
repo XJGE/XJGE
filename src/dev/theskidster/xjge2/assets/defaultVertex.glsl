@@ -1,23 +1,30 @@
 #version 330 core
 
+//Values correspond to the varaibles of the same name in the Model class. 
+#define MAX_WEIGHTS 4
+#define MAX_BONES 128
+
 //Non-instanced attributes
-layout (location = 0) in vec3 aPosition;
-layout (location = 1) in vec3 aColor;
-layout (location = 2) in vec2 aTexCoords;
-layout (location = 3) in vec3 aNormal;
+layout (location = 0) in vec3  aPosition;
+layout (location = 1) in vec3  aColor;
+layout (location = 2) in vec2  aTexCoords;
+layout (location = 3) in vec3  aNormal;
+layout (location = 7) in ivec4 aBoneIDs;
+layout (location = 8) in vec4  aWeights;
 
 //Instanced attributes
 layout (location = 4) in vec3 aPosOffset;
 layout (location = 5) in vec2 aTexOffset;
 layout (location = 6) in vec3 aColOffset;
 
-uniform int uType;
+uniform int  uType;
 uniform vec2 uTexCoords;
 uniform vec3 uColor;
 uniform mat3 uNormal;
 uniform mat4 uModel;
 uniform mat4 uView;
 uniform mat4 uProjection;
+uniform mat4 uBoneTransforms[MAX_BONES];
 
 out vec2 ioTexCoords;
 out vec3 ioColor;
@@ -59,10 +66,38 @@ void main() {
             break;
 
         case 5: //Used for rendering 3D models.
+            vec4 initPos    = vec4(0, 0, 0, 0);
+            vec4 initNormal = vec4(0, 0, 0, 0);
+            int count       = 0;
+
+            for(int i = 0; i < MAX_WEIGHTS; i++) {
+                float weight = aWeights[i];
+
+                if(weight > 0) {
+                    count++;
+
+                    int boneID  = aBoneIDs[i];
+                    vec4 tmpPos = uBoneTransforms[boneID] * vec4(aPosition, 1);
+                    initPos     += weight * tmpPos;
+
+                    vec4 tmpNormal = uBoneTransforms[boneID] * vec4(aNormal, 0);
+                    initNormal     += weight * tmpNormal;
+                }
+
+                if(count == 0) {
+                    initPos    = vec4(aPosition, 1);
+                    initNormal = vec4(aNormal, 0);
+                }
+            }
+
+            mat4 modelViewMatrix = uView * uModel;
+            vec4 mvPos = modelViewMatrix * initPos;
+            gl_Position = uProjection * mvPos;
+
+            ioColor     = uColor;
             ioTexCoords = aTexCoords;
-            ioNormal    = aNormal * uNormal;
+            ioNormal    = uNormal * initNormal.xyz;
             ioFragPos   = vec3(uModel * vec4(aPosition, 1));
-            gl_Position = uProjection * uView * uModel * vec4(aPosition, 1);            
             break;
 
         case 6: //Used for light source icons.
