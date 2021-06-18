@@ -164,6 +164,34 @@ public class Model {
         }
     }
     
+    public void delocalizeNormal() {
+        for(Mesh mesh : meshes) normal.set(mesh.modelMatrix.invert());
+    }
+    
+    public void translate(Vector3f position) {
+        for(Mesh mesh : meshes) mesh.modelMatrix.translation(position);
+    }
+    
+    public void translate(float x, float y, float z) {
+        for(Mesh mesh : meshes) mesh.modelMatrix.translation(x, y, z);
+    }
+    
+    public void rotateX(float angle) {
+        for(Mesh mesh : meshes) mesh.modelMatrix.rotateX((float) Math.toRadians(angle));
+    }
+    
+    public void rotateY(float angle) {
+        for(Mesh mesh : meshes) mesh.modelMatrix.rotateY((float) Math.toRadians(angle));
+    }
+    
+    public void rotateZ(float angle) {
+        for(Mesh mesh : meshes) mesh.modelMatrix.rotateZ((float) Math.toRadians(angle));
+    }
+    
+    public void scale(float factor) {
+        for(Mesh mesh : meshes) mesh.modelMatrix.scale(factor);
+    }
+    
     public void render(GLProgram glProgram, LightSource[] lights, int numLights) {
         glEnable(GL_DEPTH_TEST);
         glEnable(GL_CULL_FACE);

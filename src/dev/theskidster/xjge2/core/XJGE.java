@@ -238,7 +238,7 @@ public final class XJGE {
                     
                     Vector3f pos = new Vector3f(x, y, z);
                     
-                    Game.addLight(new Light(1, 1, pos, Color.random(), Color.WHITE));
+                    Game.addLight(new Light((float) Math.random(), (float) Math.random(), pos, Color.random(), Color.random()));
                 }
             });
 

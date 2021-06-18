@@ -187,7 +187,7 @@ public final class Game {
     
     //TODO: Temp
     static void addLight(Light light) {
-        scene.addLight(light);
+        scene.addLightAtIndex(0, light);
     }
     
 }

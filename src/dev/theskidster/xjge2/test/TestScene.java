@@ -21,13 +21,13 @@ public class TestScene extends Scene {
         super("test");
         
         light = new Light(1, 1, new Vector3f(-1, 0, -3), Color.random(), Color.WHITE);
-        addLight(light);
+        //addLight(light);
         
         addLightAtIndex(0, Light.daylight());
         
         entities.put("test",  new TestEntity(0, 0, -3));
         //entities.put("test2", new TestEntity2(2, 1, -3));
-        entities.put("test3", new TestEntity3(6, 0, -10));
+        entities.put("test3", new TestEntity3(6, -0.5f, -10));
     }
     
     @Override

@@ -25,7 +25,8 @@ public abstract class Scene {
     
     protected final LinkedHashMap<String, Entity> entities = new LinkedHashMap<>();
     
-    private final LightSource[] lightSources = new LightSource[MAX_LIGHTS];
+    private final LightSource[] lightSources     = new LightSource[MAX_LIGHTS];
+    private final LightSource[] lightSourcesCopy = new LightSource[MAX_LIGHTS];
     
     public Scene(String name) {
         this.name = name;
@@ -113,7 +114,8 @@ public abstract class Scene {
     }
     
     protected LightSource[] getLightSources() {
-        return lightSources; //TODO: make immutable?
+        System.arraycopy(lightSources, 0, lightSourcesCopy, 0, numLights);
+        return lightSourcesCopy;
     }
     
     public abstract void update(double targetDelta);

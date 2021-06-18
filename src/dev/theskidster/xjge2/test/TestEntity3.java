@@ -17,6 +17,7 @@ import org.joml.Vector3f;
 public class TestEntity3 extends Entity {
 
     private Model model;
+    private float angle = 0;
     
     TestEntity3(float x, float y, float z) {
         super(new Vector3f(x, y, z));
@@ -26,6 +27,12 @@ public class TestEntity3 extends Entity {
     
     @Override
     public void update(double targetDelta) {
+        model.delocalizeNormal();
+        
+        model.translate(position);
+        model.rotateY(90);
+        model.rotateZ(-135);
+        model.scale(0.1f);
     }
 
     @Override
