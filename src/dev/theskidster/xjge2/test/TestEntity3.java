@@ -22,17 +22,14 @@ public class TestEntity3 extends Entity {
     TestEntity3(float x, float y, float z) {
         super(new Vector3f(x, y, z));
         
-        model = new Model("mod_teapot.fbx");
+        model = new Model("mod_buster.fbx");
     }
     
     @Override
     public void update(double targetDelta) {
         model.delocalizeNormal();
-        
         model.translate(position);
-        model.rotateY(90);
-        model.rotateZ(-135);
-        model.scale(0.1f);
+        model.scale(0.04f);
     }
 
     @Override

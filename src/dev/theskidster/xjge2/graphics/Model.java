@@ -8,7 +8,9 @@ import dev.theskidster.xjge2.core.XJGE;
 import java.io.InputStream;
 import java.nio.ByteBuffer;
 import java.nio.IntBuffer;
+import java.util.Collections;
 import org.joml.Matrix3f;
+import org.joml.Matrix4f;
 import org.joml.Vector3f;
 import org.lwjgl.PointerBuffer;
 import org.lwjgl.assimp.*;
@@ -25,8 +27,13 @@ import static org.lwjgl.system.MemoryUtil.NULL;
 public class Model {
 
     public static final int MAX_TEXTURES = 4;
+    public static final int MAX_BONES    = 128;
+    
+    public Color color = Color.WHITE;
     
     private AIScene aiScene;
+    private Matrix4f rootTransform;
+    private Node rootNode;
     private final Vector3f noValue = new Vector3f();
     private final Matrix3f normal  = new Matrix3f();
     
@@ -113,9 +120,36 @@ public class Model {
         } else {
             MemoryUtil.memFree(modelBuf);
             
+            AINode aiRoot = aiScene.mRootNode();
+            
+            if(aiRoot != null) {
+                rootTransform = Graphics.convertFromAssimp(aiRoot.mTransformation());
+                rootNode      = parseFileHierarchy(aiRoot, null);
+            } else {
+                throw new NullPointerException("Could not locate root node in file hierarchy.");
+            }
+            
             parseMeshData(aiScene.mMeshes());
             parseTextureData(aiScene.mMaterials());
         }
+    }
+    
+    private Node parseFileHierarchy(AINode aiNode, Node parent) {
+        String nodeName = aiNode.mName().dataString();
+        Node node       = new Node(nodeName, parent);
+        
+        PointerBuffer childBuf = aiNode.mChildren();
+        
+        for(int i = 0; i < aiNode.mNumChildren(); i++) {
+            AINode aiChild = AINode.create(childBuf.get(i));
+            Node childNode = parseFileHierarchy(aiChild, node);
+            
+            node.children.add(childNode);
+        }
+        
+        node.children = Collections.unmodifiableList(node.children);
+        
+        return node;
     }
     
     private void parseMeshData(PointerBuffer meshBuf) throws Exception {
