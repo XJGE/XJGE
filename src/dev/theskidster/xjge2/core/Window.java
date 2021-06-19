@@ -28,6 +28,7 @@ public final class Window {
     private static int height;
     
     private static boolean fullscreen;
+    static boolean visible;
     
     private static String title;
     static Monitor monitor;
@@ -59,6 +60,8 @@ public final class Window {
     }
     
     static void show() {
+        visible = true;
+        
         glfwSetInputMode(HANDLE, GLFW_CURSOR, GLFW_CURSOR_NORMAL);
         glfwShowWindow(HANDLE);
         glfwFocusWindow(HANDLE);

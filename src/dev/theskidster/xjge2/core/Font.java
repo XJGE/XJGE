@@ -49,6 +49,18 @@ public final class Font {
         loadFont(Font.class.getResourceAsStream("/dev/theskidster/xjge2/assets/fnt_debug_mono.ttf"), size);
     }
     
+    Font(Font font) {
+        texHandle         = font.texHandle;
+        size              = font.size;
+        bitmapWidth       = font.bitmapWidth;
+        bitmapHeight      = font.bitmapHeight;
+        largestGlyphWidth = font.largestGlyphWidth;
+        texOffsets        = font.texOffsets;
+        
+        posOffsets.putAll(font.posOffsets);
+        advanceValues.putAll(font.advanceValues);
+    }
+    
     public Font(String filename, int size) {
         this.size = size;
         

@@ -159,7 +159,9 @@ public final class XJGE {
             
             Scene.setIconTexture(engineIcons);
             Logger.printSystemInfo();
-            XJGE.filepath = filepath;
+            
+            XJGE.filepath     = filepath;
+            Widget.engineFont = new Font(engineFont);
             
             //TODO: add more commands
             engineCommands = new TreeMap<>() {{
@@ -331,6 +333,18 @@ public final class XJGE {
             Logger.setDomain(null);
         } else {
             userCommands.put(name, command);
+        }
+    }
+    
+    public static void addUIWidget(int viewportID, String name, Widget widget) {
+        switch(viewportID) {
+            case 0, 1, 2, 3 -> viewports[viewportID].addUIWidget(name, widget);
+        }
+    }
+    
+    public static void removeUIWidget(int viewportID, String name) {
+        switch(viewportID) {
+            case 0, 1, 2, 3 -> viewports[viewportID].removeUIWidget(name);
         }
     }
     
