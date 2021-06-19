@@ -7,6 +7,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 import org.joml.Vector2f;
+import org.joml.Vector2i;
 import static org.lwjgl.opengl.GL11.glDeleteTextures;
 import static org.lwjgl.opengl.GL11C.*;
 import org.lwjgl.stb.STBTTBakedChar;
@@ -38,8 +39,8 @@ public final class Font {
     
     Map<Character, Vector2f> texOffsets = new HashMap<>();
     
-    private final HashMap<Character, Vector2f> posOffsets = new HashMap<>();
-    private final HashMap<Character, Float> advanceValues = new HashMap<>();
+    private final HashMap<Character, Vector2i> posOffsets   = new HashMap<>();
+    private final HashMap<Character, Integer> advanceValues = new HashMap<>();
     
     Font() {
         this.size = DEFAULT_SIZE;
@@ -174,8 +175,8 @@ public final class Font {
                 float texCoordY = (float) (glyph.y0()) / bitmapHeight;
                 
                 texOffsets.put(character, new Vector2f(texCoordX, texCoordY));
-                posOffsets.put(character, new Vector2f(glyph.xoff(), -glyph.yoff() - size));
-                advanceValues.put(character, glyph.xadvance());
+                posOffsets.put(character, new Vector2i((int) glyph.xoff(), (int) (-glyph.yoff() - size)));
+                advanceValues.put(character, (int) glyph.xadvance());
             }
             
             texOffsets = Collections.unmodifiableMap(texOffsets);
@@ -200,15 +201,15 @@ public final class Font {
         return largestGlyphWidth;
     }
     
-    float getGlyphAdvance(char c) {
+    int getGlyphAdvance(char c) {
         return advanceValues.get(c);
     }
     
-    float getGlyphBearing(char c) {
+    int getGlyphBearing(char c) {
         return posOffsets.get(c).x;
     }
     
-    float getGlyphDescent(char c) {
+    int getGlyphDescent(char c) {
         return posOffsets.get(c).y;
     }
     

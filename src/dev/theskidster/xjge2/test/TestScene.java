@@ -1,12 +1,15 @@
 package dev.theskidster.xjge2.test;
 
 import dev.theskidster.xjge2.core.Camera;
+import dev.theskidster.xjge2.core.Input;
 import dev.theskidster.xjge2.core.Scene;
-import dev.theskidster.xjge2.graphics.Color;
+import dev.theskidster.xjge2.core.Split;
+import dev.theskidster.xjge2.core.XJGE;
 import dev.theskidster.xjge2.graphics.GLProgram;
 import dev.theskidster.xjge2.graphics.Light;
 import java.util.Map;
-import org.joml.Vector3f;
+import static org.lwjgl.glfw.GLFW.GLFW_JOYSTICK_1;
+import static org.lwjgl.glfw.GLFW.GLFW_JOYSTICK_2;
 
 /**
  * @author J Hoffman
@@ -20,10 +23,13 @@ public class TestScene extends Scene {
     public TestScene() {
         super("test");
         
-        light = new Light(1, 1, new Vector3f(-1, 0, -3), Color.random(), Color.WHITE);
-        //addLight(light);
+        TestEntity p1 = new TestEntity(0, 0, 0);
+        TestEntity p2 = new TestEntity(0, 0, 0);
         
-        addLightAtIndex(0, Light.daylight());
+        Input.setDevicePuppet(GLFW_JOYSTICK_1, p1.puppet);
+        Input.setDevicePuppet(GLFW_JOYSTICK_2, p1.puppet);
+        
+        XJGE.setScreenSplit(Split.VERTICAL);
         
         entities.put("test",  new TestEntity(0, 0, -3));
         //entities.put("test2", new TestEntity2(2, 1, -3));

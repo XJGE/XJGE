@@ -11,7 +11,7 @@ import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.TreeMap;
-import org.joml.Vector3f;
+import org.joml.Vector2i;
 import static org.lwjgl.glfw.GLFW.*;
 
 /**
@@ -31,9 +31,9 @@ final class Terminal implements PropertyChangeListener {
     private boolean suggest;
     private boolean executed = true;
     
-    private final Vector3f caretPos   = new Vector3f(0, DEFAULT_SIZE / 4, 0);
-    private final Vector3f cursorPos  = new Vector3f(0, DEFAULT_SIZE / 4, 0);
-    private final Vector3f commandPos = new Vector3f(0, DEFAULT_SIZE / 4, -1);
+    private final Vector2i caretPos   = new Vector2i(0, DEFAULT_SIZE / 4);
+    private final Vector2i cursorPos  = new Vector2i(0, DEFAULT_SIZE / 4);
+    private final Vector2i commandPos = new Vector2i(0, DEFAULT_SIZE / 4);
     
     private String suggestion = "";
     private String prevTyped  = "";

@@ -3,7 +3,7 @@ package dev.theskidster.xjge2.core;
 import dev.theskidster.xjge2.graphics.Color;
 import dev.theskidster.xjge2.graphics.GLProgram;
 import java.util.Map;
-import org.joml.Vector3f;
+import org.joml.Vector2i;
 import org.joml.Vector3i;
 
 /**
@@ -35,7 +35,7 @@ public abstract class Widget {
         return this.position.z - widget.position.z;
     }
     
-    protected void drawString(Font font, String text, Vector3f position, Color color) {
+    protected void drawString(Font font, String text, Vector2i position, Color color) {
         this.text.drawString(font, text, position, color);
     }
     

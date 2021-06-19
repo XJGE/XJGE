@@ -6,6 +6,7 @@ import dev.theskidster.xjge2.graphics.RectangleBatch;
 import static dev.theskidster.xjge2.core.Input.KEY_MOUSE_COMBO;
 import dev.theskidster.xjge2.graphics.Color;
 import dev.theskidster.xjge2.graphics.Texture;
+import org.joml.Vector2i;
 import org.joml.Vector3f;
 import static org.lwjgl.glfw.GLFW.GLFW_JOYSTICK_5;
 import static org.lwjgl.glfw.GLFW.glfwGetVersionString;
@@ -30,14 +31,14 @@ final class DebugInfo {
     private final RectangleBatch rectBatch = new RectangleBatch(6);
     
     private final Rectangle[] rectangles = new Rectangle[6];
-    private final Vector3f[] textPos     = new Vector3f[25];
+    private final Vector2i[] textPos     = new Vector2i[25];
     private final Icon[] icons           = new Icon[5];
     
     DebugInfo(Font font, Texture iconTexture) {
         this.font = font;
         
         for(int r = 0; r < rectangles.length; r++) rectangles[r] = new Rectangle();
-        for(int p = 0; p < textPos.length; p++)    textPos[p] = new Vector3f();
+        for(int p = 0; p < textPos.length; p++)    textPos[p] = new Vector2i();
         for(int i = 0; i < icons.length; i++)      icons[i] = new Icon(iconTexture, 64, 64);
         
         icons[4].setSubImage(0, 1);
@@ -51,7 +52,7 @@ final class DebugInfo {
             rectangles[0].yPos   = Window.getHeight() - rectangles[0].height;
             
             for(int i = 0; i < 4; i++) {
-                textPos[i].set(PADDING, Window.getHeight() - (Font.DEFAULT_SIZE * (i + 1)), 0);
+                textPos[i].set(PADDING, Window.getHeight() - (Font.DEFAULT_SIZE * (i + 1)));
             }
         }
         
@@ -74,7 +75,7 @@ final class DebugInfo {
             rectangles[1].yPos   = Window.getHeight() - rectangles[1].height;
             
             for(int i = 4; i < 7; i++) {
-                textPos[i].set(rectangles[1].xPos + PADDING, Window.getHeight() - (Font.DEFAULT_SIZE * (i - 3)), 0);
+                textPos[i].set(rectangles[1].xPos + PADDING, Window.getHeight() - (Font.DEFAULT_SIZE * (i - 3)));
             }
         }
         
@@ -99,8 +100,7 @@ final class DebugInfo {
             
             for(int i = 7; i < 11; i++) {
                 textPos[i].set(rectangles[2].xPos + PADDING, 
-                              (rectangles[1].yPos - PADDING) - (Font.DEFAULT_SIZE * (i - 6)), 
-                              0);
+                              (rectangles[1].yPos - PADDING) - (Font.DEFAULT_SIZE * (i - 6)));
             }
         }
         
@@ -125,8 +125,7 @@ final class DebugInfo {
             
             for(int i = 11; i < 15; i++) {
                 textPos[i].set(rectangles[3].xPos + PADDING, 
-                              (rectangles[2].yPos - PADDING) - (Font.DEFAULT_SIZE * (i - 10)), 
-                              0);
+                              (rectangles[2].yPos - PADDING) - (Font.DEFAULT_SIZE * (i - 10)));
             }
         }
         
@@ -154,14 +153,14 @@ final class DebugInfo {
             }
             
             icons[4].setPosition(PADDING, rectangles[4].yPos + rectangles[4].height - 48);
-            textPos[15].set(80, rectangles[4].yPos + rectangles[4].height - 36, 0);
+            textPos[15].set(80, rectangles[4].yPos + rectangles[4].height - 36);
             
             for(int i = 16; i < textPos.length - 1; i += 2) {
                 float yPos = (rectangles[4].yPos + rectangles[4].height) - (96 + PADDING);
                 int index  = (i % 16) / 2;
                 
-                textPos[i].set(60, yPos - (48 * index), 0);
-                textPos[i + 1].set(80, (yPos + 16) - (48 * index), 0);
+                textPos[i].set(60, (int) (yPos - (48 * index)));
+                textPos[i + 1].set(80, (int) ((yPos + 16) - (48 * index)));
             }
         }
         
@@ -172,7 +171,7 @@ final class DebugInfo {
             rectangles[5].xPos   = Window.getWidth() - rectangles[5].width;
             rectangles[5].yPos   = rectangles[3].yPos - (rectangles[5].height + PADDING);
             
-            textPos[24].set(rectangles[5].xPos + PADDING, rectangles[5].yPos + PADDING, 0);
+            textPos[24].set(rectangles[5].xPos + PADDING, rectangles[5].yPos + PADDING);
         }
     }
     

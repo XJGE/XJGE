@@ -39,7 +39,7 @@ public final class XJGE {
     public static final Path PWD       = Path.of("").toAbsolutePath();
     public static final String VERSION = "0.0.0";
     
-    private static Split split;
+    private static Split split     = Split.NONE;
     private static String filepath = "/dev/theskidster/xjge2/assets/";
     
     private static Font engineFont;
@@ -261,7 +261,7 @@ public final class XJGE {
         debugInfo  = new DebugInfo(engineFont, engineIcons);
         
         Window.show();
-        setScreenSplit(Split.NONE);
+        setScreenSplit(getScreenSplit());
         
         glfwSetWindowSizeCallback(HANDLE, (window, w, h) -> {
             Window.updateDimensions(w, h);

@@ -4,6 +4,7 @@ import dev.theskidster.xjge2.graphics.Rectangle;
 import dev.theskidster.xjge2.graphics.Color;
 import java.util.ArrayList;
 import java.util.HashMap;
+import org.joml.Vector2i;
 import org.joml.Vector3f;
 
 /**
@@ -20,7 +21,7 @@ public final class Text {
     private final HashMap<Integer, FontVertexData> fontData = new HashMap<>();
     private final HashMap<Integer, Font> prevFont           = new HashMap<>();
     private final HashMap<Integer, String> prevText         = new HashMap<>();
-    private final HashMap<Integer, Vector3f> prevPosition   = new HashMap<>();
+    private final HashMap<Integer, Vector2i> prevPosition   = new HashMap<>();
     private final HashMap<Integer, Color>  prevColor        = new HashMap<>();
     
     private final HashMap<Integer, HashMap<Integer, Glyph>> glyphs = new HashMap<>();
@@ -39,10 +40,10 @@ public final class Text {
         if(valueChanged(prevValue, currValue)) prevValue.put(drawOrder, currValue);
     }
     
-    void drawString(Font font, String text, Vector3f position, Color color) {
+    void drawString(Font font, String text, Vector2i position, Color color) {
         drawOrder++;
         
-        if(!prevPosition.containsKey(drawOrder)) prevPosition.put(drawOrder, new Vector3f());
+        if(!prevPosition.containsKey(drawOrder)) prevPosition.put(drawOrder, new Vector2i());
         
         boolean changed = valueChanged(prevFont, font) || valueChanged(prevText, text) || 
                            valueChanged(prevPosition, position) || valueChanged(prevColor, color);
@@ -62,9 +63,8 @@ public final class Text {
                 char c = text.charAt(i);
                 
                 if(c != '\n') {
-                    Vector3f pos = new Vector3f(position.x + advance + font.getGlyphBearing(c), 
-                                                position.y + descent + font.getGlyphDescent(c),
-                                                position.z);
+                    Vector2i pos = new Vector2i(position.x + advance + font.getGlyphBearing(c), 
+                                                position.y + descent + font.getGlyphDescent(c));
                     glyphs.get(drawOrder).put(i, new Glyph(c, pos, color));
                     advance += font.getGlyphAdvance(c);
                 } else {
@@ -82,10 +82,10 @@ public final class Text {
         updateValue(prevColor, color);
     }
     
-    void drawCommand(Font font, String text, Vector3f position) {
+    void drawCommand(Font font, String text, Vector2i position) {
         drawOrder++;
         
-        if(!prevPosition.containsKey(drawOrder)) prevPosition.put(drawOrder, new Vector3f());
+        if(!prevPosition.containsKey(drawOrder)) prevPosition.put(drawOrder, new Vector2i());
         if(!fontData.containsKey(drawOrder)) fontData.put(drawOrder, new FontVertexData(font));
         
         boolean changed = valueChanged(prevText, text) || valueChanged(prevPosition, position);
@@ -101,9 +101,8 @@ public final class Text {
                 char c = text.charAt(i);
                 if(c == ' ') start = i;
                 
-                Vector3f pos = new Vector3f(position.x + advance + font.getGlyphBearing(c),
-                                            position.y + font.getGlyphDescent(c), 
-                                            position.z);
+                Vector2i pos = new Vector2i(position.x + advance + font.getGlyphBearing(c),
+                                            position.y + font.getGlyphDescent(c));
                 
                 Color col = (start != 0 && i > start) ? Color.YELLOW : Color.CYAN;
                 
@@ -125,7 +124,7 @@ public final class Text {
     void drawOutput(Font font, TerminalOutput[] o1, TerminalOutput o2, int index, boolean executed, Rectangle rectangle) {
         drawOrder++;
         
-        if(!prevPosition.containsKey(drawOrder)) prevPosition.put(drawOrder, new Vector3f());
+        if(!prevPosition.containsKey(drawOrder)) prevPosition.put(drawOrder, new Vector2i());
         if(!fontData.containsKey(drawOrder)) fontData.put(drawOrder, new FontVertexData(font));
         
         if(executed) {
@@ -145,9 +144,8 @@ public final class Text {
                 char c = o2.text.charAt(i);
                 
                 if(c != '\n') {
-                    Vector3f pos = new Vector3f(advance + font.getGlyphBearing(c), 
-                                               (yOffset + descent + font.getGlyphDescent(c) + font.size / 4), 
-                                                -2);
+                    Vector2i pos = new Vector2i(advance + font.getGlyphBearing(c), 
+                                               (yOffset + descent + font.getGlyphDescent(c) + font.size / 4));
                     
                     glyphs.get(drawOrder).put(i, new Glyph(c, pos, o2.color));
                     advance += font.getGlyphAdvance(c);

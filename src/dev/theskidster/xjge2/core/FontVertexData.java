@@ -72,7 +72,7 @@ final class FontVertexData {
             FloatBuffer positions = stack.mallocFloat(glyphs.size() * Float.BYTES);
             
             glyphs.forEach((index, glyph) -> {
-                positions.put(glyph.position.x).put(glyph.position.y).put(glyph.position.z);
+                positions.put(glyph.position.x).put(glyph.position.y).put(0);
             });
             
             positions.flip();
