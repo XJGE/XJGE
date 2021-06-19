@@ -26,6 +26,8 @@ public final class Input {
     
     private static final boolean connected[] = new boolean[4];
     
+    public static Widget missingGamepad;
+    
     private static final HashMap<Integer, InputDevice> inputDevices = new HashMap<>();
     
     private static final HashMap<Integer, HashMap<Control, Integer>> controlConfigs = new HashMap<>();
@@ -116,13 +118,40 @@ public final class Input {
                                    "disconnected at position " + jid + ".");
                     Logger.setDomain(null);
                     
-                    //TODO: add event
-                    if(jid < GLFW_JOYSTICK_5) {
+                    if(jid < GLFW_JOYSTICK_5 && Window.visible) {
                         connected[jid] = false;
+                        
+                        disableAllExcept(jid);
+                        addDisConWidget(jid);
+                        
+                        Game.addEvent(new EventGamepad(jid));
                     }
                 }
             }
         });
+    }
+    
+    private static void disableAllExcept(int deviceID) {
+        inputDevices.forEach((id, device) -> {
+            if(device instanceof Gamepad) {
+                ((Gamepad) device).enabled = (id == deviceID);
+            }
+        });
+    }
+    
+    private static void addDisConWidget(int jid) {
+        if(missingGamepad != null) {
+            if(!XJGE.getViewportActive(jid)) XJGE.addUIWidget(GLFW_JOYSTICK_1, "discon " + jid, missingGamepad);
+            else                             XJGE.addUIWidget(jid, "discon " + jid, missingGamepad);
+        } else {
+            Logger.setDomain("input");
+            Logger.logWarning("No warning message has been provided to users " + 
+                              "regarding disconnected controllers. Supply one " + 
+                              "by initializing the Input.missingGamepad object " + 
+                              "with a custom Widget.", 
+                              null);
+            Logger.setDomain(null);
+        }
     }
     
     static void findInputDevices() {
@@ -370,7 +399,7 @@ public final class Input {
             }
         } else {
             Logger.logWarning("Failed to revert the enabled state of input device " + 
-                              id + "Could not find an input device at this index.",
+                              id + " Could not find an input device at this index.",
                               null);
         }
         
@@ -387,7 +416,7 @@ public final class Input {
                            id + " \"" + inputDevices.get(id).name + "\"");
         } else {
             Logger.logWarning("Failed to change the button configuration of input device " + 
-                              id + "Could not find an input device at this index.",
+                              id + " Could not find an input device at this index.",
                               null);
         }
         

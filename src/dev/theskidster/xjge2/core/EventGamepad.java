@@ -1,5 +1,7 @@
 package dev.theskidster.xjge2.core;
 
+import static org.lwjgl.glfw.GLFW.GLFW_JOYSTICK_1;
+import static org.lwjgl.glfw.GLFW.GLFW_JOYSTICK_5;
 import static org.lwjgl.glfw.GLFW.glfwJoystickPresent;
 
 /**
@@ -21,7 +23,11 @@ final class EventGamepad extends Event {
         resolved = glfwJoystickPresent(jid);
         
         if(resolved) {
-            //TODO: reset input device states
+            for(int i = GLFW_JOYSTICK_1; i < GLFW_JOYSTICK_5; i++) {
+                if(Input.getDevicePresent(i)) Input.revertEnabledState(i);
+            }
+            
+            XJGE.removeUIWidget(jid, "discon " + jid);
         }
     }
 

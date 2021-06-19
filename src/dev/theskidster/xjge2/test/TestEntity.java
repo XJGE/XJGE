@@ -20,6 +20,8 @@ import org.lwjgl.system.MemoryStack;
 
 public class TestEntity extends Entity {
 
+    float angle;
+    
     Puppet puppet = new Puppet(this);
     Graphics g    = new Graphics();
     
@@ -71,6 +73,7 @@ public class TestEntity extends Entity {
     @Override
     public void update(double targetDelta) {
         g.modelMatrix.translation(position);
+        g.modelMatrix.rotateY(angle += 0.1f);
     }
 
     @Override
