@@ -7,9 +7,10 @@ import static dev.theskidster.xjge2.core.Input.KEY_MOUSE_COMBO;
 import dev.theskidster.xjge2.graphics.Color;
 import dev.theskidster.xjge2.graphics.Texture;
 import org.joml.Vector2i;
-import org.joml.Vector3f;
 import static org.lwjgl.glfw.GLFW.GLFW_JOYSTICK_5;
 import static org.lwjgl.glfw.GLFW.glfwGetVersionString;
+import static org.lwjgl.openal.AL10.AL_VERSION;
+import static org.lwjgl.openal.AL10.alGetString;
 import static org.lwjgl.opengl.GL11.GL_RENDERER;
 import static org.lwjgl.opengl.GL11.GL_VERSION;
 import static org.lwjgl.opengl.GL11.glGetString;
@@ -84,10 +85,10 @@ final class DebugInfo {
             String[] strings     = new String[4];
             String longestString = "";
             
-            strings[0] = "OPENAL VER: "; //TODO: add openal once its integrated.
-            strings[1] = "SPEAKER: \"";
-            strings[2] = "MUSIC MASTER VOL: ";
-            strings[3] = "SOUND MASTER VOL: ";
+            strings[0] = "OPENAL VER: " + alGetString(AL_VERSION);
+            strings[1] = "SPEAKER: \"" + Audio.speaker.name.substring(15) + "\"";
+            strings[2] = "SOUND MASTER VOLUME: " + Audio.getSoundMasterVolume();
+            strings[3] = "MUSIC MASTER VOLUME: " + Audio.getMusicMasterVolume();
             
             for(String string : strings) {
                 if(string.length() > longestString.length()) longestString = string;
@@ -202,10 +203,10 @@ final class DebugInfo {
         text.drawString(font, "JAVA VER: " + System.getProperty("java.version"), textPos[5],  Color.LIME);
         text.drawString(font, "GLFW VER: " + glfwGetVersionString(), textPos[6], Color.LIME);
         
-        text.drawString(font, "OPENAL VER: ", textPos[7], Color.WHITE);
-        text.drawString(font, "SPEAKER: \"", textPos[8], Color.YELLOW);
-        text.drawString(font, "MUSIC MASTER VOL: ", textPos[9], Color.CYAN);
-        text.drawString(font, "SOUND MASTER VOL: ", textPos[10], Color.CYAN);
+        text.drawString(font, "OPENAL VER: " + alGetString(AL_VERSION), textPos[7], Color.WHITE);
+        text.drawString(font, "SPEAKER: \"" + Audio.speaker.name.substring(15) + "\"", textPos[8], Color.YELLOW);
+        text.drawString(font, "SOUND MASTER VOLUME: " + Audio.getSoundMasterVolume(), textPos[9], Color.CYAN);
+        text.drawString(font, "MUSIC MASTER VOLUME: " + Audio.getMusicMasterVolume(), textPos[10], Color.CYAN);
         
         text.drawString(font, "OPENGL VER: " + glGetString(GL_VERSION), textPos[11], Color.WHITE);
         text.drawString(font, "GFX CARD: " + glGetString(GL_RENDERER), textPos[12], Color.YELLOW);

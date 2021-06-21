@@ -4,6 +4,9 @@ import java.util.TreeMap;
 import org.lwjgl.PointerBuffer;
 import static org.lwjgl.glfw.GLFW.glfwGetMonitors;
 import static org.lwjgl.glfw.GLFW.glfwSwapInterval;
+import static org.lwjgl.openal.ALC11.*;
+import static org.lwjgl.openal.ALUtil.getStringList;
+import static org.lwjgl.system.MemoryUtil.NULL;
 
 /**
  * @author J Hoffman
@@ -14,7 +17,12 @@ public final class Hardware {
     
     private static boolean vSyncEnabled = true;
     
+    private static final TreeMap<Integer, Speaker> speakers = new TreeMap<>();
     private static final TreeMap<Integer, Monitor> monitors = new TreeMap<>();
+    
+    static void freeSpeakers() {
+        speakers.forEach((id, device) -> alcCloseDevice(device.handle));
+    }
     
     static void removeMonitor(long handle) {
         monitors.values().removeIf(monitor -> monitor.handle == handle);
@@ -31,6 +39,26 @@ public final class Hardware {
         return monitors.values().stream().findAny().get();
     }
     
+    public static final TreeMap<Integer, Speaker> findSpeakers() {
+        speakers.forEach((id, device) -> alcCloseDevice(device.handle));
+        speakers.clear();
+        
+        var deviceList = getStringList(NULL, ALC_ALL_DEVICES_SPECIFIER);
+        
+        if(deviceList != null) {
+            for(int i = 0; i < deviceList.size(); i++) {
+                if(!speakers.containsKey(i + 1)) {
+                    speakers.put(i + 1, new Speaker(i + 1, deviceList.get(i)));
+                }
+            }
+        } else {
+            Logger.setDomain("core");
+            Logger.logSevere("Failed to find any available speakers.", null);
+        }
+        
+        return speakers;
+    }
+    
     public static final TreeMap<Integer, Monitor> findMonitors() {
         PointerBuffer monitorBuf = glfwGetMonitors();
         
@@ -41,7 +69,7 @@ public final class Hardware {
                 }
             }
         } else {
-            Logger.setDomain("winkit");
+            Logger.setDomain("core");
             Logger.logSevere("Failed to find any available monitors.", null);
         }
         
@@ -50,6 +78,10 @@ public final class Hardware {
     
     public static int getNumMonitors() {
         return monitors.size();
+    }
+    
+    public static int getNumSpeakers() {
+        return speakers.size();
     }
     
     public static boolean getVSyncEnabled() {

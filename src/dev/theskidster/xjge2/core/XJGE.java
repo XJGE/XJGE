@@ -83,7 +83,12 @@ public final class XJGE {
             
             if(!glfwInit()) Logger.logSevere("Failed to initialize GLFW.", null);
             
-            { //Initialize the window.
+            { //Initialize 3D audio utilities.
+                Audio.speaker = Hardware.findSpeakers().get(1);
+                Audio.speaker.setContextCurrent();
+            }
+            
+            { //Initialize the game window.
                 //TODO: mention in documentation that the windowResize flag will be overruled if
                 //an internal resolution is supplied.
                 glfwWindowHint(GLFW_RESIZABLE, (windowResizable && resolution == null) ? GLFW_TRUE : GLFW_FALSE);
@@ -286,6 +291,7 @@ public final class XJGE {
         terminal.freeBuffers();
         debugInfo.freeBuffers();
         
+        Hardware.freeSpeakers();
         Input.exportControls();
         GL.destroy();
         glfwTerminate();
@@ -311,7 +317,7 @@ public final class XJGE {
         setScreenSplit(split);
     }
     
-    public static boolean getViewportActive(int viewportID) {
+    static boolean getViewportActive(int viewportID) {
         return viewports[viewportID].active;
     }
     

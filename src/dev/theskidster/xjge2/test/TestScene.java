@@ -23,6 +23,7 @@ public class TestScene extends Scene {
     public TestScene() {
         super("test");
         
+        /*
         TestEntity p1 = new TestEntity(0, 0, 0);
         TestEntity p2 = new TestEntity(0, 0, 0);
         
@@ -30,6 +31,7 @@ public class TestScene extends Scene {
         Input.setDevicePuppet(GLFW_JOYSTICK_2, p1.puppet);
         
         XJGE.setScreenSplit(Split.VERTICAL);
+        */
         
         entities.put("test",  new TestEntity(0, 0, -3));
         //entities.put("test2", new TestEntity2(2, 1, -3));

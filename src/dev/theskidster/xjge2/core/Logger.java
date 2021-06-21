@@ -6,6 +6,8 @@ import java.io.PrintWriter;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import static org.lwjgl.glfw.GLFW.glfwGetVersionString;
+import static org.lwjgl.openal.AL10.AL_VERSION;
+import static org.lwjgl.openal.AL10.alGetString;
 import static org.lwjgl.opengl.GL11.GL_RENDERER;
 import static org.lwjgl.opengl.GL11.GL_VERSION;
 import static org.lwjgl.opengl.GL11.glGetString;
@@ -34,12 +36,13 @@ public final class Logger {
         logInfo("OS NAME:\t\t" + System.getProperty("os.name"));
         logInfo("JAVA VER:\t\t" + System.getProperty("java.version"));
         logInfo("GLFW VER:\t\t" + glfwGetVersionString());
-        logInfo("OPENAL VER:\t" );
+        logInfo("OPENAL VER:\t" + alGetString(AL_VERSION));
         logInfo("OPENGL VER:\t" + glGetString(GL_VERSION));
         logInfo("GFX CARD:\t\t" + glGetString(GL_RENDERER));
         logInfo("MONITORS:\t\t" + "Found: " + Hardware.getNumMonitors() + 
                 ", Primary: \"" + Window.monitor.name + "\" (" + Window.monitor.getInfo() + ")");
-        logInfo("SPEAKERS:\t\t" );
+        logInfo("SPEAKERS:\t\t" + "Found: " + Hardware.getNumSpeakers() + 
+                ", Primary: \"" + Audio.speaker.name.substring(15));
         logInfo("GAMEPADS:\t\t" + "Found: " + Input.getNumDevices());
         horizontalLine();
         newLine();
