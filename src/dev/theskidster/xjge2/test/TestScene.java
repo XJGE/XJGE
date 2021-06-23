@@ -2,8 +2,8 @@ package dev.theskidster.xjge2.test;
 
 import dev.theskidster.xjge2.core.Camera;
 import dev.theskidster.xjge2.core.Scene;
+import dev.theskidster.xjge2.core.Sound;
 import dev.theskidster.xjge2.graphics.GLProgram;
-import dev.theskidster.xjge2.graphics.Light;
 import java.util.Map;
 
 /**
@@ -12,21 +12,13 @@ import java.util.Map;
  */
 
 public class TestScene extends Scene {
-    
-    Light light;
+
+    Sound sound;
     
     public TestScene() {
         super("test");
         
-        /*
-        TestEntity p1 = new TestEntity(0, 0, 0);
-        TestEntity p2 = new TestEntity(0, 0, 0);
-        
-        Input.setDevicePuppet(GLFW_JOYSTICK_1, p1.puppet);
-        Input.setDevicePuppet(GLFW_JOYSTICK_2, p1.puppet);
-        
-        XJGE.setScreenSplit(Split.VERTICAL);
-        */
+        sound = new Sound("sfx_beep.ogg");
         
         entities.put("test",  new TestEntity(0, 0, -3));
         //entities.put("test2", new TestEntity2(2, 1, -3));

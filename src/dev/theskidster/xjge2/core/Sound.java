@@ -34,6 +34,8 @@ public final class Sound {
             loadSound(Sound.class.getResourceAsStream("/dev/theskidster/xjge2/assets/sfx_beep.ogg"));
         }
         
+        //TODO: add this sound to sounds map that will be loaded during Audio.init();
+        
         ErrorUtils.checkALError();
     }
     
