@@ -1,15 +1,10 @@
 package dev.theskidster.xjge2.test;
 
 import dev.theskidster.xjge2.core.Camera;
-import dev.theskidster.xjge2.core.Input;
 import dev.theskidster.xjge2.core.Scene;
-import dev.theskidster.xjge2.core.Split;
-import dev.theskidster.xjge2.core.XJGE;
 import dev.theskidster.xjge2.graphics.GLProgram;
 import dev.theskidster.xjge2.graphics.Light;
 import java.util.Map;
-import static org.lwjgl.glfw.GLFW.GLFW_JOYSTICK_1;
-import static org.lwjgl.glfw.GLFW.GLFW_JOYSTICK_2;
 
 /**
  * @author J Hoffman
