@@ -1,5 +1,6 @@
 package dev.theskidster.xjge2.core;
 
+import static org.lwjgl.openal.AL10.*;
 import static org.lwjgl.opengl.GL30.*;
 
 /**
@@ -9,6 +10,24 @@ import static org.lwjgl.opengl.GL30.*;
 
 public final class ErrorUtils {
 
+    public static void checkALError() {
+        int alError = alGetError();
+        
+        if(alError != AL_NO_ERROR) {
+            String desc = "";
+        
+            switch(alError) {
+                case AL_INVALID_NAME      -> desc = "invalid name";
+                case AL_INVALID_ENUM      -> desc = "invalid enum";
+                case AL_INVALID_VALUE     -> desc = "invalid value";
+                case AL_INVALID_OPERATION -> desc = "invalid operation";
+                case AL_OUT_OF_MEMORY     -> desc = "out of memory";
+            }
+
+            Logger.logSevere("OpenAL Error: (" + alError + ") " + desc, null);
+        }
+    }
+    
     public static void checkGLError() {
         int glError = glGetError();
         
@@ -43,6 +62,7 @@ public final class ErrorUtils {
                 case GL_FRAMEBUFFER_UNDEFINED                     -> desc = "undefined";
             }
             
+            Logger.setDomain("core");
             Logger.logSevere("Framebuffer Error: (" + status + ") " + desc, null);
         }
     }
