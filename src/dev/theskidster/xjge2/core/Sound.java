@@ -21,7 +21,7 @@ public final class Sound {
     private int channels;
     private int sampleRate;
     
-    public Sound(String filename) {
+    Sound(String filename, boolean isSong) {
         handle = alGenBuffers();
         
         try(InputStream file = Sound.class.getResourceAsStream(XJGE.getFilepath() + filename)) {
@@ -34,9 +34,14 @@ public final class Sound {
             loadSound(Sound.class.getResourceAsStream("/dev/theskidster/xjge2/assets/sfx_beep.ogg"));
         }
         
-        //TODO: add this sound to sounds map that will be loaded during Audio.init();
+        if(!isSong) Audio.soundHandles.put(filename, handle);
+        else        Audio.songHandles.put(filename, handle);
         
         ErrorUtils.checkALError();
+    }
+    
+    public Sound(String filename) {
+        this(filename, false);
     }
     
     private void loadSound(InputStream file) {

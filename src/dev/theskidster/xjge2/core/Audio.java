@@ -15,7 +15,8 @@ public final class Audio {
     
     static Speaker speaker;
     
-    static final Map<String, Sound> sounds = new HashMap<>();
+    static final Map<String, Integer> soundHandles = new HashMap<>();
+    static final Map<String, Integer> songHandles  = new HashMap<>();
     
     static void init() {
         
@@ -28,5 +29,11 @@ public final class Audio {
     public static float getMusicMasterVolume() {
         return musicMasterVolume;
     }
+    
+    /*
+    public static void playSound(Sound sound, vol, etc...) {
+        
+    }
+    */
     
 }
