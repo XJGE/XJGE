@@ -2,10 +2,13 @@ package dev.theskidster.xjge2.test;
 
 import dev.theskidster.xjge2.core.Audio;
 import dev.theskidster.xjge2.core.Camera;
+import dev.theskidster.xjge2.core.Game;
 import dev.theskidster.xjge2.core.Scene;
+import dev.theskidster.xjge2.core.Song;
 import dev.theskidster.xjge2.core.Sound;
 import dev.theskidster.xjge2.graphics.GLProgram;
 import java.util.Map;
+import org.joml.Vector3f;
 
 /**
  * @author J Hoffman
@@ -15,28 +18,31 @@ import java.util.Map;
 public class TestScene extends Scene {
 
     Sound sound;
+    Song song;
     
     public TestScene() {
         super("test");
         
         sound = new Sound("sfx_beep.ogg");
+        song  = new Song("msc_battle_intro.ogg", "msc_battle_body.ogg");
         
         entities.put("test",  new TestEntity(0, 0, -3));
         //entities.put("test2", new TestEntity2(2, 1, -3));
         entities.put("test3", new TestEntity3(2, -0.5f, -3));
+        
+        // Audio.playMusic(song);
+        Audio.playSound(sound, new Vector3f(10, 0, 0), true);
     }
-    
-    boolean soundPlayed;
     
     @Override
     public void update(double targetDelta) {
         
         //light.position.x += 0.1f;
         
-        if(!soundPlayed) {
-            Audio.playSound(sound, null, false);
-            soundPlayed = true;
-        }
+        /*
+        if(Game.tick(60)) {
+            Audio.playSound(sound, new Vector3f(10, 0, 0), false);
+        }*/
         
         entities.values().forEach(entity -> entity.update(targetDelta));
     }

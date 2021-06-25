@@ -43,6 +43,15 @@ public final class Audio {
     static final Map<String, Song> songs   = new HashMap<>();
     
     static void init() {
+        //TODO: free existing sounds
+        sounds.forEach((filename, sound) -> {
+            sound = new Sound(filename);
+        });
+        
+        songs.forEach((filename, song) -> {
+            //TODO: reload songs
+        });
+        
         var prevSources = new HashMap<Integer, Source>();
         
         for(int i = 0; i < sources.length; i++) {
@@ -197,7 +206,7 @@ public final class Audio {
             musicSource.queueSound(currSongBody);
         }
         
-        prevMusicSourceSong = song.intro.filename;
+        prevMusicSourceSong = song.body.filename;
         
         musicSource.setLooping(introFinished);
         
@@ -226,16 +235,20 @@ public final class Audio {
     }
     
     public static void setSoundMasterVolume(float masterVolume) {
-        soundMasterVolume = masterVolume;
-        
-        for(Source source : sources) {
-            alSourcef(source.handle, AL_GAIN, masterVolume);
+        if(masterVolume >= 0 && masterVolume <= 1) {
+            soundMasterVolume = masterVolume;
+            
+            for(Source source : sources) {
+                alSourcef(source.handle, AL_GAIN, masterVolume);
+            }
         }
     }
     
     public static void setMusicMasterVolume(float masterVolume) {
-        musicMasterVolume = masterVolume;
-        alSourcef(musicSource.handle, AL_GAIN, masterVolume);
+        if(masterVolume >= 0 && masterVolume <= 1) {
+            musicMasterVolume = masterVolume;
+            alSourcef(musicSource.handle, AL_GAIN, masterVolume);
+        }
     }
     
     public static void setSourceState(int handle, int state) {

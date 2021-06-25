@@ -234,6 +234,14 @@ public final class XJGE {
                 } else {
                     //TODO: pass key input to ui widget
                 }
+                
+                if(key == GLFW_KEY_LEFT && action == GLFW_PRESS) {
+                    Hardware.setSpeaker("prev");
+                }
+                
+                if(key == GLFW_KEY_RIGHT && action == GLFW_PRESS) {
+                    Hardware.setSpeaker("next");
+                }
             });
 
             glfwSetCursorPosCallback(HANDLE, (window, xpos, ypos) -> {

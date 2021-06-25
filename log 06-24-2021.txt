@@ -1,0 +1,35 @@
+--------------------------------------------------------------------------------
+INFO: OS NAME:		Windows 10
+INFO: JAVA VER:		15.0.2
+INFO: GLFW VER:		3.4.0 Win32 WGL EGL OSMesa VisualC DLL
+INFO: OPENAL VER:	1.1 ALSOFT 1.19.1
+INFO: OPENGL VER:	4.5.0 - Build 23.20.16.4973
+INFO: GFX CARD:		Intel(R) HD Graphics 530
+INFO: MONITORS:		Found: 2, Primary: "Generic PnP Monitor" (1920x1080 16:9 60hz)
+INFO: SPEAKERS:		Found: 3, Primary: "Speakers (Realtek High Definition Audio)
+INFO: GAMEPADS:		Found: 0
+--------------------------------------------------------------------------------
+
+INFO (core): Current scene changed to "test"
+
+
+06-24-2021 9:24PM
+ERROR: OpenAL Error: (40963) invalid value
+
+java.lang.RuntimeException
+	dev.theskidster.xjge2.core.Logger.logSevere(Logger.java:127)
+	dev.theskidster.xjge2.core.ErrorUtils.checkALError(ErrorUtils.java:27)
+	dev.theskidster.xjge2.core.Source.<init>(Source.java:43)
+	dev.theskidster.xjge2.core.Audio.lambda$init$0(Audio.java:61)
+	java.base/java.util.HashMap.forEach(HashMap.java:1425)
+	dev.theskidster.xjge2.core.Audio.init(Audio.java:54)
+	dev.theskidster.xjge2.core.Speaker.setContextCurrent(Speaker.java:37)
+	dev.theskidster.xjge2.core.Hardware.setSpeaker(Hardware.java:125)
+	dev.theskidster.xjge2.core.XJGE.lambda$init$0(XJGE.java:239)
+	org.lwjgl.glfw.GLFWKeyCallbackI.callback(GLFWKeyCallbackI.java:37)
+	org.lwjgl.system.JNI.invokeV(Native Method)
+	org.lwjgl.glfw.GLFW.glfwPollEvents(GLFW.java:3094)
+	dev.theskidster.xjge2.core.Game.loop(Game.java:41)
+	dev.theskidster.xjge2.core.XJGE.start(XJGE.java:295)
+	dev.theskidster.xjge2.test.Test.main(Test.java:30)
+

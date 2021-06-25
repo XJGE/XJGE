@@ -79,6 +79,7 @@ public final class Game {
                 }
 
                 Audio.updateSourcePositions();
+                Audio.checkIntroFinished();
                 
                 if(tick(60)) {
                     fps    = cycles;

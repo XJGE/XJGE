@@ -97,4 +97,57 @@ public final class Hardware {
         Logger.setDomain(null);
     }
     
+    public static void setSpeaker(String operation) {
+        Audio.findSourceStates();
+        
+        findSpeakers();
+        
+        if(speakers.size() > 0) {
+            switch(operation) {
+                case "next" -> {
+                    if(!speakers.ceilingKey(speakers.lastKey()).equals(Audio.speaker.id)) {
+                        Audio.speaker = speakers.higherEntry(Audio.speaker.id).getValue();
+                    } else {
+                        Audio.speaker = speakers.firstEntry().getValue();
+                    }
+                    Audio.speaker.setContextCurrent();
+                    Logger.logInfo(
+                            "Set current audio device to " + Audio.speaker.id + " \"" +
+                            Audio.speaker.name.substring(15) + "\".");
+                }
+
+                case "prev" -> {
+                    if(!speakers.floorKey(speakers.firstKey()).equals(Audio.speaker.id)) {
+                        Audio.speaker = speakers.lowerEntry(Audio.speaker.id).getValue();
+                    } else {
+                        Audio.speaker = speakers.lastEntry().getValue();
+                    }
+                    Audio.speaker.setContextCurrent();
+                    Logger.logInfo(
+                            "Set current audio device to " + Audio.speaker.id + " \"" +
+                            Audio.speaker.name.substring(15) + "\".");
+                }
+
+                default -> {
+                    try {
+                        int index = Integer.parseInt(operation);
+                        
+                        if(speakers.containsKey(index)) {
+                            Audio.speaker = speakers.get(index);
+                            Audio.speaker.setContextCurrent();
+                            Logger.logInfo(
+                                    "Set current audio device to " + Audio.speaker.id + " \"" +
+                                            Audio.speaker.name.substring(15) + "\".");
+                        } else {
+                            Logger.logWarning(
+                                    "Failed to set audio device. Could not find device at index " + index + ".", null);
+                        }
+                    } catch(NumberFormatException e) {
+                        Logger.logWarning("Failed to set audio device. Invalid index value passed.", null);
+                    }
+                }
+            }
+        }
+    }
+    
 }

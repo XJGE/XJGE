@@ -17,14 +17,13 @@ final class Source {
     private Vector3f position;
     private Vector3f tempPos = new Vector3f();
     
-    //TODO: change to Source;
+    //TODO: change to SoundSource;
     Source() {
         handle = alGenSources();
     }
     
     Source(Source source, Sound sound, int sourceSample, int sourceState) {
         handle = alGenSources();
-        
         
         setLooping(source.loop);
         setWorldPosition(source.position);

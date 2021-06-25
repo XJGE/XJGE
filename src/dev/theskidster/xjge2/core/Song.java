@@ -19,11 +19,21 @@ public final class Song {
         intro = new Sound(introFilename);
         body  = new Sound(bodyFilename);
         
-        addToCollection(introFilename);
+        addToCollection(bodyFilename);
     }
     
     private void addToCollection(String filename) {
         Audio.songs.put(filename, this);
+    }
+    
+    public void freeSong() {
+        if(intro != null) {
+            Audio.songs.remove(intro.filename);
+            intro.freeSound();
+        }
+        
+        Audio.songs.remove(body.filename);
+        body.freeSound();
     }
     
 }

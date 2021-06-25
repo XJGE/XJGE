@@ -21,10 +21,13 @@ public final class Sound {
     private int channels;
     private int sampleRate;
     
+    private final boolean isSongPart;
+    
     final String filename;
     
     Sound(String filename, boolean isSongPart) {
-        this.filename = filename;
+        this.filename   = filename;
+        this.isSongPart = isSongPart;
         
         handle = alGenBuffers();
         
@@ -85,6 +88,7 @@ public final class Sound {
     }
     
     public void freeSound() {
+        if(!isSongPart) Audio.sounds.remove(filename);
         alDeleteBuffers(handle);
     }
     
