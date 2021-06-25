@@ -1,5 +1,6 @@
 package dev.theskidster.xjge2.test;
 
+import dev.theskidster.xjge2.core.Audio;
 import dev.theskidster.xjge2.core.Camera;
 import dev.theskidster.xjge2.core.Scene;
 import dev.theskidster.xjge2.core.Sound;
@@ -25,10 +26,17 @@ public class TestScene extends Scene {
         entities.put("test3", new TestEntity3(2, -0.5f, -3));
     }
     
+    boolean soundPlayed;
+    
     @Override
     public void update(double targetDelta) {
         
         //light.position.x += 0.1f;
+        
+        if(!soundPlayed) {
+            Audio.playSound(sound, null, false);
+            soundPlayed = true;
+        }
         
         entities.values().forEach(entity -> entity.update(targetDelta));
     }

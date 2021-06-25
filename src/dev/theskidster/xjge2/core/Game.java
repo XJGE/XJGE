@@ -74,11 +74,11 @@ public final class Game {
                         viewport.currCamera.update();
                         viewport.ui.forEach((name, component) -> component.update());
 
-                        //ServiceLocator.getAudio().setViewportCamData(viewport.id, viewport.currCamera.position, viewport.currCamera.direction);
+                        Audio.setViewportCamData(viewport.id, viewport.currCamera.position, viewport.currCamera.direction);
                     }
                 }
 
-                //ServiceLocator.getAudio().updateSourcePositions();
+                Audio.updateSourcePositions();
                 
                 if(tick(60)) {
                     fps    = cycles;

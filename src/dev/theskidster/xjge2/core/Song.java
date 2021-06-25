@@ -11,12 +11,19 @@ public final class Song {
     public Sound body;
     
     public Song(String filename) {
-        body = new Sound(filename, true);
+        body = new Sound(filename);
+        addToCollection(filename);
     }
     
     public Song(String introFilename, String bodyFilename) {
-        intro = new Sound(introFilename, true);
-        body  = new Sound(bodyFilename, true);
+        intro = new Sound(introFilename);
+        body  = new Sound(bodyFilename);
+        
+        addToCollection(introFilename);
+    }
+    
+    private void addToCollection(String filename) {
+        Audio.songs.put(filename, this);
     }
     
 }

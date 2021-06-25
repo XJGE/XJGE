@@ -21,7 +21,11 @@ public final class Sound {
     private int channels;
     private int sampleRate;
     
-    Sound(String filename, boolean isSong) {
+    final String filename;
+    
+    Sound(String filename, boolean isSongPart) {
+        this.filename = filename;
+        
         handle = alGenBuffers();
         
         try(InputStream file = Sound.class.getResourceAsStream(XJGE.getFilepath() + filename)) {
@@ -34,8 +38,7 @@ public final class Sound {
             loadSound(Sound.class.getResourceAsStream("/dev/theskidster/xjge2/assets/sfx_beep.ogg"));
         }
         
-        if(!isSong) Audio.soundHandles.put(filename, handle);
-        else        Audio.songHandles.put(filename, handle);
+        if(!isSongPart) addToCollection(filename);
         
         ErrorUtils.checkALError();
     }
@@ -67,6 +70,10 @@ public final class Sound {
             Logger.setDomain("audio");
             Logger.logSevere("Failed to parse sound data.", e);
         }
+    }
+    
+    private void addToCollection(String filename) {
+        Audio.sounds.put(filename, this);
     }
     
     public int getChannels() {
