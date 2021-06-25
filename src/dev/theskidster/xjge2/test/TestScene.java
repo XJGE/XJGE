@@ -24,14 +24,15 @@ public class TestScene extends Scene {
         super("test");
         
         sound = new Sound("sfx_beep.ogg");
-        song  = new Song("msc_battle_intro.ogg", "msc_battle_body.ogg");
+        //song  = new Song("msc_battle_intro.ogg", "msc_battle_body.ogg");
+        song = new Song("msc_unatco.ogg");
         
         entities.put("test",  new TestEntity(0, 0, -3));
         //entities.put("test2", new TestEntity2(2, 1, -3));
         entities.put("test3", new TestEntity3(2, -0.5f, -3));
         
-        // Audio.playMusic(song);
-        Audio.playSound(sound, new Vector3f(10, 0, 0), true);
+        Audio.playMusic(song);
+        //Audio.playSound(sound, new Vector3f(10, 0, 0), true);
     }
     
     @Override

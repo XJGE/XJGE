@@ -43,13 +43,14 @@ public final class Audio {
     static final Map<String, Song> songs   = new HashMap<>();
     
     static void init() {
-        //TODO: free existing sounds
         sounds.forEach((filename, sound) -> {
             sound = new Sound(filename);
         });
         
         songs.forEach((filename, song) -> {
-            //TODO: reload songs
+            song = (song.intro != null) 
+                 ? new Song(song.intro.filename, song.body.filename)
+                 : new Song(song.body.filename);
         });
         
         var prevSources = new HashMap<Integer, Source>();
