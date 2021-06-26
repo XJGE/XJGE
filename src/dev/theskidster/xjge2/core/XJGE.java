@@ -44,6 +44,7 @@ public final class XJGE {
     
     private static Font engineFont;
     private static Texture engineIcons;
+    private static Sound beep;
     private static FreeCam freeCam;
     private static Terminal terminal;
     private static DebugInfo debugInfo;
@@ -161,6 +162,7 @@ public final class XJGE {
             
             engineFont  = new Font();
             engineIcons = new Texture("spr_engineicons.png");
+            beep        = new Sound("sfx_beep.ogg");
             
             Scene.setIconTexture(engineIcons);
             Logger.printSystemInfo();
@@ -219,6 +221,10 @@ public final class XJGE {
                 if(debugEnabled && key == GLFW_KEY_F3 && action == GLFW_PRESS) {
                     showLightSources = !showLightSources;
                 }
+                
+                if(debugEnabled && key == GLFW_KEY_F4 && action == GLFW_PRESS) {
+                    Audio.playSound(beep, null, false);
+                }
 
                 if(freeCamEnabled && !terminalEnabled) {
                     if(key == GLFW_KEY_W) freeCam.pressed[0] = (action != GLFW_RELEASE);
@@ -242,6 +248,7 @@ public final class XJGE {
                 if(key == GLFW_KEY_RIGHT && action == GLFW_PRESS) {
                     Hardware.setSpeaker("next");
                 }
+                
             });
 
             glfwSetCursorPosCallback(HANDLE, (window, xpos, ypos) -> {
@@ -296,6 +303,7 @@ public final class XJGE {
         
         engineFont.freeTexture();
         engineIcons.freeTexture();
+        beep.freeSound();
         terminal.freeBuffers();
         debugInfo.freeBuffers();
         
