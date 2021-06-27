@@ -18,18 +18,18 @@
             </bookmark>
         </file>
         <file>
-            <url>src/dev/theskidster/xjge2/core/XJGE.java</url>
-            <bookmark id="41">
-                <name/>
-                <line>170</line>
-                <key/>
-            </bookmark>
-        </file>
-        <file>
             <url>src/dev/theskidster/xjge2/hud/BitmapFont.java</url>
             <bookmark id="26">
                 <name/>
                 <line>9</line>
+                <key/>
+            </bookmark>
+        </file>
+        <file>
+            <url>src/dev/theskidster/xjge2/core/XJGE.java</url>
+            <bookmark id="41">
+                <name/>
+                <line>172</line>
                 <key/>
             </bookmark>
         </file>
@@ -41,10 +41,7 @@
             <file>file:/C:/Users/thesk/Documents/Projects/XJGE/XJGE-2/src/dev/theskidster/xjge2/core/Game.java</file>
             <file>file:/C:/Users/thesk/Documents/Projects/XJGE/XJGE-2/src/dev/theskidster/xjge2/core/Audio.java</file>
             <file>file:/C:/Users/thesk/Documents/Projects/XJGE/XJGE-2/src/dev/theskidster/xjge2/test/TestScene.java</file>
-            <file>file:/C:/Users/thesk/Documents/Projects/XJGE/XJGE-2/src/dev/theskidster/xjge2/core/Source.java</file>
-            <file>file:/C:/Users/thesk/Documents/Projects/XJGE/XJGE-2/src/dev/theskidster/xjge2/core/TCBeep.java</file>
             <file>file:/C:/Users/thesk/Documents/Projects/XJGE/XJGE-2/src/dev/theskidster/xjge2/core/TCSetSpeaker.java</file>
-            <file>file:/C:/Users/thesk/Documents/Projects/XJGE/XJGE-2/src/dev/theskidster/xjge2/core/Hardware.java</file>
             <file>file:/C:/Users/thesk/Documents/Projects/XJGE/XJGE-2/src/dev/theskidster/xjge2/core/XJGE.java</file>
         </group>
     </open-files>

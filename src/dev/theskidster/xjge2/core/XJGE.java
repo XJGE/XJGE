@@ -170,17 +170,19 @@ public final class XJGE {
             XJGE.filepath     = filepath;
             Widget.engineFont = new Font(engineFont);
             
-            //TODO: add more commands
             engineCommands = new TreeMap<>() {{
-                put("cls",             new TCCLS());
-                put("help",            new TCHelp());
-                put("setFullscreen",   new TCSetFullscreen());
-                put("setMonitor",      new TCSetMonitor());
-                put("setScreenSplit",  new TCScreenSplit());
-                put("setVSync",        new TCSetVSync());
-                put("setVideoMode",    new TCSetVideoMode());
-                put("showCommands",    new TCShowCommands());
-                put("terminate",       new TCTerminate());
+                put("cls",                  new TCCLS());
+                put("help",                 new TCHelp());
+                put("setFullscreen",        new TCSetFullscreen());
+                put("setMonitor",           new TCSetMonitor());
+                put("setMusicMasterVolume", new TCSetMusicMasterVolume());
+                put("setScreenSplit",       new TCScreenSplit());
+                put("setSpeaker",           new TCSetSpeaker());
+                put("setSoundMasterVolume", new TCSetSoundMasterVolume());
+                put("setVSync",             new TCSetVSync());
+                put("setVideoMode",         new TCSetVideoMode());
+                put("showCommands",         new TCShowCommands());
+                put("terminate",            new TCTerminate());
             }};
             
             glfwSetKeyCallback(Window.HANDLE, (window, key, scancode, action, mods) -> {
@@ -240,15 +242,6 @@ public final class XJGE {
                 } else {
                     //TODO: pass key input to ui widget
                 }
-                
-                if(key == GLFW_KEY_LEFT && action == GLFW_PRESS) {
-                    Hardware.setSpeaker("prev");
-                }
-                
-                if(key == GLFW_KEY_RIGHT && action == GLFW_PRESS) {
-                    Hardware.setSpeaker("next");
-                }
-                
             });
 
             glfwSetCursorPosCallback(HANDLE, (window, xpos, ypos) -> {
