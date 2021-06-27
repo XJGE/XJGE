@@ -8,9 +8,9 @@ import java.util.List;
  * Created: May 25, 2021
  */
 
-final class TCScreenSplit extends TerminalCommand {
+final class TCSetScreenSplit extends TerminalCommand {
 
-    TCScreenSplit() {
+    TCSetScreenSplit() {
         super("Changes what kind of split is used for splitscreen play. Otherwise hidden " +
               "viewports will use either the default camera or whichever was most " + 
               "recently set.", 

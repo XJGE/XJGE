@@ -58,7 +58,7 @@ public class Model {
     private Map<String, SkeletalAnimation> animations;
     
     public Model(String filename, int aiArgs) {
-        try(InputStream file = Model.class.getResourceAsStream(XJGE.getFilepath() + filename)) {
+        try(InputStream file = Model.class.getResourceAsStream(XJGE.getAssetsFilepath() + filename)) {
             loadModel(filename, file, aiArgs);
         } catch(Exception e) {
             Logger.setDomain("graphics");
@@ -129,7 +129,7 @@ public class Model {
         
         aiFileIO.set(openProcedure, closeProcedure, NULL);
         
-        aiScene = aiImportFileEx((XJGE.getFilepath() + filename), aiArgs, aiFileIO);
+        aiScene = aiImportFileEx((XJGE.getAssetsFilepath() + filename), aiArgs, aiFileIO);
         
         if(aiScene == null) {
             MemoryUtil.memFree(modelBuf);

@@ -258,7 +258,7 @@ public final class Window {
     
     public static void setIcon(String filename) {
         try(MemoryStack stack = MemoryStack.stackPush()) {
-            InputStream file = Window.class.getResourceAsStream(XJGE.getFilepath() + filename);
+            InputStream file = Window.class.getResourceAsStream(XJGE.getAssetsFilepath() + filename);
             byte[] data      = file.readAllBytes();
             
             IntBuffer widthBuf   = stack.mallocInt(1);

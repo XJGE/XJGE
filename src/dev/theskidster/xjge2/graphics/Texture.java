@@ -30,7 +30,7 @@ public final class Texture {
         handle = glGenTextures();
         glBindTexture(target, handle);
         
-        try(InputStream file = Texture.class.getResourceAsStream(XJGE.getFilepath() + filename)) {
+        try(InputStream file = Texture.class.getResourceAsStream(XJGE.getAssetsFilepath() + filename)) {
             loadTexture(file, target);
         } catch(Exception e) {
             Logger.setDomain("graphics");

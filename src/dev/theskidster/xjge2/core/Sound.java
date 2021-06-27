@@ -31,7 +31,7 @@ public final class Sound {
         
         handle = alGenBuffers();
         
-        try(InputStream file = Sound.class.getResourceAsStream(XJGE.getFilepath() + filename)) {
+        try(InputStream file = Sound.class.getResourceAsStream(XJGE.getAssetsFilepath() + filename)) {
             loadSound(file);
         } catch(Exception e) {
             Logger.setDomain("audio");

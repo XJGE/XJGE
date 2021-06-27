@@ -67,7 +67,7 @@ public final class Font {
         texHandle = glGenTextures();
         glBindTexture(GL_TEXTURE_2D, texHandle);
         
-        try(InputStream file = Font.class.getResourceAsStream(XJGE.getFilepath() + filename)) {
+        try(InputStream file = Font.class.getResourceAsStream(XJGE.getAssetsFilepath() + filename)) {
             if(size <= 0) throw new IllegalStateException("Invalid font size " + size + " used.");
             loadFont(file, size);
         } catch(Exception e) {

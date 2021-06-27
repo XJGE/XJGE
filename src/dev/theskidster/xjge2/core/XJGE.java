@@ -39,8 +39,10 @@ public final class XJGE {
     public static final Path PWD       = Path.of("").toAbsolutePath();
     public static final String VERSION = "0.0.0";
     
-    private static Split split     = Split.NONE;
-    private static String filepath = "/dev/theskidster/xjge2/assets/";
+    private static Split split = Split.NONE;
+    
+    private static String assetsFilepath = "/dev/theskidster/xjge2/assets/";
+    private static String scenesFilepath;
     
     private static Font engineFont;
     private static Texture engineIcons;
@@ -74,7 +76,7 @@ public final class XJGE {
     
     private XJGE() {}
     
-    public static void init(String filepath, boolean debugEnabled, Vector2i resolution, boolean windowResizable) {        
+    public static void init(String assetsFilepath, String scenesFilepath, boolean debugEnabled, Vector2i resolution, boolean windowResizable) {        
         if(!initCalled) {
             if(System.getProperty("java.version").compareTo("15.0.2") < 0) {
                 Logger.logSevere("Unsupported Java version. Required 15.0.2, " + 
@@ -167,8 +169,9 @@ public final class XJGE {
             Scene.setIconTexture(engineIcons);
             Logger.printSystemInfo();
             
-            XJGE.filepath     = filepath;
-            Widget.engineFont = new Font(engineFont);
+            XJGE.assetsFilepath = assetsFilepath;
+            XJGE.scenesFilepath = scenesFilepath;
+            Widget.engineFont   = new Font(engineFont);
             
             engineCommands = new TreeMap<>() {{
                 put("cls",                  new TCCLS());
@@ -176,9 +179,10 @@ public final class XJGE {
                 put("setFullscreen",        new TCSetFullscreen());
                 put("setMonitor",           new TCSetMonitor());
                 put("setMusicMasterVolume", new TCSetMusicMasterVolume());
-                put("setScreenSplit",       new TCScreenSplit());
-                put("setSpeaker",           new TCSetSpeaker());
+                put("setScene",             new TCSetScene());
+                put("setScreenSplit",       new TCSetScreenSplit());
                 put("setSoundMasterVolume", new TCSetSoundMasterVolume());
+                put("setSpeaker",           new TCSetSpeaker());
                 put("setVSync",             new TCSetVSync());
                 put("setVideoMode",         new TCSetVideoMode());
                 put("showCommands",         new TCShowCommands());
@@ -387,8 +391,12 @@ public final class XJGE {
         return split;
     }
     
-    public static String getFilepath() {
-        return filepath;
+    public static String getAssetsFilepath() {
+        return assetsFilepath;
+    }
+    
+    public static String getScenesFilepath() {
+        return scenesFilepath;
     }
     
     public static GLProgram getDefaultGLProgram() {

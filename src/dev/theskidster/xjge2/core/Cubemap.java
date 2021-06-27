@@ -26,7 +26,7 @@ final class Cubemap {
         glBindTexture(GL_TEXTURE_CUBE_MAP, handle);
         
         images.forEach((target, filename) -> {
-            try(InputStream file = Cubemap.class.getResourceAsStream(XJGE.getFilepath() + filename)) {
+            try(InputStream file = Cubemap.class.getResourceAsStream(XJGE.getAssetsFilepath() + filename)) {
                 loadCubemapTexture(target, file);
             } catch(Exception e) {
                 Logger.setDomain("graphics");

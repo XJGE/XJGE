@@ -18,7 +18,7 @@ public final class Shader {
     
     public Shader(String filename, int stage) {
         StringBuilder output = new StringBuilder();
-        InputStream file     = Shader.class.getResourceAsStream(XJGE.getFilepath() + filename);
+        InputStream file     = Shader.class.getResourceAsStream(XJGE.getAssetsFilepath() + filename);
         
         try(BufferedReader reader = new BufferedReader(new InputStreamReader(file, "UTF-8"))) {
             String line;
