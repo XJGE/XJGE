@@ -8,7 +8,7 @@ import static org.lwjgl.openal.AL11.*;
  * Created: Jun 23, 2021
  */
 
-final class Source {
+final class SoundSource {
     
     final int handle;
     
@@ -17,12 +17,11 @@ final class Source {
     private Vector3f position;
     private Vector3f tempPos = new Vector3f();
     
-    //TODO: change to SoundSource;
-    Source() {
+    SoundSource() {
         handle = alGenSources();
     }
     
-    Source(Source source, Sound sound, int sourceSample, int sourceState) {
+    SoundSource(SoundSource source, Sound sound, int sourceSample, int sourceState) {
         handle = alGenSources();
         
         setLooping(source.loop);
@@ -42,7 +41,7 @@ final class Source {
         ErrorUtils.checkALError();
     }
     
-    Source(Source source, Song song, int sourceSample, int sourceState, boolean introFinished) {
+    SoundSource(SoundSource source, Song song, int sourceSample, int sourceState, boolean introFinished) {
         handle = alGenSources();
         
         if(song != null) {

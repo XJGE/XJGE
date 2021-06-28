@@ -167,7 +167,7 @@ final class DebugInfo {
         
         //Group 6: engine info.
         {
-            rectangles[5].width  = Text.lengthInPixels("XJGE 2 ver " + XJGE.VERSION, font) + (PADDING * 2);
+            rectangles[5].width  = Text.lengthInPixels("XJGE v" + XJGE.VERSION, font) + (PADDING * 2);
             rectangles[5].height = 24 + PADDING;
             rectangles[5].xPos   = Window.getWidth() - rectangles[5].width;
             rectangles[5].yPos   = rectangles[3].yPos - (rectangles[5].height + PADDING);
@@ -222,7 +222,7 @@ final class DebugInfo {
             text.drawString(font, Input.getDevicePresent(jid) ? Input.getDeviceName(jid) : "N/A", textPos[i + 1], Color.WHITE);
         }
         
-        text.drawString(font, "XJGE 2 ver " + XJGE.VERSION, textPos[24], Color.PINK);
+        text.drawString(font, "XJGE v" + XJGE.VERSION, textPos[24], Color.PINK);
         
         text.resetStringIndex();
     }

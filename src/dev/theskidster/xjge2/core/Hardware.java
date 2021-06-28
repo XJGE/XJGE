@@ -98,7 +98,7 @@ public final class Hardware {
     }
     
     public static void setSpeaker(String operation) {
-        Audio.findSourceStates();
+        Audio.saveContextConfig();
         
         findSpeakers();
         

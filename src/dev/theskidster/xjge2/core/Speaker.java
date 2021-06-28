@@ -34,7 +34,7 @@ public final class Speaker {
         try {
             alcMakeContextCurrent(context);
             AL.createCapabilities(capabilities);
-            Audio.init();
+            Audio.applyContextConfig();
         } catch(IllegalStateException e) {
             Logger.setDomain("audio");
             Logger.logSevere("Failed to initialize an OpenAL context on speaker \"" + name + "\"", e);

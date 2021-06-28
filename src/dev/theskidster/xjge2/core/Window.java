@@ -20,7 +20,7 @@ import static org.lwjgl.system.MemoryUtil.NULL;
 public final class Window {
     
     //TODO: this is only temporarily public for testing purposes.
-    public static final long HANDLE = glfwCreateWindow(640, 480, "XJGE 2 ver " + XJGE.VERSION, NULL, NULL);
+    public static final long HANDLE = glfwCreateWindow(640, 480, "XJGE v" + XJGE.VERSION, NULL, NULL);
     
     private static int xPos;
     private static int yPos;
