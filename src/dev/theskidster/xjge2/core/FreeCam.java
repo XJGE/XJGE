@@ -30,7 +30,7 @@ final class FreeCam extends Camera {
     }
 
     @Override
-    void update() {
+    public void update() {
         if(pressed[0]) position.add(direction.mul(speed, tempDirec));
         if(pressed[1]) position.sub(direction.cross(up, tempRight).normalize().mul(speed));
         if(pressed[2]) position.sub(direction.mul(speed, tempDirec));
@@ -38,7 +38,7 @@ final class FreeCam extends Camera {
     }
 
     @Override
-    void render(Map<String, GLProgram> glPrograms) {
+    public void render(Map<String, GLProgram> glPrograms) {
         glPrograms.values().forEach(glProgram -> {
             glProgram.use();
             

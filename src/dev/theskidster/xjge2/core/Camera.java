@@ -36,9 +36,9 @@ public abstract class Camera {
         });
     }
     
-    abstract void update();
+    public abstract void update();
     
-    abstract void render(Map<String, GLProgram> glPrograms);
+    public abstract void render(Map<String, GLProgram> glPrograms);
     
     public int getFieldOfView() {
         return fov;

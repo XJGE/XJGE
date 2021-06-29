@@ -50,13 +50,15 @@ public class TestEntity extends Entity {
         puppet.commands.put(L2, new LogControlName("L2"));
         puppet.commands.put(R2, new LogControlName("R2"));
         
+        float size = 10;
+        
         try(MemoryStack stack = MemoryStack.stackPush()) {
             g.vertices = stack.mallocFloat(18);
             
             //(vec3 position), (vec3 color)
-            g.vertices.put(-0.5f).put(-0.5f).put(0) .put(1).put(0).put(0);
-            g.vertices    .put(0) .put(0.5f).put(0) .put(0).put(1).put(0);
-            g.vertices .put(0.5f).put(-0.5f).put(0) .put(0).put(0).put(1);
+            g.vertices.put(-size).put(-size).put(0) .put(1).put(0).put(0);
+            g.vertices    .put(0) .put(size).put(0) .put(0).put(1).put(0);
+            g.vertices .put(size).put(-size).put(0) .put(0).put(0).put(1);
             
             g.vertices.flip();
         }
