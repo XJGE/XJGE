@@ -17,8 +17,9 @@ import org.joml.Vector3f;
  * <br><br>
  * NOTE: Game implementations that specify custom 
  * {@linkplain GLProgram shader programs} are required to supply a projection 
- * matrix of type mat4 via uniform variable if they wish to correctly utilize 
- * camera objects. More info about this can be found in the engines user manual.
+ * matrix of type mat4 via uniform variable if they wish to utilize camera  
+ * objects correctly. More info about this can be found in the engines user 
+ * manual under the section titled "Putting It All Into Perspective".
  */
 public abstract class Camera {
     
@@ -38,9 +39,8 @@ public abstract class Camera {
      * specified projection type. By default, the engine provides two projection
      * types; orthographic for 2D and perspective for 3D.
      * 
-     * @param isOrtho if true, the camera will utilize a 2D orthogonal projection 
-     *                to render the scene, otherwise it will use a 3D perspective 
-     *                projection
+     * @param isOrtho if true, the camera will use an orthogonal projection to 
+     *                render the scene
      */
     protected Camera(boolean isOrtho) {
         this.isOrtho = isOrtho;
@@ -52,10 +52,14 @@ public abstract class Camera {
     }
     
     /**
+     * Performs an orthogonal transformation on the cameras projection matrix, 
+     * effectively flattening the scene into 2D space.
      * 
-     * @param glProgram
-     * @param width
-     * @param height 
+     * @param glProgram the shader program that the value of the cameras 
+     *                  projection matrix will be sent to through a uniform 
+     *                  variable
+     * @param width    the width of the viewport
+     * @param height   the height of the viewport
      */
     void setOrtho(GLProgram glProgram, int width, int height) {
         glProgram.use();
@@ -64,10 +68,14 @@ public abstract class Camera {
     }
     
     /**
+     * Performs a perspective transformation on the cameras projection matrix. 
+     * This will cause the camera to render the current scene in full 3D.
      * 
-     * @param glProgram
-     * @param width
-     * @param height 
+     * @param glProgram the shader program that the value of the cameras 
+     *                  projection matrix will be sent to through a uniform 
+     *                  variable
+     * @param width    the width of the viewport
+     * @param height   the height of the viewport
      */
     void setPerspective(GLProgram glProgram, int width, int height) {
         glProgram.use();
@@ -76,38 +84,25 @@ public abstract class Camera {
     }
     
     /**
-     * 
+     * Optional abstract method which can be used to organize camera logic not 
+     * directly related to rendering. Examples of this include applying effects 
+     * such as camera shake or dolly motion.
      */
     public abstract void update();
     
     /**
+     * Abstract method used to organize the cameras OpenGL calls and other 
+     * rendering logic.
      * 
      * @param glPrograms an immutable collection containing the shader programs compiled during startup
      */
     public abstract void render(Map<String, GLProgram> glPrograms);
     
     /**
+     * Changes the current projection type the camera will use.
      * 
-     * @return 
-     */
-    public int getFieldOfView() {
-        return fov;
-    }
-    
-    /**
-     * 
-     * @param fov 
-     */
-    public void setFieldOfView(int fov) {
-        this.fov = fov;
-    }
-    
-    /**
-     * Changes the projection type used to render the scene.
-     * 
-     * @param isOrtho if true, the camera will utilize a 2D orthogonal projection 
-     *                to render the scene, otherwise it will use a 3D perspective 
-     *                projection
+     * @param isOrtho if true, the camera will use an orthogonal projection to 
+     *                render the scene
      */
     public void setProjectionType(boolean isOrtho) {
         this.isOrtho = isOrtho;
