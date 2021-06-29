@@ -120,8 +120,8 @@ final class Viewport {
     
     void resetCamera(Map<String, GLProgram> glPrograms) {
         XJGE.glPrograms.values().forEach(glProgram -> {
-            if(currCamera.ortho) currCamera.setOrtho(glProgram, width, height);
-            else                 currCamera.setPerspective(glProgram, width, height);
+            if(currCamera.isOrtho) currCamera.setOrtho(glProgram, width, height);
+            else                   currCamera.setPerspective(glProgram, width, height);
         });
     }
     

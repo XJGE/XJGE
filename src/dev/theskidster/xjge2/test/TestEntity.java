@@ -25,7 +25,7 @@ public class TestEntity extends Entity {
     Puppet puppet = new Puppet(this);
     Graphics g    = new Graphics();
     
-    TestEntity(float x, float y, float z) {
+    TestEntity(float size, float x, float y, float z) {
         super(new Vector3f(x, y, z));
         
         puppet.commands.put(CROSS, new LogControlName("Cross"));
@@ -49,8 +49,6 @@ public class TestEntity extends Entity {
         puppet.commands.put(LEFT_STICK_Y, new LogControlName("Left stick y"));
         puppet.commands.put(L2, new LogControlName("L2"));
         puppet.commands.put(R2, new LogControlName("R2"));
-        
-        float size = 10;
         
         try(MemoryStack stack = MemoryStack.stackPush()) {
             g.vertices = stack.mallocFloat(18);

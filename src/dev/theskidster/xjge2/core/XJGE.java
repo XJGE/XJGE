@@ -497,19 +497,17 @@ public final class XJGE {
         Logger.setDomain("core");
         
         if(camera == null) {
-            Logger.logInfo("Failed to set viewport camera. Null is not accepted as a value of this function.");
+            Logger.logInfo("Failed to set viewport camera. Null is not " + 
+                           "accepted as a value of this function.");
         } else if(viewportID < GLFW_JOYSTICK_1 || viewportID > GLFW_JOYSTICK_4) {
-            Logger.logInfo("Failed to set viewport camera. No viewport by the ID of " + viewportID + " exists.");
+            Logger.logInfo("Failed to set viewport camera. No viewport "+ 
+                           "by the ID of " + viewportID + " exists.");
         } else {
-            switch(viewportID) {
-                case GLFW_JOYSTICK_1, GLFW_JOYSTICK_2, GLFW_JOYSTICK_3, GLFW_JOYSTICK_4 -> {
-                    if(viewports[viewportID].currCamera == freeCam) {
-                        //Just in case this method is called while the freecam is active.
-                        viewports[viewportID].prevCamera = camera;
-                    } else {
-                        viewports[viewportID].currCamera = camera;
-                    }
-                }
+            if(viewports[viewportID].currCamera == freeCam) {
+                //Added in case the freecam is enabled when this was called.
+                viewports[viewportID].prevCamera = camera;
+            } else {
+                viewports[viewportID].currCamera = camera;
             }
         }
         

@@ -5,7 +5,6 @@ import dev.theskidster.xjge2.core.Scene;
 import dev.theskidster.xjge2.core.Song;
 import dev.theskidster.xjge2.core.Sound;
 import dev.theskidster.xjge2.core.Timer;
-import dev.theskidster.xjge2.core.XJGE;
 import dev.theskidster.xjge2.graphics.GLProgram;
 import java.util.Map;
 
@@ -19,26 +18,29 @@ public class TestScene extends Scene {
     Sound sound;
     Song song;
     TestCam camera = new TestCam();
-    Timer timer = new Timer(3, 60);
+    Timer timer = new Timer(6, 60);
     
     public TestScene() {
         super("test");
         
-        entities.put("test", new TestEntity(30, 30, -50));
+        //entities.put("test", new TestEntity(10, 30, 30, -50));
+        entities.put("test", new TestEntity(0.5f, 0, 0, -10));
         
-        timer.start();
+        //XJGE.setViewportCamera(0, camera);
+        
+        //timer.start();
     }
     
     @Override
     public void update(double targetDelta) {
+        /*
         if(timer != null) {
             timer.update();
-        
-            if(timer.time == 0) {
-                XJGE.setViewportCamera(0, camera);
-                timer = null;
-            }
-        }
+            
+            camera.setProjectionType(timer.time % 2 == 0);
+            
+            if(timer.time == 0) timer = null;
+        }*/
         
         entities.values().forEach(entity -> entity.update(targetDelta));
     }
