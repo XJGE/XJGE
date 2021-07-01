@@ -77,9 +77,11 @@ public abstract class Command {
     }
     
     /**
-     * Provides subclasses with a value 
+     * Provides subclasses with the sensitivity preferences of the input device 
+     * being used to execute this command.
      * 
-     * @return a floating point value 
+     * @return a floating point value denoting the input devices desired 
+     *         sensitivity to changes in {@link Control} input values
      */
     protected float getDeviceSensitivity() {
         return device.sensitivity;
@@ -145,20 +147,25 @@ public abstract class Command {
      * especially useful when we want to determine whether an analog stick on 
      * the {@link Gamepad} has been moved.
      * <br><br>
-     * Analog sticks are notorious for being finicky, often worn ones will 
-     * retain a small value 
+     * It's important to remember that analog sticks a notoriously unreliable in
+     * the sense that their resting values rarely reach true zero. To mitigate
+     * this effect input devices provide what's known as a "deadzone" value to
+     * indicate how much an analog stick is allowed to move before it's 
+     * recognized as a conscious decision on the players part. Therefore, the 
+     * result of this check may not always yield true even if an analog stick 
+     * is ostensibly moved.
      * <br><br>
-     * Analog sticks are notorious for 
-     * Analog sticks, especially older worn out ones rarely line up perfectly 
-     * after use.
-     * <br><br>
-     * - about dead zones
-     * - mention -1 to 1 value?
-     * - key mouse combo vs. gamepad
-     * - which buttons?
+     * Analog sticks are grouped by their axes;
+     * <table>
+     * <tr><td>{@link Control#LEFT_STICK_X LEFT_STICK_X},</td> 
+     * <td>{@link Control#LEFT_STICK_Y LEFT_STICK_Y},</td></tr>
+     * <tr><td>{@link Control#RIGHT_STICK_X RIGHT_STICK_X},</td>
+     * <td>{@link Control#RIGHT_STICK_Y RIGHT_STICK_Y},</td></tr>
+     * </table>
      * 
-     * @return true if the input value of the interactive component is a non-zero 
-     *          value exhibiting a greater absolute value than the epsilon value
+     * 
+     * @return true if the input value of the interactive component exhibits a 
+     *         greater absolute value than the deadzone value
      */
     protected boolean axisMoved() {
         boolean isNotTrigger = (control == LEFT_STICK_X) || 
@@ -171,11 +178,20 @@ public abstract class Command {
     
     /**
      * Convenience method used to check if the input state of the 
-     * {@link Control} coupled to this command is of a certain value.
+     * {@link Control} coupled to this command is of a certain value. This is 
+     * useful anytime we want to detect a change in the value of a responsive 
+     * trigger.
      * <br><br>
+     * Triggers on {@link Gamepad} style controllers may exhibit fluid input 
+     * values much in the same way analog sticks do. Their function is 
+     * significantly more predictable however so no deadzone value is used when
+     * determining its pulled state.
+     * <br><br>
+     * The interactive components used to represent triggers are
+     * {@link Control#L2 L2} and {@link Control#R2 R2}.
      * 
-     * 
-     * @return true if the input value of the interactive component is a non-zero value 
+     * @return true if the input value of the interactive component is greater 
+     *          than -1 (or 0 in the instance of {@link KeyMouseCombo})
      */
     protected boolean triggerPulled() {
         boolean isNotAxis = (control == L2) || (control == R2);
