@@ -18,8 +18,8 @@ import org.joml.Vector3f;
  * NOTE: Game implementations that specify custom 
  * {@linkplain GLProgram shader programs} are required to supply a projection 
  * matrix of type mat4 via uniform variable if they wish to utilize camera  
- * objects correctly. More info about this can be found in the engines user 
- * manual under the section titled "Putting It All Into Perspective".
+ * objects correctly. More information about this can be found in the engines 
+ * user manual under the section titled "Putting It All Into Perspective".
  */
 public abstract class Camera {
     

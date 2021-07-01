@@ -10,17 +10,22 @@ import static org.lwjgl.glfw.GLFW.GLFW_RELEASE;
  */
 
 /**
- * Abstraction of the Gang of Four pattern of the same name, command objects 
- * serve as a point at which a {@link Control} from an {@link InputDevice} can 
- * be coupled to the various actions of a {@link Puppet} object.
+ * Abstraction of the Gang of Four pattern by the same name- command objects 
+ * serve as a point at which a {@link Control} from an {@link InputDevice} can
+ * be coupled to various player actions and passed to a {@link Puppet} object. 
  * <br><br>
- * More generally, whenever you want to create a new action a player can 
- * perform- such as walking, jumping, or shooting, you'll define that 
- * functionality in an object that extends this class. Objects of this type are 
- * automatically supplied with information pertaining to the current state of 
- * the players input device. This information in conjunction with several 
- * convenience methods supplied by the parent class can be used to create 
- * player actions that exhibit a high level of fidelity.
+ * More generally, whenever you want to create a new action the player can 
+ * perform- such as walking, jumping, or shooting, you'll define that behavior
+ * in an object that extends this class. Objects of this type are automatically 
+ * supplied with information about the current state of the players input 
+ * device. This information in conjunction with several convenience methods 
+ * provided by the parent class can be used to create player actions that 
+ * exhibit a high level of fidelity.
+ * <br><br>
+ * The command superclass lacks constructors by design to encourage subclasses 
+ * to define their own. This open-ended approach allows subclasses to capture 
+ * whatever supplemental information they require to sufficiently perform 
+ * the player actions they've been assigned to.
  * 
  * @see axisMoved()
  * @see buttonPressed()
@@ -34,48 +39,8 @@ public abstract class Command {
     
     private boolean pressRequested = true;
     
-    public final String action;
     private InputDevice device;
     private Control control;
-    
-    /**
-     * Creates a new command object with no additional functionality.
-     * <br><br>
-     * It is strongly recommended that game implementations overload the default 
-     * constructors of the command class to supply whatever additional state the 
-     * command needs to sufficiently perform player actions.
-     */
-    protected Command() {
-        action = null;
-    }
-    
-    /**
-     * Creates a new command object that provides the subclass with a greater 
-     * degree of granularity to better discern the intent of player actions. 
-     * This is particularly useful when a two commands of the same type are 
-     * coupled to single interactive component (or {@link Control}).
-     * <br><br>
-     * Typically player 
-     * actions exhibit a 1:1 relationship with commands however there are some 
-     * instances where simply reusing the command can be beneficial. Take for 
-     * instance a player action in a 2D side scrolling game where the left and 
-     * right buttons on a controller are both used for movement but require 
-     * different values to change the direction the player is facing. You might 
-     * create a single "MovementCommand" subclass and supply one constructor 
-     * with "left" and the other "right" then check for which action is being 
-     * done in the {@link execute} method change the direction the player is 
-     * facing accordingly.
-     * <br><br>
-     * It is strongly recommended that game implementations overload the default 
-     * constructors of the command class to supply whatever additional state the 
-     * command needs to sufficiently perform player actions.
-     * 
-     * @param action the specific player action we'd like to check for when the 
-     *               command is executed
-     */
-    protected Command(String action) {
-        this.action = action;
-    }
     
     /**
      * Captures the state of the input device executing this command and 
@@ -114,8 +79,8 @@ public abstract class Command {
     /**
      * Convenience method used to check if the input state of the 
      * {@link Control} coupled to this command is of a certain value. This is 
-     * useful when we want to check if a button on a {@link Gamepad} has
-     * been pressed or is being held down. 
+     * useful when we want to check if a button on a {@link Gamepad} has is 
+     * being held down. 
      * <br><br>
      * Generally speaking gamepad buttons include;
      * <table>
@@ -152,7 +117,7 @@ public abstract class Command {
      * </table>
      * 
      * @return true if the input value of the interactive component equals 1 
-     *          but only upon the initial press of the interactive component
+     *          but only upon its initial press
      */
     protected boolean buttonPressedOnce() {
         if(buttonPressed() && !pressRequested) {
@@ -168,6 +133,8 @@ public abstract class Command {
     /**
      * Convenience method used to check if the input state of the 
      * {@link Control} coupled to this command is of a certain value.
+     * <br><br>
+     * 
      * <br><br>
      * - what can it be used for?
      * - about dead zones

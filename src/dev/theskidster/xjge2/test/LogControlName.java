@@ -10,8 +10,10 @@ import dev.theskidster.xjge2.core.Logger;
 
 public class LogControlName extends Command {
 
+    private String action;
+    
     public LogControlName(String action) {
-        super(action);
+        this.action = action;
     }
     
     @Override
