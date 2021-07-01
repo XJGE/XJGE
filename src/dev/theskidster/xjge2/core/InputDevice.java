@@ -15,6 +15,7 @@ abstract class InputDevice {
     final int id;
     
     float sensitivity;
+    float deadzone;
     
     boolean enabled = true;
     
@@ -26,15 +27,17 @@ abstract class InputDevice {
     
     final HashMap<Control, Integer> config;
     
-    InputDevice(int id, float sensitivity, HashMap<Control, Integer> config) {
+    InputDevice(int id, float sensitivity, float deadzone, HashMap<Control, Integer> config) {
         this.id          = id;
         this.sensitivity = sensitivity;
+        this.deadzone    = deadzone;
         this.config      = config;
     }
     
     InputDevice(InputDevice inputDevice) {
         id              = inputDevice.id;
         sensitivity     = inputDevice.sensitivity;
+        deadzone        = inputDevice.deadzone;
         enabled         = inputDevice.enabled;
         enabledStates   = inputDevice.enabledStates;
         puppets         = inputDevice.puppets;

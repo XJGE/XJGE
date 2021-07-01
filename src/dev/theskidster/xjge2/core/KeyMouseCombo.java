@@ -23,8 +23,8 @@ final class KeyMouseCombo extends InputDevice {
     private final DoubleBuffer cursorPosX;
     private final DoubleBuffer cursorPosY;
     
-    KeyMouseCombo(int id, float sensitivity, HashMap<Control, Integer> config) {
-        super(id, sensitivity, config);
+    KeyMouseCombo(int id, float sensitivity, float deadzone, HashMap<Control, Integer> config) {
+        super(id, sensitivity, deadzone, config);
         
         name = "KeyMouseCombo";
         

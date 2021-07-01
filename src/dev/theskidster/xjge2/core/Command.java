@@ -59,8 +59,8 @@ public abstract class Command {
     }
     
     /**
-     * Executes a command defined by the subclass that will control a player 
-     * action.
+     * Organizes the input logic used to control player actions. This method is
+     * called automatically once every frame.
      */
     public abstract void execute();
     
@@ -74,6 +74,15 @@ public abstract class Command {
      */
     protected float getInputValue() {
         return inputValue;
+    }
+    
+    /**
+     * Provides subclasses with a value 
+     * 
+     * @return a floating point value 
+     */
+    protected float getDeviceSensitivity() {
+        return device.sensitivity;
     }
     
     /**
@@ -132,17 +141,24 @@ public abstract class Command {
     
     /**
      * Convenience method used to check if the input state of the 
-     * {@link Control} coupled to this command is of a certain value.
+     * {@link Control} coupled to this command is of a certain value. This is 
+     * especially useful when we want to determine whether an analog stick on 
+     * the {@link Gamepad} has been moved.
      * <br><br>
-     * 
+     * Analog sticks are notorious for being finicky, often worn ones will 
+     * retain a small value 
      * <br><br>
-     * - what can it be used for?
+     * Analog sticks are notorious for 
+     * Analog sticks, especially older worn out ones rarely line up perfectly 
+     * after use.
+     * <br><br>
      * - about dead zones
      * - mention -1 to 1 value?
      * - key mouse combo vs. gamepad
      * - which buttons?
      * 
-     * @return true if the input value of the interactive component is a non-zero value 
+     * @return true if the input value of the interactive component is a non-zero 
+     *          value exhibiting a greater absolute value than the epsilon value
      */
     protected boolean axisMoved() {
         boolean isNotTrigger = (control == LEFT_STICK_X) || 
@@ -150,7 +166,7 @@ public abstract class Command {
                                (control == RIGHT_STICK_X) ||
                                (control == RIGHT_STICK_Y);
         
-        return Math.abs(inputValue) > GLFW_RELEASE && isNotTrigger;
+        return Math.abs(inputValue) > (device.deadzone) && isNotTrigger;
     }
     
     /**

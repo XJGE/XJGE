@@ -15,8 +15,8 @@ final class Gamepad extends InputDevice {
 
     private GLFWGamepadState state;
     
-    Gamepad(int id, float sensitivity, HashMap<Control, Integer> config) {
-        super(id, sensitivity, config);
+    Gamepad(int id, float sensitivity, float deadzone, HashMap<Control, Integer> config) {
+        super(id, sensitivity, deadzone, config);
         validate();
     }
     
@@ -52,9 +52,7 @@ final class Gamepad extends InputDevice {
             puppets.peek().commands.forEach((control, command) -> {
                 switch(control) {
                     case LEFT_STICK_X, LEFT_STICK_Y, RIGHT_STICK_X, RIGHT_STICK_Y -> {
-                        if(Math.abs(state.axes(config.get(control))) >= sensitivity) {
-                            command.execute(state.axes(config.get(control)), this, control);
-                        }
+                        command.execute(state.axes(config.get(control)), this, control);
                     }
                     
                     case L2, R2 -> command.execute(state.axes(config.get(control)), this, control);

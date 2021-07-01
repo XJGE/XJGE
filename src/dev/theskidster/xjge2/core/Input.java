@@ -32,9 +32,18 @@ public final class Input {
     
     private static final HashMap<Integer, HashMap<Control, Integer>> controlConfigs = new HashMap<>();
     private static final HashMap<Integer, Float> sensitivityConfigs;
+    private static final HashMap<Integer, Float> deadzoneConfigs;
     
     static {
         sensitivityConfigs = new HashMap<>() {{
+            put(KEY_MOUSE_COMBO, 1f);
+            put(GLFW_JOYSTICK_1, 1f);
+            put(GLFW_JOYSTICK_2, 1f);
+            put(GLFW_JOYSTICK_3, 1f);
+            put(GLFW_JOYSTICK_4, 1f);
+        }};
+        
+        deadzoneConfigs = new HashMap<>() {{
             put(KEY_MOUSE_COMBO, 0.15f);
             put(GLFW_JOYSTICK_1, 0.15f);
             put(GLFW_JOYSTICK_2, 0.15f);
@@ -67,7 +76,7 @@ public final class Input {
         }};
         
         controlConfigs.put(KEY_MOUSE_COMBO, keyMouseConfig);
-        inputDevices.put(KEY_MOUSE_COMBO, new KeyMouseCombo(KEY_MOUSE_COMBO, 0.15f, keyMouseConfig));
+        inputDevices.put(KEY_MOUSE_COMBO, new KeyMouseCombo(KEY_MOUSE_COMBO, 1f, 0.15f, keyMouseConfig));
         
         for(int i = 0; i < GLFW_JOYSTICK_5; i++) {
             var gamepadConfig = new HashMap<Control, Integer>() {{
@@ -162,7 +171,7 @@ public final class Input {
                 }
             } else {
                 if(glfwJoystickPresent(i)) {
-                    inputDevices.put(i, new Gamepad(i, sensitivityConfigs.get(i), controlConfigs.get(i)));
+                    inputDevices.put(i, new Gamepad(i, sensitivityConfigs.get(i), deadzoneConfigs.get(i), controlConfigs.get(i)));
                     if(i < GLFW_JOYSTICK_5) connected[i] = true;
                 }
             }
@@ -190,6 +199,7 @@ public final class Input {
                         if(xmlReader.getName().getLocalPart().equals("device")) {
                             id = Integer.parseInt(xmlReader.getAttributeValue(null, "id"));
                             sensitivityConfigs.put(id, Float.parseFloat(xmlReader.getAttributeValue(null, "sensitivity")));
+                            deadzoneConfigs.put(id, Float.parseFloat(xmlReader.getAttributeValue(null, "deadzone")));
                         } else if(xmlReader.getName().getLocalPart().equals("mapping")) {
                             String control = xmlReader.getAttributeValue(null, "control");
                             int button     = Integer.parseInt(xmlReader.getAttributeValue(null, "button"));
@@ -221,24 +231,28 @@ public final class Input {
                 output.println("<config>");
                 
                 controlConfigs.forEach((deviceID, mapping) -> {
-                    float sensitivity = 0.15f;
+                    float sensitivity = 1f;
+                    float deadzone    = 0.15f;
                     
                     if(inputDevices.containsKey(deviceID)) {
                         sensitivity = inputDevices.get(deviceID).sensitivity;
+                        deadzone    = inputDevices.get(deviceID).deadzone;
                     }
                     
                     output.append("\t<device id=\"")
-                            .append(deviceID + "\" ")
-                            .append("sensitivity=\"")
-                            .append(sensitivity + "\">")
-                            .append(System.lineSeparator());
+                          .append(deviceID + "\" ")
+                          .append("sensitivity=\"")
+                          .append(sensitivity + "\" ")
+                          .append("deadzone=\"")
+                          .append(deadzone + "\">")
+                          .append(System.lineSeparator());
                     
                     mapping.forEach((control, button) -> {
                         output.append("\t\t<mapping control=\"")
-                                .append(control.toString())
-                                .append("\" button=\"")
-                                .append(button + "\"/>")
-                                .append(System.lineSeparator());
+                              .append(control.toString())
+                              .append("\" button=\"")
+                              .append(button + "\"/>")
+                              .append(System.lineSeparator());
                     });
                     
                     output.println("\t</device>");
@@ -350,12 +364,31 @@ public final class Input {
         Logger.setDomain("input");
         
         if(inputDevices.containsKey(id)) {
+            inputDevices.get(id).sensitivity = sensitivity;
             sensitivityConfigs.put(id, sensitivity);
             
             Logger.logInfo("Changed the sensitivity of input device " + id + " \"" + 
                            inputDevices.get(id).name + "\" to (" + sensitivity + ")");
         } else {
             Logger.logWarning("Failed to change the devices sensitivity. Could " + 
+                              "not find an input device at index " + id + ".",
+                              null);
+        }
+        
+        Logger.setDomain(null);
+    }
+    
+    public static void setDeviceDeadzone(int id, float deadzone) {
+        Logger.setDomain("input");
+        
+        if(inputDevices.containsKey(id)) {
+            inputDevices.get(id).deadzone = deadzone;
+            deadzoneConfigs.put(id, deadzone);
+            
+            Logger.logInfo("Changed the deadzone value of input device " + id + " \"" + 
+                           inputDevices.get(id).name + "\" to (" + deadzone + ")");
+        } else {
+            Logger.logWarning("Failed to change the devices deadzone value. Could " + 
                               "not find an input device at index " + id + ".",
                               null);
         }
