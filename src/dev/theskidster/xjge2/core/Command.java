@@ -2,7 +2,6 @@ package dev.theskidster.xjge2.core;
 
 import static dev.theskidster.xjge2.core.Control.*;
 import static org.lwjgl.glfw.GLFW.GLFW_PRESS;
-import static org.lwjgl.glfw.GLFW.GLFW_RELEASE;
 
 /**
  * @author J Hoffman
@@ -115,9 +114,9 @@ public abstract class Command {
     /**
      * Convenience method used to check if the input state of the 
      * {@link Control} coupled to this command is of a certain value. This is 
-     * useful for when we only need a command to execute once per button press.
+     * useful for when we want a command to only execute once per button press.
      * <br><br>
-     * Generally speaking gamepad buttons include; 
+     * Gamepad buttons typically include; 
      * <table>
      * <tr><td>{@link Control#CROSS CROSS},</td> <td>{@link Control#CIRCLE CIRCLE},</td>
      * <td>{@link Control#SQUARE SQUARE},</td> <td>{@link Control#TRIANGLE TRIANGLE},</td></tr>
@@ -147,8 +146,8 @@ public abstract class Command {
      * especially useful when we want to determine whether an analog stick on 
      * the {@link Gamepad} has been moved.
      * <br><br>
-     * It's important to remember that analog sticks a notoriously unreliable in
-     * the sense that their resting values rarely reach true zero. To mitigate
+     * It's important to remember that analog sticks are notoriously unreliable 
+     * in the sense that their resting values rarely reach true zero. To mitigate
      * this effect input devices provide what's known as a "deadzone" value to
      * indicate how much an analog stick is allowed to move before it's 
      * recognized as a conscious decision on the players part. Therefore, the 
@@ -162,7 +161,6 @@ public abstract class Command {
      * <tr><td>{@link Control#RIGHT_STICK_X RIGHT_STICK_X},</td>
      * <td>{@link Control#RIGHT_STICK_Y RIGHT_STICK_Y},</td></tr>
      * </table>
-     * 
      * 
      * @return true if the input value of the interactive component exhibits a 
      *         greater absolute value than the deadzone value
