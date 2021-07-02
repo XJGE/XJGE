@@ -8,8 +8,14 @@ import static org.lwjgl.opengl.GL30.*;
  * Created: May 8, 2021
  */
 
+/**
+ * Provides convenience methods for locating errors encountered by the engine at runtime.
+ */
 public final class ErrorUtils {
 
+    /**
+     * Checks the error state of the OpenAL API.
+     */
     public static void checkALError() {
         int alError = alGetError();
         
@@ -28,6 +34,9 @@ public final class ErrorUtils {
         }
     }
     
+    /**
+     * Checks the error state of the OpenGL API.
+     */
     public static void checkGLError() {
         int glError = glGetError();
         
@@ -47,6 +56,13 @@ public final class ErrorUtils {
         }
     }
     
+    /**
+     * Checks the status of the Framebuffer object. This is really only ever used during upon initialization of the engine.
+     * 
+     * @param target the target of the Framebuffer completeness check. One of {@link org.lwjgl.opengl.GL30C#GL_FRAMEBUFFER FRAMEBUFFER}, 
+     *               {@link org.lwjgl.opengl.GL30C#GL_READ_FRAMEBUFFER READ_FRAMEBUFFER}, or 
+     *               {@link org.lwjgl.opengl.GL30C#GL_DRAW_FRAMEBUFFER DRAW_FRAMEBUFFER}.
+     */
     static void checkFBStatus(int target) {
         int status  = glCheckFramebufferStatus(target);
         String desc = "";
