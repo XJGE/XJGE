@@ -78,7 +78,7 @@ void main() {
             ioResult = vec4(ioColor, texture(uTexture, ioTexCoords).a);
             break;
 
-        case 2: case 3: case -1: //Used for rendering polygons and rectangles.
+        case 2: case 3: //Used for rendering polygons and rectangles.
             ioResult = vec4(ioColor, uOpacity);
             break;
 
