@@ -26,8 +26,8 @@ final class Cubemap {
     final int handle;
     
     /**
-     * Creates a new cubemap texture object from the image files provided. Like conventional {@link Texture} objects, the cubemap will provide a fallback texture 
-     * in place of missing images. 
+     * Creates a new cubemap texture object from the image files provided. Like conventional {@link Texture} objects, the cubemap will provide a
+     * fallback texture in place of missing images. 
      * <br><br>
      * <i>All images used by the cubemap must exhibit the same width/height dimensions in pixels otherwise it will appear black.</i>
      * 

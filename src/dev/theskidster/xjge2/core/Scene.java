@@ -23,6 +23,9 @@ public abstract class Scene {
     private static Texture iconTexture;
     private Skybox skybox;
     
+    /**
+     * 
+     */
     protected final LinkedHashMap<String, Entity> entities = new LinkedHashMap<>();
     
     private final LightSource[] lightSources     = new LightSource[MAX_LIGHTS];
@@ -117,6 +120,8 @@ public abstract class Scene {
         System.arraycopy(lightSources, 0, lightSourcesCopy, 0, numLights);
         return lightSourcesCopy;
     }
+    
+    // This method is called automatically by the engine once every game tick.
     
     public abstract void update(double targetDelta);
     

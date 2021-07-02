@@ -51,7 +51,7 @@ public abstract class Command {
     }
     
     /**
-     * Organizes the input logic used to control player actions. This method is called automatically once every frame.
+     * Organizes the input logic used to control player actions. This method is called automatically once every game tick.
      */
     public abstract void execute();
     
