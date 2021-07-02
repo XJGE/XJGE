@@ -181,13 +181,13 @@ public final class Audio {
      * will be used to calculate the positions of sound sources within the 3D 
      * scene relative to players point of view.
      * 
-     * @param id        a value used to identify a viewport
-     * @param position  the current position of the viewports camera object
-     * @param direction the direction in which the viewports camera is currently facing
+     * @param viewportID a value used to identify a viewport
+     * @param position   the current position of the viewports camera object
+     * @param direction  the direction in which the viewports camera is currently facing
      */
-    static void setViewportCamData(int id, Vector3f position, Vector3f direction) {
-        camPos.put(id, position);
-        camDir.put(id, direction);
+    static void setViewportCamData(int viewportID, Vector3f position, Vector3f direction) {
+        camPos.put(viewportID, position);
+        camDir.put(viewportID, direction);
     }
     
     /**
@@ -319,7 +319,7 @@ public final class Audio {
      * <br><br>
      * It is encouraged that you multiply this value by some factor of ten to 
      * obfuscate the implementations reliance on a floating point value from 0 
-     * to 1 and instead provide users with something more practical 
+     * to 1 and instead provide players with something more practical 
      * (0 to 100, etc).
      * 
      * @return the value used to attenuate the volume of all sound effects
@@ -333,7 +333,7 @@ public final class Audio {
      * <br><br>
      * It is encouraged that you multiply this value by some factor of ten to 
      * obfuscate the implementations reliance on a floating point value from 0 
-     * to 1 and instead provide users with something more practical 
+     * to 1 and instead provide players with something more practical 
      * (0 to 100, etc).
      * 
      * @return the value used to attenuate the volume of the game music
