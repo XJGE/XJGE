@@ -6,9 +6,8 @@ package dev.theskidster.xjge2.core;
  */
 
 /**
- * Represents a generic interactive component on a {@link Gamepad} such as an 
- * analog stick, button, or trigger. Modeled after a PS4 controller since that's 
- * all I had lying around.
+ * Represents a generic interactive component on a {@link Gamepad} such as an analog stick, button, or trigger. Modeled after a PS4 
+ * controller since that's all I had lying around.
  */
 public enum Control {
     
@@ -33,14 +32,12 @@ public enum Control {
     TRIANGLE,
     
     /**
-     * A trigger-like button usually located on the upper-left side of the 
-     * gamepad. Sometimes referred to as a bumper.
+     * A trigger-like button usually located on the upper-left side of the gamepad. Sometimes referred to as a bumper.
      */
     L1,
     
     /**
-     * A trigger-like button usually located on the upper-right side of the 
-     * gamepad. Sometimes referred to as a bumper.
+     * A trigger-like button usually located on the upper-right side of the gamepad. Sometimes referred to as a bumper.
      */
     R1,
     
@@ -55,20 +52,17 @@ public enum Control {
     OPTIONS,
     
     /**
-     * A button typically located directly in the center of the gamepad. This 
-     * may be the power button.
+     * A button typically located directly in the center of the gamepad. This may be the power button.
      */
     PS_BUTTON,
     
     /**
-     * A button that is likely integrated directly into the gamepads left analog 
-     * stick.
+     * A button that is likely integrated directly into the gamepads left analog stick.
      */
     L3,
     
     /**
-     * A button that is likely integrated directly into the gamepads right 
-     * analog stick.
+     * A button that is likely integrated directly into the gamepads right analog stick.
      */
     R3,
     
@@ -93,42 +87,38 @@ public enum Control {
     DPAD_LEFT,
     
     /**
-     * Represents the analog stick located on the left-hand side of the 
-     * gamepad. {@link Command} objects coupled to this control will only 
+     * Represents the analog stick located on the left-hand side of the gamepad. {@link Command} objects coupled to this control will only 
      * check for changes in its horizontal axis.
      */
     LEFT_STICK_X,
     
     /**
-     * Represents the analog stick located on the left-hand side of the 
-     * gamepad. {@link Command} objects coupled to this control will only 
+     * Represents the analog stick located on the left-hand side of the gamepad. {@link Command} objects coupled to this control will only 
      * check for changes in its vertical axis. 
      */
     LEFT_STICK_Y,
     
     /**
-     * Represents the analog stick located on the right-hand side of the 
-     * gamepad. {@link Command} objects coupled to this control will only 
+     * Represents the analog stick located on the right-hand side of the gamepad. {@link Command} objects coupled to this control will only 
      * check for changes in its horizontal axis.
      */
     RIGHT_STICK_X,
     
     /**
-     * Represents the analog stick located on the right-hand side of the 
-     * gamepad. {@link Command} objects coupled to this control will only 
+     * Represents the analog stick located on the right-hand side of the gamepad. {@link Command} objects coupled to this control will only 
      * check for changes in its vertical axis.
      */
     RIGHT_STICK_Y,
     
     /**
-     * A responsive trigger generally located at the upper-left side of the 
-     * gamepad directly under the button-like "bumper" trigger ({@link L1}).
+     * A responsive trigger generally located at the upper-left side of the gamepad directly under the button-like "bumper" trigger 
+     * ({@link L1}).
      */
     L2,
     
     /**
-     * A responsive trigger generally located at the upper-right side of the 
-     * gamepad directly under the button-like "bumper" trigger ({@link R1}).
+     * A responsive trigger generally located at the upper-right side of the gamepad directly under the button-like "bumper" trigger 
+     * ({@link R1}).
      */
     R2;
     

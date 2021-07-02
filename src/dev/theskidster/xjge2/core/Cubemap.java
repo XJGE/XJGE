@@ -17,10 +17,22 @@ import org.lwjgl.system.MemoryUtil;
  * Created: Jun 13, 2021
  */
 
+/**
+ * A Cubemap is similar in function to a {@link Texture} object, but instead uses the data supplied through multiple image files to generate a new
+ * three-dimensional texture object that can be used to map several individual images onto different faces of a mesh.
+ */
 final class Cubemap {
 
     final int handle;
     
+    /**
+     * Creates a new cubemap texture object from the image files provided. Like conventional {@link Texture} objects, the cubemap will provide a fallback texture 
+     * in place of missing images. 
+     * <br><br>
+     * <i>All images used by the cubemap must exhibit the same width/height dimensions in pixels otherwise it will appear black.</i>
+     * 
+     * @param images the names of each image file to parse texture data from
+     */
     Cubemap(Map<Integer, String> images) {
         handle = glGenTextures();
         glBindTexture(GL_TEXTURE_CUBE_MAP, handle);
@@ -46,6 +58,12 @@ final class Cubemap {
         ErrorUtils.checkGLError();
     }
     
+    /**
+     * Parses the data of the image file specified and uses it to generate a new texture the cubemap can use.
+     * 
+     * @param target the OpenGL texture target, this is specified automatically through the cubemaps constructor
+     * @param file   the file to parse texture data from
+     */
     private void loadCubemapTexture(int target, InputStream file) {
         try(MemoryStack stack = MemoryStack.stackPush()) {
             byte[] data = file.readAllBytes();
@@ -72,6 +90,9 @@ final class Cubemap {
         }
     }
     
+    /**
+     * Frees the OpenGL texture object and its associated handle used by this object.
+     */
     void freeTexture() {
         glDeleteTextures(handle);
     }

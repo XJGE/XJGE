@@ -11,14 +11,11 @@ import org.joml.Vector3f;
  */
 
 /**
- * Abstract class which can be used to create specialized camera objects for 
- * viewports. Subclasses of this object use a combination of matrices to alter 
- * how the game world is perceived.
+ * Abstract class which can be used to create specialized camera objects for viewports. Subclasses of this object use a combination of 
+ * matrices to alter how the game world is perceived.
  * <br><br>
- * NOTE: Game implementations that specify custom 
- * {@linkplain GLProgram shader programs} are required to supply a projection 
- * matrix of type mat4 via uniform variable if they wish to utilize camera  
- * objects correctly. More information about this can be found in the engines 
+ * NOTE: Game implementations that specify custom {@linkplain GLProgram shader programs} are required to supply a projection matrix of 
+ * type mat4 via uniform variable if they wish to utilize camera objects correctly. More information about this can be found in the engines 
  * user manual under the section titled "Putting It All Into Perspective".
  */
 public abstract class Camera {
@@ -35,12 +32,10 @@ public abstract class Camera {
     protected Matrix4f projMatrix = new Matrix4f();
     
     /**
-     * Creates a new camera object that will render the game world using the 
-     * specified projection type. By default, the engine provides two projection
-     * types; orthographic for 2D and perspective for 3D.
+     * Creates a new camera object that will render the game world using the specified projection type. By default, the engine provides 
+     * two projection types; orthographic for 2D and perspective for 3D.
      * 
-     * @param isOrtho if true, the camera will use an orthogonal projection to 
-     *                render the scene
+     * @param isOrtho if true, the camera will use an orthogonal projection to render the scene
      */
     protected Camera(boolean isOrtho) {
         this.isOrtho = isOrtho;
@@ -52,14 +47,11 @@ public abstract class Camera {
     }
     
     /**
-     * Performs an orthogonal transformation on the cameras projection matrix, 
-     * effectively flattening the scene into 2D space.
+     * Performs an orthogonal transformation on the cameras projection matrix, effectively flattening the scene into 2D space.
      * 
-     * @param glProgram the shader program that the value of the cameras 
-     *                  projection matrix will be sent to through a uniform 
-     *                  variable
-     * @param width    the width of the viewport
-     * @param height   the height of the viewport
+     * @param glProgram the shader program that the value of the cameras projection matrix will be sent to through a uniform variable
+     * @param width     the width of the viewport
+     * @param height    the height of the viewport
      */
     void setOrtho(GLProgram glProgram, int width, int height) {
         glProgram.use();
@@ -68,14 +60,12 @@ public abstract class Camera {
     }
     
     /**
-     * Performs a perspective transformation on the cameras projection matrix. 
-     * This will cause the camera to render the current scene in full 3D.
+     * Performs a perspective transformation on the cameras projection matrix. This will cause the camera to render the current scene in 
+     * full 3D.
      * 
-     * @param glProgram the shader program that the value of the cameras 
-     *                  projection matrix will be sent to through a uniform 
-     *                  variable
-     * @param width    the width of the viewport
-     * @param height   the height of the viewport
+     * @param glProgram the shader program that the value of the cameras projection matrix will be sent to through a uniform variable
+     * @param width     the width of the viewport
+     * @param height    the height of the viewport
      */
     void setPerspective(GLProgram glProgram, int width, int height) {
         glProgram.use();
@@ -84,15 +74,13 @@ public abstract class Camera {
     }
     
     /**
-     * Optional abstract method which can be used to organize camera logic not 
-     * directly related to rendering. Examples of this include applying effects 
-     * such as camera shake or dolly motion.
+     * Optional abstract method which can be used to organize camera logic not directly related to rendering. Examples of this include 
+     * applying effects such as camera shake or dolly motion.
      */
     public abstract void update();
     
     /**
-     * Abstract method used to organize the cameras OpenGL calls and other 
-     * rendering logic.
+     * Abstract method used to organize the cameras OpenGL calls and other rendering logic.
      * 
      * @param glPrograms an immutable collection containing the shader programs compiled during startup
      */
@@ -101,8 +89,7 @@ public abstract class Camera {
     /**
      * Changes the current projection type the camera will use.
      * 
-     * @param isOrtho if true, the camera will use an orthogonal projection to 
-     *                render the scene
+     * @param isOrtho if true, the camera will use an orthogonal projection to render the scene
      */
     public void setProjectionType(boolean isOrtho) {
         this.isOrtho = isOrtho;
