@@ -20,6 +20,10 @@ import static org.lwjgl.opengl.GL11.glGetString;
  * Created: Jun 10, 2021
  */
 
+/**
+ * Provides users with a interface detailing engine diagnostics and other information useful for debugging at runtime. This object is 
+ * rendered independent of player {@link Viewport}.
+ */
 final class DebugInfo {
     
     private final int PADDING = 6;
@@ -35,6 +39,12 @@ final class DebugInfo {
     private final Vector2i[] textPos     = new Vector2i[25];
     private final Icon[] icons           = new Icon[5];
     
+    /**
+     * Creates a new debug interface using the supplied font and texture.
+     * 
+     * @param font        the font the interface will be rendered in
+     * @param iconTexture the texture to use for the various icons in the interface
+     */
     DebugInfo(Font font, Texture iconTexture) {
         this.font = font;
         
@@ -45,6 +55,9 @@ final class DebugInfo {
         icons[4].setSubImage(0, 1);
     }
     
+    /**
+     * Reconfigures the positions of each group in the interface to better fit the dimensions of the window.
+     */
     void updatePosition() {
         //Group 1: runtime info.
         {
@@ -176,6 +189,9 @@ final class DebugInfo {
         }
     }
     
+    /**
+     * Renders the interface to the window.
+     */
     void render() {
         rectBatch.batchStart(0.4f);
             for(Rectangle rectangle : rectangles) rectBatch.drawRectangle(rectangle, Color.BLACK);
@@ -227,6 +243,9 @@ final class DebugInfo {
         text.resetStringIndex();
     }
 
+    /**
+     * Convenience method which frees the default buffer objects defined by this class.
+     */
     void freeBuffers() {
         rectBatch.freeBuffers();
     }
