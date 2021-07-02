@@ -34,28 +34,28 @@ out vec3 ioSkyTexCoords;
 
 void main() {
     switch(uType) {
-        case 0: //Used for viewport framebuffer texture attachments.
+        case 0: //Used for framebuffer texture attachments.
             ioTexCoords = aTexCoords;
             gl_Position = uProjection * vec4(aPosition, 1);
             break;
 
-        case 1: //Used for rendering text.
+        case 1: //Used for text rendering.
             ioTexCoords = aTexCoords + aTexOffset;
             ioColor     = aColOffset;
             gl_Position = uProjection * vec4(aPosition + aPosOffset, 1);
             break;
 
-        case 2: //Used for rendering polygons.
+        case 2: //Used for drawing polygon objects on the UI.
             ioColor     = uColor;
             gl_Position = uProjection * uModel * vec4(aPosition, 1);
             break;
 
-        case 3: //Used for rendering rectangles.
+        case 3: //Used for batch rendering rectangles on the UI.
             ioColor     = aColor;
             gl_Position = uProjection * vec4(aPosition, 1);
             break;
 
-        case 4: //Used for rendering icons.
+        case 4: //Used for icons that appear as part of the UI.
             ioTexCoords = aTexCoords + uTexCoords;
             gl_Position = uProjection * uModel * vec4(aPosition, 1);
             break;

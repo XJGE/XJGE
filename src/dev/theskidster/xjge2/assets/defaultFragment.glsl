@@ -26,6 +26,10 @@ uniform Light uLights[MAX_LIGHTS];
 
 out vec4 ioResult;
 
+/**
+ * Enables the framebuffer texture attachments to better suit unconventional 
+ * screen resolutions while maintaining a consistent pixelated look.
+ */
 float sharpen(float pixArray) {
     float normal  = (fract(pixArray) - 0.5) * 2.0;
     float normal2 = normal * normal;
@@ -33,10 +37,18 @@ float sharpen(float pixArray) {
     return floor(pixArray) + normal * pow(normal2, 2.0) / 2.0 + 0.5;
 }
 
+/**
+ * Allows texture transparency by discarding the fragments produced by its alpha 
+ * channel.
+ */
 void makeTransparent(float a) {
     if(a == 0) discard;
 }
 
+/**
+ * Calculates the output of the single world light all 3D models will be 
+ * illuminated by.
+ */
 vec3 calcWorldLight(Light light, vec3 normal) {
     vec3 direction = normalize(light.position);
     float diff     = max(dot(normal, direction), -light.contrast);
@@ -45,6 +57,11 @@ vec3 calcWorldLight(Light light, vec3 normal) {
     return (light.ambient + diffuse) * light.brightness;
 }
 
+/**
+ * Calculates the output of individual point lights located throughout the 
+ * scene. These are attenuated to have a sphere of influence on nearby 
+ * models that decreases over distance.
+ */
 vec3 calcPointLight(Light light, vec3 normal, vec3 fragPos) {
     vec3 ambient = light.ambient;
 
@@ -65,7 +82,7 @@ vec3 calcPointLight(Light light, vec3 normal, vec3 fragPos) {
 
 void main() {
     switch(uType) {
-        case 0: //Used for viewport framebuffer texture attachments.
+        case 0: //Used for framebuffer texture attachments.
             vec2 vRes = textureSize(uTexture, 0);
             
             ioResult = texture(uTexture, vec2(
@@ -74,15 +91,15 @@ void main() {
             ));
             break;
 
-        case 1: //Used for rendering text.
+        case 1: //Used for text rendering.
             ioResult = vec4(ioColor, texture(uTexture, ioTexCoords).a);
             break;
 
-        case 2: case 3: //Used for rendering polygons and rectangles.
+        case 2: case 3: //Used for rendering shapes on the UI like polygons and rectangles.
             ioResult = vec4(ioColor, uOpacity);
             break;
 
-        case 4: case 7: //Used for rendering icons and animatied 2D sprites.
+        case 4: case 7: //Used for drawing icons and sprites.
             ioResult = texture(uTexture, ioTexCoords);
             break;
 
