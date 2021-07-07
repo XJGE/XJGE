@@ -15,6 +15,9 @@ import static org.lwjgl.opengl.GL30.*;
  * Created: May 11, 2021
  */
 
+/**
+ * Contains the game loop and event system. Provides utilities for managing high-level game logic and state.
+ */
 public final class Game {
 
     private static int fps;
@@ -29,6 +32,14 @@ public final class Game {
     
     private static final Queue<Event> events = new PriorityQueue<>(Comparator.comparing(Event::getPriority));
     
+    /**
+     * Central game loop that decouples game time progression from processor speed and framerate.
+     * 
+     * @param fbo       the handle of the framebuffer object used to render viewports
+     * @param viewports an array of the viewports to render during split screen
+     * @param terminal  a command terminal that can be used to interact with the engine
+     * @param debugInfo an interface that will be rendered over all viewports while active
+     */
     static void loop(int fbo, Viewport[] viewports, Terminal terminal, DebugInfo debugInfo) {
         int cycles = 0;
         final double TARGET_DELTA = 1 / 60.0;
@@ -148,34 +159,83 @@ public final class Game {
         }
     }
     
+    /**
+     * Returns true whenever the specified number of update iterations (or cycles) has been reached. Intended to be used in for game 
+     * systems that don't require the decoupled precision of the {@link Timer} class.
+     * 
+     * @param cycles the number of cycles to wait until the next tick will occur
+     * @return       true every time the specified number of cycles has been reached
+     */
     public static boolean tick(int cycles) {
         return tickCount % cycles == 0;
     }
     
+    /**
+     * Adds an entity to the current scene.
+     * 
+     * @param name   the name used to locate the entity within the scenes {@linkplain Scene#entities entity collection}
+     * @param entity the entity object to add
+     */
     public static final void addEntity(String name, Entity entity) {
         scene.entities.put(name, entity);
     }
     
+    /**
+     * 
+     * @param event 
+     */
     public static final void addEvent(Event event) {
         events.add(event);
     }
     
+    /**
+     * Adds a new light to the scene. If the maximum number of lights has been reached, it will recycle the first one in sequence.
+     * 
+     * @param light the light object to add
+     */
+    public static void addLight(Light light) {
+        scene.addLight(light);
+    }
+    
+    /**
+     * @return 
+     */
     public static int getFPS() {
         return fps;
     }
     
+    /**
+     * 
+     * 
+     * @return 
+     */
     public static float getDelta() {
         return (float) deltaMetric;
     }
     
+    /**
+     * 
+     * 
+     * @return 
+     */
     public static boolean getTicked() {
         return ticked;
     }
     
+    /**
+     * Changes the color the OpenGL API will use to clear color buffers. Often used to set background or sky colors.
+     * 
+     * @param color the color empty space will be filled with
+     */
     public static void setClearColor(Color color) {
         clearColor = color;
     }
     
+    /**
+     * Exits the current scene and enters the new one specified through the argument passed.
+     * 
+     * @param scene the new scene to enter
+     */
     public static void setScene(Scene scene) {
         Logger.setDomain("core");
         Logger.logInfo("Current scene changed to \"" + scene.name + "\"");
@@ -184,11 +244,6 @@ public final class Game {
         
         if(Game.scene != null) scene.exit();
         Game.scene = scene;
-    }
-    
-    //TODO: Temp
-    static void addLight(Light light) {
-        scene.addLightAtIndex(0, light);
     }
     
 }
