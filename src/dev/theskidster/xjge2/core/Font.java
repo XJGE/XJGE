@@ -25,7 +25,9 @@ import static org.lwjgl.system.MemoryUtil.NULL;
  */
 
 /**
- * 
+ * Supplies the data parsed from a font file as an immutable object which can be passed to the 
+ * {@linkplain Widget#drawString(Font, String, Vector2i, Color) drawString()} method of a {@link Widget} to render text in the desired 
+ * font. TrueType .ttf is the preferred file format of this engine for fonts.
  */
 public final class Font {
     
@@ -46,7 +48,7 @@ public final class Font {
     private final HashMap<Character, Integer> advanceValues = new HashMap<>();
     
     /**
-     * 
+     * Creates a new font object using the default settings of the engine.
      */
     Font() {
         this.size = DEFAULT_SIZE;
@@ -56,8 +58,9 @@ public final class Font {
     }
     
     /**
+     * Creates a new font object from an existing one.
      * 
-     * @param font 
+     * @param font the font to copy
      */
     Font(Font font) {
         texHandle         = font.texHandle;
@@ -72,9 +75,11 @@ public final class Font {
     }
     
     /**
+     * Creates a new font object of the specified size using data parsed from a font file. Font objects are immutable by design so if you
+     * wish to render a single font in different sizes you should create a new font object for each desired size.
      * 
-     * @param filename
-     * @param size 
+     * @param filename the name of the file to load. Expects the file extension to be included.
+     * @param size     the average size to generate this fonts glyphs at
      */
     public Font(String filename, int size) {
         this.size = size;
@@ -97,9 +102,10 @@ public final class Font {
     }
     
     /**
+     * Generates a bitmap image that will be used as a texture atlas during instanced rendering.
      * 
-     * @param file
-     * @param size 
+     * @param file the .ttf file to extract font data from
+     * @param size the average size to generate this fonts glyphs at
      */
     private void loadFont(InputStream file, int size) {
         try(MemoryStack stack = MemoryStack.stackPush()) {
@@ -222,58 +228,64 @@ public final class Font {
     }
     
     /**
+     * Provides the width of this fonts bitmap image.
      * 
-     * @return 
+     * @return the width of the bitmap in pixels
      */
     int getBitmapWidth() {
         return bitmapWidth;
     }
     
     /**
+     * Provides the height of this fonts bitmap image.
      * 
-     * @return 
+     * @return the height of the bitmap in pixels
      */
     int getBitmapHeight() {
         return bitmapHeight;
     }
     
     /**
+     * Obtains the width of the largest glyph in the bitmap.
      * 
-     * @return 
+     * @return the width of the largest glyph in pixels
      */
     int getLargestGlyphWidth() {
         return largestGlyphWidth;
     }
     
     /**
+     * Obtains the horizontal advance (or stride) that the specified glyph will offset the position of next glyph in sequence by.
      * 
-     * @param c
-     * @return 
+     * @param c the character which corresponds to the glyph in question
+     * @return  the horizontal advance of the specified glyph
      */
     int getGlyphAdvance(char c) {
         return advanceValues.get(c);
     }
     
     /**
+     * Obtains the horizontal bearing space (or padding) that is applied to the specified glyphs left side during rendering. 
      * 
-     * @param c
-     * @return 
+     * @param c the character which corresponds to the glyph in question
+     * @return the horizontal bearing space of the specified glyph
      */
     int getGlyphBearing(char c) {
         return posOffsets.get(c).x;
     }
     
     /**
+     * Obtains the descent value that indicates how far below the baseline the specified glyph extends.
      * 
-     * @param c
-     * @return 
+     * @param c the character which corresponds to the glyph in question
+     * @return  the descent of the specified glyph
      */
     int getGlyphDescent(char c) {
         return posOffsets.get(c).y;
     }
     
     /**
-     * 
+     * Frees the OpenGL texture object used by this class.
      */
     public void freeTexture() {
         glDeleteTextures(texHandle);

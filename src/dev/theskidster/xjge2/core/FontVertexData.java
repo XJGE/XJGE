@@ -12,7 +12,7 @@ import org.lwjgl.system.MemoryStack;
  */
 
 /**
- * 
+ * Contains the vertex data used to render a {@link Font}.
  */
 final class FontVertexData {
     

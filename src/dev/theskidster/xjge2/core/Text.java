@@ -5,7 +5,6 @@ import dev.theskidster.xjge2.graphics.Color;
 import java.util.ArrayList;
 import java.util.HashMap;
 import org.joml.Vector2i;
-import org.joml.Vector3f;
 
 /**
  * @author J Hoffman

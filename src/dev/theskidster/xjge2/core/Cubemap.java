@@ -91,7 +91,7 @@ final class Cubemap {
     }
     
     /**
-     * Frees the OpenGL texture object and its associated handle used by this object.
+     * Frees the OpenGL texture object used by this class.
      */
     void freeTexture() {
         glDeleteTextures(handle);
