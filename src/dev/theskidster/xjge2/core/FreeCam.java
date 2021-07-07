@@ -9,6 +9,9 @@ import org.joml.Vector3f;
  * Created: May 8, 2021
  */
 
+/**
+ * A camera object provided by the engine that permits free traversal of the game world. Can be toggled by using F2 with debug mode enabled.
+ */
 final class FreeCam extends Camera {
 
     private float speed = 0.25f;
@@ -25,6 +28,9 @@ final class FreeCam extends Camera {
     private final Vector3f tempRight = new Vector3f();
     private final Vector3f tempDirec = new Vector3f();
     
+    /**
+     * Creates a new camera that may be used to freely traverse the game world.
+     */
     FreeCam() {
         super(false);
     }
@@ -47,14 +53,32 @@ final class FreeCam extends Camera {
         });
     }
 
+    /**
+     * Applies sensitivity preferences to the cameras directional changes.
+     * 
+     * @param currValue the current position of the mouse cursor along an axis
+     * @param prevValue the previous position of the mouse cursor along an axis
+     * @return a value denoting the intensity of the cameras look movement
+     */
     private float getChangeIntensity(double currValue, double prevValue) {
         return (float) (currValue - prevValue) * sensitivity;
     }
     
+    /**
+     * Allows the camera to traverse the scene quicker.
+     * 
+     * @param enable if true, the camera will move faster
+     */
     public void setSpeedBoostEnabled(boolean enable) {
         speed = (enable) ? 0.75f : 0.25f;
     }
     
+    /**
+     * Sets the current direction the camera will face using the position of the mouse cursor inside the applications {@link Window}.
+     * 
+     * @param xpos the position of the cursor along the x-axis
+     * @param ypos the position of the cursor along the y-axis
+     */
     public void setDirection(double xpos, double ypos) {
         if(xpos != prevX || ypos != prevY) {
             yaw   += getChangeIntensity(xpos, prevX) * 2;
