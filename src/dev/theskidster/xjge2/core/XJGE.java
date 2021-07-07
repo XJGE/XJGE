@@ -171,7 +171,7 @@ public final class XJGE {
             
             XJGE.assetsFilepath = assetsFilepath;
             XJGE.scenesFilepath = scenesFilepath;
-            Widget.engineFont   = new Font(engineFont);
+            Widget.defaultFont  = new Font(engineFont);
             
             engineCommands = new TreeMap<>() {{
                 put("cls",                  new TCCLS());

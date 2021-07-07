@@ -16,7 +16,7 @@ public abstract class Widget {
     protected int width;
     protected int height;
     
-    protected static Font engineFont;
+    protected static Font defaultFont;
     
     private final Text text  = new Text();
     public Vector3i position = new Vector3i();
@@ -35,10 +35,6 @@ public abstract class Widget {
     
     int compareTo(Widget widget) {
         return this.position.z - widget.position.z;
-    }
-    
-    void setEngineFont(Font font) {
-        engineFont = new Font(font);
     }
     
     protected void drawString(Font font, String text, Vector2i position, Color color) {

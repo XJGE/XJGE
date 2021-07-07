@@ -24,6 +24,9 @@ import static org.lwjgl.system.MemoryUtil.NULL;
  * Created: Jun 3, 2021
  */
 
+/**
+ * 
+ */
 public final class Font {
     
     final static int DEFAULT_SIZE = 24;
@@ -42,6 +45,9 @@ public final class Font {
     private final HashMap<Character, Vector2i> posOffsets   = new HashMap<>();
     private final HashMap<Character, Integer> advanceValues = new HashMap<>();
     
+    /**
+     * 
+     */
     Font() {
         this.size = DEFAULT_SIZE;
         texHandle = glGenTextures();
@@ -49,6 +55,10 @@ public final class Font {
         loadFont(Font.class.getResourceAsStream("/dev/theskidster/xjge2/assets/fnt_debug_mono.ttf"), size);
     }
     
+    /**
+     * 
+     * @param font 
+     */
     Font(Font font) {
         texHandle         = font.texHandle;
         size              = font.size;
@@ -61,6 +71,11 @@ public final class Font {
         advanceValues.putAll(font.advanceValues);
     }
     
+    /**
+     * 
+     * @param filename
+     * @param size 
+     */
     public Font(String filename, int size) {
         this.size = size;
         
@@ -81,6 +96,11 @@ public final class Font {
         ErrorUtils.checkGLError();
     }
     
+    /**
+     * 
+     * @param file
+     * @param size 
+     */
     private void loadFont(InputStream file, int size) {
         try(MemoryStack stack = MemoryStack.stackPush()) {
             byte[] data = file.readAllBytes();
@@ -201,30 +221,60 @@ public final class Font {
         }
     }
     
+    /**
+     * 
+     * @return 
+     */
     int getBitmapWidth() {
         return bitmapWidth;
     }
     
+    /**
+     * 
+     * @return 
+     */
     int getBitmapHeight() {
         return bitmapHeight;
     }
     
+    /**
+     * 
+     * @return 
+     */
     int getLargestGlyphWidth() {
         return largestGlyphWidth;
     }
     
+    /**
+     * 
+     * @param c
+     * @return 
+     */
     int getGlyphAdvance(char c) {
         return advanceValues.get(c);
     }
     
+    /**
+     * 
+     * @param c
+     * @return 
+     */
     int getGlyphBearing(char c) {
         return posOffsets.get(c).x;
     }
     
+    /**
+     * 
+     * @param c
+     * @return 
+     */
     int getGlyphDescent(char c) {
         return posOffsets.get(c).y;
     }
     
+    /**
+     * 
+     */
     public void freeTexture() {
         glDeleteTextures(texHandle);
     }

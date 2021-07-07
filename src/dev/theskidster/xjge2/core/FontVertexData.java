@@ -11,6 +11,9 @@ import org.lwjgl.system.MemoryStack;
  * Created: Jun 2, 2021
  */
 
+/**
+ * 
+ */
 final class FontVertexData {
     
     final int vao;
@@ -23,6 +26,10 @@ final class FontVertexData {
     private final FloatBuffer vertices;
     private final IntBuffer indices;
     
+    /**
+     * 
+     * @param font 
+     */
     FontVertexData(Font font) {
         vao = glGenVertexArrays();
         vbo = glGenBuffers();
@@ -67,6 +74,10 @@ final class FontVertexData {
         glEnableVertexAttribArray(2);
     }
     
+    /**
+     * 
+     * @param glyphs 
+     */
     private void offsetPosition(HashMap<Integer, Glyph> glyphs) {
         try(MemoryStack stack = MemoryStack.stackPush()) {
             FloatBuffer positions = stack.mallocFloat(glyphs.size() * Float.BYTES);
@@ -86,6 +97,11 @@ final class FontVertexData {
         glVertexAttribDivisor(4, 1);
     }
     
+    /**
+     * 
+     * @param font
+     * @param glyphs 
+     */
     private void offsetTexture(Font font, HashMap<Integer, Glyph> glyphs) {
         try(MemoryStack stack = MemoryStack.stackPush()) {
             FloatBuffer cells = stack.mallocFloat(glyphs.size() * Float.BYTES);
@@ -105,6 +121,10 @@ final class FontVertexData {
         glVertexAttribDivisor(5, 1);
     }
     
+    /**
+     * 
+     * @param glyphs 
+     */
     private void offsetColor(HashMap<Integer, Glyph> glyphs) {
         try(MemoryStack stack = MemoryStack.stackPush()) {
             FloatBuffer colors = stack.mallocFloat(glyphs.size() * Float.BYTES);
@@ -124,6 +144,12 @@ final class FontVertexData {
         glVertexAttribDivisor(6, 1);
     }
     
+    /**
+     * 
+     * @param font
+     * @param glyphs
+     * @param changed 
+     */
     void render(Font font, HashMap<Integer, Glyph> glyphs, boolean changed) {
         XJGE.getDefaultGLProgram().use();
         
@@ -145,6 +171,9 @@ final class FontVertexData {
         ErrorUtils.checkGLError();
     }
     
+    /**
+     * 
+     */
     void freeBuffers() {
         glDeleteVertexArrays(vao);
         glDeleteBuffers(vbo);
