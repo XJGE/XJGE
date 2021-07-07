@@ -77,9 +77,12 @@ public final class Font {
     /**
      * Creates a new font object of the specified size using data parsed from a font file. Font objects are immutable by design so if you
      * wish to render a single font in different sizes you should create a new font object for each desired size.
+     * <br><br>
+     * NOTE: the size specified in this constructor encompasses the entire glyph, including its advance, descent, and bearing space. As 
+     * such, the actual visible portion of the glyph produced may not correspond directly to the desired size in pixels.
      * 
      * @param filename the name of the file to load. Expects the file extension to be included.
-     * @param size     the average size to generate this fonts glyphs at
+     * @param size     the size to generate this fonts glyphs at in pixels
      */
     public Font(String filename, int size) {
         this.size = size;
@@ -105,7 +108,7 @@ public final class Font {
      * Generates a bitmap image that will be used as a texture atlas during instanced rendering.
      * 
      * @param file the .ttf file to extract font data from
-     * @param size the average size to generate this fonts glyphs at
+     * @param size the size to generate this fonts glyphs at in pixels
      */
     private void loadFont(InputStream file, int size) {
         try(MemoryStack stack = MemoryStack.stackPush()) {
