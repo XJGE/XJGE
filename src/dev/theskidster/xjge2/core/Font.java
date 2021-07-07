@@ -26,7 +26,7 @@ import static org.lwjgl.system.MemoryUtil.NULL;
 
 /**
  * Supplies the data parsed from a font file as an immutable object which can be passed to the 
- * {@linkplain Widget#drawString(Font, String, Vector2i, Color) drawString()} method of a {@link Widget} to render text in the desired 
+ * {@linkplain Widget#drawString(Font, String, Vector2i, Color) drawString()} method of a {@link Widget} to render text in a desired 
  * font. TrueType .ttf is the preferred file format of this engine for fonts.
  */
 public final class Font {
@@ -48,7 +48,7 @@ public final class Font {
     private final HashMap<Character, Integer> advanceValues = new HashMap<>();
     
     /**
-     * Creates a new font object using the default settings of the engine.
+     * Creates a new font object using the default font metrics of the engine.
      */
     Font() {
         this.size = DEFAULT_SIZE;
