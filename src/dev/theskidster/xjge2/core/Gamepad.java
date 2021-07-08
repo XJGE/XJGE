@@ -43,7 +43,7 @@ final class Gamepad extends InputDevice {
 
     /**
      * Determines if this controller is eligible for use by the engine. GLFW recognizes Joysticks which exhibit predictable {@link Control} 
-     * layouts as Gamepads. Gamepads often include mappings for controls which correspond well to GLFWs definitions.
+     * layouts as gamepads. Gamepads often include mappings for controls which correspond well to GLFWs definitions.
      */
     private void validate() {
         if(glfwJoystickIsGamepad(id)) {

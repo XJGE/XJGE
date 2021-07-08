@@ -18,7 +18,7 @@ import static org.lwjgl.opengl.GL30.*;
 /**
  * Provides utilities for managing high-level game logic.
  * <br><br>
- * More specifically the Game class can be used to change the current scene being rendered or the flow of execution through its
+ * More specifically the game class can be used to change the current scene being rendered or the flow of execution through its
  * access to the engines central event queue. In addition to these features the Game class also provides some convenience methods useful for 
  * general gameplay operations.
  * 
