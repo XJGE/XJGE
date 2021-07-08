@@ -249,7 +249,7 @@ public final class Font {
     }
     
     /**
-     * Obtains the width of the largest glyph in the bitmap.
+     * Obtains the width of the largest {@link Glyph} in the bitmap.
      * 
      * @return the width of the largest glyph in pixels
      */
@@ -258,7 +258,7 @@ public final class Font {
     }
     
     /**
-     * Obtains the horizontal advance (or stride) that the specified glyph will offset the position of next glyph in sequence by.
+     * Obtains the horizontal advance (or stride) that the specified {@link Glyph} will offset the position of next glyph in sequence by.
      * 
      * @param c the character which corresponds to the glyph in question
      * @return  the horizontal advance of the specified glyph

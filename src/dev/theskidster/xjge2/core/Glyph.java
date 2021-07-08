@@ -9,7 +9,8 @@ import org.joml.Vector2i;
  */
 
 /**
- * Data structure which represents a single symbol (or character) used to comprise the letters of a language.
+ * Represents a single character/letter in a language. These objects are coupled with additional state that allows them to exhibit 
+ * limited uniqueness during instanced rendering.
  */
 final class Glyph {
     
