@@ -7,6 +7,10 @@ import org.joml.Vector2i;
  * @author J Hoffman
  * Created: May 13, 2021
  */
+
+/**
+ * 
+ */
 final class Glyph {
     
     char c;

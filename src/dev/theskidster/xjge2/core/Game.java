@@ -16,7 +16,18 @@ import static org.lwjgl.opengl.GL30.*;
  */
 
 /**
- * Contains the game loop and event system. Provides utilities for managing high-level game logic and state.
+ * Provides utilities for managing high-level game logic.
+ * <br><br>
+ * More specifically the Game class can be used to change the current scene being rendered or the flow of execution through its
+ * access to the engines central event queue. In addition to these features the Game class also provides some convenience methods useful for 
+ * general gameplay operations.
+ * 
+ * @see tick(int)
+ * @see addEntity(String, Entity)
+ * @see addEvent(Event)
+ * @see addLight(Light)
+ * @see setClearColor(Color)
+ * @see setScene(Scene)
  */
 public final class Game {
 
@@ -38,7 +49,7 @@ public final class Game {
      * @param fbo       the handle of the framebuffer object used to render viewports
      * @param viewports an array of the viewports to render during split screen
      * @param terminal  a command terminal that can be used to interact with the engine
-     * @param debugInfo an interface that will be rendered over all viewports while active
+     * @param debugInfo an interface detailing the current state of the engine
      */
     static void loop(int fbo, Viewport[] viewports, Terminal terminal, DebugInfo debugInfo) {
         int cycles = 0;
@@ -171,9 +182,10 @@ public final class Game {
     }
     
     /**
-     * Adds an entity to the current scene.
+     * Adds an entity to the current scene. Generally speaking you'll only want to use this for instances where a brute-force solution is 
+     * required, otherwise entity objects should be managed directly from within the scene subclass itself.
      * 
-     * @param name   the name used to locate the entity within the scenes {@linkplain Scene#entities entity collection}
+     * @param name   the name that will be used to identify the entity in the current scenes {@linkplain Scene#entities entity collection}
      * @param entity the entity object to add
      */
     public static final void addEntity(String name, Entity entity) {
@@ -181,8 +193,10 @@ public final class Game {
     }
     
     /**
+     * Adds an event to the game event queue. Events are processed in the order of their priority. As such, events are not guaranteed to be 
+     * executed in the order from which calls to this method are made.
      * 
-     * @param event 
+     * @param event the event to queue
      */
     public static final void addEvent(Event event) {
         events.add(event);
@@ -198,32 +212,34 @@ public final class Game {
     }
     
     /**
-     * @return 
+     * Obtains engine runtime information.
+     * 
+     * @return the number of consecutive frames that have been rendered since the last update cycle
      */
     public static int getFPS() {
         return fps;
     }
     
     /**
+     * Obtains engine runtime information.
      * 
-     * 
-     * @return 
+     * @return the time in milliseconds it took the engine to complete an update cycle
      */
     public static float getDelta() {
         return (float) deltaMetric;
     }
     
     /**
+     * Obtains engine runtime information.
      * 
-     * 
-     * @return 
+     * @return true of the game has completed a pass of its update cycle
      */
     public static boolean getTicked() {
         return ticked;
     }
     
     /**
-     * Changes the color the OpenGL API will use to clear color buffers. Often used to set background or sky colors.
+     * Changes the color OpenGL will use to clear color buffers. Often used to set background or sky colors.
      * 
      * @param color the color empty space will be filled with
      */
@@ -232,7 +248,7 @@ public final class Game {
     }
     
     /**
-     * Exits the current scene and enters the new one specified through the argument passed.
+     * Exits the current scene and enters the one specified.
      * 
      * @param scene the new scene to enter
      */
