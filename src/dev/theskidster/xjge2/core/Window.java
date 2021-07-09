@@ -3,7 +3,7 @@ package dev.theskidster.xjge2.core;
 import java.io.InputStream;
 import java.nio.ByteBuffer;
 import java.nio.IntBuffer;
-import java.util.TreeMap;
+import java.util.NavigableMap;
 import static org.lwjgl.glfw.GLFW.*;
 import org.lwjgl.glfw.GLFWImage;
 import static org.lwjgl.stb.STBImage.STBI_rgb_alpha;
@@ -206,7 +206,7 @@ public final class Window {
             Logger.logSevere(e.getMessage(), e);
         }
         
-        TreeMap<Integer, Monitor> monitors = Hardware.findMonitors();
+        NavigableMap<Integer, Monitor> monitors = Hardware.findMonitors();
         Monitor newMonitor = null;
         
         if(monitors.size() > 0) {

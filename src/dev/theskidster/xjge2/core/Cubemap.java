@@ -18,8 +18,9 @@ import org.lwjgl.system.MemoryUtil;
  */
 
 /**
- * A Cubemap is similar in function to a {@link Texture} object, but instead uses the data supplied through multiple image files to generate a new
- * three-dimensional texture object that can be used to map several individual images onto different faces of a mesh.
+ * A cubemap is similar in function to a {@link dev.theskidster.xjge2.graphics.Texture Texture} object, but instead uses the data supplied 
+ * through multiple image files to generate a new three-dimensional texture object that can be used to map several individual images onto 
+ * different faces of a mesh.
  */
 final class Cubemap {
 
