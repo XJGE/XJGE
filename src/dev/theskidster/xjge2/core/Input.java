@@ -20,6 +20,9 @@ import static org.lwjgl.glfw.GLFW.*;
  * Created: May 3, 2021
  */
 
+/**
+ * Provides a single point of access through which the state of peripheral input devices may be managed.
+ */
 public final class Input {
 
     public static final int KEY_MOUSE_COMBO = -1;
@@ -140,6 +143,11 @@ public final class Input {
         });
     }
     
+    /**
+     * 
+     * 
+     * @param deviceID 
+     */
     private static void disableAllExcept(int deviceID) {
         inputDevices.forEach((id, device) -> {
             if(device instanceof Gamepad) {
@@ -148,6 +156,10 @@ public final class Input {
         });
     }
     
+    /**
+     * 
+     * @param jid 
+     */
     private static void addDisConWidget(int jid) {
         if(missingGamepad != null) {
             if(!XJGE.getViewportActive(jid)) XJGE.addUIWidget(GLFW_JOYSTICK_1, "discon " + jid, missingGamepad);
@@ -163,6 +175,9 @@ public final class Input {
         }
     }
     
+    /**
+     * 
+     */
     static void findInputDevices() {
         for(int i = 0; i < GLFW_JOYSTICK_5; i++) {
             if(inputDevices.containsKey(i)) {
@@ -178,12 +193,18 @@ public final class Input {
         }
     }
     
+    /**
+     * 
+     */
     static void pollInput() {
         inputDevices.forEach((id, device) -> {
             if(device.enabled) device.poll();
         });
     }
     
+    /**
+     * 
+     */
     static void importControls() {
         try {
             InputStream stream = new FileInputStream(XJGE.PWD.toString() + "/controls.cfg");
@@ -223,6 +244,9 @@ public final class Input {
         }
     }
     
+    /**
+     * 
+     */
     static void exportControls() {
         try {
             FileWriter file = new FileWriter("controls.cfg");
@@ -267,15 +291,29 @@ public final class Input {
         }
     }
     
+    /**
+     * 
+     * @return 
+     */
     public static int getNumDevices() {
         return inputDevices.size() - 1;
     }
     
+    /**
+     * 
+     * @param id
+     * @return 
+     */
     public static boolean getDevicePresent(int id) {
         if(inputDevices.containsKey(id)) return connected[id];
         else                             return false;
     }
     
+    /**
+     * 
+     * @param id
+     * @return 
+     */
     public static float getDeviceSensitivity(int id) {
         if(inputDevices.containsKey(id)) {
             return inputDevices.get(id).sensitivity;
@@ -290,6 +328,11 @@ public final class Input {
         }
     }
     
+    /**
+     * 
+     * @param id
+     * @return 
+     */
     public static boolean getDeviceEnabled(int id) {
         if(inputDevices.containsKey(id)) {
             return inputDevices.get(id).enabled;
@@ -304,6 +347,11 @@ public final class Input {
         }
     }
     
+    /**
+     * 
+     * @param id
+     * @return 
+     */
     public static String getDeviceName(int id) {
         if(inputDevices.containsKey(id)) {
             return inputDevices.get(id).name;
@@ -318,6 +366,11 @@ public final class Input {
         }
     }
     
+    /**
+     * 
+     * @param id
+     * @return 
+     */
     public static HashMap<Control, Integer> getDeviceControls(int id) {
         if(inputDevices.containsKey(id)) {
             return controlConfigs.get(id);
@@ -332,10 +385,19 @@ public final class Input {
         }
     }
     
+    /**
+     * 
+     * @return 
+     */
     public static int[] getKeyMouseAxisValues() {
         return ((KeyMouseCombo) inputDevices.get(KEY_MOUSE_COMBO)).axisValues;
     }
     
+    /**
+     * 
+     * @param id
+     * @return 
+     */
     public static Puppet getDevicePuppet(int id) {
         if(inputDevices.containsKey(id)) {
             try {
@@ -360,6 +422,11 @@ public final class Input {
         }
     }
     
+    /**
+     * 
+     * @param id
+     * @param sensitivity 
+     */
     public static void setDeviceSensitivity(int id, float sensitivity) {
         Logger.setDomain("input");
         
@@ -378,6 +445,11 @@ public final class Input {
         Logger.setDomain(null);
     }
     
+    /**
+     * 
+     * @param id
+     * @param deadzone 
+     */
     public static void setDeviceDeadzone(int id, float deadzone) {
         Logger.setDomain("input");
         
@@ -396,6 +468,11 @@ public final class Input {
         Logger.setDomain(null);
     }
     
+    /**
+     * 
+     * @param id
+     * @param enabled 
+     */
     public static void setDeviceEnabled(int id, boolean enabled) {
         Logger.setDomain("input");
         
@@ -416,6 +493,10 @@ public final class Input {
         Logger.setDomain(null);
     }
     
+    /**
+     * 
+     * @param id 
+     */
     public static void revertEnabledState(int id) {
         Logger.setDomain("input");
         
@@ -439,6 +520,11 @@ public final class Input {
         Logger.setDomain(null);
     }
     
+    /**
+     * 
+     * @param id
+     * @param config 
+     */
     public static void setDeviceControls(int id, HashMap<Control, Integer> config) {
         Logger.setDomain("input");
         
@@ -456,6 +542,13 @@ public final class Input {
         Logger.setDomain(null);
     }
     
+    /**
+     * 
+     * @param x1
+     * @param x2
+     * @param y1
+     * @param y2 
+     */
     public static void setKeyMouseAxisValues(int x1, int x2, int y1, int y2) {
         /*
         this needs to be set to whatever bitwise values are passed in place of the axis buttons.
@@ -484,6 +577,10 @@ public final class Input {
         Logger.setDomain(null);
     }
     
+    /**
+     * 
+     * @param id 
+     */
     public static void bindPreviousPuppet(int id) {
         Logger.setDomain("input");
         
