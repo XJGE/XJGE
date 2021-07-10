@@ -34,6 +34,10 @@ public final class Input {
     
     private static final boolean connected[] = new boolean[4];
     
+    /**
+     * A widget object provided by the engine that will be rendered anytime an input device is disconnected. It is left uninitialized by 
+     * default- you will need to initialize it with your own subclass of {@link Widget} for it to appear.
+     */
     public static Widget missingGamepad;
     
     private static final HashMap<Integer, InputDevice> inputDevices = new HashMap<>();
@@ -310,7 +314,7 @@ public final class Input {
     /**
      * Checks whether or not an input device is currently connected to the system.
      * 
-     * @param deviceID the number used to identify the input device. One of: 
+     * @param deviceID the number which corresponds to the input device in question. One of: 
      * {@link org.lwjgl.glfw.GLFW#GLFW_JOYSTICK_1 GLFW_JOYSTICK_1}, {@link org.lwjgl.glfw.GLFW#GLFW_JOYSTICK_2 GLFW_JOYSTICK_2}, 
      * {@link org.lwjgl.glfw.GLFW#GLFW_JOYSTICK_3 GLFW_JOYSTICK_3}, {@link org.lwjgl.glfw.GLFW#GLFW_JOYSTICK_4 GLFW_JOYSTICK_4}, or 
      * {@link KEY_MOUSE_COMBO}.
@@ -332,7 +336,7 @@ public final class Input {
      * where the current sensitivity value needs to be exposed to the user- such as an interface that allows users to edit their 
      * control preferences.
      * 
-     * @param deviceID the number used to identify the input device. One of: 
+     * @param deviceID the number which corresponds to the input device in question. One of: 
      * {@link org.lwjgl.glfw.GLFW#GLFW_JOYSTICK_1 GLFW_JOYSTICK_1}, {@link org.lwjgl.glfw.GLFW#GLFW_JOYSTICK_2 GLFW_JOYSTICK_2}, 
      * {@link org.lwjgl.glfw.GLFW#GLFW_JOYSTICK_3 GLFW_JOYSTICK_3}, {@link org.lwjgl.glfw.GLFW#GLFW_JOYSTICK_4 GLFW_JOYSTICK_4}, or 
      * {@link KEY_MOUSE_COMBO}.
@@ -349,10 +353,34 @@ public final class Input {
         }
     }
     
+        /**
+     * Obtains the deadzone value an input device will use to determine how much pressure must be applied to an analog stick before its 
+     * input is recognized.
+     * <br><br>
+     * The deadzones effect is applied automatically by the engine. This method should be used in instances where the current deadzone
+     * value needs to be exposed to the user- such as an interface that allows users to edit their control preferences.
+     * 
+     * @param deviceID the number which corresponds to the input device in question. One of: 
+     * {@link org.lwjgl.glfw.GLFW#GLFW_JOYSTICK_1 GLFW_JOYSTICK_1}, {@link org.lwjgl.glfw.GLFW#GLFW_JOYSTICK_2 GLFW_JOYSTICK_2}, 
+     * {@link org.lwjgl.glfw.GLFW#GLFW_JOYSTICK_3 GLFW_JOYSTICK_3}, {@link org.lwjgl.glfw.GLFW#GLFW_JOYSTICK_4 GLFW_JOYSTICK_4}, or 
+     * {@link KEY_MOUSE_COMBO}.
+     * 
+     * @return the deadzone value of the specified input device or the default value of 0.15 if the device cannot be found
+     * 
+     * @see setDeviceSensitivity(int, float)
+     */
+    public static float getDeviceDeadzone(int deviceID) {
+        if(inputDevices.containsKey(deviceID)) {
+            return inputDevices.get(deviceID).deadzone;
+        } else {
+            return 0.15f;
+        }
+    }
+    
     /**
      * Checks whether or not an input device is currently allowing the engine to process its input actions.
      * 
-     * @param deviceID the number used to identify the input device. One of: 
+     * @param deviceID the number which corresponds to the input device in question. One of: 
      * {@link org.lwjgl.glfw.GLFW#GLFW_JOYSTICK_1 GLFW_JOYSTICK_1}, {@link org.lwjgl.glfw.GLFW#GLFW_JOYSTICK_2 GLFW_JOYSTICK_2}, 
      * {@link org.lwjgl.glfw.GLFW#GLFW_JOYSTICK_3 GLFW_JOYSTICK_3}, {@link org.lwjgl.glfw.GLFW#GLFW_JOYSTICK_4 GLFW_JOYSTICK_4}, or 
      * {@link KEY_MOUSE_COMBO}.
@@ -374,7 +402,7 @@ public final class Input {
      * <br><br>
      * Device names are not guaranteed to be unique and typically reflect the model and or manufacturer of the device.
      * 
-     * @param deviceID the number used to identify the input device. One of: 
+     * @param deviceID the number which corresponds to the input device in question. One of: 
      * {@link org.lwjgl.glfw.GLFW#GLFW_JOYSTICK_1 GLFW_JOYSTICK_1}, {@link org.lwjgl.glfw.GLFW#GLFW_JOYSTICK_2 GLFW_JOYSTICK_2}, 
      * {@link org.lwjgl.glfw.GLFW#GLFW_JOYSTICK_3 GLFW_JOYSTICK_3}, {@link org.lwjgl.glfw.GLFW#GLFW_JOYSTICK_4 GLFW_JOYSTICK_4}, or 
      * {@link KEY_MOUSE_COMBO}.
@@ -398,7 +426,7 @@ public final class Input {
      * More generally, a player may prefer the button associated with jumping to be changed to another button on the controller- the 
      * player can alter their devices control configuration to achieve this.
      * 
-     * @param deviceID the number used to identify the input device. One of: 
+     * @param deviceID the number which corresponds to the input device in question. One of: 
      * {@link org.lwjgl.glfw.GLFW#GLFW_JOYSTICK_1 GLFW_JOYSTICK_1}, {@link org.lwjgl.glfw.GLFW#GLFW_JOYSTICK_2 GLFW_JOYSTICK_2}, 
      * {@link org.lwjgl.glfw.GLFW#GLFW_JOYSTICK_3 GLFW_JOYSTICK_3}, {@link org.lwjgl.glfw.GLFW#GLFW_JOYSTICK_4 GLFW_JOYSTICK_4}, or 
      * {@link KEY_MOUSE_COMBO}.
@@ -416,21 +444,23 @@ public final class Input {
     }
     
     /**
+     * Obtains the axis values of the GLFW keys that will be used to mimic the action of an analog stick with the keyboard.
      * 
-     * @return 
+     * @return an array containing the values corresponding to the GLFW keys being used
      */
     public static int[] getKeyMouseAxisValues() {
         return ((KeyMouseCombo) inputDevices.get(KEY_MOUSE_COMBO)).axisValues;
     }
     
     /**
+     * Obtains the current puppet object an input device is using (if any).
      * 
-     * @param deviceID the number used to identify the input device. One of: 
+     * @param deviceID the number which corresponds to the input device in question. One of: 
      * {@link org.lwjgl.glfw.GLFW#GLFW_JOYSTICK_1 GLFW_JOYSTICK_1}, {@link org.lwjgl.glfw.GLFW#GLFW_JOYSTICK_2 GLFW_JOYSTICK_2}, 
      * {@link org.lwjgl.glfw.GLFW#GLFW_JOYSTICK_3 GLFW_JOYSTICK_3}, {@link org.lwjgl.glfw.GLFW#GLFW_JOYSTICK_4 GLFW_JOYSTICK_4}, or 
      * {@link KEY_MOUSE_COMBO}.
      * 
-     * @return 
+     * @return the current puppet object of the specified input device or <b>null</b> if no puppet object is bound/the device cannot be found
      */
     public static Puppet getDevicePuppet(int deviceID) {
         if(inputDevices.containsKey(deviceID)) {
@@ -457,12 +487,15 @@ public final class Input {
     }
     
     /**
+     * Sets the sensitivity value an input device will use to adjust the responsiveness of input actions during gameplay.
      * 
-     * @param deviceID the number used to identify the input device. One of: 
+     * @param deviceID the number which corresponds to the input device in question. One of: 
      * {@link org.lwjgl.glfw.GLFW#GLFW_JOYSTICK_1 GLFW_JOYSTICK_1}, {@link org.lwjgl.glfw.GLFW#GLFW_JOYSTICK_2 GLFW_JOYSTICK_2}, 
      * {@link org.lwjgl.glfw.GLFW#GLFW_JOYSTICK_3 GLFW_JOYSTICK_3}, {@link org.lwjgl.glfw.GLFW#GLFW_JOYSTICK_4 GLFW_JOYSTICK_4}, or 
      * {@link KEY_MOUSE_COMBO}.
-     * @param sensitivity 
+     * @param sensitivity the new sensitivity value the device will use
+     * 
+     * @see getDeviceSensitivity(int)
      */
     public static void setDeviceSensitivity(int deviceID, float sensitivity) {
         Logger.setDomain("input");
@@ -484,7 +517,7 @@ public final class Input {
     
     /**
      * 
-     * @param deviceID the number used to identify the input device. One of: 
+     * @param deviceID the number which corresponds to the input device in question. One of: 
      * {@link org.lwjgl.glfw.GLFW#GLFW_JOYSTICK_1 GLFW_JOYSTICK_1}, {@link org.lwjgl.glfw.GLFW#GLFW_JOYSTICK_2 GLFW_JOYSTICK_2}, 
      * {@link org.lwjgl.glfw.GLFW#GLFW_JOYSTICK_3 GLFW_JOYSTICK_3}, {@link org.lwjgl.glfw.GLFW#GLFW_JOYSTICK_4 GLFW_JOYSTICK_4}, or 
      * {@link KEY_MOUSE_COMBO}.
@@ -507,7 +540,7 @@ public final class Input {
     
     /**
      * 
-     * @param deviceID the number used to identify the input device. One of: 
+     * @param deviceID the number which corresponds to the input device in question. One of: 
      * {@link org.lwjgl.glfw.GLFW#GLFW_JOYSTICK_1 GLFW_JOYSTICK_1}, {@link org.lwjgl.glfw.GLFW#GLFW_JOYSTICK_2 GLFW_JOYSTICK_2}, 
      * {@link org.lwjgl.glfw.GLFW#GLFW_JOYSTICK_3 GLFW_JOYSTICK_3}, {@link org.lwjgl.glfw.GLFW#GLFW_JOYSTICK_4 GLFW_JOYSTICK_4}, or 
      * {@link KEY_MOUSE_COMBO}.
@@ -535,7 +568,7 @@ public final class Input {
     
     /**
      * 
-     * @param deviceID the number used to identify the input device. One of: 
+     * @param deviceID the number which corresponds to the input device in question. One of: 
      * {@link org.lwjgl.glfw.GLFW#GLFW_JOYSTICK_1 GLFW_JOYSTICK_1}, {@link org.lwjgl.glfw.GLFW#GLFW_JOYSTICK_2 GLFW_JOYSTICK_2}, 
      * {@link org.lwjgl.glfw.GLFW#GLFW_JOYSTICK_3 GLFW_JOYSTICK_3}, {@link org.lwjgl.glfw.GLFW#GLFW_JOYSTICK_4 GLFW_JOYSTICK_4}, or 
      * {@link KEY_MOUSE_COMBO}.
@@ -565,7 +598,7 @@ public final class Input {
     
     /**
      * 
-     * @param deviceID the number used to identify the input device. One of: 
+     * @param deviceID the number which corresponds to the input device in question. One of: 
      * {@link org.lwjgl.glfw.GLFW#GLFW_JOYSTICK_1 GLFW_JOYSTICK_1}, {@link org.lwjgl.glfw.GLFW#GLFW_JOYSTICK_2 GLFW_JOYSTICK_2}, 
      * {@link org.lwjgl.glfw.GLFW#GLFW_JOYSTICK_3 GLFW_JOYSTICK_3}, {@link org.lwjgl.glfw.GLFW#GLFW_JOYSTICK_4 GLFW_JOYSTICK_4}, or 
      * {@link KEY_MOUSE_COMBO}.
@@ -625,7 +658,7 @@ public final class Input {
     
     /**
      * 
-     * @param deviceID the number used to identify the input device. One of: 
+     * @param deviceID the number which corresponds to the input device in question. One of: 
      * {@link org.lwjgl.glfw.GLFW#GLFW_JOYSTICK_1 GLFW_JOYSTICK_1}, {@link org.lwjgl.glfw.GLFW#GLFW_JOYSTICK_2 GLFW_JOYSTICK_2}, 
      * {@link org.lwjgl.glfw.GLFW#GLFW_JOYSTICK_3 GLFW_JOYSTICK_3}, {@link org.lwjgl.glfw.GLFW#GLFW_JOYSTICK_4 GLFW_JOYSTICK_4}, or 
      * {@link KEY_MOUSE_COMBO}.
