@@ -353,7 +353,7 @@ public final class Input {
         }
     }
     
-        /**
+    /**
      * Obtains the deadzone value an input device will use to determine how much pressure must be applied to an analog stick before its 
      * input is recognized.
      * <br><br>
@@ -448,6 +448,8 @@ public final class Input {
      * analog stick.
      * 
      * @return an array containing the axis values corresponding to various GLFW keys
+     * 
+     * @see setKeyMouseAxisValues(int, int, int, int)
      */
     public static int[] getKeyMouseAxisValues() {
         return ((KeyMouseCombo) inputDevices.get(KEY_MOUSE_COMBO)).axisValues;
@@ -477,12 +479,6 @@ public final class Input {
                 return null;
             }
         } else {
-            Logger.setDomain("input");
-            Logger.logWarning("Failed to get the current puppet of input device " + deviceID + 
-                              ". Could not find an input device at this index.", 
-                              null);
-            Logger.setDomain(null);
-            
             return null;
         }
     }
@@ -494,7 +490,7 @@ public final class Input {
      * {@link org.lwjgl.glfw.GLFW#GLFW_JOYSTICK_1 GLFW_JOYSTICK_1}, {@link org.lwjgl.glfw.GLFW#GLFW_JOYSTICK_2 GLFW_JOYSTICK_2}, 
      * {@link org.lwjgl.glfw.GLFW#GLFW_JOYSTICK_3 GLFW_JOYSTICK_3}, {@link org.lwjgl.glfw.GLFW#GLFW_JOYSTICK_4 GLFW_JOYSTICK_4}, or 
      * {@link KEY_MOUSE_COMBO}.
-     * @param sensitivity the new sensitivity value the device will use
+     * @param sensitivity the new sensitivity value the input device will use
      * 
      * @see getDeviceSensitivity(int)
      */
@@ -504,9 +500,6 @@ public final class Input {
         if(inputDevices.containsKey(deviceID)) {
             inputDevices.get(deviceID).sensitivity = sensitivity;
             sensitivityConfigs.put(deviceID, sensitivity);
-            
-            Logger.logInfo("Changed the sensitivity of input device " + deviceID + " \"" + 
-                           inputDevices.get(deviceID).name + "\" to (" + sensitivity + ")");
         } else {
             Logger.logWarning("Failed to change the devices sensitivity. Could " + 
                               "not find an input device at index " + deviceID + ".",
@@ -517,12 +510,16 @@ public final class Input {
     }
     
     /**
+     * Sets the deadzone value an input device will use to determine how much pressure must be applied to an analog stick before its 
+     * input is recognized.
      * 
      * @param deviceID the number which corresponds to the input device in question. One of: 
      * {@link org.lwjgl.glfw.GLFW#GLFW_JOYSTICK_1 GLFW_JOYSTICK_1}, {@link org.lwjgl.glfw.GLFW#GLFW_JOYSTICK_2 GLFW_JOYSTICK_2}, 
      * {@link org.lwjgl.glfw.GLFW#GLFW_JOYSTICK_3 GLFW_JOYSTICK_3}, {@link org.lwjgl.glfw.GLFW#GLFW_JOYSTICK_4 GLFW_JOYSTICK_4}, or 
      * {@link KEY_MOUSE_COMBO}.
-     * @param deadzone 
+     * @param deadzone the new deadzone value the input device will use
+     * 
+     * @see getDeviceDeadzone(int)
      */
     public static void setDeviceDeadzone(int deviceID, float deadzone) {
         Logger.setDomain("input");
@@ -540,34 +537,36 @@ public final class Input {
     }
     
     /**
+     * Sets the current enabled state of an input device.
      * 
      * @param deviceID the number which corresponds to the input device in question. One of: 
      * {@link org.lwjgl.glfw.GLFW#GLFW_JOYSTICK_1 GLFW_JOYSTICK_1}, {@link org.lwjgl.glfw.GLFW#GLFW_JOYSTICK_2 GLFW_JOYSTICK_2}, 
      * {@link org.lwjgl.glfw.GLFW#GLFW_JOYSTICK_3 GLFW_JOYSTICK_3}, {@link org.lwjgl.glfw.GLFW#GLFW_JOYSTICK_4 GLFW_JOYSTICK_4}, or 
      * {@link KEY_MOUSE_COMBO}.
-     * @param enabled 
+     * @param enabled if true, the device will allow the engine to process its input actions
+     * 
+     * @see getDeviceEnabled(int)
      */
     public static void setDeviceEnabled(int deviceID, boolean enabled) {
-        Logger.setDomain("input");
-        
         if(inputDevices.containsKey(deviceID)) {
             InputDevice device = inputDevices.get(deviceID);
             
             device.enabledStates.add(enabled);
             device.enabled = device.enabledStates.peek();
-            
-            if(device.enabled) Logger.logInfo("Enabled input device " + deviceID + " \"" + device.name + "\"");
-            else               Logger.logInfo("Disabled input device " + deviceID + " \"" + device.name + "\"");
         } else {
+            Logger.setDomain("input");
+            
             Logger.logWarning("Failed to change the enabled state of input device " + 
                               deviceID + "Could not find an input device at this index.",
                               null);
+            
+            Logger.setDomain(null);
         }
-        
-        Logger.setDomain(null);
     }
     
     /**
+     * Reverts the enabled state of an input device to its previous value. This is useful in the case of an event or cutscene where the
+     * players input device may have been temporarily disabled.
      * 
      * @param deviceID the number which corresponds to the input device in question. One of: 
      * {@link org.lwjgl.glfw.GLFW#GLFW_JOYSTICK_1 GLFW_JOYSTICK_1}, {@link org.lwjgl.glfw.GLFW#GLFW_JOYSTICK_2 GLFW_JOYSTICK_2}, 
@@ -575,35 +574,47 @@ public final class Input {
      * {@link KEY_MOUSE_COMBO}.
      */
     public static void revertEnabledState(int deviceID) {
-        Logger.setDomain("input");
-        
         if(inputDevices.containsKey(deviceID)) {
             InputDevice device = inputDevices.get(deviceID);
             
             try {
                 device.enabledStates.pop();
                 device.enabled = device.enabledStates.peek();
-                Logger.logInfo("Reverted the enabled state of input device " + deviceID + 
-                               " \"" + device.name + "\" to (" + device.enabled + ")");
             } catch(EmptyStackException e) {
                 device.enabled = true;
             }
         } else {
+            Logger.setDomain("input");
+            
             Logger.logWarning("Failed to revert the enabled state of input device " + 
                               deviceID + " Could not find an input device at this index.",
                               null);
+            
+            Logger.setDomain(null);
         }
-        
-        Logger.setDomain(null);
     }
     
     /**
+     * Sets the current control configuration of an input device.
+     * <br><br>
+     * Control configurations are a part of user-defined preferences that will be retained between runtime sessions. These 
+     * configurations dictate how {@link Control controls} on an input device will be mapped to actions in game.
+     * <br><br>
+     * More generally, a player may prefer the button associated with jumping to be changed to another button on the controller- the 
+     * player can alter their devices control configuration to achieve this.
+     * <br><br>
+     * NOTE: When setting the configuration of {@link Control#LEFT_STICK_X LEFT_STICK_X} and {@link Control#LEFT_STICK_Y LEFT_STICK_Y} 
+     * for the {@link KeyMouseCombo} device, a bitwise OR (provided as |) should be used to pass two values denoting each key 
+     * representing the two directions along a single axis. See {@link getKeyMouseAxisValues()} and {@link setKeyMouseAxisValues()} for
+     * more information. TODO: maybe mention in user manual?
      * 
      * @param deviceID the number which corresponds to the input device in question. One of: 
      * {@link org.lwjgl.glfw.GLFW#GLFW_JOYSTICK_1 GLFW_JOYSTICK_1}, {@link org.lwjgl.glfw.GLFW#GLFW_JOYSTICK_2 GLFW_JOYSTICK_2}, 
      * {@link org.lwjgl.glfw.GLFW#GLFW_JOYSTICK_3 GLFW_JOYSTICK_3}, {@link org.lwjgl.glfw.GLFW#GLFW_JOYSTICK_4 GLFW_JOYSTICK_4}, or 
      * {@link KEY_MOUSE_COMBO}.
      * @param config 
+     * 
+     * @see getDeviceControls(int)
      */
     public static void setDeviceControls(int deviceID, Map<Control, Integer> config) {
         Logger.setDomain("input");
@@ -623,34 +634,44 @@ public final class Input {
     }
     
     /**
+     * Sets the GLFW keys the keyboard will use to mimic the action of an analog stick.
      * 
-     * @param x1
-     * @param x2
-     * @param y1
-     * @param y2 
+     * @param x1 the GLFW key used to move left along the x-axis
+     * @param x2 the GLFW key used to move right along the x-axis
+     * @param y1 the GLFW key used to move down along the y-axis
+     * @param y2 the GLFW key that to move up along the y-axis
+     * 
+     * @see getKeyMouseAxisValues()
      */
     public static void setKeyMouseAxisValues(int x1, int x2, int y1, int y2) {
-        /*
-        this needs to be set to whatever bitwise values are passed in place of the axis buttons.
-        */
-        
         ((KeyMouseCombo) inputDevices.get(KEY_MOUSE_COMBO)).axisValues[0] = x1;
         ((KeyMouseCombo) inputDevices.get(KEY_MOUSE_COMBO)).axisValues[1] = x2;
         ((KeyMouseCombo) inputDevices.get(KEY_MOUSE_COMBO)).axisValues[2] = y1;
         ((KeyMouseCombo) inputDevices.get(KEY_MOUSE_COMBO)).axisValues[3] = y2;
     }
     
-    public static void setDevicePuppet(int id, Puppet puppet) {
+    /**
+     * Sets the current puppet object an input device will control.
+     * 
+     * @param deviceID the number which corresponds to the input device in question. One of: 
+     * {@link org.lwjgl.glfw.GLFW#GLFW_JOYSTICK_1 GLFW_JOYSTICK_1}, {@link org.lwjgl.glfw.GLFW#GLFW_JOYSTICK_2 GLFW_JOYSTICK_2}, 
+     * {@link org.lwjgl.glfw.GLFW#GLFW_JOYSTICK_3 GLFW_JOYSTICK_3}, {@link org.lwjgl.glfw.GLFW#GLFW_JOYSTICK_4 GLFW_JOYSTICK_4}, or 
+     * {@link KEY_MOUSE_COMBO}.
+     * @param puppet the puppet object the input device will use
+     * 
+     * @see getDevicePuppet(int)
+     */
+    public static void setDevicePuppet(int deviceID, Puppet puppet) {
         Logger.setDomain("input");
         
-        if(inputDevices.containsKey(id)) {
-            inputDevices.get(id).puppetSetEvents.add(puppet);
+        if(inputDevices.containsKey(deviceID)) {
+            inputDevices.get(deviceID).puppetSetEvents.add(puppet);
             
-            Logger.logInfo("Changed the current puppet object of input device " + id + " \"" + 
-                            inputDevices.get(id).name + "\" to (" + puppet.object.getClass().getCanonicalName() + ")");
+            Logger.logInfo("Changed the current puppet object of input device " + deviceID + " \"" + 
+                            inputDevices.get(deviceID).name + "\" to (" + puppet.object.getClass().getCanonicalName() + ")");
         } else {
             Logger.logWarning("Failed to change the devices current puppet object. " + 
-                              "Could not find an input device at index " + id + ".",
+                              "Could not find an input device at index " + deviceID + ".",
                               null);
         }
         
@@ -658,6 +679,8 @@ public final class Input {
     }
     
     /**
+     * Reverts the binding of an input device to its previous puppet object if it had one. This is useful in instances such as vehicles 
+     * where the player may assume control of a puppet temporarily before switching back to their main binding.
      * 
      * @param deviceID the number which corresponds to the input device in question. One of: 
      * {@link org.lwjgl.glfw.GLFW#GLFW_JOYSTICK_1 GLFW_JOYSTICK_1}, {@link org.lwjgl.glfw.GLFW#GLFW_JOYSTICK_2 GLFW_JOYSTICK_2}, 
