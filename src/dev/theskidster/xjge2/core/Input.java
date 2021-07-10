@@ -444,9 +444,10 @@ public final class Input {
     }
     
     /**
-     * Obtains the axis values of the GLFW keys that will be used to mimic the action of an analog stick with the keyboard.
+     * Obtains an array of values denoting which GLFW keys will be used by the {@link KeyMouseCombo} input device to mimic the action of an 
+     * analog stick.
      * 
-     * @return an array containing the values corresponding to the GLFW keys being used
+     * @return an array containing the axis values corresponding to various GLFW keys
      */
     public static int[] getKeyMouseAxisValues() {
         return ((KeyMouseCombo) inputDevices.get(KEY_MOUSE_COMBO)).axisValues;
