@@ -35,8 +35,8 @@ public final class Input {
     private static final boolean connected[] = new boolean[4];
     
     /**
-     * A widget object provided by the engine that will be rendered anytime an input device is disconnected. It is left uninitialized by 
-     * default- you will need to initialize it with your own subclass of {@link Widget} for it to appear.
+     * A widget object provided by the engine that will be rendered anytime an input device is disconnected. This object is left
+     * uninitialized by default so you will need to initialize it with your own {@link Widget} subclass for it to appear.
      */
     public static Widget missingGamepad;
     
@@ -330,7 +330,7 @@ public final class Input {
     }
     
     /**
-     * Obtains the sensitivity value an input device will use to adjust the responsiveness of input actions during gameplay.
+     * Obtains the sensitivity value that an input device will use to adjust the responsiveness of its input actions during gameplay.
      * <br><br>
      * It's recommended that gameplay systems instead use {@link Command#getDeviceSensitivity()} and reserve this method for instances 
      * where the current sensitivity value needs to be exposed to the user- such as an interface that allows users to edit their 
@@ -357,8 +357,8 @@ public final class Input {
      * Obtains the deadzone value an input device will use to determine how much pressure must be applied to an analog stick before its 
      * input is recognized.
      * <br><br>
-     * The deadzones effect is applied automatically by the engine. This method should be used in instances where the current deadzone
-     * value needs to be exposed to the user- such as an interface that allows users to edit their control preferences.
+     * The effect of the deadzone value is applied automatically by the engine. This method should be used in instances where the current 
+     * deadzone value must be exposed to the user- such as an interface that allows users to edit their input preferences.
      * 
      * @param deviceID the number which corresponds to the input device in question. One of: 
      * {@link org.lwjgl.glfw.GLFW#GLFW_JOYSTICK_1 GLFW_JOYSTICK_1}, {@link org.lwjgl.glfw.GLFW#GLFW_JOYSTICK_2 GLFW_JOYSTICK_2}, 
@@ -367,7 +367,7 @@ public final class Input {
      * 
      * @return the deadzone value of the specified input device or the default value of 0.15 if the device cannot be found
      * 
-     * @see setDeviceSensitivity(int, float)
+     * @see setDeviceDeadzone(int, float)
      */
     public static float getDeviceDeadzone(int deviceID) {
         if(inputDevices.containsKey(deviceID)) {
@@ -398,16 +398,17 @@ public final class Input {
     }
     
     /**
-     * Obtains the name of an input device. 
+     * Obtains the name of an input device.
      * <br><br>
-     * Device names are not guaranteed to be unique and typically reflect the model and or manufacturer of the device.
+     * NOTE: Device names are not guaranteed to be unique and typically only reflect the model and/or manufacturer. This information 
+     * can often help better identify a device, but shouldn't be used to refer to it.
      * 
      * @param deviceID the number which corresponds to the input device in question. One of: 
      * {@link org.lwjgl.glfw.GLFW#GLFW_JOYSTICK_1 GLFW_JOYSTICK_1}, {@link org.lwjgl.glfw.GLFW#GLFW_JOYSTICK_2 GLFW_JOYSTICK_2}, 
      * {@link org.lwjgl.glfw.GLFW#GLFW_JOYSTICK_3 GLFW_JOYSTICK_3}, {@link org.lwjgl.glfw.GLFW#GLFW_JOYSTICK_4 GLFW_JOYSTICK_4}, or 
      * {@link KEY_MOUSE_COMBO}.
      * 
-     * @return a human-readable string of text used to further identify an input device
+     * @return a human-readable description of the input device
      */
     public static String getDeviceName(int deviceID) {
         if(inputDevices.containsKey(deviceID)) {
@@ -420,11 +421,8 @@ public final class Input {
     /**
      * Obtains the current control configuration of an input device.
      * <br><br>
-     * Control configurations are a part of user-defined preferences that will be retained between runtime sessions. These 
-     * configurations dictate how {@link Control controls} on an input device will be mapped to actions in game.
-     * <br><br>
-     * More generally, a player may prefer the button associated with jumping to be changed to another button on the controller- the 
-     * player can alter their devices control configuration to achieve this.
+     * Control configurations are user-defined input preferences that will be retained between runtime sessions. These configurations 
+     * dictate how {@linkplain Control controls} on an input device will be mapped to actions in game.
      * 
      * @param deviceID the number which corresponds to the input device in question. One of: 
      * {@link org.lwjgl.glfw.GLFW#GLFW_JOYSTICK_1 GLFW_JOYSTICK_1}, {@link org.lwjgl.glfw.GLFW#GLFW_JOYSTICK_2 GLFW_JOYSTICK_2}, 
@@ -447,7 +445,7 @@ public final class Input {
      * Obtains an array of values denoting which GLFW keys will be used by the {@link KeyMouseCombo} input device to mimic the action of an 
      * analog stick.
      * 
-     * @return an array containing the axis values corresponding to various GLFW keys
+     * @return an array containing the axis values corresponding to various GLFW keyboard keys
      * 
      * @see setKeyMouseAxisValues(int, int, int, int)
      */
@@ -597,16 +595,9 @@ public final class Input {
     /**
      * Sets the current control configuration of an input device.
      * <br><br>
-     * Control configurations are a part of user-defined preferences that will be retained between runtime sessions. These 
-     * configurations dictate how {@link Control controls} on an input device will be mapped to actions in game.
-     * <br><br>
-     * More generally, a player may prefer the button associated with jumping to be changed to another button on the controller- the 
-     * player can alter their devices control configuration to achieve this.
-     * <br><br>
-     * NOTE: When setting the configuration of {@link Control#LEFT_STICK_X LEFT_STICK_X} and {@link Control#LEFT_STICK_Y LEFT_STICK_Y} 
-     * for the {@link KeyMouseCombo} device, a bitwise OR (provided as |) should be used to pass two values denoting each key 
-     * representing the two directions along a single axis. See {@link getKeyMouseAxisValues()} and {@link setKeyMouseAxisValues()} for
-     * more information. TODO: maybe mention in user manual?
+     * NOTE: When setting the configuration of controls {@link Control#LEFT_STICK_X LEFT_STICK_X} and 
+     * {@link Control#LEFT_STICK_Y LEFT_STICK_Y} for the {@link KeyMouseCombo} input device, a bitwise OR (symbolized as |) should be used to 
+     * pass two values representing the GLFW keyboard keys that will be used to move the analog stick along a single axis.
      * 
      * @param deviceID the number which corresponds to the input device in question. One of: 
      * {@link org.lwjgl.glfw.GLFW#GLFW_JOYSTICK_1 GLFW_JOYSTICK_1}, {@link org.lwjgl.glfw.GLFW#GLFW_JOYSTICK_2 GLFW_JOYSTICK_2}, 

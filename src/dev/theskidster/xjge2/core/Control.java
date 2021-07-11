@@ -6,8 +6,7 @@ package dev.theskidster.xjge2.core;
  */
 
 /**
- * Represents a generic interactive component on a {@link Gamepad} such as an analog stick, button, or trigger. Modeled after a PS4
- * controller since that's all I had lying around.
+ * Represents an interactive component on a {@link Gamepad} such as an analog stick, button, or trigger.
  */
 public enum Control {
     
