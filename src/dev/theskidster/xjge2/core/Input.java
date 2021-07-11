@@ -603,7 +603,7 @@ public final class Input {
      * {@link org.lwjgl.glfw.GLFW#GLFW_JOYSTICK_1 GLFW_JOYSTICK_1}, {@link org.lwjgl.glfw.GLFW#GLFW_JOYSTICK_2 GLFW_JOYSTICK_2}, 
      * {@link org.lwjgl.glfw.GLFW#GLFW_JOYSTICK_3 GLFW_JOYSTICK_3}, {@link org.lwjgl.glfw.GLFW#GLFW_JOYSTICK_4 GLFW_JOYSTICK_4}, or 
      * {@link KEY_MOUSE_COMBO}.
-     * @param config 
+     * @param config the collection containing the new control configuration to apply
      * 
      * @see getDeviceControls(int)
      */
