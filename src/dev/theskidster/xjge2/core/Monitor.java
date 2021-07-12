@@ -1,6 +1,8 @@
 package dev.theskidster.xjge2.core;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Map;
 import java.util.TreeMap;
 import static org.lwjgl.glfw.GLFW.glfwGetMonitorName;
 import static org.lwjgl.glfw.GLFW.glfwGetVideoMode;
@@ -12,6 +14,9 @@ import org.lwjgl.glfw.GLFWVidMode;
  * Created: Apr 29, 2021
  */
 
+/**
+ * Represents a visual display device such as a computer monitor or television.
+ */
 public final class Monitor {
     
     final int id;
@@ -23,6 +28,12 @@ public final class Monitor {
     private GLFWVidMode videoMode;
     private final TreeMap<String, GLFWVidMode> videoModes = new TreeMap<>();
     
+    /**
+     * Provides the information parsed from a visual display device as an object.
+     * 
+     * @param id     the unique number used to identify the device in other parts of the engine
+     * @param handle a unique value provided by GLFW used to identify the device
+     */
     Monitor(int id, long handle) {
         this.id     = id;
         this.handle = handle;
@@ -57,44 +68,103 @@ public final class Monitor {
         }
     }
     
+    /**
+     * Finds the greatest common divisor given two numbers. Used to calculate the aspect ratios of the monitors various video modes.
+     * 
+     * @param width  the width of the video mode
+     * @param height the height of the video mode
+     * 
+     * @return the greatest common divisor
+     */
     private int findDivisor(int width, int height) {
         return (height == 0) ? width : findDivisor(height, width % height);
     }
     
+    /**
+     * Finds the aspect ratio of a video mode.
+     * 
+     * @param mode the video mode to parse information from
+     * 
+     * @return an aspect ratio represented as a string
+     */
     private String getAspectRatio(GLFWVidMode mode) {
         int gcd = findDivisor(mode.width(), mode.height());
         return mode.width() / gcd + ":" + mode.height() / gcd;
     }
     
+    /**
+     * Obtains the aspect ratio of the monitors current video mode.
+     * 
+     * @return an aspect ratio represented as a string
+     */
     public String getAspectRatio() {
         return getAspectRatio(videoMode);
     }
     
+    /**
+     * Generates a string that provides information about a video mode.
+     * 
+     * @param mode the video mode to parse information from
+     * 
+     * @return a human-readable string detailing the video modes resolution, aspect ratio, and refresh rate
+     */
     private String getInfo(GLFWVidMode mode) {
         return mode.width() + "x" + mode.height() + " " + getAspectRatio(mode) +
                " " + mode.refreshRate() + "hz";
     }
     
+    /**
+     * Generates a string that provides information about the monitors current video mode.
+     * 
+     * @return a human-readable string detailing the video modes resolution, aspect ratio, and refresh rate
+     */
     public String getInfo() {
         return getInfo(videoMode);
     }
     
+    /**
+     * Obtains the width of the monitors current video mode.
+     * 
+     * @return the width of the video mode in pixels
+     */
     public int getWidth() {
         return videoMode.width();
     }
     
+    /**
+     * Obtains the height of the monitors current video mode.
+     * 
+     * @return the height of the video mode in pixels
+     */
     public int getHeight() {
         return videoMode.height();
     }
     
+    /**
+     * Obtains the refresh rate of the monitors current video mode.
+     * 
+     * @return the refresh rate of the video mode in hertz
+     */
     public int getRefreshRate() {
         return videoMode.refreshRate();
     }
     
-    public TreeMap<String, GLFWVidMode> getVideoModes() {
-        return videoModes;
+    /**
+     * Provides an immutable collection of all the video modes available to this monitor that are supported by the engine.
+     * 
+     * @return a collection of GLFW video mode objects
+     */
+    public Map<String, GLFWVidMode> getVideoModes() {
+        return Collections.unmodifiableNavigableMap(videoModes);
     }
     
+    /**
+     * Sets the video mode the monitor will use.
+     * 
+     * @param operation the method of traversal to use. Either explicitly as the location of the video mode in the monitors video mode 
+     *                  collection (as a number) or "prev/next" to move between the previous and next video modes available to the monitor 
+     *                  respectively.
+     */
     public void setVideoMode(String operation) {
         switch(operation) {
             case "next" -> {
@@ -161,7 +231,6 @@ public final class Monitor {
         }
         
         Window.reconfigure();
-        //TODO: viewports. Refer to legacy project.
     }
     
 }
