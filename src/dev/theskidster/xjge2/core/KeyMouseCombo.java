@@ -46,11 +46,12 @@ final class KeyMouseCombo extends InputDevice {
     }
     
     /**
+     * Calculates an input value of the virtual right analog stick by using the current and previous positions of the mouse cursor.
      * 
-     * @param currValue 
-     * @param prevValue 
+     * @param currValue the current position of the mouse cursor along a single axis
+     * @param prevValue the previous position of the mouse cursor along a single axis
      * 
-     * @return 
+     * @return a value indicating the intensity of the movement
      */
     private float findAxisValue(float currValue, float prevValue) {
         if(firstMouse) {
