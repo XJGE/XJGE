@@ -201,6 +201,10 @@ public final class Input {
                 }
             }
         }
+        
+        inputDevices.get(KEY_MOUSE_COMBO).sensitivity = sensitivityConfigs.get(KEY_MOUSE_COMBO);
+        inputDevices.get(KEY_MOUSE_COMBO).deadzone    = deadzoneConfigs.get(KEY_MOUSE_COMBO);
+        inputDevices.get(KEY_MOUSE_COMBO).config.putAll(controlConfigs.get(KEY_MOUSE_COMBO));
     }
     
     /**
@@ -598,6 +602,17 @@ public final class Input {
      * NOTE: When setting the configuration of controls {@link Control#LEFT_STICK_X LEFT_STICK_X} and 
      * {@link Control#LEFT_STICK_Y LEFT_STICK_Y} for the {@link KeyMouseCombo} input device, a bitwise OR (symbolized as |) should be used to 
      * pass two values representing the GLFW keyboard keys that will be used to move the analog stick along a single axis.
+     * <br><br>
+     * For example, you might do something like this:
+     * <br><br>
+     * <blockquote><pre>
+     * var keyMouseConfig = new HashMap() {{
+     *     ...
+     *     put(LEFT_STICK_X,  GLFW_KEY_A | GLFW_KEY_D);
+     *     put(LEFT_STICK_Y,  GLFW_KEY_W | GLFW_KEY_S);
+     *     ...
+     * }};
+     * </pre></blockquote>
      * 
      * @param deviceID the number which corresponds to the input device in question. One of: 
      * {@link org.lwjgl.glfw.GLFW#GLFW_JOYSTICK_1 GLFW_JOYSTICK_1}, {@link org.lwjgl.glfw.GLFW#GLFW_JOYSTICK_2 GLFW_JOYSTICK_2}, 

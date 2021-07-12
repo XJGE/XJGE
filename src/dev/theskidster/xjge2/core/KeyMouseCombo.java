@@ -11,6 +11,9 @@ import org.lwjgl.system.MemoryStack;
  * Created: May 3, 2021
  */
 
+/**
+ * A virtual input device comprised of the keyboard and mouse that attempts to mimic the actions of a {@link Gamepad}.
+ */
 final class KeyMouseCombo extends InputDevice {
 
     int[] axisValues = new int[4];
@@ -23,6 +26,14 @@ final class KeyMouseCombo extends InputDevice {
     private final DoubleBuffer cursorPosX;
     private final DoubleBuffer cursorPosY;
     
+    /**
+     * Creates a new KeyMouseCombo object and applies the users settings to its control configuration.
+     * 
+     * @param id          the unique number used to identify the device in other parts of the engine
+     * @param sensitivity a value used by gameplay systems to adjust the responsiveness of input actions based off the users preference
+     * @param deadzone    a value used to indicate how much pressure must be applied to an analog stick before its input is recognized
+     * @param config      a collection of various {@link Control} mappings
+     */
     KeyMouseCombo(int id, float sensitivity, float deadzone, HashMap<Control, Integer> config) {
         super(id, sensitivity, deadzone, config);
         
@@ -34,6 +45,13 @@ final class KeyMouseCombo extends InputDevice {
         }
     }
     
+    /**
+     * 
+     * @param currValue 
+     * @param prevValue 
+     * 
+     * @return 
+     */
     private float findAxisValue(float currValue, float prevValue) {
         if(firstMouse) {
             prevValue  = currValue;
