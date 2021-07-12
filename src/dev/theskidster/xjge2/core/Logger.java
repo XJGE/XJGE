@@ -24,6 +24,9 @@ public final class Logger {
     private static PrintWriter logText;
     private static final StringBuilder output = new StringBuilder();
     
+    /**
+     * Inserts a horizontal line into the logger output with no other information.
+     */
     private static void horizontalLine() {
         String line = "--------------------------------------------------------------------------------";
         System.out.println(line);
@@ -31,6 +34,9 @@ public final class Logger {
               .append(System.lineSeparator());
     }
     
+    /**
+     * Outputs information pertaining to the environment variable of the system on which the engine is currently running.
+     */
     static void printSystemInfo() {
         horizontalLine();
         logInfo("OS NAME:\t\t" + System.getProperty("os.name"));
@@ -48,15 +54,41 @@ public final class Logger {
         newLine();
     }
     
+    /**
+     * Inserts an empty space into the logger output with no other information. Included here to encourage structure.
+     */
     public static void newLine() {
         System.out.println();
         output.append(System.lineSeparator());
     }
     
+    /**
+     * Appends the name of a module to the log message following the priority indicator (INFO, WARNING, etc). Included so log messages 
+     * can be better located within different domains of the engine. You likely won't need to make use of it in your game project 
+     * unless you really want to.
+     * <br><br>
+     * NOTE: Should you choose to utilize this feature remember to pass <b>null</b> following the log message to reset the state of the
+     * logger so any log messages following this one do not inadvertently exhibit erroneous domain names. This process often looks 
+     * something like this:
+     * <br><br>
+     * <blockquote><pre>
+     * setDomain("myDomain");
+     *     logInfo(...);
+     * setDomain(null);
+     * </pre></blockquote>
+     * 
+     * @param domain the name of the module to append to the log message
+     */
     public static void setDomain(String domain) {
         Logger.domain = (domain != null) ? " (" + domain + ")" : "";
     }
     
+    /**
+     * Writes an informative low-priority message to the applications console. Typically used to indicate significant state changes occurring within the 
+     * application.
+     * 
+     * @param message the text to appear as output in the console/log file 
+     */
     public static void logInfo(String message) {
         System.out.println("INFO" + domain + ": " + message);
         
@@ -67,6 +99,13 @@ public final class Logger {
               .append(System.lineSeparator());
     }
     
+    /**
+     * Writes a medium-priority message to the applications console. Warning messages should be used to indicate that the application may have entered an 
+     * invalid state which hasn't (yet) resulted in a crash- but may produce undefined behavior.
+     * 
+     * @param message the text to appear as output in the console/log file 
+     * @param e       an optional exception used to output a stack trace. If {@code null} is passed, no stack trace information will be displayed.
+     */
     public static void logWarning(String message, Exception e) {
         String timestamp = new SimpleDateFormat("MM-dd-yyyy h:mma").format(new Date());
         
@@ -104,6 +143,16 @@ public final class Logger {
         }
     }
     
+    /**
+     * Writes a high-priority message to the applications console. Use of this method is reserved only for instances wherein the application 
+     * has encountered some fatal error that will require it to cease execution.
+     * <br><br>
+     * A .txt file containing the recorded output will be generated in the directory from which the application was launched.
+     * 
+     * @param message the text to appear as output in the console/log file 
+     * @param e       an optional exception used to output a stack trace. If {@code null} is passed, JLogger will generate a nondescript
+     *                {@link RuntimeException}.
+     */
     public static void logSevere(String message, Exception e) {
         String date = new SimpleDateFormat("MM-dd-yyyy").format(new Date());
         String time = new SimpleDateFormat("h:mma").format(new Date());
