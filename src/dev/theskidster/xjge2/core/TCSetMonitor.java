@@ -8,10 +8,16 @@ import java.util.List;
  * Created: May 26, 2021
  */
 
+/**
+ * Changes the display device the game window will use. Often this will cause the window to relocate.
+ */
 final class TCSetMonitor extends TerminalCommand {
 
+    /**
+     * Creates a new instance of the setMonitor command.
+     */
     TCSetMonitor() {
-        super("Changes the current monitor the game window use.", 
+        super("Changes the display device the game window will use.", 
 
               useGenericSetter("device"),
 
@@ -29,13 +35,13 @@ final class TCSetMonitor extends TerminalCommand {
                 if(value > 0 && value < Hardware.getNumMonitors() + 1) {
                     Window.setMonitor(args.get(0));
                 } else {
-                    setOutput("ERROR: Could not find a monitor with an ID of " + value, Color.YELLOW);
+                    setOutput("ERROR: Could not find a monitor with an ID of " + value, Color.RED);
                 }
             } catch(NumberFormatException e) {
                 if(args.get(0).equals("next") || args.get(0).equals("prev")) {
                     Window.setMonitor(args.get(0));
                 } else {
-                    setOutput(errorInvalidArg(args.get(0), "<int>, (next), or (prev)"), Color.YELLOW);
+                    setOutput(errorInvalidArg(args.get(0), "<int>, (next), or (prev)"), Color.RED);
                 }
             }
         } else {

@@ -10,10 +10,13 @@ import java.util.List;
 
 final class TCSetMusicMasterVolume extends TerminalCommand {
 
+    /**
+     * Creates a new instance of the setMusicMasterVolume command.
+     */
     public TCSetMusicMasterVolume() {
         super("Sets the master volume of the games music.", 
 
-              "Requires a float between 0 and 1.",
+              "Requires a value between 0 and 1.",
 
               "setMusicMasterVolume (<float>)");
     }
@@ -34,10 +37,10 @@ final class TCSetMusicMasterVolume extends TerminalCommand {
                     if(value >= 0 && value <= 1) {
                         Audio.setMusicMasterVolume(value);
                     } else {
-                        setOutput("ERROR: Value out of bounds, must be between 1 and 0.", Color.YELLOW);
+                        setOutput("ERROR: Value out of bounds, must be between 1 and 0.", Color.RED);
                     }
                 } catch(NumberFormatException e) {
-                    setOutput(errorInvalidArg(args.get(0), "(float)"), Color.YELLOW);
+                    setOutput(errorInvalidArg(args.get(0), "(float)"), Color.RED);
                 }
             }
         }

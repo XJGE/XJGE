@@ -36,7 +36,7 @@ final class TCSetFullscreen extends TerminalCommand {
                 setOutput("Fullscreen changed: (" + value + ")", Color.WHITE);
                 Window.setFullscreen(value);
             } else {
-                setOutput(errorInvalidArg(parameter, "(true) or (false)"), Color.YELLOW);
+                setOutput(errorInvalidArg(parameter, "(true) or (false)"), Color.RED);
             }
         } else {
             Window.setFullscreen(!Window.getFullscreen());
