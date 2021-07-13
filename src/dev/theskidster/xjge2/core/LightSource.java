@@ -15,7 +15,7 @@ import org.lwjgl.system.MemoryStack;
  */
 
 /**
- * Represents a source of visible light at some point in space. This object can be best conceptualized as a physical object that emits 
+ * Represents a source of visible light at some point in 3D space. This object can be best conceptualized as a physical object that emits 
  * light, such as a light bulb.
  * <br><br>
  * This is a data structure used internally by the engine. If you wish to add a new source of light to a scene, you should use either
