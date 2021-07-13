@@ -11,6 +11,9 @@ import org.lwjgl.openal.ALCCapabilities;
  * Created: Jun 20, 2021
  */
 
+/**
+ * Represents a peripheral audio output device such as a speaker, headset, or headphones.
+ */
 public final class Speaker {
 
     final int id;
@@ -21,6 +24,12 @@ public final class Speaker {
     public final String name;
     private final ALCCapabilities capabilities;
     
+    /**
+     * Creates a new audio device.
+     * 
+     * @param id   the unique number used to identify the device in other parts of the engine
+     * @param name the name of the device as provided by OpenAL
+     */
     Speaker(int id, String name) {
         this.id   = id;
         this.name = name;
@@ -30,6 +39,11 @@ public final class Speaker {
         context      = alcCreateContext(handle, (IntBuffer) null);
     }
     
+    /**
+     * Before an audio device can start playing sounds from {@link SoundSource} objects, OpenAL must create a context. Using this method 
+     * will create a new OpenAL context on the device from which it is called and subsequently reload any audio data previously allocated 
+     * into the new context.
+     */
     void setContextCurrent() {
         try {
             alcMakeContextCurrent(context);
