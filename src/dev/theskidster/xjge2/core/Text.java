@@ -11,6 +11,12 @@ import org.joml.Vector2i;
  * Created: Jun 4, 2021
  */
 
+/**
+ * Provides utilities for rendering text to the screen.
+ * <br><br>
+ * NOTE: The primary method used by this class to draw strings of text is exposed exclusively to subclasses of {@link Widget}. All other
+ * additional methods can be accessed statically.
+ */
 public final class Text {
 
     private int drawOrder;
@@ -25,8 +31,20 @@ public final class Text {
     
     private final HashMap<Integer, HashMap<Integer, Glyph>> glyphs = new HashMap<>();
     
+    /**
+     * Default constructor provided here to keep it out of the implementations reach.
+     */
     Text() {}
     
+    /**
+     * Checks to see whether or not a property of the rendered text has changed.
+     * 
+     * @param <T>       the data type of the property
+     * @param prevValue the previous value of the property being checked
+     * @param currValue the current value of the property in question
+     * 
+     * @return true if a change in the text strings state has been detected
+     */
     private <T> boolean valueChanged(HashMap<Integer, T> prevValue, T currValue) {
         if(prevValue.containsKey(drawOrder)) {
             return !prevValue.get(drawOrder).equals(currValue);
@@ -35,10 +53,25 @@ public final class Text {
         }
     }
     
+    /**
+     * Updates the value of a property to reflect whatever changes have been made to the string of rendered text.
+     * 
+     * @param <T>       the data type of the property
+     * @param prevValue the previous value of the property being checked
+     * @param currValue the current value of the property in question
+     */
     private <T> void updateValue(HashMap<Integer, T> prevValue, T currValue) {
         if(valueChanged(prevValue, currValue)) prevValue.put(drawOrder, currValue);
     }
     
+    /**
+     * Draws a string of text to the screen.
+     * 
+     * @param font     the font the text will be drawn in
+     * @param text     the string of text to display
+     * @param position the position in the window at which the text string will be rendered
+     * @param color    the color the text will be rendered in
+     */
     void drawString(Font font, String text, Vector2i position, Color color) {
         drawOrder++;
         
@@ -81,6 +114,13 @@ public final class Text {
         updateValue(prevColor, color);
     }
     
+    /**
+     * Draws a string of text that exhibits syntax highlighting.
+     * 
+     * @param font     the font the text will be drawn in
+     * @param text     the string of text to display
+     * @param position the position in the window at which the text string will be rendered
+     */
     void drawCommand(Font font, String text, Vector2i position) {
         drawOrder++;
         
@@ -120,6 +160,16 @@ public final class Text {
         updateValue(prevPosition, prevPosition.get(drawOrder).set(position));
     }
     
+    /**
+     * Draws the output response of a terminal command.
+     * 
+     * @param font      the font the text will be drawn in
+     * @param o1        an array containing the output objects generated from previously executed commands
+     * @param o2        the output object representing the response of the executed command
+     * @param index     the current index that the output occupies in the command terminals output history
+     * @param executed  if true, a new command has been executed and the properties of a rendered text will need to be updated
+     * @param rectangle the rectangle object that will serve as a background to the generated output string
+     */
     void drawOutput(Font font, TerminalOutput[] o1, TerminalOutput o2, int index, boolean executed, Rectangle rectangle) {
         drawOrder++;
         
@@ -163,10 +213,23 @@ public final class Text {
         fontData.get(drawOrder).render(font, glyphs.get(drawOrder), executed);
     }
     
+    /**
+     * Resets the order in which the strings are rendered. This is called automatically by the engine to further optimize text 
+     * rendering.
+     */
     void resetStringIndex() {
         drawOrder = 0;
     }
     
+    /**
+     * Attempts to wrap a string inside of the width specified. Will not break words.
+     * 
+     * @param text         the string of text to wrap
+     * @param advanceLimit the width that the string may not exceed
+     * @param font         the current font of the string being wrapped
+     * 
+     * @return a string formatted to fit inside the width specified
+     */
     public static String wrap(String text, int advanceLimit, Font font) {
         var words        = new ArrayList<String>();
         StringBuilder sb = new StringBuilder();
@@ -210,6 +273,14 @@ public final class Text {
         return text;
     }
     
+    /**
+     * Finds the length of a string in pixels.
+     * 
+     * @param text the string of text to measure
+     * @param font the current font of the string being measured
+     * 
+     * @return the length of the string in pixels
+     */
     public static int lengthInPixels(String text, Font font) {
         int length = 0;
         
@@ -222,6 +293,15 @@ public final class Text {
         return length;
     }
     
+    /**
+     * Finds the amount of times a character appears in a string from some point.
+     * 
+     * @param text  the string of text to examine
+     * @param c     the character to search for
+     * @param index the index to offset the search by. Any index preceding the one specified will be omitted from the search.
+     * 
+     * @return the number of times the character was found in the string provided
+     */
     public static int numCharOccurences(String text, char c, int index) {
         if(index >= text.length()) return 0;
         int count = (text.charAt(index) == c) ? 1 : 0;

@@ -1,6 +1,5 @@
 package dev.theskidster.xjge2.core;
 
-import dev.theskidster.xjge2.core.Game;
 import java.beans.PropertyChangeListener;
 import java.util.List;
 
