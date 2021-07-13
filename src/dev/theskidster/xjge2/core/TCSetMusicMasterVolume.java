@@ -8,15 +8,19 @@ import java.util.List;
  * Created: Jun 24, 2021
  */
 
+/**
+ * Changes the current master volume used to attenuate the games background music.
+ */
 final class TCSetMusicMasterVolume extends TerminalCommand {
 
     /**
      * Creates a new instance of the setMusicMasterVolume command.
      */
     public TCSetMusicMasterVolume() {
-        super("Sets the master volume of the games music.", 
+        super("Changes the current master volume used to attenuate the games " + 
+              "background music.", 
 
-              "Requires a value between 0 and 1.",
+              "Requires a floating point value between 0 and 1.",
 
               "setMusicMasterVolume (<float>)");
     }
@@ -26,10 +30,10 @@ final class TCSetMusicMasterVolume extends TerminalCommand {
         output = null;
         
         if(args.isEmpty()) {
-            setOutput(errorNotEnoughArgs(1), Color.YELLOW);
+            setOutput(errorNotEnoughArgs(1), Color.RED);
         } else {
             if(args.size() > 1) {
-                setOutput(errorTooManyArgs(args.size(), 1), Color.YELLOW);
+                setOutput(errorTooManyArgs(args.size(), 1), Color.RED);
             } else {
                 try {
                     float value = Float.parseFloat(args.get(0));
