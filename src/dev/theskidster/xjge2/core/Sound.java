@@ -15,6 +15,11 @@ import org.lwjgl.system.MemoryUtil;
  * Created: Jun 22, 2021
  */
 
+/**
+ * Supplies the data parsed from an audio file into a new sound object that can be used by the {@link Audio} class to play sound 
+ * effects. The engine supports two formats, 8-bit mono (for sound effects), and 16-bit stereo (for music). Vorbis .ogg is the preferred 
+ * file format of this engine.
+ */
 public final class Sound {
 
     public final int handle;
@@ -25,6 +30,13 @@ public final class Sound {
     
     final String filename;
     
+    /**
+     * Creates a new sound object from the audio file specified. If the audio file cannot be found, the engine will instead use a fallback 
+     * sound in its place.
+     * 
+     * @param filename   the name of the file to load. Expects the file extension to be included.
+     * @param isSongPart if true, the sound will not be included in the audio classes sound collection
+     */
     Sound(String filename, boolean isSongPart) {
         this.filename   = filename;
         this.isSongPart = isSongPart;
@@ -46,10 +58,21 @@ public final class Sound {
         ErrorUtils.checkALError();
     }
     
+    /**
+     * Creates a new sound object from the audio file specified. If the audio file cannot be found, the engine will instead use a fallback 
+     * sound in its place.
+     * 
+     * @param filename the name of the file to load. Expects the file extension to be included.
+     */
     public Sound(String filename) {
         this(filename, false);
     }
     
+     /**
+     * Parses the data of the sound file specified and generates a new data buffer from its contents.
+     * 
+     * @param file the file to extract sound data from
+     */
     private void loadSound(InputStream file) {
         try(MemoryStack stack = MemoryStack.stackPush()) {
             byte[] data = file.readAllBytes();
@@ -75,18 +98,38 @@ public final class Sound {
         }
     }
     
+    /**
+     * Adds the object to a collection in the {@link Audio} class that will be used to reload audio data when the current OpenAL context 
+     * is changed.
+     * 
+     * @param filename the name of the file to load. Expects the file extension to be included.
+     */
     private void addToCollection(String filename) {
         Audio.sounds.put(filename, this);
     }
     
+    /**
+     * Obtains the amount of channels this sound exhibits. This typically can be used to determine whether or not a sound is mixed in a 
+     * mono or stereo format.
+     * 
+     * @return the number of channels used by the sound object
+     */
     public int getChannels() {
         return channels;
     }
     
+    /**
+     * Obtains the unaltered sample rate of the sound. Typically in the range of 44kHz to 48kHz.
+     * 
+     * @return the sample rate of the sound object in hertz
+     */
     public int getSampleRate() {
         return sampleRate;
     }
     
+    /**
+     * Frees the audio data buffer used by this object.
+     */
     public void freeSound() {
         if(!isSongPart) Audio.sounds.remove(filename);
         alDeleteBuffers(handle);
