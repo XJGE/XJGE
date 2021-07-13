@@ -16,6 +16,10 @@ import org.lwjgl.system.MemoryStack;
  * Created: May 11, 2021
  */
 
+/**
+ * Represents a rectangular region of the applications window through which the perspective of a scene and its rendered objects may be 
+ * viewed.
+ */
 final class Viewport {
 
     final int id;
@@ -33,6 +37,12 @@ final class Viewport {
     
     LinkedHashMap<String, Widget> ui = new LinkedHashMap<>();
     
+    /**
+     * Creates a new viewport object.
+     * 
+     * @param id the unique number used to identify the viewport in other parts of the engine. Corresponds directly with 
+     *           {@link org.lwjgl.glfw.GLFW#GLFW_JOYSTICK_1 GLFW_JOYSTICK} values.
+     */
     Viewport(int id) {
         this.id = id;
         
@@ -45,6 +55,11 @@ final class Viewport {
         active = (id == 0);
     }
     
+    /**
+     * Creates a new viewport object from an existing one.
+     * 
+     * @param viewport the viewport object to copy
+     */
     Viewport(Viewport viewport) {
         id         = viewport.id;
         texHandle  = viewport.texHandle;
@@ -59,6 +74,9 @@ final class Viewport {
         ui         = viewport.ui;
     }
     
+    /**
+     * Creates a new OpenGL texture object to be attached to the engines framebuffer.
+     */
     private void createTextureAttachment() {
         glBindTexture(GL_TEXTURE_2D, texHandle);
             glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
@@ -92,6 +110,18 @@ final class Viewport {
         glEnableVertexAttribArray(2);
     }
     
+    /**
+     * Renders a scene from the perspective of this viewport. Viewport rendering is done in three stages: 
+     * <ol>
+     * <li>The perspective of the camera object used by this viewport is rendered.</li>
+     * <li>The viewports UI components will be drawn in order of their z-positions.</li> 
+     * <li>The texture attachment associated with this viewport by the engines framebuffer will be updated to reflect the changes made 
+     *     in the previous two steps.</li>
+     * </ol>
+     * 
+     * @param glPrograms an immutable collection containing the shader programs compiled during startup
+     * @param stage      the stage denoting the viewports current render pass
+     */
     void render(Map<String, GLProgram> glPrograms, String stage) {
         switch(stage) {
             case "camera" -> {
@@ -118,6 +148,12 @@ final class Viewport {
         }
     }
     
+    /**
+     * Convenience method used to revert the viewports camera projection matrix back to whatever projection type (orthogonal or perspective) 
+     * it was using before.
+     * 
+     * @param glPrograms an immutable collection containing the shader programs compiled during startup
+     */
     void resetCamera(Map<String, GLProgram> glPrograms) {
         XJGE.glPrograms.values().forEach(glProgram -> {
             if(currCamera.isOrtho) currCamera.setOrtho(glProgram, width, height);
@@ -125,6 +161,16 @@ final class Viewport {
         });
     }
     
+    /**
+     * Sets the resolution and position of the viewport inside the applications window.
+     * 
+     * @param width  the width of the viewport in pixels
+     * @param height the height of the viewport in pixels
+     * @param x1     the x coordinate of the viewports bottom left corner
+     * @param y1     the y coordinate of the viewports bottom left corner
+     * @param x2     the x coordinate of the viewports top right corner
+     * @param y2     the y coordinate of the viewports top right corner
+     */
     void setBounds(int width, int height, int x1, int y1, int x2, int y2) {
         this.width  = width;
         this.height = height;
@@ -136,6 +182,13 @@ final class Viewport {
         ui.values().forEach(widget -> widget.setSplitPosition()); //TODO: provide split type, width, height, x1/2.. etc.?
     }
     
+    /**
+     * Adds a new {@link Widget} to this viewport. Widgets will be rendered in the order of their z-positions with lower numbers denoting a higher priority. 
+     * For example, a component with a z-position of 0 will be rendered in front of a component with a z-position of 1.
+     * 
+     * @param name   the name that will be used to identify and remove the widget later
+     * @param widget the widget to add
+     */
     void addUIWidget(String name, Widget widget) {
         ui.put(name, widget);
         
@@ -152,6 +205,11 @@ final class Viewport {
         ui.putAll(temp);
     }
     
+    /**
+     * Removes a widget from this viewports user interface.
+     * 
+     * @param name the name of the widget to remove
+     */
     void removeUIWidget(String name) {
         ui.remove(name);
     }
