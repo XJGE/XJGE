@@ -158,7 +158,7 @@ final class Terminal implements PropertyChangeListener {
             rectBatch1.drawRectangle(0, 0, Window.getWidth(), font.size + 4, Color.BLACK);
         rectBatch1.batchEnd();
         
-        rectBatch2.batchStart(0.4f);
+        rectBatch2.batchStart(0.5f);
             opaqueRectangles.forEach((index, rect) -> {
                 rectBatch2.drawRectangle(rect, Color.BLACK);
             });

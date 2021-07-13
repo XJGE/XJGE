@@ -31,8 +31,8 @@ final class TCHelp extends TerminalCommand {
         switch(args.size()) {
             case 0 -> {
                 String info = "Start typing to view command suggestions, press " + 
-                              "TAB to autocomplete, ENTER to execute, and F1 to " + 
-                              "exit the terminal. A full list of commands can " + 
+                              "TAB to autocomplete, ENTER to execute, and SHIFT+F1 " + 
+                              "to exit the terminal. A full list of commands can " + 
                               "be viewed by using showCommands.";
                 
                 setOutput(info, Color.LIME);
@@ -42,9 +42,9 @@ final class TCHelp extends TerminalCommand {
                 command = args.get(0);
 
                 if(commands.keySet().stream().anyMatch(name -> name.equals(command))) {
-                    setOutput(command + " - " + commands.get(command).getDescription(), Color.WHITE);
+                    setOutput(command + " - " + commands.get(command).getDescription(), Color.CYAN);
                 } else {
-                    setOutput(commandNotFound(command), Color.YELLOW);
+                    setOutput(commandNotFound(command), angryRed);
                 }
             }
 
@@ -57,7 +57,7 @@ final class TCHelp extends TerminalCommand {
                         if(commands.keySet().stream().anyMatch(name -> name.equals(command))) {
                             setOutput(commands.get(command).getUsage(), Color.WHITE);
                         } else {
-                            setOutput(commandNotFound(command), Color.YELLOW);
+                            setOutput(commandNotFound(command), Color.ORANGE);
                         }
                     }
                     
@@ -65,15 +65,15 @@ final class TCHelp extends TerminalCommand {
                         if(commands.keySet().stream().anyMatch(name -> name.equals(command))) {
                             setOutput(commands.get(command).getSyntax(), Color.YELLOW);
                         } else {
-                            setOutput(commandNotFound(command), Color.YELLOW);
+                            setOutput(commandNotFound(command), Color.ORANGE);
                         }
                     }
 
-                    default -> setOutput("ERROR: Unknown wildcard: \"" + wildcard + "\", use -u or -s.", Color.YELLOW);
+                    default -> setOutput("ERROR: Unknown wildcard: \"" + wildcard + "\", use -u or -s.", Color.ORANGE);
                 }
             }
 
-            default -> setOutput(errorTooManyArgs(args.size(), 2), Color.YELLOW);
+            default -> setOutput(errorTooManyArgs(args.size(), 2), Color.ORANGE);
         }
     }
     

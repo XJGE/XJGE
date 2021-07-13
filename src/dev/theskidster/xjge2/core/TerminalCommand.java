@@ -16,6 +16,8 @@ public abstract class TerminalCommand {
     private final String usage;
     private final String syntax;
     
+    protected final Color angryRed = Color.RED;
+    
     protected TerminalOutput output;
     
     protected Map<String, TerminalCommand> commands;

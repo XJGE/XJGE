@@ -193,7 +193,7 @@ final class DebugInfo {
      * Renders the interface to the window.
      */
     void render() {
-        rectBatch.batchStart(0.4f);
+        rectBatch.batchStart(0.5f);
             for(Rectangle rectangle : rectangles) rectBatch.drawRectangle(rectangle, Color.BLACK);
         rectBatch.batchEnd();
         
