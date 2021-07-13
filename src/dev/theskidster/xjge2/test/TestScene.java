@@ -1,12 +1,10 @@
 package dev.theskidster.xjge2.test;
 
 import dev.theskidster.xjge2.core.Camera;
-import dev.theskidster.xjge2.core.Game;
 import dev.theskidster.xjge2.core.Scene;
 import dev.theskidster.xjge2.core.Song;
 import dev.theskidster.xjge2.core.Sound;
 import dev.theskidster.xjge2.core.Timer;
-import dev.theskidster.xjge2.graphics.Color;
 import dev.theskidster.xjge2.graphics.GLProgram;
 import java.util.Map;
 
@@ -29,8 +27,6 @@ public class TestScene extends Scene {
         
         //Input.setDevicePuppet(GLFW_JOYSTICK_1, entity.puppet);
         //Input.setDeviceDeadzone(0, 0.34f); //TODO: doesnt update cfg file.
-        
-        //Game.setClearColor(Color.RED);
         
         entities.put("test", new TestEntity3(0, 0, -5));
         //entities.put("test", entity);

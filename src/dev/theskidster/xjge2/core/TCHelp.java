@@ -8,8 +8,14 @@ import java.util.List;
  * Created: May 26, 2021
  */
 
+/**
+ * Provides users with information about commands and the command terminal.
+ */
 final class TCHelp extends TerminalCommand {
     
+    /**
+     * Creates a new instance of the help command.
+     */
     TCHelp() {
         super("Supplies information about the terminal and its various " + 
               "commands. Use -u, or -s, prior to the commands name to view " + 
@@ -44,7 +50,7 @@ final class TCHelp extends TerminalCommand {
                 if(commands.keySet().stream().anyMatch(name -> name.equals(command))) {
                     setOutput(command + " - " + commands.get(command).getDescription(), Color.CYAN);
                 } else {
-                    setOutput(commandNotFound(command), angryRed);
+                    setOutput(commandNotFound(command), Color.RED);
                 }
             }
 
@@ -57,7 +63,7 @@ final class TCHelp extends TerminalCommand {
                         if(commands.keySet().stream().anyMatch(name -> name.equals(command))) {
                             setOutput(commands.get(command).getUsage(), Color.WHITE);
                         } else {
-                            setOutput(commandNotFound(command), Color.ORANGE);
+                            setOutput(commandNotFound(command), Color.RED);
                         }
                     }
                     
@@ -65,18 +71,25 @@ final class TCHelp extends TerminalCommand {
                         if(commands.keySet().stream().anyMatch(name -> name.equals(command))) {
                             setOutput(commands.get(command).getSyntax(), Color.YELLOW);
                         } else {
-                            setOutput(commandNotFound(command), Color.ORANGE);
+                            setOutput(commandNotFound(command), Color.RED);
                         }
                     }
 
-                    default -> setOutput("ERROR: Unknown wildcard: \"" + wildcard + "\", use -u or -s.", Color.ORANGE);
+                    default -> setOutput("ERROR: Unknown wildcard: \"" + wildcard + "\", use -u or -s.", Color.RED);
                 }
             }
 
-            default -> setOutput(errorTooManyArgs(args.size(), 2), Color.ORANGE);
+            default -> setOutput(errorTooManyArgs(args.size(), 2), Color.RED);
         }
     }
     
+    /**
+     * Generates an error message whenever a command of the name specified cannot be found.
+     * 
+     * @param command the name of the command that doesn't exist
+     * 
+     * @return a generic string indicating an error
+     */
     private String commandNotFound(String command) {
         return "ERROR: Unable to find command: \"" + command + "\".";
     }
