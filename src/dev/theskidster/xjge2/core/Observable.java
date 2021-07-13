@@ -10,7 +10,7 @@ import java.util.HashMap;
  */
 
 /**
- * Component object which can be used to relay information about state changes occurring in the implementing object to one or more observers 
+ * A Component object which can be used to relay information about state changes occurring in the implementing object to one or more observers 
  * located anywhere in the codebase. Objects which use observable objects should define the properties (often fields) observers should look for 
  * in their constructors with the properties collection provided. This usually looks something like this:
  * <blockquote><pre>
@@ -27,6 +27,14 @@ import java.util.HashMap;
  *     observable.properties.put("myProperty3", prop3);
  *     ...
  *     observable.addObserver(other);
+ *     ...
+ * }
+ * 
+ * <b>//Called every game tick...</b>
+ * MyObject.update() {
+ *     notifyObservers("myProperty1", prop1);
+ *     notifyObservers("myProperty2", prop2);
+ *     notifyObservers("myProperty3", prop3);
  *     ...
  * }
  * </pre></blockquote>
