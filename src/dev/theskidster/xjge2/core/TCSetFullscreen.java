@@ -8,8 +8,14 @@ import java.util.List;
  * Created: May 25, 2021
  */
 
+/**
+ * Changes the game window between fullscreen and windowed modes.
+ */
 final class TCSetFullscreen extends TerminalCommand {
 
+    /**
+     * Creates a new instance of the setFullscreen command.
+     */
     TCSetFullscreen() {
         super("Changes the game window between fullscreen and windowed modes.", 
               
