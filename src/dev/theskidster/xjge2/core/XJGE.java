@@ -31,7 +31,7 @@ public final class XJGE {
     
     private static boolean initCalled;
     private static boolean matchWindowResolution;
-    private static boolean freeCamEnabled;
+    private static boolean noclipEnabled;
     private static boolean terminalEnabled;
     private static boolean showLightSources;
     private static boolean firstMouse = true;
@@ -47,7 +47,7 @@ public final class XJGE {
     private static Font engineFont;
     private static Texture engineIcons;
     private static Sound beep;
-    private static FreeCam freeCam;
+    private static Noclip freeCam;
     private static Terminal terminal;
     private static DebugInfo debugInfo;
     
@@ -205,9 +205,9 @@ public final class XJGE {
                 
                 if(debugEnabled && key == GLFW_KEY_F2 && action == GLFW_PRESS) {
                     if(!terminalEnabled) {
-                        XJGE.freeCamEnabled = !freeCamEnabled;
+                        XJGE.noclipEnabled = !noclipEnabled;
                         
-                        if(freeCamEnabled) {
+                        if(noclipEnabled) {
                             glfwSetInputMode(Window.HANDLE, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
                             viewports[0].prevCamera = viewports[0].currCamera;
                             viewports[0].currCamera = freeCam;
@@ -232,7 +232,7 @@ public final class XJGE {
                     Audio.playSound(beep, null, false);
                 }
 
-                if(freeCamEnabled && !terminalEnabled) {
+                if(noclipEnabled && !terminalEnabled) {
                     if(key == GLFW_KEY_W) freeCam.pressed[0] = (action != GLFW_RELEASE);
                     if(key == GLFW_KEY_A) freeCam.pressed[1] = (action != GLFW_RELEASE);
                     if(key == GLFW_KEY_S) freeCam.pressed[2] = (action != GLFW_RELEASE);
@@ -249,7 +249,7 @@ public final class XJGE {
             });
 
             glfwSetCursorPosCallback(HANDLE, (window, xpos, ypos) -> {
-                if(freeCamEnabled && !terminalEnabled) {
+                if(noclipEnabled && !terminalEnabled) {
                     if(firstMouse) {
                         freeCam.prevX = xpos;
                         freeCam.prevY = ypos;
@@ -275,7 +275,7 @@ public final class XJGE {
         engineCommands.values().forEach(command -> command.setCommands(engineCommands));
         
         glPrograms = Collections.unmodifiableMap(glPrograms);
-        freeCam    = new FreeCam();
+        freeCam    = new Noclip();
         terminal   = new Terminal(engineCommands, engineFont);
         debugInfo  = new DebugInfo(engineFont, engineIcons);
         
@@ -504,7 +504,7 @@ public final class XJGE {
                            "by the ID of " + viewportID + " exists.");
         } else {
             if(viewports[viewportID].currCamera == freeCam) {
-                //Added in case the freecam is enabled when this was called.
+                //Added in case noclip is enabled when this was called.
                 viewports[viewportID].prevCamera = camera;
             } else {
                 viewports[viewportID].currCamera = camera;

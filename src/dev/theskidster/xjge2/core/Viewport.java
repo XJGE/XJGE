@@ -28,8 +28,8 @@ final class Viewport {
     private Graphics g = new Graphics();
     Vector2i botLeft   = new Vector2i();
     Vector2i topRight  = new Vector2i();
-    Camera prevCamera  = new FreeCam();
-    Camera currCamera  = new FreeCam();
+    Camera prevCamera  = new Noclip();
+    Camera currCamera  = new Noclip();
     
     LinkedHashMap<String, Widget> ui = new LinkedHashMap<>();
     

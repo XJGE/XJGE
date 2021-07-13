@@ -178,7 +178,7 @@ final class FontVertexData {
     }
     
     /**
-     * Convenience method which frees the default buffer objects defined by this class.
+     * Convenience method which frees the data buffers allocated by this class.
      */
     void freeBuffers() {
         glDeleteVertexArrays(vao);

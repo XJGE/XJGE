@@ -10,9 +10,9 @@ import org.joml.Vector3f;
  */
 
 /**
- * A camera object provided by the engine that permits free traversal of the game world. Can be toggled by using F2 with debug mode enabled.
+ * A camera object provided by the engine that permits free traversal of the game world.
  */
-final class FreeCam extends Camera {
+final class Noclip extends Camera {
 
     private float speed = 0.25f;
     private float pitch;
@@ -31,7 +31,7 @@ final class FreeCam extends Camera {
     /**
      * Creates a new camera that may be used to freely traverse the game world.
      */
-    FreeCam() {
+    Noclip() {
         super(false);
     }
 

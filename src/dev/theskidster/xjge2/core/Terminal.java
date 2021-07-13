@@ -19,6 +19,13 @@ import static org.lwjgl.glfw.GLFW.*;
  * Created: May 23, 2021
  */
 
+/**
+ * Provides a command line which can be used to interact with the engine at runtime. The command terminals functionality can be extended to 
+ * support more commands to better suit the needs of the implementation.
+ * <br><br>
+ * The command terminal can be opened by pressing {@code SHIFT} + {@code F1} with debug mode enabled. While open, the terminal will 
+ * override input from the keyboard. {@linkplain Noclip Noclip mode} cannot be used while the command terminal is open.
+ */
 final class Terminal implements PropertyChangeListener {
 
     private int xIndex;
@@ -54,15 +61,32 @@ final class Terminal implements PropertyChangeListener {
     
     private static final HashMap<Integer, Key> keyChars;
     
+    /**
+     * Represents a key on the keyboard.
+     */
     private static class Key {
         private final char c;
         private final char C;
         
+        /**
+         * Creates a new Key struct that contains the character the key represents 
+         * in both upper and lowercase.
+         * 
+         * @param c the letter/symbol of the key in lowercase
+         * @param C the letter/symbol of the key in uppercase
+         */
         Key(char c, char C) {
             this.c = c;
             this.C = C;
         }
         
+        /**
+         * Returns the appropriate letter/symbol the key represents depending on whether the shift key was pressed.
+         * 
+         * @param shiftHeld if true, the uppercase character will be returned
+         * 
+         * @return the letter/symbol the key represents
+         */
         char getChar(boolean shiftHeld) {
             return (!shiftHeld) ? c : C; 
         }
@@ -123,6 +147,12 @@ final class Terminal implements PropertyChangeListener {
         for(int i = 0; i < 5; i++) opaqueRectangles.put(i, new Rectangle());
     }
     
+    /**
+     * Creates a new command terminal which can be used to interact directly with the game engine.
+     * 
+     * @param commands 
+     * @param font     
+     */
     Terminal(TreeMap<String, TerminalCommand> commands, Font font) {
         this.commands = commands;
         this.font     = font;
@@ -135,6 +165,9 @@ final class Terminal implements PropertyChangeListener {
         rectBatch2 = new RectangleBatch(5);
     }
     
+    /**
+     * 
+     */
     void update() {
         timer.update();
         if(Game.tick(20) && cursorIdle) cursorBlink = !cursorBlink; 
@@ -153,6 +186,9 @@ final class Terminal implements PropertyChangeListener {
         prevTyped = typed.toString();
     }
     
+    /**
+     * 
+     */
     void render() {
         rectBatch1.batchStart(1);
             rectBatch1.drawRectangle(0, 0, Window.getWidth(), font.size + 4, Color.BLACK);
@@ -185,6 +221,12 @@ final class Terminal implements PropertyChangeListener {
         ErrorUtils.checkGLError();
     }
     
+    /**
+     * 
+     * @param key
+     * @param action
+     * @param mods 
+     */
     void processKeyInput(int key, int action, int mods) {
         if(action == GLFW_PRESS || action == GLFW_REPEAT) {
             cursorIdle  = false;
@@ -269,6 +311,10 @@ final class Terminal implements PropertyChangeListener {
         }
     }
     
+    /**
+     * 
+     * @param c 
+     */
     private void insertChar(char c) {
         typed.insert(xIndex, c);
         charPos.put(xIndex, (xIndex * glyphAdvance) + glyphAdvance);
@@ -285,6 +331,10 @@ final class Terminal implements PropertyChangeListener {
         scrollX();
     }
     
+    /**
+     * 
+     * @return 
+     */
     private boolean validate() {
         if((typed.toString().length() > suggestion.length())) {
             return typed.toString().regionMatches(0, suggestion, 0, suggestion.length()) &&
@@ -294,6 +344,10 @@ final class Terminal implements PropertyChangeListener {
         }
     }
     
+    /**
+     * 
+     * @param s 
+     */
     private void autoComplete(String s) {
         typed.delete(0, typed.length());
         xIndex = 0;
@@ -303,6 +357,9 @@ final class Terminal implements PropertyChangeListener {
         }
     }
     
+    /**
+     * 
+     */
     private void scrollX() {
         if(typed.length() > 0) {
             int xOffset = 0;
@@ -325,6 +382,10 @@ final class Terminal implements PropertyChangeListener {
         }
     }
     
+    /**
+     * 
+     * @param command 
+     */
     private void execute(String command) {
         String name = "";
         ArrayList<String> args = new ArrayList<>();
@@ -378,6 +439,9 @@ final class Terminal implements PropertyChangeListener {
         executed = true;
     }
     
+    /**
+     * Convenience method which frees the data buffers allocated by this class.
+     */
     void freeBuffers() {
         if(rectBatch1 != null && rectBatch2 != null) {
             rectBatch1.freeBuffers();
