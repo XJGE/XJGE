@@ -1,7 +1,6 @@
 package dev.theskidster.xjge2.core;
 
 import dev.theskidster.xjge2.graphics.Color;
-import java.lang.System.Logger.Level;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.util.List;
@@ -11,12 +10,19 @@ import java.util.List;
  * Created: Jun 27, 2021
  */
 
+/**
+ * Changes the current scene to render.
+ */
 public class TCSetScene extends TerminalCommand {
 
+    /**
+     * Creates a new instance of the setScene command.
+     */
     public TCSetScene() {
         super("Changes the current scene to render.", 
 
-              "Pass the class name of the desired level, should not include parentheses.",
+              "Pass the class name of the desired level, should not include " + 
+              " parentheses or extension.",
 
               "setLevel (<string>)");
     }
@@ -26,10 +32,10 @@ public class TCSetScene extends TerminalCommand {
         output = null;
 
         if(args.isEmpty()) {
-            setOutput(errorNotEnoughArgs(1), Color.YELLOW);
+            setOutput(errorNotEnoughArgs(1), Color.RED);
         } else {
             if(args.size() > 1) {
-                setOutput(errorTooManyArgs(args.size(), 1), Color.YELLOW);
+                setOutput(errorTooManyArgs(args.size(), 1), Color.RED);
             } else {
                 try {
                     Class<?> c = Class.forName(XJGE.getScenesFilepath() + args.get(0));
@@ -38,12 +44,12 @@ public class TCSetScene extends TerminalCommand {
                         Constructor con = c.getConstructor(Scene.class.getClasses());
                         Game.setScene((Scene) con.newInstance(new Object[0]));
                     } else {
-                        setOutput("ERROR: Invalid argument. Must be a subclass of Level.", Color.YELLOW);
+                        setOutput("ERROR: Invalid argument. Must be a subclass of Scene.", Color.RED);
                     }
                 } catch(ClassNotFoundException | IllegalAccessException | IllegalArgumentException | 
                         InstantiationException | NoSuchMethodException | SecurityException | 
                         InvocationTargetException | NoClassDefFoundError ex) {
-                    setOutput(errorInvalidArg(args.get(0), "<Level>"), Color.YELLOW);
+                    setOutput(errorInvalidArg(args.get(0), "<string>"), Color.RED);
                 }
             }
         }
