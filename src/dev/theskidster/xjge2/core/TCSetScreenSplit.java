@@ -8,12 +8,16 @@ import java.util.List;
  * Created: May 25, 2021
  */
 
+/**
+ * Changes how the screen will be divided during split screen mode.
+ */
 final class TCSetScreenSplit extends TerminalCommand {
 
+    /**
+     * Creates a new instance of the setScreenSplit command.
+     */
     TCSetScreenSplit() {
-        super("Changes what kind of split is used for splitscreen play. Otherwise hidden " +
-              "viewports will use either the default camera or whichever was most " + 
-              "recently set.", 
+        super("Changes how the screen will be divided during split screen mode.", 
 
               "Parameter must be one of: none, vertical, horizontal, trisect, or quarter.",
 
@@ -25,10 +29,10 @@ final class TCSetScreenSplit extends TerminalCommand {
         output = null;
         
         if(args.isEmpty()) {
-            setOutput(errorNotEnoughArgs(1), Color.YELLOW);
+            setOutput(errorNotEnoughArgs(1), Color.RED);
         } else {
             if(args.size() > 1) {
-                setOutput(errorTooManyArgs(args.size(), 1), Color.YELLOW);
+                setOutput(errorTooManyArgs(args.size(), 1), Color.RED);
             } else {
                 switch(args.get(0)) {
                     case "none"       -> XJGE.setScreenSplit(Split.NONE);
@@ -37,7 +41,7 @@ final class TCSetScreenSplit extends TerminalCommand {
                     case "trisect"    -> XJGE.setScreenSplit(Split.TRISECT);
                     case "quarter"    -> XJGE.setScreenSplit(Split.QUARTER);
 
-                    default -> setOutput(errorInvalidArg(args.get(0), "(none), (horizontal), (vertical), (trisect), or (quarter)"), Color.YELLOW);
+                    default -> setOutput(errorInvalidArg(args.get(0), "(none), (horizontal), (vertical), (trisect), or (quarter)"), Color.RED);
                 }
             }
         }
