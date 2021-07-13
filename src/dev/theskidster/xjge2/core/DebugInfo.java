@@ -42,7 +42,7 @@ final class DebugInfo {
     /**
      * Creates a new debug interface using the supplied font and texture.
      * 
-     * @param font        the font the interface will be rendered in
+     * @param font        the font supplied by the engine that the interface will be rendered in
      * @param iconTexture the texture to use for the various icons in the interface
      */
     DebugInfo(Font font, Texture iconTexture) {

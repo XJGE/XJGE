@@ -20,8 +20,8 @@ import static org.lwjgl.glfw.GLFW.*;
  */
 
 /**
- * Provides a command line which can be used to interact with the engine at runtime. The command terminals functionality can be extended to 
- * support more commands to better suit the needs of the implementation.
+ * Provides a command line which can be used to interact with the engine at runtime. The command terminals functionality can be extended 
+ * to support more commands to better suit the needs of the implementation.
  * <br><br>
  * The command terminal can be opened by pressing {@code SHIFT} + {@code F1} with debug mode enabled. While open, the terminal will 
  * override input from the keyboard. {@linkplain Noclip Noclip mode} cannot be used while the command terminal is open.
@@ -62,18 +62,17 @@ final class Terminal implements PropertyChangeListener {
     private static final HashMap<Integer, Key> keyChars;
     
     /**
-     * Represents a key on the keyboard.
+     * Represents a single key on the keyboard.
      */
     private static class Key {
         private final char c;
         private final char C;
         
         /**
-         * Creates a new Key struct that contains the character the key represents 
-         * in both upper and lowercase.
+         * Creates a new Key struct that contains the characters the key represents.
          * 
-         * @param c the letter/symbol of the key in lowercase
-         * @param C the letter/symbol of the key in uppercase
+         * @param c the default letter/symbol of the key
+         * @param C the letter/symbol of the key when shift is held
          */
         Key(char c, char C) {
             this.c = c;
@@ -81,7 +80,7 @@ final class Terminal implements PropertyChangeListener {
         }
         
         /**
-         * Returns the appropriate letter/symbol the key represents depending on whether the shift key was pressed.
+         * Returns the letter/symbol the key represents depending on whether the shift key is held.
          * 
          * @param shiftHeld if true, the uppercase character will be returned
          * 
@@ -150,8 +149,8 @@ final class Terminal implements PropertyChangeListener {
     /**
      * Creates a new command terminal which can be used to interact directly with the game engine.
      * 
-     * @param commands 
-     * @param font     
+     * @param commands the commands the terminal will support
+     * @param font     the font supplied by the engine that the interface will be rendered in
      */
     Terminal(TreeMap<String, TerminalCommand> commands, Font font) {
         this.commands = commands;
@@ -166,7 +165,7 @@ final class Terminal implements PropertyChangeListener {
     }
     
     /**
-     * 
+     * Processes input and updates the command terminals interface.
      */
     void update() {
         timer.update();
@@ -187,7 +186,7 @@ final class Terminal implements PropertyChangeListener {
     }
     
     /**
-     * 
+     * Renders the interface to the window.
      */
     void render() {
         rectBatch1.batchStart(1);
@@ -222,10 +221,11 @@ final class Terminal implements PropertyChangeListener {
     }
     
     /**
+     * Processes input from the keyboard captured by the application window.
      * 
-     * @param key
-     * @param action
-     * @param mods 
+     * @param key    the value supplied by GLFW of a single key on the keyboard
+     * @param action an action supplied by GLFW that describes the nature of the key press
+     * @param mods   a value supplied by GLFW denoting whether any mod keys where held (such as shift or control)
      */
     void processKeyInput(int key, int action, int mods) {
         if(action == GLFW_PRESS || action == GLFW_REPEAT) {
@@ -312,8 +312,9 @@ final class Terminal implements PropertyChangeListener {
     }
     
     /**
+     * Inserts a character into the command line.
      * 
-     * @param c 
+     * @param c the typed character to add
      */
     private void insertChar(char c) {
         typed.insert(xIndex, c);
@@ -332,8 +333,9 @@ final class Terminal implements PropertyChangeListener {
     }
     
     /**
+     * Determines if the string in the command line matches a supported command.
      * 
-     * @return 
+     * @return true if the command is recognized by the terminal
      */
     private boolean validate() {
         if((typed.toString().length() > suggestion.length())) {
@@ -345,20 +347,22 @@ final class Terminal implements PropertyChangeListener {
     }
     
     /**
+     * Completes typing the suggestion provided by the terminal.
      * 
-     * @param s 
+     * @param suggestion the command suggestion to complete
      */
-    private void autoComplete(String s) {
+    private void autoComplete(String suggestion) {
         typed.delete(0, typed.length());
         xIndex = 0;
         
-        for(Character c : s.toCharArray()) {    
+        for(Character c : suggestion.toCharArray()) {    
             insertChar(c);
         }
     }
     
     /**
-     * 
+     * Offsets the visible portion of the string typed in the terminal by the position of the cursor. Used to navigate large strings that 
+     * extend beyond the windows width.
      */
     private void scrollX() {
         if(typed.length() > 0) {
@@ -383,8 +387,9 @@ final class Terminal implements PropertyChangeListener {
     }
     
     /**
+     * Executes a terminal command.
      * 
-     * @param command 
+     * @param command the command parsed from the typed string
      */
     private void execute(String command) {
         String name = "";
