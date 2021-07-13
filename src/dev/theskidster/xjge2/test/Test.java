@@ -1,8 +1,6 @@
 package dev.theskidster.xjge2.test;
 
 import dev.theskidster.xjge2.core.Game;
-import dev.theskidster.xjge2.core.Input;
-import static dev.theskidster.xjge2.core.Input.KEY_MOUSE_COMBO;
 import dev.theskidster.xjge2.core.XJGE;
 import org.joml.Vector2i;
 
