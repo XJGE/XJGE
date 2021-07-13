@@ -13,6 +13,10 @@ import org.lwjgl.system.MemoryUtil;
  * Created: Jun 13, 2021
  */
 
+/**
+ * Enables a {@link Scene} to exhibit a greater level of detail in its environment by projecting a 3D texture onto the corresponding 
+ * faces of a cuboid mesh, creating the illusion of an infinitely distant sky.
+ */
 public final class Skybox {
     
     private final Cubemap cubemap;
@@ -21,10 +25,28 @@ public final class Skybox {
     private final Matrix3f tempView = new Matrix3f();
     private final Matrix4f newView  = new Matrix4f();
     
+    /**
+     * Creates a new skybox using the images specified. These images should all exhibit the same width/height dimensions in pixels and may 
+     * exhibit transparency. 
+     * 
+     * @param topFilename    the filename of the image to use for the top of the skybox
+     * @param centerFilename the filename of the image to use for the sides of the skybox
+     * @param bottomFilename the filename of the image to use for the bottom of the skybox
+     */
     public Skybox(String topFilename, String centerFilename, String bottomFilename) {
         this(centerFilename, centerFilename, topFilename, bottomFilename, centerFilename, centerFilename);
     }
     
+    /**
+     * Overloaded version of {@link Skybox(String, String, String)}. This variant permits more variation between faces of the skybox.
+     * 
+     * @param rightFilename  the filename of the image to use for the right side of the skybox
+     * @param leftFilename   the filename of the image to use for the left side of the skybox
+     * @param topFilename    the filename of the image to use for the top of the skybox
+     * @param bottomFilename the filename of the image to use for the bottom of the skybox
+     * @param frontFilename  the filename of the image to use for the front of the skybox
+     * @param backFilename   the filename of the image to use for the back of the skybox
+     */
     public Skybox(String rightFilename, String leftFilename, String topFilename, String bottomFilename, String frontFilename, String backFilename) {
         Map<Integer, String> images = new HashMap<>();
         
@@ -100,6 +122,12 @@ public final class Skybox {
         MemoryUtil.memFree(g.indices);
     }
     
+    /**
+     * Renders the skybox using the images provided through its constructor. The view matrix of the camera currently rendering the scene is 
+     * included here to create the illusion of distance.
+     * 
+     * @param viewMatrix the view matrix of the viewport camera currently rendering the level
+     */
     void render(Matrix4f viewMatrix) {
         XJGE.getDefaultGLProgram().use();
         
@@ -121,6 +149,9 @@ public final class Skybox {
         ErrorUtils.checkGLError();
     }
     
+    /**
+     * Frees the texture objects and data buffers used by the skybox.
+     */
     public void freeResources() {
         cubemap.freeTexture();
         g.freeBuffers();
