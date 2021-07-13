@@ -34,12 +34,18 @@ final class TCSetMonitor extends TerminalCommand {
 
                 if(value > 0 && value < Hardware.getNumMonitors() + 1) {
                     Window.setMonitor(args.get(0));
+                    setOutput("Moved the window to monitor " + Window.monitor.id + 
+                              " \"" + Window.monitor.name + "\"", 
+                              Color.WHITE);
                 } else {
                     setOutput("ERROR: Could not find a monitor with an ID of " + value, Color.RED);
                 }
             } catch(NumberFormatException e) {
                 if(args.get(0).equals("next") || args.get(0).equals("prev")) {
                     Window.setMonitor(args.get(0));
+                    setOutput("Moved the window to monitor " + Window.monitor.id + 
+                              " \"" + Window.monitor.name + "\"", 
+                              Color.WHITE);
                 } else {
                     setOutput(errorInvalidArg(args.get(0), "<int>, (next), or (prev)"), Color.RED);
                 }

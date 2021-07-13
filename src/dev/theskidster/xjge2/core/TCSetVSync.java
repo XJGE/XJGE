@@ -8,8 +8,14 @@ import java.util.List;
  * Created: May 26, 2021
  */
 
+/**
+ * Changes whether or not vertical sync is enabled.
+ */
 final class TCSetVSync extends TerminalCommand {
 
+    /**
+     * Creates a new instance of the setVSync command.
+     */
     TCSetVSync() {
         super("Changes whether or not vertical sync is enabled.",
 
@@ -30,11 +36,11 @@ final class TCSetVSync extends TerminalCommand {
                 setOutput("VSync changed: (" + value + ")", Color.WHITE);
                 Hardware.setVSyncEnabled(value);
             } else {
-                setOutput(errorInvalidArg(parameter, "(true) or (false)"), Color.YELLOW);
+                setOutput(errorInvalidArg(parameter, "(true) or (false)"), Color.RED);
             }
         } else {
             Hardware.setVSyncEnabled(!Hardware.getVSyncEnabled());
-            setOutput("VSync changed: (" + Hardware.getVSyncEnabled() + ")", Color.WHITE);
+            setOutput("VSync changed: (" + Hardware.getVSyncEnabled() + ")", Color.RED);
         }
     }
 

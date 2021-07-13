@@ -180,7 +180,7 @@ public final class Hardware {
                         Audio.speaker.setContextCurrent();
                         Logger.logInfo(
                                 "Set current audio device to " + Audio.speaker.id + " \"" +
-                                Audio.speaker.name.substring(15) + "\".");
+                                Audio.speaker.name.substring(15) + "\"");
                     }
 
                     case "prev" -> {
@@ -192,7 +192,7 @@ public final class Hardware {
                         Audio.speaker.setContextCurrent();
                         Logger.logInfo(
                                 "Set current audio device to " + Audio.speaker.id + " \"" +
-                                Audio.speaker.name.substring(15) + "\".");
+                                Audio.speaker.name.substring(15) + "\"");
                     }
 
                     default -> {
@@ -204,7 +204,7 @@ public final class Hardware {
                                 Audio.speaker.setContextCurrent();
                                 Logger.logInfo(
                                         "Set current audio device to " + Audio.speaker.id + " \"" +
-                                                Audio.speaker.name.substring(15) + "\".");
+                                                Audio.speaker.name.substring(15) + "\"");
                             } else {
                                 Logger.logWarning(
                                         "Failed to set audio device. Could not find device at index " + index + ".", null);

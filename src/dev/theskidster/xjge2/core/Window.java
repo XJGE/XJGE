@@ -242,10 +242,7 @@ public final class Window {
                 }
             }
             
-            if(newMonitor != null) {
-                setMonitor(newMonitor);
-                //TODO: reset viewports
-            }
+            if(newMonitor != null) setMonitor(newMonitor);
         } else {
             Logger.logWarning("Failed to change windows current monitor." + 
                               " No monitors are currently connected.", 

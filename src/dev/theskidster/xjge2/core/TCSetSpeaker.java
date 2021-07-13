@@ -8,10 +8,16 @@ import java.util.List;
  * Created: Jun 24, 2021
  */
 
+/**
+ * Changes the current audio output device.
+ */
 final class TCSetSpeaker extends TerminalCommand {
 
+    /**
+     * Creates a new instance of the setSpeaker command.
+     */
     public TCSetSpeaker() {
-        super("Changes the current audio device.", 
+        super("Changes the current audio output device.", 
 
               useGenericSetter("device"),
 
@@ -28,18 +34,24 @@ final class TCSetSpeaker extends TerminalCommand {
 
                 if(value > -1 && value < Hardware.getNumSpeakers()) {
                     Hardware.setSpeaker(args.get(0));
+                    setOutput("Set current audio device to " + Audio.speaker.id + 
+                              " \"" + Audio.speaker.name.substring(15) + "\"", 
+                              Color.WHITE);
                 } else {
-                    setOutput("ERROR: Could not find an audio device by the ID of " + value, Color.YELLOW);
+                    setOutput("ERROR: Could not find an audio device by the ID of " + value, Color.RED);
                 }
             } catch(NumberFormatException e) {
                 if(args.get(0).equals("next") || args.get(0).equals("prev")) {
                     Hardware.setSpeaker(args.get(0));
+                    setOutput("Set current audio device to " + Audio.speaker.id + 
+                              " \"" + Audio.speaker.name.substring(15) + "\"", 
+                              Color.WHITE);
                 } else {
-                    setOutput(errorInvalidArg(args.get(0), "<int>, (next), or (prev)"), Color.YELLOW);
+                    setOutput(errorInvalidArg(args.get(0), "<int>, (next), or (prev)"), Color.RED);
                 }
             }
         } else {
-            setOutput(errorNotEnoughArgs(1), Color.YELLOW);
+            setOutput(errorNotEnoughArgs(1), Color.RED);
         }
     }
 
