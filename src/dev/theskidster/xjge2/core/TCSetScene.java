@@ -18,7 +18,7 @@ public class TCSetScene extends TerminalCommand {
     /**
      * Creates a new instance of the setScene command.
      */
-    public TCSetScene() {
+    TCSetScene() {
         super("Changes the current scene to render.", 
 
               "Pass the class name of the desired level, should not include " + 

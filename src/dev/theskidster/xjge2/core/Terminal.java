@@ -358,7 +358,7 @@ final class Terminal implements PropertyChangeListener {
             commands.get(name).execute(args);
             output = commands.get(name).getOutput();
         } else {
-            output = new TerminalOutput("ERROR: Command not recognized. Check syntax or use help.\n", Color.YELLOW);
+            output = new TerminalOutput("ERROR: Command not recognized. Check syntax or use help.\n", Color.RED);
         }
         
         if(output != null) {
@@ -393,9 +393,15 @@ final class Terminal implements PropertyChangeListener {
         cursorIdle = (Boolean) evt.getNewValue();
     }
     
+    /**
+     * Clears the terminal output.
+     */
     static class TCCLS extends TerminalCommand {
         
-        public TCCLS() {
+        /**
+         * Creates a new instance of the cls command.
+         */
+        TCCLS() {
             super("Clears the terminal output.",
 
                   "Simply type cls to use. This command contains no additional " + 

@@ -16,7 +16,7 @@ final class TCSetSoundMasterVolume extends TerminalCommand {
     /**
      * Creates a new instance of the setSoundMasterVolume command.
      */
-    public TCSetSoundMasterVolume() {
+    TCSetSoundMasterVolume() {
         super("Changes the current master volume used to attenuate the games " + 
               "sound effects.", 
 

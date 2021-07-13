@@ -51,7 +51,7 @@ final class TCSetMonitor extends TerminalCommand {
                 }
             }
         } else {
-            setOutput(errorNotEnoughArgs(1), Color.YELLOW);
+            setOutput(errorNotEnoughArgs(1), Color.RED);
         }
     }
 

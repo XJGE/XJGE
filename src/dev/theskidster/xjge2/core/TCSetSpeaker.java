@@ -16,7 +16,7 @@ final class TCSetSpeaker extends TerminalCommand {
     /**
      * Creates a new instance of the setSpeaker command.
      */
-    public TCSetSpeaker() {
+    TCSetSpeaker() {
         super("Changes the current audio output device.", 
 
               useGenericSetter("device"),

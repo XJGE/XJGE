@@ -9,9 +9,15 @@ import static org.lwjgl.glfw.GLFW.glfwSetWindowShouldClose;
  * Created: May 25, 2021
  */
 
+/**
+ * Ceases execution and gracefully exits the application.
+ */
 final class TCTerminate extends TerminalCommand {
 
-    public TCTerminate() {
+    /**
+     * Creates a new instance of the terminate command.
+     */
+    TCTerminate() {
         super("Ceases execution and gracefully exits the application.",
 
               "Simply type terminate to use. This command contains no " +
