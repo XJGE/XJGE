@@ -41,7 +41,9 @@ final class TCSetMusicMasterVolume extends TerminalCommand {
                     if(value >= 0 && value <= 1) {
                         Audio.setMusicMasterVolume(value);
                     } else {
-                        setOutput("ERROR: Value out of bounds, must be between 1 and 0.", Color.RED);
+                        setOutput("ERROR: Value out of bounds, must be a " + 
+                                  "floating point value between 0 and 1.", 
+                                  Color.RED);
                     }
                 } catch(NumberFormatException e) {
                     setOutput(errorInvalidArg(args.get(0), "(float)"), Color.RED);
