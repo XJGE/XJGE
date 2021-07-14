@@ -17,10 +17,12 @@ import static org.lwjgl.system.MemoryUtil.NULL;
  * Created: Apr 29, 2021
  */
 
+/**
+ * Provides a point of access which can be used to alter the properties of the applications window at runtime.
+ */
 public final class Window {
     
-    //TODO: this is only temporarily public for testing purposes.
-    public static final long HANDLE = glfwCreateWindow(640, 480, "XJGE v" + XJGE.VERSION, NULL, NULL);
+    static final long HANDLE = glfwCreateWindow(640, 480, "XJGE v" + XJGE.VERSION, NULL, NULL);
     
     private static int xPos;
     private static int yPos;
@@ -33,6 +35,9 @@ public final class Window {
     private static String title;
     static Monitor monitor;
     
+    /**
+     * Adapts the window configuration to the video mode of the current monitor.
+     */
     static void reconfigure() {
         if(fullscreen) {
             width  = monitor.getWidth();
@@ -59,6 +64,9 @@ public final class Window {
         glfwSwapInterval(Hardware.getVSyncEnabled() ? 1 : 0);
     }
     
+    /**
+     * Uncovers the window and requests focus from the operating system.
+     */
     static void show() {
         visible = true;
         
@@ -104,36 +112,86 @@ public final class Window {
             
             Logger.setDomain(null);
         });
+        
+        glfwSetWindowPosCallback(HANDLE, (window, x, y) -> {
+            xPos = x;
+            yPos = y;
+        });
+        
+        glfwSetWindowSizeCallback(HANDLE, (window, w, h) -> {
+            updateDimensions(w, h);
+        });
     }
     
+    /**
+     * Obtains the position of the window, in screen coordinates, of the upper-left corner of the content area of the window.
+     * 
+     * @return the position of the windows content area along the x-axis
+     */
     public static int getPositionX() {
         return xPos;
     }
     
+    /**
+     * Obtains the position of the window, in screen coordinates, of the upper-left corner of the content area of the window.
+     * 
+     * @return the position of the windows content area along the y-axis
+     */
     public static int getPositionY() {
         return yPos;
     }
     
+    /**
+     * Obtains the current width of the windows content area.
+     * 
+     * @return the width of the window in pixels
+     */
     public static int getWidth() {
         return width;
     }
     
+    /**
+     * Obtains the current height of the windows content area.
+     * 
+     * @return the height of the window in pixels
+     */
     public static int getHeight() {
         return height;
     }
     
+    /**
+     * Obtains the value indicating whether or not the window is currently in fullscreen mode.
+     * 
+     * @return if true, the window will cover the entire screen including taskbars
+     */
     public static boolean getFullscreen() {
         return fullscreen;
     }
     
+    /**
+     * Obtains the title used to identify the window. This is the same title that will be displayed to the user from the windows frame.
+     * 
+     * @return the title of the window as a string
+     */
     public static String getTitle() {
         return title;
     }
     
+    /**
+     * Obtains the {@link Monitor} which the window is currently using.
+     * 
+     * @return the current monitor object of the window
+     */
     public static Monitor getMonitor() {
         return monitor;
     }
     
+    /**
+     * Sets the position, in screen coordinates, of the upper-left corner of the content area of the window.
+     * 
+     * @param xPos the x-coordinate of the upper-left corner of the content area
+     * @param yPos the y-coordinate of the upper-left corner of the content area
+     */
     public static void setPosition(int xPos, int yPos) {
         Window.xPos = xPos;
         Window.yPos = yPos;
@@ -141,6 +199,9 @@ public final class Window {
         glfwSetWindowPos(HANDLE, xPos, yPos);
     }
     
+    /**
+     * Attempts to place the window in the center of the monitor.
+     */
     public static void setPositionCentered() {
         try(MemoryStack stack = MemoryStack.stackPush()) {
             IntBuffer xPosBuf = stack.mallocInt(1);
@@ -150,21 +211,38 @@ public final class Window {
             
             xPos = Math.round((monitor.getWidth() - width) / 2) + xPosBuf.get();
             yPos = Math.round((monitor.getHeight() - height) / 2) + yPosBuf.get();
-        
+            
             glfwSetWindowPos(HANDLE, xPos, yPos);
         }
     }
     
+    /**
+     * Updates the values of the windows width and height fields without alerting GLFW.
+     * 
+     * @param width  the new width of the window in pixels
+     * @param height the new height of the window in pixels
+     */
     static void updateDimensions(int width, int height) {
         Window.width  = width;
         Window.height = height;
     }
     
+    /**
+     * Sets the size of the windows content area in pixels.
+     * 
+     * @param width  the desired width of the window
+     * @param height the desired height of the window
+     */
     public static void setDimensions(int width, int height) {
         updateDimensions(width, height);
         glfwSetWindowSize(HANDLE, width, height);
     }
     
+    /**
+     * Changes the game window between fullscreen and windowed modes.
+     * 
+     * @param fullscreen if true, the window will cover the entire screen including taskbars
+     */
     public static void setFullscreen(boolean fullscreen) {
         Logger.setDomain("winkit");
         Logger.logInfo("Toggled fullscreen (" + fullscreen + ")");
@@ -173,16 +251,31 @@ public final class Window {
         enableFullscreen(fullscreen);
     }
     
+    /**
+     * Updates the current value of the windows fullscreen field and reconfigures it to better fit the monitor.
+     * 
+     * @param fullscreen if true, the window will cover the entire screen including taskbars
+     */
     static void enableFullscreen(boolean fullscreen) {
         Window.fullscreen = fullscreen;
         reconfigure();
     }
-            
+    
+    /**
+     * Changes the title used to identify the window. This is the same title that will be displayed to the user from the windows frame.
+     * 
+     * @param title the new title the window will use
+     */
     public static void setTitle(String title) {
         Window.title = title;
         glfwSetWindowTitle(HANDLE, title);
     }
     
+    /**
+     * Changes the current monitor the window will use. Alternate version of {@link setMonitor(String)}.
+     * 
+     * @param monitor the monitor that the window will be switched to
+     */
     public static void setMonitor(Monitor monitor) {
         enableFullscreen(!fullscreen);
 
@@ -196,6 +289,12 @@ public final class Window {
         enableFullscreen(!fullscreen);
     }
     
+    /**
+     * Changes the current monitor the window will use. Often this will cause the window to relocate.
+     * 
+     * @param operation the method of traversal to use. Either explicitly as the ID number of the device or "prev/next" to move between 
+     *                  the previous and next devices in the collection respectively.
+     */
     public static void setMonitor(String operation) {
         enableFullscreen(!fullscreen);
         Logger.setDomain("winkit");
@@ -253,6 +352,11 @@ public final class Window {
         enableFullscreen(!fullscreen);
     }
     
+    /**
+     * Sets the icon image of the window. Images should be at least 32x32 pixels large, but no larger than 64x64.
+     * 
+     * @param filename the name of the file to load. Expects the file extension to be included.
+     */
     public static void setIcon(String filename) {
         try(MemoryStack stack = MemoryStack.stackPush()) {
             InputStream file = Window.class.getResourceAsStream(XJGE.getAssetsFilepath() + filename);
@@ -285,6 +389,9 @@ public final class Window {
         }
     }
     
+    /**
+     * Gracefully ceases execution and closes the window.
+     */
     public static void close() {
         glfwSetWindowShouldClose(HANDLE, true);
     }
