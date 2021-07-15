@@ -183,8 +183,8 @@ final class Viewport {
     }
     
     /**
-     * Adds a new {@link Widget} to this viewport. Widgets will be rendered in the order of their z-positions with lower numbers denoting a higher priority. 
-     * For example, a component with a z-position of 0 will be rendered in front of a component with a z-position of 1.
+     * Adds a new {@link Widget} to this viewport. Widgets will be rendered in the order of their z-positions with lower numbers denoting 
+     * a higher priority. For example, a component with a z-position of 0 will be rendered in front of a component with a z-position of 1.
      * 
      * @param name   the name that will be used to identify and remove the widget later
      * @param widget the widget to add

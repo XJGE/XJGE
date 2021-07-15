@@ -25,7 +25,7 @@ import static org.lwjgl.glfw.GLFW.*;
  * of the implementation.
  * <br><br>
  * The command terminal can be opened by pressing {@code SHIFT} + {@code F1} with debug mode enabled. While open, the terminal will 
- * override input from the keyboard. Additionally, {@link Noclip} cannot be used while the command terminal is open.
+ * override input from the keyboard. Additionally, {@link Noclip} cannot be used while the command terminal is active.
  */
 final class Terminal implements PropertyChangeListener {
 

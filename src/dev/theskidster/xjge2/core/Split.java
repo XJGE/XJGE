@@ -6,7 +6,7 @@ package dev.theskidster.xjge2.core;
  */
 
 /**
- * Represents the different ways in which the screen can be divided during split screen.
+ * Represents a way in which the screen can be divided during split screen mode.
  */
 public enum Split {
 
@@ -16,12 +16,14 @@ public enum Split {
     NONE,
     
     /**
-     * The screen will be divided horizontally from side to side. Only the first and second viewports will be visible.
+     * The screen will be divided horizontally from side to side. Only the first and second viewports will be visible and will appear to 
+     * be stacked on top of one another.
      */
     HORIZONTAL,
     
     /**
-     * The screen will be divided vertically from top to bottom. Only the first and second viewports will be visible.
+     * The screen will be divided vertically from top to bottom. Only the first and second viewports will be visible and will appear to 
+     * be positioned beside each other.
      */
     VERTICAL,
     
