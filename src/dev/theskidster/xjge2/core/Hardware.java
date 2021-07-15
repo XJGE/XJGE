@@ -16,7 +16,7 @@ import static org.lwjgl.system.MemoryUtil.NULL;
  */
 
 /**
- * Provides utilities to manage the state of various connected peripheral devices.
+ * Provides utilities to manage the state of various connected peripheral devices not directly related to user input.
  */
 public final class Hardware {
     

@@ -23,6 +23,30 @@ import static org.lwjgl.opengl.GL30.*;
  * Created: Apr 28, 2021
  */
 
+/**
+ * Represents the game engine in its broadest sense and provides a point at which its functionality may be extended to better suit the 
+ * individual requirements of the implementation.
+ * <br><br>
+ * More specifically this class provides the following features:
+ * <ul>
+ * <li>The ability to change how the screen will be {@linkplain setScreenSplit divided} during split screen mode.</li>
+ * <li>Access to the {@linkplain getDefaultGLProgram default shader program} used internally by the engine.</li>
+ * <li>The ability to provide supplemental {@linkplain addCommand terminal commands} and {@linkplain addGLProgram shader programs} as 
+ * needed by the implementation.</li>
+ * <li>Control over which {@link Camera} objects viewports will use to render the scene from their perspectives.</li>
+ * <li>The ability to {@linkplain addUIWidget add} and {@linkplain removeUIWidget remove} UI widgets from viewports.</li>
+ * </ul>
+ * <p>Before the engines features may be used {@link init init()} must be called. Followed by whichever settings the implementation
+ * wishes to alter before exposing the game window to the player with the {@link start start()} method.</p>
+ * 
+ * @see Hardware
+ * @see Input
+ * @see Monitor
+ * @see Logger
+ * @see Terminal
+ * @see Viewport
+ * @see Window
+ */
 public final class XJGE {
     
     private static int fbo;
@@ -74,8 +98,24 @@ public final class XJGE {
     used to set the initial scene the engine will enter upon startup.
     */
     
+    /**
+     * Default constructor provided here to keep it out of the implementations reach.
+     */
     private XJGE() {}
     
+    /**
+     * Initializes the engines assets, compiles the default shader programs, and searches for connected peripheral devices. This method 
+     * must be called once before the engine can be used.
+     * <br><br>
+     * NOTE: If a resolution is provided the value of {@code windowResizable} will be ignored.
+     * 
+     * @param assetsFilepath  the relative filepath to a folder that contains all of the games assets
+     * @param scenesFilepath  the relative filepath to the package that contains all of the games scene subclasses
+     * @param debugEnabled    if true, the engine will provide debugging utilities at runtime
+     * @param resolution      the internal resolution the engine will display the framebuffer at or <b>null</b> to copy the resolution 
+     *                        of the window
+     * @param windowResizable if true, the user will be allowed to freely alter the size of the window 
+     */
     public static void init(String assetsFilepath, String scenesFilepath, boolean debugEnabled, Vector2i resolution, boolean windowResizable) {        
         if(!initCalled) {
             if(System.getProperty("java.version").compareTo("15.0.2") < 0) {
@@ -270,6 +310,9 @@ public final class XJGE {
         initCalled = true;
     }
     
+    /**
+     * 
+     */
     public static void start() {
         engineCommands.putAll(userCommands);
         engineCommands.values().forEach(command -> command.setCommands(engineCommands));
@@ -310,6 +353,9 @@ public final class XJGE {
         glfwTerminate();
     }
     
+    /**
+     * 
+     */
     private static void createRenderbuffer() {
         glBindFramebuffer(GL_FRAMEBUFFER, fbo);
         int rbo = glGenRenderbuffers();
@@ -322,6 +368,9 @@ public final class XJGE {
         glBindFramebuffer(GL_FRAMEBUFFER, 0);
     }
     
+    /**
+     * 
+     */
     static void transferViewportState() {
         for(int i = 0; i < viewports.length; i++) {
             viewports[i] = new Viewport(viewports[i]);
@@ -330,10 +379,21 @@ public final class XJGE {
         setScreenSplit(split);
     }
     
+    /**
+     * 
+     * @param viewportID
+     * 
+     * @return 
+     */
     static boolean getViewportActive(int viewportID) {
         return viewports[viewportID].active;
     }
     
+    /**
+     * 
+     * @param name
+     * @param glProgram 
+     */
     public static void addGLProgram(String name, GLProgram glProgram) {
         if(!name.equals("default")) {
             glPrograms.put(name, glProgram);
@@ -346,6 +406,11 @@ public final class XJGE {
         }
     }
     
+    /**
+     * 
+     * @param name
+     * @param command 
+     */
     public static void addCommand(String name, TerminalCommand command) {
         if(engineCommands.containsKey(name)) {
             Logger.setDomain("core");
@@ -359,50 +424,103 @@ public final class XJGE {
         }
     }
     
+    /**
+     * 
+     * @param viewportID
+     * @param name
+     * @param widget 
+     * 
+     * @see Viewport
+     * @see Widget
+     */
     public static final void addUIWidget(int viewportID, String name, Widget widget) {
         switch(viewportID) {
             case 0, 1, 2, 3 -> viewports[viewportID].addUIWidget(name, widget);
         }
     }
     
+    /**
+     * 
+     * @param viewportID
+     * @param name 
+     * 
+     * @see Viewport
+     * @see Widget
+     */
     public static final void removeUIWidget(int viewportID, String name) {
         switch(viewportID) {
             case 0, 1, 2, 3 -> viewports[viewportID].removeUIWidget(name);
         }
     }
     
+    /**
+     * 
+     * @return 
+     */
     public static int getResolutionX() {
         return resolutionX;
     }
     
+    /**
+     * 
+     * @return 
+     */
     public static int getResolutionY() {
         return resolutionY;
     }
     
+    /**
+     * 
+     * @return 
+     */
     static boolean getTerminalEnabled() {
         return terminalEnabled;
     }
     
+    /**
+     * 
+     * @return 
+     */
     static boolean getLightSourcesVisible() {
         return showLightSources;
     }
     
+    /**
+     * 
+     * @return 
+     */
     public static Split getScreenSplit() {
         return split;
     }
     
+    /**
+     * 
+     * @return 
+     */
     public static String getAssetsFilepath() {
         return assetsFilepath;
     }
     
+    /**
+     * 
+     * @return 
+     */
     public static String getScenesFilepath() {
         return scenesFilepath;
     }
     
+    /**
+     * 
+     * @return 
+     */
     public static GLProgram getDefaultGLProgram() {
         return glPrograms.get("default");
     }
     
+    /**
+     * 
+     * @param split 
+     */
     public static final void setScreenSplit(Split split) {
         XJGE.split = split;
         
@@ -493,6 +611,11 @@ public final class XJGE {
         }
     }
     
+    /**
+     * 
+     * @param viewportID
+     * @param camera 
+     */
     public static final void setViewportCamera(int viewportID, Camera camera) {
         Logger.setDomain("core");
         

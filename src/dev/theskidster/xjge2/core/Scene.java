@@ -14,6 +14,10 @@ import org.joml.Matrix4f;
 
 /**
  * A 3D representation of the game world that contains entities, light sources, and camera objects.
+ * 
+ * @see Entity
+ * @see LightSource
+ * @see Camera
  */
 public abstract class Scene {
 

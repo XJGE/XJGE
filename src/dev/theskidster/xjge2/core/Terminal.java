@@ -20,11 +20,12 @@ import static org.lwjgl.glfw.GLFW.*;
  */
 
 /**
- * Provides a command line which can be used to interact with the engine at runtime. The command terminals functionality can be extended 
- * to support more commands to better suit the needs of the implementation.
+ * Provides a command line which can be used to interact with the engine at runtime. The command terminals functionality can be 
+ * {@linkplain XJGE#addCommand(String, TerminalCommand) extended} to support more commands to better suit the individual requirements 
+ * of the implementation.
  * <br><br>
  * The command terminal can be opened by pressing {@code SHIFT} + {@code F1} with debug mode enabled. While open, the terminal will 
- * override input from the keyboard. {@linkplain Noclip Noclip mode} cannot be used while the command terminal is open.
+ * override input from the keyboard. Additionally, {@link Noclip} cannot be used while the command terminal is open.
  */
 final class Terminal implements PropertyChangeListener {
 

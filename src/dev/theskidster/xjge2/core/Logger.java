@@ -17,6 +17,25 @@ import static org.lwjgl.opengl.GL11.glGetString;
  * Created: Apr 28, 2021
  */
 
+/**
+ * A lightweight application logger comprised of a single static class which can be used to keep a chronological record of significant 
+ * events occurring within the application at runtime.
+ * <br><br>
+ * Output provided by the logger can be viewed through the applications console at runtime, or after the application has ceased execution
+ * following a call made to {@link logSevere(String, Exception) logSevere()} in which case a .txt file will be generated containing the
+ * loggers output.
+ * <br><br>
+ * The logger provides the following methods for generating text output:
+ * <ul>
+ * <li>{@link logInfo(String) logInfo()} - Produces a low-priority message, useful for tracking state changes.</li>
+ * <li>{@link logWarning(String, Exception) logWarning()} - Indicates that the application may have encountered a non-fatal error.</li>
+ * <li>{@link logSevere(String, Exception) logSevere()} - A fatal error has occurred which will require the application to cease execution 
+ * immediately.</li>
+ * <li>{@link setDomain(String) setDomain()} - Appends the name of whichever application is using the logger to the log messages it 
+ * creates.</li>
+ * <li>{@link newLine() newLine()} - Inserts a new line into the text output.</li>
+ * </ul>
+ */
 public final class Logger {
     
     private static String domain = "";
