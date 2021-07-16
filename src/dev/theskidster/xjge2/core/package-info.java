@@ -1,14 +1,18 @@
 /**
- * Contains various classes, objects, and utiltites many of which are essential to function of the engine. These are listed in detail below:
+ * Contains various classes, objects, and utilities many of which are essential to function of the engine. These are listed in greater 
+ * detail below:
  * <br><br>
  * <h2>Core Classes:</h2>
  * <table border="1">
  * <tr><td><b>Name</b></td><td><b>Description</b></td></tr>
- * <tr><td>{@linkplain Hardware}</td><td>asdf</td></tr>
- * <tr><td>{@linkplain Input}</td><td>asdf</td></tr>
- * <tr><td>{@linkplain Monitor}</td><td>asdf</td></tr>
- * <tr><td>{@linkplain Viewport}</td><td>asdf</td></tr>
- * <tr><td>{@linkplain Window}</td><td>asdf</td></tr>
+ * <tr><td>{@linkplain Hardware}</td><td>Manages the state of various peripheral devices including those used for audio output and 
+ * visual display.</td></tr>
+ * <tr><td>{@linkplain Input}</td><td>Provides a single point of access through which the state of peripheral input devices may be 
+ * managed.</td></tr>
+ * <tr><td>{@linkplain Monitor}</td><td>Represents a visual display device such as a computer monitor or television.</td></tr>
+ * <tr><td>{@linkplain Viewport}</td><td>Represents a rectangular region of the applications window through which the perspective 
+ * of a scene and its rendered objects may be viewed.</td></tr>
+ * <tr><td>{@linkplain Window}</td><td>Provides a point of access which can be used to alter the properties of the applications window at runtime.</td></tr>
  * </table>
  * <br><br>
  * <h2>Gameplay Utilities:</h2>
