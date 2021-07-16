@@ -3,7 +3,7 @@
  * detail below:
  * <br><br>
  * <h2>Core Classes:</h2>
- * <table border="1">
+ * <table>
  * <tr><td><b>Name</b></td><td><b>Description</b></td></tr>
  * <tr><td>{@linkplain Hardware}</td><td>Manages the state of various peripheral devices including those used for audio output and 
  * visual display.</td></tr>
@@ -17,7 +17,7 @@
  * </table>
  * <br><br>
  * <h2>Gameplay Utilities:</h2>
- * <table border="1">
+ * <table>
  * <tr><td><b>Name</b></td><td><b>Description</b></td></tr>
  * <tr><td>{@linkplain Audio}</td><td>Provides a single point of access through which sound effects and music can be played.</td></tr>
  * <tr><td>{@linkplain Camera}</td><td>Abstract class which can be used to create specialized camera objects for viewports.</td></tr>
@@ -41,10 +41,14 @@
  * </table>
  * <br><br>
  * <h2>Other Miscellaneous Features:</h2>
- * <table border="1">
+ * <table>
  * <tr><td><b>Name</b></td><td><b>Description</b></td></tr>
  * <tr><td>{@linkplain ErrorUtils}</td><td>Provides convenience methods for locating errors encountered by the engine at runtime.</td></tr>
- * <tr><td>{@linkplain ErrorUtils}</td><td>Provides</td></tr>
+ * <tr><td>{@linkplain Font}</td><td>Supplies the data parsed from a font file as an immutable object which can be used to render text in 
+ * some desired font.</td></tr>
+ * <tr><td>{@linkplain Song}</td><td>Represents a musical composition.</td></tr>
+ * <tr><td>{@linkplain Sound}</td><td>upplies the data parsed from an audio file into a new sound object that can be used by the Audio 
+ * class</td></tr>
  * </table>
  */
 package dev.theskidster.xjge2.core;
