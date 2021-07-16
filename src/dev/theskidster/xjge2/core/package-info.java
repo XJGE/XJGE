@@ -52,38 +52,3 @@
  * </table>
  */
 package dev.theskidster.xjge2.core;
-
-/**
- * <ul>
- * <li>{@link Audio}</li>
- * <li>{@link Camera}</li>
- * <li>{@link Command}</li>
- * <li>{@link Entity}</li>
- * <li>{@link Event}</li>
- * </ul>
- * </td><td>
- * <ul>
- * <li>{@link Game}</li>
- * <li>{@link InputDevice}</li>
- * <li>{@link Observable}</li>
- * <li>{@link Puppet}</li>
- * <li>{@link Scene}</li>
- * </ul>
- * </td><td>
- * <ul>
- * <li>{@link Skybox}</li>
- * <li>{@link Speaker}</li>
- * <li>{@link Text}</li>
- * <li>{@link Timer}</li>
- * <li>{@link Widget}</li>
- * </ul>
- * </td></tr></table>
- * Some other miscellaneous utilities are also worth mentioning here:
- * <ul>
- * <li>{@link ErrorUtils}</li>
- * <li>{@link Font}</li>
- * <li>{@link Skybox}</li>
- * <li>{@link Song}</li>
- * <li>{@link Sound}</li>
- * </ul>
- */
