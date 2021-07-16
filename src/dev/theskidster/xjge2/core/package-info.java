@@ -12,35 +12,44 @@
  * <tr><td>{@linkplain Monitor}</td><td>Represents a visual display device such as a computer monitor or television.</td></tr>
  * <tr><td>{@linkplain Viewport}</td><td>Represents a rectangular region of the applications window through which the perspective 
  * of a scene and its rendered objects may be viewed.</td></tr>
- * <tr><td>{@linkplain Window}</td><td>Provides a point of access which can be used to alter the properties of the applications window at runtime.</td></tr>
+ * <tr><td>{@linkplain Window}</td><td>Provides a point of access which can be used to alter the properties of the applications window at 
+ * runtime.</td></tr>
  * </table>
  * <br><br>
  * <h2>Gameplay Utilities:</h2>
  * <table border="1">
  * <tr><td><b>Name</b></td><td><b>Description</b></td></tr>
- * <tr><td>{@linkplain Audio}</td><td>asdf</td></tr>
+ * <tr><td>{@linkplain Audio}</td><td>Provides a single point of access through which sound effects and music can be played.</td></tr>
+ * <tr><td>{@linkplain Camera}</td><td>Abstract class which can be used to create specialized camera objects for viewports.</td></tr>
+ * <tr><td>{@linkplain Command}</td><td>Allows an interactive component of an input device to be coupled to some player action.</td></tr>
+ * <tr><td>{@linkplain Entity}</td><td>Abstract class which can be used to represent dynamic game objects in the scene.</td></tr>
+ * <tr><td>{@linkplain Event}</td><td>Represents a game or engine event (such as a pause, cutscene, or error) that temporarily disrupts 
+ * the normal flow of execution.</td></tr>
+ * <tr><td>{@linkplain Game}</td><td>Provides utilities for managing high-level game logic.</td></tr>
+ * <tr><td>{@linkplain InputDevice}</td><td>Represents a peripheral device that can capture input actions from a user.</td></tr>
+ * <tr><td>{@linkplain Observable}</td><td>Used to relay information about state changes occurring in the implementing object to one or 
+ * more observers located anywhere in the codebase.</td></tr>
+ * <tr><td>{@linkplain Puppet}</td><td>Component object that enables implementing objects to make use of input actions captured from an 
+ * input device.</td></tr>
+ * <tr><td>{@linkplain Scene}</td><td>A 3D representation of the game world that contains entities, light sources, and camera objects.
+ * <tr><td>{@linkplain Skybox}</td><td>An object which can be used to create a background to a scene.</td></tr>
+ * <tr><td>{@linkplain Text}</td><td>Provides utilities for rendering text to the screen.</td></tr>
+ * <tr><td>{@linkplain Timer}</td><td>A simple monotonic timing mechanism.</td></tr>
+ * <tr><td>{@linkplain Widget}</td><td>An abstract class which can be used to define subclasses that will comprise individual elements of 
+ * a user interface.</td></tr>
+ * </td></tr>
  * </table>
  * <br><br>
  * <h2>Other Miscellaneous Features:</h2>
  * <table border="1">
  * <tr><td><b>Name</b></td><td><b>Description</b></td></tr>
  * <tr><td>{@linkplain ErrorUtils}</td><td>Provides convenience methods for locating errors encountered by the engine at runtime.</td></tr>
+ * <tr><td>{@linkplain ErrorUtils}</td><td>Provides</td></tr>
  * </table>
  */
 package dev.theskidster.xjge2.core;
 
-
 /**
- * Contains classes and objects essential to the function of the engine. These include:
- * <ul>
- * <li>{@link Hardware}</li>
- * <li>{@link Input}</li>
- * <li>{@link Monitor}</li>
- * <li>{@link Viewport}</li>
- * <li>{@link Window}</li>
- * </ul>
- * Additionally, this package contains various features useful for gameplay systems:
- * <table><td><tr>
  * <ul>
  * <li>{@link Audio}</li>
  * <li>{@link Camera}</li>
