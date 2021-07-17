@@ -7,6 +7,9 @@ import org.joml.Vector3f;
  * Created: May 8, 2021
  */
 
+/**
+ * An immutable object used to represent color.
+ */
 public final class Color {
     
     public static final Color WHITE   = new Color(1);
@@ -32,16 +35,24 @@ public final class Color {
     
     private final Vector3f conversion;
     
-    private Color() {
-        r = g = b = 0;
-        conversion = new Vector3f();
-    }
-    
+    /**
+     * Creates a new achromatic shade (gray) using the specified scalar value. 
+     * 
+     * @param scalar the value all RGB components will be set to (between 0 and 1)
+     */
     private Color(float scalar) {
         r = g = b = scalar;
         conversion = new Vector3f(scalar);
     }
     
+    /**
+     * Creates a new color object using the values of the three RGB components supplied. Component values are expected to be within the
+     * range of 0 to 255.
+     * 
+     * @param r the red color component
+     * @param g the green color component
+     * @param b the blue color component
+     */
     private Color(int r, int g, int b) {
         this.r = (r / 255f);
         this.g = (g / 255f);
@@ -50,10 +61,25 @@ public final class Color {
         conversion = new Vector3f(this.r, this.g, this.b);
     }
     
+    /**
+     * Creates a new color object using the values of the three RGB components supplied. Component values are expected to be within the
+     * range of 0 to 255.
+     * 
+     * @param r the red color component
+     * @param g the green color component
+     * @param b the blue color component
+     * 
+     * @return a new immutable color object generated with the specified RGB components
+     */
     public static Color create(int r, int g, int b) {
         return new Color(r, g, b);
     }
     
+    /**
+     * Creates a random color.
+     * 
+     * @return a new immutable color object that exhibits randomized color component values
+     */
     public static Color random() {
         return new Color(
                 (int) (Math.random() * 255),
@@ -61,11 +87,24 @@ public final class Color {
                 (int) (Math.random() * 255));
     }
     
+    /**
+     * Returns the RGB component values of this object as a three-component floating point vector that can be passed to a 
+     * {@linkplain GLProgram shader program} through a uniform variable.
+     * 
+     * @return the value of this color RGB components as a three-component floating point vector struct
+     */
     public Vector3f asVec3() {
         return conversion;
     }
     
-    public boolean equals(Color other) {
+    /**
+     * Compares the RGB component values of this color to another.
+     * 
+     * @param other the color to test this one against
+     * 
+     * @return true if the colors are the same
+     */
+    public boolean compareTo(Color other) {
         if(this == other) {
             return true;
         } else {

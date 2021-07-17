@@ -6,7 +6,7 @@ package dev.theskidster.xjge2.graphics;
  */
 
 /**
- * Represents a GLSL data type that will be used to allocate a buffer of corresponding size.
+ * Represents a GLSL data type that will be used to allocate a data buffer of corresponding size.
  */
 public enum BufferType {
     /**
