@@ -13,6 +13,12 @@ import org.lwjgl.system.MemoryStack;
  * Created: Jun 8, 2021
  */
 
+/**
+ * Represents a quickly comprehensible symbol included to help users better understand an interface. Icons make use of a {@link Atlas} 
+ * and as such, provide utilities for quickly switching between individual sub-images as needed.
+ * 
+ * @see dev.theskidster.xjge2.core.Widget
+ */
 public final class Icon {
 
     private Vector2f currCell = new Vector2f();
@@ -20,6 +26,13 @@ public final class Icon {
     private final Texture texture;
     private final Atlas atlas;
     
+    /**
+     * Creates a new icon object which can be used to comprise part of a larger user interface.
+     * 
+     * @param texture    the texture image to use
+     * @param cellWidth  the width of each sub-image cell in pixels
+     * @param cellHeight the height of each sub-image cell in pixels
+     */
     public Icon(Texture texture, int cellWidth, int cellHeight) {
         this.texture = texture;
         
@@ -58,14 +71,31 @@ public final class Icon {
         glEnableVertexAttribArray(2);
     }
     
+    /**
+     * Sets the current position of the icon on the screen
+     * 
+     * @param position the position to set this icon to
+     */
     public void setPosition(Vector2i position) {
         g.modelMatrix.translation(position.x, position.y, 0);
     }
     
+    /**
+     * Variant of {@link setPosition(Vector2i)}.
+     * 
+     * @param x the x position coordinate to set the icon to
+     * @param y the y position coordinate to set the icon to
+     */
     public void setPosition(int x, int y) {
         g.modelMatrix.translation(x, y, 0);
     }
     
+    /**
+     * Sets the sub-image this icon will use
+     * 
+     * @param cellX the location of the cell along the x-axis as it appears in the texture atlas
+     * @param cellY the location of the cell along the y-axis as it appears in the texture atlas
+     */
     public void setSubImage(int cellX, int cellY) {
         Vector2i key = new Vector2i(cellX, cellY);
         
@@ -80,6 +110,9 @@ public final class Icon {
         }
     }
     
+    /**
+     * Renders the icon image.
+     */
     public void render() {
         XJGE.getDefaultGLProgram().use();
         
@@ -97,6 +130,9 @@ public final class Icon {
         ErrorUtils.checkGLError();
     }
     
+    /**
+     * Convenience method which frees the data buffers allocated by this class.
+     */
     public void freeBuffers() {
         g.freeBuffers();
     }
