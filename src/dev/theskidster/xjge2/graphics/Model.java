@@ -28,6 +28,11 @@ import static org.lwjgl.system.MemoryUtil.NULL;
  * Created: Jun 16, 2021
  */
 
+/**
+ * Represents a 3D model. Models may possess animations, multiple meshes, textures, or a combination of these things. Various limitations 
+ * are imposed by the engine to ensure models are loaded with consistency. The Autodesk .fbx file format is the preferred format of this 
+ * engine for its compact size, though other formats should work as well.
+ */
 public class Model {
 
     public static final int MAX_TEXTURES   = 4;
@@ -57,6 +62,15 @@ public class Model {
     
     private Map<String, SkeletalAnimation> animations;
     
+    /**
+     * Overloaded version of {@link Model(String)} that permits the use of custom post processing arguments.
+     * 
+     * @param filename the name of the file to load. Expects the file extension to be included.
+     * @param aiArgs   the Assimp arguments to use for post processing such as 
+     *                 {@link org.lwjgl.assimp.Assimp#aiProcess_Triangulate aiProcess_Triangulate}, 
+     *                 {@link org.lwjgl.assimp.Assimp#aiProcess_GenSmoothNormals aiProcess_GenSmoothNormals}, 
+     *                 {@link org.lwjgl.assimp.Assimp#aiProcess_FixInfacingNormals aiProcess_FixInfacingNormals}, etc.
+     */
     public Model(String filename, int aiArgs) {
         try(InputStream file = Model.class.getResourceAsStream(XJGE.getAssetsFilepath() + filename)) {
             loadModel(filename, file, aiArgs);
@@ -67,6 +81,11 @@ public class Model {
         }
     }
     
+    /**
+     * Parses the file provided and generates a 3D model from the data it contains.
+     * 
+     * @param filename the name of the file to load. Expects the file extension to be included.
+     */
     public Model(String filename) {
         this(filename, 
              aiProcess_JoinIdenticalVertices | 
@@ -76,6 +95,16 @@ public class Model {
              aiProcess_FixInfacingNormals);
     }
     
+    /**
+     * Specifies various file open/read/close procedures and then constructs a new model instance using the data parsed from the file.
+     * 
+     * @param filename the name of the file to load. Expects the file extension to be included.
+     * @param file     the file to extract model data from
+     * @param aiArgs   the Assimp arguments to use for post processing such as 
+     *                 {@link org.lwjgl.assimp.Assimp#aiProcess_Triangulate aiProcess_Triangulate}, 
+     *                 {@link org.lwjgl.assimp.Assimp#aiProcess_GenSmoothNormals aiProcess_GenSmoothNormals}, 
+     *                 {@link org.lwjgl.assimp.Assimp#aiProcess_FixInfacingNormals aiProcess_FixInfacingNormals}, etc.
+     */
     private void loadModel(String filename, InputStream file, int aiArgs) throws Exception {
         byte[] data = file.readAllBytes();
         
@@ -152,6 +181,14 @@ public class Model {
         }
     }
     
+    /**
+     * Translates the structure of the model file into a hierarchy that can be used by the engine.
+     * 
+     * @param aiNode the Assimp data structure from which a new node object will be constructed
+     * @param parent the parent of the unprocessed Assimp node or null if this is the root node
+     * 
+     * @return a new child node of the parent provided 
+     */
     private Node parseFileHierarchy(AINode aiNode, Node parent) {
         String nodeName = aiNode.mName().dataString();
         Node node       = new Node(nodeName, parent);
@@ -170,6 +207,13 @@ public class Model {
         return node;
     }
     
+    /**
+     * Parses mesh data used by this model.
+     * 
+     * @param meshBuf    the buffer of model mesh data provided by Assimp
+     * 
+     * @throws Exception if the data parsed from the file is invalid
+     */
     private void parseMeshData(PointerBuffer meshBuf) throws Exception {
         meshes = new Mesh[aiScene.mNumMeshes()];
         
@@ -179,6 +223,28 @@ public class Model {
         }
     }
     
+    /**
+     * Parses each texture that will be used by this model.
+     * <br><br>
+     * The engine imposes a number of significant restrictions regarding textures that should be considered during the model creation 
+     * process. Specifically;
+     * <ol>
+     * <li>Models may not exceed the maximum number of allowed textures specified through the {@link MAX_TEXTURES} field. By default 
+     * this number is four, but may be altered at the discretion of the implementation as needed.</li>
+     * <br>
+     * <li>Any {@link Mesh} object representing part of this model can not use more than one texture concurrently. That is, a single 
+     * texture may be shared between multiple meshes, but a single mesh may not exhibit multiple textures.</li>
+     * <br>
+     * <li>Since models are loaded directly from memory, they must embed their textures inside of materials in order to load 
+     * correctly.</li>
+     * <br>
+     * <li>Texture image files used by models must be located in the same directory as the model file itself.</li>
+     * </ol>
+     * 
+     * @param materialBuf the buffer of models material data provided by Assimp
+     * 
+     * @throws Exception if one or more textures could not be located. The engine will instead use a placeholder texture.
+     */
     private void parseTextureData(PointerBuffer materialBuf) throws Exception {
         if(aiScene.mNumMaterials() > MAX_TEXTURES) {
             textures = new Texture[MAX_TEXTURES];
@@ -218,6 +284,11 @@ public class Model {
         }
     }
     
+    /**
+     * Parses data required by this model during skeletal animation.
+     * 
+     * @param animationBuf the buffer of the models animation data as provided by Assimp
+     */
     private void parseAnimationData(PointerBuffer animationBuf) {
         animations = new HashMap<>();
         
@@ -241,6 +312,13 @@ public class Model {
         }
     }
     
+    /**
+     * Generates the final transforms of each {@link Node} that will be used to move the bones of the model during a 
+     * {@link SkeletalAnimation}.
+     * 
+     * @param aiNodeAnim the Assimp structure that will be parsed to calculate a nodes transformations
+     * @param node       the node that will contain the calculated transformations
+     */
     private void genTransforms(AINodeAnim aiNodeAnim, Node node) {
         AIVectorKey.Buffer aiPosKeyBuf   = aiNodeAnim.mPositionKeys();
         AIVectorKey.Buffer aiScaleKeyBuf = aiNodeAnim.mScalingKeys();
@@ -269,6 +347,11 @@ public class Model {
         }
     }
     
+    /**
+     * generates every {@link KeyFrame} of a {@link SkeletalAnimation}.
+     * 
+     * @return the list of keyframes used by the animation.
+     */
     private ArrayList<KeyFrame> genKeyFrames() {
         ArrayList<KeyFrame> frames = new ArrayList<>();
         
@@ -298,40 +381,86 @@ public class Model {
         return frames;
     }
     
+    /**
+     * Couples the local space of the models mesh normals to that of the current scenes world space. Use this to fix the direction of the 
+     * light source relative to the model whenever it's being illuminated incorrectly.
+     */
     public void delocalizeNormal() {
         for(Mesh mesh : meshes) normal.set(mesh.modelMatrix.invert());
     }
     
+    /**
+     * Translates the entire 3D model to the location specified.
+     * 
+     * @param position the position to set the model to
+     */
     public void translate(Vector3f position) {
         for(Mesh mesh : meshes) mesh.modelMatrix.translation(position);
     }
     
+    /**
+     * Alternate version of {@link translate(Vector3f) translate()}.
+     * 
+     * @param x the x coordinate of the game world to place this model at
+     * @param y the y coordinate of the game world to place this model at
+     * @param z the z coordinate of the game world to place this model at
+     */
     public void translate(float x, float y, float z) {
         for(Mesh mesh : meshes) mesh.modelMatrix.translation(x, y, z);
     }
     
+    /**
+     * Rotates the entire 3D model in relation to the worlds x-axis.
+     * 
+     * @param angle the angle with which the model will be rotated
+     */
     public void rotateX(float angle) {
         for(Mesh mesh : meshes) mesh.modelMatrix.rotateX((float) Math.toRadians(angle));
     }
     
+    /**
+     * Rotates the entire 3D model in relation to the worlds y-axis.
+     * 
+     * @param angle the angle with which the model will be rotated
+     */
     public void rotateY(float angle) {
         for(Mesh mesh : meshes) mesh.modelMatrix.rotateY((float) Math.toRadians(angle));
     }
     
+    /**
+     * Rotates the entire 3D model in relation to the worlds z-axis.
+     * 
+     * @param angle the angle with which the model will be rotated
+     */
     public void rotateZ(float angle) {
         for(Mesh mesh : meshes) mesh.modelMatrix.rotateZ((float) Math.toRadians(angle));
     }
     
+    /**
+     * Scales the entire 3D model by the factor specified.
+     * 
+     * @param factor the factor with which the models size will be multiplied by
+     */
     public void scale(float factor) {
         for(Mesh mesh : meshes) mesh.modelMatrix.scale(factor);
     }
     
+    /**
+     * Outputs a list of every animation this model has at its disposal to the console.
+     */
     public void listAnimations() {
         Logger.setDomain("graphics");
         animations.forEach((name, anim) -> Logger.logInfo(name));
         Logger.setDomain(null);
     }
     
+    /**
+     * Sets the current that will be played by this model. A small transition animation will be generated if the value passed to the 
+     * {@link numFrames} argument is greater than zero.
+     * 
+     * @param name      the name of the animation as it appears in the model file
+     * @param numFrames the number of frames to transition between the current animation and the new one
+     */
     public void setAnimation(String name, int numFrames) {
         if(!animations.containsKey(name)) {
             Logger.setDomain("graphics");
@@ -376,6 +505,11 @@ public class Model {
         }
     }
     
+    /**
+     * Sets the playback speed of this models current animation. Subsequent animations will inherit the value specified.
+     * 
+     * @param speed a non-negative number between 1 and 0. A value of zero will pause the animation at its current {@link KeyFrame}.
+     */
     public void setAnimationSpeed(float speed) {
         if(speed > 1)      speed = 1;
         else if(speed < 0) speed = 0;
@@ -383,6 +517,9 @@ public class Model {
         this.speed = speed * MAX_ANIM_SPEED;
     }
     
+    /**
+     * Updates the current skeletal animation.
+     */
     public void updateAnimation() {
         if(currAnimation.transition && currAnimation.getFinished()) {
             currAnimation = animations.get(currAnimation.nextAnim);
@@ -391,6 +528,14 @@ public class Model {
         currAnimation.genCurrFrame(speed, loopAnimation);
     }
     
+    /**
+     * Renders the 3D model. Should be called from within the implementing entities 
+     * {@link dev.theskidster.xjge.entities.Entity#render(Camera, LightSource[], int) render()} method.
+     * 
+     * @param glProgram the shader program that will be used to render this model
+     * @param lights    an array of light source objects inhabiting the current level
+     * @param numLights the total number of lights in the level
+     */
     public void render(GLProgram glProgram, LightSource[] lights, int numLights) {
         glEnable(GL_DEPTH_TEST);
         glEnable(GL_CULL_FACE);
@@ -438,10 +583,16 @@ public class Model {
         ErrorUtils.checkGLError();
     }
     
+    /**
+     * Convenience method which frees the data buffers allocated by this class.
+     */
     public void freeBuffers() {
         for(Mesh mesh : meshes) mesh.freeBuffers();
     }
     
+    /**
+     * Frees the OpenGL texture objects used by this class.
+     */
     public void freeTextures() {
         for(Texture texture : textures) texture.freeTexture();
     }
