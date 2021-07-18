@@ -19,6 +19,11 @@ import org.lwjgl.system.MemoryUtil;
  * Created: May 11, 2021
  */
 
+/**
+ * Supplies the data parsed from an image file into a new two-dimensional texture object that can be used by the graphics pipeline. RBGA 
+ * encoded .png is the preferred file format of this engine. OpenGL texture parameters are expected to be defined outside of this class 
+ * following the texture objects initialization.
+ */
 public final class Texture {
     
     public final int handle;
@@ -26,6 +31,21 @@ public final class Texture {
     private int height;
     private int channels;
     
+    /**
+     * Creates a new texture object from the image file specified. If the image file cannot be found, the engine will instead use a 
+     * fallback texture in its place.
+     * 
+     * @param filename the name of the file to load. Expects the file extension to be included.
+     * @param target   the OpenGL texture target. One of: One of:<br>
+     *                 <table><tr><td>{@link org.lwjgl.opengl.GL11C#GL_TEXTURE_2D TEXTURE_2D}</td>
+     *                 <td>{@link org.lwjgl.opengl.GL30#GL_TEXTURE_1D_ARRAY TEXTURE_1D_ARRAY}</td>
+     *                 <td>{@link org.lwjgl.opengl.GL31#GL_TEXTURE_RECTANGLE TEXTURE_RECTANGLE}</td>
+     *                 <td>{@link org.lwjgl.opengl.GL13#GL_TEXTURE_CUBE_MAP TEXTURE_CUBE_MAP}</td></tr>
+     *                 <tr><td>{@link org.lwjgl.opengl.GL11C#GL_PROXY_TEXTURE_2D PROXY_TEXTURE_2D}</td>
+     *                 <td>{@link org.lwjgl.opengl.GL30#GL_PROXY_TEXTURE_1D_ARRAY PROXY_TEXTURE_1D_ARRAY}</td>
+     *                 <td>{@link org.lwjgl.opengl.GL31#GL_PROXY_TEXTURE_RECTANGLE PROXY_TEXTURE_RECTANGLE}</td>
+     *                 <td>{@link org.lwjgl.opengl.GL13#GL_PROXY_TEXTURE_CUBE_MAP PROXY_TEXTURE_CUBE_MAP}</td></tr></table>
+     */
     public Texture(String filename, int target) {
         handle = glGenTextures();
         glBindTexture(target, handle);
@@ -47,6 +67,20 @@ public final class Texture {
         this(filename, GL_TEXTURE_2D);
     }
     
+    /**
+     * Parses the data of the image file specified and generates a new OpenGL texture object from its contents.
+     * 
+     * @param file   the file to extract texture data from
+     * @param target the OpenGL texture target. One of: One of:<br>
+     *               <table><tr><td>{@link org.lwjgl.opengl.GL11C#GL_TEXTURE_2D TEXTURE_2D}</td>
+     *               <td>{@link org.lwjgl.opengl.GL30#GL_TEXTURE_1D_ARRAY TEXTURE_1D_ARRAY}</td>
+     *               <td>{@link org.lwjgl.opengl.GL31#GL_TEXTURE_RECTANGLE TEXTURE_RECTANGLE}</td>
+     *               <td>{@link org.lwjgl.opengl.GL13#GL_TEXTURE_CUBE_MAP TEXTURE_CUBE_MAP}</td></tr>
+     *               <tr><td>{@link org.lwjgl.opengl.GL11C#GL_PROXY_TEXTURE_2D PROXY_TEXTURE_2D}</td>
+     *               <td>{@link org.lwjgl.opengl.GL30#GL_PROXY_TEXTURE_1D_ARRAY PROXY_TEXTURE_1D_ARRAY}</td>
+     *               <td>{@link org.lwjgl.opengl.GL31#GL_PROXY_TEXTURE_RECTANGLE PROXY_TEXTURE_RECTANGLE}</td>
+     *               <td>{@link org.lwjgl.opengl.GL13#GL_PROXY_TEXTURE_CUBE_MAP PROXY_TEXTURE_CUBE_MAP}</td></tr></table>
+     */
     private void loadTexture(InputStream file, int target) {
         try(MemoryStack stack = MemoryStack.stackPush()) {
             byte[] data = file.readAllBytes();
@@ -77,10 +111,38 @@ public final class Texture {
         }
     }
     
-    public int getWidth()    { return width; }
-    public int getHeight()   { return height; }
-    public int getChannels() { return channels; }
+    /**
+     * Obtains the width of the texture.
+     * 
+     * @return the textures width in pixels
+     */
+    public int getWidth() {
+        return width;
+    }
     
+    /**
+     * Obtains the height of the texture.
+     * 
+     * @return the textures height in pixels
+     */
+    public int getHeight() {
+        return height;
+    }
+    
+    /**
+     * Obtains the amount of color channels this texture uses.
+     * 
+     * @return the number of color components the texture image exhibits
+     */
+    public int getChannels() {
+        return channels;
+    }
+    
+    /**
+     * Frees the OpenGL texture image associated with this object. Should be used when a texture is no longer needed.
+     * 
+     * @see org.lwjgl.opengl.GL11#glDeleteTextures(int)
+     */
     public void freeTexture() {
         glDeleteTextures(handle);
     }
