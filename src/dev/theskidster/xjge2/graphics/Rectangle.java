@@ -7,6 +7,9 @@ import org.joml.Vector2i;
  * Created: May 25, 2021
  */
 
+/**
+ * Data structure used by {@link RectangleBatch} objects to draw single color rectangles.
+ */
 public class Rectangle {
 
     public int xPos;
@@ -14,8 +17,19 @@ public class Rectangle {
     public int width;
     public int height;
     
+    /**
+     * 
+     */
     public Rectangle() {}
     
+    /**
+     * Creates a new rectangle object.
+     * 
+     * @param xPos
+     * @param yPos
+     * @param width
+     * @param height 
+     */
     public Rectangle(int xPos, int yPos, int width, int height) {
         this.xPos   = xPos;
         this.yPos   = yPos;
