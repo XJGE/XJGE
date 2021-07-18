@@ -18,17 +18,17 @@ public class Rectangle {
     public int height;
     
     /**
-     * 
+     * Creates a new rectangle object.
      */
     public Rectangle() {}
     
     /**
-     * Creates a new rectangle object.
+     * Creates a new rectangle object using the data specified.
      * 
-     * @param xPos
-     * @param yPos
-     * @param width
-     * @param height 
+     * @param xPos   the x coordinate of the rectangles position
+     * @param yPos   the y coordinate of the rectangles position
+     * @param width  the width of the rectangle
+     * @param height the height of the rectangle
      */
     public Rectangle(int xPos, int yPos, int width, int height) {
         this.xPos   = xPos;
@@ -37,6 +37,13 @@ public class Rectangle {
         this.height = height;
     }
     
+    /**
+     * Determines if the specified point has intersected this rectangle.
+     * 
+     * @param point the point to check
+     * 
+     * @return true if an intersection was detected
+     */
     public boolean contains(Vector2i point) {
         return (point.x > xPos && point.x < xPos + width) && 
                (point.y > yPos && point.y < yPos + height);
