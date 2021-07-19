@@ -1,13 +1,13 @@
 package dev.theskidster.xjge2.core;
 
-/**
- * @author J Hoffman
- * Created: May 3, 2021
- */
+//Created: May 3, 2021
 
 /**
  * Represents an interactive component on a {@link Gamepad} such as an analog 
  * stick, button, or trigger.
+ * 
+ * @author J Hoffman
+ * @since  2.0.0
  */
 public enum Control {
     

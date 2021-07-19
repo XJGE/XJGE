@@ -15,14 +15,15 @@ import static org.lwjgl.opengl.GL11.GL_RENDERER;
 import static org.lwjgl.opengl.GL11.GL_VERSION;
 import static org.lwjgl.opengl.GL11.glGetString;
 
-/**
- * @author J Hoffman
- * Created: Jun 10, 2021
- */
+//Created: Jun 10, 2021
 
 /**
- * Provides users with a interface detailing engine diagnostics and other information useful for debugging at runtime. This object is 
- * rendered independent of player {@link Viewport}.
+ * Provides users with a interface detailing engine diagnostics and other 
+ * information useful for debugging at runtime. This object is rendered 
+ * independent of player {@link Viewport}.
+ * 
+ * @author J Hoffman
+ * @since  2.0.0
  */
 final class DebugInfo {
     
@@ -42,8 +43,10 @@ final class DebugInfo {
     /**
      * Creates a new debug interface using the supplied font and texture.
      * 
-     * @param font        the font supplied by the engine that the interface will be rendered in
-     * @param iconTexture the texture to use for the various icons in the interface
+     * @param font        the font supplied by the engine that the interface 
+     *                    will be rendered in
+     * @param iconTexture the texture to use for the various icons in the 
+     *                    interface
      */
     DebugInfo(Font font, Texture iconTexture) {
         this.font = font;
@@ -56,7 +59,8 @@ final class DebugInfo {
     }
     
     /**
-     * Reconfigures the positions of each group in the interface to better fit the dimensions of the window.
+     * Reconfigures the positions of each group in the interface to better fit 
+     * the dimensions of the window.
      */
     void updatePosition() {
         //Group 1: runtime info.
