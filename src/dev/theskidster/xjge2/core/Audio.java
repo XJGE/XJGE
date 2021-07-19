@@ -7,18 +7,25 @@ import java.util.TreeMap;
 import org.joml.Vector3f;
 import static org.lwjgl.openal.AL11.*;
 
-/**
- * @author J Hoffman
- * Created: Jun 20, 2021
- */
+//Created: Jun 20, 2021
 
 /**
- * Provides a single point of access through which sound effects and music can be played.
+ * Provides an abstraction of the OpenAL API through which sound effects and 
+ * music may be played.
+ * 
+ * @author J Hoffman
+ * @since  2.0.0
  */
 public final class Audio {
 
+    /**
+     * A unique value that can be passed to the 
+     * {@link #setSoundSourceState(int, int)} method to change the current 
+     * state of every sound source.
+     */
     public static final int ALL_SOURCES = 0;
-    static final int MAX_SOURCES         = 64;
+    
+    static final int MAX_SOURCES = 64;
     private static int prevMusicSourceSample;
     private static int prevMusicSourceState;
     
@@ -46,8 +53,8 @@ public final class Audio {
     static final Map<String, Song> songs   = new HashMap<>();
     
     /**
-     * Ensures that the previous state of the OpenAL context is retained between configuration changes made to the current {@link Speaker} 
-     * the game engine is utilizing.
+     * Ensures that the state of the previous OpenAL context is retained 
+     * between configuration changes of the current audio output device.
      */
     static void applyContextConfig() {
         sounds.forEach((filename, sound) -> {
@@ -98,8 +105,13 @@ public final class Audio {
     }
     
     /**
-     * Queries a pool of {@link SoundSource} objects and returns one which is not currently in use. If no sound sources are available the 
-     * engine will attempt to procure one by returning whichever sound source is playing audio at the lowest volume.
+     * Queries a pool of {@link SoundSource} objects and returns one which is 
+     * not currently in use. 
+     * <p>
+     * NOTE: If no sound sources are available, the engine will attempt to 
+     * procure one by returning whichever is playing audio at the lowest 
+     * volume.
+     * </p>
      * 
      * @return a sound source object to use for audio output
      */
@@ -135,12 +147,13 @@ public final class Audio {
     }
     
     /**
-     * Returns the ID number of the {@link Viewport} who's camera is positioned closest to the location of a sound source object in the 
-     * game world.
+     * Returns the ID number of the {@link Viewport} whos camera object is 
+     * positioned closest to the location of a {@link SoundSource} in the game 
+     * world.
      * 
      * @param position the position of the sound source object
      * 
-     * @return a value used to identify a viewport.
+     * @return a value used to identify a viewport
      */
     private static int findClosestViewport(Vector3f position) {
         for(int i = 0; i < camDir.size(); i++) {
@@ -155,7 +168,8 @@ public final class Audio {
     }
     
     /**
-     * Repositions every active {@link SoundSource} object around the single OpenAL listener object located at the center of the game world.
+     * Repositions every active {@link SoundSource} object around the single 
+     * OpenAL listener object located at the center of the game world.
      * 
      * @see SoundSource#setSourcePosition(Vector3f, Vector3f)
      */
@@ -172,12 +186,14 @@ public final class Audio {
     }
     
     /**
-     * Captures the orientation of a viewports {@link Camera} object. This data will be used to calculate the positions of sound sources 
-     * within the 3D scene relative to players point of view.
+     * Captures the orientation of a viewports camera object. This data will be
+     * used to calculate the positions of sound sources within the game world 
+     * relative to players point of view.
      * 
-     * @param viewportID a value used to identify a viewport
+     * @param viewportID a value used to identify the viewport
      * @param position   the current position of the viewports camera object
-     * @param direction  the direction in which the viewports camera is currently facing
+     * @param direction  the direction in which the viewports camera is 
+     *                   currently facing
      */
     static void setViewportCamData(int viewportID, Vector3f position, Vector3f direction) {
         camPos.put(viewportID, position);
@@ -185,10 +201,11 @@ public final class Audio {
     }
     
     /**
-     * Captures the state of each sound source object currently in use. The captured state of the sound sources will be transferred to a 
-     * new OpenAL context once it is initialized.
+     * Captures the state of each sound source object currently in use. The 
+     * captured state of the sound sources will be transferred to a new OpenAL 
+     * context once it is initialized.
      * 
-     * @see applyContextConfig()
+     * @see #applyContextConfig()
      */
     static void saveContextConfig() {
         if(musicSource != null) {
@@ -203,8 +220,9 @@ public final class Audio {
     }
     
     /**
-     * Queues the main body section of a piece of music once the intro sequence has finished. The body section will loop indefinitely 
-     * until paused, stopped, or another piece of music is played.
+     * Queues the main body section of a piece of music once the intro sequence 
+     * has finished. The body section will loop indefinitely until paused, 
+     * stopped, or another piece of music is played.
      */
     static void queueMusicBodySection() {
         if(alGetSourcei(musicSource.handle, AL_BUFFERS_PROCESSED) == 2 && !introFinished) {
@@ -220,16 +238,18 @@ public final class Audio {
     }
     
     /**
-     * Plays a {@link Sound} at the position specified.
+     * Emits a {@link Sound} from some specified position in the game world.
      * 
      * @param sound    the sound to play
-     * @param position the position from which the sound will play. If <b>null</b> is passed, the sound will not be attenuated according 
-     *                 to its position in the 3D scene.
+     * @param position the position from which the sound will play. If 
+     *                 <b>null</b> is passed, the sound will not be attenuated 
+     *                 according to its position in the game world.
      * @param loop     if true, the sound will loop indefinitely until stopped
      * 
-     * @return a value that identifies the {@link SoundSource} object used to play the specified sound
+     * @return a value that identifies which {@link SoundSource} was used to 
+     *         play the sound
      * 
-     * @see setSoundSourceState(int, int);
+     * @see #setSoundSourceState(int, int)
      */
     public static int playSound(Sound sound, Vector3f position, boolean loop) {
         SoundSource source = findSoundSource();
@@ -246,8 +266,12 @@ public final class Audio {
     }
     
     /**
-     * Plays a {@link Song} from the beginning. If the song provided contains an intro sequence it will be played first before looping 
-     * the body section. Calling this method will interrupt and replace any song that was previously playing.
+     * Plays a song from the beginning. If the song contains an intro 
+     * sequence it will be played first before looping the body section.
+     * <p>
+     * NOTE: Calling this method will interrupt and replace any song that was 
+     * previously playing.
+     * </p>
      * 
      * @param song the song to start playing
      */
@@ -276,9 +300,9 @@ public final class Audio {
     }
     
     /**
-     * Pauses whatever song is playing at its current measure.
+     * Pauses whatever song is currently playing at its current measure.
      * 
-     * @see resumeMusic()
+     * @see #resumeMusic()
      */
     public static void pauseMusic() {
         alSourcePause(musicSource.handle);
@@ -288,24 +312,28 @@ public final class Audio {
      * Resumes playing whatever song was previously paused from where it left 
      * off.
      * 
-     * @see pauseMusic()
+     * @see #pauseMusic()
      */
     public static void resumeMusic() {
         alSourcePlay(musicSource.handle);
     }
     
     /**
-     * Ceases playing a song. Unlike {@link pauseMusic()}, stopping a song will set reset its current measure.
+     * Ceases playing a song. Unlike {@link #pauseMusic()}, stopping a song 
+     * will set reset its measure.
      */
     public static void stopMusic() {
         alSourceStop(musicSource.handle);
     }
     
     /**
-     * Provides the current value of the sound master volume.
-     * <br><br>
-     * It is encouraged that you multiply this value by some factor of ten to obfuscate the implementations reliance on a floating point 
-     * value from 0 to 1 and instead provide players with something more practical (0 to 100, etc).
+     * Obtains the current value of the sound master volume.
+     * <p>
+     * NOTE: It's encouraged that you multiply this value by some factor of ten
+     * to obfuscate the implementations reliance on a floating point value from 
+     * 0 to 1 and instead provide players with something more practical 
+     * (0 to 100, etc).
+     * </p>
      * 
      * @return the value used to attenuate the volume of all sound effects
      */
@@ -315,20 +343,26 @@ public final class Audio {
     
     /**
      * Provides the current value of the music master volume.
-     * <br><br>
-     * It is encouraged that you multiply this value by some factor of ten to obfuscate the implementations reliance on a floating point 
-     * value from 0 to 1 and instead provide players with something more practical (0 to 100, etc).
+     * <p>
+     * NOTE: It's encouraged that you multiply this value by some factor of ten
+     * to obfuscate the implementations reliance on a floating point value from 
+     * 0 to 1 and instead provide players with something more practical 
+     * (0 to 100, etc).
+     * </p>
      * 
-     * @return the value used to attenuate the volume of the game music
+     * @return the value used to attenuate the volume of the games background 
+     *         music
      */
     public static float getMusicMasterVolume() {
         return musicMasterVolume;
     }
     
     /**
-     * Sets the master volume that will be used to attenuate the overall volume of all sound effects.
+     * Sets the master volume that will be used to attenuate the overall volume
+     * of all sound effects.
      * 
-     * @param masterVolume the value used to attenuate the volume of all sound effects (between 0 and 1)
+     * @param masterVolume the value used to attenuate the volume of sound 
+     *                     effects (between 0 and 1)
      */
     public static void setSoundMasterVolume(float masterVolume) {
         if(masterVolume >= 0 && masterVolume <= 1) {
@@ -341,9 +375,11 @@ public final class Audio {
     }
     
     /**
-     * Sets the master volume that will be used to attenuate the overall volume of all game music.
+     * Sets the master volume that will be used to attenuate the overall volume
+     * of the games background music.
      * 
-     * @param masterVolume the value used to attenuate the volume of the game music (between 0 and 1)
+     * @param masterVolume the value used to attenuate the volume of the games 
+     *                     music (between 0 and 1)
      */
     public static void setMusicMasterVolume(float masterVolume) {
         if(masterVolume >= 0 && masterVolume <= 1) {
@@ -355,9 +391,12 @@ public final class Audio {
     /**
      * Explicitly sets the state of a {@link SoundSource} object.
      * 
-     * @param handle the unique handle used to identify the sound source object or {@link ALL_SOURCES}
-     * @param state  the state to set the source to. One of {@link org.lwjgl.openal.AL10#AL_PAUSED AL_PLAYING}, 
-     *               {@link org.lwjgl.openal.AL10#AL_PAUSED AL_PAUSED}, or {@link org.lwjgl.openal.AL10#AL_PAUSED AL_STOPPED}. 
+     * @param handle the unique handle used to identify the sound source or 
+     *               {@link ALL_SOURCES}
+     * @param state  the state to set the source to. One of 
+     *               {@link org.lwjgl.openal.AL10#AL_PAUSED AL_PLAYING}, 
+     *               {@link org.lwjgl.openal.AL10#AL_PAUSED AL_PAUSED}, or 
+     *               {@link org.lwjgl.openal.AL10#AL_PAUSED AL_STOPPED}. 
      */
     public static void setSoundSourceState(int handle, int state) {
         if(handle == ALL_SOURCES) {
