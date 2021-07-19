@@ -5,10 +5,7 @@ import java.util.Map;
 import org.joml.Matrix4f;
 import org.joml.Vector3f;
 
-/**
- * @author J Hoffman
- * Created: May 8, 2021
- */
+//Created: May 8, 2021
 
 /**
  * Abstract class which can be used to create specialized objects that will 
@@ -21,6 +18,9 @@ import org.joml.Vector3f;
  * objects correctly. More information about this can be found in the engines 
  * user manual under the section titled "Putting It All Into Perspective".
  * </p>
+ * 
+ * @author J Hoffman
+ * @since  2.0.0
  */
 public abstract class Camera {
     
