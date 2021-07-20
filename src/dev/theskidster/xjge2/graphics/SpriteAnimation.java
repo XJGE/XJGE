@@ -5,14 +5,15 @@ import java.util.ArrayList;
 import java.util.List;
 import org.joml.Vector2i;
 
-/**
- * @author J Hoffman
- * Created: Jun 13, 2021
- */
+//Created: Jun 13, 2021
 
 /**
- * Represents a 2D sprite animation that iterates over a series of sub-images from a {@link SpriteSheet} in sequence to create the illusion 
+ * Represents a 2D sprite animation that iterates over a series of sub-images 
+ * from a {@linkplain Atlas texture atlas} in sequence to create the illusion 
  * of movement.
+ * 
+ * @author J Hoffman
+ * @since  2.0.0
  */
 public class SpriteAnimation {
 
@@ -24,7 +25,8 @@ public class SpriteAnimation {
     /**
      * Creates a new single-frame animation- a non-animation if you will.
      * 
-     * @param frame the frame to display indefinitely until the animation is changed
+     * @param frame the frame to display indefinitely until the animation is 
+     *              changed
      */
     public SpriteAnimation(Vector2i frame) {
         speed = 1;
@@ -43,7 +45,8 @@ public class SpriteAnimation {
     }
     
     /**
-     * Steps the animation forward changing the texture coordinates of the {@link SpriteSheet} and subsequently the sub-image rendered.
+     * Steps the animation forward changing the texture coordinates of the 
+     * sprite sheet and subsequently the sub-image rendered.
      * 
      * @param atlas the texture atlas (or sprite sheet) to use for this animation
      */
