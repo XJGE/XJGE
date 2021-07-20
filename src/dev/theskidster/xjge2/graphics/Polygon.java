@@ -9,8 +9,13 @@ import org.lwjgl.system.MemoryStack;
 //Created: Jun 15, 2021
 
 /**
- * Objects of this class can be used as part of a larger {@linkplain dev.theskidster.xjge2.core.Widget UI widget} to represent a regular 2D shape 
- * such as a pentagon, hexagon, or circle by utilizing the number of sides specified through its constructor.
+ * Objects of this class can be used as part of a larger 
+ * {@linkplain dev.theskidster.xjge2.core.Widget UI widget} to represent a 
+ * regular 2D shape such as a pentagon, hexagon, or circle by utilizing the 
+ * number of sides specified through its constructor.
+ * 
+ * @author J Hoffman
+ * @since  2.0.0
  */
 public class Polygon {
 
@@ -20,14 +25,19 @@ public class Polygon {
     private final Graphics g = new Graphics();
     
     /**
-     * Creates a new n-sided polygon object which can be used to represent regular shapes and circles. 
+     * Creates a new n-sided polygon object which can be used to represent 
+     * regular shapes and circles. 
      * 
-     * @param numSides the number of sides this shape will exhibit, (5 for a pentagon, 6 for a hexagon, etc.)
-     * @param fill     if true, the shape will be filled with the specified color
+     * @param numSides the number of sides this shape will exhibit, (5 for a 
+     *                 pentagon, 6 for a hexagon, etc.)
+     * @param fill     if true, the shape will be filled with the specified 
+     *                 color
      * @param radius   the radius used to determine the size of the polygon
-     * @param color    the color in which this shape will initially be rendered
-     * @param xPos     the position at which the shape will be rendered initially along the x axis
-     * @param yPos     the position at which the shape will be rendered initially along the y axis
+     * @param color    the color to render this shape in
+     * @param xPos     the x-coordinate of the shapes initial position in the 
+     *                 viewport
+     * @param yPos     the y-coordinate of the shapes initial position in the 
+     *                 viewport
      */
     public Polygon(int numSides, boolean fill, float radius, Color color, int xPos, int yPos) {
         this.numSides = numSides;
@@ -58,13 +68,17 @@ public class Polygon {
     }
     
     /**
-     * Alternate version of the {@link Polygon(int, boolean, float, Color, int, int) Polygon()} constructor.
+     * Alternate version of the 
+     * {@link Polygon(int, boolean, float, Color, int, int) Polygon()} 
+     * constructor.
      * 
-     * @param numSides the number of sides this shape will exhibit, (5 for a pentagon, 6 for a hexagon, etc.)
-     * @param fill     if true, the shape will be filled with the specified color
+     * @param numSides the number of sides this shape will exhibit, (5 for a 
+     *                 pentagon, 6 for a hexagon, etc.)
+     * @param fill     if true, the shape will be filled with the specified 
+     *                 color
      * @param radius   the radius used to determine the size of the polygon
-     * @param color    the color in which this shape will initially be rendered
-     * @param position the position at which the shape will be rendered initially
+     * @param color    the color to render this shape in
+     * @param position the position at which the shape will be placed initially
      */
     public Polygon(int numSides, boolean fill, float radius, Color color, Vector2i position) {
         this(numSides, fill, radius, color, position.x, position.y);
@@ -72,8 +86,9 @@ public class Polygon {
     
     /**
      * Translates the polygon to the position specified. 
-     * <br><br>
+     * <p>
      * NOTE: polygons are positioned around their centerpoints.
+     * </p>
      * 
      * @param position the position where the shape will be placed
      */
@@ -84,8 +99,8 @@ public class Polygon {
     /**
      * Alternate version of {@link setPosition(Vector2f)}.
      * 
-     * @param x the point along the x-axis at which this shape will be positioned
-     * @param y the point along the y-axis at which this shape will be positioned
+     * @param x the x coordinate to place this shape in the window
+     * @param y the y coordinate to place this shape in the window
      */
     public final void translate(int x, int y) {
         g.modelMatrix.translation(x, y, 0);

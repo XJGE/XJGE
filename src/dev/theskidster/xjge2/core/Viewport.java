@@ -176,10 +176,10 @@ final class Viewport {
      * 
      * @param width  the width of the viewport in pixels
      * @param height the height of the viewport in pixels
-     * @param x1     the x coordinate of the viewports bottom left corner
-     * @param y1     the y coordinate of the viewports bottom left corner
-     * @param x2     the x coordinate of the viewports top right corner
-     * @param y2     the y coordinate of the viewports top right corner
+     * @param x1     the x-coordinate of the viewports bottom-left corner
+     * @param y1     the y-coordinate of the viewports bottom-left corner
+     * @param x2     the x-coordinate of the viewports top-right corner
+     * @param y2     the y-coordinate of the viewports top-right corner
      */
     void setBounds(int width, int height, int x1, int y1, int x2, int y2) {
         this.width  = width;

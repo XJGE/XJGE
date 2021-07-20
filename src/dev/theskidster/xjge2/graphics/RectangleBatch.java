@@ -6,13 +6,11 @@ import org.joml.Vector2i;
 import static org.lwjgl.opengl.GL30.*;
 import org.lwjgl.system.MemoryUtil;
 
-/**
- * @author J Hoffman
- * Created: May 26, 2021
- */
+//Created: May 26, 2021
 
 /**
- * Used to batch render rectangles. A batch should be done inside of a components render method like so:
+ * Used to batch render rectangles. A batch should be done inside of a 
+ * components render method like so:
  * <blockquote><pre>
  * batchStart(1.0f);
  *     drawRectangle()
@@ -21,6 +19,9 @@ import org.lwjgl.system.MemoryUtil;
  *     ...
  * batchEnd();
  * </pre></blockquote>
+ * 
+ * @author J Hoffman
+ * @since  2.0.0
  */
 public final class RectangleBatch {
     
@@ -31,9 +32,11 @@ public final class RectangleBatch {
     private final Graphics g = new Graphics();
     
     /**
-     * Establishes a system through which vertex data may be streamed to draw rectangles. 
+     * Establishes a system through which vertex data may be streamed to draw 
+     * rectangles. 
      * 
-     * @param numRectangles the maximum number of rectangles this batch is allowed to draw
+     * @param numRectangles the maximum number of rectangles this batch is 
+     *                      allowed to draw
      */
     public RectangleBatch(int numRectangles) {
         g.vertices = MemoryUtil.memAllocFloat(24 * numRectangles);
@@ -105,13 +108,14 @@ public final class RectangleBatch {
     }
     
     /**
-     * Draws a rectangle using the data provided. the position shape will be drawn starts from its bottom left corner.
+     * Draws a rectangle using the data provided. The shape will be drawn 
+     * starting from the position of its bottom-left corner.
      * 
-     * @param x      the x position to draw the rectangle from
-     * @param y      the y position to draw the rectangle from
-     * @param width  the width of the rectangle
-     * @param height the height of the rectangle
-     * @param color  the color to draw the rectangle
+     * @param x      the x-coordinate of the rectangles bottom-left corner
+     * @param y      the y-coordinate of the rectangles bottom-left corner
+     * @param width  the width (in pixels) of the rectangle
+     * @param height the height (in pixels) of the rectangle
+     * @param color  the color to draw the rectangle in
      */
     public void drawRectangle(int x, int y, int width, int height, Color color) {
         int startIndex = (numVertices / 24) * Float.BYTES;
@@ -128,12 +132,13 @@ public final class RectangleBatch {
     }
     
     /**
-     * Draws a rectangle using the data provided.
+     * Draws a rectangle using the data provided. The shape will be drawn 
+     * starting from the position of its bottom-left corner.
      * 
-     * @param pos    the position to draw the rectangle from. Starts from the shapes bottom left corner.
-     * @param width  the width of the rectangle
-     * @param height the height of the rectangle
-     * @param color  the color to draw the rectangle
+     * @param pos    the position in the viewport to draw the rectangle from
+     * @param width  the width (in pixels) of the rectangle
+     * @param height the height (in pixels) of the rectangle
+     * @param color  the color to draw the rectangle in
      */
     public void drawRectangle(Vector2i pos, int width, int height, Color color) {
         drawRectangle(pos.x, pos.y, width, height, color);
@@ -143,7 +148,7 @@ public final class RectangleBatch {
      * Draws a rectangle using the data provided.
      * 
      * @param rectangle the rectangle to draw
-     * @param color     the color in which it will appear
+     * @param color     the color to draw the rectangle in
      */
     public void drawRectangle(Rectangle rectangle, Color color) {
         drawRectangle(

@@ -75,9 +75,9 @@ public final class Icon {
     }
     
     /**
-     * Sets the current position of the icon on the screen
+     * Sets the current position of the icon.
      * 
-     * @param position the position to set this icon to
+     * @param position the position to set this icon to in the viewport
      */
     public void setPosition(Vector2i position) {
         g.modelMatrix.translation(position.x, position.y, 0);
@@ -86,8 +86,8 @@ public final class Icon {
     /**
      * Variant of {@link setPosition(Vector2i)}.
      * 
-     * @param x the x position coordinate to set the icon to
-     * @param y the y position coordinate to set the icon to
+     * @param x the x-coordinate to place the icon at in the viewport
+     * @param y the y-coordinate to place the icon at in the viewport
      */
     public void setPosition(int x, int y) {
         g.modelMatrix.translation(x, y, 0);

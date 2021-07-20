@@ -2,13 +2,14 @@ package dev.theskidster.xjge2.graphics;
 
 import org.joml.Vector2i;
 
-/**
- * @author J Hoffman
- * Created: May 25, 2021
- */
+//Created: May 25, 2021
 
 /**
- * Data structure used by {@link RectangleBatch} objects to draw single color rectangles.
+ * Data structure used by {@link RectangleBatch} objects to draw single color 
+ * rectangles.
+ * 
+ * @author J Hoffman
+ * @since  2.0.0
  */
 public class Rectangle {
 
@@ -25,8 +26,8 @@ public class Rectangle {
     /**
      * Creates a new rectangle object using the data specified.
      * 
-     * @param xPos   the x coordinate of the rectangles position
-     * @param yPos   the y coordinate of the rectangles position
+     * @param xPos   the x-coordinate of the rectangles position
+     * @param yPos   the y-coordinate of the rectangles position
      * @param width  the width of the rectangle
      * @param height the height of the rectangle
      */

@@ -425,9 +425,9 @@ public class Model {
     /**
      * Alternate version of {@link translate(Vector3f) translate()}.
      * 
-     * @param x the x coordinate of the game world to place this model at
-     * @param y the y coordinate of the game world to place this model at
-     * @param z the z coordinate of the game world to place this model at
+     * @param x the x-coordinate of the game world to place this model at
+     * @param y the y-coordinate of the game world to place this model at
+     * @param z the z-coordinate of the game world to place this model at
      */
     public void translate(float x, float y, float z) {
         for(Mesh mesh : meshes) mesh.modelMatrix.translation(x, y, z);
