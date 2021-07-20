@@ -7,8 +7,8 @@ import org.joml.Vector3f;
 //Created: May 7, 2021
 
 /**
- * Abstract class which can be used to represent dynamic game objects within a
- * {@link Scene}.
+ * Abstract class which can be used to represent dynamic game objects within 
+ * the game world.
  * 
  * @author J Hoffman
  * @since  2.0.0

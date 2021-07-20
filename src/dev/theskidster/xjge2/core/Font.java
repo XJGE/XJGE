@@ -19,15 +19,17 @@ import org.lwjgl.system.MemoryStack;
 import org.lwjgl.system.MemoryUtil;
 import static org.lwjgl.system.MemoryUtil.NULL;
 
-/**
- * @author J Hoffman
- * Created: Jun 3, 2021
- */
+//Created: Jun 3, 2021
 
 /**
- * Supplies the data parsed from a font file as an immutable object which can be passed to the 
- * {@linkplain Widget#drawString(Font, String, Vector2i, Color) drawString()} method of a {@link Widget} to render text in a desired 
+ * Supplies the data parsed from a font file as an immutable object which can 
+ * be passed to the 
+ * {@linkplain Widget#drawString(Font, String, Vector2i, Color) drawString()} 
+ * method of a {@link Widget} to render text in some desired 
  * font. TrueType .ttf is the preferred file format of this engine for fonts.
+ * 
+ * @author J Hoffman
+ * @since  2.0.0
  */
 public final class Font {
     
@@ -75,14 +77,21 @@ public final class Font {
     }
     
     /**
-     * Creates a new font object of the specified size using data parsed from a font file. Font objects are immutable by design so if you
-     * wish to render a single font in different sizes you should create a new font object for each desired size.
-     * <br><br>
-     * NOTE: the size specified in this constructor encompasses the entire glyph, including its advance, descent, and bearing space. As 
-     * such, the actual visible portion of the glyph produced may not correspond directly to the desired size in pixels.
+     * Creates a new font object of the specified size using data parsed from a 
+     * font file. Font objects are immutable by design so if you wish to render 
+     * a single font in different sizes you should create a new font object for 
+     * each desired size.
+     * <p>
+     * NOTE: the size specified in this constructor encompasses the entire 
+     * glyph, including its advance, descent, and bearing space. As such, the 
+     * actual visible portion of the glyph produced may not correspond directly 
+     * to the desired size in pixels.
+     * </p>
      * 
-     * @param filename the name of the file to load. Expects the file extension to be included.
-     * @param size     the size to generate this fonts glyphs at in pixels
+     * @param filename the name of the file to load. Expects the file extension 
+     *                 to be included.
+     * @param size     the desired size (in pixels) to generate this fonts 
+     *                 glyphs at
      */
     public Font(String filename, int size) {
         this.size = size;
@@ -105,10 +114,12 @@ public final class Font {
     }
     
     /**
-     * Generates a bitmap image that will be used as a texture atlas during instanced rendering.
+     * Generates a bitmap image that will be used as a texture atlas during 
+     * instanced rendering.
      * 
-     * @param file the .ttf file to extract font data from
-     * @param size the size to generate this fonts glyphs at in pixels
+     * @param file the file to parse font data from
+     * @param size the desired size (in pixels) to generate this fonts glyphs 
+     *             at
      */
     private void loadFont(InputStream file, int size) {
         try(MemoryStack stack = MemoryStack.stackPush()) {
@@ -258,19 +269,23 @@ public final class Font {
     }
     
     /**
-     * Obtains the horizontal advance (or stride) that the specified {@link Glyph} will offset the position of next glyph in sequence by.
+     * Obtains the horizontal advance (or stride) that the specified 
+     * {@link Glyph} will offset the position of next glyph in sequence by.
      * 
      * @param c the character which corresponds to the glyph in question
-     * @return  the horizontal advance of the specified glyph
+     * 
+     * @return the horizontal advance of the specified glyph
      */
     int getGlyphAdvance(char c) {
         return advanceValues.get(c);
     }
     
     /**
-     * Obtains the horizontal bearing space (or padding) that is applied to the specified glyphs left side during rendering. 
+     * Obtains the horizontal bearing space (or padding) that is applied to the 
+     * specified glyphs left side during rendering. 
      * 
      * @param c the character which corresponds to the glyph in question
+     * 
      * @return the horizontal bearing space of the specified glyph
      */
     int getGlyphBearing(char c) {
@@ -278,10 +293,12 @@ public final class Font {
     }
     
     /**
-     * Obtains the descent value that indicates how far below the baseline the specified glyph extends.
+     * Obtains the descent value that indicates how far below the baseline the 
+     * specified glyph extends.
      * 
      * @param c the character which corresponds to the glyph in question
-     * @return  the descent of the specified glyph
+     * 
+     * @return the descent of the specified glyph
      */
     int getGlyphDescent(char c) {
         return posOffsets.get(c).y;

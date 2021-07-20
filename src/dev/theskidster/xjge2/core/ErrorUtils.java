@@ -3,13 +3,14 @@ package dev.theskidster.xjge2.core;
 import static org.lwjgl.openal.AL10.*;
 import static org.lwjgl.opengl.GL30.*;
 
-/**
- * @author J Hoffman
- * Created: May 8, 2021
- */
+//Created: May 8, 2021
 
 /**
- * Provides convenience methods for locating errors encountered by the engine at runtime.
+ * Provides convenience methods for locating errors encountered by the engine 
+ * at runtime.
+ * 
+ * @author J Hoffman
+ * @since  2.0.0
  */
 public final class ErrorUtils {
 
@@ -57,11 +58,14 @@ public final class ErrorUtils {
     }
     
     /**
-     * Checks the status of the Framebuffer object. This is really only ever used during upon initialization of the engine.
+     * Checks the current status of the framebuffer.
      * 
-     * @param target the target of the Framebuffer completeness check. One of {@link org.lwjgl.opengl.GL30C#GL_FRAMEBUFFER FRAMEBUFFER}, 
-     *               {@link org.lwjgl.opengl.GL30C#GL_READ_FRAMEBUFFER READ_FRAMEBUFFER}, or 
-     *               {@link org.lwjgl.opengl.GL30C#GL_DRAW_FRAMEBUFFER DRAW_FRAMEBUFFER}.
+     * @param target the target of the framebuffer completeness check. One of:
+     * <table><tr>
+     * <td>{@link org.lwjgl.opengl.GL30C#GL_FRAMEBUFFER FRAMEBUFFER}</td>
+     * <td>{@link org.lwjgl.opengl.GL30C#GL_READ_FRAMEBUFFER READ_FRAMEBUFFER}</td>
+     * <td>{@link org.lwjgl.opengl.GL30C#GL_DRAW_FRAMEBUFFER DRAW_FRAMEBUFFER}</td>
+     * </tr></table>
      */
     static void checkFBStatus(int target) {
         int status  = glCheckFramebufferStatus(target);
