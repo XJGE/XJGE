@@ -14,18 +14,24 @@ import java.util.TreeMap;
 import org.joml.Vector2i;
 import static org.lwjgl.glfw.GLFW.*;
 
-/**
- * @author J Hoffman
- * Created: May 23, 2021
- */
+//Created: May 23, 2021
 
 /**
- * Provides a command line which can be used to interact with the engine at runtime. The command terminals functionality can be 
- * {@linkplain XJGE#addCommand(String, TerminalCommand) extended} to support more commands to better suit the individual requirements 
- * of the implementation.
- * <br><br>
- * The command terminal can be opened by pressing {@code SHIFT} + {@code F1} with debug mode enabled. While open, the terminal will 
- * override input from the keyboard. Additionally, {@link Noclip} cannot be used while the command terminal is active.
+ * Provides a command line through which the engine may be interacted with at
+ * runtime.
+ * <p>
+ * With debug mode enabled, press {@code SHIFT} + {@code F1} to open or close 
+ * the terminal. While the terminal is open, input from the keyboard will be 
+ * overridden and {@link Noclip} cannot be used.
+ * </p><p>
+ * The terminals functionality can be 
+ * {@linkplain XJGE#addCommand(String, TerminalCommand) extended} to support 
+ * additional commands to better suit the individual requirements of the 
+ * implementation.
+ * </p>
+ * 
+ * @author J Hoffman
+ * @since  2.0.0
  */
 final class Terminal implements PropertyChangeListener {
 
@@ -70,7 +76,8 @@ final class Terminal implements PropertyChangeListener {
         private final char C;
         
         /**
-         * Creates a new Key struct that contains the characters the key represents.
+         * Creates a new Key struct that contains the characters the key 
+         * represents.
          * 
          * @param c the default letter/symbol of the key
          * @param C the letter/symbol of the key when shift is held
@@ -81,11 +88,13 @@ final class Terminal implements PropertyChangeListener {
         }
         
         /**
-         * Returns the letter/symbol the key represents depending on whether the shift key is held.
+         * Returns the letter/symbol the key represents depending on whether 
+         * the shift key is held.
          * 
-         * @param shiftHeld if true, the uppercase character will be returned
+         * @param shiftHeld if true, the uppercase/secondary character will be 
+         *                  returned
          * 
-         * @return the letter/symbol the key represents
+         * @return one of the letters/symbols the key represents
          */
         char getChar(boolean shiftHeld) {
             return (!shiftHeld) ? c : C; 
@@ -148,10 +157,12 @@ final class Terminal implements PropertyChangeListener {
     }
     
     /**
-     * Creates a new command terminal which can be used to interact directly with the game engine.
+     * Creates a new command terminal which can be used to interact directly 
+     * with the game engine at runtime.
      * 
-     * @param commands the commands the terminal will support
-     * @param font     the font supplied by the engine that the interface will be rendered in
+     * @param commands the commands the terminal will use
+     * @param font     the font supplied by the engine that the interface will 
+     *                 be rendered in
      */
     Terminal(TreeMap<String, TerminalCommand> commands, Font font) {
         this.commands = commands;
@@ -225,8 +236,10 @@ final class Terminal implements PropertyChangeListener {
      * Processes input from the keyboard captured by the application window.
      * 
      * @param key    the value supplied by GLFW of a single key on the keyboard
-     * @param action an action supplied by GLFW that describes the nature of the key press
-     * @param mods   a value supplied by GLFW denoting whether any mod keys where held (such as shift or control)
+     * @param action an action supplied by GLFW that describes the nature of 
+     *               the key press
+     * @param mods   a value supplied by GLFW denoting whether any mod keys 
+     *               where held (such as shift or control)
      */
     void processKeyInput(int key, int action, int mods) {
         if(action == GLFW_PRESS || action == GLFW_REPEAT) {
@@ -334,7 +347,8 @@ final class Terminal implements PropertyChangeListener {
     }
     
     /**
-     * Determines if the string in the command line matches a supported command.
+     * Determines if the string in the command line matches a supported 
+     * command.
      * 
      * @return true if the command is recognized by the terminal
      */
@@ -362,8 +376,9 @@ final class Terminal implements PropertyChangeListener {
     }
     
     /**
-     * Offsets the visible portion of the string typed in the terminal by the position of the cursor. Used to navigate large strings that 
-     * extend beyond the windows width.
+     * Offsets the visible portion of the string typed in the terminal by the 
+     * position of the cursor. Used to navigate large strings that extend 
+     * beyond the windows width.
      */
     private void scrollX() {
         if(typed.length() > 0) {
