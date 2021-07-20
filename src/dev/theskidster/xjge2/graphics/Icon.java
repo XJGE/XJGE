@@ -28,6 +28,8 @@ public final class Icon {
     private final Texture texture;
     private final Atlas atlas;
     
+    public Color color = Color.WHITE;
+    
     /**
      * Creates a new icon object which can be used to comprise part of a larger 
      * user interface.
@@ -127,6 +129,7 @@ public final class Icon {
         glBindVertexArray(g.vao);
         
         XJGE.getDefaultGLProgram().setUniform("uType", 4);
+        XJGE.getDefaultGLProgram().setUniform("uColor", color.asVec3());
         XJGE.getDefaultGLProgram().setUniform("uModel", false, g.modelMatrix);
         XJGE.getDefaultGLProgram().setUniform("uTexCoords", currCell);
         

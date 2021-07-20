@@ -6,12 +6,12 @@ import dev.theskidster.xjge2.core.ErrorUtils;
 import dev.theskidster.xjge2.core.LightSource;
 import dev.theskidster.xjge2.core.XJGE;
 import dev.theskidster.xjge2.graphics.Atlas;
+import dev.theskidster.xjge2.graphics.Color;
 import dev.theskidster.xjge2.graphics.GLProgram;
 import dev.theskidster.xjge2.graphics.Graphics;
 import dev.theskidster.xjge2.graphics.SpriteAnimation;
 import dev.theskidster.xjge2.graphics.Texture;
 import java.util.ArrayList;
-import java.util.List;
 import java.util.Map;
 import org.joml.Vector2i;
 import org.joml.Vector3f;
@@ -29,6 +29,8 @@ public class TestEntity2 extends Entity {
     Texture texture;
     Atlas atlas;
     SpriteAnimation animation;
+    
+    Color color = Color.WHITE;
     
     public TestEntity2(float x, float y, float z) {
         super(new Vector3f(x, y, z));
@@ -67,7 +69,7 @@ public class TestEntity2 extends Entity {
         glEnableVertexAttribArray(0);
         glEnableVertexAttribArray(2);
         
-        List<Vector2i> frames = new ArrayList<>() {{
+        ArrayList<Vector2i> frames = new ArrayList<>() {{
             add(new Vector2i());
             add(new Vector2i(1, 0));
             add(new Vector2i(2, 0));
@@ -94,6 +96,7 @@ public class TestEntity2 extends Entity {
         glBindVertexArray(g.vao);
         
         XJGE.getDefaultGLProgram().setUniform("uType", 7);
+        XJGE.getDefaultGLProgram().setUniform("uColor", color.asVec3());
         XJGE.getDefaultGLProgram().setUniform("uModel", false, g.modelMatrix);
         XJGE.getDefaultGLProgram().setUniform("uTexCoords", atlas.texCoords);
         

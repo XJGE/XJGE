@@ -2,7 +2,6 @@ package dev.theskidster.xjge2.graphics;
 
 import dev.theskidster.xjge2.core.Game;
 import java.util.ArrayList;
-import java.util.List;
 import org.joml.Vector2i;
 
 //Created: Jun 13, 2021
@@ -20,7 +19,7 @@ public class SpriteAnimation {
     public int currFrame;
     public int speed;
     
-    public List<Vector2i> frames = new ArrayList<>();
+    public ArrayList<Vector2i> frames = new ArrayList<>();
     
     /**
      * Creates a new single-frame animation- a non-animation if you will.
@@ -39,7 +38,7 @@ public class SpriteAnimation {
      * @param frames the frames that comprise the animation in sequence
      * @param speed  the speed of the animation in game ticks
      */
-    public SpriteAnimation(int speed, List<Vector2i> frames) {
+    public SpriteAnimation(int speed, ArrayList<Vector2i> frames) {
         this.speed  = speed;
         this.frames = frames;
     }

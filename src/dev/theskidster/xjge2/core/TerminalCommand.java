@@ -19,7 +19,7 @@ public abstract class TerminalCommand {
     private final String usage;
     private final String syntax;
     
-    protected TerminalOutput output;
+    TerminalOutput output;
     
     protected Map<String, TerminalCommand> commands;
     
@@ -131,7 +131,7 @@ public abstract class TerminalCommand {
      * 
      * @return the generated message as a string
      */
-    public static String useGenericSetter(String diff) {
+    protected static String useGenericSetter(String diff) {
         return "Supplying prev or next will iterate backwards or forwards through each " + 
                "available " + diff + " whereas passing a number will explicitly set the " + 
                 diff + " to whichever currently occupies that ID (if it exists).";
@@ -147,7 +147,7 @@ public abstract class TerminalCommand {
      * 
      * @return the generated message as a string
      */
-    public static String useGenericShowing(String diff) {
+    protected static String useGenericShowing(String diff) {
         return "Passing no argument will toggle " + diff + ". Supplying either true or " + 
                 "false will set it explicitly.";
     }

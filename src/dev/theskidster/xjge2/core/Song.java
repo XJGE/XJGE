@@ -12,8 +12,8 @@ package dev.theskidster.xjge2.core;
  */
 public final class Song {
 
-    public Sound intro;
-    public Sound body;
+    Sound intro;
+    Sound body;
     
     /**
      * Creates a new song object using the audio file specified. The file 

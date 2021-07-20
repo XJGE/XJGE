@@ -13,7 +13,7 @@ import java.util.List;
  * @author J Hoffman
  * @since  2.0.0
  */
-public class TCSetScene extends TerminalCommand {
+final class TCSetScene extends TerminalCommand {
 
     /**
      * Creates a new instance of the setScene command.

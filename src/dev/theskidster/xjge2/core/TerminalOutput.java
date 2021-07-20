@@ -13,13 +13,13 @@ import dev.theskidster.xjge2.graphics.Color;
  */
 public class TerminalOutput {
     
-    public final String text;
-    public final Color color;
+    final String text;
+    final Color color;
     
     /**
      * Creates an empty response.
      */
-    public TerminalOutput() {
+    TerminalOutput() {
         text  = "";
         color = Color.WHITE;
     }
@@ -30,7 +30,7 @@ public class TerminalOutput {
      * @param text  the text to show the user
      * @param color the color the text will be rendered in
      */
-    public TerminalOutput(String text, Color color) {
+    TerminalOutput(String text, Color color) {
         this.text  = text;
         this.color = color;
     }

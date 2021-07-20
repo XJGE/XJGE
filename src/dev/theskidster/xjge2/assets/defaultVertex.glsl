@@ -57,6 +57,7 @@ void main() {
 
         case 4: //Used for icons that appear as part of the UI.
             ioTexCoords = aTexCoords + uTexCoords;
+            ioColor     = uColor;
             gl_Position = uProjection * uModel * vec4(aPosition, 1);
             break;
 
@@ -103,6 +104,7 @@ void main() {
 
         case 7: //Used for animated 2D sprites.
             ioTexCoords = aTexCoords + uTexCoords;
+            ioColor     = uColor;
             gl_Position = uProjection * uView * uModel * vec4(aPosition, 1);
             break;
 

@@ -481,7 +481,7 @@ final class Terminal implements PropertyChangeListener {
     /**
      * Clears the terminal output.
      */
-    static class TCCLS extends TerminalCommand {
+    static final class TCCLS extends TerminalCommand {
         
         /**
          * Creates a new instance of the cls command.

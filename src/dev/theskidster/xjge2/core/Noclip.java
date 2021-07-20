@@ -20,10 +20,10 @@ final class Noclip extends Camera {
     private float yaw               = -90f;
     private final float sensitivity = 0.10f;
     
-    public double prevX;
-    public double prevY;
+    double prevX;
+    double prevY;
     
-    public boolean[] pressed = new boolean[4];
+    boolean[] pressed = new boolean[4];
     
     private final Vector3f tempFront = new Vector3f();
     private final Vector3f tempRight = new Vector3f();
@@ -71,7 +71,7 @@ final class Noclip extends Camera {
      * 
      * @param enable if true, the camera will move faster
      */
-    public void setSpeedBoostEnabled(boolean enable) {
+    void setSpeedBoostEnabled(boolean enable) {
         speed = (enable) ? 0.75f : 0.25f;
     }
     
@@ -82,7 +82,7 @@ final class Noclip extends Camera {
      * @param xpos the position of the cursor along the x-axis
      * @param ypos the position of the cursor along the y-axis
      */
-    public void setDirection(double xpos, double ypos) {
+    void setDirection(double xpos, double ypos) {
         if(xpos != prevX || ypos != prevY) {
             yaw   += getChangeIntensity(xpos, prevX) * 2;
             pitch += getChangeIntensity(ypos, prevY) * 2;

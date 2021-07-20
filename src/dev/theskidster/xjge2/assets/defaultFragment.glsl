@@ -100,7 +100,7 @@ void main() {
             break;
 
         case 4: case 7: //Used for drawing icons and sprites.
-            ioResult = texture(uTexture, ioTexCoords);
+            ioResult = texture(uTexture, ioTexCoords) * vec4(ioColor, 1.0);
             break;
 
         case 5: //Used for rendering 3D models.

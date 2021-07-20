@@ -87,7 +87,7 @@ public final class Logger {
      * Inserts an empty space into the logger output with no other information. 
      * Included here to encourage structure.
      */
-    public static void newLine() {
+    static void newLine() {
         System.out.println();
         output.append(System.lineSeparator());
     }

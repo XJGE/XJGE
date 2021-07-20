@@ -95,7 +95,7 @@ public abstract class Entity {
     /**
      * Requests the removal and destruction of this entity.
      */
-    protected void remove() {
+    public void remove() {
         remove = true;
     }
     
