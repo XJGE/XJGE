@@ -9,13 +9,13 @@ import static org.lwjgl.glfw.GLFW.glfwGetVideoMode;
 import static org.lwjgl.glfw.GLFW.glfwGetVideoModes;
 import org.lwjgl.glfw.GLFWVidMode;
 
-/**
- * @author J Hoffman
- * Created: Apr 29, 2021
- */
+//Created: Apr 29, 2021
 
 /**
  * Represents a visual display device such as a computer monitor or television.
+ * 
+ * @author J Hoffman
+ * @since  2.0.0
  */
 public final class Monitor {
     
@@ -29,10 +29,13 @@ public final class Monitor {
     private final TreeMap<String, GLFWVidMode> videoModes = new TreeMap<>();
     
     /**
-     * Provides the information parsed from a visual display device as an object.
+     * Provides the information parsed from a visual display device as an 
+     * object.
      * 
-     * @param id     the unique number used to identify the device in other parts of the engine
-     * @param handle a unique value provided by GLFW used to identify the device
+     * @param id     the unique number used to identify the device in other 
+     *               parts of the engine
+     * @param handle a unique value provided by GLFW used to identify the 
+     *               device
      */
     Monitor(int id, long handle) {
         this.id     = id;
@@ -69,7 +72,8 @@ public final class Monitor {
     }
     
     /**
-     * Finds the greatest common divisor given two numbers. Used to calculate the aspect ratios of the monitors various video modes.
+     * Finds the greatest common divisor given two numbers. Used to calculate 
+     * the aspect ratios of the monitors various video modes.
      * 
      * @param width  the width of the video mode
      * @param height the height of the video mode
@@ -106,7 +110,8 @@ public final class Monitor {
      * 
      * @param mode the video mode to parse information from
      * 
-     * @return a human-readable string detailing the video modes resolution, aspect ratio, and refresh rate
+     * @return a human-readable string detailing the video modes resolution, 
+     *         aspect ratio, and refresh rate
      */
     private String getInfo(GLFWVidMode mode) {
         return mode.width() + "x" + mode.height() + " " + getAspectRatio(mode) +
@@ -114,9 +119,11 @@ public final class Monitor {
     }
     
     /**
-     * Generates a string that provides information about the monitors current video mode.
+     * Generates a string that provides information about the monitors current 
+     * video mode.
      * 
-     * @return a human-readable string detailing the video modes resolution, aspect ratio, and refresh rate
+     * @return a human-readable string detailing the video modes resolution, 
+     *         aspect ratio, and refresh rate
      */
     public String getInfo() {
         return getInfo(videoMode);
@@ -150,7 +157,8 @@ public final class Monitor {
     }
     
     /**
-     * Provides an immutable collection of all the video modes available to this monitor that are supported by the engine.
+     * Provides an immutable collection of all the video modes available to 
+     * this monitor that are supported by the engine.
      * 
      * @return a collection of GLFW video mode objects
      */
@@ -161,9 +169,10 @@ public final class Monitor {
     /**
      * Sets the video mode the monitor will use.
      * 
-     * @param operation the method of traversal to use. Either explicitly as the location of the video mode in the monitors video mode 
-     *                  collection (as a number) or "prev/next" to move between the previous and next video modes available to the monitor 
-     *                  respectively.
+     * @param operation the method of traversal to use. Either explicitly as 
+     *                  the ID number of the monitor or "prev/next" to move 
+     *                  between the previous and next video modes available to 
+     *                  the monitor respectively.
      */
     public void setVideoMode(String operation) {
         switch(operation) {

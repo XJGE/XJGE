@@ -4,15 +4,17 @@ import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
 import java.util.HashMap;
 
-/**
- * @author J Hoffman
- * Created: May 9, 2021
- */
+//Created: May 9, 2021
 
 /**
- * A Component object which can be used to relay information about state changes occurring in the implementing object to one or more observers 
- * located anywhere in the codebase. Objects which use observable objects should define the properties (often fields) observers should look for 
- * in their constructors with the properties collection provided. This usually looks something like this:
+ * A Component object which can be used to relay information about state 
+ * changes occurring in the implementing object to one or more observers 
+ * located anywhere in the codebase. 
+ * <p>
+ * Objects which make use of observable should define the properties (often 
+ * fields) observers should look for in their constructors with the properties 
+ * collection provided. This usually looks something like this:
+ * </p>
  * <blockquote><pre>
  * int prop1     = 0;
  * boolean prop2 = false;
@@ -38,6 +40,9 @@ import java.util.HashMap;
  *     ...
  * }
  * </pre></blockquote>
+ * 
+ * @author J Hoffman
+ * @since  2.0.0
  */
 public class Observable {
 
@@ -45,7 +50,8 @@ public class Observable {
     public final HashMap<String, Object> properties = new HashMap<>();
     
     /**
-     * Creates a new observable object that will look for state changes in the object provided and supply it to other parts of the codebase.
+     * Creates a new observable object that will look for state changes in the 
+     * object provided and supply it to other parts of the codebase.
      * 
      * @param object the implementing object that will expose its state
      */
@@ -54,16 +60,19 @@ public class Observable {
     }
     
     /**
-     * Exposes this objects state to another. Observer objects must implement {@link java.beans.PropertyChangeListener PropertyChangeListener}.
+     * Exposes this objects state to another. Observer objects must implement 
+     * {@link java.beans.PropertyChangeListener PropertyChangeListener}.
      * 
-     * @param observer the object that is interested in the state changes of the one implementing the {@link Observable} component
+     * @param observer the object that is interested in the state changes of 
+     *                 the one implementing the {@link Observable} component
      */
     public void addObserver(PropertyChangeListener observer) {
         observable.addPropertyChangeListener(observer);
     }
     
     /**
-     * Revokes an observers access to view the state changes of implementing objects.
+     * Revokes an observers access to view the state changes of implementing 
+     * objects.
      * 
      * @param observer the observer to remove
      */

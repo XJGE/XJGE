@@ -7,13 +7,14 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 import org.joml.Matrix4f;
 
-/**
- * @author J Hoffman
- * Created: May 7, 2021
- */
+//Created: May 7, 2021
 
 /**
- * A 3D representation of the game world that contains entities, light sources, and camera objects.
+ * A 3D representation of the game world that contains entities, light sources, 
+ * and camera objects.
+ * 
+ * @author J Hoffman
+ * @since  2.0.0
  * 
  * @see Entity
  * @see LightSource
@@ -22,7 +23,8 @@ import org.joml.Matrix4f;
 public abstract class Scene {
 
     /**
-     * The maximum number of light source objects that may be simultaneously present in the scene at any given time.
+     * The maximum number of light source objects that may be simultaneously 
+     * present in the scene at any given time.
      */
     public static final int MAX_LIGHTS = 32;
     
@@ -35,9 +37,12 @@ public abstract class Scene {
     
     /**
      * A collection of every {@link Entity} object in the scene.
-     * <br><br>
-     * Because the engine actively makes use of this collection elsewhere you should not attempt to supplant its functionality with 
-     * your own. Instead the collection should be used to iterate through the logic loop of each entity like so:
+     * <p>
+     * Because the engine actively makes use of this collection elsewhere you 
+     * should not attempt to supplant its functionality with your own. Instead 
+     * the collection should be used to iterate through the logic loop of each 
+     * entity like so:
+     * </p>
      * <blockquote><pre>
      * <b>//In the scenes update() method...</b>
      * entities.values().forEach(entity -&gt; {
@@ -49,9 +54,12 @@ public abstract class Scene {
      *     entity.render();
      * });
      * </pre></blockquote>
-     * 
-     * The details regarding how this is achieved are largely subject to the needs of the implementation, though generally 
-     * speaking for a large volume of entity objects lambda expressions like those above are usually sufficient enough.
+     * <p>
+     * The details regarding how this is achieved are largely subject to the 
+     * needs of the implementation, though generally speaking for a large 
+     * volume of entity objects lambda expressions like those above are usually 
+     * sufficient enough.
+     * </p>
      */
     protected final LinkedHashMap<String, Entity> entities = new LinkedHashMap<>();
     
@@ -59,9 +67,11 @@ public abstract class Scene {
     private final LightSource[] lightSourcesCopy = new LightSource[MAX_LIGHTS];
     
     /**
-     * Creates a new 3D scene that will contain entities, light sources, and camera objects.
+     * Creates a new 3D scene that will contain entities, light sources, and 
+     * camera objects.
      * 
-     * @param name the name used to refer to the scene in other parts of the engine
+     * @param name the name used to refer to the scene in other parts of the 
+     *             engine
      */
     public Scene(String name) {
         this.name = name;
@@ -69,8 +79,9 @@ public abstract class Scene {
     }
     
     /**
-     * Calculates the current number of light source objects that currently exist in the scene. This includes light sources which are in
-     * a disabled state.
+     * Calculates the current number of light source objects that currently 
+     * exist in the scene. This includes light sources which are in a disabled 
+     * state.
      */
     private void findNumLights() {
         numLights = 1;
@@ -81,24 +92,28 @@ public abstract class Scene {
     }
     
     /**
-     * Supplies the scene with the texture atlas containing icons that will be used to render the positions of {@link LightSource} 
-     * objects in debug mode.
+     * Supplies the scene with the texture atlas containing icons that will be 
+     * used to render the positions of {@link LightSource} objects in debug 
+     * mode.
      * 
-     * @param iconTexture the texture atlas containing all the icons used by the engine
+     * @param iconTexture the texture atlas containing all the icons used by 
+     *                    the engine
      */
     static void setIconTexture(Texture iconTexture) {
         Scene.iconTexture = iconTexture;
     }
     
     /**
-     * Safely removes entity objects from the scenes {@link entities} collection. This method is called automatically by the engine.
+     * Safely removes entity objects from the scenes {@link entities} 
+     * collection. This method is called automatically by the engine.
      */
     void processRemoveRequests() {
         entities.entrySet().removeIf(entry -> entry.getValue().removalRequested());
     }
     
     /**
-     * Updates the position of the scenes light source objects. This method is called automatically by the engine.
+     * Updates the position of the scenes light source objects. This method is 
+     * called automatically by the engine.
      */
     void updateLightSources() {
         for(LightSource source : lightSources) {
@@ -107,19 +122,23 @@ public abstract class Scene {
     }
     
     /**
-     * Renders the scenes current {@link Skybox} (if one exists). This method is called automatically by the engine. 
+     * Renders the scenes current {@link Skybox} (if one exists). This method 
+     * is called automatically by the engine. 
      * 
-     * @param viewMatrix the view matrix of the viewport whos camera is currently rendering the scene
+     * @param viewMatrix the view matrix of the viewport whos camera is 
+     *                   currently rendering the scene
      */
     void renderSkybox(Matrix4f viewMatrix) {
         if(skybox != null) skybox.render(viewMatrix);
     }
     
     /**
-     * Renders the icons indicating the positions of every initialized light source in the scene while debug mode is enabled. This method 
-     * is called automatically by the engine.
+     * Renders the icons indicating the positions of every initialized light 
+     * source in the scene while debug mode is enabled. This method is called 
+     * automatically by the engine.
      * 
-     * @param camera the {@link Camera} object of the current {@link Viewport} being rendered
+     * @param camera the {@link Camera} object of the current {@link Viewport} 
+     *               being rendered
      */
     void renderLightsources(Camera camera) {
         if(XJGE.getLightSourcesVisible()) {
@@ -139,7 +158,8 @@ public abstract class Scene {
     }
     
     /**
-     * Adds a new light to the scene. If the maximum number of lights has been reached, it will recycle the first one in sequence.
+     * Adds a new light to the scene. If the maximum number of lights has been 
+     * reached, it will recycle the first one in sequence.
      * 
      * @param light the light object to add
      */
@@ -167,11 +187,14 @@ public abstract class Scene {
     }
     
     /**
-     * Adds a new light to the scene at the index specified. This is useful in situations where we would like to explicitly partition the 
-     * lights in the scene for different uses.
-     * <br><br>
-     * If a light source already exists at that index, it will be replaced. Passing 
-     * zero in place of the index value will change the current world light that illuminates all objects.
+     * Adds a new light to the scene at the index specified. This is useful in 
+     * situations where we would like to explicitly partition the lights in the 
+     * scene for different uses.
+     * <p>
+     * If a light source already exists at that index, it will be replaced. 
+     * Passing zero in place of the index value will change the current world 
+     * light that illuminates all objects.
+     * </p>
      * 
      * @param index an existing location within the light array to occupy
      * @param light the light object to add
@@ -194,7 +217,8 @@ public abstract class Scene {
     }
     
     /**
-     * Obtains the current amount of initialized light source objects within the scene.
+     * Obtains the current amount of initialized light source objects within 
+     * the scene.
      * 
      * @return the number of initialized light source objects
      */
@@ -203,9 +227,11 @@ public abstract class Scene {
     }
     
     /**
-     * Obtains a copy of the current light source array used by the scene. This cannot be used to alter light source objects but is 
-     * instead intended to supply objects which exhibit shading (such as {@linkplain dev.theskidster.xjge2.graphics.Model 3D models}) 
-     * with lighting data.
+     * Obtains a copy of the current light source array used by the scene. This 
+     * cannot be used to alter light source objects but is instead intended to 
+     * supply objects which exhibit shading (such as 
+     * {@linkplain dev.theskidster.xjge2.graphics.Model 3D models}) with 
+     * lighting data.
      * 
      * @return an array of light source objects
      */
@@ -215,8 +241,8 @@ public abstract class Scene {
     }
     
     /**
-     * Organizes and updates the game logic of the scene and every entity inhabiting it. Called automatically by the engine once every 
-     * game tick. 
+     * Organizes and updates the game logic of the scene and every entity 
+     * inhabiting it. Called automatically by the engine once every game tick. 
      * 
      * @param targetDelta a constant value denoting the desired time (in 
      *                    seconds) it should take for one game tick to complete
@@ -226,19 +252,24 @@ public abstract class Scene {
     public abstract void update(double targetDelta, double trueDelta);
     
     /**
-     * Organizes calls to the OpenGL API made by entities and other various objects located in the game world. This method is called 
-     * automatically by the engine.
+     * Organizes calls to the OpenGL API made by entities and other various 
+     * objects located in the game world. This method is called automatically 
+     * by the engine.
      * 
-     * @param glPrograms an immutable collection containing the shader programs compiled during startup
-     * @param viewportID the ID number of the viewport currently rendering the scene. Supplied here in case certain objects are to be
+     * @param glPrograms an immutable collection containing the shader programs 
+     *                   compiled during startup
+     * @param viewportID the ID number of the viewport currently rendering the 
+     *                   scene. Supplied here in case certain objects are to be
      *                   included or omitted from the viewports rendering pass
-     * @param camera     the {@link Camera} object of the current {@link Viewport} being rendered
+     * @param camera     the {@link Camera} object of the current 
+     *                   {@link Viewport} being rendered
      */
     public abstract void render(Map<String, GLProgram> glPrograms, int viewportID, Camera camera);
     
     /**
-     * Called by the engine when this scene is left for another. Any memory/resources allocated by the scene including that of entities 
-     * which are no longer needed should be freed here.
+     * Called by the engine when this scene is left for another. Any 
+     * memory/resources allocated by the scene including that of entities which 
+     * are no longer needed should be freed here.
      */
     public abstract void exit();
     

@@ -4,13 +4,14 @@ import dev.theskidster.xjge2.graphics.GLProgram;
 import java.util.Map;
 import org.joml.Vector3f;
 
-/**
- * @author J Hoffman
- * Created: May 8, 2021
- */
+//Created: May 8, 2021
 
 /**
- * A camera object provided by the engine that permits free traversal of the game world.
+ * A camera object provided by the engine that permits free traversal of the 
+ * game world.
+ * 
+ * @author J Hoffman
+ * @since  2.0.0
  */
 final class Noclip extends Camera {
 
@@ -58,6 +59,7 @@ final class Noclip extends Camera {
      * 
      * @param currValue the current position of the mouse cursor along an axis
      * @param prevValue the previous position of the mouse cursor along an axis
+     * 
      * @return a value denoting the intensity of the cameras look movement
      */
     private float getChangeIntensity(double currValue, double prevValue) {
@@ -74,7 +76,8 @@ final class Noclip extends Camera {
     }
     
     /**
-     * Sets the current direction the camera will face using the position of the mouse cursor inside the applications {@link Window}.
+     * Sets the current direction the camera will face using the position of 
+     * the mouse cursor inside the applications {@link Window}.
      * 
      * @param xpos the position of the cursor along the x-axis
      * @param ypos the position of the cursor along the y-axis
