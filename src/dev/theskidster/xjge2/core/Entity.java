@@ -4,24 +4,26 @@ import dev.theskidster.xjge2.graphics.GLProgram;
 import java.util.Map;
 import org.joml.Vector3f;
 
-/**
- * @author J Hoffman
- * Created: May 7, 2021
- */
+//Created: May 7, 2021
 
 /**
- * Abstract class which can be used to represent dynamic game objects in the {@link Scene}.
+ * Abstract class which can be used to represent dynamic game objects within a
+ * {@link Scene}.
+ * 
+ * @author J Hoffman
+ * @since  2.0.0
  */
 public abstract class Entity {
 
     private boolean remove;
     
-    public Vector3f position;
+    public final Vector3f position;
     
     /**
-     * Constructs a new Entity object. Most subclasses will likely overload this with their own arguments.
+     * Creates a new instance of an entity object. Most subclasses will likely 
+     * overload this with their own arguments.
      * 
-     * @param position the initial position of this entity in 3D space
+     * @param position the initial position of this entity in the game world
      */
     protected Entity(Vector3f position) {
         this.position = position;
@@ -30,29 +32,46 @@ public abstract class Entity {
     /**
      * Used to organize entity game logic.
      * 
-     * @param targetDelta a constant value describing the desired delta time it should take for one game tick to complete
+     * @param targetDelta a constant value denoting the desired time (in 
+     *                    seconds) it should take for one game tick to complete
+     * @param trueDelta   the actual time (in seconds) it took the current game
+     *                    tick to complete.
      */
-    public abstract void update(double targetDelta);
+    public abstract void update(double targetDelta, double trueDelta);
     
     /**
-     * Legacy render method included in the event an entity only wishes to use a single {@link GLProgram} during rendering.
+     * Used to organize calls to the OpenGL API and other code pertaining to
+     * rendering.
      * 
-     * @param glProgram the shader program that will be used to render this entity
-     * @param camera    the {@link Camera} object of the current {@link Viewport} being rendered
-     * @param lights    an array of light source objects provided by the current {@link Scene}
-     * @param numLights the total number of lights the scene is actively using
+     * @param glProgram the shader program that will be used to render this 
+     *                  entity
+     * @param camera    the camera object of the current viewport whos turn it 
+     *                  is to complete a render pass
+     * @param lights    an array of light source objects provided by the 
+     *                  current scene
+     * @param numLights the total number of light sources currently in the game 
+     *                  world
      * 
      * @see render(Map, Camera, LightSource[], int)
      */
     public abstract void render(GLProgram glProgram, Camera camera, LightSource[] lights, int numLights);
     
     /**
-     * Used to organize the OpenGL draw calls required to render this entity in the game world.
+     * Used to organize calls to the OpenGL API and other code pertaining to
+     * rendering.
+     * <p>
+     * This variant of the render method allows entities to utilize multiple 
+     * shader programs.
+     * </p>
      * 
-     * @param glPrograms an immutable collection containing the shader programs compiled during startup
-     * @param camera     the {@link Camera} object of the current {@link Viewport} being rendered
-     * @param lights     an array of light source objects provided by the current {@link Scene}
-     * @param numLights  the total number of lights the scene is actively using
+     * @param glPrograms an immutable collection containing the shader programs 
+     *                   compiled during startup
+     * @param camera     the camera object of the current viewport whos turn it
+     *                   is to complete a render pass
+     * @param lights     an array of light source objects provided by the 
+     *                   current scene
+     * @param numLights  the total number of light sources currently in the 
+     *                   game world
      * 
      * @see render(GLProgram, Camera, LightSource[], int)
      */
@@ -60,12 +79,16 @@ public abstract class Entity {
     
     
     /**
-     * Used to free the resources used by the entity once it is no longer needed, Calls like 
-     * {@link dev.theskidster.xjge2.graphics.Graphics#freeBuffers Graphics.freeBuffers()} and 
-     * {@link dev.theskidster.xjge2.graphics.Texture#freeTexture Texture.freeTexture()} should be made here.
-     * <br><br>
-     * NOTE: This method should <i>only</i> be used to deallocate memory. Death animations and other effects should be included in the 
-     * entities game logic via the {@link update update()} method.
+     * Used to free the resources used by the entity once it is no longer 
+     * needed.
+     * <p>
+     * NOTE: This method should <i>only</i> be used to deallocate memory. Death 
+     * animations and other effects should be included in the entities game 
+     * logic via the {@link update update()} method.
+     * </p>
+     * 
+     * @see dev.theskidster.xjge2.graphics.Graphics#freeBuffers()
+     * @see dev.theskidster.xjge2.graphics.Texture#freeTexture()
      */
     protected abstract void destroy();
     
@@ -77,8 +100,12 @@ public abstract class Entity {
     }
     
     /**
-     * Finds if the entity has made a request for {@linkplain remove removal}. If it has, the entity will be {@linkplain destroy destroyed} and 
-     * subsequently removed from the current scenes {@linkplain Scene#entities entities collection}.
+     * Finds if the entity has made a request for removal from the game world. 
+     * <p>
+     * If a removal request has been made, the entity will be 
+     * {@linkplain destroy destroyed} and subsequently removed from the current 
+     * scenes {@linkplain Scene#entities entity collection}.
+     * </p>
      * 
      * @return true if the entity has requested removal
      */

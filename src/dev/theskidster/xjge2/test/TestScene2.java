@@ -21,7 +21,7 @@ public class TestScene2 extends Scene {
     }
 
     @Override
-    public void update(double targetDelta) {
+    public void update(double targetDelta, double trueDelta) {
     }
 
     @Override

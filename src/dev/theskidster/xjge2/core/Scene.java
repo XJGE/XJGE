@@ -218,9 +218,12 @@ public abstract class Scene {
      * Organizes and updates the game logic of the scene and every entity inhabiting it. Called automatically by the engine once every 
      * game tick. 
      * 
-     * @param targetDelta the desired delta time value an update cycle should take to complete
+     * @param targetDelta a constant value denoting the desired time (in 
+     *                    seconds) it should take for one game tick to complete
+     * @param trueDelta   the actual time (in seconds) it took the current game
+     *                    tick to complete.
      */
-    public abstract void update(double targetDelta);
+    public abstract void update(double targetDelta, double trueDelta);
     
     /**
      * Organizes calls to the OpenGL API made by entities and other various objects located in the game world. This method is called 

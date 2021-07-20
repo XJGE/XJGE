@@ -92,7 +92,8 @@ public abstract class Camera {
     public abstract void update();
     
     /**
-     * Abstract method used to organize calls made to the OpenGL API.
+     * Used to organize calls to the OpenGL API and other code pertaining to
+     * rendering.
      * 
      * @param glPrograms an immutable collection containing the shader programs
      *                   compiled during startup

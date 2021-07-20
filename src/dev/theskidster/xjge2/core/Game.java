@@ -85,7 +85,7 @@ public final class Game {
                     if(!event.resolved) event.resolve();
                     else                events.poll();
                 } else {
-                    scene.update(TARGET_DELTA);
+                    scene.update(TARGET_DELTA, deltaMetric);
                     scene.updateLightSources();
                     scene.processRemoveRequests();
                 }
@@ -222,8 +222,15 @@ public final class Game {
     
     /**
      * Obtains engine runtime information.
+     * <p>
+     * NOTE: The current delta value returned by this method is truncated and 
+     * intended for display/debug purposes only. A more accurate version can be 
+     * found in the {@linkplain Scene#update(double, double) update method} of
+     * the current scene under the {@code trueDelta} argument.
+     * </p>
      * 
-     * @return the time in milliseconds it took the engine to complete an update cycle
+     * @return the time (in seconds) it took the engine to complete an update 
+     *         cycle
      */
     public static float getDelta() {
         return (float) deltaMetric;

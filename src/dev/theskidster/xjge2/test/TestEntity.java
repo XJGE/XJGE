@@ -71,7 +71,7 @@ public class TestEntity extends Entity {
     }
 
     @Override
-    public void update(double targetDelta) {
+    public void update(double targetDelta, double trueDelta) {
         g.modelMatrix.translation(position);
         g.modelMatrix.rotateY(angle += 0.1f);
     }

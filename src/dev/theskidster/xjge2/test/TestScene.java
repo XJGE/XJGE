@@ -37,7 +37,7 @@ public class TestScene extends Scene {
     }
     
     @Override
-    public void update(double targetDelta) {
+    public void update(double targetDelta, double trueDelta) {
         /*
         if(timer != null) {
             timer.update();
@@ -47,7 +47,7 @@ public class TestScene extends Scene {
             if(timer.time == 0) timer = null;
         }*/
         
-        entities.values().forEach(entity -> entity.update(targetDelta));
+        entities.values().forEach(entity -> entity.update(targetDelta, trueDelta));
     }
 
     @Override

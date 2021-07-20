@@ -27,7 +27,7 @@ public class TestEntity3 extends Entity {
     }
     
     @Override
-    public void update(double targetDelta) {
+    public void update(double targetDelta, double trueDelta) {
         model.delocalizeNormal();
         model.translate(position);
         model.scale(0.004f);
