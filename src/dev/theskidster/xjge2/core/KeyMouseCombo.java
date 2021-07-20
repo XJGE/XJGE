@@ -6,13 +6,14 @@ import java.util.HashMap;
 import static org.lwjgl.glfw.GLFW.*;
 import org.lwjgl.system.MemoryStack;
 
-/**
- * @author J Hoffman
- * Created: May 3, 2021
- */
+//Created: May 3, 2021
 
 /**
- * A virtual input device comprised of the keyboard and mouse that attempts to mimic the actions of a {@link Gamepad}.
+ * A virtual input device comprised of the keyboard and mouse that attempts to 
+ * mimic the actions of a {@link Gamepad}.
+ * 
+ * @author J Hoffman
+ * @since  2.0.0
  */
 final class KeyMouseCombo extends InputDevice {
 
@@ -27,11 +28,17 @@ final class KeyMouseCombo extends InputDevice {
     private final DoubleBuffer cursorPosY;
     
     /**
-     * Creates a new KeyMouseCombo object and applies the users settings to its control configuration.
+     * Creates a new KeyMouseCombo object and applies the users settings to its 
+     * control configuration.
      * 
-     * @param id          the unique number used to identify the device in other parts of the engine
-     * @param sensitivity a value used by gameplay systems to adjust the responsiveness of input actions based off the users preference
-     * @param deadzone    a value used to indicate how much pressure must be applied to an analog stick before its input is recognized
+     * @param id          the unique number used to identify the device in 
+     *                    other parts of the engine
+     * @param sensitivity a value used by gameplay systems to adjust the 
+     *                    responsiveness of input actions based off the users 
+     *                    preference
+     * @param deadzone    a value used to indicate how much pressure must be 
+     *                    applied to an analog stick before its input is 
+     *                    recognized
      * @param config      a collection of various {@link Control} mappings
      */
     KeyMouseCombo(int id, float sensitivity, float deadzone, HashMap<Control, Integer> config) {
@@ -46,10 +53,13 @@ final class KeyMouseCombo extends InputDevice {
     }
     
     /**
-     * Calculates an input value of the virtual right analog stick by using the current and previous positions of the mouse cursor.
+     * Calculates an input value of the virtual right analog stick by using the 
+     * current and previous positions of the mouse cursor.
      * 
-     * @param currValue the current position of the mouse cursor along a single axis
-     * @param prevValue the previous position of the mouse cursor along a single axis
+     * @param currValue the current position of the mouse cursor along a single 
+     *                  axis
+     * @param prevValue the previous position of the mouse cursor along a 
+     *                  single axis
      * 
      * @return a value indicating the intensity of the movement
      */

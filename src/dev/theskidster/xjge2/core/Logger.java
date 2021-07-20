@@ -12,29 +12,36 @@ import static org.lwjgl.opengl.GL11.GL_RENDERER;
 import static org.lwjgl.opengl.GL11.GL_VERSION;
 import static org.lwjgl.opengl.GL11.glGetString;
 
-/**
- * @author J Hoffman
- * Created: Apr 28, 2021
- */
+//Created: Apr 28, 2021
 
 /**
- * A lightweight application logger comprised of a single static class which can be used to keep a chronological record of significant 
- * events occurring within the application at runtime.
- * <br><br>
- * Output provided by the logger can be viewed through the applications console at runtime, or after the application has ceased execution
- * following a call made to {@link logSevere(String, Exception) logSevere()} in which case a .txt file will be generated containing the
- * loggers output.
- * <br><br>
+ * A lightweight application logger comprised of a single static class which 
+ * can be used to keep a chronological record of significant events occurring 
+ * within the application at runtime.
+ * <p>
+ * Output provided by the logger can be viewed through the applications console 
+ * at runtime, or after the application has ceased execution following a call 
+ * made to {@link logSevere(String, Exception) logSevere()} in which case a 
+ * .txt file will be generated containing the loggers output.
+ * </p><p>
  * The logger provides the following methods for generating text output:
  * <ul>
- * <li>{@link logInfo(String) logInfo()} - Produces a low-priority message, useful for tracking state changes.</li>
- * <li>{@link logWarning(String, Exception) logWarning()} - Indicates that the application may have encountered a non-fatal error.</li>
- * <li>{@link logSevere(String, Exception) logSevere()} - A fatal error has occurred which will require the application to cease execution 
+ * <li>{@link logInfo(String) logInfo()} - Produces a low-priority message, 
+ * useful for tracking state changes.</li>
+ * <li>{@link logWarning(String, Exception) logWarning()} - Indicates that the 
+ * application may have encountered a non-fatal error.</li>
+ * <li>{@link logSevere(String, Exception) logSevere()} - A fatal error has 
+ * occurred which will require the application to cease execution 
  * immediately.</li>
- * <li>{@link setDomain(String) setDomain()} - Appends the name of whichever application is using the logger to the log messages it 
+ * <li>{@link setDomain(String) setDomain()} - Appends the name of whichever 
+ * application is using the logger to the log messages it 
  * creates.</li>
  * <li>{@link newLine() newLine()} - Inserts a new line into the text output.</li>
  * </ul>
+ * </p>
+ * 
+ * @author J Hoffman
+ * @since  2.0.0
  */
 public final class Logger {
     
@@ -44,7 +51,8 @@ public final class Logger {
     private static final StringBuilder output = new StringBuilder();
     
     /**
-     * Inserts a horizontal line into the logger output with no other information.
+     * Inserts a horizontal line into the logger output with no other 
+     * information.
      */
     private static void horizontalLine() {
         String line = "--------------------------------------------------------------------------------";
@@ -54,7 +62,8 @@ public final class Logger {
     }
     
     /**
-     * Outputs information pertaining to the environment variable of the system on which the engine is currently running.
+     * Outputs information pertaining to the environment variable of the system 
+     * on which the engine is currently running.
      */
     static void printSystemInfo() {
         horizontalLine();
@@ -74,7 +83,8 @@ public final class Logger {
     }
     
     /**
-     * Inserts an empty space into the logger output with no other information. Included here to encourage structure.
+     * Inserts an empty space into the logger output with no other information. 
+     * Included here to encourage structure.
      */
     public static void newLine() {
         System.out.println();
@@ -82,14 +92,16 @@ public final class Logger {
     }
     
     /**
-     * Appends the name of a module to the log message following the priority indicator (INFO, WARNING, etc). Included so log messages 
-     * can be better located within different domains of the engine. You likely won't need to make use of it in your game project 
-     * unless you really want to.
-     * <br><br>
-     * NOTE: Should you choose to utilize this feature remember to pass <b>null</b> following the log message to reset the state of the
-     * logger so any log messages following this one do not inadvertently exhibit erroneous domain names. This process often looks 
-     * something like this:
-     * <br><br>
+     * Appends the name of a module to the log message following the priority 
+     * indicator (INFO, WARNING, etc). Included so log messages can be better 
+     * located within different domains of the engine. You likely won't need to 
+     * make use of it in your game project unless you really want to.
+     * <p>
+     * NOTE: Should you choose to utilize this feature remember to pass 
+     * <b>null</b> following the log message to reset the state of the logger 
+     * so any log messages following this one do not inadvertently exhibit 
+     * erroneous domain names. This process often looks something like this:
+     * </p>
      * <blockquote><pre>
      * setDomain("myDomain");
      *     logInfo(...);
@@ -103,8 +115,9 @@ public final class Logger {
     }
     
     /**
-     * Writes an informative low-priority message to the applications console. Typically used to indicate significant state changes occurring within the 
-     * application.
+     * Writes an informative low-priority message to the applications console. 
+     * Typically used to indicate significant state changes occurring within 
+     * the application.
      * 
      * @param message the text to appear as output in the console/log file 
      */
@@ -119,11 +132,15 @@ public final class Logger {
     }
     
     /**
-     * Writes a medium-priority message to the applications console. Warning messages should be used to indicate that the application may have entered an 
-     * invalid state which hasn't (yet) resulted in a crash- but may produce undefined behavior.
+     * Writes a medium-priority message to the applications console. Warning 
+     * messages should be used to indicate that the application may have 
+     * entered an invalid state which hasn't (yet) resulted in a crash- but may 
+     * produce undefined behavior.
      * 
      * @param message the text to appear as output in the console/log file 
-     * @param e       an optional exception used to output a stack trace. If {@code null} is passed, no stack trace information will be displayed.
+     * @param e       an optional exception used to output a stack trace. If 
+     *                {@code null} is passed, no stack trace information will 
+     *                be displayed.
      */
     public static void logWarning(String message, Exception e) {
         String timestamp = new SimpleDateFormat("MM-dd-yyyy h:mma").format(new Date());
@@ -163,14 +180,18 @@ public final class Logger {
     }
     
     /**
-     * Writes a high-priority message to the applications console. Use of this method is reserved only for instances wherein the application 
-     * has encountered some fatal error that will require it to cease execution.
-     * <br><br>
-     * A .txt file containing the recorded output will be generated in the directory from which the application was launched.
+     * Writes a high-priority message to the applications console. Use of this
+     * method is reserved only for instances wherein the application has 
+     * encountered some fatal error that will require it to cease execution.
+     * <p>
+     * A .txt file containing the recorded output will be generated in the 
+     * directory from which the application was launched.
+     * </p>
      * 
      * @param message the text to appear as output in the console/log file 
-     * @param e       an optional exception used to output a stack trace. If {@code null} is passed, JLogger will generate a nondescript
-     *                {@link RuntimeException}.
+     * @param e       an optional exception used to output a stack trace. If 
+     *                {@code null} is passed, JLogger will generate a 
+     *                nondescript {@link RuntimeException}.
      */
     public static void logSevere(String message, Exception e) {
         String date = new SimpleDateFormat("MM-dd-yyyy").format(new Date());
