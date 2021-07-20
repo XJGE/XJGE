@@ -47,7 +47,7 @@
  * <tr><td>{@linkplain Font}</td><td>Supplies the data parsed from a font file as an immutable object which can be used to render text in 
  * some desired font.</td></tr>
  * <tr><td>{@linkplain Song}</td><td>Represents a musical composition.</td></tr>
- * <tr><td>{@linkplain Sound}</td><td>upplies the data parsed from an audio file into a new sound object that can be used by the Audio 
+ * <tr><td>{@linkplain Sound}</td><td>Supplies the data parsed from an audio file into a new sound object that can be used by the Audio 
  * class</td></tr>
  * </table>
  */

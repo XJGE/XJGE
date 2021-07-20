@@ -11,14 +11,14 @@ import org.joml.Vector2i;
 import static org.lwjgl.opengl.GL30.*;
 import org.lwjgl.system.MemoryStack;
 
-/**
- * @author J Hoffman
- * Created: May 11, 2021
- */
+//Created: May 11, 2021
 
 /**
- * Represents a rectangular region of the applications window through which the perspective of a scene and its rendered objects may be 
- * viewed.
+ * Represents a rectangular region of the game window through which the 
+ * perspective of a scene and its rendered objects may be viewed.
+ * 
+ * @author J Hoffman
+ * @since  2.0.0
  */
 final class Viewport {
 
@@ -40,8 +40,10 @@ final class Viewport {
     /**
      * Creates a new viewport object.
      * 
-     * @param id the unique number used to identify the viewport in other parts of the engine. Corresponds directly with 
-     *           {@link org.lwjgl.glfw.GLFW#GLFW_JOYSTICK_1 GLFW_JOYSTICK} values.
+     * @param id the unique number used to identify the viewport in other parts 
+     *           of the engine. Corresponds directly with 
+     *           {@link org.lwjgl.glfw.GLFW#GLFW_JOYSTICK_1 GLFW_JOYSTICK} 
+     *           values.
      */
     Viewport(int id) {
         this.id = id;
@@ -75,7 +77,8 @@ final class Viewport {
     }
     
     /**
-     * Creates a new OpenGL texture object to be attached to the engines framebuffer.
+     * Creates a new OpenGL texture object to be attached to the engines 
+     * framebuffer.
      */
     private void createTextureAttachment() {
         glBindTexture(GL_TEXTURE_2D, texHandle);
@@ -111,15 +114,20 @@ final class Viewport {
     }
     
     /**
-     * Renders a scene from the perspective of this viewport. Viewport rendering is done in three stages: 
+     * Renders a scene from the perspective of this viewport. Viewport 
+     * rendering is done in three stages: 
      * <ol>
-     * <li>The perspective of the camera object used by this viewport is rendered.</li>
-     * <li>The viewports UI components will be drawn in order of their z-positions.</li> 
-     * <li>The texture attachment associated with this viewport by the engines framebuffer will be updated to reflect the changes made 
-     *     in the previous two steps.</li>
+     * <li>The perspective of the camera object used by this viewport is 
+     *     rendered.</li>
+     * <li>The viewports UI components will be drawn in order of their 
+     *     z-positions.</li> 
+     * <li>The texture attachment associated with this viewport by the engines 
+     *     framebuffer will be updated to reflect the changes made in the 
+     *     previous two steps.</li>
      * </ol>
      * 
-     * @param glPrograms an immutable collection containing the shader programs compiled during startup
+     * @param glPrograms an immutable collection containing the shader programs 
+     *                   compiled during startup
      * @param stage      the stage denoting the viewports current render pass
      */
     void render(Map<String, GLProgram> glPrograms, String stage) {
@@ -149,10 +157,12 @@ final class Viewport {
     }
     
     /**
-     * Convenience method used to revert the viewports camera projection matrix back to whatever projection type (orthogonal or perspective) 
-     * it was using before.
+     * Convenience method used to revert the viewports camera projection matrix 
+     * back to whatever projection type (orthogonal or perspective) it was 
+     * using before.
      * 
-     * @param glPrograms an immutable collection containing the shader programs compiled during startup
+     * @param glPrograms an immutable collection containing the shader programs 
+     *                   compiled during startup
      */
     void resetCamera(Map<String, GLProgram> glPrograms) {
         XJGE.glPrograms.values().forEach(glProgram -> {
@@ -162,7 +172,7 @@ final class Viewport {
     }
     
     /**
-     * Sets the resolution and position of the viewport inside the applications window.
+     * Sets the resolution and position of the viewport inside the game window.
      * 
      * @param width  the width of the viewport in pixels
      * @param height the height of the viewport in pixels
@@ -183,10 +193,13 @@ final class Viewport {
     }
     
     /**
-     * Adds a new {@link Widget} to this viewport. Widgets will be rendered in the order of their z-positions with lower numbers denoting 
-     * a higher priority. For example, a component with a z-position of 0 will be rendered in front of a component with a z-position of 1.
+     * Adds a new {@link Widget} to this viewport. Widgets will be rendered in 
+     * the order of their z-positions with lower numbers denoting a higher 
+     * priority. For example, a component with a z-position of 0 will be 
+     * rendered in front of a component with a z-position of 1.
      * 
-     * @param name   the name that will be used to identify and remove the widget later
+     * @param name   the name that will be used to identify and remove the 
+     *               widget later
      * @param widget the widget to add
      */
     void addUIWidget(String name, Widget widget) {

@@ -22,6 +22,7 @@ import static org.lwjgl.opengl.GL30.*;
  * </p>
  * <p>
  * These gameplay methods include:
+ * </p>
  * <ul>
  * <li>{@linkplain #addEntity(String, Entity)}</li>
  * <li>{@linkplain #addEvent(Event)}</li>
@@ -29,7 +30,7 @@ import static org.lwjgl.opengl.GL30.*;
  * <li>{@linkplain #setClearColor(Color)}</li>
  * <li>{@linkplain #setScene(Scene)}</li>
  * <li>{@linkplain #tick(int)}</li>
- * </ul></p>
+ * </ul>
  * 
  * @author J Hoffman
  * @since  2.0.0

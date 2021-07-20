@@ -25,20 +25,21 @@ import static org.lwjgl.opengl.GL11.glGetString;
  * .txt file will be generated containing the loggers output.
  * </p><p>
  * The logger provides the following methods for generating text output:
+ * </p>
  * <ul>
  * <li>{@link logInfo(String) logInfo()} - Produces a low-priority message, 
- * useful for tracking state changes.</li>
+ *     useful for tracking state changes.</li>
  * <li>{@link logWarning(String, Exception) logWarning()} - Indicates that the 
- * application may have encountered a non-fatal error.</li>
+ *     application may have encountered a non-fatal error.</li>
  * <li>{@link logSevere(String, Exception) logSevere()} - A fatal error has 
- * occurred which will require the application to cease execution 
- * immediately.</li>
+ *     occurred which will require the application to cease execution 
+ *     immediately.</li>
  * <li>{@link setDomain(String) setDomain()} - Appends the name of whichever 
- * application is using the logger to the log messages it 
- * creates.</li>
- * <li>{@link newLine() newLine()} - Inserts a new line into the text output.</li>
+ *     application is using the logger to the log messages it 
+ *     creates.</li>
+ * <li>{@link newLine() newLine()} - Inserts a new line into the text 
+ *     output.</li>
  * </ul>
- * </p>
  * 
  * @author J Hoffman
  * @since  2.0.0

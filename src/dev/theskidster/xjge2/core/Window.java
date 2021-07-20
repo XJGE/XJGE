@@ -12,13 +12,14 @@ import static org.lwjgl.stb.STBImage.stbi_load_from_memory;
 import org.lwjgl.system.MemoryStack;
 import static org.lwjgl.system.MemoryUtil.NULL;
 
-/**
- * @author J Hoffman
- * Created: Apr 29, 2021
- */
+//Created: Apr 29, 2021
 
 /**
- * Provides a point of access which can be used to alter the properties of the applications window at runtime.
+ * Provides a point of access which can be used to alter the properties of the 
+ * game window at runtime.
+ * 
+ * @author J Hoffman
+ * @since  2.0.0
  */
 public final class Window {
     
@@ -36,7 +37,8 @@ public final class Window {
     static Monitor monitor;
     
     /**
-     * Adapts the window configuration to the video mode of the current monitor.
+     * Adapts the window configuration to the video mode of the current 
+     * monitor.
      */
     static void reconfigure() {
         if(fullscreen) {
@@ -124,7 +126,8 @@ public final class Window {
     }
     
     /**
-     * Obtains the position of the window, in screen coordinates, of the upper-left corner of the content area of the window.
+     * Obtains the position of the window, in screen coordinates, of the 
+     * upper-left corner of the content area of the window.
      * 
      * @return the position of the windows content area along the x-axis
      */
@@ -133,7 +136,8 @@ public final class Window {
     }
     
     /**
-     * Obtains the position of the window, in screen coordinates, of the upper-left corner of the content area of the window.
+     * Obtains the position of the window, in screen coordinates, of the 
+     * upper-left corner of the content area of the window.
      * 
      * @return the position of the windows content area along the y-axis
      */
@@ -160,16 +164,19 @@ public final class Window {
     }
     
     /**
-     * Obtains the value indicating whether or not the window is currently in fullscreen mode.
+     * Obtains the value indicating whether or not the window is currently in 
+     * fullscreen mode.
      * 
-     * @return if true, the window will cover the entire screen including taskbars
+     * @return if true, the window will cover the entire screen including 
+     *         taskbars
      */
     public static boolean getFullscreen() {
         return fullscreen;
     }
     
     /**
-     * Obtains the title used to identify the window. This is the same title that will be displayed to the user from the windows frame.
+     * Obtains the title used to identify the window. This is the same title 
+     * that will be displayed to the user from the windows frame.
      * 
      * @return the title of the window as a string
      */
@@ -187,7 +194,8 @@ public final class Window {
     }
     
     /**
-     * Sets the position, in screen coordinates, of the upper-left corner of the content area of the window.
+     * Sets the position, in screen coordinates, of the upper-left corner of 
+     * the content area of the window.
      * 
      * @param xPos the x-coordinate of the upper-left corner of the content area
      * @param yPos the y-coordinate of the upper-left corner of the content area
@@ -217,7 +225,8 @@ public final class Window {
     }
     
     /**
-     * Updates the values of the windows width and height fields without alerting GLFW.
+     * Updates the values of the windows width and height fields without 
+     * alerting GLFW.
      * 
      * @param width  the new width of the window in pixels
      * @param height the new height of the window in pixels
@@ -241,7 +250,8 @@ public final class Window {
     /**
      * Changes the game window between fullscreen and windowed modes.
      * 
-     * @param fullscreen if true, the window will cover the entire screen including taskbars
+     * @param fullscreen if true, the window will cover the entire screen 
+     *                   including taskbars
      */
     public static void setFullscreen(boolean fullscreen) {
         Logger.setDomain("winkit");
@@ -252,9 +262,11 @@ public final class Window {
     }
     
     /**
-     * Updates the current value of the windows fullscreen field and reconfigures it to better fit the monitor.
+     * Updates the current value of the windows fullscreen field and 
+     * reconfigures it to better fit the monitor.
      * 
-     * @param fullscreen if true, the window will cover the entire screen including taskbars
+     * @param fullscreen if true, the window will cover the entire screen 
+     *                   including taskbars
      */
     static void enableFullscreen(boolean fullscreen) {
         Window.fullscreen = fullscreen;
@@ -262,7 +274,8 @@ public final class Window {
     }
     
     /**
-     * Changes the title used to identify the window. This is the same title that will be displayed to the user from the windows frame.
+     * Changes the title used to identify the window. This is the same title 
+     * that will be displayed to the user from the windows frame.
      * 
      * @param title the new title the window will use
      */
@@ -272,7 +285,8 @@ public final class Window {
     }
     
     /**
-     * Changes the current monitor the window will use. Alternate version of {@link setMonitor(String)}.
+     * Changes the current monitor the window will use. Alternate version of 
+     * {@link setMonitor(String)}.
      * 
      * @param monitor the monitor that the window will be switched to
      */
@@ -290,10 +304,13 @@ public final class Window {
     }
     
     /**
-     * Changes the current monitor the window will use. Often this will cause the window to relocate.
+     * Changes the current monitor the window will use. Often this will cause 
+     * the window to relocate.
      * 
-     * @param operation the method of traversal to use. Either explicitly as the ID number of the device or "prev/next" to move between 
-     *                  the previous and next devices in the collection respectively.
+     * @param operation the method of traversal to use. Either explicitly as 
+     *                  the ID number of the device or "prev/next" to move 
+     *                  between the previous and next devices in the collection 
+     *                  respectively.
      */
     public static void setMonitor(String operation) {
         enableFullscreen(!fullscreen);
@@ -353,9 +370,11 @@ public final class Window {
     }
     
     /**
-     * Sets the icon image of the window. Images should be at least 32x32 pixels large, but no larger than 64x64.
+     * Sets the icon image of the window. Images should be at least 32x32 
+     * pixels large, but no larger than 64x64.
      * 
-     * @param filename the name of the file to load. Expects the file extension to be included.
+     * @param filename the name of the file to load. Expects the file extension 
+     *                 to be included.
      */
     public static void setIcon(String filename) {
         try(MemoryStack stack = MemoryStack.stackPush()) {

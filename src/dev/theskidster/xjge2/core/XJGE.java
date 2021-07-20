@@ -18,26 +18,36 @@ import static org.lwjgl.glfw.GLFW.*;
 import org.lwjgl.opengl.GL;
 import static org.lwjgl.opengl.GL30.*;
 
-/**
- * @author J Hoffman
- * Created: Apr 28, 2021
- */
+//Created: Apr 28, 2021
 
 /**
- * Represents the game engine in its broadest sense and provides a point at which its functionality may be extended to better suit the 
- * individual requirements of the implementation.
- * <br><br>
+ * Represents the game engine in its broadest sense and provides a point at 
+ * which its functionality may be extended to better suit the individual 
+ * requirements of the implementation.
+ * <p>
  * More specifically this class provides the following features:
+ * </p>
  * <ul>
- * <li>The ability to change how the screen will be {@linkplain setScreenSplit divided} during split screen mode.</li>
- * <li>Convenient access to the {@linkplain getDefaultGLProgram default shader program} used internally by the engine.</li>
- * <li>The ability to provide the engine with supplemental {@linkplain addCommand terminal commands} and 
- * {@linkplain addGLProgram shader programs}.</li>
- * <li>Control over which {@link Camera} object each viewport will use to display the scene from their perspective.</li>
- * <li>The ability to {@linkplain addUIWidget add} and {@linkplain removeUIWidget remove} UI widgets from viewports.</li>
+ * <li>The ability to change how the screen will be 
+ *     {@linkplain setScreenSplit divided} during split screen mode.</li>
+ * <li>Convenient access to the {@linkplain getDefaultGLProgram default shader 
+ *     program} used internally by the engine.</li>
+ * <li>The ability to provide the engine with supplemental {@linkplain 
+ *     addCommand terminal commands} and 
+ *     {@linkplain addGLProgram shader programs}.</li>
+ * <li>Control over which {@link Camera} object each viewport will use to 
+ *     display the scene from their perspective.</li>
+ * <li>The ability to {@linkplain addUIWidget add} and {@linkplain 
+ *     removeUIWidget remove} UI widgets from viewports.</li>
  * </ul>
- * <p>Before the engines features can be used {@link init init()} must be called followed by changing whichever settings the 
- * implementation needs to before exposing the game window with {@link start start()}.</p>
+ * <p>
+ * Before the engines features can be used {@link init init()} must be called 
+ * followed by changing whichever settings the implementation needs to before 
+ * exposing the game window with {@link start start()}.
+ * </p>
+ * 
+ * @author J Hoffman
+ * @since  2.0.0
  * 
  * @see Hardware
  * @see Input
@@ -82,27 +92,37 @@ public final class XJGE {
     private static final Viewport[] viewports = new Viewport[4];
     
     /**
-     * Default constructor provided here to keep it out of the implementations reach.
+     * Default constructor provided here to keep it out of the implementations 
+     * reach.
      */
     private XJGE() {}
     
     /**
-     * Initializes the engines assets, compiles the default shader programs, and searches for connected peripheral devices. This method 
-     * must be called once before the engine can be used.
-     * <br><br>
-     * NOTE: If a resolution is provided the value of {@code windowResizable} will be ignored. Additionally, the {@code scenesFilepath} 
-     * should use periods for separators instead of slashes akin to how it appears in your IDEs package explorer. A call to this method
-     * might look something like the following:
+     * Initializes the engines assets, compiles the default shader programs, 
+     * and searches for connected peripheral devices. This method must be 
+     * called once before the engine can be used.
+     * <p>
+     * NOTE: If a resolution is provided the value of {@code windowResizable} 
+     * will be ignored. Additionally, the {@code scenesFilepath} should use 
+     * periods for separators instead of slashes akin to how it appears in your 
+     * IDEs package explorer. A call to this method might look something like 
+     * the following:
+     * </p>
      * <blockquote><pre>
      * init(<i>"/dev/theskidster/game/assets/"</i>, <i>"dev.theskidster.game.scenes."</i>, <b>true<b>, <b>null</b>, <b>true<b>);
      * </pre></blockquote>
      * 
-     * @param assetsFilepath  the relative filepath to a folder that contains all of the games assets
-     * @param scenesFilepath  the relative filepath to the package that contains all of the games scene subclasses
-     * @param debugEnabled    if true, the engine will provide debugging utilities at runtime
-     * @param resolution      the internal resolution the engine will display the framebuffer at or <b>null</b> to copy the resolution 
-     *                        of the window
-     * @param windowResizable if true, the user will be allowed to freely alter the size of the window 
+     * @param assetsFilepath  the relative filepath to a folder that contains 
+     *                        all of the games assets
+     * @param scenesFilepath  the relative filepath to the package that 
+     *                        contains all of the games scene subclasses
+     * @param debugEnabled    if true, the engine will provide debugging 
+     *                        utilities at runtime
+     * @param resolution      the internal resolution the engine will display 
+     *                        the framebuffer at or <b>null</b> to copy the 
+     *                        resolution of the window
+     * @param windowResizable if true, the user will be allowed to freely alter 
+     *                        the size of the window 
      */
     public static void init(String assetsFilepath, String scenesFilepath, boolean debugEnabled, Vector2i resolution, boolean windowResizable) {        
         if(!initCalled) {
@@ -297,13 +317,18 @@ public final class XJGE {
     }
     
     /**
-     * Exposes the window to the user and starts running the applications main loop. 
-     * <br><br>
-     * NOTE: This should be called <i>after</i> setting the initial scene with {@link Game#setScene(Scene)} and supplying whatever 
-     * additional {@linkplain dev.theskidster.xjge2.graphics.GLProgram shader programs} and {@linkplain addCommand terminal commands}
-     * the implementation requires.
+     * Exposes the window to the user and starts running the applications main 
+     * loop. 
+     * <p>
+     * NOTE: This should be called <i>after</i> setting the initial scene with 
+     * {@link Game#setScene(Scene)} and supplying whatever additional 
+     * {@linkplain dev.theskidster.xjge2.graphics.GLProgram shader programs} 
+     * and {@linkplain addCommand terminal commands} the implementation 
+     * requires.
+     * </p>
      * 
      * @see Game
+     * @see Window
      */
     public static void start() {
         engineCommands.putAll(userCommands);
@@ -346,7 +371,8 @@ public final class XJGE {
     }
     
     /**
-     * Generates a new renderbuffer object and attaches it to the engines framebuffer. 
+     * Generates a new renderbuffer object and attaches it to the engines 
+     * framebuffer. 
      */
     private static void createRenderbuffer() {
         glBindFramebuffer(GL_FRAMEBUFFER, fbo);
@@ -361,9 +387,10 @@ public final class XJGE {
     }
     
     /**
-     * Transfers the state of every viewport object to a new instance. Called internally by the engine anytime some operation is
-     * performed by the application that invalidates the current state of the viewports. Such as when the current {@link Split} value is
-     * altered.
+     * Transfers the state of every viewport object to a new instance. Called 
+     * internally by the engine anytime some operation is performed by the 
+     * application that invalidates the current state of the viewports. Such as 
+     * when the current {@link Split} value is altered.
      */
     static void transferViewportState() {
         for(int i = 0; i < viewports.length; i++) {
@@ -374,19 +401,22 @@ public final class XJGE {
     }
     
     /**
-     * Obtains the current status of the viewport used to indicate its visibility.
+     * Obtains the current status of the viewport used to indicate its 
+     * visibility.
      * 
      * @param viewportID the ID number of the viewport to query
      * 
-     * @return true if the viewport of the specified ID number is currently visible
+     * @return true if the viewport of the specified ID number is currently 
+     *         visible
      */
     static boolean getViewportActive(int viewportID) {
         return viewports[viewportID].active;
     }
     
     /**
-     * Adds a custom {@link GLProgram} to an immutable collection which can be accessed through a scenes {@linkplain Scene#render render()} 
-     * method to draw the various objects and entities within it.
+     * Adds a custom {@link GLProgram} to an immutable collection which can be 
+     * accessed through a scenes {@linkplain Scene#render render()} method to 
+     * draw the various objects and entities within it.
      * 
      * @param name      the name that will be used to refer to the program
      * @param glProgram the object representing the compiled shader program
@@ -404,8 +434,8 @@ public final class XJGE {
     }
     
     /**
-     * Adds a new user-defined command that can be accessed through the engines {@link Terminal} and used to debug the application at 
-     * runtime.
+     * Adds a new user-defined command that can be accessed through the engines 
+     * {@link Terminal} and used to debug the application at runtime.
      * 
      * @param name    the name the terminal will use to refer to the command
      * @param command an object used to organize the commands internal logic
@@ -424,11 +454,14 @@ public final class XJGE {
     }
     
     /**
-     * Adds a new {@link Widget} to the specified viewport. Widgets will be rendered in the order of their z-positions with lower numbers 
-     * denoting a higher priority. For example, a component with a z-position of 0 will be rendered in front of a component with a z-position of 1.
+     * Adds a new {@link Widget} to the specified viewport. Widgets will be 
+     * rendered in the order of their z-positions with lower numbers denoting a 
+     * higher priority. For example, a component with a z-position of 0 will be 
+     * rendered in front of a component with a z-position of 1.
      * 
      * @param viewportID the ID number of the viewport to add the widget to
-     * @param name       the name that will be used to identify and remove the widget later
+     * @param name       the name that will be used to identify and remove the 
+     *                   widget later
      * @param widget     the widget object to add
      * 
      * @see Viewport
@@ -442,7 +475,8 @@ public final class XJGE {
     /**
      * Removes a widget from the specified viewports user interface.
      * 
-     * @param viewportID the ID number of the viewport to remove the widget from
+     * @param viewportID the ID number of the viewport to remove the widget 
+     *                   from
      * @param name       the name of the widget to remove
      * 
      * @see Viewport
@@ -473,7 +507,8 @@ public final class XJGE {
     }
     
     /**
-     * Obtains the value that indicates whether or not the command terminal is currently open.
+     * Obtains the value that indicates whether or not the command terminal is 
+     * currently open.
      * 
      * @return true if the debug mode is enabled and the terminal is open
      */
@@ -482,9 +517,11 @@ public final class XJGE {
     }
     
     /**
-     * Obtains a value that determines if the positions of sources of light should be exposed.
+     * Obtains a value that determines if the positions of sources of light 
+     * should be exposed.
      * 
-     * @return if true, icons indicating the color and locations of the light sources will be rendered
+     * @return if true, icons indicating the color and locations of the light 
+     *         sources will be rendered
      */
     static boolean getLightSourcesVisible() {
         return showLightSources;
@@ -500,8 +537,9 @@ public final class XJGE {
     }
     
     /**
-     * Obtains a user-provided string denoting the location of the sounds, images, .glsl files, and whatever other assets are used by 
-     * the implementation.
+     * Obtains a user-provided string denoting the location of the sounds, 
+     * images, .glsl files, and whatever other assets are used by the 
+     * implementation.
      * 
      * @return a filepath to the location containing the games assets
      */
@@ -510,7 +548,8 @@ public final class XJGE {
     }
     
     /**
-     * Obtains a user-provided string that tells the engine where to search for implementations of the {@link Scene} superclass.
+     * Obtains a user-provided string that tells the engine where to search for 
+     * implementations of the {@link Scene} superclass.
      * 
      * @return a filepath to the location containing the games scene subclasses
      */
@@ -528,11 +567,16 @@ public final class XJGE {
     }
     
     /**
-     * Sets the current split value the engine will use to divide the screen during split screen mode.
+     * Sets the current split value the engine will use to divide the screen 
+     * during split screen mode.
      * 
-     * @param split a value that determines how the screen will be divided. One of: {@link Split#NONE NONE}, 
-     *              {@link Split#HORIZONTAL HORIZONTAL}, {@link Split#VERTICAL VERTICAL}, {@link Split#TRISECT TRISECT}, or 
-     *              {@link Split#QUARTER QUARTER}.
+     * @param split a value that determines how the screen will be divided. One 
+     *              of: 
+     * <table><tr>
+     * <td>{@link Split#NONE NONE}</td><td>{@link Split#HORIZONTAL HORIZONTAL}</td>
+     * <td>{@link Split#VERTICAL VERTICAL}</td></tr><tr>
+     * <td>{@link Split#TRISECT TRISECT}</td><td>{@link Split#QUARTER QUARTER}</td>
+     * </table>
      */
     public static final void setScreenSplit(Split split) {
         XJGE.split = split;
@@ -627,7 +671,8 @@ public final class XJGE {
     /**
      * Sets the current camera object a viewport will use.
      * 
-     * @param viewportID the ID number of the viewport whos camera we want to set
+     * @param viewportID the ID number of the viewport whos camera we want to 
+     *                   set
      * @param camera     the camera object being assigned to the viewport
      */
     public static final void setViewportCamera(int viewportID, Camera camera) {

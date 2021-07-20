@@ -6,16 +6,18 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import org.joml.Vector2i;
 
-/**
- * @author J Hoffman
- * Created: Jun 4, 2021
- */
+//Created: Jun 4, 2021
 
 /**
  * Provides utilities for rendering text to the screen.
- * <br><br>
- * NOTE: The primary method used by this class to draw strings of text is exposed exclusively to subclasses of {@link Widget}. All other
- * additional methods can be accessed statically.
+ * <p>
+ * NOTE: The primary method used by this class to draw strings of text is 
+ * exposed exclusively to subclasses of {@link Widget}. All other additional 
+ * methods can be accessed statically.
+ * </p>
+ * 
+ * @author J Hoffman
+ * @since  2.0.0
  */
 public final class Text {
 
@@ -32,12 +34,14 @@ public final class Text {
     private final HashMap<Integer, HashMap<Integer, Glyph>> glyphs = new HashMap<>();
     
     /**
-     * Default constructor provided here to keep it out of the implementations reach.
+     * Default constructor provided here to keep it out of the implementations 
+     * reach.
      */
     Text() {}
     
     /**
-     * Checks to see whether or not a property of the rendered text has changed.
+     * Checks to see whether or not a property of the rendered text has 
+     * changed.
      * 
      * @param <T>       the data type of the property
      * @param prevValue the previous value of the property being checked
@@ -54,7 +58,8 @@ public final class Text {
     }
     
     /**
-     * Updates the value of a property to reflect whatever changes have been made to the string of rendered text.
+     * Updates the value of a property to reflect whatever changes have been 
+     * made to the string of rendered text.
      * 
      * @param <T>       the data type of the property
      * @param prevValue the previous value of the property being checked
@@ -69,7 +74,8 @@ public final class Text {
      * 
      * @param font     the font the text will be drawn in
      * @param text     the string of text to display
-     * @param position the position in the window at which the text string will be rendered
+     * @param position the position in the window at which the text string will 
+     *                 be rendered
      * @param color    the color the text will be rendered in
      */
     void drawString(Font font, String text, Vector2i position, Color color) {
@@ -119,7 +125,8 @@ public final class Text {
      * 
      * @param font     the font the text will be drawn in
      * @param text     the string of text to display
-     * @param position the position in the window at which the text string will be rendered
+     * @param position the position in the window at which the text string will 
+     *                 be rendered
      */
     void drawCommand(Font font, String text, Vector2i position) {
         drawOrder++;
@@ -164,11 +171,16 @@ public final class Text {
      * Draws the output response of a terminal command.
      * 
      * @param font      the font the text will be drawn in
-     * @param o1        an array containing the output objects generated from previously executed commands
-     * @param o2        the output object representing the response of the executed command
-     * @param index     the current index that the output occupies in the command terminals output history
-     * @param executed  if true, a new command has been executed and the properties of a rendered text will need to be updated
-     * @param rectangle the rectangle object that will serve as a background to the generated output string
+     * @param o1        an array containing the output objects generated from 
+     *                  previously executed commands
+     * @param o2        the output object representing the response of the 
+     *                  executed command
+     * @param index     the current index that the output occupies in the 
+     *                  command terminals output history
+     * @param executed  if true, a new command has been executed and the 
+     *                  properties of a rendered text will need to be updated
+     * @param rectangle the rectangle object that will serve as a background to 
+     *                  the generated output string
      */
     void drawOutput(Font font, TerminalOutput[] o1, TerminalOutput o2, int index, boolean executed, Rectangle rectangle) {
         drawOrder++;
@@ -214,15 +226,16 @@ public final class Text {
     }
     
     /**
-     * Resets the order in which the strings are rendered. This is called automatically by the engine to further optimize text 
-     * rendering.
+     * Resets the order in which the strings are rendered. This is called 
+     * automatically by the engine to further optimize text rendering.
      */
     void resetStringIndex() {
         drawOrder = 0;
     }
     
     /**
-     * Attempts to wrap a string inside of the width specified. Will not break words.
+     * Attempts to wrap a string inside of the width specified. Will not break 
+     * words.
      * 
      * @param text         the string of text to wrap
      * @param advanceLimit the width that the string may not exceed
@@ -294,13 +307,16 @@ public final class Text {
     }
     
     /**
-     * Finds the amount of times a character appears in a string from some point.
+     * Finds the amount of times a character appears in a string from some 
+     * point.
      * 
      * @param text  the string of text to examine
      * @param c     the character to search for
-     * @param index the index to offset the search by. Any index preceding the one specified will be omitted from the search.
+     * @param index the index to offset the search by. Any index preceding the 
+     *              one specified will be omitted from the search.
      * 
-     * @return the number of times the character was found in the string provided
+     * @return the number of times the character was found in the string 
+     *         provided
      */
     public static int numCharOccurences(String text, char c, int index) {
         if(index >= text.length()) return 0;

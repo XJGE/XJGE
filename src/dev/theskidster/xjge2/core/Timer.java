@@ -3,13 +3,14 @@ package dev.theskidster.xjge2.core;
 import java.beans.PropertyChangeListener;
 import java.util.List;
 
-/**
- * @author J Hoffman
- * Created: May 7, 2021
- */
+//Created: May 7, 2021
 
 /**
- * A simple monotonic timing mechanism. Useful for game events and other systems that require specialized timing intervals.
+ * A simple monotonic timing mechanism. Useful for game events and other 
+ * systems that require specialized timing intervals.
+ * 
+ * @author J Hoffman
+ * @since  2.0.0
  */
 public class Timer {
     
@@ -23,10 +24,13 @@ public class Timer {
     private final Observable observable = new Observable(this);
     
     /**
-     * Creates a new timer object that will step forward every time the specified number of update cycles have passed.
+     * Creates a new timer object that will step forward every time the 
+     * specified number of update cycles have passed.
      * 
-     * @param time  the total number of steps the timer must complete before it is finished
-     * @param speed the number of game ticks to wait before stepping forward. A single tick typically takes a millisecond.
+     * @param time  the total number of steps the timer must complete before it 
+     *              is finished
+     * @param speed the number of game ticks to wait before stepping forward. A 
+     *              single tick typically takes a millisecond.
      * 
      * @see Game#tick(int)
      */
@@ -37,11 +41,14 @@ public class Timer {
     }
     
     /**
-     * Creates a new timer object that will step forward every time the specified number of update cycles have passed. This constructor 
-     * will notify an observer once the timer has finished.
+     * Creates a new timer object that will step forward every time the 
+     * specified number of update cycles have passed. This constructor will 
+     * notify an observer once the timer has finished.
      * 
-     * @param time     the total number of steps the timer must complete before it is finished
-     * @param speed    the number of update ticks to wait before stepping forward. A single tick typically takes a millisecond.
+     * @param time     the total number of steps the timer must complete before 
+     *                 it is finished
+     * @param speed    the number of update ticks to wait before stepping 
+     *                 forward. A single tick typically takes a millisecond.
      * @param observer the object waiting for this timer to finish
      * 
      * @see Observable
@@ -57,11 +64,14 @@ public class Timer {
     }
     
     /**
-     * Creates a new timer object that will step forward every time the specified number of update cycles have passed. This constructor 
-     * will notify multiple observers once the timer has finished.
+     * Creates a new timer object that will step forward every time the 
+     * specified number of update cycles have passed. This constructor will 
+     * notify multiple observers once the timer has finished.
      * 
-     * @param time      the total number of steps the timer must complete before it is finished
-     * @param speed     the number of update ticks to wait before stepping forward. A single tick typically takes a millisecond.
+     * @param time      the total number of steps the timer must complete 
+     *                  before it is finished
+     * @param speed     the number of update ticks to wait before stepping 
+     *                  forward. A single tick typically takes a millisecond.
      * @param observers the objects waiting for this timer to finish
      * 
      * @see Observable
@@ -92,8 +102,9 @@ public class Timer {
     public void reset() { time = initialTime; }
     
     /**
-     * Updates the timer. It is expected that implementing objects using a timer component will supply some sort of {@code update()} method 
-     * as part of a larger logic loop through which this can be called.
+     * Updates the timer. It is expected that implementing objects using a 
+     * timer component will supply some sort of {@code update()} method as part 
+     * of a larger logic loop through which this can be called.
      */
     public void update() {
         if(start) {
@@ -107,8 +118,10 @@ public class Timer {
     }
     
     /**
-     * Sets the timer back to its initial state and starts ticking again. Not to be confused with {@link reset()} which will only effect 
-     * the timers time value. Restarting a timer will notify its observers once it has finished even if it had finished previously.
+     * Sets the timer back to its initial state and starts ticking again. Not 
+     * to be confused with {@link reset()} which will only effect the timers 
+     * time value. Restarting a timer will notify its observers once it has 
+     * finished even if it had finished previously.
      */
     public void restart() {
         finished = false;
