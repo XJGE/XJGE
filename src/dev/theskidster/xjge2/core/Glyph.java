@@ -3,14 +3,15 @@ package dev.theskidster.xjge2.core;
 import dev.theskidster.xjge2.graphics.Color;
 import org.joml.Vector2i;
 
-/**
- * @author J Hoffman
- * Created: May 13, 2021
- */
+//Created: May 13, 2021
 
 /**
- * Represents a single character/letter in a language. These objects are coupled with additional state that allows them to exhibit 
- * limited uniqueness during instanced rendering.
+ * Represents a single character/letter in a language. These objects are 
+ * coupled with additional state that allows them to exhibit limited uniqueness 
+ * during instanced rendering.
+ * 
+ * @author J Hoffman
+ * @since  2.0.0
  */
 final class Glyph {
     

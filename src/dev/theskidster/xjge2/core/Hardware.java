@@ -10,13 +10,14 @@ import static org.lwjgl.openal.ALC11.*;
 import static org.lwjgl.openal.ALUtil.getStringList;
 import static org.lwjgl.system.MemoryUtil.NULL;
 
-/**
- * @author J Hoffman
- * Created: Apr 29, 2021
- */
+//Created: Apr 29, 2021
 
 /**
- * Provides utilities to manage the state of various connected peripheral devices not directly related to user input.
+ * Provides utilities to manage the state of various connected peripheral 
+ * devices not directly related to user input.
+ * 
+ * @author J Hoffman
+ * @since  2.0.0
  */
 public final class Hardware {
     
@@ -33,18 +34,22 @@ public final class Hardware {
     }
     
     /**
-     * Removes the specified display device from a collection of currently connected peripheral devices.
+     * Removes the specified display device from a collection of currently 
+     * connected peripheral devices.
      * 
-     * @param handle a unique value provided by GLFW used to identify the device
+     * @param handle a unique value provided by GLFW used to identify the 
+     *               device
      */
     static void removeMonitor(long handle) {
         monitors.values().removeIf(monitor -> monitor.handle == handle);
     }
     
     /**
-     * Obtains a display device from a collection of currently connected peripheral devices.
+     * Obtains a display device from a collection of currently connected 
+     * peripheral devices.
      * 
-     * @param handle a unique value provided by GLFW used to identify the device
+     * @param handle a unique value provided by GLFW used to identify the 
+     *               device
      * 
      * @return the monitor object whos handle corresponds to the one supplied
      */
@@ -56,16 +61,19 @@ public final class Hardware {
     }
     
     /**
-     * Obtains any available monitor currently connected and subject to the engines influence.
+     * Obtains any available monitor currently connected and subject to the 
+     * engines influence.
      * 
-     * @return a monitor object that's available to the engine for immediate use 
+     * @return a monitor object that's available to the engine for immediate 
+     *         use 
      */
     static Monitor getAnyMonitor() {
         return monitors.values().stream().findAny().get();
     }
     
     /**
-     * Finds every available audio device currently connected to the system and returns them in a collection.
+     * Finds every available audio device currently connected to the system and 
+     * returns them in a collection.
      * 
      * @return an immutable collection of available audio devices
      */
@@ -90,7 +98,8 @@ public final class Hardware {
     }
     
     /**
-     * Finds every available display device currently connected to the system and returns them in a collection.
+     * Finds every available display device currently connected to the system 
+     * and returns them in a collection.
      * 
      * @return an immutable collection of available display devices
      */
@@ -139,8 +148,9 @@ public final class Hardware {
     }
     
     /**
-     * Determines whether the application will take advantage of vertical sync (or VSync) while rendering frames. VSync 
-     * is enabled by default on startup.
+     * Determines whether the application will take advantage of vertical sync 
+     * (or VSync) while rendering frames. VSync is enabled by default on 
+     * startup.
      * 
      * @param vSyncEnabled if true, vertical sync will be enabled
      */
@@ -156,12 +166,16 @@ public final class Hardware {
     /**
      * Sets the current audio device the engine will use. 
      * <br><br>
-     * NOTE: Using this method will update the collection of audio devices available to the engine and change the current OpenAL context. 
-     * This action will require all sounds and music previously loaded into memory to be reloaded which may cause brief but noticeable 
-     * stutter while the audio data is being transferred.
+     * NOTE: Using this method will update the collection of audio devices 
+     * available to the engine and change the current OpenAL context. This 
+     * action will require all sounds and music previously loaded into memory 
+     * to be reloaded which may cause brief but noticeable stutter while the 
+     * audio data is being transferred.
      * 
-     * @param operation the method of traversal to use. Either explicitly as the ID number of the device or "prev/next" to move between 
-     *                  the previous and next devices in the collection respectively.
+     * @param operation the method of traversal to use. Either explicitly as 
+     *                  the ID number of the device or "prev/next" to move 
+     *                  between the previous and next devices in the collection 
+     *                  respectively.
      */
     public static void setSpeaker(String operation) {
         Audio.saveContextConfig();
