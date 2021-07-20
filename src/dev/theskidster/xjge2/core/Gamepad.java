@@ -6,24 +6,31 @@ import static org.lwjgl.glfw.GLFW.*;
 import org.lwjgl.glfw.GLFWGamepadState;
 import org.lwjgl.system.MemoryStack;
 
-/**
- * @author J Hoffman
- * Created: May 3, 2021
- */
+//Created: May 3, 2021
 
 /**
- * Represents a generic game controller held with two hands that exhibits two analog sticks, two or more triggers, and several buttons.
+ * Represents a generic game controller held with two hands that exhibits two 
+ * analog sticks, two or more triggers, and several buttons.
+ * 
+ * @author J Hoffman
+ * @since  2.0.0
  */
 final class Gamepad extends InputDevice {
 
     private GLFWGamepadState state;
     
     /**
-     * Creates a new gamepad object and applies the users settings to its control configuration.
+     * Creates a new gamepad object and applies the users settings to its 
+     * control configuration.
      * 
-     * @param id          the unique number used to identify the device in other parts of the engine
-     * @param sensitivity a value used by gameplay systems to adjust the responsiveness of input actions based off the users preference
-     * @param deadzone    a value used to indicate how much pressure must be applied to an analog stick before its input is recognized
+     * @param id          the unique number used to identify the device in 
+     *                    other parts of the engine
+     * @param sensitivity a value used by gameplay systems to adjust the 
+     *                    responsiveness of input actions based off the users 
+     *                    preference
+     * @param deadzone    a value used to indicate how much pressure must be 
+     *                    applied to an analog stick before its input is 
+     *                    recognized
      * @param config      a collection of various {@link Control} mappings
      */
     Gamepad(int id, float sensitivity, float deadzone, HashMap<Control, Integer> config) {
@@ -42,8 +49,10 @@ final class Gamepad extends InputDevice {
     }
 
     /**
-     * Determines if this controller is eligible for use by the engine. GLFW recognizes Joysticks which exhibit predictable {@link Control} 
-     * layouts as gamepads. Gamepads often include mappings for controls which correspond well to GLFWs definitions.
+     * Determines if this controller is eligible for use by the engine. GLFW 
+     * recognizes Joysticks which exhibit predictable {@link Control} layouts 
+     * as gamepads. Gamepads often include mappings for controls which 
+     * correspond well to GLFWs definitions.
      */
     private void validate() {
         if(glfwJoystickIsGamepad(id)) {
