@@ -2,13 +2,14 @@ package dev.theskidster.xjge2.core;
 
 import dev.theskidster.xjge2.graphics.Color;
 
-/**
- * @author J Hoffman
- * Created: May 25, 2021
- */
+//Created: May 25, 2021
 
 /**
- * A data structure which contains information pertaining to a commands response when executed.
+ * A data structure which contains information pertaining to a commands 
+ * response when executed.
+ * 
+ * @author J Hoffman
+ * @since  2.0.0
  */
 public class TerminalOutput {
     
