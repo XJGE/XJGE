@@ -3,13 +3,14 @@ package dev.theskidster.xjge2.graphics;
 import static org.lwjgl.opengl.GL20.*;
 import org.lwjgl.system.MemoryStack;
 
-/**
- * @author J Hoffman
- * Created: May 13, 2021
- */
+//Created: May 13, 2021
 
 /**
- * Defines a set of reusable vertex data that can be utilized to represent a 2D object that makes use of instanced rendering techniques.
+ * Defines a set of reusable vertex data that can be utilized to represent a 2D 
+ * object that makes use of instanced rendering techniques.
+ * 
+ * @author J Hoffman
+ * @since  2.0.0
  */
 public class Instance2D {
 
@@ -23,12 +24,14 @@ public class Instance2D {
     private final Graphics g = new Graphics();
     
     /**
-     * Constructs a rectangular instance that uses a sprite image as its texture. Useful for text, tiles, etc.
+     * Constructs a rectangular instance that uses a sprite image as its 
+     * texture. Useful for text, tiles, etc.
      * 
      * @param texture    the texture image to use
      * @param cellWidth  the width of each sub-image cell in pixels
      * @param cellHeight the height of each sub-image cell in pixels
-     * @param fromCenter determines whether the instance will be offset by its center or bottom left corner relative to its position
+     * @param fromCenter determines whether the instance will be offset by its 
+     *                   center or bottom left corner relative to its position
      */
     public Instance2D(Texture texture, int cellWidth, int cellHeight, boolean fromCenter) {
         this.texture    = texture;

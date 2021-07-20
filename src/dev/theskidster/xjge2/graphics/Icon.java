@@ -8,14 +8,16 @@ import org.joml.Vector2i;
 import static org.lwjgl.opengl.GL30.*;
 import org.lwjgl.system.MemoryStack;
 
-/**
- * @author J Hoffman
- * Created: Jun 8, 2021
- */
+//Created: Jun 8, 2021
 
 /**
- * Represents a quickly comprehensible symbol included to help users better understand an interface. Icons make use of a {@link Atlas} 
- * and as such, provide utilities for quickly switching between individual sub-images as needed.
+ * Represents a quickly comprehensible symbol included to help users better 
+ * understand an interface. Icons make use of a {@link Atlas} and as such, 
+ * provide utilities for quickly switching between individual sub-images as 
+ * needed.
+ * 
+ * @author J Hoffman
+ * @since  2.0.0
  * 
  * @see dev.theskidster.xjge2.core.Widget
  */
@@ -27,7 +29,8 @@ public final class Icon {
     private final Atlas atlas;
     
     /**
-     * Creates a new icon object which can be used to comprise part of a larger user interface.
+     * Creates a new icon object which can be used to comprise part of a larger 
+     * user interface.
      * 
      * @param texture    the texture image to use
      * @param cellWidth  the width of each sub-image cell in pixels
@@ -93,8 +96,10 @@ public final class Icon {
     /**
      * Sets the sub-image this icon will use
      * 
-     * @param cellX the location of the cell along the x-axis as it appears in the texture atlas
-     * @param cellY the location of the cell along the y-axis as it appears in the texture atlas
+     * @param cellX the location of the cell along the x-axis as it appears in 
+     *              the texture atlas
+     * @param cellY the location of the cell along the y-axis as it appears in 
+     *              the texture atlas
      */
     public void setSubImage(int cellX, int cellY) {
         Vector2i key = new Vector2i(cellX, cellY);

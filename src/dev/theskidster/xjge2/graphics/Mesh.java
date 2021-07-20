@@ -18,13 +18,14 @@ import org.lwjgl.assimp.AIVertexWeight;
 import static org.lwjgl.opengl.GL30.*;
 import org.lwjgl.system.MemoryUtil;
 
-/**
- * @author J Hoffman
- * Created: Jun 16, 2021
- */
+//Created: Jun 16, 2021
 
 /**
- * Represents a 3D polygonal collection of vertices, edges, and faces that will define the shape of a {@link Model}.
+ * Represents a 3D polygonal collection of vertices, edges, and faces that will 
+ * define the shape of a {@link Model}.
+ * 
+ * @author J Hoffman
+ * @since  2.0.0
  */
 final class Mesh {
 
@@ -38,9 +39,11 @@ final class Mesh {
     Matrix4f modelMatrix = new Matrix4f();
     
     /**
-     * Creates a mesh object that will be used by the engine to render part of a {@link Model}.
+     * Creates a mesh object that will be used by the engine to render part of 
+     * a {@link Model}.
      * 
-     * @param aiMesh the mesh object provided by the Assimp library with which vertex data will be parsed
+     * @param aiMesh the mesh object provided by the Assimp library with which 
+     *               vertex data will be parsed
      * @param bones  a collection of the bones located within the mesh
      */
     Mesh(AIMesh aiMesh, ArrayList<Bone> bones) {
@@ -62,9 +65,11 @@ final class Mesh {
     }
     
     /**
-     * Extracts the vertex positions of the mesh object and provides them to the graphics pipeline.
+     * Extracts the vertex positions of the mesh object and provides them to 
+     * the graphics pipeline.
      * 
-     * @param aiMesh the mesh object provided by the Assimp library with which vertex data will be parsed
+     * @param aiMesh the mesh object provided by the Assimp library with which 
+     *               vertex data will be parsed
      */
     private void parsePositionData(AIMesh aiMesh) {
         FloatBuffer positionBuf    = MemoryUtil.memAllocFloat(aiMesh.mNumVertices() * 3);
@@ -88,10 +93,12 @@ final class Mesh {
     }
     
     /**
-     * Extracts the texture coordinates of the mesh object and provides them to the graphics pipeline. If a model contains no textures, 
-     * the values will be initialized to zero by default.
+     * Extracts the texture coordinates of the mesh object and provides them to 
+     * the graphics pipeline. If a model contains no textures, the values will 
+     * be initialized to zero by default.
      * 
-     * @param aiMesh the mesh object provided by the Assimp library with which vertex data will be parsed
+     * @param aiMesh the mesh object provided by the Assimp library with which 
+     *               vertex data will be parsed
      */
     private void parseTexCoordData(AIMesh aiMesh) {
         FloatBuffer texCoordBuf    = MemoryUtil.memAllocFloat(aiMesh.mNumVertices() * 2);
@@ -117,10 +124,12 @@ final class Mesh {
     }
     
     /**
-     * Extracts the vertex normals of the mesh object and provides them to the graphics pipeline. If a model doesn't refactor light, the 
-     * values will be initialized to zero by default.
+     * Extracts the vertex normals of the mesh object and provides them to the 
+     * graphics pipeline. If a model doesn't refactor light, the values will be 
+     * initialized to zero by default.
      * 
-     * @param aiMesh the mesh object provided by the Assimp library with which vertex data will be parsed
+     * @param aiMesh the mesh object provided by the Assimp library with which 
+     *               vertex data will be parsed
      */
     private void parseNormalData(AIMesh aiMesh) {
         FloatBuffer normalBuf      = MemoryUtil.memAllocFloat(aiMesh.mNumVertices() * 3);
@@ -147,9 +156,11 @@ final class Mesh {
     }
     
     /**
-     * Extracts vertex data necessary for use during skeletal animation. If no animation data is present, this step is skipped.
+     * Extracts vertex data necessary for use during skeletal animation. If no 
+     * animation data is present, this step is skipped.
      * 
-     * @param aiMesh the mesh object provided by the Assimp library with which vertex data will be parsed
+     * @param aiMesh the mesh object provided by the Assimp library with which 
+     *               vertex data will be parsed
      */
     private void parseBoneData(AIMesh aiMesh, List<Bone> bones) {
         PointerBuffer boneBuf = aiMesh.mBones();
@@ -220,9 +231,11 @@ final class Mesh {
     }
     
     /**
-     * Uses the number of faces in the mesh to generate indices that can be used by the graphics pipeline to optimize rendering.
+     * Uses the number of faces in the mesh to generate indices that can be 
+     * used by the graphics pipeline to optimize rendering.
      * 
-     * @param aiMesh the mesh object provided by the Assimp library with which vertex data will be parsed
+     * @param aiMesh the mesh object provided by the Assimp library with which 
+     *               vertex data will be parsed
      */
     private void parseFaceData(AIMesh aiMesh) {
         indices = MemoryUtil.memAllocInt(aiMesh.mNumFaces() * 3);

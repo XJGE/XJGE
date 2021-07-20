@@ -2,13 +2,14 @@ package dev.theskidster.xjge2.graphics;
 
 import org.joml.Vector3f;
 
-/**
- * @author J Hoffman
- * Created: Jun 12, 2021
- */
+//Created: Jun 12, 2021
 
 /**
- * Data structure that contains information which can be used to simulate visible light.
+ * Data structure that contains information which can be used to simulate 
+ * visible light.
+ * 
+ * @author J Hoffman
+ * @since  2.0.0
  */
 public final class Light {
 
@@ -22,14 +23,19 @@ public final class Light {
     public Color diffuseColor;
     
     /**
-     * Creates a new light object that contains data which can be used by the fragment shader during lighting calculations.
+     * Creates a new light object that contains data which can be used by the 
+     * fragment shader during lighting calculations.
      * 
-     * @param brightness   the intensity and range of the light. Should be a non-negative value between 0 and 1.
-     * @param contrast     the noticeable difference between the intensity of the ambient and diffuse colors of this light. Should be a non-negative value between 
-     *                     0 and 1.
+     * @param brightness   the intensity and range of the light. Should be a 
+     *                     non-negative value between 0 and 1.
+     * @param contrast     the noticeable difference between the intensity of 
+     *                     the ambient and diffuse colors of this light. Should 
+     *                     be a non-negative value between 0 and 1.
      * @param position     the position from which the light will be emitted.
-     * @param ambientColor the ambient color that will be used to color the shaded side of an entity
-     * @param diffuseColor the color that will be noticeably reflected off nearby entities
+     * @param ambientColor the ambient color that will be used to color the 
+     *                     shaded side of an entity
+     * @param diffuseColor the color that will be noticeably reflected off 
+     *                     nearby entities
      */
     public Light(float brightness, float contrast, Vector3f position, Color ambientColor, Color diffuseColor) {
         this.brightness   = brightness;
@@ -40,7 +46,8 @@ public final class Light {
     }
     
     /**
-     * Provides implementing applications with an predefined light object that mimics daylight.
+     * Provides implementing applications with an predefined light object that 
+     * mimics daylight.
      * 
      * @return a new engine-provided light object
      */
@@ -49,7 +56,8 @@ public final class Light {
     }
     
     /**
-     * Provides implementing applications with an predefined light object that simulates the hue of a sunset.
+     * Provides implementing applications with an predefined light object that 
+     * simulates the hue of a sunset.
      * 
      * @return a new engine-provided light object
      */
@@ -58,7 +66,8 @@ public final class Light {
     }
     
     /**
-     * Provides implementing applications with an predefined light object that resembles moonlight.
+     * Provides implementing applications with an predefined light object that 
+     * resembles moonlight.
      * 
      * @return a new engine-provided light object
      */

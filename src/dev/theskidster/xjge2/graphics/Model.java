@@ -23,15 +23,17 @@ import static org.lwjgl.opengl.GL30.*;
 import org.lwjgl.system.MemoryUtil;
 import static org.lwjgl.system.MemoryUtil.NULL;
 
-/**
- * @author J Hoffman
- * Created: Jun 16, 2021
- */
+//Created: Jun 16, 2021
 
 /**
- * Represents a 3D model. Models may possess animations, multiple meshes, textures, or a combination of these things. Various limitations 
- * are imposed by the engine to ensure models are loaded with consistency. The Autodesk .fbx file format is the preferred format of this 
- * engine for its compact size, though other formats should work as well.
+ * Represents a 3D model. Models may possess animations, multiple meshes, 
+ * textures, or a combination of these things. Various limitations are imposed 
+ * by the engine to ensure models are loaded with consistency. The Autodesk 
+ * .fbx file format is the preferred format of this engine for its compact 
+ * size, though other formats should work as well.
+ * 
+ * @author J Hoffman
+ * @since  2.0.0
  */
 public class Model {
 
@@ -63,13 +65,18 @@ public class Model {
     private Map<String, SkeletalAnimation> animations;
     
     /**
-     * Overloaded version of {@link Model(String)} that permits the use of custom post processing arguments.
+     * Overloaded version of {@link Model(String)} that permits the use of 
+     * custom post processing arguments.
      * 
-     * @param filename the name of the file to load. Expects the file extension to be included.
+     * @param filename the name of the file to load. Expects the file extension 
+     *                 to be included.
      * @param aiArgs   the Assimp arguments to use for post processing such as 
-     *                 {@link org.lwjgl.assimp.Assimp#aiProcess_Triangulate aiProcess_Triangulate}, 
-     *                 {@link org.lwjgl.assimp.Assimp#aiProcess_GenSmoothNormals aiProcess_GenSmoothNormals}, 
-     *                 {@link org.lwjgl.assimp.Assimp#aiProcess_FixInfacingNormals aiProcess_FixInfacingNormals}, etc.
+     *                 {@link org.lwjgl.assimp.Assimp#aiProcess_Triangulate 
+     *                 aiProcess_Triangulate}, 
+     *                 {@link org.lwjgl.assimp.Assimp#aiProcess_GenSmoothNormals 
+     *                 aiProcess_GenSmoothNormals}, 
+     *                 {@link org.lwjgl.assimp.Assimp#aiProcess_FixInfacingNormals 
+     *                 aiProcess_FixInfacingNormals}, etc.
      */
     public Model(String filename, int aiArgs) {
         try(InputStream file = Model.class.getResourceAsStream(XJGE.getAssetsFilepath() + filename)) {
@@ -82,9 +89,11 @@ public class Model {
     }
     
     /**
-     * Parses the file provided and generates a 3D model from the data it contains.
+     * Parses the file provided and generates a 3D model from the data it 
+     * contains.
      * 
-     * @param filename the name of the file to load. Expects the file extension to be included.
+     * @param filename the name of the file to load. Expects the file extension 
+     *                 to be included.
      */
     public Model(String filename) {
         this(filename, 
@@ -96,14 +105,19 @@ public class Model {
     }
     
     /**
-     * Specifies various file open/read/close procedures and then constructs a new model instance using the data parsed from the file.
+     * Specifies various file open/read/close procedures and then constructs a 
+     * new model instance using the data parsed from the file.
      * 
-     * @param filename the name of the file to load. Expects the file extension to be included.
+     * @param filename the name of the file to load. Expects the file extension 
+     *                 to be included.
      * @param file     the file to extract model data from
      * @param aiArgs   the Assimp arguments to use for post processing such as 
-     *                 {@link org.lwjgl.assimp.Assimp#aiProcess_Triangulate aiProcess_Triangulate}, 
-     *                 {@link org.lwjgl.assimp.Assimp#aiProcess_GenSmoothNormals aiProcess_GenSmoothNormals}, 
-     *                 {@link org.lwjgl.assimp.Assimp#aiProcess_FixInfacingNormals aiProcess_FixInfacingNormals}, etc.
+     *                 {@link org.lwjgl.assimp.Assimp#aiProcess_Triangulate 
+     *                 aiProcess_Triangulate}, 
+     *                 {@link org.lwjgl.assimp.Assimp#aiProcess_GenSmoothNormals 
+     *                 aiProcess_GenSmoothNormals}, 
+     *                 {@link org.lwjgl.assimp.Assimp#aiProcess_FixInfacingNormals 
+     *                 aiProcess_FixInfacingNormals}, etc.
      */
     private void loadModel(String filename, InputStream file, int aiArgs) throws Exception {
         byte[] data = file.readAllBytes();
@@ -182,10 +196,13 @@ public class Model {
     }
     
     /**
-     * Translates the structure of the model file into a hierarchy that can be used by the engine.
+     * Translates the structure of the model file into a hierarchy that can be 
+     * used by the engine.
      * 
-     * @param aiNode the Assimp data structure from which a new node object will be constructed
-     * @param parent the parent of the unprocessed Assimp node or null if this is the root node
+     * @param aiNode the Assimp data structure from which a new node object 
+     *               will be constructed
+     * @param parent the parent of the unprocessed Assimp node or null if this 
+     *               is the root node
      * 
      * @return a new child node of the parent provided 
      */
@@ -225,25 +242,29 @@ public class Model {
     
     /**
      * Parses each texture that will be used by this model.
-     * <br><br>
-     * The engine imposes a number of significant restrictions regarding textures that should be considered during the model creation 
-     * process. Specifically;
+     * <p>
+     * The engine imposes a number of significant restrictions regarding 
+     * textures that should be considered during the model creation process. 
+     * Specifically;
+     * </p>
      * <ol>
-     * <li>Models may not exceed the maximum number of allowed textures specified through the {@link MAX_TEXTURES} field. By default 
-     * this number is four, but may be altered at the discretion of the implementation as needed.</li>
-     * <br>
-     * <li>Any {@link Mesh} object representing part of this model can not use more than one texture concurrently. That is, a single 
-     * texture may be shared between multiple meshes, but a single mesh may not exhibit multiple textures.</li>
-     * <br>
-     * <li>Since models are loaded directly from memory, they must embed their textures inside of materials in order to load 
-     * correctly.</li>
-     * <br>
-     * <li>Texture image files used by models must be located in the same directory as the model file itself.</li>
+     * <li>Models may not exceed the maximum number of allowed textures 
+     *     specified through the {@link MAX_TEXTURES} field. By default this 
+     *     number is four.</li>
+     * <li>Any {@link Mesh} object representing part of this model can not use 
+     *     more than one texture concurrently. That is, a single texture may be 
+     *     shared between multiple meshes, but a single mesh may not exhibit 
+     *     multiple textures.</li>
+     * <li>Since models are loaded directly from memory, they must embed their 
+     *     textures inside of materials in order to load correctly.</li>
+     * <li>Texture image files used by models must be located in the same 
+     *     directory as the model file itself.</li>
      * </ol>
      * 
      * @param materialBuf the buffer of models material data provided by Assimp
      * 
-     * @throws Exception if one or more textures could not be located. The engine will instead use a placeholder texture.
+     * @throws Exception if one or more textures could not be located. The 
+     *                   engine will instead use a placeholder texture.
      */
     private void parseTextureData(PointerBuffer materialBuf) throws Exception {
         if(aiScene.mNumMaterials() > MAX_TEXTURES) {
@@ -287,7 +308,8 @@ public class Model {
     /**
      * Parses data required by this model during skeletal animation.
      * 
-     * @param animationBuf the buffer of the models animation data as provided by Assimp
+     * @param animationBuf the buffer of the models animation data as provided 
+     *                     by Assimp
      */
     private void parseAnimationData(PointerBuffer animationBuf) {
         animations = new HashMap<>();
@@ -382,8 +404,10 @@ public class Model {
     }
     
     /**
-     * Couples the local space of the models mesh normals to that of the current scenes world space. Use this to fix the direction of the 
-     * light source relative to the model whenever it's being illuminated incorrectly.
+     * Couples the local space of the models mesh normals to that of the 
+     * current scenes world space. Use this to fix the direction of the light 
+     * source relative to the model whenever it's being illuminated 
+     * incorrectly.
      */
     public void delocalizeNormal() {
         for(Mesh mesh : meshes) normal.set(mesh.modelMatrix.invert());
@@ -439,14 +463,16 @@ public class Model {
     /**
      * Scales the entire 3D model by the factor specified.
      * 
-     * @param factor the factor with which the models size will be multiplied by
+     * @param factor the factor with which the models size will be multiplied 
+     *               by
      */
     public void scale(float factor) {
         for(Mesh mesh : meshes) mesh.modelMatrix.scale(factor);
     }
     
     /**
-     * Outputs a list of every animation this model has at its disposal to the console.
+     * Outputs a list of every animation this model has at its disposal to the 
+     * console.
      */
     public void listAnimations() {
         Logger.setDomain("graphics");
@@ -455,11 +481,14 @@ public class Model {
     }
     
     /**
-     * Sets the current that will be played by this model. A small transition animation will be generated if the value passed to the 
-     * {@link numFrames} argument is greater than zero.
+     * Sets the current that will be played by this model. A small transition 
+     * animation will be generated if the value passed to the {@link numFrames} 
+     * argument is greater than zero.
      * 
-     * @param name      the name of the animation as it appears in the model file
-     * @param numFrames the number of frames to transition between the current animation and the new one
+     * @param name      the name of the animation as it appears in the model 
+     *                  file
+     * @param numFrames the number of frames to transition between the current 
+     *                  animation and the new one
      */
     public void setAnimation(String name, int numFrames) {
         if(!animations.containsKey(name)) {
@@ -506,9 +535,11 @@ public class Model {
     }
     
     /**
-     * Sets the playback speed of this models current animation. Subsequent animations will inherit the value specified.
+     * Sets the playback speed of this models current animation. Subsequent 
+     * animations will inherit the value specified.
      * 
-     * @param speed a non-negative number between 1 and 0. A value of zero will pause the animation at its current {@link KeyFrame}.
+     * @param speed a non-negative number between 1 and 0. A value of zero will 
+     *              pause the animation at its current {@link KeyFrame}.
      */
     public void setAnimationSpeed(float speed) {
         if(speed > 1)      speed = 1;
@@ -529,12 +560,15 @@ public class Model {
     }
     
     /**
-     * Renders the 3D model. Should be called from within the implementing entities 
-     * {@link dev.theskidster.xjge.entities.Entity#render(Camera, LightSource[], int) render()} method.
+     * Renders the 3D model. Should be called from within the implementing 
+     * entities {@link dev.theskidster.xjge2.core.Entity#render(GLProgram, Camera, LightSource[], int) 
+     * render()} method.
      * 
-     * @param glProgram the shader program that will be used to render this model
-     * @param lights    an array of light source objects inhabiting the current level
-     * @param numLights the total number of lights in the level
+     * @param glProgram the shader program that will be used to render this 
+     *                  model
+     * @param lights    an array of light source objects inhabiting the current 
+     *                  scene
+     * @param numLights the total number of lights in the scene
      */
     public void render(GLProgram glProgram, LightSource[] lights, int numLights) {
         glEnable(GL_DEPTH_TEST);

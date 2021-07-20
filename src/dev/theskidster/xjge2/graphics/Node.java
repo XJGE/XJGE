@@ -4,15 +4,18 @@ import java.util.ArrayList;
 import java.util.List;
 import org.joml.Matrix4f;
 
-/**
- * @author J Hoffman
- * Created: Jun 17, 2021
- */
+//Created: Jun 17, 2021
 
 /**
- * Data structure that represents a single point of interest within a {@link Model} as defined by its file. Node objects are contained 
- * within a hierarchy and provide a unique name that can be used to traverse the tree. Nodes may also exhibit parent/child relationships 
- * with other nodes and are often used to calculate transformations in ascending order to move the {@link Bone bones} of an animated model.
+ * Data structure that represents a single point of interest within a 
+ * {@link Model} as defined by its file. Node objects are contained within a 
+ * hierarchy and provide a unique name that can be used to traverse the tree. 
+ * Nodes may also exhibit parent/child relationships with other nodes and are 
+ * often used to calculate transformations in ascending order to move the 
+ * {@link Bone bones} of an animated model.
+ * 
+ * @author J Hoffman
+ * @since  2.0.0
  */
 class Node {
 
@@ -23,8 +26,8 @@ class Node {
     List<Matrix4f> transforms = new ArrayList<>();
     
     /**
-     * Constructs a new node object that will couple the name of a node (most often corresponding to a {@link Bone}) to a parent if one 
-     * exists.
+     * Constructs a new node object that will couple the name of a node 
+     * (most often corresponding to a {@link Bone}) to a parent if one exists.
      * 
      * @param name   the unique name used identify the node in the hierarchy
      * @param parent the parent node of this node
@@ -82,8 +85,8 @@ class Node {
     }
     
     /**
-     * Finds the total number of {@link KeyFrame KeyFrames} (represented as transformations) this node has in relation to the current 
-     * animation.
+     * Finds the total number of {@link KeyFrame KeyFrames} (represented as 
+     * transformations) this node has in relation to the current animation.
      * 
      * @return the number of transforms this node has in the current animation.
      */

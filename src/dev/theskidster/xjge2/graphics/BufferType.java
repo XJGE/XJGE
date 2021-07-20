@@ -1,12 +1,13 @@
 package dev.theskidster.xjge2.graphics;
 
-/**
- * @author J Hoffman
- * Created: May 2, 2021
- */
+//Created: May 2, 2021
 
 /**
- * Represents a GLSL data type that will be used to allocate a data buffer of corresponding size.
+ * Represents a GLSL data type that will be used to allocate a data buffer of 
+ * corresponding size.
+ * 
+ * @author J Hoffman
+ * @since  2.0.0
  */
 public enum BufferType {
     /**

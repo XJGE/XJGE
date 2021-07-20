@@ -2,13 +2,13 @@ package dev.theskidster.xjge2.graphics;
 
 import org.joml.Vector3f;
 
-/**
- * @author J Hoffman
- * Created: May 8, 2021
- */
+//Created: May 8, 2021
 
 /**
  * An immutable object used to represent color.
+ * 
+ * @author J Hoffman
+ * @since  2.0.0
  */
 public final class Color {
     
@@ -38,7 +38,8 @@ public final class Color {
     /**
      * Creates a new achromatic shade (gray) using the specified scalar value. 
      * 
-     * @param scalar the value all RGB components will be set to (between 0 and 1)
+     * @param scalar the value all RGB components will be set to (between 0 and 
+     *               1)
      */
     private Color(float scalar) {
         r = g = b = scalar;
@@ -46,8 +47,9 @@ public final class Color {
     }
     
     /**
-     * Creates a new color object using the values of the three RGB components supplied. Component values are expected to be within the
-     * range of 0 to 255.
+     * Creates a new color object using the values of the three RGB components 
+     * supplied. Component values are expected to be within the range of 0 to 
+     * 255.
      * 
      * @param r the red color component
      * @param g the green color component
@@ -62,14 +64,16 @@ public final class Color {
     }
     
     /**
-     * Creates a new color object using the values of the three RGB components supplied. Component values are expected to be within the
-     * range of 0 to 255.
+     * Creates a new color object using the values of the three RGB components 
+     * supplied. Component values are expected to be within the range of 0 to 
+     * 255.
      * 
      * @param r the red color component
      * @param g the green color component
      * @param b the blue color component
      * 
-     * @return a new immutable color object generated with the specified RGB components
+     * @return a new immutable color object generated with the specified RGB 
+     *         components
      */
     public static Color create(int r, int g, int b) {
         return new Color(r, g, b);
@@ -78,7 +82,8 @@ public final class Color {
     /**
      * Creates a random color.
      * 
-     * @return a new immutable color object that exhibits randomized color component values
+     * @return a new immutable color object that exhibits randomized color 
+     *         component values
      */
     public static Color random() {
         return new Color(
@@ -88,10 +93,12 @@ public final class Color {
     }
     
     /**
-     * Returns the RGB component values of this object as a three-component floating point vector that can be passed to a 
-     * {@linkplain GLProgram shader program} through a uniform variable.
+     * Returns the RGB component values of this object as a three-component 
+     * floating point vector that can be passed to a {@linkplain GLProgram 
+     * shader program} through a uniform variable.
      * 
-     * @return the value of this color RGB components as a three-component floating point vector struct
+     * @return the value of this color RGB components as a three-component 
+     *         floating point vector struct
      */
     public Vector3f asVec3() {
         return conversion;

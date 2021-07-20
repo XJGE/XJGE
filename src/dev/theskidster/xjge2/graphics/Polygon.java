@@ -6,10 +6,7 @@ import org.joml.Vector2i;
 import static org.lwjgl.opengl.GL30.*;
 import org.lwjgl.system.MemoryStack;
 
-/**
- * @author J Hoffman
- * Created: Jun 15, 2021
- */
+//Created: Jun 15, 2021
 
 /**
  * Objects of this class can be used as part of a larger {@linkplain dev.theskidster.xjge2.core.Widget UI widget} to represent a regular 2D shape 
