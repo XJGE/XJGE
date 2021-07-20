@@ -3,13 +3,14 @@ package dev.theskidster.xjge2.core;
 import dev.theskidster.xjge2.graphics.Color;
 import java.util.List;
 
-/**
- * @author J Hoffman
- * Created: May 26, 2021
- */
+//Created: May 26, 2021
 
 /**
- * Shows all commands available to the command terminal. This includes user-defined commands.
+ * Shows all commands available to the command terminal. This includes 
+ * user-defined commands.
+ * 
+ * @author J Hoffman
+ * @since  2.0.0
  */
 final class TCShowCommands extends TerminalCommand {
     

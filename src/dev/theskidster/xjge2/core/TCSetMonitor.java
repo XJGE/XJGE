@@ -3,13 +3,14 @@ package dev.theskidster.xjge2.core;
 import dev.theskidster.xjge2.graphics.Color;
 import java.util.List;
 
-/**
- * @author J Hoffman
- * Created: May 26, 2021
- */
+//Created: May 26, 2021
 
 /**
- * Changes the display device the game window will use. Often this will cause the window to relocate.
+ * Changes the display device the game window will use. Often this will cause 
+ * the window to relocate.
+ * 
+ * @author J Hoffman
+ * @since  2.0.0
  */
 final class TCSetMonitor extends TerminalCommand {
 

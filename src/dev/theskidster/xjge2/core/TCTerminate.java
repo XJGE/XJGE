@@ -4,13 +4,13 @@ import dev.theskidster.xjge2.graphics.Color;
 import java.util.List;
 import static org.lwjgl.glfw.GLFW.glfwSetWindowShouldClose;
 
-/**
- * @author J Hoffman
- * Created: May 25, 2021
- */
+//Created: May 25, 2021
 
 /**
  * Ceases execution and gracefully exits the application.
+ * 
+ * @author J Hoffman
+ * @since  2.0.0
  */
 final class TCTerminate extends TerminalCommand {
 

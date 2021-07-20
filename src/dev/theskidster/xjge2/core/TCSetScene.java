@@ -5,13 +5,13 @@ import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.util.List;
 
-/**
- * @author J Hoffman
- * Created: Jun 27, 2021
- */
+//Created: Jun 27, 2021
 
 /**
  * Changes the current scene to render.
+ * 
+ * @author J Hoffman
+ * @since  2.0.0
  */
 public class TCSetScene extends TerminalCommand {
 

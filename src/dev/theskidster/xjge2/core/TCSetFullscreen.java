@@ -3,13 +3,13 @@ package dev.theskidster.xjge2.core;
 import dev.theskidster.xjge2.graphics.Color;
 import java.util.List;
 
-/**
- * @author J Hoffman
- * Created: May 25, 2021
- */
+//Created: May 25, 2021
 
 /**
  * Changes the game window between fullscreen and windowed modes.
+ * 
+ * @author J Hoffman
+ * @since  2.0.0
  */
 final class TCSetFullscreen extends TerminalCommand {
 

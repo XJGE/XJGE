@@ -3,13 +3,14 @@ package dev.theskidster.xjge2.core;
 import dev.theskidster.xjge2.graphics.Color;
 import java.util.List;
 
-/**
- * @author J Hoffman
- * Created: May 27, 2021
- */
+//Created: May 27, 2021
 
 /**
- * Alters the video mode of the display device the game window is currently using.
+ * Alters the video mode of the display device the game window is currently 
+ * using.
+ * 
+ * @author J Hoffman
+ * @since  2.0.0
  */
 final class TCSetVideoMode extends TerminalCommand {
 

@@ -3,13 +3,13 @@ package dev.theskidster.xjge2.core;
 import dev.theskidster.xjge2.graphics.Color;
 import java.util.List;
 
-/**
- * @author J Hoffman
- * Created: May 26, 2021
- */
+//Created: May 26, 2021
 
 /**
  * Provides users with information about commands and the command terminal.
+ * 
+ * @author J Hoffman
+ * @since  2.0.0
  */
 final class TCHelp extends TerminalCommand {
     
@@ -84,7 +84,8 @@ final class TCHelp extends TerminalCommand {
     }
     
     /**
-     * Generates an error message whenever a command of the name specified cannot be found.
+     * Generates an error message whenever a command of the name specified 
+     * cannot be found.
      * 
      * @param command the name of the command that doesn't exist
      * 

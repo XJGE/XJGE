@@ -3,13 +3,13 @@ package dev.theskidster.xjge2.core;
 import dev.theskidster.xjge2.graphics.Color;
 import java.util.List;
 
-/**
- * @author J Hoffman
- * Created: May 26, 2021
- */
+//Created: May 26, 2021
 
 /**
  * Changes whether or not vertical sync is enabled.
+ * 
+ * @author J Hoffman
+ * @since  2.0.0
  */
 final class TCSetVSync extends TerminalCommand {
 

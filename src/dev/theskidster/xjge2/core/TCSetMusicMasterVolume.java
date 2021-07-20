@@ -3,13 +3,14 @@ package dev.theskidster.xjge2.core;
 import dev.theskidster.xjge2.graphics.Color;
 import java.util.List;
 
-/**
- * @author J Hoffman
- * Created: Jun 24, 2021
- */
+//Created: Jun 24, 2021
 
 /**
- * Changes the current master volume used to attenuate the games background music.
+ * Changes the current master volume used to attenuate the games background 
+ * music.
+ * 
+ * @author J Hoffman
+ * @since  2.0.0
  */
 final class TCSetMusicMasterVolume extends TerminalCommand {
 
