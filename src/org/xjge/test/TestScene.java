@@ -10,7 +10,6 @@ import java.util.Map;
 import org.joml.Vector3i;
 import static org.lwjgl.glfw.GLFW.GLFW_JOYSTICK_1;
 import static org.lwjgl.glfw.GLFW.GLFW_JOYSTICK_2;
-import org.xjge.core.Widget;
 import org.xjge.core.XJGE;
 
 /**
@@ -36,13 +35,13 @@ public class TestScene extends Scene {
         
         //XJGE.setViewportCamera(0, camera);
         
-        
+        /*
         widg1 = new TestWidget(new Vector3i(), XJGE.getResolutionX(), XJGE.getResolutionY());
         widg2 = new TestWidget(new Vector3i(), XJGE.getResolutionX(), XJGE.getResolutionY());
         
         XJGE.addUIWidget(GLFW_JOYSTICK_1, "w1", widg1);
         XJGE.addUIWidget(GLFW_JOYSTICK_2, "w2", widg2);
-        
+        */
         
         //timer.start();
     }
