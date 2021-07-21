@@ -23,11 +23,6 @@ public class TestScene extends Scene {
     public TestScene() {
         super("test");
         
-        //TestEntity entity = new TestEntity(0.5f, 0, 0, -10);
-        
-        //Input.setDevicePuppet(GLFW_JOYSTICK_1, entity.puppet);
-        //Input.setDeviceDeadzone(0, 0.34f); //TODO: doesnt update cfg file.
-        
         entities.put("test", new TestEntity3(0, 0, -5));
         //entities.put("test", entity);
         

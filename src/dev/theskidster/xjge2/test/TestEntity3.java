@@ -47,7 +47,5 @@ public class TestEntity3 extends Entity {
     @Override
     protected void destroy() {
     }
-
-    //TODO: load teapot model, remove test entity
     
 }

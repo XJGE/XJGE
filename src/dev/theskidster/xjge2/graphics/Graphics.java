@@ -13,7 +13,7 @@ import static org.lwjgl.opengl.GL30.*;
  * <ul>
  * <li>A vertex buffer object - As a default buffer through which the 
  *     implementing class may supply its vertex data to the 
- *     {@linkplain dev.theskidster.xjge.shader.core graphics pipeline}.</li>
+ *     {@linkplain dev.theskidster.xjge2.graphics graphics pipeline}.</li>
  * <li>A index buffer object - To discourage data redundancy by specifying 
  *     which vertices to reuse for the objects model mesh.</li>
  * <li>A vertex array object - For providing convenient access to the default 

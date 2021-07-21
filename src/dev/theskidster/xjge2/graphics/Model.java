@@ -482,7 +482,7 @@ public class Model {
     
     /**
      * Sets the current that will be played by this model. A small transition 
-     * animation will be generated if the value passed to the {@link numFrames} 
+     * animation will be generated if the value passed to the {@code numFrames} 
      * argument is greater than zero.
      * 
      * @param name      the name of the animation as it appears in the model 

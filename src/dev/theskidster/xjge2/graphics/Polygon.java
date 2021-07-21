@@ -97,7 +97,7 @@ public class Polygon {
     }
     
     /**
-     * Alternate version of {@link setPosition(Vector2f)}.
+     * Alternate version of {@link #translate(Vector2i)}.
      * 
      * @param x the x coordinate to place this shape in the window
      * @param y the y coordinate to place this shape in the window

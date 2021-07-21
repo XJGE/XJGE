@@ -12,9 +12,14 @@ import org.joml.Vector2i;
 public class Test {
 
     /*
-    TODO:
     this class and package are temporary and provided for testing purposes only!
     they should not be included in releases!
+    
+    org.xjge.assets
+    org.xjge.core
+    org.xjge.graphics
+    
+    org.xjge.legacy.asdf
     */
     
     public static void main(String args[]) {

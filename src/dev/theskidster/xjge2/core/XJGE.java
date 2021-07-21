@@ -109,7 +109,7 @@ public final class XJGE {
      * the following:
      * </p>
      * <blockquote><pre>
-     * init(<i>"/dev/theskidster/game/assets/"</i>, <i>"dev.theskidster.game.scenes."</i>, <b>true<b>, <b>null</b>, <b>true<b>);
+     * init(<i>"/dev/theskidster/game/assets/"</i>, <i>"dev.theskidster.game.scenes."</i>, <b>true</b>, <b>null</b>, <b>true</b>);
      * </pre></blockquote>
      * 
      * @param assetsFilepath  the relative filepath to a folder that contains 
