@@ -63,6 +63,9 @@ public final class XJGE {
     private static int resolutionX;
     private static int resolutionY;
     
+    private static double cursorX;
+    private static double cursorY;
+    
     private static boolean initCalled;
     private static boolean matchWindowResolution;
     private static boolean noclipEnabled;
@@ -295,6 +298,12 @@ public final class XJGE {
             });
 
             glfwSetCursorPosCallback(HANDLE, (window, xpos, ypos) -> {
+                float scaleX = (float) resolutionX / Window.getWidth();
+                float scaleY = (float) resolutionY / Window.getHeight();
+                
+                cursorX = (double) (xpos * scaleX);
+                cursorY = (double) Math.abs((ypos * scaleY) - resolutionY);
+                
                 if(noclipEnabled && !terminalEnabled) {
                     if(firstMouse) {
                         freeCam.prevX = xpos;
@@ -504,6 +513,36 @@ public final class XJGE {
      */
     public static int getResolutionY() {
         return resolutionY;
+    }
+    
+    /**
+     * Obtains the current position of the mouse cursor within the game windows 
+     * content area.
+     * <p>
+     * NOTE: if the engine was supplied with a resolution during 
+     * {@linkplain #init initialization} the value returned by this method will
+     * be converted to correspond to the coordinate system of the resolution.
+     * </p>
+     * 
+     * @return the current x-coordinate of the mouse cursor
+     */
+    public static final double getCursorPosX() {
+        return cursorX;
+    }
+    
+    /**
+     * Obtains the current position of the mouse cursor within the game windows 
+     * content area.
+     * <p>
+     * NOTE: if the engine was supplied with a resolution during 
+     * {@linkplain #init initialization} the value returned by this method will
+     * be converted to correspond to the coordinate system of the resolution.
+     * </p>
+     * 
+     * @return the current y-coordinate of the mouse cursor
+     */
+    public static final double getCursorPosY() {
+        return cursorY;
     }
     
     /**

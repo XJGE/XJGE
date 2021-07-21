@@ -7,6 +7,11 @@ import org.xjge.core.Sound;
 import org.xjge.core.Timer;
 import org.xjge.graphics.GLProgram;
 import java.util.Map;
+import org.joml.Vector3i;
+import static org.lwjgl.glfw.GLFW.GLFW_JOYSTICK_1;
+import static org.lwjgl.glfw.GLFW.GLFW_JOYSTICK_2;
+import org.xjge.core.Widget;
+import org.xjge.core.XJGE;
 
 /**
  * @author J Hoffman
@@ -20,6 +25,9 @@ public class TestScene extends Scene {
     TestCam camera = new TestCam();
     Timer timer = new Timer(6, 60);
     
+    TestWidget widg1;
+    TestWidget widg2;
+    
     public TestScene() {
         super("test");
         
@@ -27,6 +35,14 @@ public class TestScene extends Scene {
         //entities.put("test", entity);
         
         //XJGE.setViewportCamera(0, camera);
+        
+        /*
+        widg1 = new TestWidget(new Vector3i(), XJGE.getResolutionX(), XJGE.getResolutionY());
+        widg2 = new TestWidget(new Vector3i(), XJGE.getResolutionX(), XJGE.getResolutionY());
+        
+        XJGE.addUIWidget(GLFW_JOYSTICK_1, "w1", widg1);
+        XJGE.addUIWidget(GLFW_JOYSTICK_2, "w2", widg2);
+        */
         
         //timer.start();
     }

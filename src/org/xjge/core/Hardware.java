@@ -230,8 +230,7 @@ public final class Hardware {
                 }
             }
         } catch(NullPointerException e) {
-            //TODO: fail gracefully without crash.
-            Logger.logSevere("Failed to set audio device. No such device is available", e);
+            Logger.logWarning("Failed to set audio device. No such device is available", e);
         }
     }
     

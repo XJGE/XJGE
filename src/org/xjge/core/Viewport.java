@@ -189,7 +189,9 @@ final class Viewport {
         
         createTextureAttachment();
         
-        ui.values().forEach(widget -> widget.setSplitPosition()); //TODO: provide split type, width, height, x1/2.. etc.?
+        ui.values().forEach(widget -> {
+            widget.setSplitPosition(XJGE.getScreenSplit(), width, height);
+        });
     }
     
     /**

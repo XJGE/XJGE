@@ -96,7 +96,6 @@ public final class Sound {
             if(channels == 1) alBufferData(handle, AL_FORMAT_MONO16, sound, sampleRate);
             else              alBufferData(handle, AL_FORMAT_STEREO16, sound, sampleRate);
             
-            //TODO: MemoryUtil.memFree(sound); ?
             MemoryUtil.memFree(soundBuf);
             
         } catch(IOException e) {

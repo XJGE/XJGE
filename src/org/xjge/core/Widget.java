@@ -42,7 +42,7 @@ public abstract class Widget {
     /**
      * Updates the internal logic of the widget.
      */
-    public abstract void update(); //TODO: cursorX/Y?
+    public abstract void update();
     
     /**
      * Organizes calls to the OpenGL API made by this widget.
@@ -54,10 +54,21 @@ public abstract class Widget {
     
     /**
      * Called automatically anytime a change to the applications viewports 
-     * occurs. Using this method, widgets can update the positions of their 
+     * occurs.Using this method, widgets can update the positions of their 
      * elements to better suit the size of the viewport.
+     * <p>
+     * The arguments found here are provided out of convenience and can be 
+     * accessed statically though the {@link XJGE} class if the implementation 
+     * prefers.
+     * </p>
+     * 
+     * @param split          the current split value used to divide the screen
+     * @param viewportWidth  the width (in internal resolution pixels) of the 
+     *                       viewport rendering this widget
+     * @param viewportHeight the height (in internal resolution pixels) of the
+     *                       viewport rendering this widget
      */
-    public abstract void setSplitPosition();
+    public abstract void setSplitPosition(Split split, int viewportWidth, int viewportHeight);
     
     /**
      * Compares the z-position of this widget to another to determine the order 
