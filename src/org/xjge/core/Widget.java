@@ -71,6 +71,23 @@ public abstract class Widget {
     public abstract void setSplitPosition(Split split, int viewportWidth, int viewportHeight);
     
     /**
+     * Processes input from the keyboard captured by the game window.
+     * <p>
+     * NOTE: Only the first viewport (ID: 0) will receive input from the 
+     * keyboard.
+     * </p>
+     * 
+     * @param key    the value supplied by GLFW of a single key on the keyboard
+     * @param action an action supplied by GLFW that describes the nature of 
+     *               the key press
+     * @param mods   a value supplied by GLFW denoting whether any mod keys 
+     *               where held (such as shift or control)
+     * 
+     * @see Input#getKeyChar(int, int)
+     */
+    public abstract void processKeyInput(int key, int action, int mods);
+    
+    /**
      * Compares the z-position of this widget to another to determine the order 
      * in which they're to be rendered. Widgets with a higher z-index will be 
      * drawn further into the background.

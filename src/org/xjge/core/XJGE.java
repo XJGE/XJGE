@@ -290,11 +290,8 @@ public final class XJGE {
                     freeCam.setSpeedBoostEnabled(mods == GLFW_MOD_SHIFT);
                 }
 
-                if(XJGE.terminalEnabled) {
-                    terminal.processKeyInput(key, action, mods);
-                } else {
-                    //TODO: pass key input to ui widget
-                }
+                if(XJGE.terminalEnabled) terminal.processKeyInput(key, action, mods);
+                else                     viewports[0].processKeyInput(key, action, mods);
             });
 
             glfwSetCursorPosCallback(HANDLE, (window, xpos, ypos) -> {

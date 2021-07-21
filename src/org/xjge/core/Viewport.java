@@ -8,6 +8,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import org.joml.Vector2i;
+import static org.lwjgl.glfw.GLFW.GLFW_MOD_SHIFT;
 import static org.lwjgl.opengl.GL30.*;
 import org.lwjgl.system.MemoryStack;
 
@@ -169,6 +170,19 @@ final class Viewport {
             if(currCamera.isOrtho) currCamera.setOrtho(glProgram, width, height);
             else                   currCamera.setPerspective(glProgram, width, height);
         });
+    }
+    
+    /**
+     * Processes input from the keyboard captured by the game window.
+     * 
+     * @param key    the value supplied by GLFW of a single key on the keyboard
+     * @param action an action supplied by GLFW that describes the nature of 
+     *               the key press
+     * @param mods   a value supplied by GLFW denoting whether any mod keys 
+     *               where held (such as shift or control)
+     */
+    void processKeyInput(int key, int action, int mods) {        
+        ui.values().forEach(widget -> widget.processKeyInput(key, action, mods));
     }
     
     /**

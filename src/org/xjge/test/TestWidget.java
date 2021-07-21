@@ -4,6 +4,8 @@ package org.xjge.test;
 
 import java.util.Map;
 import org.joml.Vector3i;
+import static org.lwjgl.glfw.GLFW.GLFW_MOD_SHIFT;
+import org.xjge.core.Input;
 import org.xjge.core.Split;
 import org.xjge.core.Widget;
 import org.xjge.graphics.GLProgram;
@@ -39,6 +41,12 @@ public class TestWidget extends Widget {
     @Override
     public void setSplitPosition(Split split, int viewportWidth, int viewportHeight) {
         icon.setPosition(viewportWidth - 20, viewportHeight - 20);
+    }
+
+    @Override
+    public void processKeyInput(int key, int action, int mods) {
+        Character keyChar = Input.getKeyChar(key, mods);
+        if(keyChar != null) System.out.println(keyChar);    
     }
 
 }
