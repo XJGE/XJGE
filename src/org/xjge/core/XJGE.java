@@ -400,17 +400,13 @@ public final class XJGE {
         debugInfo  = new DebugInfo(engineFont, engineIcons);
         
         Window.show();
+        updateRenderbufferDimensions();
         setScreenSplit(getScreenSplit());
         
         glfwSetWindowSizeCallback(HANDLE, (window, w, h) -> {
             Window.updateDimensions(w, h);
 
-            if(matchWindowResolution && Window.getWidth() != 0 && Window.getHeight() != 0) {
-                resolutionX = w;
-                resolutionY = h;
-
-                createRenderbuffer();
-            }
+            updateRenderbufferDimensions();
 
             setScreenSplit(getScreenSplit());
             debugInfo.updatePosition();
@@ -465,6 +461,19 @@ public final class XJGE {
         
         ErrorUtils.checkGLError();
         glBindFramebuffer(GL_FRAMEBUFFER, 0);
+    }
+    
+    /**
+     * Sets the width/height dimensions of the renderbuffer in accordance to 
+     * the engines internal resolution (in pixels).
+     */
+    private static void updateRenderbufferDimensions() {
+        if(matchWindowResolution && Window.getWidth() != 0 && Window.getHeight() != 0) {
+            resolutionX = Window.getWidth();
+            resolutionY = Window.getHeight();
+
+            createRenderbuffer();
+        }
     }
     
     /**
@@ -677,6 +686,8 @@ public final class XJGE {
      */
     public static final void setScreenSplit(Split split) {
         XJGE.split = split;
+        
+        System.out.println("bleh");
         
         for(Viewport viewport : viewports) {
             switch(split) {

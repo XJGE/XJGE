@@ -119,10 +119,6 @@ public final class Window {
             xPos = x;
             yPos = y;
         });
-        
-        glfwSetWindowSizeCallback(HANDLE, (window, w, h) -> {
-            updateDimensions(w, h);
-        });
     }
     
     /**
