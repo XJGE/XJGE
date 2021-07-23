@@ -8,7 +8,6 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import org.joml.Vector2i;
-import static org.lwjgl.glfw.GLFW.GLFW_MOD_SHIFT;
 import static org.lwjgl.opengl.GL30.*;
 import org.lwjgl.system.MemoryStack;
 
@@ -56,25 +55,6 @@ final class Viewport {
         createTextureAttachment();
         
         active = (id == 0);
-    }
-    
-    /**
-     * Creates a new viewport object from an existing one.
-     * 
-     * @param viewport the viewport object to copy
-     */
-    Viewport(Viewport viewport) {
-        id         = viewport.id;
-        texHandle  = viewport.texHandle;
-        width      = viewport.width;
-        height     = viewport.height;
-        active     = viewport.active;
-        botLeft    = viewport.botLeft;
-        topRight   = viewport.topRight;
-        g          = viewport.g;
-        prevCamera = viewport.prevCamera;
-        currCamera = viewport.currCamera;
-        ui         = viewport.ui;
     }
     
     /**

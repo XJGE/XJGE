@@ -468,20 +468,6 @@ public final class XJGE {
     }
     
     /**
-     * Transfers the state of every viewport object to a new instance. Called 
-     * internally by the engine anytime some operation is performed by the 
-     * application that invalidates the current state of the viewports. Such as 
-     * when the current {@link Split} value is altered.
-     */
-    static void transferViewportState() {
-        for(int i = 0; i < viewports.length; i++) {
-            viewports[i] = new Viewport(viewports[i]);
-        }
-        
-        setScreenSplit(split);
-    }
-    
-    /**
      * Obtains the current status of the viewport used to indicate its 
      * visibility.
      * 
