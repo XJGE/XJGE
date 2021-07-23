@@ -41,7 +41,7 @@ public final class Texture {
      * @param filename the name of the file to load. Expects the file extension 
      *                 to be included.
      * @param target   the OpenGL texture target. One of:
-     * <table><tr>
+     * <table><caption></caption><tr>
      * <td>{@link org.lwjgl.opengl.GL11C#GL_TEXTURE_2D TEXTURE_2D}</td>
      * <td>{@link org.lwjgl.opengl.GL30#GL_TEXTURE_1D_ARRAY TEXTURE_1D_ARRAY}</td>
      * <td>{@link org.lwjgl.opengl.GL31#GL_TEXTURE_RECTANGLE TEXTURE_RECTANGLE}</td>

@@ -15,9 +15,7 @@ import org.joml.Vector3f;
  * the game world is perceived. Game implementations that specify custom 
  * {@linkplain GLProgram shader programs} are required to supply a 4x4 
  * projection matrix of via uniform variable if they wish to utilize camera 
- * objects correctly. More information about this can be found in the engines 
- * user manual under the section titled "Putting It All Into Perspective".
- * </p>
+ * objects correctly.
  * 
  * @author J Hoffman
  * @since  2.0.0
@@ -105,7 +103,6 @@ public abstract class Camera {
      * <p>
      * By default, the engine provides two projection types; orthographic for 
      * 2D and perspective for 3D.
-     * </p>
      * 
      * @param isOrtho if true, the camera will use an orthographic projection 
      *                to render the scene

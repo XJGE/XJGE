@@ -60,7 +60,6 @@ public abstract class Widget {
      * The arguments found here are provided out of convenience and can be 
      * accessed statically though the {@link XJGE} class if the implementation 
      * prefers.
-     * </p>
      * 
      * @param split          the current split value used to divide the screen
      * @param viewportWidth  the width (in internal resolution pixels) of the 
@@ -75,7 +74,6 @@ public abstract class Widget {
      * <p>
      * NOTE: Only the first viewport (ID: 0) will receive input from the 
      * keyboard.
-     * </p>
      * 
      * @param key    the value supplied by GLFW of a single key on the keyboard
      * @param action an action supplied by GLFW that describes the nature of 

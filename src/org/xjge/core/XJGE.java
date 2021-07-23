@@ -36,7 +36,6 @@ import static org.lwjgl.opengl.GL30.*;
  * requirements of the implementation.
  * <p>
  * More specifically this class provides the following features:
- * </p>
  * <ul>
  * <li>The ability to change how the screen will be 
  *     {@linkplain setScreenSplit divided} during split screen mode.</li>
@@ -54,7 +53,6 @@ import static org.lwjgl.opengl.GL30.*;
  * Before the engines features can be used {@link init init()} must be called 
  * followed by changing whichever settings the implementation needs to before 
  * exposing the game window with {@link start start()}.
- * </p>
  * 
  * @author J Hoffman
  * @since  2.0.0
@@ -120,7 +118,6 @@ public final class XJGE {
      * periods for separators instead of slashes akin to how it appears in your 
      * IDEs package explorer. A call to this method might look something like 
      * the following:
-     * </p>
      * <blockquote><pre>
      * init(<i>"/dev/theskidster/game/assets/"</i>, <i>"dev.theskidster.game.scenes."</i>, <b>true</b>, <b>null</b>, <b>true</b>);
      * </pre></blockquote>
@@ -385,7 +382,6 @@ public final class XJGE {
      * {@link org.xjge.graphics.GLProgram shader programs} 
      * and {@linkplain addCommand terminal commands} the implementation 
      * requires.
-     * </p>
      * 
      * @see Game
      * @see Window
@@ -589,7 +585,6 @@ public final class XJGE {
      * NOTE: if the engine was supplied with a resolution during 
      * {@linkplain #init initialization} the value returned by this method will
      * be converted to correspond to the coordinate system of the resolution.
-     * </p>
      * 
      * @return the current x-coordinate of the mouse cursor
      */
@@ -604,7 +599,6 @@ public final class XJGE {
      * NOTE: if the engine was supplied with a resolution during 
      * {@linkplain #init initialization} the value returned by this method will
      * be converted to correspond to the coordinate system of the resolution.
-     * </p>
      * 
      * @return the current y-coordinate of the mouse cursor
      */
@@ -678,7 +672,7 @@ public final class XJGE {
      * 
      * @param split a value that determines how the screen will be divided. One 
      *              of: 
-     * <table><tr>
+     * <table><caption></caption><tr>
      * <td>{@link Split#NONE NONE}</td><td>{@link Split#HORIZONTAL HORIZONTAL}</td>
      * <td>{@link Split#VERTICAL VERTICAL}</td></tr><tr>
      * <td>{@link Split#TRISECT TRISECT}</td><td>{@link Split#QUARTER QUARTER}</td>

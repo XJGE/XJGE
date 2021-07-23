@@ -23,9 +23,8 @@ import static org.lwjgl.opengl.GL11.glGetString;
  * at runtime, or after the application has ceased execution following a call 
  * made to {@link logSevere(String, Exception) logSevere()} in which case a 
  * .txt file will be generated containing the loggers output.
- * </p><p>
+ * <p>
  * The logger provides the following methods for generating text output:
- * </p>
  * <ul>
  * <li>{@link logInfo(String) logInfo()} - Produces a low-priority message, 
  *     useful for tracking state changes.</li>
@@ -102,7 +101,7 @@ public final class Logger {
      * <b>null</b> following the log message to reset the state of the logger 
      * so any log messages following this one do not inadvertently exhibit 
      * erroneous domain names. This process often looks something like this:
-     * </p>
+     * 
      * <blockquote><pre>
      * setDomain("myDomain");
      *     logInfo(...);
@@ -187,7 +186,6 @@ public final class Logger {
      * <p>
      * A .txt file containing the recorded output will be generated in the 
      * directory from which the application was launched.
-     * </p>
      * 
      * @param message the text to appear as output in the console/log file 
      * @param e       an optional exception used to output a stack trace. If 

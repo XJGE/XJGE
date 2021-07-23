@@ -246,7 +246,6 @@ public class Model {
      * The engine imposes a number of significant restrictions regarding 
      * textures that should be considered during the model creation process. 
      * Specifically;
-     * </p>
      * <ol>
      * <li>Models may not exceed the maximum number of allowed textures 
      *     specified through the {@link MAX_TEXTURES} field. By default this 

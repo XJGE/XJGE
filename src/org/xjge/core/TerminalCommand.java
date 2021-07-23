@@ -26,10 +26,7 @@ public abstract class TerminalCommand {
     /**
      * Creates a new terminal command with metadata that the 
      * {@linkplain TCHelp help command} will display.
-     * <p>
-     * <h2>On Syntax Structure:</h2>
-     * </p>
-     * <table border="1">
+     * <table border="1"><caption>On Syntax Structure:</caption>
      * <tr><td><b>Syntax</b></td><td><b>Meaning</b></td></tr>
      * <tr><td>plain text</td><td>Enter this literally, exactly as shown.</td></tr>
      * <tr><td>&lt;type&gt;</td><td>An argument that should be replaced with an 

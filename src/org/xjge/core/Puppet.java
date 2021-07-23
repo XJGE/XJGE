@@ -12,7 +12,6 @@ import java.util.HashMap;
  * <p>
  * Any object that can be controlled by a player should utilize a puppet 
  * object.
- * </p>
  * 
  * @author J Hoffman
  * @since  2.0.0

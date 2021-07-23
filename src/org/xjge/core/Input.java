@@ -386,7 +386,7 @@ public final class Input {
      * 
      * @param deviceID the number which corresponds to the input device in 
      *                 question. One of: 
-     * <table>
+     * <table><caption></caption>
      * <tr><td>{@link org.lwjgl.glfw.GLFW#GLFW_JOYSTICK_1 GLFW_JOYSTICK_1}</td>
      * <td>{@link org.lwjgl.glfw.GLFW#GLFW_JOYSTICK_2 GLFW_JOYSTICK_2}</td>
      * <td>{@link org.lwjgl.glfw.GLFW#GLFW_JOYSTICK_3 GLFW_JOYSTICK_3}</td></tr>
@@ -407,7 +407,7 @@ public final class Input {
     /**
      * Obtains the sensitivity value that an input device will use to adjust 
      * the responsiveness of its input actions during gameplay.
-     * <br><br>
+     * <p>
      * It's recommended that gameplay systems instead use 
      * {@link Command#getDeviceSensitivity()} and reserve this method for 
      * instances where the current sensitivity value needs to be exposed to the 
@@ -416,7 +416,7 @@ public final class Input {
      * 
      * @param deviceID the number which corresponds to the input device in 
      *                 question. One of: 
-     * <table>
+     * <table><caption></caption>
      * <tr><td>{@link org.lwjgl.glfw.GLFW#GLFW_JOYSTICK_1 GLFW_JOYSTICK_1}</td>
      * <td>{@link org.lwjgl.glfw.GLFW#GLFW_JOYSTICK_2 GLFW_JOYSTICK_2}</td>
      * <td>{@link org.lwjgl.glfw.GLFW#GLFW_JOYSTICK_3 GLFW_JOYSTICK_3}</td></tr>
@@ -441,7 +441,7 @@ public final class Input {
      * Obtains the deadzone value an input device will use to determine how 
      * much pressure must be applied to an analog stick before its input is 
      * recognized.
-     * <br><br>
+     * <p>
      * The effect of the deadzone value is applied automatically by the engine. 
      * This method should be used in instances where the current deadzone value 
      * must be exposed to the user- such as an interface that allows users to 
@@ -449,7 +449,7 @@ public final class Input {
      * 
      * @param deviceID the number which corresponds to the input device in 
      *                 question. One of: 
-     * <table>
+     * <table><caption></caption>
      * <tr><td>{@link org.lwjgl.glfw.GLFW#GLFW_JOYSTICK_1 GLFW_JOYSTICK_1}</td>
      * <td>{@link org.lwjgl.glfw.GLFW#GLFW_JOYSTICK_2 GLFW_JOYSTICK_2}</td>
      * <td>{@link org.lwjgl.glfw.GLFW#GLFW_JOYSTICK_3 GLFW_JOYSTICK_3}</td></tr>
@@ -476,7 +476,7 @@ public final class Input {
      * 
      * @param deviceID the number which corresponds to the input device in 
      *                 question. One of: 
-     * <table>
+     * <table><caption></caption>
      * <tr><td>{@link org.lwjgl.glfw.GLFW#GLFW_JOYSTICK_1 GLFW_JOYSTICK_1}</td>
      * <td>{@link org.lwjgl.glfw.GLFW#GLFW_JOYSTICK_2 GLFW_JOYSTICK_2}</td>
      * <td>{@link org.lwjgl.glfw.GLFW#GLFW_JOYSTICK_3 GLFW_JOYSTICK_3}</td></tr>
@@ -498,14 +498,14 @@ public final class Input {
     
     /**
      * Obtains the name of an input device.
-     * <br><br>
+     * <p>
      * NOTE: Device names are not guaranteed to be unique and typically only 
      * reflect the model and/or manufacturer. This information can often help 
      * better identify a device, but shouldn't be used to refer to it.
      * 
      * @param deviceID the number which corresponds to the input device in 
      *                 question. One of: 
-     * <table>
+     * <table><caption></caption>
      * <tr><td>{@link org.lwjgl.glfw.GLFW#GLFW_JOYSTICK_1 GLFW_JOYSTICK_1}</td>
      * <td>{@link org.lwjgl.glfw.GLFW#GLFW_JOYSTICK_2 GLFW_JOYSTICK_2}</td>
      * <td>{@link org.lwjgl.glfw.GLFW#GLFW_JOYSTICK_3 GLFW_JOYSTICK_3}</td></tr>
@@ -525,7 +525,7 @@ public final class Input {
     
     /**
      * Obtains the current control configuration of an input device.
-     * <br><br>
+     * <p>
      * Control configurations are user-defined input preferences that will be 
      * retained between runtime sessions. These configurations dictate how 
      * {@linkplain Control controls} on an input device will be mapped to 
@@ -533,7 +533,7 @@ public final class Input {
      * 
      * @param deviceID the number which corresponds to the input device in 
      *                 question. One of: 
-     * <table>
+     * <table><caption></caption>
      * <tr><td>{@link org.lwjgl.glfw.GLFW#GLFW_JOYSTICK_1 GLFW_JOYSTICK_1}</td>
      * <td>{@link org.lwjgl.glfw.GLFW#GLFW_JOYSTICK_2 GLFW_JOYSTICK_2}</td>
      * <td>{@link org.lwjgl.glfw.GLFW#GLFW_JOYSTICK_3 GLFW_JOYSTICK_3}</td></tr>
@@ -573,7 +573,7 @@ public final class Input {
      * 
      * @param deviceID the number which corresponds to the input device in 
      *                 question. One of: 
-     * <table>
+     * <table><caption></caption>
      * <tr><td>{@link org.lwjgl.glfw.GLFW#GLFW_JOYSTICK_1 GLFW_JOYSTICK_1}</td>
      * <td>{@link org.lwjgl.glfw.GLFW#GLFW_JOYSTICK_2 GLFW_JOYSTICK_2}</td>
      * <td>{@link org.lwjgl.glfw.GLFW#GLFW_JOYSTICK_3 GLFW_JOYSTICK_3}</td></tr>
@@ -610,7 +610,6 @@ public final class Input {
      * unmodified english model. As such, the letter/symbol of the key in 
      * question must correspond to an ASCII character between the ranges of 
      * 32-127, any characters outside of this range will return <b>null</b>.
-     * </p>
      * 
      * @param key  the value supplied by GLFW of a single key on the keyboard
      * @param mods a value supplied by GLFW denoting whether any mod keys 
@@ -633,7 +632,7 @@ public final class Input {
      * 
      * @param deviceID the number which corresponds to the input device in 
      *                 question. One of: 
-     * <table>
+     * <table><caption></caption>
      * <tr><td>{@link org.lwjgl.glfw.GLFW#GLFW_JOYSTICK_1 GLFW_JOYSTICK_1}</td>
      * <td>{@link org.lwjgl.glfw.GLFW#GLFW_JOYSTICK_2 GLFW_JOYSTICK_2}</td>
      * <td>{@link org.lwjgl.glfw.GLFW#GLFW_JOYSTICK_3 GLFW_JOYSTICK_3}</td></tr>
@@ -666,7 +665,7 @@ public final class Input {
      * 
      * @param deviceID the number which corresponds to the input device in 
      *                 question. One of: 
-     * <table>
+     * <table><caption></caption>
      * <tr><td>{@link org.lwjgl.glfw.GLFW#GLFW_JOYSTICK_1 GLFW_JOYSTICK_1}</td>
      * <td>{@link org.lwjgl.glfw.GLFW#GLFW_JOYSTICK_2 GLFW_JOYSTICK_2}</td>
      * <td>{@link org.lwjgl.glfw.GLFW#GLFW_JOYSTICK_3 GLFW_JOYSTICK_3}</td></tr>
@@ -697,7 +696,7 @@ public final class Input {
      * 
      * @param deviceID the number which corresponds to the input device in 
      *                 question. One of: 
-     * <table>
+     * <table><caption></caption>
      * <tr><td>{@link org.lwjgl.glfw.GLFW#GLFW_JOYSTICK_1 GLFW_JOYSTICK_1}</td>
      * <td>{@link org.lwjgl.glfw.GLFW#GLFW_JOYSTICK_2 GLFW_JOYSTICK_2}</td>
      * <td>{@link org.lwjgl.glfw.GLFW#GLFW_JOYSTICK_3 GLFW_JOYSTICK_3}</td></tr>
@@ -733,7 +732,7 @@ public final class Input {
      * 
      * @param deviceID the number which corresponds to the input device in 
      *                 question. One of: 
-     * <table>
+     * <table><caption></caption>
      * <tr><td>{@link org.lwjgl.glfw.GLFW#GLFW_JOYSTICK_1 GLFW_JOYSTICK_1}</td>
      * <td>{@link org.lwjgl.glfw.GLFW#GLFW_JOYSTICK_2 GLFW_JOYSTICK_2}</td>
      * <td>{@link org.lwjgl.glfw.GLFW#GLFW_JOYSTICK_3 GLFW_JOYSTICK_3}</td></tr>
@@ -764,16 +763,15 @@ public final class Input {
     
     /**
      * Sets the current control configuration of an input device.
-     * <br><br>
+     * <p>
      * NOTE: When setting the configuration of controls 
      * {@link Control#LEFT_STICK_X LEFT_STICK_X} and 
      * {@link Control#LEFT_STICK_Y LEFT_STICK_Y} for the {@link KeyMouseCombo} 
      * input device, a bitwise OR (symbolized as |) should be used to pass two 
      * values representing the GLFW keyboard keys that will be used to move the 
      * analog stick along a single axis.
-     * <br><br>
+     * <p>
      * For example, you might do something like this:
-     * <br><br>
      * <blockquote><pre>
      * var keyMouseConfig = new HashMap() {{
      *     ...
@@ -785,7 +783,7 @@ public final class Input {
      * 
      * @param deviceID the number which corresponds to the input device in 
      *                 question. One of: 
-     * <table>
+     * <table><caption></caption>
      * <tr><td>{@link org.lwjgl.glfw.GLFW#GLFW_JOYSTICK_1 GLFW_JOYSTICK_1}</td>
      * <td>{@link org.lwjgl.glfw.GLFW#GLFW_JOYSTICK_2 GLFW_JOYSTICK_2}</td>
      * <td>{@link org.lwjgl.glfw.GLFW#GLFW_JOYSTICK_3 GLFW_JOYSTICK_3}</td></tr>
@@ -837,7 +835,7 @@ public final class Input {
      * 
      * @param deviceID the number which corresponds to the input device in 
      *                 question. One of: 
-     * <table>
+     * <table><caption></caption>
      * <tr><td>{@link org.lwjgl.glfw.GLFW#GLFW_JOYSTICK_1 GLFW_JOYSTICK_1}</td>
      * <td>{@link org.lwjgl.glfw.GLFW#GLFW_JOYSTICK_2 GLFW_JOYSTICK_2}</td>
      * <td>{@link org.lwjgl.glfw.GLFW#GLFW_JOYSTICK_3 GLFW_JOYSTICK_3}</td></tr>
@@ -873,7 +871,7 @@ public final class Input {
      * 
      * @param deviceID the number which corresponds to the input device in 
      *                 question. One of: 
-     * <table>
+     * <table><caption></caption>
      * <tr><td>{@link org.lwjgl.glfw.GLFW#GLFW_JOYSTICK_1 GLFW_JOYSTICK_1}</td>
      * <td>{@link org.lwjgl.glfw.GLFW#GLFW_JOYSTICK_2 GLFW_JOYSTICK_2}</td>
      * <td>{@link org.lwjgl.glfw.GLFW#GLFW_JOYSTICK_3 GLFW_JOYSTICK_3}</td></tr>

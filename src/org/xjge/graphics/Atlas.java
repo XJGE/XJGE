@@ -13,7 +13,6 @@ import org.joml.Vector2i;
  * {@link Texture}.
  * <p>
  * More specifically the data provided by this object includes:
- * </p>
  * <ul>
  * <li>The number of rows and columns the texture image was divided into.</li>
  * <li>The number of sub-images (or cells) the atlas contains.</li>
@@ -55,7 +54,6 @@ public final class Atlas {
      * <p>
      * NOTE: The dimensions of the texture should be evenly divisible by the 
      * cell width and height.
-     * </p>
      * 
      * @param texture    the texture image to use
      * @param cellWidth  the width of each sub-image cell in pixels

@@ -42,7 +42,6 @@ public abstract class Scene {
      * should not attempt to supplant its functionality with your own. Instead 
      * the collection should be used to iterate through the logic loop of each 
      * entity like so:
-     * </p>
      * <blockquote><pre>
      * <b>//In the scenes update() method...</b>
      * entities.values().forEach(entity -&gt; {
@@ -59,7 +58,6 @@ public abstract class Scene {
      * needs of the implementation, though generally speaking for a large 
      * volume of entity objects lambda expressions like those above are usually 
      * sufficient enough.
-     * </p>
      */
     protected final LinkedHashMap<String, Entity> entities = new LinkedHashMap<>();
     
@@ -194,7 +192,6 @@ public abstract class Scene {
      * If a light source already exists at that index, it will be replaced. 
      * Passing zero in place of the index value will change the current world 
      * light that illuminates all objects.
-     * </p>
      * 
      * @param index an existing location within the light array to occupy
      * @param light the light object to add

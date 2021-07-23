@@ -19,7 +19,6 @@ import org.lwjgl.assimp.AIAnimation;
  * we move the femur bone of some bipedal model for instance, the shin, foot, 
  * and toes will follow- however the hip bone (parent to the femur) will remain 
  * stationary.
- * </p>
  * 
  * @author J Hoffman
  * @since  2.0.0
@@ -219,7 +218,6 @@ class SkeletalAnimation {
      * two keyframes bone transformations, a new set of transformations will be 
      * produced dynamically, enabling animation playback speed to be altered 
      * freely with smooth results.
-     * </p>
      * 
      * @param speed a non-negative number used to set the animations playback 
      *              speed

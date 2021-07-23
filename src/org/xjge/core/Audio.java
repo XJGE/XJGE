@@ -111,7 +111,6 @@ public final class Audio {
      * NOTE: If no sound sources are available, the engine will attempt to 
      * procure one by returning whichever is playing audio at the lowest 
      * volume.
-     * </p>
      * 
      * @return a sound source object to use for audio output
      */
@@ -283,7 +282,6 @@ public final class Audio {
      * <p>
      * NOTE: Calling this method will interrupt and replace any song that was 
      * previously playing.
-     * </p>
      * 
      * @param song the song to start playing
      */
@@ -345,7 +343,6 @@ public final class Audio {
      * to obfuscate the implementations reliance on a floating point value from 
      * 0 to 1 and instead provide players with something more practical 
      * (0 to 100, etc).
-     * </p>
      * 
      * @return the value used to attenuate the volume of all sound effects
      */
@@ -360,7 +357,6 @@ public final class Audio {
      * to obfuscate the implementations reliance on a floating point value from 
      * 0 to 1 and instead provide players with something more practical 
      * (0 to 100, etc).
-     * </p>
      * 
      * @return the value used to attenuate the volume of the games background 
      *         music

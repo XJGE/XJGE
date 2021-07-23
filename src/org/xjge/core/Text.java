@@ -14,7 +14,6 @@ import org.joml.Vector2i;
  * NOTE: The primary method used by this class to draw strings of text is 
  * exposed exclusively to subclasses of {@link Widget}. All other additional 
  * methods can be accessed statically.
- * </p>
  * 
  * @author J Hoffman
  * @since  2.0.0

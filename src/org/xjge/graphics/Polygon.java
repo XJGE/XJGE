@@ -88,7 +88,6 @@ public class Polygon {
      * Translates the polygon to the position specified. 
      * <p>
      * NOTE: polygons are positioned around their centerpoints.
-     * </p>
      * 
      * @param position the position where the shape will be placed
      */

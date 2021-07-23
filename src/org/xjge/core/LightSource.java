@@ -20,7 +20,6 @@ import org.lwjgl.system.MemoryStack;
  * new source of light to a scene, you should use either
  * {@link Game#addLight(org.xjge.graphics.Light) Game.addLight()} or 
  * {@link Scene#addLight(org.xjge.graphics.Light) Scene.addLight()}.
- * </p>
  * 
  * @author J Hoffman
  * @since  2.0.0

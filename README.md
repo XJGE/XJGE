@@ -28,3 +28,35 @@ XJGE is an extensible game engine written in Java that allows developers to quic
 
 
 
+## All Features
+
+* Split screen functionality (Camera, Viewport)
+* Multi-controller support
+* Game state management (scene)
+* Monotonic timer (Timer)
+* Observers (Observable)
+* Central Event Queue
+* Extensible runtime command terminal (Terminal)
+* All features present in the terminal available through engine utilities (Window, Hardware, Input, etc.)
+* UI system that utilizes composition-style architecture (Widget, remember discon!)
+* 3D audio system
+* Composition-style entity system (not a true ECS however, Entity)
+* Various graphics utilities (Skybox, Graphics, Model, Atlas, SpriteAnimation, etc.)
+* Custom glsl shader support
+* Input system with command-style architecture.
+* Error state checking (ErrorUtils)
+
+
+
+## Chapters
+
+| SUBJECT         | DESCRIPTION                                                  |
+| --------------- | ------------------------------------------------------------ |
+| Foreword        | Introduction to game engines & overview of the manuals contents |
+| Getting Started |                                                              |
+|                 |                                                              |
+|                 |                                                              |
+|                 |                                                              |
+
+
+

@@ -11,7 +11,6 @@ import static org.lwjgl.openal.AL11.*;
  * These objects can be best conceptualized as invisible CD players/speakers 
  * located throughout the game world, with the CD itself acting as the sources
  * current {@link Sound} or {@link Song} to play.
- * </p>
  * 
  * @author J Hoffman
  * @since  2.0.0
@@ -66,7 +65,6 @@ final class SoundSource {
      * <p>
      * Variant of {@link SoundSource(SoundSource, Sound, int, int)} for copying 
      * a sound source that was playing music.
-     * </p>
      * 
      * @param source        the sound source to copy
      * @param sound         the sound to load this source with
@@ -192,7 +190,6 @@ final class SoundSource {
      * from allowing additional sounds to be queued through 
      * {@link queueSound(Sound) queueSound()} and cause an 
      * {@linkplain org.xjge.core.ErrorUtils#checkALError() AL Error}.
-     * </p>
      * 
      * @param sound the sound to bind to this source
      */
@@ -213,7 +210,6 @@ final class SoundSource {
      * prior to other operations to set its type, as its type cannot be set 
      * explicitly later. The reserved music source object by default uses this 
      * type.
-     * </p>
      * 
      * @param sound the sound to queue
      */

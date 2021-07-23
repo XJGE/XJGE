@@ -35,7 +35,6 @@ final class Cubemap {
      * <p>
      * NOTE: All images used by the cubemap must exhibit the same width/height 
      * dimensions in pixels otherwise it will appear black.
-     * </p>
      * 
      * @param images a collection containing the names of each image file to 
      *               parse texture data from

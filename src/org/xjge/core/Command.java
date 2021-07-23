@@ -17,12 +17,11 @@ import static org.lwjgl.glfw.GLFW.GLFW_PRESS;
  * players input device. This information in conjunction with several 
  * convenience methods provided by the parent class can be used to create 
  * player actions that exhibit a high level of fidelity.
- * </p><p>
+ * <p>
  * The command superclass lacks constructors by design to encourage subclasses 
  * to define their own. This open-ended approach allows subclasses to capture 
  * whatever supplemental information they require to sufficiently perform the 
  * player actions they've been assigned to.
- * </p>
  * 
  * @author J Hoffman
  * @since  2.0.0
@@ -96,7 +95,7 @@ public abstract class Command {
      * being held down. 
      * <p>
      * Generally speaking gamepad buttons include:
-     * <table>
+     * <table><caption></caption>
      * <tr>
      * <td>{@link Control#CROSS CROSS}</td>
      * <td>{@link Control#CIRCLE CIRCLE}</td>
@@ -112,10 +111,9 @@ public abstract class Command {
      * <td>{@link Control#L3 L3}</td><td>{@link Control#R3 R3}</td>
      * </tr>
      * </table>
-     * </p><p>
+     * <p>
      * If you wish to check whether a button has been pressed once use 
      * {@link buttonPressedOnce()}.
-     * </p>
      * 
      * @return true if the input value of the interactive component equals 1
      */
@@ -129,7 +127,7 @@ public abstract class Command {
      * useful for when we want a command to only execute once per button press.
      * <p>
      * Generally speaking gamepad buttons include:
-     * <table>
+     * <table><caption></caption>
      * <tr>
      * <td>{@link Control#CROSS CROSS}</td>
      * <td>{@link Control#CIRCLE CIRCLE}</td>
@@ -145,7 +143,6 @@ public abstract class Command {
      * <td>{@link Control#L3 L3}</td><td>{@link Control#R3 R3}</td>
      * </tr>
      * </table>
-     * </p>
      * 
      * @return true if the input value of the interactive component equals 1 
      *         but only upon its initial press
@@ -174,9 +171,9 @@ public abstract class Command {
      * before it's recognized as a conscious decision on the players part. 
      * Therefore, the result of this check may not always yield true even if an 
      * analog stick is ostensibly moved.
-     * </p><p>
+     * <p>
      * Analog sticks are grouped by their axes;
-     * <table>
+     * <table><caption></caption>
      * <tr>
      * <td>{@link Control#LEFT_STICK_X LEFT_STICK_X}</td>
      * <td>{@link Control#LEFT_STICK_Y LEFT_STICK_Y}</td>
@@ -185,7 +182,6 @@ public abstract class Command {
      * <td>{@link Control#RIGHT_STICK_Y RIGHT_STICK_Y}</td>
      * </tr>
      * </table>
-     * </p>
      * 
      * @return true if the input value of the interactive component exhibits a 
      *         greater absolute value than the deadzone value
@@ -209,10 +205,9 @@ public abstract class Command {
      * values much in the same way analog sticks do. Their function is 
      * significantly more predictable however so no deadzone value is used when 
      * determining its pulled state.
-     * </p><p>
+     * <p>
      * The interactive components used to represent triggers are 
      * {@link Control#L2 L2} and {@link Control#R2 R2}.
-     * </p>
      * 
      * @return true if the input value of the interactive component is greater 
      *         than -1 (or 0 in the instance of {@link KeyMouseCombo})

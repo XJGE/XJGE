@@ -62,7 +62,6 @@ public abstract class Entity {
      * <p>
      * This variant of the render method allows entities to utilize multiple 
      * shader programs.
-     * </p>
      * 
      * @param glPrograms an immutable collection containing the shader programs 
      *                   compiled during startup
@@ -85,7 +84,6 @@ public abstract class Entity {
      * NOTE: This method should <i>only</i> be used to deallocate memory. Death 
      * animations and other effects should be included in the entities game 
      * logic via the {@link update update()} method.
-     * </p>
      * 
      * @see org.xjge.graphics.Graphics#freeBuffers()
      * @see org.xjge.graphics.Texture#freeTexture()
@@ -105,7 +103,6 @@ public abstract class Entity {
      * If a removal request has been made, the entity will be 
      * {@linkplain destroy destroyed} and subsequently removed from the current 
      * scenes {@linkplain Scene#entities entity collection}.
-     * </p>
      * 
      * @return true if the entity has requested removal
      */

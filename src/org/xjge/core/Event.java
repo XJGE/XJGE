@@ -24,7 +24,6 @@ public abstract class Event {
      * <p>
      * NOTE: Priorities 0-3 are restricted to engine use only so you should 
      * start at 4 or greater.
-     * </p>
      * 
      * @param priority the priority of the event
      */

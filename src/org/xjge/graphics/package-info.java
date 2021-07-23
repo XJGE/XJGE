@@ -5,7 +5,6 @@
  * pipeline while retaining more opportunities for optimization.
  * <p>
  * These Abstractions include:
- * </p>
  * <ul>
  * <li>{@link Atlas}</li>
  * <li>{@link Graphics}</li>

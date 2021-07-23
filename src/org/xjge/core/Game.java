@@ -19,10 +19,8 @@ import static org.lwjgl.opengl.GL30.*;
  * being rendered or the flow of execution through its access to the engines 
  * central event queue. In addition to these features the Game class also 
  * provides some convenience methods useful for general gameplay operations.
- * </p>
  * <p>
  * These gameplay methods include:
- * </p>
  * <ul>
  * <li>{@linkplain #addEntity(String, Entity)}</li>
  * <li>{@linkplain #addEvent(Event)}</li>
@@ -245,7 +243,6 @@ public final class Game {
      * intended for display/debug purposes only. A more accurate version can be 
      * found in the {@linkplain Scene#update(double, double) update method} of
      * the current scene under the {@code trueDelta} argument.
-     * </p>
      * 
      * @return the time (in seconds) it took the engine to complete an update 
      *         cycle

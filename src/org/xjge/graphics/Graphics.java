@@ -28,7 +28,6 @@ import static org.lwjgl.opengl.GL30.*;
  * {@link org.lwjgl.assimp.Assimp Assimp} binding is also available in 
  * conjunction to the previously mentioned classes to load vertex data in the 
  * form of a 3D model.
- * </p>
  * 
  * @author J Hoffman
  * @since  2.0.0

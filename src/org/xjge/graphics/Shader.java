@@ -29,7 +29,7 @@ public final class Shader {
      *                 extension to be included.
      * @param stage    the stage of the shader process this object will 
      *                 describe. One of:
-     * <table>
+     * <table><caption></caption>
      * <tr>
      * <td>{@link org.lwjgl.opengl.GL30#GL_VERTEX_SHADER GL_VERTEX_SHADER}</td>
      * <td>{@link org.lwjgl.opengl.GL30#GL_FRAGMENT_SHADER GL_FRAGMENT_SHADER}</td>

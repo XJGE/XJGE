@@ -1,10 +1,8 @@
 /**
  * Contains various classes, objects, and utilities many of which are essential 
  * to the function of the engine. These are listed in greater detail below:
- * <p>
- * <h2>Core Classes:</h2>
- * </p>
- * <table border="1">
+ * <br><br>
+ * <table border="1"><caption>Core Classes:</caption>
  * <tr><td><b>Name</b></td><td><b>Description</b></td></tr>
  * <tr><td>{@linkplain Hardware}</td><td>Manages the state of various 
  *         peripheral devices including those used for audio output and 
@@ -20,10 +18,8 @@
  * <tr><td>{@linkplain Window}</td><td>Provides a point of access which can be 
  *         used to alter the properties of the game window at runtime.</td></tr>
  * </table>
- * <p>
- * <h2>Gameplay Utilities:</h2>
- * </p>
- * <table border="1">
+ * <br><br>
+ * <table border="1"><caption>Gameplay Utilities:</caption>
  * <tr><td><b>Name</b></td><td><b>Description</b></td></tr>
  * <tr><td>{@linkplain Audio}</td><td>Provides a single point of access through 
  *         which sound effects and music can be played.</td></tr>
@@ -58,12 +54,9 @@
  * <tr><td>{@linkplain Widget}</td><td>An abstract class which can be used to 
  *         define subclasses that will comprise individual elements of a user 
  *         interface.</td></tr>
- * </td></tr>
  * </table>
- * <p>
- * <h2>Other Miscellaneous Features:</h2>
- * </p>
- * <table border="1">
+ * <br><br>
+ * <table border="1"><caption>Other Miscellaneous Features:</caption>
  * <tr><td><b>Name</b></td><td><b>Description</b></td></tr>
  * <tr><td>{@linkplain ErrorUtils}</td><td>Provides convenience methods for 
  *         locating errors encountered by the engine at runtime.</td></tr>

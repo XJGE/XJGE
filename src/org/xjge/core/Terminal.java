@@ -23,12 +23,11 @@ import static org.lwjgl.glfw.GLFW.*;
  * With debug mode enabled, press {@code SHIFT} + {@code F1} to open or close 
  * the terminal. While the terminal is open, input from the keyboard will be 
  * overridden and {@link Noclip} cannot be used.
- * </p><p>
+ * <p>
  * The terminals functionality can be 
  * {@linkplain XJGE#addCommand(String, TerminalCommand) extended} to support 
  * additional commands to better suit the individual requirements of the 
  * implementation.
- * </p>
  * 
  * @author J Hoffman
  * @since  2.0.0

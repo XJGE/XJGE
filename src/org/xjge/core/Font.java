@@ -86,7 +86,6 @@ public final class Font {
      * glyph, including its advance, descent, and bearing space. As such, the 
      * actual visible portion of the glyph produced may not correspond directly 
      * to the desired size in pixels.
-     * </p>
      * 
      * @param filename the name of the file to load. Expects the file extension 
      *                 to be included.

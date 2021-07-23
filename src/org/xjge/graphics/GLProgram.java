@@ -98,7 +98,6 @@ public class GLProgram {
      * the memory address of the buffer on the GPU that holds the value of the 
      * uniform variable and provides that information in an object which will 
      * wrap this state for the engine to use during rendering operations. 
-     * </p>
      * 
      * @param type the GLSL data type of the uniform variable
      * @param name the unique name used to identify the uniform variable as it 

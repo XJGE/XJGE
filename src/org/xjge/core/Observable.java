@@ -14,7 +14,6 @@ import java.util.HashMap;
  * Objects which make use of observable should define the properties (often 
  * fields) observers should look for in their constructors with the properties 
  * collection provided. This usually looks something like this:
- * </p>
  * <blockquote><pre>
  * int prop1     = 0;
  * boolean prop2 = false;

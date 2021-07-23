@@ -175,7 +175,7 @@ public final class Hardware {
     
     /**
      * Sets the current audio device the engine will use. 
-     * <br><br>
+     * <p>
      * NOTE: Using this method will update the collection of audio devices 
      * available to the engine and change the current OpenAL context. This 
      * action will require all sounds and music previously loaded into memory 
