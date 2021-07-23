@@ -238,6 +238,18 @@ public final class Audio {
     }
     
     /**
+     * Sets the values of the master volumes using the data from the engine 
+     * configuration file.
+     * 
+     * @param soundVol the value of the sound master volume at startup
+     * @param musicVol the value of the music master volume at startup
+     */
+    static void setMasterVolumePreferences(float soundVol, float musicVol) {
+        soundMasterVolume = soundVol;
+        musicMasterVolume = musicVol;
+    }
+    
+    /**
      * Emits a {@link Sound} from some specified position in the game world.
      * 
      * @param sound    the sound to play
@@ -371,6 +383,10 @@ public final class Audio {
             for(SoundSource source : soundSources) {
                 alSourcef(source.handle, AL_GAIN, masterVolume);
             }
+            
+            Logger.setDomain("audio");
+            Logger.logInfo("Sound master volume changed: (" + masterVolume + ")");
+            Logger.setDomain(null);
         }
     }
     
@@ -385,6 +401,10 @@ public final class Audio {
         if(masterVolume >= 0 && masterVolume <= 1) {
             musicMasterVolume = masterVolume;
             alSourcef(musicSource.handle, AL_GAIN, masterVolume);
+            
+            Logger.setDomain("audio");
+            Logger.logInfo("Music master volume changed: (" + masterVolume + ")");
+            Logger.setDomain(null);
         }
     }
     

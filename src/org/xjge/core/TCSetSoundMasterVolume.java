@@ -39,6 +39,7 @@ final class TCSetSoundMasterVolume extends TerminalCommand {
                     float value = Float.parseFloat(args.get(0));
 
                     if(value >= 0 && value <= 1) {
+                        setOutput("Sound master volume changed: (" + value + ")", Color.WHITE);
                         Audio.setSoundMasterVolume(value);
                     } else {
                         setOutput("ERROR: Value out of bounds, must be a " + 

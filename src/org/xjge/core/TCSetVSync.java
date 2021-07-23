@@ -40,7 +40,7 @@ final class TCSetVSync extends TerminalCommand {
             }
         } else {
             Hardware.setVSyncEnabled(!Hardware.getVSyncEnabled());
-            setOutput("VSync changed: (" + Hardware.getVSyncEnabled() + ")", Color.RED);
+            setOutput("VSync changed: (" + Hardware.getVSyncEnabled() + ")", Color.WHITE);
         }
     }
 

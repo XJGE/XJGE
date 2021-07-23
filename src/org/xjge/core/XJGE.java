@@ -1,5 +1,11 @@
 package org.xjge.core;
 
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.PrintWriter;
 import static org.xjge.core.Input.KEY_MOUSE_COMBO;
 import org.xjge.core.Terminal.TCCLS;
 import static org.xjge.core.Window.HANDLE;
@@ -13,6 +19,10 @@ import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.Map;
 import java.util.TreeMap;
+import javax.xml.stream.XMLInputFactory;
+import javax.xml.stream.XMLStreamConstants;
+import javax.xml.stream.XMLStreamException;
+import javax.xml.stream.XMLStreamReader;
 import org.joml.Vector2i;
 import static org.lwjgl.glfw.GLFW.*;
 import org.lwjgl.opengl.GL;
@@ -102,8 +112,8 @@ public final class XJGE {
     
     /**
      * Initializes the engines assets, compiles the default shader programs, 
-     * and searches for connected peripheral devices. This method must be 
-     * called once before the engine can be used.
+     * and searches for connected peripheral devices.This method must be called 
+     * once before the engine can be used.
      * <p>
      * NOTE: If a resolution is provided the value of {@code windowResizable} 
      * will be ignored. Additionally, the {@code scenesFilepath} should use 
@@ -115,19 +125,23 @@ public final class XJGE {
      * init(<i>"/dev/theskidster/game/assets/"</i>, <i>"dev.theskidster.game.scenes."</i>, <b>true</b>, <b>null</b>, <b>true</b>);
      * </pre></blockquote>
      * 
-     * @param assetsFilepath  the relative filepath to a folder that contains 
-     *                        all of the games assets
-     * @param scenesFilepath  the relative filepath to the package that 
-     *                        contains all of the games scene subclasses
-     * @param debugEnabled    if true, the engine will provide debugging 
-     *                        utilities at runtime
-     * @param resolution      the internal resolution the engine will display 
-     *                        the framebuffer at or <b>null</b> to copy the 
-     *                        resolution of the window
-     * @param windowResizable if true, the user will be allowed to freely alter 
-     *                        the size of the window 
+     * @param assetsFilepath   the relative filepath to a folder that contains 
+     *                         all of the games assets
+     * @param scenesFilepath   the relative filepath to the package that 
+     *                         contains all of the games scene subclasses
+     * @param debugEnabled     if true, the engine will provide debugging 
+     *                         utilities at runtime
+     * @param resolution       the internal resolution the engine will display 
+     *                         the framebuffer at or <b>null</b> to copy the 
+     *                         resolution of the window
+     * @param windowResizable  if true, the user will be allowed to freely alter 
+     *                         the size of the window 
+     * @param retainFullscreen if true, the game window will retain its mode 
+     *                         (fullscreen or windowed) depending on the 
+     *                         players preferences
      */
-    public static void init(String assetsFilepath, String scenesFilepath, boolean debugEnabled, Vector2i resolution, boolean windowResizable) {        
+    public static void init(String assetsFilepath, String scenesFilepath, boolean debugEnabled, Vector2i resolution, boolean windowResizable, 
+                             boolean retainFullscreen) {        
         if(!initCalled) {
             if(System.getProperty("java.version").compareTo("15.0.2") < 0) {
                 Logger.logSevere("Unsupported Java version. Required 15.0.2, " + 
@@ -136,6 +150,45 @@ public final class XJGE {
             }
             
             if(!glfwInit()) Logger.logSevere("Failed to initialize GLFW.", null);
+            
+            boolean fullscreen = false;
+            
+            //Load settings from engine configuration file.
+            try {
+                InputStream stream = new FileInputStream(PWD.toString() + "/engine.cfg");
+                XMLStreamReader xmlReader = XMLInputFactory.newInstance().createXMLStreamReader(stream);
+                
+                while(xmlReader.hasNext()) {
+                    switch(xmlReader.next()) {
+                        case XMLStreamConstants.START_ELEMENT -> {
+                            if(xmlReader.getName().getLocalPart().equals("config")) {
+                                final float soundMaster  = Float.parseFloat(xmlReader.getAttributeValue(null, "soundMaster"));
+                                final float musicMaster  = Float.parseFloat(xmlReader.getAttributeValue(null, "musicMaster"));
+                                final boolean vSync      = Boolean.parseBoolean(xmlReader.getAttributeValue(null, "vSync"));
+                                
+                                Audio.setMasterVolumePreferences(soundMaster, musicMaster);
+                                Hardware.setVSyncPreference(vSync);
+                                
+                                if(retainFullscreen) {
+                                    fullscreen = Boolean.parseBoolean(xmlReader.getAttributeValue(null, "fullscreen"));
+                                }
+                            }
+                        }
+                        
+                        case XMLStreamConstants.END_ELEMENT -> {
+                            if(xmlReader.getName().getLocalPart().equals("config")) {
+                                xmlReader.close();
+                            }
+                        }
+                    }
+                }
+            } catch(FileNotFoundException | NumberFormatException | XMLStreamException e) {
+                Logger.setDomain("core");
+                Logger.logWarning("Failed to parse engine configuration " + 
+                                  "file, using default configuration.", 
+                                  e);
+                Logger.setDomain(null);
+            }
             
             { //Initialize 3D audio utilities.
                 Audio.speaker = Hardware.findSpeakers().get(1);
@@ -147,6 +200,7 @@ public final class XJGE {
                 glfwWindowHint(GLFW_VISIBLE, GLFW_FALSE);
                 
                 Window.monitor = Hardware.findMonitors().get(1);
+                Window.setFullscreenPreference(fullscreen);
                 Window.setIcon("img_null.png");
             }
             
@@ -369,6 +423,27 @@ public final class XJGE {
         beep.freeSound();
         terminal.freeBuffers();
         debugInfo.freeBuffers();
+        
+        //Export engine configuration.
+        try {
+            FileWriter file = new FileWriter("engine.cfg");
+            
+            try(PrintWriter output = new PrintWriter(file)) {
+                output.append("<config soundMaster=\"")
+                      .append(Audio.getSoundMasterVolume() + "\" ")
+                      .append("musicMaster=\"")
+                      .append(Audio.getMusicMasterVolume() + "\" ")
+                      .append("vSync=\"")
+                      .append(Hardware.getVSyncEnabled() + "\" ")
+                      .append("fullscreen=\"")
+                      .append(Window.getFullscreen() + "\">")
+                      .append("</config>");
+            }
+        } catch(IOException e) {
+            Logger.setDomain("core");
+            Logger.logWarning("Failed to export engine configuration.", e);
+            Logger.setDomain(null);
+        }
         
         Hardware.freeSpeakers();
         Input.exportControls();

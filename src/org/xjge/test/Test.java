@@ -20,9 +20,11 @@ public class Test {
         
         Vector2i res = new Vector2i(384, 216);
         
-        XJGE.init("/org/xjge/assets/", "org.xjge.test.", true, null, true);
+        XJGE.init("/org/xjge/assets/", "org.xjge.test.", true, null, true, false);
         
         //Input.setDeviceEnabled(0, false);
+        
+        //Window.setDimensions(1200, 400); TODO: stretched
         
         Game.setScene(new TestScene());
         

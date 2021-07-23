@@ -237,6 +237,17 @@ public final class Window {
     }
     
     /**
+     * Sets the value of the windows fullscreen field using data from the 
+     * engines configuration file without alerting GLFW.
+     * 
+     * @param fullscreen if true, the window will cover the entire screen 
+     *                   including taskbars
+     */
+    static void setFullscreenPreference(boolean fullscreen) {
+        Window.fullscreen = fullscreen;
+    }
+    
+    /**
      * Sets the size of the windows content area in pixels.
      * 
      * @param width  the desired width of the window

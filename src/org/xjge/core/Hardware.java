@@ -72,6 +72,16 @@ public final class Hardware {
     }
     
     /**
+     * Sets the value of vsync using data from the engine configuration file.
+     * 
+     * @param enabled if true, vsync will be enabled when the engine is 
+     *                initialized
+     */
+    static void setVSyncPreference(boolean enabled) {
+        vSyncEnabled = enabled;
+    }
+    
+    /**
      * Finds every available audio device currently connected to the system and 
      * returns them in a collection.
      * 

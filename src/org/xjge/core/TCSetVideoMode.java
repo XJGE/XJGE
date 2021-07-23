@@ -38,9 +38,15 @@ final class TCSetVideoMode extends TerminalCommand {
             } else {
                 try {
                     Window.getMonitor().setVideoMode(args.get(0));
+                    setOutput("Changed the current video mode: (" + 
+                              Window.monitor.getInfo() + ")", 
+                              Color.WHITE);
                 } catch(NumberFormatException e) {
                     if(args.get(0).equals("next") || args.get(0).equals("prev")) {
                         Window.getMonitor().setVideoMode(args.get(0));
+                        setOutput("Changed the current video mode: (" + 
+                                  Window.monitor.getInfo() + ")", 
+                                  Color.WHITE);
                     } else {
                         setOutput(errorInvalidArg(args.get(0), "<int>, (next), or (prev)"), Color.RED);
                     }

@@ -40,6 +40,7 @@ final class TCSetMusicMasterVolume extends TerminalCommand {
                     float value = Float.parseFloat(args.get(0));
 
                     if(value >= 0 && value <= 1) {
+                        setOutput("Music master volume changed: (" + value + ")", Color.WHITE);
                         Audio.setMusicMasterVolume(value);
                     } else {
                         setOutput("ERROR: Value out of bounds, must be a " + 

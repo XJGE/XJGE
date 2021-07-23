@@ -315,7 +315,6 @@ public final class Input {
                     }
                 }
             }
-            
         } catch(FileNotFoundException | XMLStreamException | IllegalArgumentException e) {
             Logger.setDomain("input");
             Logger.logWarning("Failed to import user-defined controls.", e);
