@@ -50,13 +50,23 @@ XJGE is an extensible game engine written in Java that allows developers to quic
 
 ## Chapters
 
-| SUBJECT         | DESCRIPTION                                                  |
-| --------------- | ------------------------------------------------------------ |
-| Foreword        | Introduction to game engines & overview of the manuals contents |
-| Getting Started |                                                              |
-|                 |                                                              |
-|                 |                                                              |
-|                 |                                                              |
+| SUBJECT:               | DESCRIPTION:                                                 |
+| ---------------------- | ------------------------------------------------------------ |
+| Foreword               | Introduction to game engines & overview of the manuals contents |
+| Getting Started        | Setup in IDE, Create a scene, and display the window         |
+| Debug Mode             | Demonstrate debug mode features                              |
+| Our First Entity       | Add an entity to the scene (just a triangle for now)         |
+| Gamepad Input          | Capture Input from the gamepad (LogControlName)              |
+| Puppet Objects         | Introduce puppet objects, move triangle entity with controller. |
+| Split Screen Utilities | Show how split screen works                                  |
+| UI                     | Demonstrate the UI system. (Widget, Icon, Polygon, etc.)     |
+| Animation              |                                                              |
+| Gameplay Utilities     | (Timer, Observer)                                            |
+| Error Checking         | (Error utilities, disconnected controller widget)            |
+| The Graphics Pipeline  | (Lighting, Skybox, etc.)                                     |
+|                        |                                                              |
+|                        |                                                              |
+|                        |                                                              |
 
 
 
