@@ -3,6 +3,7 @@ package org.xjge.test;
 import org.xjge.core.Game;
 import org.xjge.core.XJGE;
 import org.joml.Vector2i;
+import org.xjge.core.Window;
 
 /**
  * @author J Hoffman
@@ -24,7 +25,7 @@ public class Test {
         
         //Input.setDeviceEnabled(0, false);
         
-        //Window.setDimensions(1200, 400); TODO: stretched
+        Window.setDimensions(1200, 400);
         
         Game.setScene(new TestScene());
         
