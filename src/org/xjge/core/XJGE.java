@@ -681,8 +681,6 @@ public final class XJGE {
     public static final void setScreenSplit(Split split) {
         XJGE.split = split;
         
-        System.out.println("bleh");
-        
         for(Viewport viewport : viewports) {
             switch(split) {
                 case NONE -> {
