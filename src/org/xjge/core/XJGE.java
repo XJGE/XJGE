@@ -308,10 +308,12 @@ public final class XJGE {
                         XJGE.noclipEnabled = !noclipEnabled;
                         
                         if(noclipEnabled) {
+                            Input.setDeviceEnabled(KEY_MOUSE_COMBO, false);
                             glfwSetInputMode(Window.HANDLE, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
                             viewports[0].prevCamera = viewports[0].currCamera;
                             viewports[0].currCamera = freeCam;
                         } else {
+                            Input.revertEnabledState(KEY_MOUSE_COMBO);
                             glfwSetInputMode(Window.HANDLE, GLFW_CURSOR, Window.cursorMode);
                             viewports[0].currCamera = viewports[0].prevCamera;
                         }

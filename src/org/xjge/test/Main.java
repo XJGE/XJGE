@@ -25,7 +25,6 @@ public class Main {
         /*
         TODO:
          - disable keyboard input while noclip is active
-         - provide glfwSetInputMode() to implementation (through window?)
         */
         
         XJGE.start();
