@@ -312,7 +312,7 @@ public final class XJGE {
                             viewports[0].prevCamera = viewports[0].currCamera;
                             viewports[0].currCamera = freeCam;
                         } else {
-                            glfwSetInputMode(Window.HANDLE, GLFW_CURSOR, GLFW_CURSOR_NORMAL);
+                            glfwSetInputMode(Window.HANDLE, GLFW_CURSOR, Window.cursorMode);
                             viewports[0].currCamera = viewports[0].prevCamera;
                         }
                     } else {

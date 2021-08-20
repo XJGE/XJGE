@@ -29,6 +29,7 @@ public final class Window {
     private static int yPos;
     private static int width;
     private static int height;
+    static int cursorMode = GLFW_CURSOR_NORMAL;
     
     private static boolean fullscreen;
     static boolean visible;
@@ -72,7 +73,7 @@ public final class Window {
     static void show() {
         visible = true;
         
-        glfwSetInputMode(HANDLE, GLFW_CURSOR, GLFW_CURSOR_NORMAL);
+        glfwSetInputMode(HANDLE, GLFW_CURSOR, cursorMode);
         glfwShowWindow(HANDLE);
         glfwFocusWindow(HANDLE);
         
@@ -187,6 +188,23 @@ public final class Window {
      */
     public static Monitor getMonitor() {
         return monitor;
+    }
+    
+    /**
+     * Obtains the current value of the specified input option used by the game 
+     * window.
+     * 
+     * @param mode the input option to manipulate. One of 
+     *             {@link org.lwjgl.glfw.GLFW#GLFW_CURSOR GLFW_CURSOR}, 
+     *             {@link org.lwjgl.glfw.GLFW#GLFW_STICKY_KEYS GLFW_STICKY_KEYS}, 
+     *             {@link org.lwjgl.glfw.GLFW#GLFW_STICKY_MOUSE_BUTTONS GLFW_STICKY_MOUSE_BUTTONS}, 
+     *             {@link org.lwjgl.glfw.GLFW#GLFW_LOCK_KEY_MODS GLFW_LOCK_KEY_MODS}, or
+     *             {@link org.lwjgl.glfw.GLFW#GLFW_RAW_MOUSE_MOTION GLFW_RAW_MOUSE_MOTION}.
+     * 
+     * @return 
+     */
+    public int getInputMode(int mode) {
+        return glfwGetInputMode(HANDLE, mode);
     }
     
     /**
@@ -413,6 +431,22 @@ public final class Window {
                               e);
             Logger.setDomain(null);
         }
+    }
+    
+    /**
+     * Sets the value of an input option used by the game window.
+     * 
+     * @param mode the input option to manipulate. One of 
+     *              {@link org.lwjgl.glfw.GLFW#GLFW_CURSOR GLFW_CURSOR}, 
+     *              {@link org.lwjgl.glfw.GLFW#GLFW_STICKY_KEYS GLFW_STICKY_KEYS}, 
+     *              {@link org.lwjgl.glfw.GLFW#GLFW_STICKY_MOUSE_BUTTONS GLFW_STICKY_MOUSE_BUTTONS}, 
+     *              {@link org.lwjgl.glfw.GLFW#GLFW_LOCK_KEY_MODS GLFW_LOCK_KEY_MODS}, or
+     *              {@link org.lwjgl.glfw.GLFW#GLFW_RAW_MOUSE_MOTION GLFW_RAW_MOUSE_MOTION}.
+     * @param value the new value to set the specified input option to 
+     */
+    public static void setInputMode(int mode, int value) {
+        if(mode == GLFW_CURSOR) cursorMode = value;
+        glfwSetInputMode(HANDLE, mode, value);
     }
     
     /**
