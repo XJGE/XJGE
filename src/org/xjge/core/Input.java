@@ -148,6 +148,7 @@ public final class Input {
         
         controlConfigs.put(KEY_MOUSE_COMBO, keyMouseConfig);
         inputDevices.put(KEY_MOUSE_COMBO, new KeyMouseCombo(KEY_MOUSE_COMBO, 1f, 0.15f, keyMouseConfig));
+        setKeyMouseAxisValues(GLFW_KEY_A, GLFW_KEY_D, GLFW_KEY_S, GLFW_KEY_W);
         
         for(int i = 0; i < GLFW_JOYSTICK_5; i++) {
             var gamepadConfig = new HashMap<Control, Integer>() {{
@@ -814,7 +815,8 @@ public final class Input {
     
     /**
      * Sets the GLFW keys the keyboard will use to mimic the action of an 
-     * analog stick.
+     * analog stick. Typically you'd use this anytime the player wishes to use
+     * a key combination other than WASD to move (in first person for example).
      * 
      * @param x1 the GLFW key used to move left along the x-axis
      * @param x2 the GLFW key used to move right along the x-axis

@@ -22,11 +22,6 @@ public class Main {
         
         Game.setScene(new TestScene());
         
-        /*
-        TODO:
-         - disable keyboard input while noclip is active
-        */
-        
         XJGE.start();
     }
 
