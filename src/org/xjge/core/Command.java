@@ -34,6 +34,8 @@ import static org.lwjgl.glfw.GLFW.GLFW_PRESS;
  */
 public abstract class Command {
 
+    private int deviceID;
+    
     private float inputValue;
     
     private boolean pressRequested = true;
@@ -54,12 +56,7 @@ public abstract class Command {
         this.inputValue = inputValue;
         this.device     = device;
         this.control    = control;
-        
-        /*
-        TODO:
-         - provide device ID
-         - provide press count?
-        */
+        this.deviceID   = device.id;
         
         execute();
     }
@@ -92,6 +89,15 @@ public abstract class Command {
      */
     protected float getDeviceSensitivity() {
         return device.sensitivity;
+    }
+    
+    /**
+     * Obtains the ID number of the device currently executing this command.
+     * 
+     * @return a value indicating which input device is being used
+     */
+    protected int getDeviceID() {
+        return deviceID;
     }
     
     /**
