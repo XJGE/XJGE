@@ -148,7 +148,7 @@ public final class Input {
         
         controlConfigs.put(KEY_MOUSE_COMBO, keyMouseConfig);
         inputDevices.put(KEY_MOUSE_COMBO, new KeyMouseCombo(KEY_MOUSE_COMBO, 1f, 0.15f, keyMouseConfig));
-        setKeyMouseAxisValues(GLFW_KEY_A, GLFW_KEY_D, GLFW_KEY_S, GLFW_KEY_W);
+        setKeyMouseAxisValues(GLFW_KEY_A, GLFW_KEY_D, GLFW_KEY_W, GLFW_KEY_S);
         
         for(int i = 0; i < GLFW_JOYSTICK_5; i++) {
             var gamepadConfig = new HashMap<Control, Integer>() {{
