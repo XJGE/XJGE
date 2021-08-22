@@ -85,6 +85,8 @@ final class KeyMouseCombo extends InputDevice {
                             command.execute(-1, this, control);
                         } else if(glfwGetKey(Window.HANDLE, key2) == GLFW_PRESS) {
                             command.execute(1, this, control);
+                        } else {
+                            command.execute(0, this, control);
                         }
                     }
                     

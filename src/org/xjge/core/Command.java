@@ -55,6 +55,12 @@ public abstract class Command {
         this.device     = device;
         this.control    = control;
         
+        /*
+        TODO:
+         - provide device ID
+         - provide press count?
+        */
+        
         execute();
     }
     
