@@ -327,6 +327,15 @@ public final class Input {
      * Exports a configuration file containing user input preferences.
      */
     static void exportControls() {
+        /*
+        TODO:
+         - decouple left/right stick deadzones
+         - remove sensitivity- allow implementation to provide
+           additional fields to the .cfg file.
+         - provide these custom fields as a collection that can 
+           be accessed (safely) from the input device 
+        */
+        
         try {
             FileWriter file = new FileWriter("controls.cfg");
             

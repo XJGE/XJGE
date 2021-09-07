@@ -154,6 +154,8 @@ public final class Game {
                 }
             }
             
+            //TODO: add extension for shadow mapping.
+            
             if(XJGE.getTerminalEnabled() || debugInfo.show) {
                 glViewport(0, 0, Window.getWidth(), Window.getHeight());
                 projMatrix.setOrtho(0,  Window.getWidth(), 0, Window.getHeight(), 0, Integer.MAX_VALUE);

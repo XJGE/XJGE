@@ -560,18 +560,19 @@ public class Model {
     
     /**
      * Renders the 3D model. Should be called from within the implementing 
-     * entities {@link org.xjge.core.Entity#render(GLProgram, Camera, 
-     * LightSource[], int) render()} method.
+     * entities {@link org.xjge.core.Entity#render(GLProgram, Camera, LightSource[], int) render()} method.
      * 
      * @param glProgram the shader program that will be used to render this 
      *                  model
      * @param lights    an array of light source objects inhabiting the current 
      *                  scene
      * @param numLights the total number of lights in the scene
+     * @param depthTest if true, the model will be occluded by other objects in the scene
+     * @param cullFace  if true, the pipeline will discard fragments produced by backwards facing polygons
      */
-    public void render(GLProgram glProgram, LightSource[] lights, int numLights) {
-        glEnable(GL_DEPTH_TEST);
-        glEnable(GL_CULL_FACE);
+    public void render(GLProgram glProgram, LightSource[] lights, int numLights, boolean depthTest, boolean cullFace) {
+        if(depthTest) glEnable(GL_DEPTH_TEST);
+        if(cullFace)  glEnable(GL_CULL_FACE);
         
         glProgram.use();
         
@@ -610,8 +611,8 @@ public class Model {
             glDrawElements(GL_TRIANGLES, mesh.indices.capacity(), GL_UNSIGNED_INT, 0);
         }
         
-        glDisable(GL_DEPTH_TEST);
-        glDisable(GL_CULL_FACE);
+        if(depthTest) glDisable(GL_DEPTH_TEST);
+        if(cullFace)  glDisable(GL_CULL_FACE);
         
         ErrorUtils.checkGLError();
     }
