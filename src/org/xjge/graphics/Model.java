@@ -22,6 +22,7 @@ import static org.lwjgl.assimp.Assimp.*;
 import static org.lwjgl.opengl.GL30.*;
 import org.lwjgl.system.MemoryUtil;
 import static org.lwjgl.system.MemoryUtil.NULL;
+import org.xjge.core.Camera;
 
 //Created: Jun 16, 2021
 
@@ -567,12 +568,10 @@ public class Model {
      * @param lights    an array of light source objects inhabiting the current 
      *                  scene
      * @param numLights the total number of lights in the scene
-     * @param depthTest if true, the model will be occluded by other objects in the scene
-     * @param cullFace  if true, the pipeline will discard fragments produced by backwards facing polygons
+     * @param capabilities an object that can be used to enable various OpenGL capabilities
      */
-    public void render(GLProgram glProgram, LightSource[] lights, int numLights, boolean depthTest, boolean cullFace) {
-        if(depthTest) glEnable(GL_DEPTH_TEST);
-        if(cullFace)  glEnable(GL_CULL_FACE);
+    public void render(GLProgram glProgram, LightSource[] lights, int numLights, GLCapabilities capabilities) {
+        if(capabilities != null) capabilities.enable();
         
         glProgram.use();
         
@@ -611,8 +610,7 @@ public class Model {
             glDrawElements(GL_TRIANGLES, mesh.indices.capacity(), GL_UNSIGNED_INT, 0);
         }
         
-        if(depthTest) glDisable(GL_DEPTH_TEST);
-        if(cullFace)  glDisable(GL_CULL_FACE);
+        if(capabilities != null) capabilities.disable();
         
         ErrorUtils.checkGLError();
     }
