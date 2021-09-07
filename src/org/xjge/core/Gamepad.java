@@ -23,18 +23,13 @@ final class Gamepad extends InputDevice {
      * Creates a new gamepad object and applies the users settings to its 
      * control configuration.
      * 
-     * @param id          the unique number used to identify the device in 
-     *                    other parts of the engine
-     * @param sensitivity a value used by gameplay systems to adjust the 
-     *                    responsiveness of input actions based off the users 
-     *                    preference
-     * @param deadzone    a value used to indicate how much pressure must be 
-     *                    applied to an analog stick before its input is 
-     *                    recognized
-     * @param config      a collection of various {@link Control} mappings
+     * @param id       the unique number used to identify the device in 
+     *                 other parts of the engine
+     * @param controls a collection of various {@link Control} mappings
+     * @param settings a collection containing additional user preferences
      */
-    Gamepad(int id, float sensitivity, float deadzone, HashMap<Control, Integer> config) {
-        super(id, sensitivity, deadzone, config);
+    Gamepad(int id, HashMap<Control, Integer> controls, HashMap<String, Float> settings) {
+        super(id, controls, settings);
         validate();
     }
     
@@ -81,12 +76,12 @@ final class Gamepad extends InputDevice {
             puppets.peek().commands.forEach((control, command) -> {
                 switch(control) {
                     case LEFT_STICK_X, LEFT_STICK_Y, RIGHT_STICK_X, RIGHT_STICK_Y -> {
-                        command.execute(state.axes(config.get(control)), this, control);
+                        command.execute(state.axes(controls.get(control)), this, control);
                     }
                     
-                    case L2, R2 -> command.execute(state.axes(config.get(control)), this, control);
+                    case L2, R2 -> command.execute(state.axes(controls.get(control)), this, control);
                     
-                    default -> command.execute(state.buttons(config.get(control)), this, control);
+                    default -> command.execute(state.buttons(controls.get(control)), this, control);
                 }
             });
         }

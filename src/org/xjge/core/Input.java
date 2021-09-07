@@ -47,8 +47,7 @@ public final class Input {
     private static final HashMap<Integer, InputDevice> inputDevices = new HashMap<>();
     
     private static final HashMap<Integer, HashMap<Control, Integer>> controlConfigs = new HashMap<>();
-    private static final HashMap<Integer, Float> sensitivityConfigs;
-    private static final HashMap<Integer, Float> deadzoneConfigs;
+    private static final HashMap<Integer, HashMap<String, Float>> settingConfigs    = new HashMap<>();
     
     static final Map<Integer, Key> keyChars;
     
@@ -106,21 +105,14 @@ public final class Input {
         
         keyChars = Collections.unmodifiableMap(keys);
         
-        sensitivityConfigs = new HashMap<>() {{
-            put(KEY_MOUSE_COMBO, 1f);
-            put(GLFW_JOYSTICK_1, 1f);
-            put(GLFW_JOYSTICK_2, 1f);
-            put(GLFW_JOYSTICK_3, 1f);
-            put(GLFW_JOYSTICK_4, 1f);
-        }};
-        
-        deadzoneConfigs = new HashMap<>() {{
-            put(KEY_MOUSE_COMBO, 0.15f);
-            put(GLFW_JOYSTICK_1, 0.15f);
-            put(GLFW_JOYSTICK_2, 0.15f);
-            put(GLFW_JOYSTICK_3, 0.15f);
-            put(GLFW_JOYSTICK_4, 0.15f);
-        }};
+        for(int i = -1; i < GLFW_JOYSTICK_5; i++) {
+            HashMap<String, Float> settings = new HashMap<>(){{
+                put("leftDeadzone", 0.15f);
+                put("rightDeadzone", 0.15f);
+            }};
+            
+            settingConfigs.put(i, settings);
+        }
         
         var keyMouseConfig = new HashMap<Control, Integer>() {{
             put(CROSS,         GLFW_KEY_SPACE);
@@ -147,7 +139,7 @@ public final class Input {
         }};
         
         controlConfigs.put(KEY_MOUSE_COMBO, keyMouseConfig);
-        inputDevices.put(KEY_MOUSE_COMBO, new KeyMouseCombo(KEY_MOUSE_COMBO, 1f, 0.15f, keyMouseConfig));
+        inputDevices.put(KEY_MOUSE_COMBO, new KeyMouseCombo(KEY_MOUSE_COMBO, keyMouseConfig, settingConfigs.get(KEY_MOUSE_COMBO)));
         setKeyMouseAxisValues(GLFW_KEY_A, GLFW_KEY_D, GLFW_KEY_W, GLFW_KEY_S);
         
         for(int i = 0; i < GLFW_JOYSTICK_5; i++) {
@@ -260,15 +252,14 @@ public final class Input {
                 }
             } else {
                 if(glfwJoystickPresent(i)) {
-                    inputDevices.put(i, new Gamepad(i, sensitivityConfigs.get(i), deadzoneConfigs.get(i), controlConfigs.get(i)));
+                    inputDevices.put(i, new Gamepad(i, controlConfigs.get(i), settingConfigs.get(i)));
                     if(i < GLFW_JOYSTICK_5) connected[i] = true;
                 }
             }
         }
         
-        inputDevices.get(KEY_MOUSE_COMBO).sensitivity = sensitivityConfigs.get(KEY_MOUSE_COMBO);
-        inputDevices.get(KEY_MOUSE_COMBO).deadzone    = deadzoneConfigs.get(KEY_MOUSE_COMBO);
-        inputDevices.get(KEY_MOUSE_COMBO).config.putAll(controlConfigs.get(KEY_MOUSE_COMBO));
+        inputDevices.get(KEY_MOUSE_COMBO).controls.putAll(controlConfigs.get(KEY_MOUSE_COMBO));
+        inputDevices.get(KEY_MOUSE_COMBO).settings.putAll(settingConfigs.get(KEY_MOUSE_COMBO));
     }
     
     /**
@@ -294,13 +285,21 @@ public final class Input {
             
             while(xmlReader.hasNext()) {
                 final int ID = id;
+                final HashMap<String, Float> settings = new HashMap<>();
                 
                 switch(xmlReader.next()) {
                     case XMLStreamConstants.START_ELEMENT -> {
                         if(xmlReader.getName().getLocalPart().equals("device")) {
-                            id = Integer.parseInt(xmlReader.getAttributeValue(null, "id"));
-                            sensitivityConfigs.put(id, Float.parseFloat(xmlReader.getAttributeValue(null, "sensitivity")));
-                            deadzoneConfigs.put(id, Float.parseFloat(xmlReader.getAttributeValue(null, "deadzone")));
+                            
+                            for(int a = 0; a < xmlReader.getAttributeCount(); a++) {
+                                String attribName = xmlReader.getAttributeLocalName(a);
+                                
+                                if(attribName.equals("id")) {
+                                    id = Integer.parseInt(xmlReader.getAttributeValue(null, "id"));
+                                } else {
+                                    settings.put(attribName, Float.parseFloat(xmlReader.getAttributeValue(null, attribName)));
+                                }
+                            }
                         } else if(xmlReader.getName().getLocalPart().equals("mapping")) {
                             String control = xmlReader.getAttributeValue(null, "control");
                             int button     = Integer.parseInt(xmlReader.getAttributeValue(null, "button"));
@@ -327,15 +326,6 @@ public final class Input {
      * Exports a configuration file containing user input preferences.
      */
     static void exportControls() {
-        /*
-        TODO:
-         - decouple left/right stick deadzones
-         - remove sensitivity- allow implementation to provide
-           additional fields to the .cfg file.
-         - provide these custom fields as a collection that can 
-           be accessed (safely) from the input device 
-        */
-        
         try {
             FileWriter file = new FileWriter("controls.cfg");
             
@@ -343,20 +333,25 @@ public final class Input {
                 output.println("<config>");
                 
                 controlConfigs.forEach((deviceID, mapping) -> {
-                    float sensitivity = 1f;
-                    float deadzone    = 0.15f;
-                    
-                    if(inputDevices.containsKey(deviceID)) {
-                        sensitivity = inputDevices.get(deviceID).sensitivity;
-                        deadzone    = inputDevices.get(deviceID).deadzone;
-                    }
-                    
                     output.append("\t<device id=\"")
                           .append(deviceID + "\" ")
-                          .append("sensitivity=\"")
-                          .append(sensitivity + "\" ")
-                          .append("deadzone=\"")
-                          .append(deadzone + "\">")
+                          .append("leftDeadzone=\"")
+                          .append(settingConfigs.get(deviceID).get("leftDeadzone") + "\" ")
+                          .append("rightDeadzone=\"")
+                          .append(settingConfigs.get(deviceID).get("rightDeadzone") + "\"");
+                    
+                    if(inputDevices.containsKey(deviceID)) {
+                        InputDevice device = inputDevices.get(deviceID);
+                        
+                        device.settings.forEach((name, value) -> {
+                            if(!name.equals("leftDeadzone") && !name.equals("rightDeadzone")) {
+                                output.append(" " + name + "=\"")
+                                      .append(value + "\"");
+                            }
+                        });
+                    }
+                    
+                    output.append(">")
                           .append(System.lineSeparator());
                     
                     mapping.forEach((control, button) -> {
@@ -415,47 +410,20 @@ public final class Input {
     }
     
     /**
-     * Obtains the sensitivity value that an input device will use to adjust 
-     * the responsiveness of its input actions during gameplay.
+     * Obtains the value of some setting that an input device can use to adjust 
+     * the responsiveness of input actions during gameplay.
      * <p>
      * It's recommended that gameplay systems instead use 
-     * {@link Command#getDeviceSensitivity()} and reserve this method for 
-     * instances where the current sensitivity value needs to be exposed to the 
-     * user- such as an interface that allows users to edit their control 
-     * preferences.
-     * 
-     * @param deviceID the number which corresponds to the input device in 
-     *                 question. One of: 
-     * <table><caption></caption>
-     * <tr><td>{@link org.lwjgl.glfw.GLFW#GLFW_JOYSTICK_1 GLFW_JOYSTICK_1}</td>
-     * <td>{@link org.lwjgl.glfw.GLFW#GLFW_JOYSTICK_2 GLFW_JOYSTICK_2}</td>
-     * <td>{@link org.lwjgl.glfw.GLFW#GLFW_JOYSTICK_3 GLFW_JOYSTICK_3}</td></tr>
-     * <tr><td>{@link org.lwjgl.glfw.GLFW#GLFW_JOYSTICK_4 GLFW_JOYSTICK_4}</td> 
-     * <td>{@link KEY_MOUSE_COMBO}</td></tr>
-     * </table>
-     * 
-     * @return the sensitivity value of the specified input device or the 
-     *         default value of 1.0 if the device cannot be found
-     * 
-     * @see setDeviceSensitivity(int, float)
-     */
-    public static float getDeviceSensitivity(int deviceID) {
-        if(inputDevices.containsKey(deviceID)) {
-            return inputDevices.get(deviceID).sensitivity;
-        } else {
-            return 1;
-        }
-    }
-    
-    /**
-     * Obtains the deadzone value an input device will use to determine how 
-     * much pressure must be applied to an analog stick before its input is 
-     * recognized.
+     * {@link Command#getDeviceSetting(String)} and reserve this method for 
+     * instances where the current value of the setting in question needs to be
+     * exposed to the user- such as an interface that allows the user to edit 
+     * their devices preferences.
      * <p>
-     * The effect of the deadzone value is applied automatically by the engine. 
-     * This method should be used in instances where the current deadzone value 
-     * must be exposed to the user- such as an interface that allows users to 
-     * edit their input preferences.
+     * NOTE: by default the engine provides deadzone settings for both the left
+     * and right analog sticks of each input device. These settings determine 
+     * how much a stick will need to be moved before its input is recognized. 
+     * The values of these settings can be queried with "leftDeadzone" and 
+     * "rightDeadzone" respectively.
      * 
      * @param deviceID the number which corresponds to the input device in 
      *                 question. One of: 
@@ -466,17 +434,20 @@ public final class Input {
      * <tr><td>{@link org.lwjgl.glfw.GLFW#GLFW_JOYSTICK_4 GLFW_JOYSTICK_4}</td> 
      * <td>{@link KEY_MOUSE_COMBO}</td></tr>
      * </table>
+     * @param name     the name of the setting to parse a value from
      * 
-     * @return the deadzone value of the specified input device or the default 
-     *         value of 0.15 if the device cannot be found
-     * 
-     * @see setDeviceDeadzone(int, float)
+     * @return the value of the setting or {@code NaN} if the device and/or 
+     *         setting could not be found
      */
-    public static float getDeviceDeadzone(int deviceID) {
+    public static float getDeviceSetting(int deviceID, String name) {
         if(inputDevices.containsKey(deviceID)) {
-            return inputDevices.get(deviceID).deadzone;
+            if(inputDevices.get(deviceID).settings.containsKey(name)) {
+                return inputDevices.get(deviceID).settings.get(name);
+            } else {
+                return Float.NaN;
+            }
         } else {
-            return 0.15f;
+            return Float.NaN;
         }
     }
     
@@ -637,8 +608,23 @@ public final class Input {
     }
     
     /**
-     * Sets the sensitivity value an input device will use to adjust the 
-     * responsiveness of input actions during gameplay.
+     * Changes the setting value of the specified input device.
+     * <p>
+     * This method can also be used to provide additional settings the 
+     * implementation may require from input devices. To achieve this, simply 
+     * pass the value obtained from {@link getDeviceSetting} to the 
+     * {@code value} argument of this method and it will be retained between 
+     * runtime sessions.
+     * <p>
+     * For example, you might do something like this:
+     * <blockquote><pre>
+     * XJGE.init()...
+     * 
+     * float prevValue = Input.getDeviceSetting(KEY_MOUSE_COMBO, "settingName");
+     * Input.setDeviceSetting(KEY_MOUSE_COMBO, "settingName", prevValue);
+     * 
+     * XJGE.start()...
+     * </pre></blockquote>
      * 
      * @param deviceID the number which corresponds to the input device in 
      *                 question. One of: 
@@ -649,51 +635,19 @@ public final class Input {
      * <tr><td>{@link org.lwjgl.glfw.GLFW#GLFW_JOYSTICK_4 GLFW_JOYSTICK_4}</td> 
      * <td>{@link KEY_MOUSE_COMBO}</td></tr>
      * </table>
-     * @param sensitivity the new sensitivity value the input device will use
+     * @param name  the name of the setting that will be changed
+     * @param value the new value to change the setting to
      * 
-     * @see getDeviceSensitivity(int)
+     * @see getDeviceSetting(int, String)
      */
-    public static void setDeviceSensitivity(int deviceID, float sensitivity) {
+    public static void setDeviceSetting(int deviceID, String name, float value) {
         Logger.setDomain("input");
         
         if(inputDevices.containsKey(deviceID)) {
-            inputDevices.get(deviceID).sensitivity = sensitivity;
-            sensitivityConfigs.put(deviceID, sensitivity);
+            inputDevices.get(deviceID).settings.put(name, value);
+            settingConfigs.get(deviceID).put(name, value);
         } else {
-            Logger.logWarning("Failed to change the devices sensitivity. Could " + 
-                              "not find an input device at index " + deviceID + ".",
-                              null);
-        }
-        
-        Logger.setDomain(null);
-    }
-    
-    /**
-     * Sets the deadzone value an input device will use to determine how much 
-     * pressure must be applied to an analog stick before its input is 
-     * recognized.
-     * 
-     * @param deviceID the number which corresponds to the input device in 
-     *                 question. One of: 
-     * <table><caption></caption>
-     * <tr><td>{@link org.lwjgl.glfw.GLFW#GLFW_JOYSTICK_1 GLFW_JOYSTICK_1}</td>
-     * <td>{@link org.lwjgl.glfw.GLFW#GLFW_JOYSTICK_2 GLFW_JOYSTICK_2}</td>
-     * <td>{@link org.lwjgl.glfw.GLFW#GLFW_JOYSTICK_3 GLFW_JOYSTICK_3}</td></tr>
-     * <tr><td>{@link org.lwjgl.glfw.GLFW#GLFW_JOYSTICK_4 GLFW_JOYSTICK_4}</td> 
-     * <td>{@link KEY_MOUSE_COMBO}</td></tr>
-     * </table>
-     * @param deadzone the new deadzone value the input device will use
-     * 
-     * @see getDeviceDeadzone(int)
-     */
-    public static void setDeviceDeadzone(int deviceID, float deadzone) {
-        Logger.setDomain("input");
-        
-        if(inputDevices.containsKey(deviceID)) {
-            inputDevices.get(deviceID).deadzone = deadzone;
-            deadzoneConfigs.put(deviceID, deadzone);
-        } else {
-            Logger.logWarning("Failed to change the devices deadzone value. Could " + 
+            Logger.logWarning("Failed to add extra configuration \"" + name + "\". Could " + 
                               "not find an input device at index " + deviceID + ".",
                               null);
         }

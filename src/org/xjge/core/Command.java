@@ -81,14 +81,29 @@ public abstract class Command {
     }
     
     /**
-     * Provides subclasses with the sensitivity preferences of the input device 
-     * being used to execute this command.
+     * Provides subclasses with a value that denotes some preference of the 
+     * input device currently being used to execute this command.
+     * <p>
+     * NOTE: by default the engine provides deadzone settings for both the left
+     * and right analog sticks of each input device. These settings determine 
+     * how much a stick will need to be moved before its input is recognized. 
+     * The values of these settings can be queried with "leftDeadzone" and 
+     * "rightDeadzone" respectively.
+     * <p>
+     * Additional settings can be defined with 
+     * {@link Input#setDeviceSetting(int, String, float)}.
      * 
-     * @return a value denoting the input devices desired sensitivity to 
-     *         changes in {@link Control} input values
+     * @param name the name of the setting to parse a value from
+     * 
+     * @return the value of the setting or {@code NaN} if the setting of the 
+     *          name specified could not be found
      */
-    protected float getDeviceSensitivity() {
-        return device.sensitivity;
+    protected float getDeviceSetting(String name) {
+        if(device.settings.containsKey(name)) {
+            return device.settings.get(name);
+        } else {
+            return Float.NaN;
+        }
     }
     
     /**
@@ -198,13 +213,19 @@ public abstract class Command {
      * @return true if the input value of the interactive component exhibits a 
      *         greater absolute value than the deadzone value
      */
-    protected boolean axisMoved() {
-        boolean isNotTrigger = (control == LEFT_STICK_X) || 
-                               (control == LEFT_STICK_Y) ||
-                               (control == RIGHT_STICK_X) ||
-                               (control == RIGHT_STICK_Y);
+    protected boolean axisMoved() {        
+        float deadzone       = 0;
+        boolean isNotTrigger = false;
         
-        return Math.abs(inputValue) > (device.deadzone) && isNotTrigger;
+        if(control == LEFT_STICK_X || control == LEFT_STICK_Y) {
+            deadzone     = device.settings.get("leftDeadzone");
+            isNotTrigger = true;
+        } else if(control == RIGHT_STICK_X || control == RIGHT_STICK_Y) {
+            deadzone     = device.settings.get("rightDeadzone");
+            isNotTrigger = true;
+        }
+        
+        return Math.abs(inputValue) > (deadzone) && isNotTrigger;
     }
     
     /**

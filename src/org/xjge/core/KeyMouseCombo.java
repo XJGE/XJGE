@@ -31,18 +31,13 @@ final class KeyMouseCombo extends InputDevice {
      * Creates a new KeyMouseCombo object and applies the users settings to its 
      * control configuration.
      * 
-     * @param id          the unique number used to identify the device in 
-     *                    other parts of the engine
-     * @param sensitivity a value used by gameplay systems to adjust the 
-     *                    responsiveness of input actions based off the users 
-     *                    preference
-     * @param deadzone    a value used to indicate how much pressure must be 
-     *                    applied to an analog stick before its input is 
-     *                    recognized
-     * @param config      a collection of various {@link Control} mappings
+     * @param id       the unique number used to identify the device in 
+     *                 other parts of the engine
+     * @param controls a collection of various {@link Control} mappings
+     * @param settings a collection containing additional user preferences
      */
-    KeyMouseCombo(int id, float sensitivity, float deadzone, HashMap<Control, Integer> config) {
-        super(id, sensitivity, deadzone, config);
+    KeyMouseCombo(int id, HashMap<Control, Integer> controls, HashMap<String, Float> settings) {
+        super(id, controls, settings);
         
         name = "KeyMouseCombo";
         
@@ -55,6 +50,9 @@ final class KeyMouseCombo extends InputDevice {
     /**
      * Calculates an input value of the virtual right analog stick by using the 
      * current and previous positions of the mouse cursor.
+     * <p>
+     * NOTE: You may want to attenuate the value produced by this method with 
+     * some sort of sensitivity setting.
      * 
      * @param currValue the current position of the mouse cursor along a single 
      *                  axis
@@ -62,6 +60,8 @@ final class KeyMouseCombo extends InputDevice {
      *                  single axis
      * 
      * @return a value indicating the intensity of the movement
+     * 
+     * @see Input#setDeviceSetting(int, String, float) 
      */
     private float findAxisValue(float currValue, float prevValue) {
         if(firstMouse) {
@@ -69,7 +69,7 @@ final class KeyMouseCombo extends InputDevice {
             firstMouse = false;
         }
         
-        return (currValue - prevValue) * sensitivity;
+        return (currValue - prevValue);
     }
     
     @Override
@@ -78,8 +78,8 @@ final class KeyMouseCombo extends InputDevice {
             puppets.peek().commands.forEach((control, command) -> {
                 switch(control) {
                     case LEFT_STICK_X, LEFT_STICK_Y -> {
-                        int key1 = (config.get(control) & ((control == LEFT_STICK_X) ? axisValues[0] : axisValues[2]));
-                        int key2 = (config.get(control) & ((control == LEFT_STICK_X) ? axisValues[1] : axisValues[3]));
+                        int key1 = (controls.get(control) & ((control == LEFT_STICK_X) ? axisValues[0] : axisValues[2]));
+                        int key2 = (controls.get(control) & ((control == LEFT_STICK_X) ? axisValues[1] : axisValues[3]));
                         
                         if(glfwGetKey(Window.HANDLE, key1) == GLFW_PRESS) {
                             command.execute(-1, this, control);
@@ -108,9 +108,9 @@ final class KeyMouseCombo extends InputDevice {
                         }
                     }
                         
-                    case L2, R2 -> command.execute(glfwGetMouseButton(Window.HANDLE, config.get(control)), this, control);
+                    case L2, R2 -> command.execute(glfwGetMouseButton(Window.HANDLE, controls.get(control)), this, control);
                     
-                    default -> command.execute(glfwGetKey(Window.HANDLE, config.get(control)), this, control);
+                    default -> command.execute(glfwGetKey(Window.HANDLE, controls.get(control)), this, control);
                 }
             });
         }

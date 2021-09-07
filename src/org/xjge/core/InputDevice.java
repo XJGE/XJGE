@@ -17,9 +17,6 @@ abstract class InputDevice {
 
     final int id;
     
-    float sensitivity;
-    float deadzone;
-    
     boolean enabled = true;
     
     protected String name;
@@ -28,27 +25,22 @@ abstract class InputDevice {
     Stack<Puppet> puppets         = new Stack<>();
     Queue<Puppet> puppetSetEvents = new LinkedList<>();
     
-    final HashMap<Control, Integer> config;
+    final HashMap<Control, Integer> controls;
+    final HashMap<String, Float> settings;
     
     /**
      * Creates a new input device object and applies the users settings to its 
      * control configuration.
      * 
-     * @param id          the unique number used to identify the device in 
-     *                    other parts of the engine
-     * @param sensitivity a value used by gameplay systems to adjust the 
-     *                    responsiveness of input actions based off the users 
-     *                    preference
-     * @param deadzone    a value used to indicate how much pressure must be 
-     *                    applied to an analog stick before its input is 
-     *                    recognized
-     * @param config      a collection of various {@link Control} mappings
+     * @param id       the unique number used to identify the device in 
+     *                 other parts of the engine
+     * @param controls a collection of various {@link Control} mappings
+     * @param settings a collection containing additional user preferences
      */
-    InputDevice(int id, float sensitivity, float deadzone, HashMap<Control, Integer> config) {
-        this.id          = id;
-        this.sensitivity = sensitivity;
-        this.deadzone    = deadzone;
-        this.config      = config;
+    InputDevice(int id, HashMap<Control, Integer> controls, HashMap<String, Float> settings) {
+        this.id       = id;
+        this.controls = controls;
+        this.settings = settings;
     }
     
     /**
@@ -58,13 +50,12 @@ abstract class InputDevice {
      */
     InputDevice(InputDevice inputDevice) {
         id              = inputDevice.id;
-        sensitivity     = inputDevice.sensitivity;
-        deadzone        = inputDevice.deadzone;
         enabled         = inputDevice.enabled;
         enabledStates   = inputDevice.enabledStates;
         puppets         = inputDevice.puppets;
         puppetSetEvents = inputDevice.puppetSetEvents;
-        config          = inputDevice.config;
+        controls        = inputDevice.controls;
+        settings        = inputDevice.settings;
     }
     
     /**
