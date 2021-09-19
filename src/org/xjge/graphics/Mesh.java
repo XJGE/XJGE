@@ -22,12 +22,14 @@ import org.lwjgl.system.MemoryUtil;
 
 /**
  * Represents a 3D polygonal collection of vertices, edges, and faces that will 
- * define the shape of a {@link Model}.
+ * define the shape of a {@link Model}. Contains a single 4x4 matrix that can 
+ * be used by the implementation to change the orientation of the mesh in world 
+ * space.
  * 
  * @author J Hoffman
  * @since  2.0.0
  */
-final class Mesh {
+public final class Mesh {
 
     final int vao   = glGenVertexArrays();
     private int vbo = glGenBuffers();
@@ -36,7 +38,7 @@ final class Mesh {
     int texIndex;
     
     IntBuffer indices;
-    Matrix4f modelMatrix = new Matrix4f();
+    public Matrix4f modelMatrix = new Matrix4f();
     
     /**
      * Creates a mesh object that will be used by the engine to render part of 

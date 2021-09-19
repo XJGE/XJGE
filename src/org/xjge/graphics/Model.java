@@ -9,8 +9,10 @@ import java.io.InputStream;
 import java.nio.ByteBuffer;
 import java.nio.IntBuffer;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import org.joml.Matrix3f;
 import org.joml.Matrix4f;
@@ -350,7 +352,7 @@ public class Model {
             AIVectorKey aiVecKey = aiPosKeyBuf.get(i);
             AIVector3D aiVec     = aiVecKey.mValue();
             
-            Matrix4f transform = new Matrix4f().translate(aiVec.x(), aiVec.y(), aiVec.z());
+            Matrix4f transform = new Matrix4f().translation(aiVec.x(), aiVec.y(), aiVec.z());
             
             AIQuatKey aiQuatKey    = aiRotKeyBuf.get(i);
             AIQuaternion aiQuat    = aiQuatKey.mValue();
@@ -418,18 +420,18 @@ public class Model {
      * 
      * @param position the position to set the model to
      */
-    public void translate(Vector3f position) {
+    public void translation(Vector3f position) {
         for(Mesh mesh : meshes) mesh.modelMatrix.translation(position);
     }
     
     /**
-     * Alternate version of {@link translate(Vector3f) translate()}.
+     * Alternate version of {@link translation(Vector3f) translation()}.
      * 
      * @param x the x-coordinate of the game world to place this model at
      * @param y the y-coordinate of the game world to place this model at
      * @param z the z-coordinate of the game world to place this model at
      */
-    public void translate(float x, float y, float z) {
+    public void translation(float x, float y, float z) {
         for(Mesh mesh : meshes) mesh.modelMatrix.translation(x, y, z);
     }
     
@@ -442,7 +444,7 @@ public class Model {
      * @param angleY the angle to rotate the model along the y-axis
      * @param angleZ the angle to rotate the model along the z-axis
      */
-    public void rotate(float angleX, float angleY, float angleZ) {
+    public void rotationXYZ(float angleX, float angleY, float angleZ) {
         for(Mesh mesh : meshes) mesh.modelMatrix.rotationXYZ(angleX, angleY, angleZ);
     }
     
@@ -484,29 +486,14 @@ public class Model {
     }
     
     /**
-     * Changes the orientation of the 3D model to point its {@code -z} value 
-     * along the direction specified.
+     * Provides access to the models {@link Mesh} objects. The model matrix 
+     * contained in each mesh object can be used to apply custom 
+     * transformations otherwise not available through the model class.
      * 
-     * @param direction the direction point the models {@code -z} along
-     * @param up        the direction understood as upwards relative to the 
-     *                  game world
+     * @return an immutable collection of this models mesh objects
      */
-    public void lookAlong(Vector3f direction, Vector3f up) {
-        for(Mesh mesh : meshes) mesh.modelMatrix.setLookAlong(direction, up);
-    }
-    
-    /**
-     * Changes the orientation of the 3D model to point towards the specified 
-     * target. Intended for right-handed coordinate systems.
-     * 
-     * @param position  the current position of the 3D model
-     * @param target    the target position to point the models {@code -z} 
-     *                  towards
-     * @param up        the direction understood as upwards relative to the 
-     *                  game world
-     */
-    public void lookAt(Vector3f position, Vector3f target, Vector3f up) {
-        for(Mesh mesh : meshes) mesh.modelMatrix.setLookAt(position, target, up);
+    public List<Mesh> getMeshes() {
+        return Collections.unmodifiableList(Arrays.asList(meshes));
     }
     
     /**
