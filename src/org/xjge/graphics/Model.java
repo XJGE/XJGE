@@ -434,6 +434,19 @@ public class Model {
     }
     
     /**
+     * Changes the rotation of the entire 3D model relative to each axis. This 
+     * method is essentially a combined version of {@link rotateX rotateX()}, 
+     * {@link rotateY rotateY()}, and {@link rotateZ rotateZ()}.
+     * 
+     * @param angleX the angle to rotate the model along the x-axis
+     * @param angleY the angle to rotate the model along the y-axis
+     * @param angleZ the angle to rotate the model along the z-axis
+     */
+    public void rotate(float angleX, float angleY, float angleZ) {
+        for(Mesh mesh : meshes) mesh.modelMatrix.rotationXYZ(angleX, angleY, angleZ);
+    }
+    
+    /**
      * Rotates the entire 3D model in relation to the worlds x-axis.
      * 
      * @param angle the angle with which the model will be rotated
@@ -468,6 +481,32 @@ public class Model {
      */
     public void scale(float factor) {
         for(Mesh mesh : meshes) mesh.modelMatrix.scale(factor);
+    }
+    
+    /**
+     * Changes the orientation of the 3D model to point its {@code -z} value 
+     * along the direction specified.
+     * 
+     * @param direction the direction point the models {@code -z} along
+     * @param up        the direction understood as upwards relative to the 
+     *                  game world
+     */
+    public void lookAlong(Vector3f direction, Vector3f up) {
+        for(Mesh mesh : meshes) mesh.modelMatrix.setLookAlong(direction, up);
+    }
+    
+    /**
+     * Changes the orientation of the 3D model to point towards the specified 
+     * target. Intended for right-handed coordinate systems.
+     * 
+     * @param position  the current position of the 3D model
+     * @param target    the target position to point the models {@code -z} 
+     *                  towards
+     * @param up        the direction understood as upwards relative to the 
+     *                  game world
+     */
+    public void lookAt(Vector3f position, Vector3f target, Vector3f up) {
+        for(Mesh mesh : meshes) mesh.modelMatrix.setLookAt(position, target, up);
     }
     
     /**
