@@ -60,7 +60,7 @@ public class Model {
     private final Vector3f noValue = new Vector3f();
     private final Matrix3f normal  = new Matrix3f();
     
-    private Mesh[] meshes;
+    private Mesh[] meshes; //TODO: permit mesh removal?
     private Texture[] textures;
     
     private final ArrayList<Bone> bones = new ArrayList<>();
