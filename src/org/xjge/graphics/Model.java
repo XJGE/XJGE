@@ -53,6 +53,7 @@ public class Model {
     
     public Color color = Color.WHITE;
     
+    private final String filename;
     private AIScene aiScene;
     private Matrix4f rootTransform;
     private Node rootNode;
@@ -82,8 +83,10 @@ public class Model {
      *                 aiProcess_FixInfacingNormals}, etc.
      */
     public Model(String filename, int aiArgs) {
+        this.filename = filename;
+        
         try(InputStream file = Model.class.getResourceAsStream(XJGE.getAssetsFilepath() + filename)) {
-            loadModel(filename, file, aiArgs);
+            loadModel(file, aiArgs);
         } catch(Exception e) {
             Logger.setDomain("graphics");
             Logger.logWarning("Failed to load model \"" + filename + "\"", e);
@@ -111,8 +114,6 @@ public class Model {
      * Specifies various file open/read/close procedures and then constructs a 
      * new model instance using the data parsed from the file.
      * 
-     * @param filename the name of the file to load. Expects the file extension 
-     *                 to be included.
      * @param file     the file to extract model data from
      * @param aiArgs   the Assimp arguments to use for post processing such as 
      *                 {@link org.lwjgl.assimp.Assimp#aiProcess_Triangulate 
@@ -122,7 +123,7 @@ public class Model {
      *                 {@link org.lwjgl.assimp.Assimp#aiProcess_FixInfacingNormals 
      *                 aiProcess_FixInfacingNormals}, etc.
      */
-    private void loadModel(String filename, InputStream file, int aiArgs) throws Exception {
+    private void loadModel(InputStream file, int aiArgs) throws Exception {
         byte[] data = file.readAllBytes();
         
         ByteBuffer modelBuf = MemoryUtil.memAlloc(data.length).put(data).flip();
@@ -497,26 +498,87 @@ public class Model {
     }
     
     /**
-     * Outputs a list of every animation this model has at its disposal to the 
-     * console.
+     * Outputs a list to the console containing information about every 
+     * animation baked into this model.
      */
     public void listAnimations() {
-        Logger.setDomain("graphics");
-        animations.forEach((name, anim) -> Logger.logInfo(name));
+        Logger.setDomain("graphics");        
+        Logger.logInfo("Skeletal Animations for Model \"" + filename + "\":");
+        animations.forEach((name, anim) -> Logger.logInfo("\"" + name + "\" (" + anim.duration + " sec)"));
         Logger.setDomain(null);
     }
     
     /**
-     * Sets the current that will be played by this model. A small transition 
-     * animation will be generated if the value passed to the {@code numFrames} 
-     * argument is greater than zero.
+     * Obtains the total duration of the specified animation as it was parsed 
+     * from the model file.
+     * 
+     * @param name the name of the animation to query
+     * 
+     * @return the duration (in seconds) of the animation 
+     */
+    public float getAnimationDuration(String name) {
+        return animations.get(name).duration;
+    }
+    
+    /**
+     * Checks whether the specified animation has finished playing.
+     * 
+     * @param name the name of the animation to query
+     * 
+     * @return true if the animation has completed a full cycle of all its 
+     *         keyframes
+     */
+    public boolean getAnimationFinished(String name) {
+        return animations.get(name).getFinished();
+    }
+    
+    /**
+     * Obtains a value which indicates how close we are to completing the 
+     * specified animations current {@link KeyFrame}.
+     * 
+     * @param name the name of the animation to query
+     * 
+     * @return a non-negative number (between 0 and 1) indicating the 
+     *         progression of the animations current keyframe
+     */
+    public float getAnimationFrameTime(String name) {
+        return animations.get(name).getFrameTime();
+    }
+    
+    /**
+     * Obtains the number of keyframes the specified animation has.
+     * 
+     * @param name the name of the animation to query
+     * 
+     * @return the number of keyframes parsed from the file
+     */
+    public int getAnimationFrameCount(String name) {
+        return animations.get(name).getFrameCount();
+    }
+    
+    /**
+     * Obtains the current amount of time that's elapsed in the specified 
+     * animation.
+     * 
+     * @param name the name of the animation to query
+     * 
+     * @return the seek time of the animation (in seconds)
+     */
+    public float getAnimationSeekTime(String name) {
+        return animations.get(name).getSeekTime();
+    }
+    
+    /**
+     * Sets the current animation that will be played by this model. A small 
+     * transition animation will be generated if the value passed to the 
+     * {@code numFrames} argument is greater than zero.
      * 
      * @param name      the name of the animation as it appears in the model 
      *                  file
      * @param numFrames the number of frames to transition between the current 
      *                  animation and the new one
      */
-    public void setAnimation(String name, int numFrames) {
+    public void setCurrentAnimation(String name, int numFrames) {
         if(!animations.containsKey(name)) {
             Logger.setDomain("graphics");
             Logger.logWarning(
@@ -575,14 +637,47 @@ public class Model {
     }
     
     /**
-     * Updates the current skeletal animation.
+     * Sets the time elapsed between the current {@link KeyFrame} and the next 
+     * one in sequence.
+     * 
+     * @param frameTime a non-negative number (between 0 and 1) indicating the 
+     *                  progression of the animations current keyframe
      */
-    public void updateAnimation() {
+    public void setAnimationFrameTime(float frameTime) {
+        currAnimation.setFrameTime(frameTime);
+    }
+    
+    /**
+     * Sets the current seek time of the animation. Similar in function to a 
+     * slider on a video or movie that can be moved back and forth to change 
+     * the current time/frame/scene.
+     * 
+     * @param seekTime a value to offset the animations current seek/elapsed 
+     *                 time with
+     */
+    public void setAnimationSeekTime(float seekTime) {
+        currAnimation.setSeekTime(seekTime);
+    }
+    
+    /**
+     * Steps the seek time of the models current animation forwards. A call to 
+     * this method must be made regularly inside the update loop for models to 
+     * utilize the engines animation utilities properly.
+     * <p>
+     * NOTE: the value passed to the delta parameter should be one of 
+     * {@code targetDelta} or {@code trueDelta} provided by the 
+     * {@linkplain org.xjge.core.Scene#update(double, double) update()} method 
+     * of the Scene class.
+     * 
+     * @param delta the time (in seconds) it took to complete a single game 
+     *              tick
+     */
+    public void updateAnimation(double delta) {
         if(currAnimation.transition && currAnimation.getFinished()) {
             currAnimation = animations.get(currAnimation.nextAnim);
         }
         
-        currAnimation.genCurrFrame(speed, loopAnimation);
+        currAnimation.genCurrFrame(speed, loopAnimation, delta);
     }
     
     /**

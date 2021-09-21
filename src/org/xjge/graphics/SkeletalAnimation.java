@@ -1,6 +1,5 @@
 package org.xjge.graphics;
 
-import org.xjge.core.Game;
 import java.util.List;
 import org.joml.Matrix4f;
 import org.lwjgl.assimp.AIAnimation;
@@ -93,11 +92,13 @@ class SkeletalAnimation {
      * @param speed a non-negative number used to set the animations playback 
      *              speed
      * @param loop  if true, animations will loop indefinitely until stopped
+     * @param delta the time (in seconds) it took to complete a single game 
+     *              tick
      */
-    private void step(float speed, boolean loop) {
+    private void step(float speed, boolean loop, double delta) {
         if(speed > 0) {
-            frameTime += (speed + Game.getDelta());
-            seekTime  += (speed + Game.getDelta());
+            frameTime += (speed + delta);
+            seekTime  += (speed + delta);
         }
         
         if(frameTime > 1) frameTime %= 1;
@@ -143,6 +144,15 @@ class SkeletalAnimation {
      */
     float getFrameTime() {
         return frameTime;
+    }
+    
+    /**
+     * Obtains the number of keyframes this animation has.
+     * 
+     * @return the number of keyframes parsed from the file
+     */
+    int getFrameCount() {
+        return frames.size();
     }
     
     /**
@@ -222,9 +232,11 @@ class SkeletalAnimation {
      * @param speed a non-negative number used to set the animations playback 
      *              speed
      * @param loop  if true, animations will loop indefinitely until stopped
+     * @param delta the time (in seconds) it took to complete a single game 
+     *              tick
      */
-    void genCurrFrame(float speed, boolean loop) {
-        step(speed, loop);
+    void genCurrFrame(float speed, boolean loop, double delta) {
+        step(speed, loop, delta);
         findNearestFrames();
         
         for(int b = 0; b < Model.MAX_BONES; b++) {
