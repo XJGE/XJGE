@@ -105,7 +105,7 @@ class SkeletalAnimation {
         
         if(transition) finished = (seekTime >= duration - 2);
         
-        if(seekTime > duration) {
+        if(seekTime > duration - 2) {
             if(loop) {
                 seekTime %= duration;
             } else {

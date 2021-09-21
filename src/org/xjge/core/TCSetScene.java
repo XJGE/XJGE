@@ -9,6 +9,10 @@ import java.util.List;
 
 /**
  * Changes the current scene to render.
+ * <p>
+ * NOTE: The package containing the scenes returned by 
+ * {@link org.xjge.core.XJGE#getScenesFilepath() XJGE.getScenesFilepath()} must 
+ * be named "scenes" otherwise this command will fail.
  * 
  * @author J Hoffman
  * @since  2.0.0
@@ -22,9 +26,9 @@ final class TCSetScene extends TerminalCommand {
         super("Changes the current scene to render.", 
 
               "Pass the class name of the desired level, should not include " + 
-              " parentheses or extension.",
+              "parentheses or extension.",
 
-              "setLevel (<string>)");
+              "setScene (<string>)");
     }
 
     @Override
