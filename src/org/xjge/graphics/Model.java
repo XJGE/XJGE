@@ -61,7 +61,7 @@ public class Model {
     private final Vector3f noValue = new Vector3f();
     private final Matrix3f normal  = new Matrix3f();
     
-    private Mesh[] meshes; //TODO: permit mesh removal?
+    private Mesh[] meshes;
     private Texture[] textures;
     
     private final ArrayList<Bone> bones = new ArrayList<>();
@@ -105,7 +105,6 @@ public class Model {
         this(filename, 
              aiProcess_JoinIdenticalVertices | 
              aiProcess_Triangulate | 
-             aiProcess_GenSmoothNormals | 
              aiProcess_LimitBoneWeights | 
              aiProcess_FixInfacingNormals);
     }
@@ -625,6 +624,9 @@ public class Model {
     /**
      * Sets the playback speed of this models current animation. Subsequent 
      * animations will inherit the value specified.
+     * <p>
+     * NOTE: The total number of keyframes in an animation should be evenly 
+     * divisible otherwise you'll get some stuttering with values below 1. 
      * 
      * @param speed a non-negative number between 1 and 0. A value of zero will 
      *              pause the animation at its current {@link KeyFrame}.
