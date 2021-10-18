@@ -292,12 +292,12 @@ public class Model {
         for(int i = 0; i < textures.length; i++) {
             AIMaterial aiMaterial = AIMaterial.create(materialBuf.get(i));
             
-            AIString filename = AIString.calloc();
-            Assimp.aiGetMaterialTexture(aiMaterial, aiTextureType_DIFFUSE, 0, filename, (IntBuffer) null, null, null, null, null, null);
+            AIString aiFilename = AIString.calloc();
+            Assimp.aiGetMaterialTexture(aiMaterial, aiTextureType_DIFFUSE, 0, aiFilename, (IntBuffer) null, null, null, null, null, null);
             
-            textures[i] = new Texture(filename.dataString());
+            textures[i] = new Texture(aiFilename.dataString());
             
-            filename.free();
+            aiFilename.free();
             
             glBindTexture(GL_TEXTURE_2D, textures[i].handle);
                 glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_MIRRORED_REPEAT);
@@ -673,11 +673,13 @@ public class Model {
      *              tick
      */
     public void updateAnimation(double delta) {
-        if(currAnimation.transition && currAnimation.getFinished()) {
-            currAnimation = animations.get(currAnimation.nextAnim);
+        if(currAnimation != null) {
+            if(currAnimation.transition && currAnimation.getFinished()) {
+                currAnimation = animations.get(currAnimation.nextAnim);
+            }
+
+            currAnimation.genCurrFrame(speed, loopAnimation, delta);
         }
-        
-        currAnimation.genCurrFrame(speed, loopAnimation, delta);
     }
     
     /**

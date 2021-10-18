@@ -22,7 +22,7 @@ import org.joml.Vector3f;
  */
 public abstract class Camera {
     
-    protected int fov = 45;
+    protected float fov = 45.0f;
     
     boolean isOrtho;
     
