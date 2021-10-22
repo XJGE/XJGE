@@ -370,10 +370,6 @@ public class Model {
         }
     }
     
-    public void bindMeshTexture(Mesh mesh) {
-        
-    }
-    
     /**
      * generates every {@link KeyFrame} of a {@link SkeletalAnimation}.
      * 
@@ -409,15 +405,55 @@ public class Model {
     }
     
     /**
+     * Sets the texture of the specified mesh to the current 
+     * {@code GL_TEXTURE_2D} target. This method is useful when you want to 
+     * change various texture parameters to better suit the model.
+     * <p>
+     * NOTE: By default textures are loaded by the model class using 
+     * mirrored-repeat wrapping and a nearest neighbor filter.
+     * 
+     * @param mesh the mesh who's texture we want to set as the current bind 
+     *              target
+     */
+    public void bindMeshTexture(Mesh mesh) {
+        if(meshes.contains(mesh)) {
+            glBindTexture(GL_TEXTURE_2D, textures[mesh.textureID].handle);
+        } else {
+            String meshName = (mesh == null) ? "null" : mesh.name;
+            
+            Logger.setDomain("graphics");
+            Logger.logWarning("Failed to bind the texture of mesh \"" + meshName + 
+                              "\" no such mesh is present in this model.", null);
+            Logger.setDomain(null);
+        }
+    }
+    
+    /**
+     * Alternate version of {@link bindMeshTexture bindMeshTexture()}.
+     * <p>
+     * NOTE: Mesh names are not guaranteed to be unique. As such, you should 
+     * only use this method if you're certain the name specified matches that of
+     * the mesh who's texture you're trying to bind.
+     * 
+     * @param name the name that corresponds to the mesh we want to set as the 
+     *              bind target
+     */
+    public void bindMeshTexture(String name) {
+        meshes.forEach(mesh -> {
+            if(mesh.name.equals(name)) {
+                glBindTexture(GL_TEXTURE_2D, textures[mesh.textureID].handle);
+            } 
+        });
+    }
+    
+    /**
      * Couples the local space of the models mesh normals to that of the 
      * current scenes world space. Use this to fix the direction of the light 
      * source relative to the model whenever it's being illuminated 
      * incorrectly.
      */
     public void delocalizeNormal() {
-        meshes.forEach(mesh -> {
-            normal.set(mesh.modelMatrix.invert());
-        });
+        meshes.forEach(mesh -> normal.set(mesh.modelMatrix.invert()));
     }
     
     /**
@@ -694,7 +730,7 @@ public class Model {
         
         glProgram.use();
         
-        for(Mesh mesh : meshes) {
+        meshes.forEach(mesh -> {
             glBindTexture(GL_TEXTURE_2D, textures[mesh.textureID].handle);
             glBindVertexArray(mesh.vao);
             
@@ -727,7 +763,7 @@ public class Model {
             }
             
             glDrawElements(GL_TRIANGLES, mesh.indices.capacity(), GL_UNSIGNED_INT, 0);
-        }
+        });
         
         if(capabilities != null) capabilities.disable();
         
@@ -738,7 +774,7 @@ public class Model {
      * Convenience method which frees the data buffers allocated by this class.
      */
     public void freeBuffers() {
-        for(Mesh mesh : meshes) mesh.freeBuffers();
+        meshes.forEach(mesh -> mesh.freeBuffers());
     }
     
     /**
