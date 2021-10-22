@@ -57,15 +57,29 @@ public class Model {
     private Matrix4f rootTransform;
     private Node rootNode;
     private SkeletalAnimation currAnimation;
-    private final Vector3f noValue = new Vector3f();
-    private final Matrix3f normal  = new Matrix3f();
+    private final Vector3f noValue        = new Vector3f();
+    private final Matrix3f normal         = new Matrix3f();
+    private final DefaultCaps defaultCaps = new DefaultCaps();
     
     public List<Mesh> meshes = new ArrayList();
+    
     private Texture[] textures;
-    
     private final ArrayList<Bone> bones = new ArrayList<>();
-    
     private Map<String, SkeletalAnimation> animations;
+    
+    private class DefaultCaps extends GLCapabilities {
+        @Override
+        public void enable() {
+            glEnable(GL_DEPTH_TEST);
+            glEnable(GL_CULL_FACE);
+        }
+
+        @Override
+        public void disable() {
+            glDisable(GL_CULL_FACE);
+            glDisable(GL_DEPTH_TEST);
+        }
+    }
     
     /**
      * Overloaded version of {@link Model(String)} that permits the use of 
@@ -768,6 +782,21 @@ public class Model {
         if(capabilities != null) capabilities.disable();
         
         ErrorUtils.checkGLError();
+    }
+    
+    /**
+     * Alternate version of {@link render render()} that uses the default 
+     * {@link GLCapabilities} provided by the engine which includes backface 
+     * culling and depth testing.
+     * 
+     * @param glProgram the shader program that will be used to render this 
+     *                  model
+     * @param lights    an array of light source objects inhabiting the current 
+     *                  scene
+     * @param numLights the total number of lights in the scene
+     */
+    public void render(GLProgram glProgram, LightSource[] lights, int numLights) {
+        render(glProgram, lights, numLights, defaultCaps);
     }
     
     /**
