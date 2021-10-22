@@ -61,7 +61,7 @@ public class Model {
     private final Matrix3f normal         = new Matrix3f();
     private final DefaultCaps defaultCaps = new DefaultCaps();
     
-    public List<Mesh> meshes = new ArrayList();
+    public List<Mesh> meshes = new ArrayList<>();
     
     private Texture[] textures;
     private final ArrayList<Bone> bones = new ArrayList<>();
