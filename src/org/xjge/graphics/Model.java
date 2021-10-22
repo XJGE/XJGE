@@ -39,7 +39,7 @@ import org.xjge.core.Camera;
  */
 public class Model {
 
-    public static final int MAX_TEXTURES   = 4;
+    public static final int MAX_TEXTURES   = 8;
     public static final int MAX_BONES      = 128;
     public static final int MAX_ANIM_SPEED = 5;
     public static final int MAX_WEIGHTS    = 4;
@@ -251,7 +251,7 @@ public class Model {
      * <ol>
      * <li>Models may not exceed the maximum number of allowed textures 
      *     specified through the {@link MAX_TEXTURES} field. By default this 
-     *     number is four.</li>
+     *     number is eight.</li>
      * <li>Any {@link Mesh} object representing part of this model can not use 
      *     more than one texture concurrently. That is, a single texture may be 
      *     shared between multiple meshes, but a single mesh may not exhibit 
