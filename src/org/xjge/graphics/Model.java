@@ -9,7 +9,6 @@ import java.io.InputStream;
 import java.nio.ByteBuffer;
 import java.nio.IntBuffer;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
@@ -61,7 +60,7 @@ public class Model {
     private final Vector3f noValue = new Vector3f();
     private final Matrix3f normal  = new Matrix3f();
     
-    private Mesh[] meshes;
+    public List<Mesh> meshes = new ArrayList();
     private Texture[] textures;
     
     private final ArrayList<Bone> bones = new ArrayList<>();
@@ -235,12 +234,12 @@ public class Model {
      * @throws Exception if the data parsed from the file is invalid
      */
     private void parseMeshData(PointerBuffer meshBuf) throws Exception {
-        meshes = new Mesh[aiScene.mNumMeshes()];
-        
-        for(int i = 0; i < meshes.length; i++) {
+        for(int i = 0; i < aiScene.mNumMeshes(); i++) {
             AIMesh aiMesh = AIMesh.create(meshBuf.get(i));
-            meshes[i]     = new Mesh(aiMesh, bones);
+            meshes.add(new Mesh(aiMesh, bones));
         }
+        
+        meshes = Collections.unmodifiableList(meshes);
     }
     
     /**
@@ -371,6 +370,10 @@ public class Model {
         }
     }
     
+    public void bindMeshTexture(Mesh mesh) {
+        
+    }
+    
     /**
      * generates every {@link KeyFrame} of a {@link SkeletalAnimation}.
      * 
@@ -412,7 +415,9 @@ public class Model {
      * incorrectly.
      */
     public void delocalizeNormal() {
-        for(Mesh mesh : meshes) normal.set(mesh.modelMatrix.invert());
+        meshes.forEach(mesh -> {
+            normal.set(mesh.modelMatrix.invert());
+        });
     }
     
     /**
@@ -421,7 +426,7 @@ public class Model {
      * @param position the position to set the model to
      */
     public void translation(Vector3f position) {
-        for(Mesh mesh : meshes) mesh.modelMatrix.translation(position);
+        meshes.forEach(mesh -> mesh.modelMatrix.translation(position));
     }
     
     /**
@@ -432,7 +437,7 @@ public class Model {
      * @param z the z-coordinate of the game world to place this model at
      */
     public void translation(float x, float y, float z) {
-        for(Mesh mesh : meshes) mesh.modelMatrix.translation(x, y, z);
+        meshes.forEach(mesh -> mesh.modelMatrix.translation(x, y, z));
     }
     
     /**
@@ -445,7 +450,7 @@ public class Model {
      * @param angleZ the angle to rotate the model along the z-axis
      */
     public void rotationXYZ(float angleX, float angleY, float angleZ) {
-        for(Mesh mesh : meshes) mesh.modelMatrix.rotationXYZ(angleX, angleY, angleZ);
+        meshes.forEach(mesh -> mesh.modelMatrix.rotationXYZ(angleX, angleY, angleZ));
     }
     
     /**
@@ -454,7 +459,7 @@ public class Model {
      * @param angle the angle with which the model will be rotated
      */
     public void rotateX(float angle) {
-        for(Mesh mesh : meshes) mesh.modelMatrix.rotateX((float) Math.toRadians(angle));
+        meshes.forEach(mesh -> mesh.modelMatrix.rotateX((float) Math.toRadians(angle)));
     }
     
     /**
@@ -463,7 +468,7 @@ public class Model {
      * @param angle the angle with which the model will be rotated
      */
     public void rotateY(float angle) {
-        for(Mesh mesh : meshes) mesh.modelMatrix.rotateY((float) Math.toRadians(angle));
+        meshes.forEach(mesh -> mesh.modelMatrix.rotateY((float) Math.toRadians(angle)));
     }
     
     /**
@@ -472,7 +477,7 @@ public class Model {
      * @param angle the angle with which the model will be rotated
      */
     public void rotateZ(float angle) {
-        for(Mesh mesh : meshes) mesh.modelMatrix.rotateZ((float) Math.toRadians(angle));
+        meshes.forEach(mesh -> mesh.modelMatrix.rotateZ((float) Math.toRadians(angle)));
     }
     
     /**
@@ -482,18 +487,7 @@ public class Model {
      *               by
      */
     public void scale(float factor) {
-        for(Mesh mesh : meshes) mesh.modelMatrix.scale(factor);
-    }
-    
-    /**
-     * Provides access to the models {@link Mesh} objects. The model matrix 
-     * contained in each mesh object can be used to apply custom 
-     * transformations otherwise not available through the model class.
-     * 
-     * @return an immutable collection of this models mesh objects
-     */
-    public List<Mesh> getMeshes() {
-        return Collections.unmodifiableList(Arrays.asList(meshes));
+        meshes.forEach(mesh -> mesh.modelMatrix.scale(factor));
     }
     
     /**
@@ -701,7 +695,7 @@ public class Model {
         glProgram.use();
         
         for(Mesh mesh : meshes) {
-            glBindTexture(GL_TEXTURE_2D, textures[mesh.texIndex].handle);
+            glBindTexture(GL_TEXTURE_2D, textures[mesh.textureID].handle);
             glBindVertexArray(mesh.vao);
             
             glProgram.setUniform("uType", 5);

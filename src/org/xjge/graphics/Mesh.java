@@ -35,7 +35,9 @@ public final class Mesh {
     private int vbo = glGenBuffers();
     final int ibo   = glGenBuffers();
     
-    int texIndex;
+    final int textureID;
+    
+    public final String name;
     
     IntBuffer indices;
     public Matrix4f modelMatrix = new Matrix4f();
@@ -51,7 +53,8 @@ public final class Mesh {
     Mesh(AIMesh aiMesh, ArrayList<Bone> bones) {
         glBindVertexArray(vao);
         
-        texIndex = aiMesh.mMaterialIndex(); //Determines which texture this mesh should use.
+        textureID = aiMesh.mMaterialIndex(); //Determines which texture this mesh should use.
+        name      = aiMesh.mName().dataString();
         
         parsePositionData(aiMesh);
         parseTexCoordData(aiMesh);
@@ -62,6 +65,8 @@ public final class Mesh {
         glEnableVertexAttribArray(0); //position
         glEnableVertexAttribArray(2); //texture coordinates
         glEnableVertexAttribArray(3); //normal
+        
+        //TODO: move this.
         glEnableVertexAttribArray(7); //boneIDs
         glEnableVertexAttribArray(8); //weights
     }
