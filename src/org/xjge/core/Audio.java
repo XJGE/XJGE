@@ -115,8 +115,8 @@ public final class Audio {
      * @return a sound source object to use for audio output
      */
     private static SoundSource findSoundSource() {
-        SoundSource source  = null;
-        boolean search = true;
+        SoundSource source = null;
+        boolean search    = true;
         
         for(int i = 0; search; i++) {
             if(i < MAX_SOURCES) {
@@ -141,8 +141,6 @@ public final class Audio {
                 search = false;
             }
         }
-        
-        if(source != null) source.setWorldPosition(null);
         
         return source;
     }

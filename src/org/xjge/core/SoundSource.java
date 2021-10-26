@@ -133,7 +133,8 @@ final class SoundSource {
      * @param position the position to place the sound source at
      */
     void setWorldPosition(Vector3f position) {
-        if(position != null) this.position = position;
+        this.position = position;
+        if(position == null) alSource3f(handle, AL_POSITION, 0, 0, 0);
     }
     
     /**
@@ -164,8 +165,6 @@ final class SoundSource {
             float z   = (float) (dist * Math.sin(rad));
 
             alSource3f(handle, AL_POSITION, x, tempPos.y, z);
-        } else {
-            alSource3f(handle, AL_POSITION, 0, 0, 0);
         }
     }
     
