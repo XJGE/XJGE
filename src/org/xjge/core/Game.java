@@ -85,6 +85,9 @@ public final class Game {
                 ticked    = true;
                 tickCount = (tickCount == Integer.MAX_VALUE) ? 0 : tickCount + 1;
                 
+                Audio.updateSoundSourcePositions();
+                Audio.queueMusicBodySection();
+                
                 //Process any unresolved events otherwise update the scene normally.
                 if(events.size() > 0) {
                     Event event = events.peek();
@@ -106,9 +109,6 @@ public final class Game {
                         Audio.setViewportCamData(viewport.id, viewport.currCamera.position, viewport.currCamera.direction);
                     }
                 }
-
-                Audio.updateSoundSourcePositions();
-                Audio.queueMusicBodySection();
                 
                 if(tick(60)) {
                     fps    = cycles;
