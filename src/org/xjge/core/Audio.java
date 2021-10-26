@@ -142,6 +142,8 @@ public final class Audio {
             }
         }
         
+        if(source != null) source.setWorldPosition(null);
+        
         return source;
     }
     

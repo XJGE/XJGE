@@ -164,6 +164,8 @@ final class SoundSource {
             float z   = (float) (dist * Math.sin(rad));
 
             alSource3f(handle, AL_POSITION, x, tempPos.y, z);
+        } else {
+            alSource3f(handle, AL_POSITION, 0, 0, 0);
         }
     }
     

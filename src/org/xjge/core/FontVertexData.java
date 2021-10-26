@@ -38,6 +38,8 @@ final class FontVertexData {
         vbo = glGenBuffers();
         ibo = glGenBuffers();
         
+        //TODO: fix memory leak in here.
+        
         vboPosOffset = glGenBuffers();
         vboTexOffset = glGenBuffers();
         vboColOffset = glGenBuffers();
