@@ -125,7 +125,7 @@ public final class Audio {
                     search = false;
                 }
             } else {
-                //We'll just fkn take it then!
+                //We'll just take it then!
                 var tempSources = new HashMap<SoundSource, Float>();
                 for(SoundSource src : soundSources) {
                     tempSources.put(src, alGetSourcef(src.handle, AL_GAIN));
