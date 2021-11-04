@@ -2,7 +2,9 @@ package org.xjge.scenes;
 
 import java.util.Map;
 import org.xjge.core.Camera;
+import org.xjge.core.Game;
 import org.xjge.core.Scene;
+import org.xjge.graphics.Color;
 import org.xjge.graphics.GLProgram;
 
 /**
@@ -17,6 +19,8 @@ public class TestScene extends Scene {
 
     public TestScene() {
         super("test");
+        
+        //Game.setClearColor(Color.BLACK);
     }
 
     @Override

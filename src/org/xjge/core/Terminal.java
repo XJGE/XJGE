@@ -8,7 +8,6 @@ import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.TreeMap;
 import org.joml.Vector2i;
@@ -58,7 +57,7 @@ final class Terminal implements PropertyChangeListener {
     
     RectangleBatch rectBatch1;
     RectangleBatch rectBatch2;
-    private static final LinkedHashMap<Integer, Rectangle> opaqueRectangles = new LinkedHashMap<>();
+    private static final Rectangle[] opaqueRectangles = new Rectangle[5];
     
     TreeMap<String, TerminalCommand> commands;
     private final ArrayList<String> cmdHistory      = new ArrayList<>();
@@ -66,7 +65,7 @@ final class Terminal implements PropertyChangeListener {
     private final HashMap<Integer, Integer> charPos = new HashMap<>();
     
     static {
-        for(int i = 0; i < 5; i++) opaqueRectangles.put(i, new Rectangle());
+        for(int i = 0; i < 5; i++) opaqueRectangles[i] = new Rectangle();
     }
     
     /**
@@ -119,15 +118,15 @@ final class Terminal implements PropertyChangeListener {
         rectBatch1.batchEnd();
         
         rectBatch2.batchStart(0.5f);
-            opaqueRectangles.forEach((index, rect) -> {
-                rectBatch2.drawRectangle(rect, Color.BLACK);
-            });
+            for(Rectangle opaqueRectangle : opaqueRectangles) {
+                rectBatch2.drawRectangle(opaqueRectangle, Color.BLACK);
+            }
         rectBatch2.batchEnd();
         
         text.drawString(font, ">", caretPos, Color.WHITE);
         
         for(int i = 0; i <= shiftElements; i++) {
-            text.drawOutput(font, cmdOutput, cmdOutput[i], i, executed, opaqueRectangles.get(i));
+            text.drawOutput(font, cmdOutput, cmdOutput[i], i, executed, opaqueRectangles[i]);
         }
         
         executed = false;
@@ -412,8 +411,12 @@ final class Terminal implements PropertyChangeListener {
         public void execute(List<String> args) {
             shiftElements = -1;
             
-            opaqueRectangles.clear();
-            for(int i = 0; i < 5; i++) opaqueRectangles.put(i, new Rectangle());
+            for(int i = 0; i < 5; i++) {
+                opaqueRectangles[i].xPos   = 0;
+                opaqueRectangles[i].yPos   = 0;
+                opaqueRectangles[i].width  = 0;
+                opaqueRectangles[i].height = 0;
+            }
         }
     }
     

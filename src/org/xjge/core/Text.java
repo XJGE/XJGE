@@ -68,6 +68,8 @@ public final class Text {
         if(valueChanged(prevValue, currValue)) prevValue.put(drawOrder, currValue);
     }
     
+    int trueCount = 0;
+    
     /**
      * Draws a string of text to the screen.
      * 

@@ -78,6 +78,7 @@ public final class RectangleBatch {
         
         glDrawElements(GL_TRIANGLES, g.indices.capacity(), GL_UNSIGNED_INT, 0);
         glDisable(GL_BLEND);
+        
         ErrorUtils.checkGLError();
     }
     /**
