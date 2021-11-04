@@ -190,7 +190,8 @@ public final class Text {
         if(!fontData.containsKey(drawOrder)) fontData.put(drawOrder, new FontVertexData(font));
         
         if(executed) {
-            glyphs.get(drawOrder).clear();
+            if(glyphs.containsKey(drawOrder)) glyphs.get(drawOrder).clear();
+            else                              glyphs.put(drawOrder, new HashMap<>());
             
             int advance = 0;
             int descent = 0;

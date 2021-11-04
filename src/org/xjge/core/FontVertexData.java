@@ -184,8 +184,9 @@ final class FontVertexData {
         
         XJGE.getDefaultGLProgram().setUniform("uType", 1);
         
-        glDrawElementsInstanced(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0, glyphs.size());
+        glDrawElementsInstanced(GL_TRIANGLES, indices.capacity(), GL_UNSIGNED_INT, 0, glyphs.size());
         glDisable(GL_BLEND);
+        
         ErrorUtils.checkGLError();
     }
     

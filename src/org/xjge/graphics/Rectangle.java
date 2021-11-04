@@ -1,6 +1,15 @@
 package org.xjge.graphics;
 
+import java.nio.FloatBuffer;
+import java.nio.IntBuffer;
 import org.joml.Vector2i;
+import static org.lwjgl.opengl.GL15C.GL_ARRAY_BUFFER;
+import static org.lwjgl.opengl.GL15C.glBindBuffer;
+import static org.lwjgl.opengl.GL15C.glBufferSubData;
+import static org.lwjgl.opengl.GL30.*;
+import org.lwjgl.system.MemoryStack;
+import org.xjge.core.ErrorUtils;
+import org.xjge.core.XJGE;
 
 //Created: May 25, 2021
 
@@ -13,10 +22,16 @@ import org.joml.Vector2i;
  */
 public class Rectangle {
 
+    private int vao = -1;
+    private int vbo;
+    private int ibo;
+    
     public int xPos;
     public int yPos;
     public int width;
     public int height;
+    
+    private IntBuffer indices;
     
     /**
      * Creates a new rectangle object.
@@ -38,6 +53,35 @@ public class Rectangle {
         this.height = height;
     }
     
+    private void genBuffers() {
+        vao = glGenVertexArrays();
+        vbo = glGenBuffers();
+        ibo = glGenBuffers();
+        
+        glBindVertexArray(vao);
+        
+        glBindBuffer(GL_ARRAY_BUFFER, vbo);
+        glBufferData(GL_ARRAY_BUFFER, 24 * Float.BYTES, GL_DYNAMIC_DRAW);
+        
+        try(MemoryStack stack = MemoryStack.stackPush()) {
+            indices = stack.mallocInt(6);
+            
+            indices.put(0).put(1).put(2);
+            indices.put(2).put(3).put(0);
+            
+            indices.flip();
+        }
+        
+        glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ibo);
+        glBufferData(GL_ELEMENT_ARRAY_BUFFER, indices, GL_STATIC_DRAW);
+        
+        glVertexAttribPointer(0, 3, GL_FLOAT, false, (6 * Float.BYTES), 0);
+        glVertexAttribPointer(1, 3, GL_FLOAT, false, (6 * Float.BYTES), (3 * Float.BYTES));
+        
+        glEnableVertexAttribArray(0);
+        glEnableVertexAttribArray(1);
+    }
+    
     /**
      * Determines if the specified point has intersected this rectangle.
      * 
@@ -48,6 +92,38 @@ public class Rectangle {
     public boolean contains(Vector2i point) {
         return (point.x > xPos && point.x < xPos + width) && 
                (point.y > yPos && point.y < yPos + height);
+    }
+    
+    public void render(float opacity, Color color) {
+        if(vao == -1) genBuffers();
+        
+        XJGE.getDefaultGLProgram().use();
+        
+        glEnable(GL_BLEND);
+        glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+        glBindVertexArray(vao);
+        
+        XJGE.getDefaultGLProgram().setUniform("uType", 3);
+        XJGE.getDefaultGLProgram().setUniform("uOpacity", opacity);
+        
+        try(MemoryStack stack = MemoryStack.stackPush()) {
+            FloatBuffer vertices = stack.mallocFloat(24);
+            
+            vertices.put(xPos)        .put(yPos + height).put(0).put(color.r).put(color.g).put(color.b);
+            vertices.put(xPos + width).put(yPos + height).put(0).put(color.r).put(color.g).put(color.b);
+            vertices.put(xPos + width).put(yPos)         .put(0).put(color.r).put(color.g).put(color.b);
+            vertices.put(xPos)        .put(yPos)         .put(0).put(color.r).put(color.g).put(color.b);
+            
+            vertices.flip();
+            
+            glBindBuffer(GL_ARRAY_BUFFER, vbo);
+            glBufferSubData(GL_ARRAY_BUFFER, 0, vertices);
+        }
+        
+        glDrawElements(GL_TRIANGLES, indices.capacity(), GL_UNSIGNED_INT, 0);
+        glDisable(GL_BLEND);
+        
+        ErrorUtils.checkGLError();
     }
     
 }

@@ -1,7 +1,6 @@
 package org.xjge.core;
 
 import org.xjge.graphics.Rectangle;
-import org.xjge.graphics.RectangleBatch;
 import static org.xjge.core.Font.DEFAULT_SIZE;
 import org.xjge.graphics.Color;
 import java.beans.PropertyChangeEvent;
@@ -37,6 +36,7 @@ final class Terminal implements PropertyChangeListener {
     private int yIndex;
     private static int shiftElements = -1;
     private final int glyphAdvance;
+    private int outputTop;
     
     private boolean cursorIdle;
     private boolean cursorBlink;
@@ -55,9 +55,9 @@ final class Terminal implements PropertyChangeListener {
     private final StringBuilder typed = new StringBuilder();
     private final Timer timer         = new Timer(1, 20, this);
     
-    RectangleBatch rectBatch1;
-    RectangleBatch rectBatch2;
     private static final Rectangle[] opaqueRectangles = new Rectangle[5];
+    private static final Rectangle commandLine        = new Rectangle();
+    private static final Rectangle commandOutput      = new Rectangle();
     
     TreeMap<String, TerminalCommand> commands;
     private final ArrayList<String> cmdHistory      = new ArrayList<>();
@@ -83,9 +83,6 @@ final class Terminal implements PropertyChangeListener {
         glyphAdvance = (int) font.getGlyphAdvance('>');
         cursorPos.x  = glyphAdvance;
         commandPos.x = glyphAdvance;
-        
-        rectBatch1 = new RectangleBatch(1);
-        rectBatch2 = new RectangleBatch(5);
     }
     
     /**
@@ -113,20 +110,22 @@ final class Terminal implements PropertyChangeListener {
      * Renders the interface to the window.
      */
     void render() {
-        rectBatch1.batchStart(1);
-            rectBatch1.drawRectangle(0, 0, Window.getWidth(), font.size + 4, Color.BLACK);
-        rectBatch1.batchEnd();
+        commandLine.width  = Window.getWidth();
+        commandLine.height = font.size + 4;
+        commandLine.render(1, Color.BLACK);
         
-        rectBatch2.batchStart(0.5f);
-            for(Rectangle opaqueRectangle : opaqueRectangles) {
-                rectBatch2.drawRectangle(opaqueRectangle, Color.BLACK);
-            }
-        rectBatch2.batchEnd();
+        commandOutput.width  = Window.getWidth();
+        commandOutput.height = outputTop;
+        commandOutput.render(0.5f, Color.BLACK);
         
         text.drawString(font, ">", caretPos, Color.WHITE);
         
         for(int i = 0; i <= shiftElements; i++) {
             text.drawOutput(font, cmdOutput, cmdOutput[i], i, executed, opaqueRectangles[i]);
+        }
+        
+        for(Rectangle rectangle : opaqueRectangles) {
+            if(rectangle.height > 0) outputTop = rectangle.yPos + rectangle.height;
         }
         
         executed = false;
@@ -372,19 +371,6 @@ final class Terminal implements PropertyChangeListener {
         executed = true;
     }
     
-    /**
-     * Convenience method which frees the data buffers allocated by this class.
-     */
-    void freeBuffers() {
-        if(rectBatch1 != null && rectBatch2 != null) {
-            rectBatch1.freeBuffers();
-            rectBatch2.freeBuffers();
-            
-            rectBatch1 = null;
-            rectBatch2 = null;
-        }
-    }
-    
     @Override
     public void propertyChange(PropertyChangeEvent evt) {
         cursorIdle = (Boolean) evt.getNewValue();
@@ -417,6 +403,11 @@ final class Terminal implements PropertyChangeListener {
                 opaqueRectangles[i].width  = 0;
                 opaqueRectangles[i].height = 0;
             }
+            
+            commandOutput.xPos   = 0;
+            commandOutput.yPos   = 0;
+            commandOutput.width  = 0;
+            commandOutput.height = 0;
         }
     }
     
