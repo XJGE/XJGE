@@ -371,6 +371,14 @@ final class Terminal implements PropertyChangeListener {
         executed = true;
     }
     
+    /**
+     * Convenience method which frees the data buffers allocated by this class.
+     */
+    void freeBuffers() {
+        commandLine.freeBuffers();
+        commandOutput.freeBuffers();
+    }
+    
     @Override
     public void propertyChange(PropertyChangeEvent evt) {
         cursorIdle = (Boolean) evt.getNewValue();

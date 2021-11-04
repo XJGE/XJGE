@@ -415,6 +415,7 @@ public final class XJGE {
         engineFont.freeTexture();
         engineIcons.freeTexture();
         beep.freeSound();
+        terminal.freeBuffers();
         debugInfo.freeBuffers();
         
         //Export engine configuration.

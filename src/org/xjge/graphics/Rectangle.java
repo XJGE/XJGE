@@ -53,6 +53,11 @@ public class Rectangle {
         this.height = height;
     }
     
+    /**
+     * Generates buffer objects for this rectangle to use during rendering. 
+     * Called automatically by the engine once when {@link render render()} is 
+     * first used.
+     */
     private void genBuffers() {
         vao = glGenVertexArrays();
         vbo = glGenBuffers();
@@ -94,6 +99,15 @@ public class Rectangle {
                (point.y > yPos && point.y < yPos + height);
     }
     
+    /**
+     * A quick and dirty way to render a rectangle with little overhead.
+     * <p>
+     * NOTE: Anytime a large number of rectangles needs to be drawn efficiently 
+     * {@link RectangleBatch} should instead be used in place of this method.
+     * 
+     * @param opacity the transparency value of the rectangle
+     * @param color   the color to draw the rectangle in
+     */
     public void render(float opacity, Color color) {
         if(vao == -1) genBuffers();
         
@@ -124,6 +138,17 @@ public class Rectangle {
         glDisable(GL_BLEND);
         
         ErrorUtils.checkGLError();
+    }
+    
+    /**
+     * Convenience method which frees the default buffer objects defined by 
+     * this class. Only required if {@link render render()} is called and this
+     * object is no longer needed.
+     */
+    public void freeBuffers() {
+        glDeleteVertexArrays(vao);
+        glDeleteBuffers(vbo);
+        glDeleteBuffers(ibo);
     }
     
 }
