@@ -158,6 +158,26 @@ public final class Hardware {
     }
     
     /**
+     * Obtains an object which represents the current monitor the window is 
+     * using. This method is identical in function to 
+     * {@link Window#getMonitor()}.
+     * 
+     * @return the current monitor object of the window
+     */
+    public static Monitor getCurrentMonitor() {
+        return Window.monitor;
+    }
+    
+    /**
+     * Obtains the current {@link Speaker} the engine is using for audio output.
+     * 
+     * @return an object that represents a peripheral audio device
+     */
+    public static Speaker getCurrentSpeaker() {
+        return Audio.speaker;
+    }
+    
+    /**
      * Determines whether the application will take advantage of vertical sync 
      * (or VSync) while rendering frames. VSync is enabled by default on 
      * startup.

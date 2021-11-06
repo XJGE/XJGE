@@ -59,4 +59,6 @@ public final class Speaker {
         }
     }
     
+    //TODO: provide more information using the devices capabilities?
+    
 }
