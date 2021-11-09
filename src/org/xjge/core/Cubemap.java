@@ -36,8 +36,10 @@ final class Cubemap {
      * NOTE: All images used by the cubemap must exhibit the same width/height 
      * dimensions in pixels otherwise it will appear black.
      * 
-     * @param images a collection containing the names of each image file to 
-     *               parse texture data from
+     * @param images          a collection containing the names of each image 
+     *                        file to parse texture data from
+     * @param useLinearFilter if true, the textures will be filtered without 
+     *                        hard edges
      */
     Cubemap(Map<Integer, String> images, boolean useLinearFilter) {
         handle = glGenTextures();
