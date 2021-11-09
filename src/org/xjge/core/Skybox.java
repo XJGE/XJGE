@@ -63,9 +63,9 @@ public final class Skybox {
      * @param useLinearFilter if true, the textures will be filtered without 
      *                        hard edges
      */
-    public Skybox(String rightFilename, String leftFilename, String topFilename, 
-                  String bottomFilename, String frontFilename, String backFilename, 
-                  boolean useLinearFilter) {
+    public Skybox(String rightFilename, String leftFilename, String topFilename, String bottomFilename, 
+                  String frontFilename, String backFilename, boolean useLinearFilter) {
+        
         Map<Integer, String> images = new HashMap<>();
         
         for(int i = 0; i < 6; i++) {
@@ -159,6 +159,7 @@ public final class Skybox {
         newView.set(tempView);
         
         XJGE.getDefaultGLProgram().setUniform("uType", 8);
+        XJGE.getDefaultGLProgram().setUniform("uModel", false, g.modelMatrix);
         XJGE.getDefaultGLProgram().setUniform("uView", false, newView);
         
         glDrawElements(GL_TRIANGLES, g.indices.capacity(), GL_UNSIGNED_INT, 0);
@@ -167,6 +168,16 @@ public final class Skybox {
         XJGE.getDefaultGLProgram().setUniform("uView", false, viewMatrix);
         
         ErrorUtils.checkGLError();
+    }
+    
+    /**
+     * Provides the model matrix of the skybox. This can be used to achieve 
+     * various effects such as rotation.
+     * 
+     * @return the model matrix of the skybox 
+     */
+    public Matrix4f getModelMatrix() {
+        return g.modelMatrix;
     }
     
     /**

@@ -9,6 +9,7 @@ import java.util.Queue;
 import org.joml.Matrix4f;
 import static org.lwjgl.glfw.GLFW.*;
 import static org.lwjgl.opengl.GL30.*;
+import org.xjge.graphics.GLProgram;
 
 //Created: May 11, 2021
 
@@ -58,7 +59,7 @@ public final class Game {
      *                  the engine
      * @param debugInfo an interface detailing the current state of the engine
      */
-    static void loop(int fbo, Viewport[] viewports, Terminal terminal, DebugInfo debugInfo) {
+    static void loop(int fbo, Viewport[] viewports, Terminal terminal, DebugInfo debugInfo, GLProgram depthProgram) {
         int cycles = 0;
         final double TARGET_DELTA = 1 / 60.0;
         double prevTime = glfwGetTime();

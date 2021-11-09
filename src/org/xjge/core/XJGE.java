@@ -99,6 +99,7 @@ public final class XJGE {
     private static TreeMap<String, TerminalCommand> engineCommands     = new TreeMap<>();
     private static final TreeMap<String, TerminalCommand> userCommands = new TreeMap<>();
     
+    static GLProgram depthProgram;
     static Map<String, GLProgram> glPrograms   = new HashMap<>();
     private static final Viewport[] viewports = new Viewport[4];
     
@@ -262,6 +263,19 @@ public final class XJGE {
                 glPrograms.put("default", defaultProgram);
             }
             
+            { //Initialize depth shader for shadow maps.
+                var shaderSourceFiles = new LinkedList<Shader>() {{
+                    add(new Shader("depthVertex.glsl", GL_VERTEX_SHADER));
+                    add(new Shader("depthFragment.glsl", GL_FRAGMENT_SHADER));
+                }};
+                
+                depthProgram = new GLProgram(shaderSourceFiles, "default");
+                
+                depthProgram.use();
+                depthProgram.addUniform(BufferType.MAT4, "uModel");
+                depthProgram.addUniform(BufferType.MAT4, "uLightSpace");
+            }
+            
             engineFont  = new Font();
             engineIcons = new Texture("spr_engineicons.png");
             beep        = new Sound("sfx_beep.ogg");
@@ -410,7 +424,7 @@ public final class XJGE {
             debugInfo.updatePosition();
         });
         
-        Game.loop(fbo, viewports, terminal, debugInfo);
+        Game.loop(fbo, viewports, terminal, debugInfo, depthProgram);
         
         engineFont.freeTexture();
         engineIcons.freeTexture();

@@ -89,12 +89,12 @@ public class Timer {
     /**
      * Starts the timer.
      */
-    public void start() { start = true; };
+    public void start() { start = true; }
     
     /**
      * Stops the timer. Doing so will pause it at its current time.
      */
-    public void stop()  { start = false; };
+    public void stop()  { start = false; }
     
     /**
      * Resets the time of the timer to its initial duration.

@@ -146,6 +146,12 @@ public abstract class Scene {
         }
     }
     
+    void renderShadows(GLProgram depthProgram) {
+        //TODO: check if shadow map is provided
+        depthProgram.use();
+        entities.values().forEach(entity -> entity.renderShadow(depthProgram));
+    }
+    
     /**
      * Sets the current skybox the scene will render as part of its background.
      * 

@@ -76,6 +76,7 @@ public abstract class Entity {
      */
     public abstract void render(Map<String, GLProgram> glPrograms, Camera camera, LightSource[] lights, int numLights);
     
+    public abstract void renderShadow(GLProgram depthProgram);
     
     /**
      * Used to free the resources used by the entity once it is no longer 
