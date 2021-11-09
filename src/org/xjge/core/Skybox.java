@@ -37,9 +37,11 @@ public final class Skybox {
      *                       the skybox
      * @param bottomFilename the filename of the image to use for the bottom of 
      *                       the skybox
+     * @param useLinearFilter if true, the textures will be filtered without 
+     *                        hard edges
      */
-    public Skybox(String topFilename, String centerFilename, String bottomFilename) {
-        this(centerFilename, centerFilename, topFilename, bottomFilename, centerFilename, centerFilename);
+    public Skybox(String topFilename, String centerFilename, String bottomFilename, boolean useLinearFilter) {
+        this(centerFilename, centerFilename, topFilename, bottomFilename, centerFilename, centerFilename, useLinearFilter);
     }
     
     /**
@@ -58,8 +60,12 @@ public final class Skybox {
      *                       the skybox
      * @param backFilename   the filename of the image to use for the back of 
      *                       the skybox
+     * @param useLinearFilter if true, the textures will be filtered without 
+     *                        hard edges
      */
-    public Skybox(String rightFilename, String leftFilename, String topFilename, String bottomFilename, String frontFilename, String backFilename) {
+    public Skybox(String rightFilename, String leftFilename, String topFilename, 
+                  String bottomFilename, String frontFilename, String backFilename, 
+                  boolean useLinearFilter) {
         Map<Integer, String> images = new HashMap<>();
         
         for(int i = 0; i < 6; i++) {
@@ -73,7 +79,7 @@ public final class Skybox {
             }
         }
         
-        cubemap = new Cubemap(images);
+        cubemap = new Cubemap(images, useLinearFilter);
         g       = new Graphics();
         
         g.vertices = MemoryUtil.memAllocFloat(192);
