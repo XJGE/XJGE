@@ -42,6 +42,7 @@ public class TestScene extends Scene {
     private EntityPlane plane1;
     private EntityPlane plane2;
     private EntityPlane plane3;
+    private EntityPlane plane4;
     
     public TestScene() {
         super("test");
@@ -50,11 +51,13 @@ public class TestScene extends Scene {
         
         plane1 = new EntityPlane(0, -3, 0, 50, 50, Color.BLUE);
         plane2 = new EntityPlane(0, 3, 0, 5, 5, Color.RED);
-        plane3 = new EntityPlane(0, 4, 1, 2, 2, Color.GREEN);
+        plane3 = new EntityPlane(-1, 4, 0, 2, 2, Color.GREEN);
+        plane4 = new EntityPlane(30, 3, 30, 2, 2, Color.PURPLE);
         
         entities.put("plane1", plane1);
         entities.put("plane2", plane2);
         entities.put("plane3", plane3);
+        entities.put("plane4", plane4);
         
         /*
         fortress = new Model("mod_arena.fbx", 
@@ -75,7 +78,7 @@ public class TestScene extends Scene {
         arenaCaps = new ArenaCaps();
         */
         
-        addLightAtIndex(0, new Light(1f, 0.15f, new Vector3f(16, 26, 14), Color.WHITE, Color.WHITE));
+        addLightAtIndex(0, new Light(0.25f, 0.15f, new Vector3f(16, 26, 14), Color.WHITE, Color.WHITE));
     }
 
     @Override

@@ -1,0 +1,14 @@
+
+11-09-2021 9:10PM
+ERROR (shader-utils): Failed to parse GLSL file "defaultFragment.glsl". ERROR: 0:160: 'normal' : redefinition 
+ERROR: 0:165: 'result' : redefinition 
+
+
+
+java.lang.RuntimeException
+	org.xjge.core.Logger.logSevere(Logger.java:215)
+	org.xjge.graphics.Shader.<init>(Shader.java:68)
+	org.xjge.core.XJGE$1.<init>(XJGE.java:238)
+	org.xjge.core.XJGE.init(XJGE.java:236)
+	org.xjge.test.Main.main(Main.java:18)
+

@@ -159,13 +159,14 @@ void main() {
             
             vec3 norm    = normalize(ioNormal);
             float diff   = max(dot(norm, direction), 0);
-            vec3 diffuse = diff * ioColor * ioColor;
-            vec3 ambient = (ioColor + diffuse) * uLights[0].brightness;
+            vec3 diffuse = diff * uLights[0].diffuse;
+            vec3 ambient = (uLights[0].ambient + diffuse) * uLights[0].brightness;
             
             //Calculate shadows.
             float dotLightNormal = dot(direction, norm);
             float shadow         = calcShadow(dotLightNormal);
-            vec3 lighting        = (shadow + ambient) * ioColor; //(shadow * diffuse + ambient) * ioColor;
+            //vec3 lighting        = (shadow + ambient) * ioColor; //(shadow * diffuse + ambient) * ioColor;
+            vec3 lighting        = (shadow * diffuse + ambient) * ioColor;
             
             ioResult = vec4(lighting, 1);
             break;

@@ -1,0 +1,13 @@
+
+11-09-2021 9:00PM
+ERROR (shader-utils): Failed to parse GLSL file "defaultFragment.glsl". ERROR: 0:162: '=' :  cannot convert from 'highp float' to '3-component vector of highp float'
+
+
+
+java.lang.RuntimeException
+	org.xjge.core.Logger.logSevere(Logger.java:215)
+	org.xjge.graphics.Shader.<init>(Shader.java:68)
+	org.xjge.core.XJGE$1.<init>(XJGE.java:238)
+	org.xjge.core.XJGE.init(XJGE.java:236)
+	org.xjge.test.Main.main(Main.java:18)
+
