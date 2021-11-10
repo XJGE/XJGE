@@ -43,6 +43,7 @@ public class TestScene extends Scene {
     private EntityPlane plane2;
     private EntityPlane plane3;
     private EntityPlane plane4;
+    private EntityCube cube;
     
     public TestScene() {
         super("test");
@@ -51,18 +52,21 @@ public class TestScene extends Scene {
         
         /*
         TODO:
-        shadow mapping should be as simple as setting up a skybox.
+         - shadow mapping should be as simple as setting up a skybox and setting 
+           entities model matrix via renderShadow()
         */
         
         plane1 = new EntityPlane(0, -3, 0, 50, 50, Color.BLUE);
         plane2 = new EntityPlane(0, 3, 0, 5, 5, Color.RED);
         plane3 = new EntityPlane(-1, 4, 0, 2, 2, Color.GREEN);
         plane4 = new EntityPlane(30, 3, 30, 2, 2, Color.YELLOW);
+        cube   = new EntityCube(3, 7, 4, 2, 2, 2);
         
         entities.put("plane1", plane1);
         entities.put("plane2", plane2);
         entities.put("plane3", plane3);
         entities.put("plane4", plane4);
+        entities.put("cube", cube);
         
         //TODO: try teapot model.
         
@@ -106,6 +110,7 @@ public class TestScene extends Scene {
     public void render(Map<String, GLProgram> glPrograms, int viewportID, Camera camera) {
         //fortress.render(glPrograms.get("default"), getLightSources(), getNumLights(), arenaCaps);
         
+        glPrograms.get("default").use();
         entities.values().forEach(entity -> entity.render(glPrograms.get("default"), camera, getLightSources(), getNumLights()));
     }
 

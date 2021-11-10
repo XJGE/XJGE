@@ -63,8 +63,6 @@ public class EntityPlane extends Entity {
     
     @Override
     public void update(double targetDelta, double trueDelta) {
-        
-        
         g.modelMatrix.translation(position);
         
         if(color == Color.RED) {
@@ -74,8 +72,6 @@ public class EntityPlane extends Entity {
 
     @Override
     public void render(GLProgram glProgram, Camera camera, LightSource[] lights, int numLights) {
-        glProgram.use();
-        
         glEnable(GL_DEPTH_TEST);
         glBindVertexArray(g.vao);
         
