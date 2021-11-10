@@ -2,18 +2,6 @@ package org.xjge.scenes;
 
 import java.util.Map;
 import org.joml.Vector3f;
-import static org.lwjgl.assimp.Assimp.aiProcess_FixInfacingNormals;
-import static org.lwjgl.assimp.Assimp.aiProcess_FlipUVs;
-import static org.lwjgl.assimp.Assimp.aiProcess_Triangulate;
-import static org.lwjgl.opengl.GL11C.GL_LINEAR;
-import static org.lwjgl.opengl.GL11C.GL_REPEAT;
-import static org.lwjgl.opengl.GL11C.GL_TEXTURE_2D;
-import static org.lwjgl.opengl.GL11C.GL_TEXTURE_MAG_FILTER;
-import static org.lwjgl.opengl.GL11C.GL_TEXTURE_MIN_FILTER;
-import static org.lwjgl.opengl.GL11C.GL_TEXTURE_WRAP_S;
-import static org.lwjgl.opengl.GL11C.GL_TEXTURE_WRAP_T;
-import static org.lwjgl.opengl.GL11C.glBindTexture;
-import static org.lwjgl.opengl.GL11C.glTexParameteri;
 import org.xjge.core.Camera;
 import org.xjge.core.Scene;
 import org.xjge.core.Skybox;
@@ -54,6 +42,8 @@ public class TestScene extends Scene {
         TODO:
          - shadow mapping should be as simple as setting up a skybox and setting 
            entities model matrix via renderShadow()
+         - models should still exhibit lighting even with shadows disabled
+         - clean up any loose ends- add documentation.
         */
         
         plane1 = new EntityPlane(0, -3, 0, 50, 50, Color.BLUE);

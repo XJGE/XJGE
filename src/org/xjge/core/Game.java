@@ -122,7 +122,7 @@ public final class Game {
                 }
             }
             
-            shadowMap.createMap(camUp, depthProgram, scene);
+            //TODO: only if shadow map is not null.
             XJGE.getDefaultGLProgram().use();
             XJGE.getDefaultGLProgram().setUniform("uLights[0].brightness", scene.getLightSources()[0].getBrightness());
             XJGE.getDefaultGLProgram().setUniform("uLights[0].contrast",   scene.getLightSources()[0].getContrast());
@@ -134,6 +134,8 @@ public final class Game {
             //Render scene from the perspective of each active viewport.
             for(Viewport viewport : viewports) {
                 if(viewport.active) {
+                    shadowMap.createMap(camUp, depthProgram, scene);
+                    
                     if(viewport.id == 0) {
                         glClearColor(0, 0, 0, 0);
                         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
