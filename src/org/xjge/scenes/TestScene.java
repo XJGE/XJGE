@@ -49,15 +49,22 @@ public class TestScene extends Scene {
         
         setSkybox(skybox);
         
+        /*
+        TODO:
+        shadow mapping should be as simple as setting up a skybox.
+        */
+        
         plane1 = new EntityPlane(0, -3, 0, 50, 50, Color.BLUE);
         plane2 = new EntityPlane(0, 3, 0, 5, 5, Color.RED);
         plane3 = new EntityPlane(-1, 4, 0, 2, 2, Color.GREEN);
-        plane4 = new EntityPlane(30, 3, 30, 2, 2, Color.PURPLE);
+        plane4 = new EntityPlane(30, 3, 30, 2, 2, Color.YELLOW);
         
         entities.put("plane1", plane1);
         entities.put("plane2", plane2);
         entities.put("plane3", plane3);
         entities.put("plane4", plane4);
+        
+        //TODO: try teapot model.
         
         /*
         fortress = new Model("mod_arena.fbx", 
@@ -78,7 +85,7 @@ public class TestScene extends Scene {
         arenaCaps = new ArenaCaps();
         */
         
-        addLightAtIndex(0, new Light(0.25f, 0.15f, new Vector3f(16, 26, 14), Color.WHITE, Color.WHITE));
+        addLightAtIndex(0, new Light(1, 0.5f, new Vector3f(16, 26, 14), Color.WHITE, Color.WHITE));
     }
 
     @Override

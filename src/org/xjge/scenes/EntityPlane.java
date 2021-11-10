@@ -96,6 +96,8 @@ public class EntityPlane extends Entity {
 
     @Override
     public void renderShadow(GLProgram depthProgram) {
+        //TODO: this could be automated- but would require a Graphics object
+        
         glEnable(GL_DEPTH_TEST);
         glBindVertexArray(g.vao);
         
