@@ -251,6 +251,7 @@ public final class XJGE {
                 defaultProgram.addUniform(BufferType.MAT4,  "uView");
                 defaultProgram.addUniform(BufferType.MAT4,  "uProjection");
                 defaultProgram.addUniform(BufferType.MAT4,  "uBoneTransforms");
+                defaultProgram.addUniform(BufferType.MAT4,  "uLightSpace");
                 
                 for(int i = 0; i < Scene.MAX_LIGHTS; i++) {
                     defaultProgram.addUniform(BufferType.FLOAT, "uLights[" + i + "].brightness");
@@ -263,7 +264,7 @@ public final class XJGE {
                 glPrograms.put("default", defaultProgram);
             }
             
-            { //Initialize depth shader for shadow maps.
+            { //Initialize the depth shader for shadow mapping.
                 var shaderSourceFiles = new LinkedList<Shader>() {{
                     add(new Shader("depthVertex.glsl", GL_VERTEX_SHADER));
                     add(new Shader("depthFragment.glsl", GL_FRAGMENT_SHADER));

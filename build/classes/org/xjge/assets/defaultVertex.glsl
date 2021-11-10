@@ -25,12 +25,14 @@ uniform mat4 uModel;
 uniform mat4 uView;
 uniform mat4 uProjection;
 uniform mat4 uBoneTransforms[MAX_BONES];
+uniform mat4 uLightSpace;
 
 out vec2 ioTexCoords;
 out vec3 ioColor;
 out vec3 ioNormal;
 out vec3 ioFragPos;
 out vec3 ioSkyTexCoords;
+out vec4 ioLightFrag;
 
 void main() {
     switch(uType) {
@@ -94,6 +96,7 @@ void main() {
             ioTexCoords = aTexCoords;
             ioNormal    = uNormal * initNormal.xyz;
             ioFragPos   = vec3(uModel * vec4(aPosition, 1));
+            //ioLightFrag = uLightSpace * vec4(ioFragPos, 1);
             break;
 
         case 6: //Used for light source icons.
@@ -111,6 +114,14 @@ void main() {
         case 8: //Used for drawing skyboxes.
             ioSkyTexCoords = aPosition;
             gl_Position    = (uProjection * uView * uModel * vec4(aPosition, 1));
+            break;
+        
+        case 9: //TODO: temp, used for test objects Plane and Cube.
+            ioColor     = uColor;
+            ioFragPos   = vec3(uModel * vec4(aPosition, 1));
+            ioNormal    = uNormal * aNormal;
+            ioLightFrag = uLightSpace * vec4(ioFragPos, 1);
+            gl_Position = uProjection * uView * uModel * vec4(aPosition, 1);
             break;
     }
 }

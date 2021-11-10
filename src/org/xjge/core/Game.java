@@ -7,6 +7,7 @@ import java.util.Comparator;
 import java.util.PriorityQueue;
 import java.util.Queue;
 import org.joml.Matrix4f;
+import org.joml.Vector3f;
 import static org.lwjgl.glfw.GLFW.*;
 import static org.lwjgl.opengl.GL30.*;
 import org.xjge.graphics.GLProgram;
@@ -45,6 +46,10 @@ public final class Game {
     
     private static Color clearColor = Color.create(92, 148, 252);
     private static Scene scene;
+    
+    //TODO: temp- move somewhere else.
+    private static ShadowMap shadowMap = new ShadowMap();
+    private static Vector3f camUp      = new Vector3f(0, 1, 0);
     
     private static final Queue<Event> events = new PriorityQueue<>(Comparator.comparing(Event::getPriority));
     
@@ -117,6 +122,10 @@ public final class Game {
                 }
             }
             
+            shadowMap.createMap(camUp, depthProgram, scene);
+            XJGE.getDefaultGLProgram().use();
+            XJGE.getDefaultGLProgram().setUniform("uLightSpace", false, shadowMap.lightSpace);
+            
             //Render scene from the perspective of each active viewport.
             for(Viewport viewport : viewports) {
                 if(viewport.active) {
@@ -124,7 +133,7 @@ public final class Game {
                         glClearColor(0, 0, 0, 0);
                         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
                     }
-
+                    
                     glBindFramebuffer(GL_FRAMEBUFFER, fbo);
                         glViewport(0, 0, viewport.width, viewport.height);
                         glClearColor(clearColor.r, clearColor.g, clearColor.b, 0);

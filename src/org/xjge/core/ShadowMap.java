@@ -24,7 +24,6 @@ public class ShadowMap {
     private final float NEAR_PLANE = 1f;
     private final float FAR_PLANE  = 100f;
     
-    final Vector3f lightPos = new Vector3f(16, 26, 14);
     private final Vector3f lightDir = new Vector3f();
     
     private final Matrix4f lightView = new Matrix4f();
@@ -54,7 +53,7 @@ public class ShadowMap {
     
     void createMap(Vector3f camUp, GLProgram depthProgram, Scene scene) {
         lightProj.setOrtho(-100f, 100f, -100f, 100f, NEAR_PLANE, FAR_PLANE);
-        lightView.setLookAt(lightPos, lightDir, camUp);
+        lightView.setLookAt(scene.getLightSources()[0].getPosition(), lightDir, camUp);
         lightProj.mul(lightView, lightSpace);
         
         depthProgram.use();

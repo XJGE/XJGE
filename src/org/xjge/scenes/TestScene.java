@@ -1,6 +1,7 @@
 package org.xjge.scenes;
 
 import java.util.Map;
+import org.joml.Vector3f;
 import static org.lwjgl.assimp.Assimp.aiProcess_FixInfacingNormals;
 import static org.lwjgl.assimp.Assimp.aiProcess_FlipUVs;
 import static org.lwjgl.assimp.Assimp.aiProcess_Triangulate;
@@ -16,7 +17,9 @@ import static org.lwjgl.opengl.GL11C.glTexParameteri;
 import org.xjge.core.Camera;
 import org.xjge.core.Scene;
 import org.xjge.core.Skybox;
+import org.xjge.graphics.Color;
 import org.xjge.graphics.GLProgram;
+import org.xjge.graphics.Light;
 import org.xjge.graphics.Model;
 
 /**
@@ -36,11 +39,24 @@ public class TestScene extends Scene {
     private Model fortress;
     private ArenaCaps arenaCaps;
     
+    private EntityPlane plane1;
+    private EntityPlane plane2;
+    private EntityPlane plane3;
+    
     public TestScene() {
         super("test");
         
         setSkybox(skybox);
         
+        plane1 = new EntityPlane(0, -3, 0, 50, 50, Color.BLUE);
+        plane2 = new EntityPlane(0, 3, 0, 5, 5, Color.RED);
+        plane3 = new EntityPlane(0, 4, 1, 2, 2, Color.GREEN);
+        
+        entities.put("plane1", plane1);
+        entities.put("plane2", plane2);
+        entities.put("plane3", plane3);
+        
+        /*
         fortress = new Model("mod_arena.fbx", 
              aiProcess_Triangulate | aiProcess_FlipUVs | aiProcess_FixInfacingNormals);
         
@@ -57,21 +73,30 @@ public class TestScene extends Scene {
         glBindTexture(GL_TEXTURE_2D, 0);
         
         arenaCaps = new ArenaCaps();
+        */
+        
+        addLightAtIndex(0, new Light(1f, 0.15f, new Vector3f(16, 26, 14), Color.WHITE, Color.WHITE));
     }
 
     @Override
     public void update(double targetDelta, double trueDelta) {
         skybox.getModelMatrix().rotationY((float) Math.toRadians(angle -= 0.01f));
         
+        /*
         fortress.delocalizeNormal();
         fortress.translation(0, 0, 0);
         fortress.rotateX(-90f);
         fortress.rotateZ(90f);
+        */
+        
+        entities.values().forEach(entity -> entity.update(targetDelta, trueDelta));
     }
 
     @Override
     public void render(Map<String, GLProgram> glPrograms, int viewportID, Camera camera) {
-        fortress.render(glPrograms.get("default"), getLightSources(), getNumLights(), arenaCaps);
+        //fortress.render(glPrograms.get("default"), getLightSources(), getNumLights(), arenaCaps);
+        
+        entities.values().forEach(entity -> entity.render(glPrograms.get("default"), camera, getLightSources(), getNumLights()));
     }
 
     @Override
