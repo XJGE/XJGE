@@ -24,6 +24,7 @@ import static org.lwjgl.opengl.GL30.*;
 import org.lwjgl.system.MemoryUtil;
 import static org.lwjgl.system.MemoryUtil.NULL;
 import org.xjge.core.Camera;
+import org.xjge.core.Game;
 
 //Created: Jun 16, 2021
 
@@ -747,7 +748,8 @@ public class Model {
         meshes.forEach(mesh -> {
             //TODO: look into why shadows arent displayed on textured objects.
             //glActiveTexture(GL_TEXTURE0);
-            glBindTexture(GL_TEXTURE_2D, textures[mesh.textureID].handle);
+            //glBindTexture(GL_TEXTURE_2D, textures[mesh.textureID].handle);
+            glBindTexture(GL_TEXTURE_2D, Game.shadowMap.depthTexHandle);
             
             /*
             try(MemoryStack stack = MemoryStack.stackPush()) {

@@ -58,14 +58,6 @@ float calcShadow(float dotLightNormal) {
     return (depth + bias) < pos.z ? 0 : 1;
 }
 
-float calcShowShadow(float dotLightNormal) {
-    vec3 pos = ioLightFrag.xyz * 0.5 + 0.5;
-    if(pos.z > 1) pos.z = 1;
-    float depth = texture(uShadowMap, pos.xy).r;
-
-    return depth < pos.z ? 0 : 1;
-}
-
 /**
  * Calculates the output of the single world light all 3D models will be 
  * illuminated by.
@@ -142,7 +134,9 @@ void main() {
             }
             
             makeTransparent(texture(uTexture, ioTexCoords).a);
-            ioResult = texture(uTexture, ioTexCoords) * vec4(result, 1.0); //TODO: model transparency.
+            //NOTE: dark textures mess with the shadow results.
+            //ioResult = texture(uTexture, ioTexCoords) * vec4(result, 1.0); //TODO: model transparency.
+            ioResult = vec4(result, 1.0);
             break;
 
         case 6: //Used for light source icons.

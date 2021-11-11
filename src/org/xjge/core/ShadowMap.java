@@ -19,7 +19,7 @@ public class ShadowMap {
     private final int SHADOW_WIDTH  = 2560;
     private final int SHADOW_HEIGHT = 2560;
     private final int fbo;
-    final int depthTexHandle;
+    public final int depthTexHandle;
     
     private final float NEAR_PLANE = 1f;
     private final float FAR_PLANE  = 100f;
@@ -119,6 +119,15 @@ public class ShadowMap {
             glClear(GL_DEPTH_BUFFER_BIT);
             //glActiveTexture(GL_TEXTURE0);
             glBindTexture(GL_TEXTURE_2D, depthTexHandle);
+            
+            /*
+            try(MemoryStack stack = MemoryStack.stackPush()) {
+                IntBuffer result = stack.callocInt(1);
+                
+                glGetIntegerv(GL_TEXTURE_BINDING_2D, result);
+                
+                System.out.println(result.get());
+            }*/
             
             scene.renderShadows(depthProgram);
         glBindFramebuffer(GL_FRAMEBUFFER, 0);

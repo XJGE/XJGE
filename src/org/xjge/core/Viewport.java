@@ -1,5 +1,6 @@
 package org.xjge.core;
 
+import java.nio.IntBuffer;
 import org.xjge.graphics.Graphics;
 import org.xjge.graphics.GLProgram;
 import java.util.Collections;
@@ -127,6 +128,18 @@ final class Viewport {
             case "texture" -> {
                 glBindTexture(GL_TEXTURE_2D, texHandle);
                 glBindVertexArray(g.vao);
+                
+                //TODO: manually set texture units?
+                
+                /*
+                try(MemoryStack stack = MemoryStack.stackPush()) {
+                    IntBuffer result = stack.callocInt(1);
+                    
+                    glGetIntegerv(GL_TEXTURE_BINDING_2D, result);
+
+                    System.out.println(id + " " + result.get());
+                }
+                */
                 
                 glPrograms.get("default").use();
                 glPrograms.get("default").setUniform("uType", 0);
