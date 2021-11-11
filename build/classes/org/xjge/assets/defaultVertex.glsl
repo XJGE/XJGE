@@ -96,7 +96,7 @@ void main() {
             ioTexCoords = aTexCoords;
             ioNormal    = uNormal * initNormal.xyz;
             ioFragPos   = vec3(uModel * vec4(aPosition, 1));
-            //ioLightFrag = uLightSpace * vec4(ioFragPos, 1);
+            ioLightFrag = uLightSpace * vec4(ioFragPos, 1);
             break;
 
         case 6: //Used for light source icons.

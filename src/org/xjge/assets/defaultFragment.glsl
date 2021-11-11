@@ -54,7 +54,7 @@ float calcShadow(float dotLightNormal) {
 
     float depth = texture(uShadowMap, pos.xy).r;
 
-    float bias = max(0.009 * (1 - dotLightNormal), 0.0003);
+    float bias = max(0.0009 * (1 - dotLightNormal), 0.00003);
     return (depth + bias) < pos.z ? 0 : 1;
 }
 
@@ -70,20 +70,19 @@ float calcShowShadow(float dotLightNormal) {
  * Calculates the output of the single world light all 3D models will be 
  * illuminated by.
  */
-vec3 calcWorldLight(Light light, vec3 normal) {
+vec3 calcWorldLight(Light light) {
     vec3 direction = normalize(light.position);
-    float diff     = max(dot(normal, direction), -light.contrast);
-    vec3 diffuse   = diff * light.ambient * light.diffuse;
     
-    /*
-    //Calculate shadows.
-    float dotLightNormal = dot(direction, normal);
+    vec3 norm    = normalize(ioNormal);
+    float diff   = max(dot(norm, direction), 0);
+    vec3 diffuse = diff * uLights[0].diffuse * uLights[0].brightness;
+    vec3 ambient = uLights[0].ambient * uLights[0].contrast;
+    
+    float dotLightNormal = dot(direction, norm);
     float shadow         = calcShadow(dotLightNormal);
+    vec3 lighting        = (shadow * diffuse + ambient) * ioColor;
     
-    return (shadow * light.ambient + diffuse) * light.brightness;
-    */
-    
-    return (light.ambient + diffuse) * light.brightness;
+    return lighting;
 }
 
 /**
@@ -110,6 +109,9 @@ vec3 calcPointLight(Light light, vec3 normal, vec3 fragPos) {
 }
 
 void main() {
+    
+    //TODO: add type for drawing sprites with lighting / shadows applied.
+    
     switch(uType) {
         case 0: //Used for framebuffer texture attachments.
             vec2 vRes = textureSize(uTexture, 0);
@@ -133,11 +135,10 @@ void main() {
             break;
 
         case 5: //Used for rendering 3D models.
-            vec3 normal = normalize(ioNormal);
-            vec3 result = calcWorldLight(uLights[0], normal);
+            vec3 result = calcWorldLight(uLights[0]);
 
             for(int i = 1; i < uNumLights; i++) {
-                result += calcPointLight(uLights[i], normal, ioFragPos);
+                result += calcPointLight(uLights[i], normalize(ioNormal), ioFragPos);
             }
             
             makeTransparent(texture(uTexture, ioTexCoords).a);

@@ -799,6 +799,24 @@ public class Model {
         render(glProgram, lights, numLights, defaultCaps);
     }
     
+    public void renderShadow(GLProgram depthProgram) {
+        glEnable(GL_DEPTH_TEST);
+        glEnable(GL_CULL_FACE);
+        glCullFace(GL_FRONT);
+        
+        meshes.forEach(mesh -> {
+            glBindVertexArray(mesh.vao);
+            depthProgram.setUniform("uModel", false, mesh.modelMatrix);
+            glDrawElements(GL_TRIANGLES, mesh.indices.capacity(), GL_UNSIGNED_INT, 0);
+        });
+        
+        glCullFace(GL_BACK);
+        glDisable(GL_CULL_FACE);
+        glDisable(GL_DEPTH_TEST);
+        
+        ErrorUtils.checkGLError();
+    }
+    
     /**
      * Convenience method which frees the data buffers allocated by this class.
      */
@@ -812,5 +830,27 @@ public class Model {
     public void freeTextures() {
         for(Texture texture : textures) texture.freeTexture();
     }
+    
+    /*
+    vec3 direction = normalize(light.position);
+    float diff     = max(dot(normal, direction), -light.contrast);
+    vec3 diffuse   = diff * light.ambient * light.diffuse;
+    
+    return (light.ambient + diffuse) * light.brightness;
+    */
+    
+    /*
+    vec3 direction = normalize(uLights[0].position);
+    
+    vec3 norm    = normalize(ioNormal);
+    float diff   = max(dot(norm, direction), 0);
+    vec3 diffuse = diff * uLights[0].diffuse * uLights[0].brightness;
+    vec3 ambient = uLights[0].ambient * uLights[0].contrast;
+
+    //Calculate shadows.
+    float dotLightNormal = dot(direction, norm);
+    float shadow         = calcShadow(dotLightNormal);
+    vec3 lighting        = (shadow * diffuse + ambient) * ioColor;
+    */
     
 }

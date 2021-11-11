@@ -25,11 +25,15 @@ public class EntityCube extends Entity {
     
     private float angle;
     
+    private boolean rotate;
+    
     private Graphics g      = new Graphics();
     private Matrix3f normal = new Matrix3f();
     
-    EntityCube(float x, float y, float z, float width, float height, float depth) {
+    EntityCube(float x, float y, float z, float width, float height, float depth, boolean rotate) {
         super(new Vector3f(x, y, z));
+        
+        this.rotate = rotate;
         
         float w = width / 2;
         float h = height / 2;
@@ -101,8 +105,10 @@ public class EntityCube extends Entity {
         normal.set(g.modelMatrix.invert());
         g.modelMatrix.translation(position);
         
-        g.modelMatrix.rotateY((float) Math.toRadians(angle -= 0.4f));
-        g.modelMatrix.rotateZ((float) -Math.toRadians(angle));
+        if(rotate) {
+            g.modelMatrix.rotateY((float) Math.toRadians(angle -= 0.4f));
+            g.modelMatrix.rotateZ((float) -Math.toRadians(angle));
+        }
     }
 
     @Override
@@ -130,11 +136,15 @@ public class EntityCube extends Entity {
     @Override
     public void renderShadow(GLProgram depthProgram) {
         glEnable(GL_DEPTH_TEST);
+        glEnable(GL_CULL_FACE);
+        glCullFace(GL_FRONT); //Culling the front of the object fixes "peter panning"
         glBindVertexArray(g.vao);
         
         depthProgram.setUniform("uModel", false, g.modelMatrix);
         
         glDrawElements(GL_TRIANGLES, g.indices.capacity(), GL_UNSIGNED_INT, 0);
+        glCullFace(GL_BACK);
+        glDisable(GL_CULL_FACE);
         glDisable(GL_DEPTH_TEST);
         
         ErrorUtils.checkGLError();
