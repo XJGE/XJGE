@@ -117,8 +117,9 @@ public class ShadowMap {
         glViewport(0, 0, SHADOW_WIDTH, SHADOW_HEIGHT);
         glBindFramebuffer(GL_FRAMEBUFFER, fbo);
             glClear(GL_DEPTH_BUFFER_BIT);
-            glActiveTexture(GL_TEXTURE0);
+            //glActiveTexture(GL_TEXTURE0);
             glBindTexture(GL_TEXTURE_2D, depthTexHandle);
+            
             scene.renderShadows(depthProgram);
         glBindFramebuffer(GL_FRAMEBUFFER, 0);
     }

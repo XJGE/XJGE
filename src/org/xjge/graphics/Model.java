@@ -745,7 +745,20 @@ public class Model {
         glProgram.use();
         
         meshes.forEach(mesh -> {
+            //TODO: look into why shadows arent displayed on textured objects.
+            //glActiveTexture(GL_TEXTURE0);
             glBindTexture(GL_TEXTURE_2D, textures[mesh.textureID].handle);
+            
+            /*
+            try(MemoryStack stack = MemoryStack.stackPush()) {
+                IntBuffer result = stack.callocInt(1);
+                
+                glGetIntegerv(GL_TEXTURE_BINDING_2D, result);
+                
+                System.out.println(result.get());
+            }
+            */
+            
             glBindVertexArray(mesh.vao);
             
             glProgram.setUniform("uType", 5);

@@ -70,15 +70,14 @@ float calcShowShadow(float dotLightNormal) {
  * Calculates the output of the single world light all 3D models will be 
  * illuminated by.
  */
-vec3 calcWorldLight(Light light) {
+vec3 calcWorldLight(Light light, vec3 normal) {
     vec3 direction = normalize(light.position);
     
-    vec3 norm    = normalize(ioNormal);
-    float diff   = max(dot(norm, direction), 0);
+    float diff   = max(dot(normal, direction), 0);
     vec3 diffuse = diff * uLights[0].diffuse * uLights[0].brightness;
     vec3 ambient = uLights[0].ambient * uLights[0].contrast;
     
-    float dotLightNormal = dot(direction, norm);
+    float dotLightNormal = dot(direction, normal);
     float shadow         = calcShadow(dotLightNormal);
     vec3 lighting        = (shadow * diffuse + ambient) * ioColor;
     
@@ -135,14 +134,15 @@ void main() {
             break;
 
         case 5: //Used for rendering 3D models.
-            vec3 result = calcWorldLight(uLights[0]);
+            vec3 normal = normalize(ioNormal);
+            vec3 result = calcWorldLight(uLights[0], normal);
 
             for(int i = 1; i < uNumLights; i++) {
-                result += calcPointLight(uLights[i], normalize(ioNormal), ioFragPos);
+                result += calcPointLight(uLights[i], normal, ioFragPos);
             }
             
             makeTransparent(texture(uTexture, ioTexCoords).a);
-            ioResult = texture(uTexture, ioTexCoords) * vec4(result * ioColor, 1.0); //TODO: model transparency.
+            ioResult = texture(uTexture, ioTexCoords) * vec4(result, 1.0); //TODO: model transparency.
             break;
 
         case 6: //Used for light source icons.

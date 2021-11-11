@@ -33,6 +33,7 @@ public class TestScene extends Scene {
     private EntityPlane plane4;
     private EntityCube cube1;
     private EntityCube cube2;
+    private EntityCube cube3;
     private EntityTeapot teapot;
     
     public TestScene() {
@@ -54,6 +55,7 @@ public class TestScene extends Scene {
         plane4 = new EntityPlane(30, 3, 30, 2, 2, Color.YELLOW);
         cube1  = new EntityCube(3, 7, 4, 2, 2, 2, true);
         cube2  = new EntityCube(-14, -2, -20, 2, 2, 2, false);
+        cube3  = new EntityCube(-10, 5, -15, 2, 2, 2, true);
         teapot = new EntityTeapot(0, -1, 0);
         
         entities.put("plane1", plane1);
@@ -62,6 +64,7 @@ public class TestScene extends Scene {
         entities.put("plane4", plane4);
         entities.put("cube1", cube1);
         entities.put("cube2", cube2);
+        entities.put("cube3", cube3);
         entities.put("teapot", teapot);
         
         //TODO: try teapot model.
