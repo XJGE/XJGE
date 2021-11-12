@@ -52,7 +52,7 @@ public final class Light {
      * @return a new engine-provided light object
      */
     public static final Light daylight() {
-        return new Light(0.55f, 0.15f, new Vector3f(-2, 4, 1), Color.WHITE, Color.WHITE);
+        return new Light(1, 0.55f, new Vector3f(-10, 30, 7.5f), Color.WHITE, Color.WHITE);
     }
     
     /**
@@ -62,7 +62,7 @@ public final class Light {
      * @return a new engine-provided light object
      */
     public static final Light sunset() {
-        return new Light(0.7f, 0.46f, new Vector3f(-1, 1, -2), Color.create(173, 141, 162), Color.create(255, 204, 76));
+        return new Light(0.87f, 0.5f, new Vector3f(-8, 7.5f, -30), Color.create(173, 141, 162), Color.create(255, 204, 86));
     }
     
     /**
@@ -72,7 +72,7 @@ public final class Light {
      * @return a new engine-provided light object
      */
     public static final Light midnight() {
-        return new Light(0.95f, 1, new Vector3f(1, 2, 2), Color.create(35, 45, 74), Color.WHITE);
+        return new Light(0.82f, 0.45f, new Vector3f(6.5f, 16.7f, 30), Color.create(38, 48, 76), Color.create(48, 62, 80));
     }
     
 }
