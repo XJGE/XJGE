@@ -84,6 +84,17 @@ public class TestScene extends Scene {
         addLightAtIndex(0, new Light(0.82f, 0.45f, new Vector3f(6.5f, 16.7f, 30), Color.create(38, 48, 76), Color.create(48, 62, 80)));
         
         
+        /*
+        TODO:
+        - allow shadow map to sample textures / sprite transparency so things
+          arent rendered just like squares.
+        - add new uType for sprites that want to exhibit lighting effects.
+        - refactor / clean up this mess!
+        - add doc
+        - remove tests
+        - recompile jars
+        */
+        
         addLight(new Light(0.1f, 0.5f, new Vector3f(30, 2, 0), Color.YELLOW, Color.WHITE));
         //addLight(new Light(0.1f, 0.5f, new Vector3f(-30, 2, 0), Color.YELLOW, Color.WHITE));
         //addLightAtIndex(1, new Light(1, 0.5f, new Vector3f(0, 0, 0), Color.YELLOW, Color.WHITE));
