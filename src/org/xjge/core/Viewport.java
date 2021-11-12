@@ -126,23 +126,13 @@ final class Viewport {
             }
             
             case "texture" -> {
+                glActiveTexture(GL_TEXTURE0);
                 glBindTexture(GL_TEXTURE_2D, texHandle);
                 glBindVertexArray(g.vao);
                 
-                //TODO: manually set texture units?
-                
-                /*
-                try(MemoryStack stack = MemoryStack.stackPush()) {
-                    IntBuffer result = stack.callocInt(1);
-                    
-                    glGetIntegerv(GL_TEXTURE_BINDING_2D, result);
-
-                    System.out.println(id + " " + result.get());
-                }
-                */
-                
                 glPrograms.get("default").use();
                 glPrograms.get("default").setUniform("uType", 0);
+                glPrograms.get("default").setUniform("uTexture", 0);
                 
                 glDrawElements(GL_TRIANGLES, g.indices.capacity(), GL_UNSIGNED_INT, 0);
                 ErrorUtils.checkGLError();

@@ -747,19 +747,12 @@ public class Model {
         
         meshes.forEach(mesh -> {
             //TODO: look into why shadows arent displayed on textured objects.
-            //glActiveTexture(GL_TEXTURE0);
-            //glBindTexture(GL_TEXTURE_2D, textures[mesh.textureID].handle);
-            glBindTexture(GL_TEXTURE_2D, Game.shadowMap.depthTexHandle);
+            glActiveTexture(GL_TEXTURE0);
+            glBindTexture(GL_TEXTURE_2D, textures[mesh.textureID].handle);
             
-            /*
-            try(MemoryStack stack = MemoryStack.stackPush()) {
-                IntBuffer result = stack.callocInt(1);
-                
-                glGetIntegerv(GL_TEXTURE_BINDING_2D, result);
-                
-                System.out.println(result.get());
-            }
-            */
+            //TODO: only active if shadow map is enabled.
+            glActiveTexture(GL_TEXTURE1);
+            glBindTexture(GL_TEXTURE_2D, Game.shadowMap.depthTexHandle);
             
             glBindVertexArray(mesh.vao);
             
@@ -768,6 +761,8 @@ public class Model {
             glProgram.setUniform("uNormal", true, normal);
             glProgram.setUniform("uNumLights", numLights);
             glProgram.setUniform("uColor", color.asVec3());
+            glProgram.setUniform("uTexture", 0);
+            glProgram.setUniform("uShadowMap", 1);
             
             for(int i = 0; i < Scene.MAX_LIGHTS; i++) {
                 if(lights[i] != null) {

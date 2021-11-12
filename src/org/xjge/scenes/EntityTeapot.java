@@ -30,8 +30,8 @@ public class EntityTeapot extends Entity {
     public void update(double targetDelta, double trueDelta) {
         teapot.delocalizeNormal();
         
-        //position.x += 0.1f;
-        //position.z -= 0.1f;
+        //position.x += 0.05f;
+        //position.z -= 0.05f;
         
         teapot.meshes.forEach(mesh -> {
             mesh.modelMatrix.translation(position);
