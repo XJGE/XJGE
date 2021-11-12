@@ -137,6 +137,7 @@ public final class LightSource {
         
         glEnable(GL_BLEND);
         glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+        glActiveTexture(GL_TEXTURE0);
         glBindTexture(GL_TEXTURE_2D, iconTexture.handle);
         glBindVertexArray(g.vao);
         

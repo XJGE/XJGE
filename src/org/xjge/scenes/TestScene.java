@@ -8,7 +8,6 @@ import org.xjge.core.Skybox;
 import org.xjge.graphics.Color;
 import org.xjge.graphics.GLProgram;
 import org.xjge.graphics.Light;
-import org.xjge.graphics.Model;
 
 /**
  * Nov 9, 2021
@@ -24,9 +23,6 @@ public class TestScene extends Scene {
     
     private Skybox skybox = new Skybox("sky_noon_top.png", "sky_noon_center.png", "sky_noon_bottom.png", true);
     
-    private Model fortress;
-    private ArenaCaps arenaCaps;
-    
     private EntityPlane plane1;
     private EntityPlane plane2;
     private EntityPlane plane3;
@@ -35,6 +31,7 @@ public class TestScene extends Scene {
     private EntityCube cube2;
     private EntityCube cube3;
     private EntityTeapot teapot;
+    private EntityFortress fortress;
     
     public TestScene() {
         super("test");
@@ -49,6 +46,7 @@ public class TestScene extends Scene {
          - clean up any loose ends- add documentation.
         */
         
+        fortress = new EntityFortress(0, -2.99f, 0);
         plane1 = new EntityPlane(0, -3, 0, 50, 50, Color.BLUE);
         plane2 = new EntityPlane(0, 3, 0, 5, 5, Color.RED);
         plane3 = new EntityPlane(-1, 4, 0, 2, 2, Color.GREEN);
@@ -58,6 +56,7 @@ public class TestScene extends Scene {
         cube3  = new EntityCube(-10, 5, -15, 2, 2, 2, true);
         teapot = new EntityTeapot(0, -1, 0);
         
+        entities.put("fortress", fortress);
         entities.put("plane1", plane1);
         entities.put("plane2", plane2);
         entities.put("plane3", plane3);
@@ -67,48 +66,21 @@ public class TestScene extends Scene {
         entities.put("cube3", cube3);
         entities.put("teapot", teapot);
         
-        //TODO: try teapot model.
-        
-        /*
-        fortress = new Model("mod_arena.fbx", 
-             aiProcess_Triangulate | aiProcess_FlipUVs | aiProcess_FixInfacingNormals);
-        
-        fortress.bindMeshTexture("Walls");
-            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
-            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
-            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-        glBindTexture(GL_TEXTURE_2D, 0);
-        
-        fortress.bindMeshTexture("Spawns");
-            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-        glBindTexture(GL_TEXTURE_2D, 0);
-        
-        arenaCaps = new ArenaCaps();
-        */
-        
-        addLightAtIndex(0, new Light(1, 0.5f, new Vector3f(16, 26, 14), Color.WHITE, Color.WHITE));
+        addLightAtIndex(0, new Light(1, 0.5f, new Vector3f(18, 6, 20), Color.WHITE, Color.WHITE));
+        addLight(new Light(0.1f, 0.5f, new Vector3f(30, 2, 0), Color.YELLOW, Color.WHITE));
+        addLight(new Light(0.1f, 0.5f, new Vector3f(-30, 2, 0), Color.YELLOW, Color.WHITE));
+        //addLightAtIndex(1, new Light(1, 0.5f, new Vector3f(0, 0, 0), Color.YELLOW, Color.WHITE));
     }
 
     @Override
     public void update(double targetDelta, double trueDelta) {
         skybox.getModelMatrix().rotationY((float) Math.toRadians(angle -= 0.01f));
         
-        /*
-        fortress.delocalizeNormal();
-        fortress.translation(0, 0, 0);
-        fortress.rotateX(-90f);
-        fortress.rotateZ(90f);
-        */
-        
         entities.values().forEach(entity -> entity.update(targetDelta, trueDelta));
     }
 
     @Override
     public void render(Map<String, GLProgram> glPrograms, int viewportID, Camera camera) {
-        //fortress.render(glPrograms.get("default"), getLightSources(), getNumLights(), arenaCaps);
-        
         glPrograms.get("default").use();
         entities.values().forEach(entity -> entity.render(glPrograms.get("default"), camera, getLightSources(), getNumLights()));
     }
