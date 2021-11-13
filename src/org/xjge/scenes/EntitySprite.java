@@ -113,6 +113,7 @@ public class EntitySprite extends Entity {
         glBindTexture(GL_TEXTURE_2D, texture.handle);
         glBindVertexArray(g.vao);
         
+        depthProgram.setUniform("uTexCoords", texCoords);
         depthProgram.setUniform("uModel", false, g.modelMatrix);
         
         glDrawElements(GL_TRIANGLES, g.indices.capacity(), GL_UNSIGNED_INT, 0);

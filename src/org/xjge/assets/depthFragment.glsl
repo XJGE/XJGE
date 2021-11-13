@@ -6,7 +6,11 @@ uniform sampler2D uTexture;
 
 out vec4 ioResult;
 
+void makeTransparent(float a) {
+    if(a == 0) discard;
+}
+
 void main() {
-    if(texture(uTexture, ioTexCoords).a == 0) discard;
+    makeTransparent(texture(uTexture, ioTexCoords).a);
     ioResult = texture(uTexture, ioTexCoords);
 }
