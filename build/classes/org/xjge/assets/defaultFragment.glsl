@@ -134,9 +134,7 @@ void main() {
             }
             
             makeTransparent(texture(uTexture, ioTexCoords).a);
-            //NOTE: dark textures mess with the shadow results.
             ioResult = texture(uTexture, ioTexCoords) * vec4(result, 1.0); //TODO: model transparency.
-            //ioResult = vec4(result, 1.0);
             break;
 
         case 6: //Used for light source icons.

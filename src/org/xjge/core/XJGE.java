@@ -275,6 +275,7 @@ public final class XJGE {
                 depthProgram = new GLProgram(shaderSourceFiles, "default");
                 
                 depthProgram.use();
+                depthProgram.addUniform(BufferType.VEC2, "uTexCoords");
                 depthProgram.addUniform(BufferType.MAT4, "uModel");
                 depthProgram.addUniform(BufferType.MAT4, "uLightSpace");
             }

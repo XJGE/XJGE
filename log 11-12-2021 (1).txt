@@ -1,0 +1,18 @@
+
+11-12-2021 6:52PM
+ERROR (shader-utils): Failed to parse GLSL file "depthFragment.glsl". ERROR: 0:11: 'texture' : no matching overloaded function found (using implicit conversion) 
+ERROR: 0:11: 'texture' : function is not known 
+ERROR: 0:11: 'a' : field selection requires structure, vector, or matrix on left hand side 
+ERROR: 0:13: 'texture' : no matching overloaded function found (using implicit conversion) 
+ERROR: 0:13: 'texture' : function is not known 
+ERROR: 0:12: 'assign' :  cannot convert from 'const highp float' to 'FragUserData 4-component vector of highp float'
+
+
+
+java.lang.RuntimeException
+	org.xjge.core.Logger.logSevere(Logger.java:215)
+	org.xjge.graphics.Shader.<init>(Shader.java:68)
+	org.xjge.core.XJGE$2.<init>(XJGE.java:272)
+	org.xjge.core.XJGE.init(XJGE.java:270)
+	org.xjge.test.Main.main(Main.java:18)
+

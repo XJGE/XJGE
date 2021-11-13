@@ -760,8 +760,8 @@ public class Model {
             glProgram.setUniform("uNormal", true, normal);
             glProgram.setUniform("uNumLights", numLights);
             glProgram.setUniform("uColor", color.asVec3());
-            glProgram.setUniform("uTexture", 0);
-            glProgram.setUniform("uShadowMap", 1);
+            //glProgram.setUniform("uTexture", 0);
+            //glProgram.setUniform("uShadowMap", 1);
             
             for(int i = 0; i < Scene.MAX_LIGHTS; i++) {
                 if(lights[i] != null) {

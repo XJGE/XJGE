@@ -1,6 +1,14 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project-private xmlns="http://www.netbeans.org/ns/project-private/1">
-    <editor-bookmarks xmlns="http://www.netbeans.org/ns/editor-bookmarks/2" lastBookmarkId="52">
+    <editor-bookmarks xmlns="http://www.netbeans.org/ns/editor-bookmarks/2" lastBookmarkId="53">
+        <file>
+            <url>src/org/xjge/scenes/TestScene.java</url>
+            <bookmark id="53">
+                <name/>
+                <line>87</line>
+                <key/>
+            </bookmark>
+        </file>
         <file>
             <url>src/dev/theskidster/xjge2/input/Input.java</url>
             <bookmark id="9">
@@ -13,7 +21,7 @@
             <url>src/org/xjge/graphics/Model.java</url>
             <bookmark id="52">
                 <name/>
-                <line>816</line>
+                <line>810</line>
                 <key/>
             </bookmark>
         </file>
@@ -48,13 +56,14 @@
             <file>file:/C:/Users/thesk/Documents/Projects/XJGE/XJGE-2/src/org/xjge/scenes/TestScene.java</file>
             <file>file:/C:/Users/thesk/Documents/Projects/XJGE/XJGE-2/src/org/xjge/assets/defaultFragment.glsl</file>
             <file>file:/C:/Users/thesk/Documents/Projects/XJGE/XJGE-2/src/org/xjge/core/Game.java</file>
-            <file>file:/C:/Users/thesk/Documents/Projects/XJGE/XJGE-2/src/org/xjge/assets/defaultVertex.glsl</file>
+            <file>file:/C:/Users/thesk/Documents/Projects/XJGE/XJGE-2/src/org/xjge/scenes/EntityFortress.java</file>
             <file>file:/C:/Users/thesk/Documents/Projects/XJGE/XJGE-2/src/org/xjge/core/Scene.java</file>
             <file>file:/C:/Users/thesk/Documents/Projects/XJGE/XJGE-2/src/org/xjge/scenes/EntityCube.java</file>
-            <file>file:/C:/Users/thesk/Documents/Projects/XJGE/XJGE-2/src/org/xjge/scenes/EntityTeapot.java</file>
+            <file>file:/C:/Users/thesk/Documents/Projects/XJGE/XJGE-2/src/org/xjge/graphics/Light.java</file>
+            <file>file:/C:/Users/thesk/Documents/Projects/XJGE/XJGE-2/src/org/xjge/core/Skybox.java</file>
             <file>file:/C:/Users/thesk/Documents/Projects/XJGE/XJGE-2/src/org/xjge/core/XJGE.java</file>
-            <file>file:/C:/Users/thesk/Documents/Projects/XJGE/XJGE-2/src/org/xjge/core/Viewport.java</file>
-            <file>file:/C:/Users/thesk/Documents/Projects/XJGE/XJGE-2/src/org/xjge/scenes/EntityPlane.java</file>
+            <file>file:/C:/Users/thesk/Documents/Projects/XJGE/XJGE-2/src/org/xjge/assets/defaultVertex.glsl</file>
+            <file>file:/C:/Users/thesk/Documents/Projects/XJGE/XJGE-2/src/org/xjge/test/Main.java</file>
             <file>file:/C:/Users/thesk/Documents/Projects/XJGE/XJGE-2/src/org/xjge/graphics/Model.java</file>
         </group>
     </open-files>
