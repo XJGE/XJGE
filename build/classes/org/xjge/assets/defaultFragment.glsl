@@ -100,9 +100,6 @@ vec3 calcPointLight(Light light, vec3 normal, vec3 fragPos) {
 }
 
 void main() {
-    
-    //TODO: add type for drawing sprites with lighting / shadows applied.
-    
     switch(uType) {
         case 0: //Used for framebuffer texture attachments.
             vec2 vRes = textureSize(uTexture, 0);

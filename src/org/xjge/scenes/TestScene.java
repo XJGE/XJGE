@@ -48,8 +48,6 @@ public class TestScene extends Scene {
         
         /*
         TODO:
-        - allow shadow map to sample textures / sprite transparency so things
-          arent rendered just like squares.
         - add new uType for sprites that want to exhibit lighting effects.
         - refactor / clean up this mess!
         - add doc
