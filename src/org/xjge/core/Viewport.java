@@ -1,6 +1,5 @@
 package org.xjge.core;
 
-import java.nio.IntBuffer;
 import org.xjge.graphics.Graphics;
 import org.xjge.graphics.GLProgram;
 import java.util.Collections;
