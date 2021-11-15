@@ -1,8 +1,6 @@
 package org.xjge.scenes;
 
-import static org.lwjgl.opengl.GL11C.GL_DEPTH_TEST;
-import static org.lwjgl.opengl.GL11C.glDisable;
-import static org.lwjgl.opengl.GL11C.glEnable;
+import static org.lwjgl.opengl.GL11C.*;
 import org.xjge.graphics.GLCapabilities;
 
 /**
@@ -18,10 +16,13 @@ public class ArenaCaps extends GLCapabilities {
     @Override
     public void enable() {
         glEnable(GL_DEPTH_TEST);
+        glEnable(GL_BLEND);
+        glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
     }
 
     @Override
     public void disable() {
+        glDisable(GL_BLEND);
         glDisable(GL_DEPTH_TEST);
     }
 

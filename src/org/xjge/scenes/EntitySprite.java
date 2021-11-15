@@ -119,6 +119,7 @@ public class EntitySprite extends Entity {
         glProgram.setUniform("uNormal", true, normal);
         glProgram.setUniform("uTexCoords", texCoords);
         glProgram.setUniform("uModel", false, g.modelMatrix);
+        glProgram.setUniform("uOpacity", 1f);
         glProgram.setUniform("uTexture", 0);
         glProgram.setUniform("uShadowMap", 1);
         

@@ -47,7 +47,8 @@ public class Model {
     
     private int prevNumKeyFrames;
     
-    private float speed = 1.5f;
+    private float speed  = 1.5f;
+    public float opacity = 1;
     
     public boolean loopAnimation = true;
     
@@ -73,10 +74,16 @@ public class Model {
         public void enable() {
             glEnable(GL_DEPTH_TEST);
             glEnable(GL_CULL_FACE);
+            glEnable(GL_BLEND);
+            glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+            glEnable(GL_ALPHA_TEST);
+            glAlphaFunc(GL_GREATER, 0);
         }
 
         @Override
         public void disable() {
+            glDisable(GL_ALPHA_TEST);
+            glDisable(GL_BLEND);
             glDisable(GL_CULL_FACE);
             glDisable(GL_DEPTH_TEST);
         }
@@ -760,8 +767,10 @@ public class Model {
             glProgram.setUniform("uNormal", true, normal);
             glProgram.setUniform("uNumLights", numLights);
             glProgram.setUniform("uColor", color.asVec3());
-            //glProgram.setUniform("uTexture", 0);
-            //glProgram.setUniform("uShadowMap", 1);
+            glProgram.setUniform("uOpacity", opacity);
+            
+            glProgram.setUniform("uTexture", 0);
+            glProgram.setUniform("uShadowMap", 1);
             
             for(int i = 0; i < Scene.MAX_LIGHTS; i++) {
                 if(lights[i] != null) {

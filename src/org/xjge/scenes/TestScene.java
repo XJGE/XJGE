@@ -46,13 +46,14 @@ public class TestScene extends Scene {
         entities.put("teapot2", new EntityTeapot(6, 4, -5));
         entities.put("sprite", new EntitySprite(0, 1, -6, 1.5f, 2));
         entities.put("sprite2", new EntitySprite(0, 2, -4, 1.5f, 2));
+        entities.put("fortress", new EntityFortress(0, -2.99f, 0));
         
         addLightAtIndex(0, Light.daylight());
         
         
         /*
         TODO:
-        - add new uType for sprites that want to exhibit lighting effects.
+        - add point light shadows.
         - refactor / clean up this mess!
         - add doc
         - remove tests

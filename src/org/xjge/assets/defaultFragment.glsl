@@ -129,7 +129,7 @@ void main() {
                 lighting += calcPointLight(uLights[i], normalize(ioNormal), ioFragPos);
             }
             
-            ioResult = texture(uTexture, ioTexCoords) * vec4(lighting, 1.0); //TODO: model transparency.
+            ioResult = texture(uTexture, ioTexCoords) * vec4(lighting, uOpacity);
             break;
 
         case 6: //Used for light source icons.
