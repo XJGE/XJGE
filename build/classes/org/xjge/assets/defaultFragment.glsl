@@ -129,7 +129,6 @@ void main() {
                 lighting += calcPointLight(uLights[i], normalize(ioNormal), ioFragPos);
             }
             
-            makeTransparent(texture(uTexture, ioTexCoords).a);
             ioResult = texture(uTexture, ioTexCoords) * vec4(lighting, 1.0); //TODO: model transparency.
             break;
 

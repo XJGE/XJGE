@@ -28,6 +28,7 @@ public class EntitySprite extends Entity {
 
     private Vector2f texCoords = new Vector2f();
     private Graphics g      = new Graphics();
+    private Graphics g2     = new Graphics();
     private Texture texture;
     private Matrix3f normal = new Matrix3f();
     
@@ -67,6 +68,29 @@ public class EntitySprite extends Entity {
         glEnableVertexAttribArray(0);
         glEnableVertexAttribArray(2);
         glEnableVertexAttribArray(3);
+        
+        try(MemoryStack stack = MemoryStack.stackPush()) {
+            g2.vertices = stack.mallocFloat(12);
+            g2.indices  = stack.mallocInt(6);
+            
+            //(vec3 position), (vec2 texCoords), (vec3 normal)
+            g2.vertices.put(-width / 2).put(0).put(-depth / 2);
+            g2.vertices.put(-width / 2).put(0) .put(depth / 2);
+            g2.vertices .put(width / 2).put(0) .put(depth / 2);
+            g2.vertices. put(width / 2).put(0).put(-depth / 2);
+            
+            g2.indices.put(0).put(1).put(2);
+            g2.indices.put(2).put(3).put(0);
+            
+            g2.vertices.flip();
+            g2.indices.flip();
+        }
+        
+        g2.bindBuffers();
+        
+        glVertexAttribPointer(0, 3, GL_FLOAT, false, (3 * Float.BYTES), 0);
+        
+        glEnableVertexAttribArray(0);
     }
     
     @Override
@@ -74,6 +98,9 @@ public class EntitySprite extends Entity {
         
         g.modelMatrix.translation(position);
         g.modelMatrix.rotateX((float) Math.toRadians(45f));
+        
+        g2.modelMatrix.translation(position);
+        g2.modelMatrix.rotateX((float) Math.toRadians(45f));
     }
 
     @Override
@@ -105,13 +132,21 @@ public class EntitySprite extends Entity {
     @Override
     public void render(Map<String, GLProgram> glPrograms, Camera camera, LightSource[] lights, int numLights) {
     }
-
+    
     @Override
     public void renderShadow(GLProgram depthProgram) {
-        glEnable(GL_DEPTH_TEST);
-        glBindVertexArray(g.vao);
+        /*
+        TODO: 
         
-        depthProgram.setUniform("uModel", false, g.modelMatrix);
+        rendering shadows for 2D sprites could be achived by having 
+        different model matrices for each cell of the animation. not the most
+        ideal solution but atleast it works.
+        */
+
+        glEnable(GL_DEPTH_TEST);
+        glBindVertexArray(g2.vao);
+        
+        depthProgram.setUniform("uModel", false, g2.modelMatrix);
         
         glDrawElements(GL_TRIANGLES, g.indices.capacity(), GL_UNSIGNED_INT, 0);
         glDisable(GL_DEPTH_TEST);
