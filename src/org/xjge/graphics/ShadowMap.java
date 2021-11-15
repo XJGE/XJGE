@@ -42,8 +42,6 @@ public abstract class ShadowMap {
         
         fbo       = glGenFramebuffers();
         texHandle = glGenTextures();
-        
-        //TODO: implement shadow maps
     }
     
     public abstract void createMap(Camera camera, GLProgram glProgram, Scene scene);

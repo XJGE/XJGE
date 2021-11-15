@@ -32,15 +32,6 @@ public class TestScene extends Scene {
         
         setSkybox(skybox);
         
-        /*
-        TODO:
-         - shadow mapping should be as simple as setting up a skybox and setting 
-           entities model matrix via renderShadow()
-         - models should still exhibit lighting even with shadows disabled
-         - clean up any loose ends- add documentation.
-        */
-        
-        
         entities.put("plane", new EntityPlane(0, -3, 0, 100, 100, Color.GRAY));
         entities.put("teapot", new EntityTeapot(6, 0, -10));
         entities.put("teapot2", new EntityTeapot(6, 4, -5));
@@ -54,6 +45,10 @@ public class TestScene extends Scene {
         /*
         TODO:
         - add point light shadows.
+        - add PCF filter options
+        - centralize world light shadow map options.
+        - entities will determine individually if they wish to render shadows 
+          with the new renderShadow() method.
         - refactor / clean up this mess!
         - add doc
         - remove tests
