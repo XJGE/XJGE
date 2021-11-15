@@ -34,7 +34,7 @@ public class EntitySprite extends Entity {
     EntitySprite(float x, float y, float z, float width, float depth) {
         super(new Vector3f(x, y, z));
         
-        texture = new Texture("img_windows.png");
+        texture = new Texture("img_null.png");
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
@@ -71,6 +71,7 @@ public class EntitySprite extends Entity {
     
     @Override
     public void update(double targetDelta, double trueDelta) {
+        
         g.modelMatrix.translation(position);
         g.modelMatrix.rotateX((float) Math.toRadians(45f));
     }
@@ -86,9 +87,9 @@ public class EntitySprite extends Entity {
         glBindTexture(GL_TEXTURE_2D, Game.shadowMap.depthTexHandle);
         glBindVertexArray(g.vao);
         
-        glProgram.setUniform("uType", 7);
+        glProgram.setUniform("uType", 9);
         glProgram.setUniform("uColor", Color.WHITE.asVec3());
-        //glProgram.setUniform("uNormal", true, normal);
+        glProgram.setUniform("uNormal", true, normal);
         glProgram.setUniform("uTexCoords", texCoords);
         glProgram.setUniform("uModel", false, g.modelMatrix);
         glProgram.setUniform("uTexture", 0);

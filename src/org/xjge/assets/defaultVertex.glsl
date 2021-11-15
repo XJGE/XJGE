@@ -116,12 +116,13 @@ void main() {
             gl_Position    = (uProjection * uView * uModel * vec4(aPosition, 1));
             break;
         
-        case 9: //TODO: temp, used for test objects Plane and Cube.
+        case 9: //Used for animated 2D sprites which exhibit lighting effects.
             ioColor     = uColor;
-            ioFragPos   = vec3(uModel * vec4(aPosition, 1));
+            ioTexCoords = aTexCoords + uTexCoords;
             ioNormal    = uNormal * aNormal;
+            ioFragPos   = vec3(uModel * vec4(aPosition, 1));
             ioLightFrag = uLightSpace * vec4(ioFragPos, 1);
-            gl_Position = uProjection * uView * uModel * vec4(aPosition, 1);
+            gl_Position = (uProjection * uView * uModel * vec4(aPosition, 1));
             break;
     }
 }

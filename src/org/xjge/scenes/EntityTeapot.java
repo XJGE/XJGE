@@ -5,6 +5,7 @@ import org.joml.Vector3f;
 import org.xjge.core.Camera;
 import org.xjge.core.Entity;
 import org.xjge.core.LightSource;
+import org.xjge.graphics.Color;
 import org.xjge.graphics.GLProgram;
 import org.xjge.graphics.Model;
 

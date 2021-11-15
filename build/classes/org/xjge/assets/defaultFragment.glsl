@@ -122,16 +122,15 @@ void main() {
             ioResult = texture(uTexture, ioTexCoords) * vec4(ioColor, 1.0);
             break;
 
-        case 5: //Used for rendering 3D models.
-            vec3 normal = normalize(ioNormal);
-            vec3 result = calcWorldLight(uLights[0], normal);
+        case 5: case 9: //Used for rendering 3D models and 2D sprites that exhbit lighting effects.
+            vec3 lighting = calcWorldLight(uLights[0], normalize(ioNormal));
             
             for(int i = 1; i < uNumLights; i++) {
-                result += calcPointLight(uLights[i], normal, ioFragPos);
+                lighting += calcPointLight(uLights[i], normalize(ioNormal), ioFragPos);
             }
             
             makeTransparent(texture(uTexture, ioTexCoords).a);
-            ioResult = texture(uTexture, ioTexCoords) * vec4(result, 1.0); //TODO: model transparency.
+            ioResult = texture(uTexture, ioTexCoords) * vec4(lighting, 1.0); //TODO: model transparency.
             break;
 
         case 6: //Used for light source icons.
@@ -142,22 +141,6 @@ void main() {
         case 8: //Used for drawing skyboxes.
             makeTransparent(texture(uSkyTexture, ioSkyTexCoords).a);
             ioResult = texture(uSkyTexture, ioSkyTexCoords);
-            break;
-        
-        case 9: //TODO: temp, used for test objects Plane and Cube.
-            vec3 direction = normalize(uLights[0].position);
-            
-            vec3 norm    = normalize(ioNormal);
-            float diff   = max(dot(norm, direction), 0);
-            vec3 diffuse = diff * uLights[0].diffuse * uLights[0].brightness;
-            vec3 ambient = uLights[0].ambient * uLights[0].contrast;
-            
-            //Calculate shadows.
-            float dotLightNormal = dot(direction, norm);
-            float shadow         = calcShadow(dotLightNormal);
-            vec3 lighting        = (shadow * diffuse + ambient) * ioColor;
-            
-            ioResult = vec4(lighting, 1);
             break;
     }
 }

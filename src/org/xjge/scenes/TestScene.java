@@ -1,6 +1,7 @@
 package org.xjge.scenes;
 
 import java.util.Map;
+import org.joml.Vector3f;
 import org.xjge.core.Camera;
 import org.xjge.core.Scene;
 import org.xjge.core.Skybox;
@@ -40,11 +41,14 @@ public class TestScene extends Scene {
         */
         
         
-        entities.put("plane", new EntityPlane(0, -3, 0, 100, 100, Color.WHITE));
+        entities.put("plane", new EntityPlane(0, -3, 0, 100, 100, Color.GRAY));
         entities.put("teapot", new EntityTeapot(6, 0, -10));
+        entities.put("teapot2", new EntityTeapot(6, 4, -5));
         entities.put("sprite", new EntitySprite(0, 1, -6, 1.5f, 2));
+        entities.put("sprite2", new EntitySprite(0, 2, -4, 1.5f, 2));
         
         addLightAtIndex(0, Light.daylight());
+        
         
         /*
         TODO:
