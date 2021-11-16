@@ -7,11 +7,6 @@ uniform sampler2D uTexture;
 out vec4 ioResult;
 
 void main() {
-    float alpha = texture(uTexture, ioTexCoords).a;
-    
-    if(alpha < 0.5) {
-        discard;
-    }
-    
+    if(texture(uTexture, ioTexCoords).a == 0) discard;
     ioResult = vec4(1.0);
 }
