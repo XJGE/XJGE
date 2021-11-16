@@ -35,9 +35,9 @@ public class EntitySprite extends Entity {
     EntitySprite(float x, float y, float z, float width, float depth) {
         super(new Vector3f(x, y, z));
         
-        texture = new Texture("img_null.png");
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+        texture = new Texture("img_windows.png");
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
         
@@ -108,6 +108,8 @@ public class EntitySprite extends Entity {
         glEnable(GL_DEPTH_TEST);
         glEnable(GL_BLEND);
         glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+        glEnable(GL_ALPHA_TEST);
+        glAlphaFunc(GL_GREATER, 0);
         glActiveTexture(GL_TEXTURE0);
         glBindTexture(GL_TEXTURE_2D, texture.handle);
         glActiveTexture(GL_TEXTURE1);
@@ -124,6 +126,7 @@ public class EntitySprite extends Entity {
         glProgram.setUniform("uShadowMap", 1);
         
         glDrawElements(GL_TRIANGLES, g.indices.capacity(), GL_UNSIGNED_INT, 0);
+        glDisable(GL_ALPHA_TEST);
         glDisable(GL_BLEND);
         glDisable(GL_DEPTH_TEST);
         
@@ -136,18 +139,10 @@ public class EntitySprite extends Entity {
     
     @Override
     public void renderShadow(GLProgram depthProgram) {
-        /*
-        TODO: 
-        
-        rendering shadows for 2D sprites could be achived by having 
-        different model matrices for each cell of the animation. not the most
-        ideal solution but atleast it works.
-        */
-
         glEnable(GL_DEPTH_TEST);
-        glBindVertexArray(g2.vao);
+        glBindVertexArray(g.vao);
         
-        depthProgram.setUniform("uModel", false, g2.modelMatrix);
+        depthProgram.setUniform("uModel", false, g.modelMatrix);
         
         glDrawElements(GL_TRIANGLES, g.indices.capacity(), GL_UNSIGNED_INT, 0);
         glDisable(GL_DEPTH_TEST);

@@ -5,7 +5,7 @@
             <url>src/org/xjge/scenes/TestScene.java</url>
             <bookmark id="53">
                 <name/>
-                <line>49</line>
+                <line>45</line>
                 <key/>
             </bookmark>
         </file>
@@ -21,7 +21,7 @@
             <url>src/org/xjge/graphics/Model.java</url>
             <bookmark id="52">
                 <name/>
-                <line>810</line>
+                <line>819</line>
                 <key/>
             </bookmark>
         </file>
@@ -52,7 +52,7 @@
     </editor-bookmarks>
     <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
         <group>
-            <file>file:/C:/Users/thesk/Documents/Projects/XJGE/XJGE-2/src/org/xjge/assets/depthVertex.glsl</file>
+            <file>file:/C:/Users/thesk/Documents/Projects/XJGE/XJGE-2/src/org/xjge/core/ShadowMap.java</file>
             <file>file:/C:/Users/thesk/Documents/Projects/XJGE/XJGE-2/src/org/xjge/scenes/TestScene.java</file>
             <file>file:/C:/Users/thesk/Documents/Projects/XJGE/XJGE-2/src/org/xjge/assets/defaultFragment.glsl</file>
             <file>file:/C:/Users/thesk/Documents/Projects/XJGE/XJGE-2/src/org/xjge/assets/defaultVertex.glsl</file>
@@ -60,8 +60,6 @@
             <file>file:/C:/Users/thesk/Documents/Projects/XJGE/XJGE-2/src/org/xjge/graphics/Light.java</file>
             <file>file:/C:/Users/thesk/Documents/Projects/XJGE/XJGE-2/src/org/xjge/core/Skybox.java</file>
             <file>file:/C:/Users/thesk/Documents/Projects/XJGE/XJGE-2/src/org/xjge/scenes/EntityPlane.java</file>
-            <file>file:/C:/Users/thesk/Documents/Projects/XJGE/XJGE-2/src/org/xjge/scenes/EntitySprite.java</file>
-            <file>file:/C:/Users/thesk/Documents/Projects/XJGE/XJGE-2/src/org/xjge/assets/depthFragment.glsl</file>
             <file>file:/C:/Users/thesk/Documents/Projects/XJGE/XJGE-2/src/org/xjge/graphics/Model.java</file>
         </group>
     </open-files>
