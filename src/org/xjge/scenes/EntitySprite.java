@@ -36,8 +36,8 @@ public class EntitySprite extends Entity {
         super(new Vector3f(x, y, z));
         
         texture = new Texture("img_windows.png");
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
         
@@ -98,6 +98,7 @@ public class EntitySprite extends Entity {
         
         g.modelMatrix.translation(position);
         //g.modelMatrix.rotateX((float) Math.toRadians(45f));
+        g.modelMatrix.rotateX((float) Math.toRadians(90f));
     }
 
     @Override

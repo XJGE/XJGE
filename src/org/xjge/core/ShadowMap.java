@@ -21,6 +21,8 @@ public class ShadowMap {
     private final int fbo;
     public final int depthTexHandle;
     
+    public static int PCFRadius = 3;
+    
     private final float NEAR_PLANE = 1f;
     private final float FAR_PLANE  = 100f;
     
@@ -90,14 +92,14 @@ public class ShadowMap {
         
         glBindTexture(GL_TEXTURE_2D, depthTexHandle);
         glTexImage2D(GL_TEXTURE_2D, 0, GL_DEPTH_COMPONENT, SHADOW_WIDTH, SHADOW_HEIGHT, 0, GL_DEPTH_COMPONENT, GL_FLOAT, NULL);
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR); //TODO: add option for nearest neighbor.
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST); //TODO: add option to change filter type?
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_BORDER);
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_BORDER);
         
         //TODO: show bounds function?
-        //float[] borderColor = new float[] {1, 1, 1, 1};
-        //glTexParameterfv(GL_TEXTURE_2D, GL_TEXTURE_BORDER_COLOR, borderColor);
+        float[] borderColor = new float[] {1, 1, 1, 1};
+        glTexParameterfv(GL_TEXTURE_2D, GL_TEXTURE_BORDER_COLOR, borderColor);
         
         glBindFramebuffer(GL_FRAMEBUFFER, fbo);
             glFramebufferTexture2D(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_TEXTURE_2D, depthTexHandle, 0);
@@ -107,7 +109,7 @@ public class ShadowMap {
     }
     
     void createMap(Vector3f camUp, GLProgram depthProgram, Scene scene) {
-        lightProj.setOrtho(-100f, 100f, -100f, 100f, NEAR_PLANE, FAR_PLANE);
+        lightProj.setOrtho(-50f, 50f, -50f, 50f, NEAR_PLANE, FAR_PLANE);
         lightView.setLookAt(scene.getLightSources()[0].getPosition(), lightDir, camUp);
         lightProj.mul(lightView, lightSpace);
         

@@ -130,6 +130,7 @@ public final class Game {
             XJGE.getDefaultGLProgram().setUniform("uLights[0].ambient",    scene.getLightSources()[0].getAmbientColor());
             XJGE.getDefaultGLProgram().setUniform("uLights[0].diffuse",    scene.getLightSources()[0].getDiffuseColor());
             XJGE.getDefaultGLProgram().setUniform("uLightSpace", false, shadowMap.lightSpace);
+            XJGE.getDefaultGLProgram().setUniform("uPCFRadius", shadowMap.PCFRadius);
             //glActiveTexture(GL_TEXTURE1);
             //glBindTexture(GL_TEXTURE_2D, shadowMap.depthTexHandle);
             

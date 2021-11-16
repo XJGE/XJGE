@@ -20,9 +20,10 @@ struct Light {
 
 uniform int uType;
 uniform int uNumLights;
+uniform int uPCFRadius;
 uniform float uOpacity;
 uniform sampler2D uTexture;
-uniform sampler2D uShadowMap;
+uniform sampler2D uShadowMap; //TODO: rename to uShadowMapTexture
 uniform samplerCube uSkyTexture;
 uniform Light uLights[MAX_LIGHTS];
 
@@ -37,6 +38,40 @@ float sharpen(float pixArray) {
     float normal2 = normal * normal;
 
     return floor(pixArray) + normal * pow(normal2, 2.0) / 2.0 + 0.5;
+}
+
+float calcShadow2(float dotLightNormal) {
+    vec3 projCoords = ioLightFrag.xyz / ioLightFrag.w;
+    
+    projCoords = projCoords * 0.5 + 0.5;
+    
+    float closestDepth = texture(uShadowMap, projCoords.xy).r;
+    float currentDepth = projCoords.z;
+    float bias = max(0.05 * (1 - dotLightNormal), 0.005);
+    
+    float shadow   = 0.0;
+    vec2 texelSize = 1.0 / textureSize(uShadowMap, 0);
+    
+    //TODO:
+    // Fix the following undesirable behavior:
+    // - supplying a PCFRadius value less than 3 darkens eveything
+    // - the walls near the ceiling inside the starting areas are not 
+    //   properly shaded, might be a result of some erroneous depth 
+    //   calculations here?
+    //
+    
+    for(int x = -uPCFRadius; x <= uPCFRadius; ++x) {
+        for(int y = -uPCFRadius; y <= uPCFRadius; ++y) {
+            float pcfDepth = texture(uShadowMap, projCoords.xy + vec2(x, y) * texelSize).r;
+            shadow += currentDepth - bias > pcfDepth ? 0.0 : 1.0;
+        }
+    }
+    
+    shadow /= (uLights[0].contrast * 100);
+    
+    if(projCoords.z > 1.0) shadow = 0.0;
+    
+    return shadow;
 }
 
 /**
@@ -70,7 +105,7 @@ vec3 calcWorldLight(Light light, vec3 normal) {
     vec3 ambient = uLights[0].ambient * uLights[0].contrast;
     
     float dotLightNormal = dot(direction, normal);
-    float shadow         = calcShadow(dotLightNormal);
+    float shadow         = calcShadow2(dotLightNormal); //calcShadow(dotLightNormal); //TODO: add option to toggle PCF filtering
     vec3 lighting        = (shadow * diffuse + ambient) * ioColor;
     
     return lighting;

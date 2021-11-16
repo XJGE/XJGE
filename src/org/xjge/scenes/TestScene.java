@@ -30,6 +30,16 @@ public class TestScene extends Scene {
         
         skybox = new Skybox("sky_noon_top.png", "sky_noon_center.png", "sky_noon_bottom.png", true);
         
+        /*
+        skybox = new Skybox("sky_sunset_center.png", "sky_sunset_center.png", "sky_sunset_top.png", 
+                "sky_sunset_bottom.png", "sky_sunset_center.png", "sky_sunset_back.png", true);
+        */
+        
+        /*
+        skybox = new Skybox("sky_midnight_center.png", "sky_midnight_center.png", "sky_midnight_top.png", 
+                "sky_midnight_bottom.png", "sky_midnight_front.png", "sky_midnight_center.png", true);
+        */
+        
         setSkybox(skybox);
         
         entities.put("plane", new EntityPlane(0, -3, 0, 100, 100, Color.GRAY));
@@ -59,6 +69,7 @@ public class TestScene extends Scene {
     @Override
     public void update(double targetDelta, double trueDelta) {
         skybox.getModelMatrix().rotationY((float) Math.toRadians(angle -= 0.01f));
+        //skybox.getModelMatrix().rotationY((float) Math.toRadians(8f));
         
         entities.values().forEach(entity -> entity.update(targetDelta, trueDelta));
     }

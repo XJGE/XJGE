@@ -242,6 +242,7 @@ public final class XJGE {
                 
                 defaultProgram.use();
                 defaultProgram.addUniform(BufferType.INT,   "uType");
+                defaultProgram.addUniform(BufferType.INT,   "uPCFRadius");
                 defaultProgram.addUniform(BufferType.INT,   "uNumLights");
                 defaultProgram.addUniform(BufferType.INT,   "uTexture");
                 defaultProgram.addUniform(BufferType.INT,   "uShadowMap");
