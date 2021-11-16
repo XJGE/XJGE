@@ -98,7 +98,6 @@ public class EntitySprite extends Entity {
         
         g.modelMatrix.translation(position);
         //g.modelMatrix.rotateX((float) Math.toRadians(45f));
-        g.modelMatrix.rotateX((float) Math.toRadians(90f));
     }
 
     @Override

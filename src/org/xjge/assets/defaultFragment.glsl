@@ -40,40 +40,6 @@ float sharpen(float pixArray) {
     return floor(pixArray) + normal * pow(normal2, 2.0) / 2.0 + 0.5;
 }
 
-float calcShadow2(float dotLightNormal) {
-    vec3 projCoords = ioLightFrag.xyz / ioLightFrag.w;
-    
-    projCoords = projCoords * 0.5 + 0.5;
-    
-    float closestDepth = texture(uShadowMap, projCoords.xy).r;
-    float currentDepth = projCoords.z;
-    float bias = max(0.05 * (1 - dotLightNormal), 0.005);
-    
-    float shadow   = 0.0;
-    vec2 texelSize = 1.0 / textureSize(uShadowMap, 0);
-    
-    //TODO:
-    // Fix the following undesirable behavior:
-    // - supplying a PCFRadius value less than 3 darkens eveything
-    // - the walls near the ceiling inside the starting areas are not 
-    //   properly shaded, might be a result of some erroneous depth 
-    //   calculations here?
-    //
-    
-    for(int x = -uPCFRadius; x <= uPCFRadius; ++x) {
-        for(int y = -uPCFRadius; y <= uPCFRadius; ++y) {
-            float pcfDepth = texture(uShadowMap, projCoords.xy + vec2(x, y) * texelSize).r;
-            shadow += currentDepth - bias > pcfDepth ? 0.0 : 1.0;
-        }
-    }
-    
-    shadow /= (uLights[0].contrast * 100);
-    
-    if(projCoords.z > 1.0) shadow = 0.0;
-    
-    return shadow;
-}
-
 /**
  * Allows texture transparency by discarding the fragments produced by its alpha 
  * channel.
@@ -86,11 +52,31 @@ float calcShadow(float dotLightNormal) {
     vec3 pos = ioLightFrag.xyz * 0.5 + 0.5;
 
     if(pos.z > 1) pos.z = 1;
-
+    
     float depth = texture(uShadowMap, pos.xy).r;
+    float bias  = max(0.0009 * (1 - dotLightNormal), 0.00003);
+    
+    if(uPCFRadius > 0) {
+        vec2 texelSize = 1.0 / textureSize(uShadowMap, 0);
+        float pcfValue = 0;
+        float factor   = 1 / (uPCFRadius * 2.0 + 1.0);
 
-    float bias = max(0.0009 * (1 - dotLightNormal), 0.00003);
-    return (depth + bias) < pos.z ? 0 : 1;
+        for(int x = -uPCFRadius; x <= uPCFRadius; x++) {
+            for(int y = -uPCFRadius; y <= uPCFRadius; y++) {
+                float pcfDepth = texture(uShadowMap, pos.xy + vec2(x, y) * texelSize).r; 
+
+                if(pos.z + bias < pcfDepth) {
+                    pcfValue += factor;
+                }
+            }
+        }
+
+        if(pcfValue > 1) pcfValue = 1;
+
+        return pcfValue;
+    } else {
+        return (depth + bias) < pos.z ? 0 : 1;
+    }
 }
 
 /**
@@ -105,7 +91,7 @@ vec3 calcWorldLight(Light light, vec3 normal) {
     vec3 ambient = uLights[0].ambient * uLights[0].contrast;
     
     float dotLightNormal = dot(direction, normal);
-    float shadow         = calcShadow2(dotLightNormal); //calcShadow(dotLightNormal); //TODO: add option to toggle PCF filtering
+    float shadow         = calcShadow(dotLightNormal);
     vec3 lighting        = (shadow * diffuse + ambient) * ioColor;
     
     return lighting;

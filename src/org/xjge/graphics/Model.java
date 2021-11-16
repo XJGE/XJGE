@@ -819,8 +819,8 @@ public class Model {
     
     public void renderShadow(GLProgram depthProgram) {
         glEnable(GL_DEPTH_TEST);
-        //glEnable(GL_CULL_FACE);
-        //glCullFace(GL_FRONT);
+        glEnable(GL_CULL_FACE);
+        glCullFace(GL_FRONT);
         
         meshes.forEach(mesh -> {
             glBindVertexArray(mesh.vao);
@@ -829,8 +829,8 @@ public class Model {
             glDrawElements(GL_TRIANGLES, mesh.indices.capacity(), GL_UNSIGNED_INT, 0);
         });
         
-        //glCullFace(GL_BACK);
-        //glDisable(GL_CULL_FACE);
+        glCullFace(GL_BACK);
+        glDisable(GL_CULL_FACE);
         glDisable(GL_DEPTH_TEST);
         
         ErrorUtils.checkGLError();

@@ -137,6 +137,7 @@ public final class Game {
             //Render scene from the perspective of each active viewport.
             for(Viewport viewport : viewports) {
                 if(viewport.active) {
+                    //TODO: performance improves once fullscreen is toggled?
                     shadowMap.createMap(camUp, depthProgram, scene);
                     
                     if(viewport.id == 0) {

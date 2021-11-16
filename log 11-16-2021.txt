@@ -1,0 +1,14 @@
+
+11-16-2021 2:43PM
+ERROR (shader-utils): Failed to parse GLSL file "defaultFragment.glsl". ERROR: 0:108: 'texture' : no matching overloaded function found (using implicit conversion) 
+ERROR: 0:108: 'texture' : function is not known 
+
+
+
+java.lang.RuntimeException
+	org.xjge.core.Logger.logSevere(Logger.java:215)
+	org.xjge.graphics.Shader.<init>(Shader.java:68)
+	org.xjge.core.XJGE$1.<init>(XJGE.java:238)
+	org.xjge.core.XJGE.init(XJGE.java:236)
+	org.xjge.test.Main.main(Main.java:18)
+
