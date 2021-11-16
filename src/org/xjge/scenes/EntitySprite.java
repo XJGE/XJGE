@@ -97,10 +97,7 @@ public class EntitySprite extends Entity {
     public void update(double targetDelta, double trueDelta) {
         
         g.modelMatrix.translation(position);
-        g.modelMatrix.rotateX((float) Math.toRadians(45f));
-        
-        g2.modelMatrix.translation(position);
-        g2.modelMatrix.rotateX((float) Math.toRadians(45f));
+        //g.modelMatrix.rotateX((float) Math.toRadians(45f));
     }
 
     @Override
@@ -141,7 +138,9 @@ public class EntitySprite extends Entity {
     public void renderShadow(GLProgram depthProgram) {
         glEnable(GL_DEPTH_TEST);
         glBindVertexArray(g.vao);
+        glBindTexture(GL_TEXTURE_2D, texture.handle);
         
+        //depthProgram.setUniform("uTexture", 0);
         depthProgram.setUniform("uModel", false, g.modelMatrix);
         
         glDrawElements(GL_TRIANGLES, g.indices.capacity(), GL_UNSIGNED_INT, 0);

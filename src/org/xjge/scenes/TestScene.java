@@ -33,10 +33,10 @@ public class TestScene extends Scene {
         setSkybox(skybox);
         
         entities.put("plane", new EntityPlane(0, -3, 0, 100, 100, Color.GRAY));
-        entities.put("teapot", new EntityTeapot(6, 0, -10));
-        entities.put("teapot2", new EntityTeapot(6, 4, -5));
-        entities.put("sprite", new EntitySprite(0, 1, -6, 1.5f, 2));
-        entities.put("sprite2", new EntitySprite(0, 2, -4, 1.5f, 2));
+        entities.put("teapot", new EntityTeapot(0, 0, 0));
+        //entities.put("teapot2", new EntityTeapot(6, 4, -5));
+        entities.put("sprite", new EntitySprite(0, 6, 3, 1.5f, 2));
+        //entities.put("sprite2", new EntitySprite(0, 2, -4, 1.5f, 2));
         entities.put("fortress", new EntityFortress(0, -2.99f, 0));
         
         addLightAtIndex(0, Light.daylight());

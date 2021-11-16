@@ -1,0 +1,10 @@
+
+11-15-2021 6:10PM
+ERROR (shaderutils): Failed to find uniform "uTexture". Check variable name or GLSL source file where it is declared.
+
+java.lang.RuntimeException
+	org.xjge.core.Logger.logSevere(Logger.java:215)
+	org.xjge.graphics.GLProgram.addUniform(GLProgram.java:109)
+	org.xjge.core.XJGE.init(XJGE.java:278)
+	org.xjge.test.Main.main(Main.java:18)
+
