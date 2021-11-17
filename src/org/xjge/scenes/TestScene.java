@@ -42,23 +42,24 @@ public class TestScene extends Scene {
         
         setSkybox(skybox);
         
-        entities.put("plane", new EntityPlane(0, -3, 0, 100, 100, Color.GRAY));
+        entities.put("plane", new EntityPlane(0, -3, 0, 100, 100, Color.create(30, 30, 30)));
         entities.put("teapot", new EntityTeapot(0, 0, 0));
-        //entities.put("teapot2", new EntityTeapot(6, 4, -5));
         entities.put("sprite", new EntitySprite(0, 6, 3, 1.5f, 2));
-        //entities.put("sprite2", new EntitySprite(0, 2, -4, 1.5f, 2));
         entities.put("fortress", new EntityFortress(0, -2.99f, 0));
         
         addLightAtIndex(0, Light.daylight());
         
+        addLight(new Light(0.1f, 0, new Vector3f(-27, -2, 0), Color.LIME, Color.LIME));
         
         /*
         TODO:
         - add point light shadows.
-        - add PCF filter options
         - centralize world light shadow map options.
         - entities will determine individually if they wish to render shadows 
           with the new renderShadow() method.
+        - add enable / disable shadows during runtime, might be another way
+          we can squeeze out more performance say if a level doesnt require
+          shadows to be drawn.
         - refactor / clean up this mess!
         - add doc
         - remove tests

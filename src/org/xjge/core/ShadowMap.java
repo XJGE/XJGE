@@ -109,7 +109,7 @@ public class ShadowMap {
     }
     
     void createMap(Vector3f camUp, GLProgram depthProgram, Scene scene) {
-        lightProj.setOrtho(-50f, 50f, -50f, 50f, NEAR_PLANE, FAR_PLANE);
+        lightProj.setOrtho(-100f, 100f, -100f, 100f, NEAR_PLANE, FAR_PLANE);
         lightView.setLookAt(scene.getLightSources()[0].getPosition(), lightDir, camUp);
         lightProj.mul(lightView, lightSpace);
         
