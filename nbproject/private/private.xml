@@ -5,15 +5,7 @@
             <url>src/org/xjge/scenes/TestScene.java</url>
             <bookmark id="53">
                 <name/>
-                <line>55</line>
-                <key/>
-            </bookmark>
-        </file>
-        <file>
-            <url>src/org/xjge/assets/defaultFragment.glsl</url>
-            <bookmark id="54">
-                <name/>
-                <line>84</line>
+                <line>54</line>
                 <key/>
             </bookmark>
         </file>
@@ -52,18 +44,15 @@
     </editor-bookmarks>
     <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
         <group>
-            <file>file:/C:/Users/thesk/Documents/Projects/XJGE/XJGE-2/src/org/xjge/core/ShadowMap.java</file>
             <file>file:/C:/Users/thesk/Documents/Projects/XJGE/XJGE-2/src/org/xjge/assets/depthVertex.glsl</file>
+            <file>file:/C:/Users/thesk/Documents/Projects/XJGE/XJGE-2/src/org/xjge/core/ShadowMap.java</file>
             <file>file:/C:/Users/thesk/Documents/Projects/XJGE/XJGE-2/src/org/xjge/scenes/TestScene.java</file>
             <file>file:/C:/Users/thesk/Documents/Projects/XJGE/XJGE-2/src/org/xjge/assets/defaultFragment.glsl</file>
             <file>file:/C:/Users/thesk/Documents/Projects/XJGE/XJGE-2/src/org/xjge/core/Game.java</file>
             <file>file:/C:/Users/thesk/Documents/Projects/XJGE/XJGE-2/src/org/xjge/assets/defaultVertex.glsl</file>
             <file>file:/C:/Users/thesk/Documents/Projects/XJGE/XJGE-2/src/org/xjge/core/XJGE.java</file>
-            <file>file:/C:/Users/thesk/Documents/Projects/XJGE/XJGE-2/src/org/xjge/graphics/Light.java</file>
-            <file>file:/C:/Users/thesk/Documents/Projects/XJGE/XJGE-2/src/org/xjge/core/Skybox.java</file>
             <file>file:/C:/Users/thesk/Documents/Projects/XJGE/XJGE-2/src/org/xjge/scenes/EntitySprite.java</file>
             <file>file:/C:/Users/thesk/Documents/Projects/XJGE/XJGE-2/src/org/xjge/assets/depthFragment.glsl</file>
-            <file>file:/C:/Users/thesk/Documents/Projects/XJGE/XJGE-2/src/org/xjge/graphics/Model.java</file>
         </group>
     </open-files>
 </project-private>

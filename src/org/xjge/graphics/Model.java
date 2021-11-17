@@ -3,7 +3,6 @@ package org.xjge.graphics;
 import org.xjge.core.ErrorUtils;
 import org.xjge.core.LightSource;
 import org.xjge.core.Logger;
-import org.xjge.core.Scene;
 import org.xjge.core.XJGE;
 import java.io.InputStream;
 import java.nio.ByteBuffer;
@@ -59,7 +58,6 @@ public class Model {
     private Matrix4f rootTransform;
     private Node rootNode;
     private SkeletalAnimation currAnimation;
-    private final Vector3f noValue        = new Vector3f();
     private final Matrix3f normal         = new Matrix3f();
     private final DefaultCaps defaultCaps = new DefaultCaps();
     
@@ -771,24 +769,6 @@ public class Model {
             
             glProgram.setUniform("uTexture", 0);
             glProgram.setUniform("uShadowMap", 1);
-            
-            for(int i = 0; i < Scene.MAX_LIGHTS; i++) {
-                if(lights[i] != null) {
-                    if(lights[i].getEnabled()) {
-                        glProgram.setUniform("uLights[" + i + "].brightness", lights[i].getBrightness());
-                        glProgram.setUniform("uLights[" + i + "].contrast",   lights[i].getContrast());
-                        glProgram.setUniform("uLights[" + i + "].position",   lights[i].getPosition());
-                        glProgram.setUniform("uLights[" + i + "].ambient",    lights[i].getAmbientColor());
-                        glProgram.setUniform("uLights[" + i + "].diffuse",    lights[i].getDiffuseColor());
-                    } else {
-                        glProgram.setUniform("uLights[" + i + "].brightness", 0);
-                        glProgram.setUniform("uLights[" + i + "].contrast",   0);
-                        glProgram.setUniform("uLights[" + i + "].position",   noValue);
-                        glProgram.setUniform("uLights[" + i + "].ambient",    noValue);
-                        glProgram.setUniform("uLights[" + i + "].diffuse",    noValue);
-                    }
-                }
-            }
             
             if(currAnimation != null) {
                 glProgram.setUniform("uBoneTransforms", false, currAnimation.getCurrFrame().transforms);
