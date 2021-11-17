@@ -36,7 +36,7 @@ final class Terminal implements PropertyChangeListener {
     private int yIndex;
     private static int shiftElements = -1;
     private final int glyphAdvance;
-    private int outputTop;
+    private static int outputTop;
     
     private boolean cursorIdle;
     private boolean cursorBlink;
@@ -404,6 +404,7 @@ final class Terminal implements PropertyChangeListener {
         @Override
         public void execute(List<String> args) {
             shiftElements = -1;
+            outputTop     = 0;
             
             for(int i = 0; i < 5; i++) {
                 opaqueRectangles[i].xPos   = 0;
