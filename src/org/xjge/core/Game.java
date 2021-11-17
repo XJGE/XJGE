@@ -131,13 +131,10 @@ public final class Game {
             XJGE.getDefaultGLProgram().setUniform("uLights[0].diffuse",    scene.getLightSources()[0].getDiffuseColor());
             XJGE.getDefaultGLProgram().setUniform("uLightSpace", false, shadowMap.lightSpace);
             XJGE.getDefaultGLProgram().setUniform("uPCFRadius", shadowMap.PCFRadius);
-            //glActiveTexture(GL_TEXTURE1);
-            //glBindTexture(GL_TEXTURE_2D, shadowMap.depthTexHandle);
             
             //Render scene from the perspective of each active viewport.
             for(Viewport viewport : viewports) {
                 if(viewport.active) {
-                    //TODO: performance improves once fullscreen is toggled?
                     shadowMap.createMap(camUp, depthProgram, scene);
                     
                     if(viewport.id == 0) {

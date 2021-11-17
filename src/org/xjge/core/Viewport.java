@@ -62,6 +62,14 @@ final class Viewport {
      * framebuffer.
      */
     private void createTextureAttachment() {
+        /*
+        TODO:
+        playing at higher resolutions significantly slows down framebuffer 
+        read/write times- pehaphs restrictions should be put in place for 
+        split screen resolutions? or a framebuffer blit mode (granted no 
+        predefined resolution is provided though init())?
+        */
+        
         glBindTexture(GL_TEXTURE_2D, texHandle);
             glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
             glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
