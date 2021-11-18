@@ -50,8 +50,9 @@ public final class Game {
     private static Scene scene;
     
     //TODO: temp- move somewhere else.
-    public static ShadowMap shadowMap = new ShadowMap();
-    private static Vector3f camUp      = new Vector3f(0, 1, 0);
+    public static ShadowMapWorld shadowMap  = new ShadowMapWorld();
+    public static ShadowMapPoint shadowMap2 = new ShadowMapPoint();
+    private static Vector3f camUp = new Vector3f(0, 1, 0);
     
     private static final Queue<Event> events = new PriorityQueue<>(Comparator.comparing(Event::getPriority));
     
@@ -130,7 +131,6 @@ public final class Game {
             XJGE.getDefaultGLProgram().setUniform("uPCFRadius", shadowMap.PCFRadius);
             
             //Set the values of every light source object in the shaders.
-            XJGE.getDefaultGLProgram().use();
             for(int i = 0; i < Scene.MAX_LIGHTS; i++) {
                 if(scene.getLightSources()[i] != null) {
                     if(scene.getLightSources()[i].getEnabled()) {

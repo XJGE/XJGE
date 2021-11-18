@@ -754,7 +754,7 @@ public class Model {
             glActiveTexture(GL_TEXTURE0);
             glBindTexture(GL_TEXTURE_2D, textures[mesh.textureID].handle);
             
-            //TODO: only active if shadow map is enabled.
+            //TODO: mode this- might need auto incrementer like numLights for texture unit number
             glActiveTexture(GL_TEXTURE1);
             glBindTexture(GL_TEXTURE_2D, Game.shadowMap.depthTexHandle);
             

@@ -14,7 +14,7 @@ import org.xjge.graphics.GLProgram;
  * @author J Hoffman
  * @since  
  */
-public class ShadowMap {
+public class ShadowMapWorld {
 
     private final int SHADOW_WIDTH  = 2560;
     private final int SHADOW_HEIGHT = 2560;
@@ -32,7 +32,7 @@ public class ShadowMap {
     private final Matrix4f lightProj = new Matrix4f();
     final Matrix4f lightSpace        = new Matrix4f();
     
-    ShadowMap() {
+    ShadowMapWorld() {
         
         /*
         FEATURES:
@@ -119,7 +119,7 @@ public class ShadowMap {
         glViewport(0, 0, SHADOW_WIDTH, SHADOW_HEIGHT);
         glBindFramebuffer(GL_FRAMEBUFFER, fbo);
             glClear(GL_DEPTH_BUFFER_BIT);
-            glBindTexture(GL_TEXTURE_2D, depthTexHandle);
+            //glBindTexture(GL_TEXTURE_2D, depthTexHandle);
             scene.renderShadows(depthProgram);
         glBindFramebuffer(GL_FRAMEBUFFER, 0);
     }

@@ -147,7 +147,7 @@ public abstract class Scene {
     }
     
     void renderShadows(GLProgram depthProgram) {
-        //TODO: check if shadow map is provided
+        //TODO: check if shadow map is enabled, add doc
         depthProgram.use();
         entities.values().forEach(entity -> entity.renderShadow(depthProgram));
     }

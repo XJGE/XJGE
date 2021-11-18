@@ -1,6 +1,7 @@
 #version 330 core
 
 in vec2 ioTexCoords;
+in vec4 ioFragPos;
 
 uniform sampler2D uTexture;
 

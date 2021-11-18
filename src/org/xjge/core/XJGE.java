@@ -26,7 +26,7 @@ import javax.xml.stream.XMLStreamReader;
 import org.joml.Vector2i;
 import static org.lwjgl.glfw.GLFW.*;
 import org.lwjgl.opengl.GL;
-import static org.lwjgl.opengl.GL30.*;
+import static org.lwjgl.opengl.GL32.*;
 
 //Created: Apr 28, 2021
 
@@ -270,6 +270,7 @@ public final class XJGE {
             { //Initialize the depth shader for shadow mapping.
                 var shaderSourceFiles = new LinkedList<Shader>() {{
                     add(new Shader("depthVertex.glsl", GL_VERTEX_SHADER));
+                    //add(new Shader("depthGeometry.glsl", GL_GEOMETRY_SHADER));
                     add(new Shader("depthFragment.glsl", GL_FRAGMENT_SHADER));
                 }};
                 
@@ -279,6 +280,11 @@ public final class XJGE {
                 depthProgram.addUniform(BufferType.INT,  "uTexture");
                 depthProgram.addUniform(BufferType.MAT4, "uModel");
                 depthProgram.addUniform(BufferType.MAT4, "uLightSpace");
+                
+                /*
+                for(int i = 0; i < 6; i++) {
+                    depthProgram.addUniform(BufferType.MAT4, "uShadowMatrices[" + i + "]");
+                }*/
             }
             
             engineFont  = new Font();
