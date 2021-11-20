@@ -51,7 +51,6 @@ public final class Game {
     
     //TODO: temp- move somewhere else.
     public static ShadowMapWorld shadowMap  = new ShadowMapWorld();
-    public static ShadowMapPoint shadowMap2 = new ShadowMapPoint();
     private static Vector3f camUp = new Vector3f(0, 1, 0);
     
     private static final Queue<Event> events = new PriorityQueue<>(Comparator.comparing(Event::getPriority));

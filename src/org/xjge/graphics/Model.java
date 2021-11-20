@@ -453,7 +453,8 @@ public class Model {
      * <p>
      * NOTE: Mesh names are not guaranteed to be unique. As such, you should 
      * only use this method if you're certain the name specified matches that of
-     * the mesh who's texture you're trying to bind.
+     * the mesh who's texture you're trying to bind. This method may fail 
+     * silently.
      * 
      * @param name the name that corresponds to the mesh we want to set as the 
      *              bind target
