@@ -119,7 +119,7 @@ public class ShadowMapWorld {
         glViewport(0, 0, SHADOW_WIDTH, SHADOW_HEIGHT);
         glBindFramebuffer(GL_FRAMEBUFFER, fbo);
             glClear(GL_DEPTH_BUFFER_BIT);
-            //glBindTexture(GL_TEXTURE_2D, depthTexHandle);
+            glBindTexture(GL_TEXTURE_2D, depthTexHandle);
             scene.renderShadows(depthProgram);
         glBindFramebuffer(GL_FRAMEBUFFER, 0);
     }
