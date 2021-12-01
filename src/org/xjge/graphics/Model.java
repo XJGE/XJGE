@@ -746,7 +746,7 @@ public class Model {
      * @param numLights the total number of lights in the scene
      * @param capabilities an object that can be used to enable various OpenGL capabilities
      */
-    public void render(GLProgram glProgram, LightSource[] lights, int numLights, GLCapabilities capabilities) {
+    public void render(GLProgram glProgram, LightSource[] lights, int numLights, GLCapabilities capabilities, int shineValue) {
         if(capabilities != null) capabilities.enable();
         
         glProgram.use();
@@ -766,6 +766,7 @@ public class Model {
             glProgram.setUniform("uNormal", true, normal);
             glProgram.setUniform("uNumLights", numLights);
             glProgram.setUniform("uColor", color.asVec3());
+            glProgram.setUniform("uShine", shineValue); //TODO: extract value from mesh material.
             glProgram.setUniform("uOpacity", opacity);
             
             glProgram.setUniform("uTexture", 0);
@@ -794,8 +795,8 @@ public class Model {
      *                  scene
      * @param numLights the total number of lights in the scene
      */
-    public void render(GLProgram glProgram, LightSource[] lights, int numLights) {
-        render(glProgram, lights, numLights, defaultCaps);
+    public void render(GLProgram glProgram, LightSource[] lights, int numLights, int shineValue) {
+        render(glProgram, lights, numLights, defaultCaps, shineValue);
     }
     
     public void renderShadow(GLProgram depthProgram) {

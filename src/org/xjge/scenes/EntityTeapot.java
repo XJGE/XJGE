@@ -44,7 +44,7 @@ public class EntityTeapot extends Entity {
 
     @Override
     public void render(GLProgram glProgram, Camera camera, LightSource[] lights, int numLights) {
-        teapot.render(glProgram, lights, numLights);
+        teapot.render(glProgram, lights, numLights, 16);
     }
 
     @Override
