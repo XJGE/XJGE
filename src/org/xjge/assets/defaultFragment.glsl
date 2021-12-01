@@ -13,9 +13,11 @@ in vec4 ioLightFrag;
 struct Light {
     float brightness;
     float contrast;
+    float distance;
     vec3 position;
     vec3 ambient;
     vec3 diffuse;
+    vec3 specular;
 };
 
 uniform int uType;

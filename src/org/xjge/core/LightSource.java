@@ -183,6 +183,10 @@ public final class LightSource {
         return light.contrast;
     }
     
+    public float getDistance() {
+        return light.distance;
+    }
+    
     /**
      * Obtains the current position of this source objects light struct in 3D 
      * space. This value sets the position from which the light will be 
@@ -215,6 +219,10 @@ public final class LightSource {
      */
     public Vector3f getDiffuseColor() {
         return light.diffuseColor.asVec3();
+    }
+    
+    public Vector3f getSpecularColor() {
+        return light.specularColor.asVec3();
     }
     
 }

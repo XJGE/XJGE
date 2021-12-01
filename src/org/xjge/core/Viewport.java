@@ -123,6 +123,11 @@ final class Viewport {
         switch(stage) {
             case "camera" -> {
                 currCamera.render(glPrograms);
+                glPrograms.values().forEach(glProgram -> {
+                    try {
+                        glProgram.setUniform("uCamPos", currCamera.position);
+                    } catch(NullPointerException e) {}
+                });
             }
             
             case "ui" -> {

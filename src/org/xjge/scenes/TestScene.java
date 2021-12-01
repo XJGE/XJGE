@@ -49,7 +49,7 @@ public class TestScene extends Scene {
         
         addLightAtIndex(0, Light.daylight());
         
-        addLight(new Light(0.1f, 0, new Vector3f(-27, -2, 0), Color.LIME, Color.LIME));
+        addLight(new Light(0.1f, 0, 0.5f, new Vector3f(-27, -2, 0), Color.LIME));
         
         /*
         TODO:

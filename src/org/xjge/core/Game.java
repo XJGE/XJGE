@@ -127,7 +127,7 @@ public final class Game {
             //TODO: only if shadow map is not null.
             XJGE.getDefaultGLProgram().use();
             XJGE.getDefaultGLProgram().setUniform("uLightSpace", false, shadowMap.lightSpace); //TODO: look into bug where opening the terminal effects shadows
-            XJGE.getDefaultGLProgram().setUniform("uPCFRadius", shadowMap.PCFRadius);
+            XJGE.getDefaultGLProgram().setUniform("uPCFValue", shadowMap.PCFRadius);
             
             //Set the values of every light source object in the shaders.
             for(int i = 0; i < Scene.MAX_LIGHTS; i++) {
@@ -135,15 +135,19 @@ public final class Game {
                     if(scene.getLightSources()[i].getEnabled()) {
                         XJGE.getDefaultGLProgram().setUniform("uLights[" + i + "].brightness", scene.getLightSources()[i].getBrightness());
                         XJGE.getDefaultGLProgram().setUniform("uLights[" + i + "].contrast",   scene.getLightSources()[i].getContrast());
+                        XJGE.getDefaultGLProgram().setUniform("uLights[" + i + "].distance",   scene.getLightSources()[i].getDistance());
                         XJGE.getDefaultGLProgram().setUniform("uLights[" + i + "].position",   scene.getLightSources()[i].getPosition());
                         XJGE.getDefaultGLProgram().setUniform("uLights[" + i + "].ambient",    scene.getLightSources()[i].getAmbientColor());
                         XJGE.getDefaultGLProgram().setUniform("uLights[" + i + "].diffuse",    scene.getLightSources()[i].getDiffuseColor());
+                        XJGE.getDefaultGLProgram().setUniform("uLights[" + i + "].specular",   scene.getLightSources()[i].getSpecularColor());
                     } else {
                         XJGE.getDefaultGLProgram().setUniform("uLights[" + i + "].brightness", 0);
                         XJGE.getDefaultGLProgram().setUniform("uLights[" + i + "].contrast",   0);
+                        XJGE.getDefaultGLProgram().setUniform("uLights[" + i + "].distance",   0);
                         XJGE.getDefaultGLProgram().setUniform("uLights[" + i + "].position",   noValue);
                         XJGE.getDefaultGLProgram().setUniform("uLights[" + i + "].ambient",    noValue);
                         XJGE.getDefaultGLProgram().setUniform("uLights[" + i + "].diffuse",    noValue);
+                        XJGE.getDefaultGLProgram().setUniform("uLights[" + i + "].specular",   noValue);
                     }
                 }
             }
