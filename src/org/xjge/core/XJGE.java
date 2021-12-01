@@ -242,13 +242,15 @@ public final class XJGE {
                 
                 defaultProgram.use();
                 defaultProgram.addUniform(BufferType.INT,   "uType");
-                defaultProgram.addUniform(BufferType.INT,   "uPCFRadius");
+                defaultProgram.addUniform(BufferType.INT,   "uPCFValue");
+                defaultProgram.addUniform(BufferType.INT,   "uShine");
                 defaultProgram.addUniform(BufferType.INT,   "uNumLights");
                 defaultProgram.addUniform(BufferType.INT,   "uTexture");
                 defaultProgram.addUniform(BufferType.INT,   "uShadowMap");
                 defaultProgram.addUniform(BufferType.FLOAT, "uOpacity");
                 defaultProgram.addUniform(BufferType.VEC2,  "uTexCoords");
                 defaultProgram.addUniform(BufferType.VEC3,  "uColor");
+                defaultProgram.addUniform(BufferType.VEC3,  "uCamPos");
                 defaultProgram.addUniform(BufferType.MAT3,  "uNormal");
                 defaultProgram.addUniform(BufferType.MAT4,  "uModel");
                 defaultProgram.addUniform(BufferType.MAT4,  "uView");
@@ -270,21 +272,15 @@ public final class XJGE {
             { //Initialize the depth shader for shadow mapping.
                 var shaderSourceFiles = new LinkedList<Shader>() {{
                     add(new Shader("depthVertex.glsl", GL_VERTEX_SHADER));
-                    //add(new Shader("depthGeometry.glsl", GL_GEOMETRY_SHADER));
                     add(new Shader("depthFragment.glsl", GL_FRAGMENT_SHADER));
                 }};
                 
-                depthProgram = new GLProgram(shaderSourceFiles, "default");
+                depthProgram = new GLProgram(shaderSourceFiles, "depth");
                 
                 depthProgram.use();
                 depthProgram.addUniform(BufferType.INT,  "uTexture");
                 depthProgram.addUniform(BufferType.MAT4, "uModel");
                 depthProgram.addUniform(BufferType.MAT4, "uLightSpace");
-                
-                /*
-                for(int i = 0; i < 6; i++) {
-                    depthProgram.addUniform(BufferType.MAT4, "uShadowMatrices[" + i + "]");
-                }*/
             }
             
             engineFont  = new Font();

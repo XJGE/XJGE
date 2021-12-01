@@ -126,7 +126,7 @@ public final class Game {
             
             //TODO: only if shadow map is not null.
             XJGE.getDefaultGLProgram().use();
-            XJGE.getDefaultGLProgram().setUniform("uLightSpace", false, shadowMap.lightSpace);
+            XJGE.getDefaultGLProgram().setUniform("uLightSpace", false, shadowMap.lightSpace); //TODO: look into bug where opening the terminal effects shadows
             XJGE.getDefaultGLProgram().setUniform("uPCFRadius", shadowMap.PCFRadius);
             
             //Set the values of every light source object in the shaders.

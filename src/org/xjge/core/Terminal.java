@@ -114,6 +114,8 @@ final class Terminal implements PropertyChangeListener {
         commandLine.height = font.size + 4;
         commandLine.render(1, Color.BLACK);
         
+        //TODO: git bisect and find which commit introduced the shadow bug when the terminal is opened.
+        
         commandOutput.width  = Window.getWidth();
         commandOutput.height = outputTop;
         commandOutput.render(0.5f, Color.BLACK);

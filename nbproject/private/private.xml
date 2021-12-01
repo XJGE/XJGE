@@ -10,6 +10,14 @@
             </bookmark>
         </file>
         <file>
+            <url>src/org/xjge/core/Entity.java</url>
+            <bookmark id="50">
+                <name/>
+                <line>78</line>
+                <key/>
+            </bookmark>
+        </file>
+        <file>
             <url>src/dev/theskidster/xjge2/input/Input.java</url>
             <bookmark id="9">
                 <name/>
@@ -30,14 +38,6 @@
             <bookmark id="51">
                 <name/>
                 <line>148</line>
-                <key/>
-            </bookmark>
-        </file>
-        <file>
-            <url>src/org/xjge/core/Entity.java</url>
-            <bookmark id="50">
-                <name/>
-                <line>78</line>
                 <key/>
             </bookmark>
         </file>
