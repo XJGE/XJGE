@@ -42,7 +42,7 @@ public class TestScene extends Scene {
         
         setSkybox(skybox);
         
-        entities.put("plane", new EntityPlane(0, -3, 0, 100, 100, Color.create(30, 30, 30)));
+        entities.put("plane", new EntityPlane(0, -3, 0, 100, 100, Color.GRAY));
         entities.put("teapot", new EntityTeapot(0, 0, 0));
         entities.put("sprite", new EntitySprite(0, 6, 3, 1.5f, 2));
         entities.put("fortress", new EntityFortress(0, -2.99f, 0));
@@ -52,8 +52,7 @@ public class TestScene extends Scene {
         addLight(new Light(0.1f, 0, 0.5f, new Vector3f(-27, -2, 0), Color.LIME));
         
         /*
-        TODO:
-        - add point light shadows.
+        TODO
         - centralize world light shadow map options.
         - entities will determine individually if they wish to render shadows 
           with the new renderShadow() method.
