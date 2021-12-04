@@ -33,9 +33,6 @@ public class ShadowMap {
     final Matrix4f lightSpace = new Matrix4f();
     
     ShadowMap() {
-        
-        
-        
         fbo = glGenFramebuffers();
         
         depthTexHandle = glGenTextures();

@@ -30,6 +30,8 @@ public class EntityCube extends Entity {
     private Graphics g      = new Graphics();
     private Matrix3f normal = new Matrix3f();
     
+    Color color = Color.WHITE;
+    
     EntityCube(float x, float y, float z, float width, float height, float depth, boolean rotate) {
         super(new Vector3f(x, y, z));
         
@@ -118,7 +120,7 @@ public class EntityCube extends Entity {
         glBindVertexArray(g.vao);
         
         glProgram.setUniform("uType", 9);
-        glProgram.setUniform("uColor", Color.WHITE.asVec3());
+        glProgram.setUniform("uColor", color.asVec3());
         glProgram.setUniform("uNormal", true, normal);
         glProgram.setUniform("uModel", false, g.modelMatrix);
         

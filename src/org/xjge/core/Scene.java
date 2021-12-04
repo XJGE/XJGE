@@ -56,8 +56,8 @@ public abstract class Scene {
      * <p>
      * The details regarding how this is achieved are largely subject to the 
      * needs of the implementation, though generally speaking for a large 
-     * volume of entity objects lambda expressions like those above are usually 
-     * sufficient enough.
+     * volume of entity objects lambda expressions like those shown above are 
+     * usually sufficient for most cases.
      */
     protected final LinkedHashMap<String, Entity> entities = new LinkedHashMap<>();
     
@@ -146,8 +146,15 @@ public abstract class Scene {
         }
     }
     
+    /**
+     * Calculates the shadows cast by each entity provided to the 
+     * {@linkplain entities} collection. This method is called automatically 
+     * by the engine.
+     * 
+     * @param depthProgram the shader program provided by the engine that will 
+     *                     be used to generate the shadow map texture
+     */
     void renderShadows(GLProgram depthProgram) {
-        //TODO: check if shadow map is enabled, add doc
         depthProgram.use();
         entities.values().forEach(entity -> entity.renderShadow(depthProgram));
     }
