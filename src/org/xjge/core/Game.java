@@ -50,7 +50,7 @@ public final class Game {
     private static Scene scene;
     
     //TODO: temp- move somewhere else.
-    public static ShadowMapWorld shadowMap  = new ShadowMapWorld();
+    public static ShadowMap shadowMap  = new ShadowMap();
     private static Vector3f camUp = new Vector3f(0, 1, 0);
     
     private static final Queue<Event> events = new PriorityQueue<>(Comparator.comparing(Event::getPriority));
@@ -127,7 +127,7 @@ public final class Game {
             //TODO: only if shadow map is not null.
             XJGE.getDefaultGLProgram().use();
             XJGE.getDefaultGLProgram().setUniform("uLightSpace", false, shadowMap.lightSpace); //TODO: look into bug where opening the terminal effects shadows
-            XJGE.getDefaultGLProgram().setUniform("uPCFValue", shadowMap.PCFRadius);
+            XJGE.getDefaultGLProgram().setUniform("uPCFValue", shadowMap.PCFValue);
             
             //Set the values of every light source object in the shaders.
             for(int i = 0; i < Scene.MAX_LIGHTS; i++) {

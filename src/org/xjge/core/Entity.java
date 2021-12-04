@@ -56,6 +56,8 @@ public abstract class Entity {
      */
     public abstract void render(GLProgram glProgram, Camera camera, LightSource[] lights, int numLights);
     
+    //TODO: change render method signature, remove lights (maybe?), include current texture attachment slot number
+    
     /**
      * Used to organize calls to the OpenGL API and other code pertaining to
      * rendering.
