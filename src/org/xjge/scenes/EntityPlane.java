@@ -93,12 +93,12 @@ public class EntityPlane extends Entity {
         glProgram.setUniform("uType", 9);
         glProgram.setUniform("uColor", color.asVec3());
         glProgram.setUniform("uNormal", true, normal);
-        glProgram.setUniform("uTexCoords", texCoords);
         glProgram.setUniform("uModel", false, g.modelMatrix);
         glProgram.setUniform("uOpacity", 1f);
         glProgram.setUniform("uTexture", 0);
         glProgram.setUniform("uShine", 256);
         glProgram.setUniform("uShadowMap", 1);
+        glProgram.setUniform("uNumLights", numLights);
         
         glDrawElements(GL_TRIANGLES, g.indices.capacity(), GL_UNSIGNED_INT, 0);
         glDisable(GL_BLEND);
