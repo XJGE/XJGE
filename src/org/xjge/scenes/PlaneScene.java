@@ -25,7 +25,7 @@ public class PlaneScene extends Scene {
         entities.put("plane", new EntityPlane(0, -3, 0, 50, 50, Color.SILVER));
         entities.put("cube", new EntityCube(0, 3, 0, 2, 2, 2, true));
         
-        Game.setClearColor(Color.BLACK);
+        //Game.setClearColor(Color.BLACK);
         
         addLightAtIndex(0, Light.midnight());
         addLight(Light.beacon());
