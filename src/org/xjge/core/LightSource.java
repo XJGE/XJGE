@@ -26,7 +26,7 @@ import org.lwjgl.system.MemoryStack;
  */
 public final class LightSource {
     
-    private final boolean isWorldLight;
+    final boolean isWorldLight;
     
     private final Light light;
     private final Graphics g;

@@ -88,7 +88,7 @@ public abstract class Scene {
         numLights = 1;
         
         for(LightSource source : lightSources) {
-            if(source != null) numLights++;
+            if(source != null && !source.isWorldLight) numLights++;
         }
     }
     
