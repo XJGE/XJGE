@@ -28,18 +28,19 @@ public final class Light {
      * Creates a new light object that contains data which can be used by the 
      * fragment shader during lighting calculations.
      * 
-     * @param brightness the intensity and range of the light. Should be a 
-     *                   non-negative value between 0 and 1.
+     * @param brightness the intensity of the light. Should be a non-negative 
+     *                   value between 0 and 1.
      * @param contrast the noticeable difference between the intensity of 
      *                 the ambient and diffuse colors of this light. Should 
      *                 be a non-negative value between 0 and 1.
-     * @param distance      
+     * @param distance      an additional value that provides 
      * @param position      the position from which the light will be emitted.
-     * @param ambientColor  the ambient color that will be used to color the 
-     *                      shaded side of an entity
-     * @param diffuseColor  the color that will be noticeably reflected off 
-     *                      nearby entities
-     * @param specularColor 
+     * @param ambientColor  the color that will be used to shade the side of 
+     *                      the entity which is not facing the light source 
+     * @param diffuseColor  the color that will be dispersed into nearby entity 
+     *                      from the general direction of the light source
+     * @param specularColor the color that will be reflected off entities 
+     *                      depending on their shininess
      */
     public Light(float brightness, float contrast, float distance, Vector3f position, Color ambientColor, Color diffuseColor, Color specularColor) {        
         this.brightness    = brightness;
@@ -51,7 +52,18 @@ public final class Light {
         this.specularColor = specularColor;
     }
     
-    //TODO: doc
+    /**
+     * Variant of 
+     * {@link Light(float, float, float, Vector3f, Color, Color, Color)} that 
+     * will initialize each color used in the Phong lighting model to the same
+     * value.
+     * 
+     * @param brightness
+     * @param contrast
+     * @param distance
+     * @param position
+     * @param color 
+     */
     public Light(float brightness, float contrast, float distance, Vector3f position, Color color) {
         this(brightness, contrast, distance, position, color, color, color);
     }

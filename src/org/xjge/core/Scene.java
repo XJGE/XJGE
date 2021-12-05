@@ -6,6 +6,7 @@ import org.xjge.graphics.Texture;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import org.joml.Matrix4f;
+import org.joml.Vector3f;
 
 //Created: May 7, 2021
 
@@ -34,6 +35,8 @@ public abstract class Scene {
     public final String name;
     private static Texture iconTexture;
     private Skybox skybox;
+    
+    private static final Vector3f noValue = new Vector3f();
     
     /**
      * A collection of every {@link Entity} object in the scene.
@@ -157,6 +160,35 @@ public abstract class Scene {
     void renderShadows(GLProgram depthProgram) {
         depthProgram.use();
         entities.values().forEach(entity -> entity.renderShadow(depthProgram));
+    }
+    
+    /**
+     * Supplies every light struct in the default fragment shader with uniform 
+     * values from their corresponding {@link LightSource} objects. This 
+     * method is called automatically by the engine.
+     */
+    void setLightingUniforms() {
+        for(int i = 0; i < Scene.MAX_LIGHTS; i++) {
+            if(lightSources[i] != null) {
+                if(lightSources[i].getEnabled()) {
+                    XJGE.getDefaultGLProgram().setUniform("uLights[" + i + "].brightness", lightSources[i].getBrightness());
+                    XJGE.getDefaultGLProgram().setUniform("uLights[" + i + "].contrast",   lightSources[i].getContrast());
+                    XJGE.getDefaultGLProgram().setUniform("uLights[" + i + "].distance",   lightSources[i].getDistance());
+                    XJGE.getDefaultGLProgram().setUniform("uLights[" + i + "].position",   lightSources[i].getPosition());
+                    XJGE.getDefaultGLProgram().setUniform("uLights[" + i + "].ambient",    lightSources[i].getAmbientColor());
+                    XJGE.getDefaultGLProgram().setUniform("uLights[" + i + "].diffuse",    lightSources[i].getDiffuseColor());
+                    XJGE.getDefaultGLProgram().setUniform("uLights[" + i + "].specular",   lightSources[i].getSpecularColor());
+                } else {
+                    XJGE.getDefaultGLProgram().setUniform("uLights[" + i + "].brightness", 0);
+                    XJGE.getDefaultGLProgram().setUniform("uLights[" + i + "].contrast",   0);
+                    XJGE.getDefaultGLProgram().setUniform("uLights[" + i + "].distance",   0);
+                    XJGE.getDefaultGLProgram().setUniform("uLights[" + i + "].position",   noValue);
+                    XJGE.getDefaultGLProgram().setUniform("uLights[" + i + "].ambient",    noValue);
+                    XJGE.getDefaultGLProgram().setUniform("uLights[" + i + "].diffuse",    noValue);
+                    XJGE.getDefaultGLProgram().setUniform("uLights[" + i + "].specular",   noValue);
+                }
+            }
+        }
     }
     
     /**
