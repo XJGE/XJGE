@@ -22,13 +22,28 @@ public class PlaneScene extends Scene {
     public PlaneScene() {
         super("plane");
         
-        entities.put("plane", new EntityPlane(0, -3, 0, 50, 50, Color.SILVER));
-        entities.put("cube", new EntityCube(0, 3, 0, 2, 2, 2, true));
+        entities.put("plane", new EntityPlane(0, -3f, 0, 50, 50, Color.SILVER));
+        entities.put("cube", new EntityCube(0, 3, 0, 1, 1, 1, true));
         
-        //Game.setClearColor(Color.BLACK);
+        Game.setClearColor(Color.BLACK);
+        
+        Light l1 = Light.random();
+        Light l2 = Light.random();
+        Light l3 = Light.random();
+        Light l4 = Light.random();
+        Light l5 = Light.random();
+        
+        l2.position.set(10, 0, 4);
+        l3.position.set(20, 0, -17);
+        l4.position.set(-16, 0, -3);
+        l5.position.set(-2, 0, 10);
         
         addLightAtIndex(0, Light.midnight());
-        addLight(Light.beacon());
+        addLight(l1);
+        addLight(l2);
+        addLight(l3);
+        addLight(l4);
+        addLight(l5);
     }
 
     @Override

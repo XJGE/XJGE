@@ -44,8 +44,8 @@ public final class Light {
      */
     public Light(float brightness, float contrast, float distance, Vector3f position, Color ambientColor, Color diffuseColor, Color specularColor) {        
         this.brightness    = Math.abs(brightness);
-        this.contrast      = clamp(0, 1, contrast);
-        this.distance      = clamp(0, Float.MAX_VALUE, distance);
+        this.contrast      = clampValue(0, 1, contrast);
+        this.distance      = clampValue(0, Float.MAX_VALUE, distance);
         this.position      = position;
         this.ambientColor  = ambientColor;
         this.diffuseColor  = diffuseColor;
@@ -82,7 +82,7 @@ public final class Light {
      * 
      * @return a value between desired minimum and maximum ranges
      */
-    private float clamp(float minValue, float maxValue, float userValue) {
+    private float clampValue(float minValue, float maxValue, float userValue) {
         float result = 0;
         
         if(userValue > maxValue) {
@@ -94,6 +94,10 @@ public final class Light {
         }
         
         return result;
+    }
+    
+    private static float randomValue(float minValue, float maxValue) {
+        return (float) (minValue + Math.random() * (maxValue - minValue));
     }
     
     /**
@@ -133,7 +137,49 @@ public final class Light {
      * @return a new engine-defined light object
      */
     public static final Light beacon() {
-        return new Light(3f, 1f, 1.25f, new Vector3f(2, 1, 0), Color.RED);
+        return new Light(2.5f, 1, 1.25f, new Vector3f(), Color.RED);
+    }
+    
+    /**
+     * Provides implementing applications with a predefined light object that 
+     * resembles a bright green glowstick. NOTE: this light does not produce 
+     * specular highlights be design. 
+     * 
+     * @return a new engine-defined light object
+     */
+    public static final Light glowstick() {
+        return new Light(0.8f, 0.7f, 0.52f, new Vector3f(), Color.LIME, Color.LIME, Color.BLACK);
+    }
+    
+    /**
+     * Provides implementing applications with a predefined light object that 
+     * resembles a cryogenic storage device.
+     * 
+     * @return a new engine-defined light object
+     */
+    public static final Light cryotube() {
+        return new Light(3.97f, 0.84f, 1.5f, new Vector3f(), Color.create(192, 8, 238), Color.create(10, 90, 153), Color.create(10, 46, 8));
+    }
+    
+    /**
+     * Provides implementing applications with a predefined light object that 
+     * resembles the warm glow of a campfire.
+     * 
+     * @return a new engine-defined light object
+     */
+    public static final Light campfire() {
+        return new Light(6.2f, 0.45f, 0.62f, new Vector3f(), Color.create(11, 71, 231), Color.create(209, 85, 3), Color.create(145, 140, 149));
+    }
+    
+    /**
+     * Provides implementing applications with a randomized light object.
+     * 
+     * @return a new engine-generated light object
+     */
+    public static final Light random() {
+        return new Light((float) Math.log(randomValue(0, 10)), randomValue(0, 1), randomValue(0, 5), 
+                          new Vector3f(), 
+                          Color.random(), Color.random(), Color.random());
     }
     
 }
