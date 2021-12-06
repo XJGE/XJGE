@@ -7,6 +7,13 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 import org.joml.Matrix4f;
 import org.joml.Vector3f;
+import static org.lwjgl.opengl.GL11.GL_DEPTH_BUFFER_BIT;
+import static org.lwjgl.opengl.GL11.GL_TEXTURE_2D;
+import static org.lwjgl.opengl.GL11.glBindTexture;
+import static org.lwjgl.opengl.GL11.glClear;
+import static org.lwjgl.opengl.GL11.glViewport;
+import static org.lwjgl.opengl.GL30.GL_FRAMEBUFFER;
+import static org.lwjgl.opengl.GL30.glBindFramebuffer;
 
 //Created: May 7, 2021
 
@@ -35,6 +42,7 @@ public abstract class Scene {
     public final String name;
     private static Texture iconTexture;
     private Skybox skybox;
+    private ShadowMap shadowMap;
     
     private static final Vector3f noValue = new Vector3f();
     
@@ -157,9 +165,17 @@ public abstract class Scene {
      * @param depthProgram the shader program provided by the engine that will 
      *                     be used to generate the shadow map texture
      */
-    void renderShadows(GLProgram depthProgram) {
-        depthProgram.use();
-        entities.values().forEach(entity -> entity.renderShadow(depthProgram));
+    void renderShadows(Vector3f camUp, GLProgram depthProgram) {
+        if(shadowMap != null) {
+            shadowMap.generate(camUp, depthProgram, lightSources[0].getPosition(), entities);
+        }
+    }
+    
+    void setShadowUniforms() {
+        if(shadowMap != null) {
+            XJGE.getDefaultGLProgram().setUniform("uLightSpace", false, shadowMap.lightSpace);
+            XJGE.getDefaultGLProgram().setUniform("uPCFValue", shadowMap.PCFValue);
+        }
     }
     
     /**

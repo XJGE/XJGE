@@ -45,13 +45,17 @@ float sharpen(float pixArray) {
 }
 
 /**
- * Allows texture transparency by discarding the fragments produced by its alpha 
- * channel.
+ * Discards fragments whos alpha component is equal to zero. Used in conjunction 
+ * with blending to produce transparent textures.
  */
 void makeTransparent(float a) {
     if(a == 0) discard;
 }
 
+/**
+ * Calculates fragment values that will be used to cast shadows on objects 
+ * within a certain portion of the scene.
+ */
 float calcShadow(float dotLightNormal) {
     vec3 pos = ioLightFrag.xyz * 0.5 + 0.5;
 

@@ -177,7 +177,7 @@ public final class Light {
      * @return a new engine-generated light object
      */
     public static final Light random() {
-        return new Light((float) Math.log(randomValue(0, 10)), randomValue(0, 1), randomValue(0, 5), 
+        return new Light((float) Math.log(randomValue(0.5f, 10)), randomValue(0, 1), randomValue(0, 5), 
                           new Vector3f(), 
                           Color.random(), Color.random(), Color.random());
     }

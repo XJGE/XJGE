@@ -1,5 +1,6 @@
 package org.xjge.core;
 
+import java.util.LinkedHashMap;
 import org.joml.Matrix4f;
 import org.joml.Vector3f;
 import static org.lwjgl.opengl.GL30.*;
@@ -12,24 +13,23 @@ import org.xjge.graphics.GLProgram;
 
 /**
  * @author J Hoffman
- * @since  
+ * @since  2.0.0
  */
-public class ShadowMap {
+public final class ShadowMap {
 
-    private final int SHADOW_WIDTH  = 2560;
-    private final int SHADOW_HEIGHT = 2560;
-    private final int fbo;
-    public final int depthTexHandle;
+    private int textureWidth  = 4096;
+    private int textureHeight = 4096;
+    private int fbo;
+    int depthTexHandle;
     
-    public static int PCFValue = 1;
+    int PCFValue = 1;
     
     private final float NEAR_PLANE = 1f;
     private final float FAR_PLANE  = 100f;
     
-    private final Vector3f lightDir  = new Vector3f();
-    private final Matrix4f lightView = new Matrix4f();
-    private final Matrix4f lightProj = new Matrix4f();
-    
+    final Vector3f lightDir   = new Vector3f();
+    final Matrix4f lightView  = new Matrix4f();
+    final Matrix4f lightProj  = new Matrix4f();
     final Matrix4f lightSpace = new Matrix4f();
     
     ShadowMap() {
@@ -38,7 +38,7 @@ public class ShadowMap {
         depthTexHandle = glGenTextures();
         
         glBindTexture(GL_TEXTURE_2D, depthTexHandle);
-        glTexImage2D(GL_TEXTURE_2D, 0, GL_DEPTH_COMPONENT, SHADOW_WIDTH, SHADOW_HEIGHT, 0, GL_DEPTH_COMPONENT, GL_FLOAT, NULL);
+        glTexImage2D(GL_TEXTURE_2D, 0, GL_DEPTH_COMPONENT, textureWidth, textureHeight, 0, GL_DEPTH_COMPONENT, GL_FLOAT, NULL);
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR); //TODO: add option to change filter type?
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_BORDER);
@@ -55,19 +55,19 @@ public class ShadowMap {
         glBindFramebuffer(GL_FRAMEBUFFER, 0);
     }
     
-    void createMap(Vector3f camUp, GLProgram depthProgram, Scene scene) {
+    void generate(Vector3f camUp, GLProgram depthProgram, Vector3f worldLightPos, LinkedHashMap<String, Entity> entities) {
         lightProj.setOrtho(-100f, 100f, -100f, 100f, NEAR_PLANE, FAR_PLANE);
-        lightView.setLookAt(scene.getLightSources()[0].getPosition(), lightDir, camUp);
+        lightView.setLookAt(worldLightPos, lightDir, camUp);
         lightProj.mul(lightView, lightSpace);
         
         depthProgram.use();
         depthProgram.setUniform("uLightSpace", false, lightSpace);
         
-        glViewport(0, 0, SHADOW_WIDTH, SHADOW_HEIGHT);
+        glViewport(0, 0, textureWidth, textureHeight);
         glBindFramebuffer(GL_FRAMEBUFFER, fbo);
             glClear(GL_DEPTH_BUFFER_BIT);
             glBindTexture(GL_TEXTURE_2D, depthTexHandle);
-            scene.renderShadows(depthProgram);
+            entities.values().forEach(entity -> entity.renderShadow(depthProgram));
         glBindFramebuffer(GL_FRAMEBUFFER, 0);
     }
     

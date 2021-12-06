@@ -143,7 +143,7 @@ public final class LightSource {
         
         XJGE.getDefaultGLProgram().setUniform("uType", 6);
         XJGE.getDefaultGLProgram().setUniform("uModel", false, g.modelMatrix);
-        XJGE.getDefaultGLProgram().setUniform("uColor", light.ambientColor.asVec3());
+        XJGE.getDefaultGLProgram().setUniform("uColor", light.diffuseColor.asVec3());
         XJGE.getDefaultGLProgram().setUniform("uTexCoords", texCoords);
         
         glDrawElements(GL_TRIANGLES, g.indices.capacity(), GL_UNSIGNED_INT, 0);

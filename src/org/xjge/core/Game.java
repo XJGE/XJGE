@@ -47,10 +47,6 @@ public final class Game {
     private static Color clearColor = Color.create(92, 148, 252);
     private static Scene scene;
     
-    //TODO: temp- move somewhere else.
-    public static ShadowMap shadowMap  = new ShadowMap();
-    private static Vector3f camUp = new Vector3f(0, 1, 0);
-    
     private static final Queue<Event> events = new PriorityQueue<>(Comparator.comparing(Event::getPriority));
     
     /**
@@ -112,7 +108,7 @@ public final class Game {
                         Audio.setViewportCamData(viewport.id, viewport.currCamera.position, viewport.currCamera.direction);
                     }
                 }
-
+                
                 Audio.updateSoundSourcePositions();
                 Audio.queueMusicBodySection();
                 
@@ -122,17 +118,16 @@ public final class Game {
                 }
             }
             
-            //TODO: only if shadow map is not null.
             XJGE.getDefaultGLProgram().use();
-            XJGE.getDefaultGLProgram().setUniform("uLightSpace", false, shadowMap.lightSpace);
-            XJGE.getDefaultGLProgram().setUniform("uPCFValue", shadowMap.PCFValue);
-            
+            scene.setShadowUniforms();
             scene.setLightingUniforms();
+            
+            //TODO: add bloom
             
             //Render scene from the perspective of each active viewport.
             for(Viewport viewport : viewports) {
                 if(viewport.active) {
-                    shadowMap.createMap(camUp, depthProgram, scene);
+                    scene.renderShadows(viewport.currCamera.up, depthProgram);
                     
                     if(viewport.id == 0) {
                         glClearColor(0, 0, 0, 0);
@@ -168,8 +163,6 @@ public final class Game {
                     viewport.render(glPrograms, "texture");
                 }
             }
-            
-            //TODO: add extension for shadow mapping.
             
             if(XJGE.getTerminalEnabled() || debugInfo.show) {
                 glViewport(0, 0, Window.getWidth(), Window.getHeight());
