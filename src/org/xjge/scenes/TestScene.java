@@ -49,6 +49,8 @@ public class TestScene extends Scene {
         
         lights[0] = Light.daylight();
         
+        lights[1] = new Light(0.1f, 0, 0.5f, new Vector3f(-27, -2, 0), Color.LIME);
+        
         //addLight(new Light(0.1f, 0, 0.5f, new Vector3f(-27, -2, 0), Color.LIME));
         
         /*

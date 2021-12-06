@@ -17,8 +17,8 @@ import org.xjge.graphics.GLProgram;
  */
 public final class ShadowMap {
 
-    private int textureWidth  = 4096;
-    private int textureHeight = 4096;
+    private int textureWidth  = 1920;
+    private int textureHeight = 1920;
     private int fbo;
     public final int depthTexHandle;
     

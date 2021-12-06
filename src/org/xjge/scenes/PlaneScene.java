@@ -44,6 +44,8 @@ public class PlaneScene extends Scene {
         lights[3] = l3;
         lights[4] = l4;
         lights[5] = l5;
+        
+        //TODO: resolution bug found- switching monitors/fullscreen effects performance?
     }
 
     @Override
@@ -55,7 +57,7 @@ public class PlaneScene extends Scene {
     @Override
     public void render(Map<String, GLProgram> glPrograms, int viewportID, Camera camera) {
         glPrograms.get("default").use();
-        entities.values().forEach(entity -> entity.render(glPrograms.get("default"), camera, lights, shadowMap.depthTexHandle));
+        entities.values().forEach(entity -> entity.render(glPrograms.get("default"), camera, lights, 0)); //shadowMap.depthTexHandle
     }
 
     @Override
