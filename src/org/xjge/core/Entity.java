@@ -54,7 +54,7 @@ public abstract class Entity {
      * 
      * @see render(Map, Camera, LightSource[], int)
      */
-    public abstract void render(GLProgram glProgram, Camera camera, LightSource[] lights, int numLights);
+    public abstract void render(GLProgram glProgram, Camera camera, Light[] lights, int shadowMapTexHandle);
     
     //TODO: change render method signature, remove lights (maybe?), include current texture attachment slot number
     
@@ -76,8 +76,9 @@ public abstract class Entity {
      * 
      * @see render(GLProgram, Camera, LightSource[], int)
      */
-    public abstract void render(Map<String, GLProgram> glPrograms, Camera camera, LightSource[] lights, int numLights);
+    public abstract void render(Map<String, GLProgram> glPrograms, Camera camera, Light[] lights, int shadowMapTexHandle);
     
+    //TODO: add doc
     public abstract void renderShadow(GLProgram depthProgram);
     
     /**

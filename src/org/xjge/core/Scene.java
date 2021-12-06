@@ -34,7 +34,7 @@ public abstract class Scene {
     public final String name;
     private static Texture iconTexture;
     private Skybox skybox;
-    private ShadowMap shadowMap;
+    protected ShadowMap shadowMap;
     
     private static final Vector3f noValue = new Vector3f();
     
@@ -64,7 +64,8 @@ public abstract class Scene {
      */
     protected final LinkedHashMap<String, Entity> entities = new LinkedHashMap<>();
     
-    public final Light[] lights = new Light[MAX_LIGHTS];
+    //TODO: add doc on how to properly use
+    protected final Light[] lights = new Light[MAX_LIGHTS];
     
     /**
      * Creates a new 3D scene that will contain entities, light sources, and 
@@ -75,32 +76,8 @@ public abstract class Scene {
      */
     public Scene(String name) {
         this.name = name;
-        lights[0] = Light.daylight();
-    }
-    
-    /**
-     * Calculates the current number of light source objects that currently 
-     * exist in the scene. This includes light sources which are in a disabled 
-     * state.
-     */
-    private void findNumLights() {
-        numLights = 1;
         
-        for(int i = 1; i < MAX_LIGHTS; i++) {
-            if(lights[i] != null) numLights++;
-        }
-    }
-    
-    /**
-     * Supplies the scene with the texture atlas containing icons that will be 
-     * used to render the positions of {@link LightSource} objects in debug 
-     * mode.
-     * 
-     * @param iconTexture the texture atlas containing all the icons used by 
-     *                    the engine
-     */
-    static void setIconTexture(Texture iconTexture) {
-        Scene.iconTexture = iconTexture;
+        shadowMap = new ShadowMap(); //TDOO: temp
     }
     
     /**
@@ -109,54 +86,6 @@ public abstract class Scene {
      */
     void processRemoveRequests() {
         entities.entrySet().removeIf(entry -> entry.getValue().removalRequested());
-    }
-    
-    /**
-     * Renders the scenes current {@link Skybox} (if one exists). This method 
-     * is called automatically by the engine. 
-     * 
-     * @param viewMatrix the view matrix of the viewport whos camera is 
-     *                   currently rendering the scene
-     */
-    void renderSkybox(Matrix4f viewMatrix) {
-        if(skybox != null) skybox.render(viewMatrix);
-    }
-    
-    /**
-     * Renders the icons indicating the positions of every initialized light 
-     * source in the scene while debug mode is enabled. This method is called 
-     * automatically by the engine.
-     * 
-     * @param camera the {@link Camera} object of the current {@link Viewport} 
-     *               being rendered
-     */
-    void renderLightSources(Camera camera) {
-        if(XJGE.getLightSourcesVisible()) {
-            for(LightSource source : lightSources) {
-                if(source != null) source.render(camera.position, camera.direction, camera.up);
-            }
-        }
-    }
-    
-    /**
-     * Calculates the shadows cast by each entity provided to the 
-     * {@linkplain entities} collection. This method is called automatically 
-     * by the engine.
-     * 
-     * @param depthProgram the shader program provided by the engine that will 
-     *                     be used to generate the shadow map texture
-     */
-    void renderShadows(Vector3f camUp, GLProgram depthProgram) {
-        if(shadowMap != null) {
-            shadowMap.generate(camUp, depthProgram, lights[0].position, entities);
-        }
-    }
-    
-    void setShadowUniforms() {
-        if(shadowMap != null) {
-            XJGE.getDefaultGLProgram().setUniform("uLightSpace", false, shadowMap.lightSpace);
-            XJGE.getDefaultGLProgram().setUniform("uPCFValue", shadowMap.PCFValue);
-        }
     }
     
     /**
@@ -188,6 +117,51 @@ public abstract class Scene {
         }
     }
     
+    void updateLightSources() {
+        if(XJGE.getLightSourcesVisible()) {
+            for(int i = 0; i < MAX_LIGHTS; i++) {
+                if(lights[i] != null) lights[i].update(i);
+            }
+        }
+    }
+    
+    /**
+     * Renders the icons indicating the positions of every initialized light 
+     * object in the scene while debug mode is enabled. This method is called 
+     * automatically by the engine.
+     * 
+     * @param camera the {@link Camera} object of the current {@link Viewport} 
+     *               being rendered
+     */
+    void renderLightSources(Camera camera) {
+        if(XJGE.getLightSourcesVisible()) {
+            for(Light light : lights) {
+                if(light != null) light.render(camera.position, camera.direction, camera.up);
+            }
+        }
+    }
+    
+    void setShadowUniforms() {
+        if(shadowMap != null) {
+            XJGE.getDefaultGLProgram().setUniform("uLightSpace", false, shadowMap.lightSpace);
+            XJGE.getDefaultGLProgram().setUniform("uPCFValue", shadowMap.PCFValue);
+        }
+    }
+    
+    /**
+     * Calculates the shadows cast by each entity provided to the 
+     * {@linkplain entities} collection. This method is called automatically 
+     * by the engine.
+     * 
+     * @param depthProgram the shader program provided by the engine that will 
+     *                     be used to generate the shadow map texture
+     */
+    void renderShadows(Vector3f camUp, GLProgram depthProgram) {
+        if(shadowMap != null && lights[0] != null) {
+            shadowMap.generate(camUp, depthProgram, lights[0].position, entities);
+        }
+    }
+    
     /**
      * Sets the current skybox the scene will render as part of its background.
      * 
@@ -198,71 +172,14 @@ public abstract class Scene {
     }
     
     /**
-     * Adds a new light to the scene. If the maximum number of lights has been 
-     * reached, it will recycle the first one in sequence.
+     * Renders the scenes current {@link Skybox} (if one exists). This method 
+     * is called automatically by the engine. 
      * 
-     * @param light the light object to add
+     * @param viewMatrix the view matrix of the viewport whos camera is 
+     *                   currently rendering the scene
      */
-    protected final void addLight(Light light) {
-        boolean search = true;
-        
-        for(int i = 1; search; i++) {
-            if(i < MAX_LIGHTS) {
-                if(lightSources[i] != null) {
-                    if(!lightSources[i].getEnabled()) {
-                        lightSources[i] = new LightSource(false, light, lightSources[i]);
-                    }
-                } else {
-                    lightSources[i] = new LightSource(false, light, iconTexture);
-                    search = false;
-                }
-            } else {
-                currLightIndex = (currLightIndex == MAX_LIGHTS - 1) ? 1 : currLightIndex + 1;
-                lightSources[currLightIndex] = new LightSource(false, light, lightSources[currLightIndex]);
-                search = false;
-            }
-        }
-        
-        findNumLights();
-    }
-    
-    /**
-     * Adds a new light to the scene at the index specified. This is useful in 
-     * situations where we would like to explicitly partition the lights in the 
-     * scene for different uses.
-     * <p>
-     * If a light source already exists at that index, it will be replaced. 
-     * Passing zero in place of the index value will change the current world 
-     * light that illuminates all objects.
-     * 
-     * @param index an existing location within the light array to occupy
-     * @param light the light object to add
-     * 
-     * @see MAX_LIGHTS
-     */
-    protected final void addLightAtIndex(int index, Light light) {
-        try {
-            if(light == null) {
-                throw new NullPointerException();
-            } else {
-                lightSources[index] = new LightSource(index == 0, light, lightSources[index]);
-                findNumLights();
-            }
-        } catch(NullPointerException | IndexOutOfBoundsException e) {
-            Logger.setDomain("core");
-            Logger.logWarning("Failed to add light object at index " + index, e);
-            Logger.setDomain(null);
-        }
-    }
-    
-    /**
-     * Obtains the current amount of initialized light source objects within 
-     * the scene.
-     * 
-     * @return the number of initialized light source objects
-     */
-    protected int getNumLights() {
-        return numLights;
+    void renderSkybox(Matrix4f viewMatrix) {
+        if(skybox != null) skybox.render(viewMatrix);
     }
     
     /**
@@ -289,7 +206,7 @@ public abstract class Scene {
      * @param camera     the {@link Camera} object of the current 
      *                   {@link Viewport} being rendered
      */
-    public abstract void render(Map<String, GLProgram> glPrograms, int viewportID, Camera camera, Light[] lights, int numLights);
+    public abstract void render(Map<String, GLProgram> glPrograms, int viewportID, Camera camera);
     
     /**
      * Called by the engine when this scene is left for another. Any 

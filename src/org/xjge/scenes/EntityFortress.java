@@ -16,7 +16,7 @@ import static org.lwjgl.opengl.GL11.glBindTexture;
 import static org.lwjgl.opengl.GL11.glTexParameteri;
 import org.xjge.core.Camera;
 import org.xjge.core.Entity;
-import org.xjge.core.LightSource;
+import org.xjge.core.Light;
 import org.xjge.graphics.GLProgram;
 import org.xjge.graphics.Model;
 
@@ -63,13 +63,13 @@ public class EntityFortress extends Entity {
     }
 
     @Override
-    public void render(GLProgram glProgram, Camera camera, LightSource[] lights, int numLights) {
-        fortress.render(glProgram, lights, numLights, arenaCaps, 128);
+    public void render(GLProgram glProgram, Camera camera, Light[] lights, int shadowMapTexHandle) {
+        fortress.render(glProgram, lights, lights.length, arenaCaps, 128, shadowMapTexHandle);
         //fortress.render(glProgram, lights, numLights);
     }
 
     @Override
-    public void render(Map<String, GLProgram> glPrograms, Camera camera, LightSource[] lights, int numLights) {
+    public void render(Map<String, GLProgram> glPrograms, Camera camera, Light[] lights, int shadowMapTexHandle) {
     }
 
     @Override

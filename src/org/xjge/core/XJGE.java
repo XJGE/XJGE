@@ -289,7 +289,7 @@ public final class XJGE {
             engineIcons = new Texture("spr_engineicons.png");
             beep        = new Sound("sfx_beep.ogg");
             
-            Scene.setIconTexture(engineIcons);
+            Light.setIconTexture(engineIcons);
             Logger.printSystemInfo();
             
             XJGE.assetsFilepath = assetsFilepath;

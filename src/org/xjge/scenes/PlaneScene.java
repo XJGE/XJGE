@@ -1,7 +1,6 @@
 package org.xjge.scenes;
 
 import java.util.Map;
-import org.joml.Vector3f;
 import org.xjge.core.Camera;
 import org.xjge.core.Game;
 import org.xjge.core.Scene;
@@ -38,12 +37,13 @@ public class PlaneScene extends Scene {
         l4.position.set(-16, 0, -3);
         l5.position.set(-2, 0, 10);
         
-        addLightAtIndex(0, Light.midnight());
-        addLight(l1);
-        addLight(l2);
-        addLight(l3);
-        addLight(l4);
-        addLight(l5);
+        lights[0] = Light.midnight();
+        
+        lights[1] = l1;
+        lights[2] = l2;
+        lights[3] = l3;
+        lights[4] = l4;
+        lights[5] = l5;
     }
 
     @Override
@@ -55,7 +55,7 @@ public class PlaneScene extends Scene {
     @Override
     public void render(Map<String, GLProgram> glPrograms, int viewportID, Camera camera) {
         glPrograms.get("default").use();
-        entities.values().forEach(entity -> entity.render(glPrograms.get("default"), camera, getLightSources(), getNumLights()));
+        entities.values().forEach(entity -> entity.render(glPrograms.get("default"), camera, lights, shadowMap.depthTexHandle));
     }
 
     @Override

@@ -20,7 +20,7 @@ public final class ShadowMap {
     private int textureWidth  = 4096;
     private int textureHeight = 4096;
     private int fbo;
-    int depthTexHandle;
+    public final int depthTexHandle;
     
     int PCFValue = 1;
     

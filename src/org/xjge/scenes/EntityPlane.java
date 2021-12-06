@@ -10,7 +10,7 @@ import org.xjge.core.Camera;
 import org.xjge.core.Entity;
 import org.xjge.core.ErrorUtils;
 import org.xjge.core.Game;
-import org.xjge.core.LightSource;
+import org.xjge.core.Light;
 import org.xjge.graphics.Color;
 import org.xjge.graphics.GLProgram;
 import org.xjge.graphics.Graphics;
@@ -80,14 +80,14 @@ public class EntityPlane extends Entity {
     }
 
     @Override
-    public void render(GLProgram glProgram, Camera camera, LightSource[] lights, int numLights) {
+    public void render(GLProgram glProgram, Camera camera, Light[] lights, int shadowMapTexHandle) {
         glEnable(GL_DEPTH_TEST);
         glEnable(GL_BLEND);
         glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
         glActiveTexture(GL_TEXTURE0);
         glBindTexture(GL_TEXTURE_2D, texture.handle);
         glActiveTexture(GL_TEXTURE1);
-        glBindTexture(GL_TEXTURE_2D, Game.shadowMap.depthTexHandle);
+        glBindTexture(GL_TEXTURE_2D, shadowMapTexHandle);
         glBindVertexArray(g.vao);
         
         glProgram.setUniform("uType", 9);
@@ -99,7 +99,7 @@ public class EntityPlane extends Entity {
         glProgram.setUniform("uTexture", 0);
         glProgram.setUniform("uShine", 256);
         glProgram.setUniform("uShadowMap", 1);
-        glProgram.setUniform("uNumLights", numLights);
+        glProgram.setUniform("uNumLights", lights.length);
         
         glDrawElements(GL_TRIANGLES, g.indices.capacity(), GL_UNSIGNED_INT, 0);
         glDisable(GL_BLEND);
@@ -109,7 +109,7 @@ public class EntityPlane extends Entity {
     }
 
     @Override
-    public void render(Map<String, GLProgram> glPrograms, Camera camera, LightSource[] lights, int numLights) {
+    public void render(Map<String, GLProgram> glPrograms, Camera camera, Light[] lights, int shadowMapTexHandle) {
     }
 
     @Override

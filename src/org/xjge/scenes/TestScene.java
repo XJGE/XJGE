@@ -47,9 +47,9 @@ public class TestScene extends Scene {
         entities.put("sprite", new EntitySprite(0, 6, 3, 1.5f, 2));
         entities.put("fortress", new EntityFortress(0, -2.99f, 0));
         
-        addLightAtIndex(0, Light.daylight());
+        lights[0] = Light.daylight();
         
-        addLight(new Light(0.1f, 0, 0.5f, new Vector3f(-27, -2, 0), Color.LIME));
+        //addLight(new Light(0.1f, 0, 0.5f, new Vector3f(-27, -2, 0), Color.LIME));
         
         /*
         TODO
@@ -77,7 +77,7 @@ public class TestScene extends Scene {
     @Override
     public void render(Map<String, GLProgram> glPrograms, int viewportID, Camera camera) {
         glPrograms.get("default").use();
-        entities.values().forEach(entity -> entity.render(glPrograms.get("default"), camera, getLightSources(), getNumLights()));
+        entities.values().forEach(entity -> entity.render(glPrograms.get("default"), camera, lights, shadowMap.depthTexHandle));
     }
 
     @Override

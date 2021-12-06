@@ -2,6 +2,8 @@ package org.xjge.core;
 
 import org.joml.Vector2f;
 import org.joml.Vector3f;
+import static org.lwjgl.opengl.GL30.*;
+import org.lwjgl.system.MemoryStack;
 import org.xjge.graphics.Atlas;
 import org.xjge.graphics.Color;
 import org.xjge.graphics.Graphics;
@@ -29,22 +31,10 @@ public final class Light {
     public Color diffuseColor;
     public Color specularColor;
     
-    //TODO: make final
     private Graphics g;
-    private Texture iconTexture;
+    private static Texture iconTexture;
     private Atlas atlas;
     private Vector2f texCoords;
-    
-    Light(float brightness, float contrast, float distance, Vector3f position, Color[] colors, boolean isWorldLight, Texture iconTexture) {
-        this.brightness    = Math.abs(brightness);
-        this.contrast      = clampValue(0, 1, contrast);
-        this.distance      = clampValue(0, Float.MAX_VALUE, distance);
-        this.position      = position;
-        this.ambientColor  = colors[0];
-        this.diffuseColor  = colors[1];
-        this.specularColor = colors[2];
-        this.iconTexture   = iconTexture;
-    }
     
     /**
      * Creates a new light object that contains data which can be used by a 
@@ -72,6 +62,35 @@ public final class Light {
         this.ambientColor  = ambientColor;
         this.diffuseColor  = diffuseColor;
         this.specularColor = specularColor;
+        
+        g         = new Graphics();
+        atlas     = new Atlas(iconTexture, 64, 64);
+        texCoords = new Vector2f(atlas.subImageWidth * 2, atlas.subImageHeight);
+        
+        try(MemoryStack stack = MemoryStack.stackPush()) {
+            g.vertices = stack.mallocFloat(20);
+            g.indices  = stack.mallocInt(6);
+            
+            //(vec3 position), (vec2 texCoords)
+            g.vertices.put(-0.5f) .put(0.5f).put(0) .put(0)                  .put(0);
+            g.vertices .put(0.5f) .put(0.5f).put(0) .put(atlas.subImageWidth).put(0);
+            g.vertices .put(0.5f).put(-0.5f).put(0) .put(atlas.subImageWidth).put(atlas.subImageHeight);
+            g.vertices.put(-0.5f).put(-0.5f).put(0) .put(0)                  .put(atlas.subImageHeight);
+            
+            g.indices.put(0).put(1).put(2);
+            g.indices.put(2).put(3).put(0);
+            
+            g.vertices.flip();
+            g.indices.flip();
+        }
+        
+        g.bindBuffers();
+        
+        glVertexAttribPointer(0, 3, GL_FLOAT, false, (5 * Float.BYTES), 0);
+        glVertexAttribPointer(2, 2, GL_FLOAT, false, (5 * Float.BYTES), (3 * Float.BYTES));
+        
+        glEnableVertexAttribArray(0);
+        glEnableVertexAttribArray(2);
     }
     
     /**
@@ -120,6 +139,39 @@ public final class Light {
     
     private static float randomValue(float minValue, float maxValue) {
         return (float) (minValue + Math.random() * (maxValue - minValue));
+    }
+    
+    static void setIconTexture(Texture engineIcons) {
+        iconTexture = engineIcons;
+    }
+    
+    void update(int index) {
+        g.modelMatrix.translation(position);
+        
+        if(index == 0) texCoords.set(atlas.subImageWidth, atlas.subImageHeight);
+        else           texCoords.set(atlas.subImageWidth * 2, atlas.subImageHeight);
+    }
+    
+    void render(Vector3f camPos, Vector3f camDir, Vector3f camUp) {
+        g.modelMatrix.billboardSpherical(position, camPos, camUp);
+        g.modelMatrix.scale(camPos.distance(position) / 10);
+
+        XJGE.getDefaultGLProgram().use();
+        
+        glEnable(GL_BLEND);
+        glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+        glActiveTexture(GL_TEXTURE0);
+        glBindTexture(GL_TEXTURE_2D, iconTexture.handle);
+        glBindVertexArray(g.vao);
+        
+        XJGE.getDefaultGLProgram().setUniform("uType", 6);
+        XJGE.getDefaultGLProgram().setUniform("uModel", false, g.modelMatrix);
+        XJGE.getDefaultGLProgram().setUniform("uColor", diffuseColor.asVec3());
+        XJGE.getDefaultGLProgram().setUniform("uTexCoords", texCoords);
+        
+        glDrawElements(GL_TRIANGLES, g.indices.capacity(), GL_UNSIGNED_INT, 0);
+        glDisable(GL_BLEND);
+        ErrorUtils.checkGLError();
     }
     
     /**

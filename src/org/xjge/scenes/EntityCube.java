@@ -8,7 +8,7 @@ import org.lwjgl.system.MemoryUtil;
 import org.xjge.core.Camera;
 import org.xjge.core.Entity;
 import org.xjge.core.ErrorUtils;
-import org.xjge.core.LightSource;
+import org.xjge.core.Light;
 import org.xjge.graphics.Color;
 import org.xjge.graphics.GLProgram;
 import org.xjge.graphics.Graphics;
@@ -114,7 +114,7 @@ public class EntityCube extends Entity {
     }
 
     @Override
-    public void render(GLProgram glProgram, Camera camera, LightSource[] lights, int numLights) {
+    public void render(GLProgram glProgram, Camera camera, Light[] lights, int shadowMapTexHandle) {
         glEnable(GL_DEPTH_TEST);
         glEnable(GL_CULL_FACE);
         glBindVertexArray(g.vao);
@@ -132,7 +132,7 @@ public class EntityCube extends Entity {
     }
 
     @Override
-    public void render(Map<String, GLProgram> glPrograms, Camera camera, LightSource[] lights, int numLights) {
+    public void render(Map<String, GLProgram> glPrograms, Camera camera, Light[] lights, int shadowMapTexHandle) {
     }
 
     @Override

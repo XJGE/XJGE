@@ -1,7 +1,6 @@
 package org.xjge.graphics;
 
 import org.xjge.core.ErrorUtils;
-import org.xjge.core.LightSource;
 import org.xjge.core.Logger;
 import org.xjge.core.XJGE;
 import java.io.InputStream;
@@ -24,6 +23,7 @@ import org.lwjgl.system.MemoryUtil;
 import static org.lwjgl.system.MemoryUtil.NULL;
 import org.xjge.core.Camera;
 import org.xjge.core.Game;
+import org.xjge.core.Light;
 
 //Created: Jun 16, 2021
 
@@ -746,7 +746,7 @@ public class Model {
      * @param numLights the total number of lights in the scene
      * @param capabilities an object that can be used to enable various OpenGL capabilities
      */
-    public void render(GLProgram glProgram, LightSource[] lights, int numLights, GLCapabilities capabilities, int shineValue) {
+    public void render(GLProgram glProgram, Light[] lights, int numLights, GLCapabilities capabilities, int shineValue, int shadowMapTexHandle) {
         if(capabilities != null) capabilities.enable();
         
         glProgram.use();
@@ -757,7 +757,7 @@ public class Model {
             
             //TODO: mode this- might need auto incrementer like numLights for texture unit number
             glActiveTexture(GL_TEXTURE1);
-            glBindTexture(GL_TEXTURE_2D, Game.shadowMap.depthTexHandle);
+            glBindTexture(GL_TEXTURE_2D, shadowMapTexHandle);
             
             glBindVertexArray(mesh.vao);
             
@@ -795,8 +795,8 @@ public class Model {
      *                  scene
      * @param numLights the total number of lights in the scene
      */
-    public void render(GLProgram glProgram, LightSource[] lights, int numLights, int shineValue) {
-        render(glProgram, lights, numLights, defaultCaps, shineValue);
+    public void render(GLProgram glProgram, Light[] lights, int shineValue, int shadowMapTexHandle) {
+        render(glProgram, lights, lights.length, defaultCaps, shineValue, shadowMapTexHandle);
     }
     
     public void renderShadow(GLProgram depthProgram) {

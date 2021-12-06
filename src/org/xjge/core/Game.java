@@ -147,7 +147,7 @@ public final class Game {
                         
                         viewport.render(glPrograms, "camera");
                         scene.renderSkybox(viewport.currCamera.viewMatrix);
-                        scene.render(glPrograms, viewport.id, viewport.currCamera, scene.lights, scene.getNumLights());
+                        scene.render(glPrograms, viewport.id, viewport.currCamera);
                         scene.renderLightSources(viewport.currCamera);
                         viewport.render(glPrograms, "ui");
                     glBindFramebuffer(GL_FRAMEBUFFER, 0);
@@ -231,7 +231,8 @@ public final class Game {
      * @param light the light object to add
      */
     public static void addLight(Light light) {
-        scene.addLight(light);
+        //scene.addLight(light);
+        //might still be nice to have this feature.
     }
     
     /**
