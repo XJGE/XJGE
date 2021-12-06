@@ -2,7 +2,6 @@ package org.xjge.core;
 
 import org.xjge.graphics.Atlas;
 import org.xjge.graphics.Graphics;
-import org.xjge.graphics.Light;
 import org.xjge.graphics.Texture;
 import org.joml.Vector2f;
 import org.joml.Vector3f;
@@ -24,11 +23,11 @@ import org.lwjgl.system.MemoryStack;
  * @author J Hoffman
  * @since  2.0.0
  */
-public final class LightSource {
+final class LightSource {
     
     final boolean isWorldLight;
     
-    private final Light light;
+    final Light light;
     private final Graphics g;
     private final Texture iconTexture;
     private final Atlas atlas;
@@ -149,80 +148,6 @@ public final class LightSource {
         glDrawElements(GL_TRIANGLES, g.indices.capacity(), GL_UNSIGNED_INT, 0);
         glDisable(GL_BLEND);
         ErrorUtils.checkGLError();
-    }
-    
-    /**
-     * Obtains the current enabled value of the source objects light struct. 
-     * This value essentially acts as an "on/off" switch with enabled lights 
-     * casting light on nearby objects that exhibit shading.
-     * 
-     * @return true if the light is currently enabled
-     */
-    public boolean getEnabled() {
-        return light.enabled;
-    }
-    
-    /**
-     * Obtains the brightness value of the source objects light struct. This 
-     * value denotes the intensity and range of the light.
-     * 
-     * @return the brightness value of the source objects light struct
-     */
-    public float getBrightness() {
-        return light.brightness;
-    }
-    
-    /**
-     * Obtains the contrast value of the source objects light struct. This 
-     * value controls the contrast between the ambient and diffuse colors on 
-     * nearby objects that exhibit shading.
-     * 
-     * @return the contrast value of the source objects light struct
-     */
-    public float getContrast() {
-        return light.contrast;
-    }
-    
-    public float getDistance() {
-        return light.distance;
-    }
-    
-    /**
-     * Obtains the current position of this source objects light struct in 3D 
-     * space. This value sets the position from which the light will be 
-     * emitted.
-     * 
-     * @return the position value of the source objects light struct
-     */
-    public Vector3f getPosition() {
-        return light.position;
-    }
-    
-    /**
-     * Obtains the ambient color of this source objects light struct. The 
-     * ambient color determines the brightness and hue of nearby objects edges 
-     * that face away from the light.
-     * 
-     * @return the color value of the ambient lighting
-     */
-    public Vector3f getAmbientColor() {
-        return light.ambientColor.asVec3();
-    }
-    
-    /**
-     * Obtains the diffuse color of this source objects light struct. The 
-     * diffuse color is refracted by the edges of nearby objects that face in 
-     * the direction of the light.
-     * 
-     * @return the color that will be reflected by objects within range of the 
-     *         light
-     */
-    public Vector3f getDiffuseColor() {
-        return light.diffuseColor.asVec3();
-    }
-    
-    public Vector3f getSpecularColor() {
-        return light.specularColor.asVec3();
     }
     
 }

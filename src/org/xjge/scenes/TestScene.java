@@ -7,7 +7,7 @@ import org.xjge.core.Scene;
 import org.xjge.core.Skybox;
 import org.xjge.graphics.Color;
 import org.xjge.graphics.GLProgram;
-import org.xjge.graphics.Light;
+import org.xjge.core.Light;
 
 /**
  * Nov 9, 2021

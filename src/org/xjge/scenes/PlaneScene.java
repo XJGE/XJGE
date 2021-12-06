@@ -7,7 +7,7 @@ import org.xjge.core.Game;
 import org.xjge.core.Scene;
 import org.xjge.graphics.Color;
 import org.xjge.graphics.GLProgram;
-import org.xjge.graphics.Light;
+import org.xjge.core.Light;
 
 /**
  * Dec 3, 2021

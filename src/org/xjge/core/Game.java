@@ -2,12 +2,10 @@ package org.xjge.core;
 
 import static org.xjge.core.XJGE.glPrograms;
 import org.xjge.graphics.Color;
-import org.xjge.graphics.Light;
 import java.util.Comparator;
 import java.util.PriorityQueue;
 import java.util.Queue;
 import org.joml.Matrix4f;
-import org.joml.Vector3f;
 import static org.lwjgl.glfw.GLFW.*;
 import static org.lwjgl.opengl.GL30.*;
 import org.xjge.graphics.GLProgram;
@@ -149,8 +147,8 @@ public final class Game {
                         
                         viewport.render(glPrograms, "camera");
                         scene.renderSkybox(viewport.currCamera.viewMatrix);
-                        scene.render(glPrograms, viewport.id, viewport.currCamera);
-                        scene.renderLightsources(viewport.currCamera);
+                        scene.render(glPrograms, viewport.id, viewport.currCamera, scene.lights, scene.getNumLights());
+                        scene.renderLightSources(viewport.currCamera);
                         viewport.render(glPrograms, "ui");
                     glBindFramebuffer(GL_FRAMEBUFFER, 0);
                     

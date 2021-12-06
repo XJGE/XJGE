@@ -1,6 +1,11 @@
-package org.xjge.graphics;
+package org.xjge.core;
 
+import org.joml.Vector2f;
 import org.joml.Vector3f;
+import org.xjge.graphics.Atlas;
+import org.xjge.graphics.Color;
+import org.xjge.graphics.Graphics;
+import org.xjge.graphics.Texture;
 
 //Created: Jun 12, 2021
 
@@ -23,6 +28,23 @@ public final class Light {
     public Color ambientColor;
     public Color diffuseColor;
     public Color specularColor;
+    
+    //TODO: make final
+    private Graphics g;
+    private Texture iconTexture;
+    private Atlas atlas;
+    private Vector2f texCoords;
+    
+    Light(float brightness, float contrast, float distance, Vector3f position, Color[] colors, boolean isWorldLight, Texture iconTexture) {
+        this.brightness    = Math.abs(brightness);
+        this.contrast      = clampValue(0, 1, contrast);
+        this.distance      = clampValue(0, Float.MAX_VALUE, distance);
+        this.position      = position;
+        this.ambientColor  = colors[0];
+        this.diffuseColor  = colors[1];
+        this.specularColor = colors[2];
+        this.iconTexture   = iconTexture;
+    }
     
     /**
      * Creates a new light object that contains data which can be used by a 

@@ -1,19 +1,11 @@
 package org.xjge.core;
 
 import org.xjge.graphics.GLProgram;
-import org.xjge.graphics.Light;
 import org.xjge.graphics.Texture;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import org.joml.Matrix4f;
 import org.joml.Vector3f;
-import static org.lwjgl.opengl.GL11.GL_DEPTH_BUFFER_BIT;
-import static org.lwjgl.opengl.GL11.GL_TEXTURE_2D;
-import static org.lwjgl.opengl.GL11.glBindTexture;
-import static org.lwjgl.opengl.GL11.glClear;
-import static org.lwjgl.opengl.GL11.glViewport;
-import static org.lwjgl.opengl.GL30.GL_FRAMEBUFFER;
-import static org.lwjgl.opengl.GL30.glBindFramebuffer;
 
 //Created: May 7, 2021
 
@@ -72,8 +64,7 @@ public abstract class Scene {
      */
     protected final LinkedHashMap<String, Entity> entities = new LinkedHashMap<>();
     
-    private final LightSource[] lightSources     = new LightSource[MAX_LIGHTS];
-    private final LightSource[] lightSourcesCopy = new LightSource[MAX_LIGHTS];
+    public final Light[] lights = new Light[MAX_LIGHTS];
     
     /**
      * Creates a new 3D scene that will contain entities, light sources, and 
@@ -84,7 +75,7 @@ public abstract class Scene {
      */
     public Scene(String name) {
         this.name = name;
-        lightSources[0] = new LightSource(true, Light.daylight(), iconTexture);
+        lights[0] = Light.daylight();
     }
     
     /**
@@ -95,8 +86,8 @@ public abstract class Scene {
     private void findNumLights() {
         numLights = 1;
         
-        for(LightSource source : lightSources) {
-            if(source != null && !source.isWorldLight) numLights++;
+        for(int i = 1; i < MAX_LIGHTS; i++) {
+            if(lights[i] != null) numLights++;
         }
     }
     
@@ -121,16 +112,6 @@ public abstract class Scene {
     }
     
     /**
-     * Updates the position of the scenes light source objects. This method is 
-     * called automatically by the engine.
-     */
-    void updateLightSources() {
-        for(LightSource source : lightSources) {
-            if(source != null) source.update();
-        }
-    }
-    
-    /**
      * Renders the scenes current {@link Skybox} (if one exists). This method 
      * is called automatically by the engine. 
      * 
@@ -149,7 +130,7 @@ public abstract class Scene {
      * @param camera the {@link Camera} object of the current {@link Viewport} 
      *               being rendered
      */
-    void renderLightsources(Camera camera) {
+    void renderLightSources(Camera camera) {
         if(XJGE.getLightSourcesVisible()) {
             for(LightSource source : lightSources) {
                 if(source != null) source.render(camera.position, camera.direction, camera.up);
@@ -167,7 +148,7 @@ public abstract class Scene {
      */
     void renderShadows(Vector3f camUp, GLProgram depthProgram) {
         if(shadowMap != null) {
-            shadowMap.generate(camUp, depthProgram, lightSources[0].getPosition(), entities);
+            shadowMap.generate(camUp, depthProgram, lights[0].position, entities);
         }
     }
     
@@ -185,15 +166,15 @@ public abstract class Scene {
      */
     void setLightingUniforms() {
         for(int i = 0; i < Scene.MAX_LIGHTS; i++) {
-            if(lightSources[i] != null) {
-                if(lightSources[i].getEnabled()) {
-                    XJGE.getDefaultGLProgram().setUniform("uLights[" + i + "].brightness", lightSources[i].getBrightness());
-                    XJGE.getDefaultGLProgram().setUniform("uLights[" + i + "].contrast",   lightSources[i].getContrast());
-                    XJGE.getDefaultGLProgram().setUniform("uLights[" + i + "].distance",   lightSources[i].getDistance());
-                    XJGE.getDefaultGLProgram().setUniform("uLights[" + i + "].position",   lightSources[i].getPosition());
-                    XJGE.getDefaultGLProgram().setUniform("uLights[" + i + "].ambient",    lightSources[i].getAmbientColor());
-                    XJGE.getDefaultGLProgram().setUniform("uLights[" + i + "].diffuse",    lightSources[i].getDiffuseColor());
-                    XJGE.getDefaultGLProgram().setUniform("uLights[" + i + "].specular",   lightSources[i].getSpecularColor());
+            if(lights[i] != null) {
+                if(lights[i].enabled) {
+                    XJGE.getDefaultGLProgram().setUniform("uLights[" + i + "].brightness", lights[i].brightness);
+                    XJGE.getDefaultGLProgram().setUniform("uLights[" + i + "].contrast",   lights[i].contrast);
+                    XJGE.getDefaultGLProgram().setUniform("uLights[" + i + "].distance",   lights[i].distance);
+                    XJGE.getDefaultGLProgram().setUniform("uLights[" + i + "].position",   lights[i].position);
+                    XJGE.getDefaultGLProgram().setUniform("uLights[" + i + "].ambient",    lights[i].ambientColor.asVec3());
+                    XJGE.getDefaultGLProgram().setUniform("uLights[" + i + "].diffuse",    lights[i].diffuseColor.asVec3());
+                    XJGE.getDefaultGLProgram().setUniform("uLights[" + i + "].specular",   lights[i].specularColor.asVec3());
                 } else {
                     XJGE.getDefaultGLProgram().setUniform("uLights[" + i + "].brightness", 0);
                     XJGE.getDefaultGLProgram().setUniform("uLights[" + i + "].contrast",   0);
@@ -285,20 +266,6 @@ public abstract class Scene {
     }
     
     /**
-     * Obtains a copy of the current light source array used by the scene. This 
-     * cannot be used to alter light source objects but is instead intended to 
-     * supply objects which exhibit shading (such as 
-     * {@link org.xjge.graphics.Model 3D models}) with 
-     * lighting data.
-     * 
-     * @return an array of light source objects
-     */
-    protected LightSource[] getLightSources() {
-        System.arraycopy(lightSources, 0, lightSourcesCopy, 0, numLights);
-        return lightSourcesCopy;
-    }
-    
-    /**
      * Organizes and updates the game logic of the scene and every entity 
      * inhabiting it. Called automatically by the engine once every game tick. 
      * 
@@ -322,7 +289,7 @@ public abstract class Scene {
      * @param camera     the {@link Camera} object of the current 
      *                   {@link Viewport} being rendered
      */
-    public abstract void render(Map<String, GLProgram> glPrograms, int viewportID, Camera camera);
+    public abstract void render(Map<String, GLProgram> glPrograms, int viewportID, Camera camera, Light[] lights, int numLights);
     
     /**
      * Called by the engine when this scene is left for another. Any 
