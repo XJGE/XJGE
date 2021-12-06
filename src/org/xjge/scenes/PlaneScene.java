@@ -57,7 +57,7 @@ public class PlaneScene extends Scene {
     @Override
     public void render(Map<String, GLProgram> glPrograms, int viewportID, Camera camera) {
         glPrograms.get("default").use();
-        entities.values().forEach(entity -> entity.render(glPrograms.get("default"), camera, lights, 0)); //shadowMap.depthTexHandle
+        entities.values().forEach(entity -> entity.render(glPrograms.get("default"), camera, lights, shadowMap.depthTexHandle));
     }
 
     @Override

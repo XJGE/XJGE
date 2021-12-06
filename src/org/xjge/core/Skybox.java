@@ -163,6 +163,10 @@ public final class Skybox {
         XJGE.getDefaultGLProgram().setUniform("uView", false, newView);
         
         glDrawElements(GL_TRIANGLES, g.indices.capacity(), GL_UNSIGNED_INT, 0);
+        
+        //glDrawElements throws error 1282 when nvidia card is used?
+        ErrorUtils.checkGLError();
+        
         glDepthMask(true);
         
         XJGE.getDefaultGLProgram().setUniform("uView", false, viewMatrix);
