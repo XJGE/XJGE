@@ -22,6 +22,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.TreeMap;
 import javax.xml.stream.XMLInputFactory;
 import javax.xml.stream.XMLStreamConstants;
@@ -32,6 +33,8 @@ import static org.lwjgl.glfw.GLFW.*;
 import org.lwjgl.opengl.GL;
 import static org.lwjgl.opengl.GL32.*;
 import static org.lwjgl.opengl.GLUtil.setupDebugMessageCallback;
+import static org.xjge.core.Input.KEY_MOUSE_COMBO;
+import static org.xjge.core.Window.HANDLE;
 
 //Created: Apr 28, 2021
 
@@ -114,30 +117,9 @@ public final class XJGE {
      */
     private XJGE() {}
     
-    private static void init(String assetsFilepath, String scenesFilepath, Vector2i resolution, boolean debugEnabled, 
-                              boolean windowResizable, boolean retainFullscreen, boolean genGLInfoLog, boolean restrict4K) {
-        //TODO: implement.
-    }
-    
-    public static void init(String assetsFilepath, String scenesFilepath) {
-        init(assetsFilepath, scenesFilepath, null, true, false, false, false, true);
-    }
-    
-    public static void init(String assetsFilepath, String scenesFilepath, HashMap<String, Object> engineArgs) {
-        boolean debugEnabled     = true;
-        boolean windowResizable  = false;
-        boolean retainFullscreen = false;
-        boolean genGLInfoLog     = false;
-        boolean restrict4K       = true;
-        
-        //output settings in console?
-        
-        //Parse values from args and provide to private init() method.
-    }
-    
     /**
      * Initializes the engines assets, compiles the default shader programs, 
-     * and searches for connected peripheral devices.This method must be called 
+     * and searches for connected peripheral devices. This method must be called 
      * once before the engine can be used.
      * <p>
      * NOTE: If a resolution is provided the value of {@code windowResizable} 
@@ -149,23 +131,26 @@ public final class XJGE {
      * init(<i>"/dev/theskidster/game/assets/"</i>, <i>"dev.theskidster.game.scenes."</i>, <b>true</b>, <b>null</b>, <b>true</b>);
      * </pre></blockquote>
      * 
-     * @param assetsFilepath   the relative filepath to a folder that contains 
-     *                         all of the games assets
-     * @param scenesFilepath   the relative filepath to the package that 
-     *                         contains all of the games scene subclasses
-     * @param debugEnabled     if true, the engine will provide debugging 
-     *                         utilities at runtime
-     * @param resolution       the internal resolution the engine will display 
-     *                         the framebuffer at or <b>null</b> to copy the 
-     *                         resolution of the window
-     * @param windowResizable  if true, the user will be allowed to freely alter 
-     *                         the size of the window 
+     * @param assetsFilepath the relative filepath to the folder that contains 
+     *                       all of the games assets
+     * @param scenesFilepath the relative filepath to the package that contains 
+     *                       all of the games scene subclasses
+     * @param resolution the internal resolution the engine will display the 
+     *                   game at or <b>null</b> to copy the resolution of the 
+     *                   window
+     * @param createOpenGLLog if true, the engine will create a text file 
+     *                        containing messages sent by the OpenGL API
+     * @param debugEnabled if true, the engine will provide debugging 
+     *                     utilities at runtime
+     * @param restrict4K if true, the engine will not permit the use of video 
+     *                   modes whos resolution is greater than 1920x1080
      * @param retainFullscreen if true, the game window will retain its mode 
-     *                         (fullscreen or windowed) depending on the 
-     *                         players preferences
+     *                         (fullscreen or windowed) between runtime sessions
+     * @param windowResizable if true, the user will be allowed to freely alter 
+     *                        the size of the window at runtime
      */
-    public static void init(String assetsFilepath, String scenesFilepath, boolean debugEnabled, Vector2i resolution, boolean windowResizable, 
-                             boolean retainFullscreen, boolean genGLInfoLog) {        
+    public static void init(String assetsFilepath, String scenesFilepath, Vector2i resolution, boolean createOpenGLLog, 
+                              boolean debugEnabled, boolean restrict4K, boolean retainFullscreen, boolean windowResizable) {
         if(!initCalled) {
             if(System.getProperty("java.version").compareTo("15.0.2") < 0) {
                 Logger.logSevere("Unsupported Java version. Required 15.0.2, " + 
@@ -339,7 +324,7 @@ public final class XJGE {
                 put("terminate",            new TCTerminate());
             }};
             
-            if(genGLInfoLog) {
+            if(createOpenGLLog) {
                 try {
                     String date = new SimpleDateFormat("MM-dd-yyyy").format(new Date());
                     
@@ -442,6 +427,23 @@ public final class XJGE {
         }
         
         initCalled = true;
+    }
+    
+    /**
+     * Simplified variant of the main {@link init} method that will initialize 
+     * the engine using its default configuration. This method must be called 
+     * before the engine can be used.
+     * 
+     * @param assetsFilepath the relative filepath to the folder that contains 
+     *                       all of the games assets
+     * @param scenesFilepath the relative filepath to the package that contains 
+     *                       all of the games scene subclasses
+     * @param resolution     the internal resolution the engine will display 
+     *                       the game at or <b>null</b> to copy the resolution 
+     *                       of the window
+     */
+    public static void init(String assetsFilepath, String scenesFilepath, Vector2i resolution) {
+        init(assetsFilepath, scenesFilepath, resolution, false, true, true, false, false);
     }
     
     /**
