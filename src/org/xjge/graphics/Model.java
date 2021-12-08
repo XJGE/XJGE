@@ -22,7 +22,6 @@ import static org.lwjgl.opengl.GL30.*;
 import org.lwjgl.system.MemoryUtil;
 import static org.lwjgl.system.MemoryUtil.NULL;
 import org.xjge.core.Camera;
-import org.xjge.core.Game;
 import org.xjge.core.Light;
 
 //Created: Jun 16, 2021
@@ -737,19 +736,24 @@ public class Model {
     
     /**
      * Renders the 3D model. Should be called from within the implementing 
-     * entities {@link org.xjge.core.Entity#render(GLProgram, Camera, LightSource[], int) render()} method.
+     * entities {@link org.xjge.core.Entity#render(GLProgram, Camera, Light[], int) render()} method.
      * 
      * @param glProgram the shader program that will be used to render this 
      *                  model
      * @param lights    an array of light source objects inhabiting the current 
      *                  scene
-     * @param numLights the total number of lights in the scene
      * @param capabilities an object that can be used to enable various OpenGL capabilities
      */
-    public void render(GLProgram glProgram, Light[] lights, int numLights, GLCapabilities capabilities, int shineValue, int shadowMapTexHandle) {
+    public void render(GLProgram glProgram, Light[] lights, GLCapabilities capabilities, int shineValue, int shadowMapTexHandle) {
         if(capabilities != null) capabilities.enable();
         
         glProgram.use();
+        
+        /*
+        NOTICE:
+        Some Nvidia drivers will cause java to return an error -1073741819 when
+        this render method is called.
+        */
         
         meshes.forEach(mesh -> {
             glActiveTexture(GL_TEXTURE0);
@@ -764,7 +768,7 @@ public class Model {
             glProgram.setUniform("uType", 5);
             glProgram.setUniform("uModel", false, mesh.modelMatrix);
             glProgram.setUniform("uNormal", true, normal);
-            glProgram.setUniform("uNumLights", numLights);
+            glProgram.setUniform("uNumLights", lights.length);
             glProgram.setUniform("uColor", color.asVec3());
             glProgram.setUniform("uShine", shineValue); //TODO: extract value from mesh material.
             glProgram.setUniform("uOpacity", opacity);
@@ -772,6 +776,7 @@ public class Model {
             glProgram.setUniform("uTexture", 0);
             glProgram.setUniform("uShadowMap", 1);
             
+            //TODO: uBoneTransforms is ignored- maybe thats the problem?
             if(currAnimation != null) {
                 glProgram.setUniform("uBoneTransforms", false, currAnimation.getCurrFrame().transforms);
             }
@@ -796,7 +801,7 @@ public class Model {
      * @param numLights the total number of lights in the scene
      */
     public void render(GLProgram glProgram, Light[] lights, int shineValue, int shadowMapTexHandle) {
-        render(glProgram, lights, lights.length, defaultCaps, shineValue, shadowMapTexHandle);
+        render(glProgram, lights, defaultCaps, shineValue, shadowMapTexHandle);
     }
     
     public void renderShadow(GLProgram depthProgram) {

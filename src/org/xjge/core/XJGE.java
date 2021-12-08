@@ -5,6 +5,7 @@ import java.io.FileNotFoundException;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.PrintStream;
 import java.io.PrintWriter;
 import static org.xjge.core.Input.KEY_MOUSE_COMBO;
 import org.xjge.core.Terminal.TCCLS;
@@ -27,6 +28,8 @@ import org.joml.Vector2i;
 import static org.lwjgl.glfw.GLFW.*;
 import org.lwjgl.opengl.GL;
 import static org.lwjgl.opengl.GL32.*;
+import org.lwjgl.opengl.GLCapabilities;
+import static org.lwjgl.opengl.GLUtil.setupDebugMessageCallback;
 
 //Created: Apr 28, 2021
 
@@ -247,6 +250,7 @@ public final class XJGE {
                 defaultProgram.addUniform(BufferType.INT,   "uNumLights");
                 defaultProgram.addUniform(BufferType.INT,   "uTexture");
                 defaultProgram.addUniform(BufferType.INT,   "uShadowMap");
+                defaultProgram.addUniform(BufferType.INT,   "uSkyTexture");
                 defaultProgram.addUniform(BufferType.FLOAT, "uOpacity");
                 defaultProgram.addUniform(BufferType.VEC2,  "uTexCoords");
                 defaultProgram.addUniform(BufferType.VEC3,  "uColor");
@@ -277,7 +281,7 @@ public final class XJGE {
                     add(new Shader("depthFragment.glsl", GL_FRAGMENT_SHADER));
                 }};
                 
-                depthProgram = new GLProgram(shaderSourceFiles, "depth");
+                depthProgram = new GLProgram(shaderSourceFiles, "default");
                 
                 depthProgram.use();
                 depthProgram.addUniform(BufferType.INT,  "uTexture");
@@ -311,6 +315,15 @@ public final class XJGE {
                 put("showCommands",         new TCShowCommands());
                 put("terminate",            new TCTerminate());
             }};
+            
+            if(debugEnabled) {
+                try {
+                    PrintStream stream = new PrintStream("glDebug.txt");
+                    setupDebugMessageCallback(stream);
+                } catch(FileNotFoundException e) {
+                    System.out.println("output.txt doesn't exist.");
+                }
+            }
             
             glfwSetKeyCallback(Window.HANDLE, (window, key, scancode, action, mods) -> {
                 if(key == GLFW_KEY_F1 && action == GLFW_PRESS) {

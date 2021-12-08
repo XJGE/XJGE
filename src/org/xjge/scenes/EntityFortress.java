@@ -64,7 +64,7 @@ public class EntityFortress extends Entity {
 
     @Override
     public void render(GLProgram glProgram, Camera camera, Light[] lights, int shadowMapTexHandle) {
-        fortress.render(glProgram, lights, lights.length, arenaCaps, 128, shadowMapTexHandle);
+        fortress.render(glProgram, lights, arenaCaps, 128, shadowMapTexHandle);
         //fortress.render(glProgram, lights, numLights);
     }
 

@@ -7,6 +7,8 @@ import org.xjge.core.Scene;
 import org.xjge.graphics.Color;
 import org.xjge.graphics.GLProgram;
 import org.xjge.core.Light;
+import org.xjge.core.Skybox;
+import org.xjge.graphics.Model;
 
 /**
  * Dec 3, 2021
@@ -18,11 +20,18 @@ import org.xjge.core.Light;
  */
 public class PlaneScene extends Scene {
     
+    Model model;
+    
     public PlaneScene() {
         super("plane");
         
+        Skybox skybox = new Skybox("sky_noon_top.png", "sky_noon_center.png", "sky_noon_bottom.png", true);
+        setSkybox(skybox);
+        
         entities.put("plane", new EntityPlane(0, -3f, 0, 50, 50, Color.SILVER));
         entities.put("cube", new EntityCube(0, 3, 0, 1, 1, 1, true));
+        
+        model = new Model("mod_teapot.fbx");
         
         Game.setClearColor(Color.BLACK);
         
@@ -51,13 +60,15 @@ public class PlaneScene extends Scene {
     @Override
     public void update(double targetDelta, double trueDelta) {
         entities.values().forEach(entity -> entity.update(targetDelta, trueDelta));
-        
     }
 
     @Override
     public void render(Map<String, GLProgram> glPrograms, int viewportID, Camera camera) {
         glPrograms.get("default").use();
         entities.values().forEach(entity -> entity.render(glPrograms.get("default"), camera, lights, shadowMap.depthTexHandle));
+        
+        //rendering models causes java to return an error: -1073741819
+        //model.render(glPrograms.get("default"), lights, 128, shadowMap.depthTexHandle);
     }
 
     @Override

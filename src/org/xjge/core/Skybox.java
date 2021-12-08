@@ -152,6 +152,7 @@ public final class Skybox {
         XJGE.getDefaultGLProgram().use();
         
         glDepthMask(false);
+        glActiveTexture(GL_TEXTURE2);
         glBindTexture(GL_TEXTURE_CUBE_MAP, cubemap.handle);
         glBindVertexArray(g.vao);
         
@@ -161,11 +162,9 @@ public final class Skybox {
         XJGE.getDefaultGLProgram().setUniform("uType", 8);
         XJGE.getDefaultGLProgram().setUniform("uModel", false, g.modelMatrix);
         XJGE.getDefaultGLProgram().setUniform("uView", false, newView);
+        XJGE.getDefaultGLProgram().setUniform("uSkyTexture", 2);
         
         glDrawElements(GL_TRIANGLES, g.indices.capacity(), GL_UNSIGNED_INT, 0);
-        
-        //glDrawElements throws error 1282 when nvidia card is used?
-        ErrorUtils.checkGLError();
         
         glDepthMask(true);
         

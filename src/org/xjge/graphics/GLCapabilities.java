@@ -17,6 +17,8 @@ package org.xjge.graphics;
  * @since  2.0.0
  */
 public abstract class GLCapabilities {
+    
+    //TODO: rename this class
 
     /**
      * Creates a new GLCapabilites object which can be passed to the 

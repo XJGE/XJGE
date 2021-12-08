@@ -2,6 +2,8 @@ package org.xjge.core;
 
 import static org.lwjgl.openal.AL10.*;
 import static org.lwjgl.opengl.GL30.*;
+import org.lwjgl.opengl.GL43;
+import org.lwjgl.system.MemoryStack;
 
 //Created: May 8, 2021
 
@@ -58,7 +60,7 @@ public final class ErrorUtils {
     }
     
     /**
-     * Checks the current status of the framebuffer.
+     * Checks the status of the currently bound framebuffer object.
      * 
      * @param target the target of the framebuffer completeness check. One of:
      * <table><tr>

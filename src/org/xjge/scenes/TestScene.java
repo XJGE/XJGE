@@ -23,8 +23,6 @@ public class TestScene extends Scene {
     
     private Skybox skybox;
     
-    private EntityFortress fortress;
-    
     public TestScene() {
         super("test");
         
