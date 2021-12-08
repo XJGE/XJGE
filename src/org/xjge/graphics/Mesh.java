@@ -65,10 +65,6 @@ public final class Mesh {
         glEnableVertexAttribArray(0); //position
         glEnableVertexAttribArray(2); //texture coordinates
         glEnableVertexAttribArray(3); //normal
-        
-        //TODO: move this.
-        //glEnableVertexAttribArray(7); //boneIDs
-        //glEnableVertexAttribArray(8); //weights
     }
     
     /**

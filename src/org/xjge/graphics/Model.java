@@ -749,12 +749,6 @@ public class Model {
         
         glProgram.use();
         
-        /*
-        NOTICE:
-        Some Nvidia drivers will cause java to return an error -1073741819 when
-        this render method is called.
-        */
-        
         meshes.forEach(mesh -> {
             glActiveTexture(GL_TEXTURE0);
             glBindTexture(GL_TEXTURE_2D, textures[mesh.textureID].handle);
@@ -764,6 +758,11 @@ public class Model {
             glBindTexture(GL_TEXTURE_2D, shadowMapTexHandle);
             
             glBindVertexArray(mesh.vao);
+            
+            if(bones.size() > 0) {
+                glEnableVertexAttribArray(7); //boneIDs
+                glEnableVertexAttribArray(8); //weights
+            }
             
             glProgram.setUniform("uType", 5);
             glProgram.setUniform("uModel", false, mesh.modelMatrix);
@@ -782,6 +781,11 @@ public class Model {
             }
             
             glDrawElements(GL_TRIANGLES, mesh.indices.capacity(), GL_UNSIGNED_INT, 0);
+            
+            if(bones.size() > 0) {
+                glDisableVertexAttribArray(7);
+                glDisableVertexAttribArray(8);
+            }
         });
         
         if(capabilities != null) capabilities.disable();
