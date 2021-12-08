@@ -208,27 +208,3 @@
 	Type: PERFORMANCE
 	Severity: MEDIUM
 	Message: Program/shader state performance warning: Vertex shader in program 3 is being recompiled based on GL state.
-[LWJGL] OpenGL debug message
-	ID: 0x20071
-	Source: API
-	Type: OTHER
-	Severity: NOTIFICATION
-	Message: Buffer detailed info: Buffer object 15 (bound to GL_VERTEX_ATTRIB_ARRAY_BUFFER_BINDING_ARB (0), usage hint is GL_STATIC_DRAW) will use VIDEO memory as the source for buffer object operations.
-[LWJGL] OpenGL debug message
-	ID: 0x20071
-	Source: API
-	Type: OTHER
-	Severity: NOTIFICATION
-	Message: Buffer detailed info: Buffer object 17 (bound to GL_VERTEX_ATTRIB_ARRAY_BUFFER_BINDING_ARB (2), usage hint is GL_STATIC_DRAW) will use VIDEO memory as the source for buffer object operations.
-[LWJGL] OpenGL debug message
-	ID: 0x20071
-	Source: API
-	Type: OTHER
-	Severity: NOTIFICATION
-	Message: Buffer detailed info: Buffer object 18 (bound to GL_VERTEX_ATTRIB_ARRAY_BUFFER_BINDING_ARB (3), usage hint is GL_STATIC_DRAW) will use VIDEO memory as the source for buffer object operations.
-[LWJGL] OpenGL debug message
-	ID: 0x20071
-	Source: API
-	Type: OTHER
-	Severity: NOTIFICATION
-	Message: Buffer detailed info: Buffer object 16 (bound to GL_ELEMENT_ARRAY_BUFFER_ARB, usage hint is GL_STATIC_DRAW) will use VIDEO memory as the source for buffer object operations.

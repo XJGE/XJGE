@@ -60,8 +60,6 @@ public class Model {
     private final Matrix3f normal         = new Matrix3f();
     private final DefaultCaps defaultCaps = new DefaultCaps();
     
-    final ArrayList<Matrix4f> emptyTransforms = new ArrayList<>();
-    
     public List<Mesh> meshes = new ArrayList<>();
     
     private Texture[] textures;
@@ -111,10 +109,6 @@ public class Model {
             Logger.setDomain("graphics");
             Logger.logWarning("Failed to load model \"" + filename + "\"", e);
             Logger.setDomain(null);
-        }
-        
-        for(int i = 0; i < MAX_BONES; i++) {
-            emptyTransforms.add(new Matrix4f());
         }
     }
     
@@ -769,7 +763,7 @@ public class Model {
             glActiveTexture(GL_TEXTURE1);
             glBindTexture(GL_TEXTURE_2D, shadowMapTexHandle);
             
-            glBindVertexArray(mesh.vao);
+            //glBindVertexArray(mesh.vao);
             
             glProgram.setUniform("uType", 5);
             glProgram.setUniform("uModel", false, mesh.modelMatrix);
@@ -785,8 +779,6 @@ public class Model {
             //TODO: uBoneTransforms is ignored- maybe thats the problem?
             if(currAnimation != null) {
                 glProgram.setUniform("uBoneTransforms", false, currAnimation.getCurrFrame().transforms);
-            } else {
-                glProgram.setUniform("uBoneTransforms", false, emptyTransforms);
             }
             
             glDrawElements(GL_TRIANGLES, mesh.indices.capacity(), GL_UNSIGNED_INT, 0);
