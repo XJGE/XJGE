@@ -20,8 +20,6 @@ import org.xjge.graphics.Model;
  */
 public class PlaneScene extends Scene {
     
-    Model model;
-    
     public PlaneScene() {
         super("plane");
         
@@ -30,8 +28,7 @@ public class PlaneScene extends Scene {
         
         entities.put("plane", new EntityPlane(0, -3f, 0, 50, 50, Color.SILVER));
         entities.put("cube", new EntityCube(0, 3, 0, 1, 1, 1, true));
-        
-        model = new Model("mod_teapot.fbx");
+        entities.put("teapot", new EntityTeapot(5, 3, 0));
         
         Game.setClearColor(Color.BLACK);
         
@@ -66,9 +63,6 @@ public class PlaneScene extends Scene {
     public void render(Map<String, GLProgram> glPrograms, int viewportID, Camera camera) {
         glPrograms.get("default").use();
         entities.values().forEach(entity -> entity.render(glPrograms.get("default"), camera, lights, shadowMap.depthTexHandle));
-        
-        //rendering models causes java to return an error: -1073741819
-        model.render(glPrograms.get("default"), lights, 128, shadowMap.depthTexHandle);
     }
 
     @Override
