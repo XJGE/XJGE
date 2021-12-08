@@ -68,7 +68,7 @@ public class PlaneScene extends Scene {
         entities.values().forEach(entity -> entity.render(glPrograms.get("default"), camera, lights, shadowMap.depthTexHandle));
         
         //rendering models causes java to return an error: -1073741819
-        //model.render(glPrograms.get("default"), lights, 128, shadowMap.depthTexHandle);
+        model.render(glPrograms.get("default"), lights, 128, shadowMap.depthTexHandle);
     }
 
     @Override
