@@ -759,11 +759,6 @@ public class Model {
             
             glBindVertexArray(mesh.vao);
             
-            if(bones.size() > 0) {
-                glEnableVertexAttribArray(7); //boneIDs
-                glEnableVertexAttribArray(8); //weights
-            }
-            
             glProgram.setUniform("uType", 5);
             glProgram.setUniform("uModel", false, mesh.modelMatrix);
             glProgram.setUniform("uNormal", true, normal);
@@ -781,11 +776,6 @@ public class Model {
             }
             
             glDrawElements(GL_TRIANGLES, mesh.indices.capacity(), GL_UNSIGNED_INT, 0);
-            
-            if(bones.size() > 0) {
-                glDisableVertexAttribArray(7);
-                glDisableVertexAttribArray(8);
-            }
         });
         
         if(capabilities != null) capabilities.disable();
