@@ -114,6 +114,27 @@ public final class XJGE {
      */
     private XJGE() {}
     
+    private static void init(String assetsFilepath, String scenesFilepath, Vector2i resolution, boolean debugEnabled, 
+                              boolean windowResizable, boolean retainFullscreen, boolean genGLInfoLog, boolean restrict4K) {
+        //TODO: implement.
+    }
+    
+    public static void init(String assetsFilepath, String scenesFilepath) {
+        init(assetsFilepath, scenesFilepath, null, true, false, false, false, true);
+    }
+    
+    public static void init(String assetsFilepath, String scenesFilepath, HashMap<String, Object> engineArgs) {
+        boolean debugEnabled     = true;
+        boolean windowResizable  = false;
+        boolean retainFullscreen = false;
+        boolean genGLInfoLog     = false;
+        boolean restrict4K       = true;
+        
+        //output settings in console?
+        
+        //Parse values from args and provide to private init() method.
+    }
+    
     /**
      * Initializes the engines assets, compiles the default shader programs, 
      * and searches for connected peripheral devices.This method must be called 
@@ -144,7 +165,7 @@ public final class XJGE {
      *                         players preferences
      */
     public static void init(String assetsFilepath, String scenesFilepath, boolean debugEnabled, Vector2i resolution, boolean windowResizable, 
-                             boolean retainFullscreen, boolean outputGLInfo) {        
+                             boolean retainFullscreen, boolean genGLInfoLog) {        
         if(!initCalled) {
             if(System.getProperty("java.version").compareTo("15.0.2") < 0) {
                 Logger.logSevere("Unsupported Java version. Required 15.0.2, " + 
@@ -318,7 +339,7 @@ public final class XJGE {
                 put("terminate",            new TCTerminate());
             }};
             
-            if(outputGLInfo) {
+            if(genGLInfoLog) {
                 try {
                     String date = new SimpleDateFormat("MM-dd-yyyy").format(new Date());
                     

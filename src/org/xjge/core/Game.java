@@ -232,7 +232,7 @@ public final class Game {
      */
     public static void addLight(Light light) {
         //scene.addLight(light);
-        //might still be nice to have this feature.
+        //TODO: might still be nice to have this feature.
     }
     
     /**
