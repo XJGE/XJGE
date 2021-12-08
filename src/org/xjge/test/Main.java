@@ -15,7 +15,7 @@ import org.xjge.scenes.TestScene;
 public class Main {
 
     public static void main(String args[]) {
-        XJGE.init("/org/xjge/assets/", "org.xjge.scenes.", true, null, false, false);
+        XJGE.init("/org/xjge/assets/", "org.xjge.scenes.", true, null, false, false, false);
         
         Game.setScene(new TestScene());
         

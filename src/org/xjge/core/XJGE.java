@@ -1,5 +1,6 @@
 package org.xjge.core;
 
+import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileWriter;
@@ -15,7 +16,9 @@ import org.xjge.graphics.BufferType;
 import org.xjge.graphics.GLProgram;
 import org.xjge.graphics.Shader;
 import java.nio.file.Path;
+import java.text.SimpleDateFormat;
 import java.util.Collections;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.Map;
@@ -28,7 +31,6 @@ import org.joml.Vector2i;
 import static org.lwjgl.glfw.GLFW.*;
 import org.lwjgl.opengl.GL;
 import static org.lwjgl.opengl.GL32.*;
-import org.lwjgl.opengl.GLCapabilities;
 import static org.lwjgl.opengl.GLUtil.setupDebugMessageCallback;
 
 //Created: Apr 28, 2021
@@ -142,7 +144,7 @@ public final class XJGE {
      *                         players preferences
      */
     public static void init(String assetsFilepath, String scenesFilepath, boolean debugEnabled, Vector2i resolution, boolean windowResizable, 
-                             boolean retainFullscreen) {        
+                             boolean retainFullscreen, boolean outputGLInfo) {        
         if(!initCalled) {
             if(System.getProperty("java.version").compareTo("15.0.2") < 0) {
                 Logger.logSevere("Unsupported Java version. Required 15.0.2, " + 
@@ -316,12 +318,22 @@ public final class XJGE {
                 put("terminate",            new TCTerminate());
             }};
             
-            if(debugEnabled) {
+            if(outputGLInfo) {
                 try {
-                    PrintStream stream = new PrintStream("glDebug.txt");
+                    String date = new SimpleDateFormat("MM-dd-yyyy").format(new Date());
+                    
+                    File file = new File("opengl log " + date + ".txt");
+                    int duplicate = 0;
+
+                    while(file.exists()) {
+                        duplicate++;
+                        file = new File("opengl log " + date + " (" + duplicate + ").txt");
+                    }
+                    
+                    PrintStream stream = new PrintStream(file);
                     setupDebugMessageCallback(stream);
                 } catch(FileNotFoundException e) {
-                    System.out.println("output.txt doesn't exist.");
+                    Logger.logWarning("Failed to create OpenGL log file.", e);
                 }
             }
             

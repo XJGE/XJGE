@@ -1,0 +1,252 @@
+[LWJGL] OpenGL debug message
+	ID: 0x20071
+	Source: API
+	Type: OTHER
+	Severity: NOTIFICATION
+	Message: Buffer detailed info: Buffer object 9 (bound to GL_ARRAY_BUFFER_ARB, usage hint is GL_STATIC_DRAW) will use VIDEO memory as the source for buffer object operations.
+[LWJGL] OpenGL debug message
+	ID: 0x20071
+	Source: API
+	Type: OTHER
+	Severity: NOTIFICATION
+	Message: Buffer detailed info: Buffer object 10 (bound to GL_ELEMENT_ARRAY_BUFFER_ARB, usage hint is GL_STATIC_DRAW) will use VIDEO memory as the source for buffer object operations.
+[LWJGL] OpenGL debug message
+	ID: 0x20071
+	Source: API
+	Type: OTHER
+	Severity: NOTIFICATION
+	Message: Buffer detailed info: Buffer object 11 (bound to GL_ARRAY_BUFFER_ARB, usage hint is GL_STATIC_DRAW) will use VIDEO memory as the source for buffer object operations.
+[LWJGL] OpenGL debug message
+	ID: 0x20071
+	Source: API
+	Type: OTHER
+	Severity: NOTIFICATION
+	Message: Buffer detailed info: Buffer object 12 (bound to GL_ELEMENT_ARRAY_BUFFER_ARB, usage hint is GL_STATIC_DRAW) will use VIDEO memory as the source for buffer object operations.
+[LWJGL] OpenGL debug message
+	ID: 0x20071
+	Source: API
+	Type: OTHER
+	Severity: NOTIFICATION
+	Message: Buffer detailed info: Buffer object 13 (bound to GL_ARRAY_BUFFER_ARB, usage hint is GL_STATIC_DRAW) will use VIDEO memory as the source for buffer object operations.
+[LWJGL] OpenGL debug message
+	ID: 0x20071
+	Source: API
+	Type: OTHER
+	Severity: NOTIFICATION
+	Message: Buffer detailed info: Buffer object 15 (bound to GL_ARRAY_BUFFER_ARB, usage hint is GL_STATIC_DRAW) will use VIDEO memory as the source for buffer object operations.
+[LWJGL] OpenGL debug message
+	ID: 0x20071
+	Source: API
+	Type: OTHER
+	Severity: NOTIFICATION
+	Message: Buffer detailed info: Buffer object 16 (bound to GL_ARRAY_BUFFER_ARB, usage hint is GL_STATIC_DRAW) will use VIDEO memory as the source for buffer object operations.
+[LWJGL] OpenGL debug message
+	ID: 0x20071
+	Source: API
+	Type: OTHER
+	Severity: NOTIFICATION
+	Message: Buffer detailed info: Buffer object 14 (bound to GL_ELEMENT_ARRAY_BUFFER_ARB, usage hint is GL_STATIC_DRAW) will use VIDEO memory as the source for buffer object operations.
+[LWJGL] OpenGL debug message
+	ID: 0x20071
+	Source: API
+	Type: OTHER
+	Severity: NOTIFICATION
+	Message: Buffer detailed info: Buffer object 17 (bound to GL_ARRAY_BUFFER_ARB, usage hint is GL_STATIC_DRAW) will use VIDEO memory as the source for buffer object operations.
+[LWJGL] OpenGL debug message
+	ID: 0x20071
+	Source: API
+	Type: OTHER
+	Severity: NOTIFICATION
+	Message: Buffer detailed info: Buffer object 18 (bound to GL_ELEMENT_ARRAY_BUFFER_ARB, usage hint is GL_STATIC_DRAW) will use VIDEO memory as the source for buffer object operations.
+[LWJGL] OpenGL debug message
+	ID: 0x20071
+	Source: API
+	Type: OTHER
+	Severity: NOTIFICATION
+	Message: Buffer detailed info: Buffer object 19 (bound to GL_ARRAY_BUFFER_ARB, usage hint is GL_STATIC_DRAW) will use VIDEO memory as the source for buffer object operations.
+[LWJGL] OpenGL debug message
+	ID: 0x20071
+	Source: API
+	Type: OTHER
+	Severity: NOTIFICATION
+	Message: Buffer detailed info: Buffer object 20 (bound to GL_ELEMENT_ARRAY_BUFFER_ARB, usage hint is GL_STATIC_DRAW) will use VIDEO memory as the source for buffer object operations.
+[LWJGL] OpenGL debug message
+	ID: 0x20071
+	Source: API
+	Type: OTHER
+	Severity: NOTIFICATION
+	Message: Buffer detailed info: Buffer object 21 (bound to GL_ARRAY_BUFFER_ARB, usage hint is GL_STATIC_DRAW) will use VIDEO memory as the source for buffer object operations.
+[LWJGL] OpenGL debug message
+	ID: 0x20071
+	Source: API
+	Type: OTHER
+	Severity: NOTIFICATION
+	Message: Buffer detailed info: Buffer object 23 (bound to GL_ARRAY_BUFFER_ARB, usage hint is GL_STATIC_DRAW) will use VIDEO memory as the source for buffer object operations.
+[LWJGL] OpenGL debug message
+	ID: 0x20071
+	Source: API
+	Type: OTHER
+	Severity: NOTIFICATION
+	Message: Buffer detailed info: Buffer object 24 (bound to GL_ARRAY_BUFFER_ARB, usage hint is GL_STATIC_DRAW) will use VIDEO memory as the source for buffer object operations.
+[LWJGL] OpenGL debug message
+	ID: 0x20071
+	Source: API
+	Type: OTHER
+	Severity: NOTIFICATION
+	Message: Buffer detailed info: Buffer object 22 (bound to GL_ELEMENT_ARRAY_BUFFER_ARB, usage hint is GL_STATIC_DRAW) will use VIDEO memory as the source for buffer object operations.
+[LWJGL] OpenGL debug message
+	ID: 0x20071
+	Source: API
+	Type: OTHER
+	Severity: NOTIFICATION
+	Message: Buffer detailed info: Buffer object 25 (bound to GL_ARRAY_BUFFER_ARB, usage hint is GL_STATIC_DRAW) will use VIDEO memory as the source for buffer object operations.
+[LWJGL] OpenGL debug message
+	ID: 0x20071
+	Source: API
+	Type: OTHER
+	Severity: NOTIFICATION
+	Message: Buffer detailed info: Buffer object 27 (bound to GL_ARRAY_BUFFER_ARB, usage hint is GL_STATIC_DRAW) will use VIDEO memory as the source for buffer object operations.
+[LWJGL] OpenGL debug message
+	ID: 0x20071
+	Source: API
+	Type: OTHER
+	Severity: NOTIFICATION
+	Message: Buffer detailed info: Buffer object 28 (bound to GL_ARRAY_BUFFER_ARB, usage hint is GL_STATIC_DRAW) will use VIDEO memory as the source for buffer object operations.
+[LWJGL] OpenGL debug message
+	ID: 0x20071
+	Source: API
+	Type: OTHER
+	Severity: NOTIFICATION
+	Message: Buffer detailed info: Buffer object 26 (bound to GL_ELEMENT_ARRAY_BUFFER_ARB, usage hint is GL_STATIC_DRAW) will use VIDEO memory as the source for buffer object operations.
+[LWJGL] OpenGL debug message
+	ID: 0x20071
+	Source: API
+	Type: OTHER
+	Severity: NOTIFICATION
+	Message: Buffer detailed info: Buffer object 29 (bound to GL_ARRAY_BUFFER_ARB, usage hint is GL_STATIC_DRAW) will use VIDEO memory as the source for buffer object operations.
+[LWJGL] OpenGL debug message
+	ID: 0x20071
+	Source: API
+	Type: OTHER
+	Severity: NOTIFICATION
+	Message: Buffer detailed info: Buffer object 31 (bound to GL_ARRAY_BUFFER_ARB, usage hint is GL_STATIC_DRAW) will use VIDEO memory as the source for buffer object operations.
+[LWJGL] OpenGL debug message
+	ID: 0x20071
+	Source: API
+	Type: OTHER
+	Severity: NOTIFICATION
+	Message: Buffer detailed info: Buffer object 32 (bound to GL_ARRAY_BUFFER_ARB, usage hint is GL_STATIC_DRAW) will use VIDEO memory as the source for buffer object operations.
+[LWJGL] OpenGL debug message
+	ID: 0x20071
+	Source: API
+	Type: OTHER
+	Severity: NOTIFICATION
+	Message: Buffer detailed info: Buffer object 30 (bound to GL_ELEMENT_ARRAY_BUFFER_ARB, usage hint is GL_STATIC_DRAW) will use VIDEO memory as the source for buffer object operations.
+[LWJGL] OpenGL debug message
+	ID: 0x20071
+	Source: API
+	Type: OTHER
+	Severity: NOTIFICATION
+	Message: Buffer detailed info: Buffer object 33 (bound to GL_ARRAY_BUFFER_ARB, usage hint is GL_STATIC_DRAW) will use VIDEO memory as the source for buffer object operations.
+[LWJGL] OpenGL debug message
+	ID: 0x20071
+	Source: API
+	Type: OTHER
+	Severity: NOTIFICATION
+	Message: Buffer detailed info: Buffer object 34 (bound to GL_ELEMENT_ARRAY_BUFFER_ARB, usage hint is GL_STATIC_DRAW) will use VIDEO memory as the source for buffer object operations.
+[LWJGL] OpenGL debug message
+	ID: 0x20071
+	Source: API
+	Type: OTHER
+	Severity: NOTIFICATION
+	Message: Buffer detailed info: Buffer object 35 (bound to GL_ARRAY_BUFFER_ARB, usage hint is GL_STATIC_DRAW) will use VIDEO memory as the source for buffer object operations.
+[LWJGL] OpenGL debug message
+	ID: 0x20071
+	Source: API
+	Type: OTHER
+	Severity: NOTIFICATION
+	Message: Buffer detailed info: Buffer object 36 (bound to GL_ELEMENT_ARRAY_BUFFER_ARB, usage hint is GL_STATIC_DRAW) will use VIDEO memory as the source for buffer object operations.
+[LWJGL] OpenGL debug message
+	ID: 0x20071
+	Source: API
+	Type: OTHER
+	Severity: NOTIFICATION
+	Message: Buffer detailed info: Buffer object 39 (bound to GL_ARRAY_BUFFER_ARB, usage hint is GL_STATIC_DRAW) will use VIDEO memory as the source for buffer object operations.
+[LWJGL] OpenGL debug message
+	ID: 0x20071
+	Source: API
+	Type: OTHER
+	Severity: NOTIFICATION
+	Message: Buffer detailed info: Buffer object 40 (bound to GL_ELEMENT_ARRAY_BUFFER_ARB, usage hint is GL_STATIC_DRAW) will use VIDEO memory as the source for buffer object operations.
+[LWJGL] OpenGL debug message
+	ID: 0x20071
+	Source: API
+	Type: OTHER
+	Severity: NOTIFICATION
+	Message: Buffer detailed info: Buffer object 41 (bound to GL_ARRAY_BUFFER_ARB, usage hint is GL_STATIC_DRAW) will use VIDEO memory as the source for buffer object operations.
+[LWJGL] OpenGL debug message
+	ID: 0x20071
+	Source: API
+	Type: OTHER
+	Severity: NOTIFICATION
+	Message: Buffer detailed info: Buffer object 42 (bound to GL_ELEMENT_ARRAY_BUFFER_ARB, usage hint is GL_STATIC_DRAW) will use VIDEO memory as the source for buffer object operations.
+[LWJGL] OpenGL debug message
+	ID: 0x20071
+	Source: API
+	Type: OTHER
+	Severity: NOTIFICATION
+	Message: Buffer detailed info: Buffer object 43 (bound to GL_ARRAY_BUFFER_ARB, usage hint is GL_STATIC_DRAW) will use VIDEO memory as the source for buffer object operations.
+[LWJGL] OpenGL debug message
+	ID: 0x20071
+	Source: API
+	Type: OTHER
+	Severity: NOTIFICATION
+	Message: Buffer detailed info: Buffer object 44 (bound to GL_ELEMENT_ARRAY_BUFFER_ARB, usage hint is GL_STATIC_DRAW) will use VIDEO memory as the source for buffer object operations.
+[LWJGL] OpenGL debug message
+	ID: 0x20071
+	Source: API
+	Type: OTHER
+	Severity: NOTIFICATION
+	Message: Buffer detailed info: Buffer object 45 (bound to GL_ARRAY_BUFFER_ARB, usage hint is GL_STATIC_DRAW) will use VIDEO memory as the source for buffer object operations.
+[LWJGL] OpenGL debug message
+	ID: 0x20071
+	Source: API
+	Type: OTHER
+	Severity: NOTIFICATION
+	Message: Buffer detailed info: Buffer object 46 (bound to GL_ELEMENT_ARRAY_BUFFER_ARB, usage hint is GL_STATIC_DRAW) will use VIDEO memory as the source for buffer object operations.
+[LWJGL] OpenGL debug message
+	ID: 0x20071
+	Source: API
+	Type: OTHER
+	Severity: NOTIFICATION
+	Message: Buffer detailed info: Buffer object 47 (bound to GL_ARRAY_BUFFER_ARB, usage hint is GL_STATIC_DRAW) will use VIDEO memory as the source for buffer object operations.
+[LWJGL] OpenGL debug message
+	ID: 0x20071
+	Source: API
+	Type: OTHER
+	Severity: NOTIFICATION
+	Message: Buffer detailed info: Buffer object 48 (bound to GL_ELEMENT_ARRAY_BUFFER_ARB, usage hint is GL_STATIC_DRAW) will use VIDEO memory as the source for buffer object operations.
+[LWJGL] OpenGL debug message
+	ID: 0x20092
+	Source: API
+	Type: PERFORMANCE
+	Severity: MEDIUM
+	Message: Program/shader state performance warning: Vertex shader in program 6 is being recompiled based on GL state.
+[LWJGL] OpenGL debug message
+	ID: 0x20092
+	Source: API
+	Type: PERFORMANCE
+	Severity: MEDIUM
+	Message: Program/shader state performance warning: Vertex shader in program 3 is being recompiled based on GL state.
+[LWJGL] OpenGL debug message
+	ID: 0x20092
+	Source: API
+	Type: PERFORMANCE
+	Severity: MEDIUM
+	Message: Program/shader state performance warning: Vertex shader in program 3 is being recompiled based on GL state.
+[LWJGL] OpenGL debug message
+	ID: 0x20092
+	Source: API
+	Type: PERFORMANCE
+	Severity: MEDIUM
+	Message: Program/shader state performance warning: Vertex shader in program 3 is being recompiled based on GL state.

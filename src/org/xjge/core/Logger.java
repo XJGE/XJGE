@@ -230,9 +230,9 @@ public final class Logger {
         System.err.println();
         output.append(System.lineSeparator());
         
-        File file     = new File("log " + date + ".txt");
+        File file = new File("log " + date + ".txt");
         int duplicate = 0;
-
+        
         while(file.exists()) {
             duplicate++;
             file = new File("log " + date + " (" + duplicate + ").txt");
