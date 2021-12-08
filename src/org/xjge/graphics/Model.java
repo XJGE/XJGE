@@ -763,7 +763,7 @@ public class Model {
             glActiveTexture(GL_TEXTURE1);
             glBindTexture(GL_TEXTURE_2D, shadowMapTexHandle);
             
-            //glBindVertexArray(mesh.vao);
+            glBindVertexArray(mesh.vao);
             
             glProgram.setUniform("uType", 5);
             glProgram.setUniform("uModel", false, mesh.modelMatrix);
