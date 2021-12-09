@@ -101,6 +101,7 @@ public final class XJGE {
     private static Noclip freeCam;
     private static Terminal terminal;
     private static DebugInfo debugInfo;
+    private static Bloom bloom;
     
     private static TreeMap<String, TerminalCommand> engineCommands     = new TreeMap<>();
     private static final TreeMap<String, TerminalCommand> userCommands = new TreeMap<>();
@@ -230,6 +231,7 @@ public final class XJGE {
             }
             
             for(int i = 0; i < viewports.length; i++) viewports[i] = new Viewport(i);
+            bloom = new Bloom(resolutionX, resolutionY);
             
             fbo = glGenFramebuffers();
             glBindFramebuffer(GL_FRAMEBUFFER, fbo);
