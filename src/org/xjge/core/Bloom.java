@@ -65,7 +65,13 @@ final class Bloom {
     }
     
     void generate(GLProgram blurProgram, int handle, boolean horizontal) {
+        /*
+        TODO:
         
+        we might be better off disolving the ShadowMap and Bloom classes and 
+        instead putting all the post-process effects in the Game class and only 
+        expose the details we can change/use.
+        */
     }
     
 }
