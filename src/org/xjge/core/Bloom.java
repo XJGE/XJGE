@@ -1,13 +1,13 @@
 package org.xjge.core;
 
-/**
- * Dec 8, 2021
- */
+//Created: Dec 8, 2021
 
 /**
  * @author J Hoffman
- * @since  
+ * @since  2.0.0
  */
-public class Bloom {
+final class Bloom {
+    
+    
 
 }
