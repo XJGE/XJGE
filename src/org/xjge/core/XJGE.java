@@ -83,6 +83,7 @@ public final class XJGE {
     private static double cursorY;
     
     private static boolean initCalled;
+    private static boolean restrict4KResolutions;
     private static boolean matchWindowResolution;
     private static boolean noclipEnabled;
     private static boolean terminalEnabled;
@@ -161,6 +162,7 @@ public final class XJGE {
             if(!glfwInit()) Logger.logSevere("Failed to initialize GLFW.", null);
             
             boolean fullscreen = false;
+            restrict4KResolutions = restrict4K;
             
             //Load settings from engine configuration file.
             try {
@@ -222,8 +224,14 @@ public final class XJGE {
             
             if(resolution == null) {
                 matchWindowResolution = true;
-                resolutionX = Window.getWidth();
-                resolutionY = Window.getHeight();
+                
+                if(!restrict4K) {
+                    resolutionX = Window.getWidth();
+                    resolutionY = Window.getHeight();
+                } else {
+                    resolutionX = 1920;
+                    resolutionY = 1080;
+                }
             } else {
                 resolutionX = resolution.x;
                 resolutionY = resolution.y;
@@ -677,6 +685,16 @@ public final class XJGE {
      */
     public static final double getCursorPosY() {
         return cursorY;
+    }
+    
+    /**
+     * Obtains the value that will be used to further cull a monitors supported 
+     * video modes.
+     * 
+     * @return true, if 4K resolutions are not permitted for use by the engine
+     */
+    static boolean get4KRestricted() {
+        return restrict4KResolutions;
     }
     
     /**

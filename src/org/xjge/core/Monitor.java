@@ -50,7 +50,13 @@ public final class Monitor {
                 switch(getAspectRatio(mode)) {
                     case "4:3", "16:9", "85:48", "683:384" -> {
                         if(mode.refreshRate() <= 60 && mode.refreshRate() >= 29) {
-                            videoModes.put(getInfo(mode), mode);
+                            if(XJGE.get4KRestricted()) {
+                                if(mode.width() <= 1920) {
+                                    videoModes.put(getInfo(mode), mode);
+                                }
+                            } else {
+                                videoModes.put(getInfo(mode), mode);
+                            }
                         }
                     }
                 }
