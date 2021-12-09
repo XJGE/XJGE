@@ -52,8 +52,6 @@ public class TestScene extends Scene {
         
         lights[1] = new Light(0.1f, 0, 0.5f, new Vector3f(-27, -2, 0), Color.LIME);
         
-        XJGE.addUIWidget(GLFW_JOYSTICK_1, "test", new TestWidget(0, 40, 0, 80, 80));
-        
         //addLight(new Light(0.1f, 0, 0.5f, new Vector3f(-27, -2, 0), Color.LIME));
         
         /*

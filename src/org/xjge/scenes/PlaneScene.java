@@ -1,14 +1,15 @@
 package org.xjge.scenes;
 
 import java.util.Map;
+import static org.lwjgl.glfw.GLFW.GLFW_JOYSTICK_1;
 import org.xjge.core.Camera;
 import org.xjge.core.Game;
 import org.xjge.core.Scene;
 import org.xjge.graphics.Color;
 import org.xjge.graphics.GLProgram;
 import org.xjge.core.Light;
-import org.xjge.core.Skybox;
-import org.xjge.graphics.Model;
+import org.xjge.core.XJGE;
+import org.xjge.test.TestWidget;
 
 /**
  * Dec 3, 2021
@@ -23,12 +24,14 @@ public class PlaneScene extends Scene {
     public PlaneScene() {
         super("plane");
         
-        Skybox skybox = new Skybox("sky_noon_top.png", "sky_noon_center.png", "sky_noon_bottom.png", true);
-        setSkybox(skybox);
+        //Skybox skybox = new Skybox("sky_noon_top.png", "sky_noon_center.png", "sky_noon_bottom.png", true);
+        //setSkybox(skybox);
+        
+        Game.setClearColor(Color.BLACK);
         
         entities.put("plane", new EntityPlane(0, -3f, 0, 50, 50, Color.SILVER));
-        entities.put("cube", new EntityCube(0, 3, 0, 1, 1, 1, true));
-        entities.put("teapot", new EntityTeapot(5, 3, 0));
+        entities.put("cube", new EntityCube(0, 3, 0, 3, 3, 3, true));
+        entities.put("teapot", new EntityTeapot(15, 3, -6));
         
         Game.setClearColor(Color.BLACK);
         
@@ -45,13 +48,13 @@ public class PlaneScene extends Scene {
         
         lights[0] = Light.midnight();
         
-        lights[1] = l1;
-        lights[2] = l2;
+        //lights[1] = l1;
+        //lights[2] = l2;
         lights[3] = l3;
-        lights[4] = l4;
-        lights[5] = l5;
+        //lights[4] = l4;
+        //lights[5] = l5;
         
-        //TODO: resolution bug found- switching monitors/fullscreen effects performance?
+        XJGE.addUIWidget(GLFW_JOYSTICK_1, "test", new TestWidget(0, 40, 0, 80, 80));
     }
 
     @Override

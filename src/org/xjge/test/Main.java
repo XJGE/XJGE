@@ -2,7 +2,7 @@ package org.xjge.test;
 
 import org.xjge.core.Game;
 import org.xjge.core.XJGE;
-import org.xjge.scenes.TestScene;
+import org.xjge.scenes.PlaneScene;
 
 /**
  * Nov 9, 2021
@@ -30,7 +30,7 @@ public class Main {
         
         XJGE.init("/org/xjge/assets/", "org.xjge.scenes.", null, false, true, true, false, false);
         
-        Game.setScene(new TestScene());
+        Game.setScene(new PlaneScene());
         
         XJGE.start();
     }

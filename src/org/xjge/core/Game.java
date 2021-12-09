@@ -8,6 +8,7 @@ import java.util.Queue;
 import org.joml.Matrix4f;
 import static org.lwjgl.glfw.GLFW.*;
 import static org.lwjgl.opengl.GL30.*;
+import static org.xjge.core.XJGE.glPrograms;
 import org.xjge.graphics.GLProgram;
 
 //Created: May 11, 2021
@@ -149,7 +150,25 @@ public final class Game {
                         scene.renderSkybox(viewport.currCamera.viewMatrix);
                         scene.render(glPrograms, viewport.id, viewport.currCamera);
                         scene.renderLightSources(viewport.currCamera);
-                        viewport.render(glPrograms, "ui");
+                        //viewport.render(glPrograms, "ui"); TODO: remove
+                    glBindFramebuffer(GL_FRAMEBUFFER, 0);
+                }
+            }
+            
+            //Apply bloom effect.
+            
+            
+            //Render each viewports UI, then output the final result of each.
+            for(Viewport viewport : viewports) {
+                if(viewport.active) {
+                    glBindFramebuffer(GL_FRAMEBUFFER, fbo);
+                    switch(viewport.id) {
+                        case 0 -> glDrawBuffer(GL_COLOR_ATTACHMENT0);
+                        case 1 -> glDrawBuffer(GL_COLOR_ATTACHMENT1);
+                        case 2 -> glDrawBuffer(GL_COLOR_ATTACHMENT2);
+                        case 3 -> glDrawBuffer(GL_COLOR_ATTACHMENT3);
+                    }
+                    viewport.render(glPrograms, "ui");
                     glBindFramebuffer(GL_FRAMEBUFFER, 0);
                     
                     glViewport(viewport.botLeft.x, viewport.botLeft.y, viewport.topRight.x, viewport.topRight.y);
