@@ -8,9 +8,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.PrintStream;
 import java.io.PrintWriter;
-import static org.xjge.core.Input.KEY_MOUSE_COMBO;
 import org.xjge.core.Terminal.TCCLS;
-import static org.xjge.core.Window.HANDLE;
 import org.xjge.graphics.Texture;
 import org.xjge.graphics.BufferType;
 import org.xjge.graphics.GLProgram;
@@ -22,7 +20,6 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.Map;
-import java.util.Map.Entry;
 import java.util.TreeMap;
 import javax.xml.stream.XMLInputFactory;
 import javax.xml.stream.XMLStreamConstants;
@@ -225,13 +222,8 @@ public final class XJGE {
             if(resolution == null) {
                 matchWindowResolution = true;
                 
-                if(!restrict4K) {
-                    resolutionX = Window.getWidth();
-                    resolutionY = Window.getHeight();
-                } else {
-                    resolutionX = 1920;
-                    resolutionY = 1080;
-                }
+                resolutionX = Window.getWidth();
+                resolutionY = Window.getHeight();
             } else {
                 resolutionX = resolution.x;
                 resolutionY = resolution.y;
@@ -691,7 +683,7 @@ public final class XJGE {
      * Obtains the value that will be used to further cull a monitors supported 
      * video modes.
      * 
-     * @return true, if 4K resolutions are not permitted for use by the engine
+     * @return true if 4K resolutions are not permitted for use by the engine
      */
     static boolean get4KRestricted() {
         return restrict4KResolutions;

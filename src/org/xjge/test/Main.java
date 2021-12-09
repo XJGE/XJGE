@@ -18,8 +18,6 @@ public class Main {
         
         /*
         TODO:
-        - create new init methods with documentation of engine arguments.
-        
         - add bloom effect from lighting testbed.
         
         - provide option to apply gaussian blur to shadowmap texture?
