@@ -30,8 +30,9 @@ public class PlaneScene extends Scene {
         Game.setClearColor(Color.BLACK);
         
         entities.put("plane", new EntityPlane(0, -3f, 0, 50, 50, Color.SILVER));
-        entities.put("cube", new EntityCube(0, 3, 0, 3, 3, 3, true));
+        entities.put("cube", new EntityCube(-6, 2, 0, 3, 3, 3, true));
         entities.put("teapot", new EntityTeapot(15, 3, -6));
+        entities.put("triangle", new EntityBloom(2, 2.5f, 0, Color.WHITE, 1));
         
         Game.setClearColor(Color.BLACK);
         

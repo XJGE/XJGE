@@ -124,5 +124,10 @@ void main() {
             ioLightFrag = uLightSpace * vec4(ioFragPos, 1);
             gl_Position = (uProjection * uView * uModel * vec4(aPosition, 1));
             break;
+        
+        case 10: //Used for "bloom volumes" which only have color and vertex positions.
+            ioColor     = aColor;
+            gl_Position = uProjection * uView * uModel * vec4(aPosition, 1);
+            break;
     }
 }

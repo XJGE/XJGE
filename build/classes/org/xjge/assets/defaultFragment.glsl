@@ -160,7 +160,7 @@ void main() {
             ioResult = vec4(ioColor, texture(uTexture, ioTexCoords).a);
             break;
 
-        case 2: case 3: //Used for rendering shapes on the UI like polygons and rectangles.
+        case 2: case 3: case 10: //Used for rendering "bloom volumes" and UI shapes like polygons and rectangles.
             ioResult = vec4(ioColor, uOpacity);
             break;
 
