@@ -171,6 +171,7 @@ final class FontVertexData {
         
         glEnable(GL_BLEND);
         glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+        glActiveTexture(GL_TEXTURE0);
         glBindTexture(GL_TEXTURE_2D, font.texHandle);
         glBindVertexArray(vao);
         
@@ -181,6 +182,7 @@ final class FontVertexData {
         }
         
         XJGE.getDefaultGLProgram().setUniform("uType", 1);
+        XJGE.getDefaultGLProgram().setUniform("uTexture", 0);
         
         glDrawElementsInstanced(GL_TRIANGLES, indices.capacity(), GL_UNSIGNED_INT, 0, glyphs.size());
         glDisable(GL_BLEND);

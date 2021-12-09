@@ -2,12 +2,15 @@ package org.xjge.scenes;
 
 import java.util.Map;
 import org.joml.Vector3f;
+import static org.lwjgl.glfw.GLFW.GLFW_JOYSTICK_1;
 import org.xjge.core.Camera;
 import org.xjge.core.Scene;
 import org.xjge.core.Skybox;
 import org.xjge.graphics.Color;
 import org.xjge.graphics.GLProgram;
 import org.xjge.core.Light;
+import org.xjge.core.XJGE;
+import org.xjge.test.TestWidget;
 
 /**
  * Nov 9, 2021
@@ -48,6 +51,8 @@ public class TestScene extends Scene {
         lights[0] = Light.daylight();
         
         lights[1] = new Light(0.1f, 0, 0.5f, new Vector3f(-27, -2, 0), Color.LIME);
+        
+        XJGE.addUIWidget(GLFW_JOYSTICK_1, "test", new TestWidget(0, 40, 0, 80, 80));
         
         //addLight(new Light(0.1f, 0, 0.5f, new Vector3f(-27, -2, 0), Color.LIME));
         
