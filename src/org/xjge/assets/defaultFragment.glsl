@@ -31,7 +31,8 @@ uniform sampler2D uShadowMap; //TODO: rename to uShadowMapTexture
 uniform samplerCube uSkyTexture;
 uniform Light uLights[MAX_LIGHTS];
 
-out vec4 ioResult;
+layout (location = 0) out vec4 ioFragColor;
+layout (location = 1) out vec4 ioBrightColor;
 
 /**
  * Enables the framebuffer texture attachments to better suit unconventional 
@@ -150,22 +151,22 @@ void main() {
         case 0: //Used for framebuffer texture attachments.
             vec2 vRes = textureSize(uTexture, 0);
             
-            ioResult = texture(uTexture, vec2(
+            ioFragColor = texture(uTexture, vec2(
                 sharpen(ioTexCoords.x * vRes.x) / vRes.x,
                 sharpen(ioTexCoords.y * vRes.y) / vRes.y
             ));
             break;
 
         case 1: //Used for text rendering.
-            ioResult = vec4(ioColor, texture(uTexture, ioTexCoords).a);
+            ioFragColor = vec4(ioColor, texture(uTexture, ioTexCoords).a);
             break;
 
         case 2: case 3: case 10: //Used for rendering "bloom volumes" and UI shapes like polygons and rectangles.
-            ioResult = vec4(ioColor, uOpacity);
+            ioFragColor = vec4(ioColor, uOpacity);
             break;
 
         case 4: case 7: //Used for drawing icons and sprites.
-            ioResult = texture(uTexture, ioTexCoords) * vec4(ioColor, 1.0);
+            ioFragColor = texture(uTexture, ioTexCoords) * vec4(ioColor, 1.0);
             break;
 
         case 5: case 9: //Used for rendering 3D models and 2D sprites that exhbit lighting effects.
@@ -175,17 +176,20 @@ void main() {
                 lighting += calcPointLight(uLights[i], normalize(ioNormal), ioFragPos);
             }
             
-            ioResult = texture(uTexture, ioTexCoords) * vec4(lighting, uOpacity);
+            ioFragColor = texture(uTexture, ioTexCoords) * vec4(lighting, uOpacity);
             break;
 
         case 6: //Used for light source icons.
             float opacity = texture(uTexture, ioTexCoords).a;
-            ioResult = texture(uTexture, ioTexCoords) * vec4(ioColor, opacity);
+            ioFragColor = texture(uTexture, ioTexCoords) * vec4(ioColor, opacity);
             break;
 
         case 8: //Used for drawing skyboxes.
             makeTransparent(texture(uSkyTexture, ioSkyTexCoords).a);
-            ioResult = texture(uSkyTexture, ioSkyTexCoords);
+            ioFragColor = texture(uSkyTexture, ioSkyTexCoords);
             break;
     }
+    
+    float brightness = dot(ioFragColor.rgb, vec3(0.2126, 0.7152, 0.0722));
+    ioBrightColor    = (brightness > 1.0) ? vec4(ioFragColor.rgb, 1) : vec4(0, 0, 0, 1); //TODO: provide 1.0 through uniform.
 }
