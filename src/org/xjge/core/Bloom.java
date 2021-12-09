@@ -13,13 +13,22 @@ import org.xjge.graphics.Graphics;
  */
 final class Bloom {
     
-    final int textureHandle;
+    final int texHandle;
     private final Graphics g;
 
     Bloom(int width, int height) {
-        textureHandle = glGenTextures();
+        /*
+        TODO:
         
-        glBindTexture(GL_TEXTURE_2D, textureHandle);
+        Not sure if this should follow the same structure as the shadow map or
+        not. it requires a framebuffer but uses ping pong on top of the default
+        one- might be better off to keep all the framebuffer objects in one place
+        i dunno this is gonna need to be organized better when its all said and done.
+        */
+        
+        texHandle = glGenTextures();
+        
+        glBindTexture(GL_TEXTURE_2D, texHandle);
             glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
             glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
             glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
