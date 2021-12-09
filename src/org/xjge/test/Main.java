@@ -18,7 +18,7 @@ public class Main {
         
         /*
         TODO:
-        - add bloom effect from lighting testbed.
+        - add bloom effect from lighting testbed. remember to fix bug with textures!
         
         - provide option to apply gaussian blur to shadowmap texture?
         
