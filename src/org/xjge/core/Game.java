@@ -1,6 +1,5 @@
 package org.xjge.core;
 
-import static org.xjge.core.XJGE.glPrograms;
 import org.xjge.graphics.Color;
 import java.util.Comparator;
 import java.util.PriorityQueue;
@@ -65,7 +64,14 @@ public final class Game {
         double prevTime = glfwGetTime();
         double currTime;
         double delta = 0;
+        
         Matrix4f projMatrix = new Matrix4f();
+        
+        int[] bloomFBOs     = new int[2];
+        int[] bloomTextures = new int[2];
+        //TODO: add attachments?
+        
+        int[] attachments = {GL_COLOR_ATTACHMENT0, GL_COLOR_ATTACHMENT4};
         
         while(!glfwWindowShouldClose(Window.HANDLE)) {
             glfwPollEvents();
@@ -136,12 +142,13 @@ public final class Game {
                     glBindFramebuffer(GL_FRAMEBUFFER, fbo);
                         glViewport(0, 0, viewport.width, viewport.height);
                         glClearColor(clearColor.r, clearColor.g, clearColor.b, 0);
-                        switch(viewport.id) {
-                            case 0 -> glDrawBuffer(GL_COLOR_ATTACHMENT0);
-                            case 1 -> glDrawBuffer(GL_COLOR_ATTACHMENT1);
-                            case 2 -> glDrawBuffer(GL_COLOR_ATTACHMENT2);
-                            case 3 -> glDrawBuffer(GL_COLOR_ATTACHMENT3);
-                        }
+                        attachments[0] = switch(viewport.id) {
+                            default -> GL_COLOR_ATTACHMENT0;
+                            case 1  -> GL_COLOR_ATTACHMENT1;
+                            case 2  -> GL_COLOR_ATTACHMENT2;
+                            case 3  -> GL_COLOR_ATTACHMENT3;
+                        };
+                        glDrawBuffers(attachments);
                         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
                         viewport.resetCamera(glPrograms);
@@ -150,7 +157,6 @@ public final class Game {
                         scene.renderSkybox(viewport.currCamera.viewMatrix);
                         scene.render(glPrograms, viewport.id, viewport.currCamera);
                         scene.renderLightSources(viewport.currCamera);
-                        //viewport.render(glPrograms, "ui"); TODO: remove
                     glBindFramebuffer(GL_FRAMEBUFFER, 0);
                 }
             }
