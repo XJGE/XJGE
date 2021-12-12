@@ -231,7 +231,7 @@ public final class XJGE {
             }
             
             for(int i = 0; i < viewports.length; i++) viewports[i] = new Viewport(i);
-            bloom = new Bloom(resolutionX, resolutionY);
+            bloom = new Bloom(1920, 1080);
             
             fbo = glGenFramebuffers();
             glBindFramebuffer(GL_FRAMEBUFFER, fbo);

@@ -143,10 +143,10 @@ public final class Game {
                         glViewport(0, 0, viewport.width, viewport.height);
                         glClearColor(clearColor.r, clearColor.g, clearColor.b, 0);
                         attachments[0] = switch(viewport.id) {
-                            default -> GL_COLOR_ATTACHMENT0;
                             case 1  -> GL_COLOR_ATTACHMENT1;
                             case 2  -> GL_COLOR_ATTACHMENT2;
                             case 3  -> GL_COLOR_ATTACHMENT3;
+                            default -> GL_COLOR_ATTACHMENT0;
                         };
                         glDrawBuffers(attachments);
                         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
@@ -168,12 +168,12 @@ public final class Game {
             for(Viewport viewport : viewports) {
                 if(viewport.active) {
                     glBindFramebuffer(GL_FRAMEBUFFER, fbo);
-                    switch(viewport.id) {
-                        case 0 -> glDrawBuffer(GL_COLOR_ATTACHMENT0);
-                        case 1 -> glDrawBuffer(GL_COLOR_ATTACHMENT1);
-                        case 2 -> glDrawBuffer(GL_COLOR_ATTACHMENT2);
-                        case 3 -> glDrawBuffer(GL_COLOR_ATTACHMENT3);
-                    }
+                    attachments[0] = switch(viewport.id) {
+                        case 1  -> GL_COLOR_ATTACHMENT1;
+                        case 2  -> GL_COLOR_ATTACHMENT2;
+                        case 3  -> GL_COLOR_ATTACHMENT3;
+                        default -> GL_COLOR_ATTACHMENT0;
+                    };
                     viewport.render(glPrograms, "ui");
                     glBindFramebuffer(GL_FRAMEBUFFER, 0);
                     
