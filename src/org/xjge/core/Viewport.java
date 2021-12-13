@@ -8,6 +8,10 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import org.joml.Vector2i;
+import static org.lwjgl.glfw.GLFW.GLFW_JOYSTICK_1;
+import static org.lwjgl.glfw.GLFW.GLFW_JOYSTICK_2;
+import static org.lwjgl.glfw.GLFW.GLFW_JOYSTICK_3;
+import static org.lwjgl.glfw.GLFW.GLFW_JOYSTICK_4;
 import static org.lwjgl.opengl.GL30.*;
 import org.lwjgl.system.MemoryStack;
 
@@ -23,17 +27,22 @@ import org.lwjgl.system.MemoryStack;
 final class Viewport {
 
     final int id;
-    final int texHandle;
+    final int viewTexHandle;
+    final int bloomTexHandle;
     int width;
     int height;
+    
+    private final int[] colorAttachments = new int[2];
     
     boolean active;
     
     private Graphics g = new Graphics();
-    Vector2i botLeft   = new Vector2i();
-    Vector2i topRight  = new Vector2i();
-    Camera prevCamera  = new Noclip();
-    Camera currCamera  = new Noclip();
+    private Bloom2 bloom;
+    
+    Vector2i botLeft  = new Vector2i();
+    Vector2i topRight = new Vector2i();
+    Camera prevCamera = new Noclip();
+    Camera currCamera = new Noclip();
     
     LinkedHashMap<String, Widget> ui = new LinkedHashMap<>();
     
@@ -48,13 +57,35 @@ final class Viewport {
     Viewport(int id) {
         this.id = id;
         
-        width     = XJGE.getResolutionX();
-        height    = XJGE.getResolutionY();
-        texHandle = glGenTextures();
+        width  = XJGE.getResolutionX();
+        height = XJGE.getResolutionY();
+        bloom  = new Bloom2(width, height);
+        
+        viewTexHandle  = glGenTextures();
+        bloomTexHandle = bloom.textures[2];
         
         createTextureAttachment();
         
         active = (id == 0);
+        
+        switch(id) {
+            case GLFW_JOYSTICK_1 -> {
+                colorAttachments[0] = GL_COLOR_ATTACHMENT0;
+                colorAttachments[1] = GL_COLOR_ATTACHMENT4;
+            }
+            case GLFW_JOYSTICK_2 -> {
+                colorAttachments[0] = GL_COLOR_ATTACHMENT1;
+                colorAttachments[1] = GL_COLOR_ATTACHMENT5;
+            }
+            case GLFW_JOYSTICK_3 -> {
+                colorAttachments[0] = GL_COLOR_ATTACHMENT2;
+                colorAttachments[1] = GL_COLOR_ATTACHMENT6;
+            }
+            case GLFW_JOYSTICK_4 -> {
+                colorAttachments[0] = GL_COLOR_ATTACHMENT3;
+                colorAttachments[1] = GL_COLOR_ATTACHMENT7;
+            }
+        }
     }
     
     /**
@@ -62,15 +93,7 @@ final class Viewport {
      * framebuffer.
      */
     private void createTextureAttachment() {
-        /*
-        TODO:
-        playing at higher resolutions significantly slows down framebuffer 
-        read/write times- pehaphs restrictions should be put in place for 
-        split screen resolutions? or a framebuffer blit mode (granted no 
-        predefined resolution is provided though init())?
-        */
-        
-        glBindTexture(GL_TEXTURE_2D, texHandle);
+        glBindTexture(GL_TEXTURE_2D, viewTexHandle);
             glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
             glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
             glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
@@ -121,7 +144,7 @@ final class Viewport {
      *                   compiled during startup
      * @param stage      the stage denoting the viewports current render pass
      */
-    void render(Map<String, GLProgram> glPrograms, String stage, int bloomTexHandle) {
+    void render(Map<String, GLProgram> glPrograms, String stage) {
         switch(stage) {
             case "camera" -> {
                 currCamera.render(glPrograms);
@@ -141,9 +164,9 @@ final class Viewport {
             
             case "texture" -> {
                 glActiveTexture(GL_TEXTURE0);
-                glBindTexture(GL_TEXTURE_2D, texHandle);
+                glBindTexture(GL_TEXTURE_2D, viewTexHandle);
                 glActiveTexture(GL_TEXTURE3);
-                glBindTexture(GL_TEXTURE_2D, bloomTexHandle);
+                glBindTexture(GL_TEXTURE_2D, bloom.textures[1]);
                 glBindVertexArray(g.vao);
                 
                 glPrograms.get("default").use();
@@ -202,6 +225,7 @@ final class Viewport {
         topRight.set(x2, y2);
         
         createTextureAttachment();
+        if(Game.enableBloom) bloom.createTextureAttachments(width, height);
         
         ui.values().forEach(widget -> {
             widget.setSplitPosition(XJGE.getScreenSplit(), width, height);
@@ -241,6 +265,31 @@ final class Viewport {
      */
     void removeUIWidget(String name) {
         ui.remove(name);
+    }
+    
+    void bindDrawBuffers(boolean both) {
+        if(both) glDrawBuffers(colorAttachments);
+        else     glDrawBuffer(colorAttachments[0]);
+    }
+    
+    void applyBloom(GLProgram blurProgram) {
+        boolean firstPass  = true;
+        boolean horizontal = true;
+        int blurWeight = 10;
+
+        for(int i = 0; i < blurWeight; i++) {
+            int value     = (horizontal) ? 1 : 0;
+            int invValue  = (horizontal) ? 0 : 1;
+            int texHandle = bloomTexHandle;
+
+            glBindFramebuffer(GL_FRAMEBUFFER, bloom.fbos[invValue]);
+            bloom.applyBlur(blurProgram, (firstPass) ? texHandle : bloom.textures[value], horizontal);
+
+            horizontal = !horizontal;
+            if(firstPass) firstPass = false;
+        }
+        
+        glBindFramebuffer(GL_FRAMEBUFFER, 0);
     }
     
 }

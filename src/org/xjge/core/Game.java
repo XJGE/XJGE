@@ -41,6 +41,7 @@ public final class Game {
     private static double deltaMetric = 0;
     
     private static boolean ticked;
+    public static boolean enableBloom = true;
     
     private static Color clearColor = Color.create(92, 148, 252);
     private static Scene scene;
@@ -58,7 +59,7 @@ public final class Game {
      *                  the engine
      * @param debugInfo an interface detailing the current state of the engine
      */
-    static void loop(int fbo, Viewport[] viewports, Terminal terminal, DebugInfo debugInfo, GLProgram depthProgram, GLProgram blurProgram, Bloom bloom) {
+    static void loop(int fbo, Viewport[] viewports, Terminal terminal, DebugInfo debugInfo, GLProgram depthProgram, GLProgram blurProgram) {
         //TODO: add doc for new arguments
         
         int cycles = 0;
@@ -76,8 +77,6 @@ public final class Game {
             if(delta < TARGET_DELTA && Hardware.getVSyncEnabled()) delta = TARGET_DELTA;
             prevTime = currTime;
             ticked   = false;
-            
-            int[] attachments = {GL_COLOR_ATTACHMENT0, GL_COLOR_ATTACHMENT4};
             
             while(delta >= TARGET_DELTA) {
                 Input.pollInput();
@@ -137,27 +136,41 @@ public final class Game {
                     glBindFramebuffer(GL_FRAMEBUFFER, fbo);
                         glViewport(0, 0, viewport.width, viewport.height);
                         glClearColor(clearColor.r, clearColor.g, clearColor.b, 0);
-                        
-                        attachments[0] = switch(viewport.id) {
-                            case 1  -> GL_COLOR_ATTACHMENT1;
-                            case 2  -> GL_COLOR_ATTACHMENT2;
-                            case 3  -> GL_COLOR_ATTACHMENT3;
-                            default -> GL_COLOR_ATTACHMENT0;
-                        };
-                        glDrawBuffers(attachments);
-                        
+                        viewport.bindDrawBuffers(Game.enableBloom);
                         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
                         viewport.resetCamera(glPrograms);
                         
-                        viewport.render(glPrograms, "camera", 0);
+                        viewport.render(glPrograms, "camera");
                         scene.renderSkybox(viewport.currCamera.viewMatrix);
                         scene.render(glPrograms, viewport.id, viewport.currCamera);
                         scene.renderLightSources(viewport.currCamera);
                     glBindFramebuffer(GL_FRAMEBUFFER, 0);
+                    
+                    
+                    projMatrix.setOrtho(viewport.width, 0, 0, viewport.height, 0, 1);
+                    
+                    if(enableBloom) {
+                        blurProgram.use();
+                        blurProgram.setUniform("uProjection", false, projMatrix);
+                        viewport.applyBloom(blurProgram);
+                    }
+                    
+                    glViewport(viewport.botLeft.x, viewport.botLeft.y, viewport.topRight.x, viewport.topRight.y);
+                    
+                    glPrograms.get("default").use();
+                    glPrograms.get("default").setUniform("uProjection", false, projMatrix);
+                    
+                    viewport.render(glPrograms, "texture");
+                    
+                    glBindFramebuffer(GL_FRAMEBUFFER, fbo);
+                        viewport.bindDrawBuffers(false);
+                        viewport.render(glPrograms, "ui");
+                    glBindFramebuffer(GL_FRAMEBUFFER, 0);
                 }
             }
             
+            /*
             //Apply bloom effect.
             {
                 projMatrix.setOrtho(Window.getWidth(), 0, 0, Window.getHeight(), 0, 1);
@@ -182,6 +195,7 @@ public final class Game {
                 }
             }
             
+            /*
             //Render each viewports UI, then output the final result of each.
             for(Viewport viewport : viewports) {
                 if(viewport.active) {
@@ -193,7 +207,7 @@ public final class Game {
                             default -> GL_COLOR_ATTACHMENT0;
                         };
                         glDrawBuffer(attachment);
-                        viewport.render(glPrograms, "ui", 0);
+                        viewport.render(glPrograms, "ui");
                     glBindFramebuffer(GL_FRAMEBUFFER, 0);
                     
                     glViewport(viewport.botLeft.x, viewport.botLeft.y, viewport.topRight.x, viewport.topRight.y);
@@ -202,9 +216,9 @@ public final class Game {
                     glPrograms.get("default").use();
                     glPrograms.get("default").setUniform("uProjection", false, projMatrix);
 
-                    viewport.render(glPrograms, "texture", bloom.textures[1]);
+                    viewport.render(glPrograms, "texture");
                 }
-            }
+            }*/
             
             if(XJGE.getTerminalEnabled() || debugInfo.show) {
                 glViewport(0, 0, Window.getWidth(), Window.getHeight());
