@@ -37,7 +37,7 @@ final class Viewport {
     boolean active;
     
     private Graphics g = new Graphics();
-    private Bloom2 bloom;
+    private Bloom bloom;
     
     Vector2i botLeft  = new Vector2i();
     Vector2i topRight = new Vector2i();
@@ -59,7 +59,7 @@ final class Viewport {
         
         width  = XJGE.getResolutionX();
         height = XJGE.getResolutionY();
-        bloom  = new Bloom2(width, height);
+        bloom  = new Bloom(width, height);
         
         viewTexHandle  = glGenTextures();
         bloomTexHandle = bloom.textures[2];
@@ -225,7 +225,7 @@ final class Viewport {
         topRight.set(x2, y2);
         
         createTextureAttachment();
-        if(Game.enableBloom) bloom.createTextureAttachments(width, height);
+        bloom.createTextureAttachments(width, height);
         
         ui.values().forEach(widget -> {
             widget.setSplitPosition(XJGE.getScreenSplit(), width, height);

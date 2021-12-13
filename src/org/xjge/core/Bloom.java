@@ -5,33 +5,29 @@ import org.lwjgl.system.MemoryStack;
 import org.xjge.graphics.GLProgram;
 import org.xjge.graphics.Graphics;
 
-//Created: Dec 8, 2021
+/**
+ * Dec 13, 2021
+ */
 
 /**
  * @author J Hoffman
- * @since  2.0.0
+ * @since  
  */
 final class Bloom {
-    
-    private int width;
-    private int height;
     
     final int[] fbos     = new int[2];
     final int[] textures = new int[3];
     
     private Graphics g = new Graphics();
-
-    Bloom() {
-        width  = Window.getWidth();
-        height = Window.getHeight();
-        
+    
+    Bloom(int width, int height) {
         glGenFramebuffers(fbos);
         glGenTextures(textures);
         
-        createTextureAttachments();
+        createTextureAttachments(width, height);
     }
     
-    private void createTextureAttachments() {
+    void createTextureAttachments(int width, int height) {
         for(int i = 0; i < 3; i++) {
             glBindTexture(GL_TEXTURE_2D, textures[i]);
                 glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
@@ -75,14 +71,7 @@ final class Bloom {
         glEnableVertexAttribArray(2);
     }
     
-    void updateDimensions() {
-        width  = Window.getWidth();
-        height = Window.getHeight();
-        
-        createTextureAttachments();
-    }
-    
-    void render(GLProgram blurProgram, int texHandle, boolean horizontal) {
+    void applyBlur(GLProgram blurProgram, int texHandle, boolean horizontal) {
         glActiveTexture(GL_TEXTURE0);
         glBindTexture(GL_TEXTURE_2D, texHandle);
         glBindVertexArray(g.vao);

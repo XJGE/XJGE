@@ -165,56 +165,6 @@ public final class Game {
                 }
             }
             
-            /*
-            //Apply bloom effect.
-            {
-                projMatrix.setOrtho(Window.getWidth(), 0, 0, Window.getHeight(), 0, 1);
-                
-                blurProgram.use();
-                blurProgram.setUniform("uProjection", false, projMatrix);
-                
-                boolean firstPass  = true;
-                boolean horizontal = true;
-                int blurWeight = 10;
-                
-                for(int i = 0; i < blurWeight; i++) {
-                    int value     = (horizontal) ? 1 : 0;
-                    int invValue  = (horizontal) ? 0 : 1;
-                    int texHandle = bloom.textures[2];
-                    
-                    glBindFramebuffer(GL_FRAMEBUFFER, bloom.fbos[invValue]);
-                    bloom.render(blurProgram, (firstPass) ? texHandle : bloom.textures[value], horizontal);
-
-                    horizontal = !horizontal;
-                    if(firstPass) firstPass = false;
-                }
-            }
-            
-            /*
-            //Render each viewports UI, then output the final result of each.
-            for(Viewport viewport : viewports) {
-                if(viewport.active) {
-                    glBindFramebuffer(GL_FRAMEBUFFER, fbo);
-                        int attachment = switch(viewport.id) {
-                            case 1  -> GL_COLOR_ATTACHMENT1;
-                            case 2  -> GL_COLOR_ATTACHMENT2;
-                            case 3  -> GL_COLOR_ATTACHMENT3;
-                            default -> GL_COLOR_ATTACHMENT0;
-                        };
-                        glDrawBuffer(attachment);
-                        viewport.render(glPrograms, "ui");
-                    glBindFramebuffer(GL_FRAMEBUFFER, 0);
-                    
-                    glViewport(viewport.botLeft.x, viewport.botLeft.y, viewport.topRight.x, viewport.topRight.y);
-                    projMatrix.setOrtho(viewport.width, 0, 0, viewport.height, 0, 1);
-                    
-                    glPrograms.get("default").use();
-                    glPrograms.get("default").setUniform("uProjection", false, projMatrix);
-
-                    viewport.render(glPrograms, "texture");
-                }
-            }*/
-            
             if(XJGE.getTerminalEnabled() || debugInfo.show) {
                 glViewport(0, 0, Window.getWidth(), Window.getHeight());
                 projMatrix.setOrtho(0,  Window.getWidth(), 0, Window.getHeight(), 0, Integer.MAX_VALUE);

@@ -809,6 +809,8 @@ public final class XJGE {
                                     resolutionX, resolutionY / 2,
                                     0, 0, 
                                     Window.getWidth(), Window.getHeight() / 2);
+                        
+                        default -> viewport.setBounds(resolutionX, resolutionY, 0, 0, 0, 0);
                     }
                 }
                 
@@ -824,6 +826,8 @@ public final class XJGE {
                                     resolutionX / 2, resolutionY,
                                     Window.getWidth() / 2, 0, 
                                     Window.getWidth() / 2, Window.getHeight());
+                        
+                        default -> viewport.setBounds(resolutionX, resolutionY, 0, 0, 0, 0);
                     }
                 }
                 
@@ -844,6 +848,8 @@ public final class XJGE {
                                     resolutionX / 2, resolutionY / 2,
                                     Window.getWidth() / 4, 0, 
                                     Window.getWidth() / 2, Window.getHeight() / 2);
+                        
+                        default -> viewport.setBounds(resolutionX, resolutionY, 0, 0, 0, 0);
                     }
                 }
                 
