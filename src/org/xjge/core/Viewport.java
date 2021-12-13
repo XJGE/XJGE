@@ -121,7 +121,7 @@ final class Viewport {
      *                   compiled during startup
      * @param stage      the stage denoting the viewports current render pass
      */
-    void render(Map<String, GLProgram> glPrograms, String stage) {
+    void render(Map<String, GLProgram> glPrograms, String stage, int bloomTexHandle) {
         switch(stage) {
             case "camera" -> {
                 currCamera.render(glPrograms);
@@ -142,11 +142,14 @@ final class Viewport {
             case "texture" -> {
                 glActiveTexture(GL_TEXTURE0);
                 glBindTexture(GL_TEXTURE_2D, texHandle);
+                glActiveTexture(GL_TEXTURE3);
+                glBindTexture(GL_TEXTURE_2D, bloomTexHandle);
                 glBindVertexArray(g.vao);
                 
                 glPrograms.get("default").use();
                 glPrograms.get("default").setUniform("uType", 0);
                 glPrograms.get("default").setUniform("uTexture", 0);
+                glPrograms.get("default").setUniform("uBloomTexture", 3);
                 
                 glDrawElements(GL_TRIANGLES, g.indices.capacity(), GL_UNSIGNED_INT, 0);
                 ErrorUtils.checkGLError();

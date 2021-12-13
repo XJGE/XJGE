@@ -33,7 +33,7 @@ public class TestWidget extends Widget {
     @Override
     public void render(Map<String, GLProgram> glPrograms) {
         glPrograms.get("default").use();
-        drawString(defaultFont, "bleh", textPos, Color.WHITE);
+        drawString(defaultFont, "bleh", textPos, Color.RED);
     }
 
     @Override

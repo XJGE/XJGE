@@ -83,10 +83,12 @@ final class Bloom {
     }
     
     void render(GLProgram blurProgram, int texHandle, boolean horizontal) {
+        glActiveTexture(GL_TEXTURE0);
         glBindTexture(GL_TEXTURE_2D, texHandle);
         glBindVertexArray(g.vao);
         
         blurProgram.setUniform("uHorizontal", (horizontal) ? 1 : 0);
+        blurProgram.setUniform("uBloomTexture", 0);
 
         glDrawElements(GL_TRIANGLES, g.indices.capacity(), GL_UNSIGNED_INT, 0);
         

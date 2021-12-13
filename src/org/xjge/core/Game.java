@@ -41,8 +41,6 @@ public final class Game {
     private static double deltaMetric = 0;
     
     private static boolean ticked;
-    public static boolean enableBloom;
-    public static boolean enableShadows;
     
     private static Color clearColor = Color.create(92, 148, 252);
     private static Scene scene;
@@ -147,14 +145,12 @@ public final class Game {
                             default -> GL_COLOR_ATTACHMENT0;
                         };
                         
-                        if(enableBloom) glDrawBuffers(attachments);
-                        else            glDrawBuffer(attachments[0]);
-                        
+                        glDrawBuffers(attachments);
                         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
                         viewport.resetCamera(glPrograms);
                         
-                        viewport.render(glPrograms, "camera");
+                        viewport.render(glPrograms, "camera", 0);
                         scene.renderSkybox(viewport.currCamera.viewMatrix);
                         scene.render(glPrograms, viewport.id, viewport.currCamera);
                         scene.renderLightSources(viewport.currCamera);
@@ -190,18 +186,16 @@ public final class Game {
             for(Viewport viewport : viewports) {
                 if(viewport.active) {
                     glBindFramebuffer(GL_FRAMEBUFFER, fbo);
-                    
-                    attachments[0] = switch(viewport.id) {
-                        case 1  -> GL_COLOR_ATTACHMENT1;
-                        case 2  -> GL_COLOR_ATTACHMENT2;
-                        case 3  -> GL_COLOR_ATTACHMENT3;
-                        default -> GL_COLOR_ATTACHMENT0;
-                    };
-                    
-                    if(enableBloom) glDrawBuffers(attachments); //TODO: unneccesary?
-                    else            glDrawBuffer(attachments[0]);
-                    
-                    viewport.render(glPrograms, "ui");
+                        attachments[0] = switch(viewport.id) {
+                            case 1  -> GL_COLOR_ATTACHMENT1;
+                            case 2  -> GL_COLOR_ATTACHMENT2;
+                            case 3  -> GL_COLOR_ATTACHMENT3;
+                            default -> GL_COLOR_ATTACHMENT0;
+                        };
+
+                        glDrawBuffers(attachments);
+
+                        viewport.render(glPrograms, "ui", 0);
                     glBindFramebuffer(GL_FRAMEBUFFER, 0);
                     
                     glViewport(viewport.botLeft.x, viewport.botLeft.y, viewport.topRight.x, viewport.topRight.y);
@@ -210,7 +204,7 @@ public final class Game {
                     glPrograms.get("default").use();
                     glPrograms.get("default").setUniform("uProjection", false, projMatrix);
 
-                    viewport.render(glPrograms, "texture");
+                    viewport.render(glPrograms, "texture", bloom.textures[2]);
                 }
             }
             
