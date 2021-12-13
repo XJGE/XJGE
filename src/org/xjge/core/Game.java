@@ -144,8 +144,19 @@ public final class Game {
                             case 3  -> GL_COLOR_ATTACHMENT3;
                             default -> GL_COLOR_ATTACHMENT0;
                         };
-                        
+                        //glDrawBuffer(attachments[0]);
                         glDrawBuffers(attachments);
+                        
+                        /*
+                        TODO: 
+                        
+                        splitscreen is making things a bit tricky- the solution
+                        might very well be to generate a framebuffer texture 
+                        from the final output of each active viewport- then 
+                        calculate bloom using that texture attachment instead of 
+                        calculating a new one for each individual viewport.
+                        */
+                        
                         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
                         viewport.resetCamera(glPrograms);
@@ -155,8 +166,20 @@ public final class Game {
                         scene.render(glPrograms, viewport.id, viewport.currCamera);
                         scene.renderLightSources(viewport.currCamera);
                     glBindFramebuffer(GL_FRAMEBUFFER, 0);
+                    
+                    /*
+                    glViewport(viewport.botLeft.x, viewport.botLeft.y, viewport.topRight.x, viewport.topRight.y);
+                    projMatrix.setOrtho(viewport.width, 0, 0, viewport.height, 0, 1);
+                    
+                    glPrograms.get("default").use();
+                    glPrograms.get("default").setUniform("uProjection", false, projMatrix);
+
+                    viewport.render(glPrograms, "new stage");
+                    */
                 }
             }
+            
+            //TODO: generate framebuffer texture of each active viewport.
             
             //Apply bloom effect.
             {
@@ -192,9 +215,7 @@ public final class Game {
                             case 3  -> GL_COLOR_ATTACHMENT3;
                             default -> GL_COLOR_ATTACHMENT0;
                         };
-
-                        glDrawBuffers(attachments);
-
+                        glDrawBuffer(attachments[0]);
                         viewport.render(glPrograms, "ui", 0);
                     glBindFramebuffer(GL_FRAMEBUFFER, 0);
                     
