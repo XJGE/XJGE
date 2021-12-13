@@ -2,7 +2,6 @@ package org.xjge.core;
 
 import static org.lwjgl.opengl.GL30.*;
 import org.lwjgl.system.MemoryStack;
-import org.xjge.graphics.GLProgram;
 import org.xjge.graphics.Graphics;
 
 //Created: Dec 8, 2021
@@ -13,30 +12,41 @@ import org.xjge.graphics.Graphics;
  */
 final class Bloom {
     
-    final int texHandle;
-    private final Graphics g;
+    private int width;
+    private int height;
+    
+    final int[] fbos     = new int[2];
+    final int[] textures = new int[3];
+    
+    private Graphics g = new Graphics();
 
-    Bloom(int width, int height) {
-        /*
-        TODO:
+    Bloom() {
+        width  = Window.getWidth();
+        height = Window.getHeight();
         
-        Not sure if this should follow the same structure as the shadow map or
-        not. it requires a framebuffer but uses ping pong on top of the default
-        one- might be better off to keep all the framebuffer objects in one place
-        i dunno this is gonna need to be organized better when its all said and done.
-        */
+        glGenFramebuffers(fbos);
+        glGenTextures(textures);
         
-        texHandle = glGenTextures();
-        
-        glBindTexture(GL_TEXTURE_2D, texHandle);
-            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
-            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
-            glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, 0);
-        glBindTexture(GL_TEXTURE_2D, 0);
-        
-        g = new Graphics();
+        createTextureAttachments();
+    }
+    
+    void createTextureAttachments() {
+        for(int i = 0; i < 3; i++) {
+            glBindTexture(GL_TEXTURE_2D, textures[i]);
+                glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+                glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+                glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+                glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+                glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, 0);
+            glBindTexture(GL_TEXTURE_2D, 0);
+            
+            if(i != 2) {
+                glBindFramebuffer(GL_FRAMEBUFFER, fbos[i]);
+                    glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, textures[i], 0);
+                    ErrorUtils.checkFBStatus(GL_FRAMEBUFFER);
+                glBindFramebuffer(GL_FRAMEBUFFER, fbos[i]);
+            }
+        }
         
         try(MemoryStack stack = MemoryStack.stackPush()) {
             g.vertices = stack.mallocFloat(20);
@@ -64,14 +74,11 @@ final class Bloom {
         glEnableVertexAttribArray(2);
     }
     
-    void generate(GLProgram blurProgram, int handle, boolean horizontal) {
-        /*
-        TODO:
+    void updateDimensions() {
+        width  = Window.getWidth();
+        height = Window.getHeight();
         
-        we might be better off disolving the ShadowMap and Bloom classes and 
-        instead putting all the post-process effects in the Game class and only 
-        expose the details we can change/use.
-        */
+        createTextureAttachments();
     }
     
 }

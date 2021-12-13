@@ -231,7 +231,7 @@ public final class XJGE {
             }
             
             for(int i = 0; i < viewports.length; i++) viewports[i] = new Viewport(i);
-            bloom = new Bloom(1920, 1080);
+            bloom = new Bloom();
             
             fbo = glGenFramebuffers();
             glBindFramebuffer(GL_FRAMEBUFFER, fbo);
@@ -239,7 +239,7 @@ public final class XJGE {
                 glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT1, GL_TEXTURE_2D, viewports[1].texHandle, 0);
                 glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT2, GL_TEXTURE_2D, viewports[2].texHandle, 0);
                 glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT3, GL_TEXTURE_2D, viewports[3].texHandle, 0);
-                glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT4, GL_TEXTURE_2D, bloom.texHandle, 0);
+                glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT4, GL_TEXTURE_2D, bloom.textures[0], 0);
             glBindFramebuffer(GL_FRAMEBUFFER, 0);
             
             createRenderbuffer();
@@ -481,10 +481,11 @@ public final class XJGE {
             updateRenderbufferDimensions();
 
             setScreenSplit(getScreenSplit());
+            bloom.updateDimensions();
             debugInfo.updatePosition();
         });
         
-        Game.loop(fbo, viewports, terminal, debugInfo, depthProgram);
+        Game.loop(fbo, viewports, terminal, debugInfo, depthProgram, bloom);
         
         engineFont.freeTexture();
         engineIcons.freeTexture();

@@ -41,6 +41,8 @@ public final class Game {
     private static double deltaMetric = 0;
     
     private static boolean ticked;
+    public static boolean enableBloom;
+    public static boolean enableShadows;
     
     private static Color clearColor = Color.create(92, 148, 252);
     private static Scene scene;
@@ -58,18 +60,13 @@ public final class Game {
      *                  the engine
      * @param debugInfo an interface detailing the current state of the engine
      */
-    static void loop(int fbo, Viewport[] viewports, Terminal terminal, DebugInfo debugInfo, GLProgram depthProgram) {
+    static void loop(int fbo, Viewport[] viewports, Terminal terminal, DebugInfo debugInfo, GLProgram depthProgram, Bloom bloom) {
         int cycles = 0;
         final double TARGET_DELTA = 1 / 60.0;
         double prevTime = glfwGetTime();
         double currTime;
         double delta = 0;
-        
         Matrix4f projMatrix = new Matrix4f();
-        
-        int[] bloomFBOs     = new int[2];
-        int[] bloomTextures = new int[2];
-        //TODO: add attachments?
         
         int[] attachments = {GL_COLOR_ATTACHMENT0, GL_COLOR_ATTACHMENT4};
         
@@ -142,13 +139,17 @@ public final class Game {
                     glBindFramebuffer(GL_FRAMEBUFFER, fbo);
                         glViewport(0, 0, viewport.width, viewport.height);
                         glClearColor(clearColor.r, clearColor.g, clearColor.b, 0);
+                        
                         attachments[0] = switch(viewport.id) {
                             case 1  -> GL_COLOR_ATTACHMENT1;
                             case 2  -> GL_COLOR_ATTACHMENT2;
                             case 3  -> GL_COLOR_ATTACHMENT3;
                             default -> GL_COLOR_ATTACHMENT0;
                         };
-                        glDrawBuffers(attachments);
+                        
+                        if(enableBloom) glDrawBuffers(attachments);
+                        else            glDrawBuffer(attachments[0]);
+                        
                         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
                         viewport.resetCamera(glPrograms);
@@ -168,12 +169,17 @@ public final class Game {
             for(Viewport viewport : viewports) {
                 if(viewport.active) {
                     glBindFramebuffer(GL_FRAMEBUFFER, fbo);
+                    
                     attachments[0] = switch(viewport.id) {
                         case 1  -> GL_COLOR_ATTACHMENT1;
                         case 2  -> GL_COLOR_ATTACHMENT2;
                         case 3  -> GL_COLOR_ATTACHMENT3;
                         default -> GL_COLOR_ATTACHMENT0;
                     };
+                    
+                    if(enableBloom) glDrawBuffers(attachments); //TODO: unneccesary?
+                    else            glDrawBuffer(attachments[0]);
+                    
                     viewport.render(glPrograms, "ui");
                     glBindFramebuffer(GL_FRAMEBUFFER, 0);
                     
