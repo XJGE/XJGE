@@ -147,6 +147,8 @@ public final class Game {
                         scene.renderLightSources(viewport.currCamera);
                     glBindFramebuffer(GL_FRAMEBUFFER, 0);
                     
+                    projMatrix.setOrtho(viewport.width, 0, 0, viewport.height, 0, 1);
+                    
                     if(enableBloom) {
                         blurProgram.use();
                         blurProgram.setUniform("uProjection", false, projMatrix);
@@ -154,17 +156,12 @@ public final class Game {
                     }
                     
                     glViewport(viewport.botLeft.x, viewport.botLeft.y, viewport.topRight.x, viewport.topRight.y);
-                    projMatrix.setOrtho(viewport.width, 0, 0, viewport.height, 0, 1);
                     
                     glPrograms.get("default").use();
                     glPrograms.get("default").setUniform("uProjection", false, projMatrix);
                     
                     viewport.render(glPrograms, "texture");
-                    
-                    glBindFramebuffer(GL_FRAMEBUFFER, fbo);
-                        viewport.bindDrawBuffers(false);
-                        viewport.render(glPrograms, "ui");
-                    glBindFramebuffer(GL_FRAMEBUFFER, 0);
+                    viewport.render(glPrograms, "ui");
                 }
             }
             

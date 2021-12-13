@@ -157,7 +157,6 @@ void main() {
                 sharpen(ioTexCoords.y * vRes.y) / vRes.y
             )).rgb;
             
-            //vec3 bloomColor = texture(uBloomTexture, ioTexCoords).rgb;
             sceneColor += texture(uBloomTexture, ioTexCoords).rgb;
             
             ioFragColor = vec4(sceneColor, 1);
