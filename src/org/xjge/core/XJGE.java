@@ -264,7 +264,7 @@ public final class XJGE {
                 defaultProgram.addUniform(BufferType.INT,   "uTexture");
                 defaultProgram.addUniform(BufferType.INT,   "uShadowMap");
                 defaultProgram.addUniform(BufferType.INT,   "uSkyTexture");
-                //defaultProgram.addUniform(BufferType.INT,   "uBloomTexture");
+                defaultProgram.addUniform(BufferType.INT,   "uBloomTexture");
                 defaultProgram.addUniform(BufferType.FLOAT, "uOpacity");
                 defaultProgram.addUniform(BufferType.VEC2,  "uTexCoords");
                 defaultProgram.addUniform(BufferType.VEC3,  "uColor");

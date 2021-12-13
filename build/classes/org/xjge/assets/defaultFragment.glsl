@@ -28,7 +28,7 @@ uniform float uOpacity;
 uniform vec3 uCamPos;
 uniform sampler2D uTexture;
 uniform sampler2D uShadowMap;
-//uniform sampler2D uBloomTexture;
+uniform sampler2D uBloomTexture;
 uniform samplerCube uSkyTexture;
 uniform Light uLights[MAX_LIGHTS];
 
@@ -158,7 +158,7 @@ void main() {
             )).rgb;
             
             //vec3 bloomColor = texture(uBloomTexture, ioTexCoords).rgb;
-            //sceneColor += texture(uBloomTexture, ioTexCoords).rgb;
+            sceneColor += texture(uBloomTexture, ioTexCoords).rgb;
             
             ioFragColor = vec4(sceneColor, 1);
             break;

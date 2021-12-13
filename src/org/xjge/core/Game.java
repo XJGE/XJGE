@@ -77,6 +77,8 @@ public final class Game {
             prevTime = currTime;
             ticked   = false;
             
+            int[] attachments = {GL_COLOR_ATTACHMENT0, GL_COLOR_ATTACHMENT4};
+            
             while(delta >= TARGET_DELTA) {
                 Input.pollInput();
                 if(XJGE.getTerminalEnabled()) terminal.update();
@@ -136,13 +138,13 @@ public final class Game {
                         glViewport(0, 0, viewport.width, viewport.height);
                         glClearColor(clearColor.r, clearColor.g, clearColor.b, 0);
                         
-                        int attachment = switch(viewport.id) {
+                        attachments[0] = switch(viewport.id) {
                             case 1  -> GL_COLOR_ATTACHMENT1;
                             case 2  -> GL_COLOR_ATTACHMENT2;
                             case 3  -> GL_COLOR_ATTACHMENT3;
                             default -> GL_COLOR_ATTACHMENT0;
                         };
-                        glDrawBuffer(attachment);
+                        glDrawBuffers(attachments);
                         
                         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
@@ -152,40 +154,9 @@ public final class Game {
                         scene.renderSkybox(viewport.currCamera.viewMatrix);
                         scene.render(glPrograms, viewport.id, viewport.currCamera);
                         scene.renderLightSources(viewport.currCamera);
-                        
-                        glViewport(viewport.botLeft.x, viewport.botLeft.y, viewport.topRight.x, viewport.topRight.y);
-                        projMatrix.setOrtho(viewport.width, 0, 0, viewport.height, 0, 1);
-
-                        glPrograms.get("default").use();
-                        glPrograms.get("default").setUniform("uProjection", false, projMatrix);
-
-                        viewport.render(glPrograms, "texture", 0);
                     glBindFramebuffer(GL_FRAMEBUFFER, 0);
                 }
             }
-            
-            //viewports[0].render(glPrograms, "tex2", bloom.textures[2]);
-            
-            if(viewports[1].active) {
-                glViewport(0, 0, Window.getWidth(), Window.getHeight());
-                bloom.render(viewports[0].texHandle);
-            }
-            
-            /*
-            glBindFramebuffer(GL_DRAW_FRAMEBUFFER, 0);
-            glBindFramebuffer(GL_READ_FRAMEBUFFER, fbo);
-            glBlitFramebuffer(
-                    0, 0,
-                    Window.getWidth(), Window.getHeight(),
-                    0, 0,
-                    Window.getWidth(), Window.getHeight(),
-                    GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT,
-                    GL_NEAREST);
-            //glDrawBuffer(GL_COLOR_ATTACHMENT4);
-            glBindFramebuffer(GL_READ_FRAMEBUFFER, 0);
-            */
-            
-            //viewports[0].render(glPrograms, "tex2", bloom.textures[2]);
             
             //Apply bloom effect.
             {
@@ -225,7 +196,6 @@ public final class Game {
                         viewport.render(glPrograms, "ui", 0);
                     glBindFramebuffer(GL_FRAMEBUFFER, 0);
                     
-                    /*
                     glViewport(viewport.botLeft.x, viewport.botLeft.y, viewport.topRight.x, viewport.topRight.y);
                     projMatrix.setOrtho(viewport.width, 0, 0, viewport.height, 0, 1);
                     
@@ -233,7 +203,6 @@ public final class Game {
                     glPrograms.get("default").setUniform("uProjection", false, projMatrix);
 
                     viewport.render(glPrograms, "texture", bloom.textures[1]);
-                    */
                 }
             }
             
