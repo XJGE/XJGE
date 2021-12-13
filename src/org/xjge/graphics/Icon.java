@@ -125,6 +125,7 @@ public final class Icon {
         
         glEnable(GL_BLEND);
         glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+        glActiveTexture(GL_TEXTURE0);
         glBindTexture(GL_TEXTURE_2D, texture.handle);
         glBindVertexArray(g.vao);
         
@@ -132,6 +133,7 @@ public final class Icon {
         XJGE.getDefaultGLProgram().setUniform("uColor", color.asVec3());
         XJGE.getDefaultGLProgram().setUniform("uModel", false, g.modelMatrix);
         XJGE.getDefaultGLProgram().setUniform("uTexCoords", currCell);
+        XJGE.getDefaultGLProgram().setUniform("uTexture", 0);
         
         glDrawElements(GL_TRIANGLES, g.indices.limit(), GL_UNSIGNED_INT, 0);
         glDisable(GL_BLEND);

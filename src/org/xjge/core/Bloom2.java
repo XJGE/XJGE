@@ -14,9 +14,6 @@ import org.xjge.graphics.Graphics;
  * @since  
  */
 final class Bloom2 {
-
-    private int width;
-    private int height;
     
     final int[] fbos     = new int[2];
     final int[] textures = new int[3];
@@ -31,9 +28,6 @@ final class Bloom2 {
     }
     
     void createTextureAttachments(int width, int height) {
-        this.width  = width;
-        this.height = height;
-        
         for(int i = 0; i < 3; i++) {
             glBindTexture(GL_TEXTURE_2D, textures[i]);
                 glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
