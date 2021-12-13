@@ -95,4 +95,18 @@ final class Bloom {
         ErrorUtils.checkGLError();
     }
     
+    void render(int texHandle) {
+        glActiveTexture(GL_TEXTURE0);
+        glBindTexture(GL_TEXTURE_2D, texHandle);
+        glBindVertexArray(g.vao);
+
+        XJGE.getDefaultGLProgram().use();
+        XJGE.getDefaultGLProgram().setUniform("uType", 0);
+        XJGE.getDefaultGLProgram().setUniform("uTexture", 0);
+
+        glDrawElements(GL_TRIANGLES, g.indices.capacity(), GL_UNSIGNED_INT, 0);
+        
+        ErrorUtils.checkGLError();
+    }
+    
 }

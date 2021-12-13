@@ -68,8 +68,6 @@ public final class Game {
         double delta = 0;
         Matrix4f projMatrix = new Matrix4f();
         
-        int[] attachments = {GL_COLOR_ATTACHMENT0, GL_COLOR_ATTACHMENT4};
-        
         while(!glfwWindowShouldClose(Window.HANDLE)) {
             glfwPollEvents();
             
@@ -138,24 +136,13 @@ public final class Game {
                         glViewport(0, 0, viewport.width, viewport.height);
                         glClearColor(clearColor.r, clearColor.g, clearColor.b, 0);
                         
-                        attachments[0] = switch(viewport.id) {
+                        int attachment = switch(viewport.id) {
                             case 1  -> GL_COLOR_ATTACHMENT1;
                             case 2  -> GL_COLOR_ATTACHMENT2;
                             case 3  -> GL_COLOR_ATTACHMENT3;
                             default -> GL_COLOR_ATTACHMENT0;
                         };
-                        //glDrawBuffer(attachments[0]);
-                        glDrawBuffers(attachments);
-                        
-                        /*
-                        TODO: 
-                        
-                        splitscreen is making things a bit tricky- the solution
-                        might very well be to generate a framebuffer texture 
-                        from the final output of each active viewport- then 
-                        calculate bloom using that texture attachment instead of 
-                        calculating a new one for each individual viewport.
-                        */
+                        glDrawBuffer(attachment);
                         
                         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
@@ -165,21 +152,40 @@ public final class Game {
                         scene.renderSkybox(viewport.currCamera.viewMatrix);
                         scene.render(glPrograms, viewport.id, viewport.currCamera);
                         scene.renderLightSources(viewport.currCamera);
-                    glBindFramebuffer(GL_FRAMEBUFFER, 0);
-                    
-                    /*
-                    glViewport(viewport.botLeft.x, viewport.botLeft.y, viewport.topRight.x, viewport.topRight.y);
-                    projMatrix.setOrtho(viewport.width, 0, 0, viewport.height, 0, 1);
-                    
-                    glPrograms.get("default").use();
-                    glPrograms.get("default").setUniform("uProjection", false, projMatrix);
+                        
+                        glViewport(viewport.botLeft.x, viewport.botLeft.y, viewport.topRight.x, viewport.topRight.y);
+                        projMatrix.setOrtho(viewport.width, 0, 0, viewport.height, 0, 1);
 
-                    viewport.render(glPrograms, "new stage");
-                    */
+                        glPrograms.get("default").use();
+                        glPrograms.get("default").setUniform("uProjection", false, projMatrix);
+
+                        viewport.render(glPrograms, "texture", 0);
+                    glBindFramebuffer(GL_FRAMEBUFFER, 0);
                 }
             }
             
-            //TODO: generate framebuffer texture of each active viewport.
+            //viewports[0].render(glPrograms, "tex2", bloom.textures[2]);
+            
+            if(viewports[1].active) {
+                glViewport(0, 0, Window.getWidth(), Window.getHeight());
+                bloom.render(viewports[0].texHandle);
+            }
+            
+            /*
+            glBindFramebuffer(GL_DRAW_FRAMEBUFFER, 0);
+            glBindFramebuffer(GL_READ_FRAMEBUFFER, fbo);
+            glBlitFramebuffer(
+                    0, 0,
+                    Window.getWidth(), Window.getHeight(),
+                    0, 0,
+                    Window.getWidth(), Window.getHeight(),
+                    GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT,
+                    GL_NEAREST);
+            //glDrawBuffer(GL_COLOR_ATTACHMENT4);
+            glBindFramebuffer(GL_READ_FRAMEBUFFER, 0);
+            */
+            
+            //viewports[0].render(glPrograms, "tex2", bloom.textures[2]);
             
             //Apply bloom effect.
             {
@@ -209,16 +215,17 @@ public final class Game {
             for(Viewport viewport : viewports) {
                 if(viewport.active) {
                     glBindFramebuffer(GL_FRAMEBUFFER, fbo);
-                        attachments[0] = switch(viewport.id) {
+                        int attachment = switch(viewport.id) {
                             case 1  -> GL_COLOR_ATTACHMENT1;
                             case 2  -> GL_COLOR_ATTACHMENT2;
                             case 3  -> GL_COLOR_ATTACHMENT3;
                             default -> GL_COLOR_ATTACHMENT0;
                         };
-                        glDrawBuffer(attachments[0]);
+                        glDrawBuffer(attachment);
                         viewport.render(glPrograms, "ui", 0);
                     glBindFramebuffer(GL_FRAMEBUFFER, 0);
                     
+                    /*
                     glViewport(viewport.botLeft.x, viewport.botLeft.y, viewport.topRight.x, viewport.topRight.y);
                     projMatrix.setOrtho(viewport.width, 0, 0, viewport.height, 0, 1);
                     
@@ -226,6 +233,7 @@ public final class Game {
                     glPrograms.get("default").setUniform("uProjection", false, projMatrix);
 
                     viewport.render(glPrograms, "texture", bloom.textures[1]);
+                    */
                 }
             }
             
