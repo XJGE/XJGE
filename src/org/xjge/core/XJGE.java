@@ -107,6 +107,7 @@ public final class XJGE {
     private static final TreeMap<String, TerminalCommand> userCommands = new TreeMap<>();
     
     static GLProgram depthProgram;
+    static GLProgram blurProgram;
     static Map<String, GLProgram> glPrograms   = new HashMap<>();
     private static final Viewport[] viewports = new Viewport[4];
     
@@ -485,7 +486,7 @@ public final class XJGE {
             debugInfo.updatePosition();
         });
         
-        Game.loop(fbo, viewports, terminal, debugInfo, depthProgram, bloom);
+        Game.loop(fbo, viewports, terminal, debugInfo, depthProgram, blurProgram, bloom);
         
         engineFont.freeTexture();
         engineIcons.freeTexture();

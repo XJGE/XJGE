@@ -60,7 +60,9 @@ public final class Game {
      *                  the engine
      * @param debugInfo an interface detailing the current state of the engine
      */
-    static void loop(int fbo, Viewport[] viewports, Terminal terminal, DebugInfo debugInfo, GLProgram depthProgram, Bloom bloom) {
+    static void loop(int fbo, Viewport[] viewports, Terminal terminal, DebugInfo debugInfo, GLProgram depthProgram, GLProgram blurProgram, Bloom bloom) {
+        //TODO: add doc for new arguments
+        
         int cycles = 0;
         final double TARGET_DELTA = 1 / 60.0;
         double prevTime = glfwGetTime();
@@ -124,8 +126,6 @@ public final class Game {
             scene.setShadowUniforms();
             scene.setLightingUniforms();
             
-            //TODO: add bloom
-            
             //Render scene from the perspective of each active viewport.
             for(Viewport viewport : viewports) {
                 if(viewport.active) {
@@ -163,7 +163,28 @@ public final class Game {
             }
             
             //Apply bloom effect.
-            
+            {
+                projMatrix.setOrtho(Window.getWidth(), 0, 0, Window.getHeight(), 0, 1);
+                
+                blurProgram.use();
+                blurProgram.setUniform("uProjection", false, projMatrix);
+                
+                boolean firstPass  = true;
+                boolean horizontal = true;
+                int blurWeight = 10;
+                
+                for(int i = 0; i < blurWeight; i++) {
+                    int value     = (horizontal) ? 1 : 0;
+                    int invValue  = (horizontal) ? 0 : 1;
+                    int texHandle = bloom.textures[2];
+                    
+                    glBindFramebuffer(GL_FRAMEBUFFER, bloom.fbos[invValue]);
+                    bloom.render(blurProgram, (firstPass) ? texHandle : bloom.textures[value], horizontal);
+
+                    horizontal = !horizontal;
+                    if(firstPass) firstPass = false;
+                }
+            }
             
             //Render each viewports UI, then output the final result of each.
             for(Viewport viewport : viewports) {

@@ -2,6 +2,7 @@ package org.xjge.core;
 
 import static org.lwjgl.opengl.GL30.*;
 import org.lwjgl.system.MemoryStack;
+import org.xjge.graphics.GLProgram;
 import org.xjge.graphics.Graphics;
 
 //Created: Dec 8, 2021
@@ -30,7 +31,7 @@ final class Bloom {
         createTextureAttachments();
     }
     
-    void createTextureAttachments() {
+    private void createTextureAttachments() {
         for(int i = 0; i < 3; i++) {
             glBindTexture(GL_TEXTURE_2D, textures[i]);
                 glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
@@ -79,6 +80,10 @@ final class Bloom {
         height = Window.getHeight();
         
         createTextureAttachments();
+    }
+    
+    void render(GLProgram blurProgram, int texHandle, boolean horizontal) {
+        
     }
     
 }
