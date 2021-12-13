@@ -27,7 +27,8 @@ uniform int uShine;
 uniform float uOpacity;
 uniform vec3 uCamPos;
 uniform sampler2D uTexture;
-uniform sampler2D uShadowMap; //TODO: rename to uShadowMapTexture
+uniform sampler2D uShadowMap;
+uniform sampler2D uBloomTexture;
 uniform samplerCube uSkyTexture;
 uniform Light uLights[MAX_LIGHTS];
 
@@ -151,10 +152,14 @@ void main() {
         case 0: //Used for framebuffer texture attachments.
             vec2 vRes = textureSize(uTexture, 0);
             
-            ioFragColor = texture(uTexture, vec2(
+            vec3 sceneColor = texture(uTexture, vec2(
                 sharpen(ioTexCoords.x * vRes.x) / vRes.x,
                 sharpen(ioTexCoords.y * vRes.y) / vRes.y
-            ));
+            )).rgb;
+            
+            sceneColor += texture(uBloomTexture, ioTexCoords).rgb;
+            
+            ioFragColor = vec4(sceneColor, 1);
             break;
 
         case 1: //Used for text rendering.

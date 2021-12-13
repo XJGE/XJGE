@@ -247,7 +247,8 @@ public final class XJGE {
             
             ErrorUtils.checkFBStatus(GL_FRAMEBUFFER);
             
-            { //Initialize the default shaders.
+            //Initialize the default shader program that will be provided to the implementation.
+            {
                 var shaderSourceFiles = new LinkedList<Shader>() {{
                     add(new Shader("defaultVertex.glsl", GL_VERTEX_SHADER));
                     add(new Shader("defaultFragment.glsl", GL_FRAGMENT_SHADER));
@@ -263,6 +264,7 @@ public final class XJGE {
                 defaultProgram.addUniform(BufferType.INT,   "uTexture");
                 defaultProgram.addUniform(BufferType.INT,   "uShadowMap");
                 defaultProgram.addUniform(BufferType.INT,   "uSkyTexture");
+                defaultProgram.addUniform(BufferType.INT,   "uBloomTexture");
                 defaultProgram.addUniform(BufferType.FLOAT, "uOpacity");
                 defaultProgram.addUniform(BufferType.VEC2,  "uTexCoords");
                 defaultProgram.addUniform(BufferType.VEC3,  "uColor");
@@ -287,7 +289,8 @@ public final class XJGE {
                 glPrograms.put("default", defaultProgram);
             }
             
-            { //Initialize the depth shader for shadow mapping.
+            //Create shader program that will generate shadow map output.
+            {
                 var shaderSourceFiles = new LinkedList<Shader>() {{
                     add(new Shader("depthVertex.glsl", GL_VERTEX_SHADER));
                     add(new Shader("depthFragment.glsl", GL_FRAGMENT_SHADER));
@@ -299,6 +302,22 @@ public final class XJGE {
                 depthProgram.addUniform(BufferType.INT,  "uTexture");
                 depthProgram.addUniform(BufferType.MAT4, "uModel");
                 depthProgram.addUniform(BufferType.MAT4, "uLightSpace");
+            }
+            
+            //Create shader program for applying gaussian blur.
+            {
+                var shaderSourceFiles = new LinkedList<Shader>() {{
+                    add(new Shader("blurVertex.glsl", GL_VERTEX_SHADER));
+                    add(new Shader("blurFragment.glsl", GL_FRAGMENT_SHADER));
+                }};
+                
+                blurProgram = new GLProgram(shaderSourceFiles, "default");
+                
+                blurProgram.use();
+                blurProgram.addUniform(BufferType.INT,   "uBloomTexture");
+                blurProgram.addUniform(BufferType.INT,   "uHorizontal");
+                blurProgram.addUniform(BufferType.FLOAT, "uWeight");
+                blurProgram.addUniform(BufferType.MAT4,  "uProjection");
             }
             
             engineFont  = new Font();
