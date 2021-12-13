@@ -204,7 +204,7 @@ public final class Game {
                     glPrograms.get("default").use();
                     glPrograms.get("default").setUniform("uProjection", false, projMatrix);
 
-                    viewport.render(glPrograms, "texture", bloom.textures[2]);
+                    viewport.render(glPrograms, "texture", bloom.textures[1]);
                 }
             }
             
