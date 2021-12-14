@@ -7,6 +7,7 @@ import java.util.Queue;
 import org.joml.Matrix4f;
 import static org.lwjgl.glfw.GLFW.*;
 import static org.lwjgl.opengl.GL30.*;
+import static org.xjge.core.Scene.MAX_LIGHTS;
 import static org.xjge.core.XJGE.glPrograms;
 import org.xjge.graphics.GLProgram;
 
@@ -231,14 +232,20 @@ public final class Game {
     }
     
     /**
-     * Adds a new light to the scene. If the maximum number of lights has been 
-     * reached, it will recycle the first one in sequence.
+     * Inserts a light object into the current scenes 
+     * {@linkplain Scene#lights lights array} at the specified index.
      * 
+     * @param index the index the light object will be placed at
      * @param light the light object to add
      */
-    public static void addLight(Light light) {
-        //scene.addLight(light);
-        //TODO: might still be nice to have this feature.
+    public static void addLight(int index, Light light) {
+        try {
+            scene.lights[index] = light;
+        } catch(IndexOutOfBoundsException e) {
+            Logger.setDomain("core");
+            Logger.logWarning("Failed to add light at index " + index + ".", e);
+            Logger.setDomain(null);
+        }
     }
     
     /**

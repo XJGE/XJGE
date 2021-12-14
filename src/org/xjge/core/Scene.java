@@ -1,7 +1,6 @@
 package org.xjge.core;
 
 import org.xjge.graphics.GLProgram;
-import org.xjge.graphics.Texture;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import org.joml.Matrix4f;
@@ -28,11 +27,7 @@ public abstract class Scene {
      */
     public static final int MAX_LIGHTS = 32;
     
-    private int currLightIndex;
-    private int numLights = 1;
-    
     public final String name;
-    private static Texture iconTexture;
     private Skybox skybox;
     private ShadowMap shadowMap;
     

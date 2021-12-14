@@ -58,22 +58,10 @@ public class TestScene extends Scene {
         lights[1] = new Light(0.1f, 0, 0.5f, new Vector3f(-27, -2, 0), Color.LIME);
         
         //addLight(new Light(0.1f, 0, 0.5f, new Vector3f(-27, -2, 0), Color.LIME));
-        
-        /*
-        TODO
-        - centralize world light shadow map options.
-        - entities will determine individually if they wish to render shadows 
-          with the new renderShadow() method.
-        - add enable / disable shadows during runtime, might be another way
-          we can squeeze out more performance say if a level doesnt require
-          shadows to be drawn.
-        - refactor / clean up this mess!
-        - add doc
-        - remove tests
-        - recompile jars
-        */
     }
 
+    boolean tried;
+    
     @Override
     public void update(double targetDelta, double trueDelta) {
         skybox.getModelMatrix().rotationY((float) Math.toRadians(angle -= 0.01f));

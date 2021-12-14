@@ -10,6 +10,8 @@ import org.xjge.graphics.GLProgram;
 //Created: Nov 9, 2021
 
 /**
+ * 
+ * 
  * @author J Hoffman
  * @since  2.0.0
  */
@@ -34,6 +36,18 @@ public final class ShadowMap {
     
     final Matrix4f lightSpace = new Matrix4f();
     
+    /**
+     * 
+     * @param minBias
+     * @param maxBias
+     * @param frustumSize
+     * @param range
+     * @param useLinearFilter
+     * @param textureWidth
+     * @param textureHeight
+     * @param showBounds
+     * @param PCFValue 
+     */
     public ShadowMap(float minBias, float maxBias, float frustumSize, float range, boolean useLinearFilter,
                      int textureWidth, int textureHeight, boolean showBounds, int PCFValue) {
         fbo            = glGenFramebuffers();
@@ -55,10 +69,20 @@ public final class ShadowMap {
         glBindFramebuffer(GL_FRAMEBUFFER, 0);
     }
     
+    /**
+     * 
+     */
     public ShadowMap() {
         this(0.00003f, 0.0009f, 100f, 100f, true, 1920, 1920, false, 1);
     }
     
+    /**
+     * 
+     * @param camUp
+     * @param depthProgram
+     * @param worldLightPos
+     * @param entities 
+     */
     void generate(Vector3f camUp, GLProgram depthProgram, Vector3f worldLightPos, LinkedHashMap<String, Entity> entities) {
         lightProj.setOrtho(-frustumSize, frustumSize, -frustumSize, frustumSize, 1f, range);
         lightView.setLookAt(worldLightPos, lightDir, camUp);
@@ -75,6 +99,12 @@ public final class ShadowMap {
         glBindFramebuffer(GL_FRAMEBUFFER, 0);
     }
     
+    /**
+     * 
+     * @param useLinearFilter
+     * @param textureWidth
+     * @param textureHeight 
+     */
     private void updateTexture(boolean useLinearFilter, int textureWidth, int textureHeight) {
         this.useLinearFilter = useLinearFilter;
         this.textureWidth    = textureWidth;
@@ -89,14 +119,27 @@ public final class ShadowMap {
         glBindTexture(GL_TEXTURE_2D, 0);
     }
     
+    /**
+     * 
+     * @param width
+     * @param height 
+     */
     public void setTextureSize(int width, int height) {
         updateTexture(useLinearFilter, width, height);
     }
     
+    /**
+     * 
+     * @param useLinearFilter 
+     */
     public void setTextureFilter(boolean useLinearFilter) {
         updateTexture(useLinearFilter, textureWidth, textureHeight);
     }
     
+    /**
+     * 
+     * @param value 
+     */
     public void setShowBounds(boolean value) {
         float[] borderColor = (value) 
                             ? new float[] {0, 0, 0, 0} 
