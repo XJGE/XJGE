@@ -76,6 +76,8 @@ public abstract class Scene {
      */
     public Scene(String name) {
         this.name = name;
+        
+        //shadowMap = new ShadowMap(); //TDOO: temp
     }
     
     /**
@@ -145,6 +147,9 @@ public abstract class Scene {
             XJGE.getDefaultGLProgram().setUniform("uPCFValue", shadowMap.PCFValue);
             XJGE.getDefaultGLProgram().setUniform("uMinShadowBias", shadowMap.minBias);
             XJGE.getDefaultGLProgram().setUniform("uMaxShadowBias", shadowMap.minBias);
+            XJGE.getDefaultGLProgram().setUniform("uShadowMapActive", 1);
+        } else {
+            XJGE.getDefaultGLProgram().setUniform("uShadowMapActive", 0);
         }
     }
     
