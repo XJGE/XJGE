@@ -9,9 +9,7 @@ uniform sampler2D uBloomTexture;
 out vec4 ioResult;
 
 void main() {
-    float radius = 2.0; //TODO: provide as uniform
-    
-    vec2 texOffset = radius / textureSize(uBloomTexture, 0);
+    vec2 texOffset = 2.0 / textureSize(uBloomTexture, 0);
     vec3 result    = texture(uBloomTexture, ioTexCoords).rgb * uWeight[0];
 
     if(uHorizontal == 1) {

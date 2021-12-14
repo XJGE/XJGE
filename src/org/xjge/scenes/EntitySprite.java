@@ -137,9 +137,10 @@ public class EntitySprite extends Entity {
     public void renderShadow(GLProgram depthProgram) {
         glEnable(GL_DEPTH_TEST);
         glBindVertexArray(g.vao);
+        glActiveTexture(GL_TEXTURE0);
         glBindTexture(GL_TEXTURE_2D, texture.handle);
         
-        //depthProgram.setUniform("uTexture", 0);
+        depthProgram.setUniform("uTexture", 0);
         depthProgram.setUniform("uModel", false, g.modelMatrix);
         
         glDrawElements(GL_TRIANGLES, g.indices.capacity(), GL_UNSIGNED_INT, 0);

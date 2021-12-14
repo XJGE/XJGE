@@ -56,8 +56,8 @@ public final class Light {
      */
     public Light(float brightness, float contrast, float distance, Vector3f position, Color ambientColor, Color diffuseColor, Color specularColor) {        
         this.brightness    = Math.abs(brightness);
-        this.contrast      = clampValue(0, 1, contrast);
-        this.distance      = clampValue(0, Float.MAX_VALUE, distance);
+        this.contrast      = XJGE.clampValue(0, 1, contrast);
+        this.distance      = XJGE.clampValue(0, Float.MAX_VALUE, distance);
         this.position      = position;
         this.ambientColor  = ambientColor;
         this.diffuseColor  = diffuseColor;
@@ -111,30 +111,6 @@ public final class Light {
      */
     public Light(float brightness, float contrast, float distance, Vector3f position, Color color) {
         this(brightness, contrast, distance, position, color, color, color);
-    }
-    
-    /**
-     * Restricts an input value from a user to one between the minimum and 
-     * maximum ranges specified.
-     * 
-     * @param minValue  the minimum permitted value
-     * @param maxValue  the maximum permitted value
-     * @param userValue the value entered by the user
-     * 
-     * @return a value between desired minimum and maximum ranges
-     */
-    private float clampValue(float minValue, float maxValue, float userValue) {
-        float result = 0;
-        
-        if(userValue > maxValue) {
-            result = maxValue;
-        } else if(userValue < minValue) {
-            result = minValue;
-        } else {
-            result = userValue;
-        }
-        
-        return result;
     }
     
     private static float randomValue(float minValue, float maxValue) {

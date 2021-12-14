@@ -270,6 +270,7 @@ public final class XJGE {
                 defaultProgram.addUniform(BufferType.FLOAT, "uOpacity");
                 defaultProgram.addUniform(BufferType.FLOAT, "uMinShadowBias");
                 defaultProgram.addUniform(BufferType.FLOAT, "uMaxShadowBias");
+                defaultProgram.addUniform(BufferType.FLOAT, "uBloomThreshold");
                 defaultProgram.addUniform(BufferType.VEC2,  "uTexCoords");
                 defaultProgram.addUniform(BufferType.VEC3,  "uColor");
                 defaultProgram.addUniform(BufferType.VEC3,  "uCamPos");
@@ -583,6 +584,30 @@ public final class XJGE {
      */
     static boolean getViewportActive(int viewportID) {
         return viewports[viewportID].active;
+    }
+    
+    /**
+     * Restricts an input value from a user to one between the minimum and 
+     * maximum ranges specified.
+     * 
+     * @param minValue  the minimum permitted value
+     * @param maxValue  the maximum permitted value
+     * @param userValue the value entered by the user
+     * 
+     * @return a value between desired minimum and maximum ranges
+     */
+    static float clampValue(float minValue, float maxValue, float userValue) {
+        float result = 0;
+        
+        if(userValue > maxValue) {
+            result = maxValue;
+        } else if(userValue < minValue) {
+            result = minValue;
+        } else {
+            result = userValue;
+        }
+        
+        return result;
     }
     
     /**

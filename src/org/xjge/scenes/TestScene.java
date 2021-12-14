@@ -3,11 +3,13 @@ package org.xjge.scenes;
 import java.util.Map;
 import org.joml.Vector3f;
 import org.xjge.core.Camera;
+import org.xjge.core.Game;
 import org.xjge.core.Scene;
 import org.xjge.core.Skybox;
 import org.xjge.graphics.Color;
 import org.xjge.graphics.GLProgram;
 import org.xjge.core.Light;
+import org.xjge.core.ShadowMap;
 
 /**
  * Nov 9, 2021
@@ -25,6 +27,12 @@ public class TestScene extends Scene {
     
     public TestScene() {
         super("test");
+        
+        Game.enableBloom = true;
+        Game.setBloomThreshold(1.5f);
+        
+        ShadowMap shadowMap = new ShadowMap();
+        setShadowMap(shadowMap);
         
         skybox = new Skybox("sky_noon_top.png", "sky_noon_center.png", "sky_noon_bottom.png", true);
         

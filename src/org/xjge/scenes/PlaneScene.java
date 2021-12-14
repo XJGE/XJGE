@@ -28,8 +28,7 @@ public class PlaneScene extends Scene {
         //Skybox skybox = new Skybox("sky_noon_top.png", "sky_noon_center.png", "sky_noon_bottom.png", true);
         //setSkybox(skybox);
         
-        //ShadowMap shadowMap = new ShadowMap();
-        ShadowMap shadowMap = new ShadowMap(0.00003f, 0.0009f, 50f, 100f, true, 1920, 1920, true, 1);
+        ShadowMap shadowMap = new ShadowMap();
         
         setShadowMap(shadowMap);
         

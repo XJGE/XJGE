@@ -151,7 +151,7 @@ public abstract class Scene {
         }
     }
     
-    protected void setShadowMap(ShadowMap shadowMap) {
+    protected final void setShadowMap(ShadowMap shadowMap) {
         this.shadowMap = shadowMap;
     }
     

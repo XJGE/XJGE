@@ -28,6 +28,7 @@ uniform int uShadowMapActive;
 uniform float uOpacity;
 uniform float uMinShadowBias;
 uniform float uMaxShadowBias;
+uniform float uBloomThreshold;
 uniform vec3 uCamPos;
 uniform sampler2D uTexture;
 uniform sampler2D uShadowMap;
@@ -202,5 +203,5 @@ void main() {
     }
     
     float brightness = dot(ioFragColor.rgb, vec3(0.2126, 0.7152, 0.0722));
-    ioBrightColor    = (brightness > 1.0) ? vec4(ioFragColor.rgb, 1) : vec4(0, 0, 0, 1); //TODO: provide 1.0 through uniform.
+    ioBrightColor    = (brightness > uBloomThreshold) ? vec4(ioFragColor.rgb, 1) : vec4(0, 0, 0, 1);
 }

@@ -38,10 +38,12 @@ public final class Game {
     private static int fps;
     private static int tickCount = 0;
     
+    private static float bloomThreshold = 1.0f;
+    
     private static double deltaMetric = 0;
     
     private static boolean ticked;
-    public static boolean enableBloom = true;
+    public static boolean enableBloom;
     
     private static Color clearColor = Color.create(92, 148, 252);
     private static Scene scene;
@@ -120,6 +122,7 @@ public final class Game {
             }
             
             XJGE.getDefaultGLProgram().use();
+            XJGE.getDefaultGLProgram().setUniform("uBloomThreshold", bloomThreshold);
             scene.setShadowUniforms();
             scene.setLightingUniforms();
             
@@ -295,6 +298,15 @@ public final class Game {
         
         if(Game.scene != null) scene.exit();
         Game.scene = scene;
+    }
+    
+    /**
+     * 
+     * 
+     * @param value 
+     */
+    public static void setBloomThreshold(float value) {
+        bloomThreshold = XJGE.clampValue(0f, 10f, value);
     }
     
 }
