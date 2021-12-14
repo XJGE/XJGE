@@ -36,7 +36,7 @@ public class EmptyScene extends Scene {
     }
 
     @Override
-    public void render(Map<String, GLProgram> glPrograms, int viewportID, Camera camera) {
+    public void render(Map<String, GLProgram> glPrograms, int viewportID, Camera camera, int depthTexHandle) {
         //entities.values().forEach(entity -> entity.render(glPrograms.get("default"), camera, lights, 0));
     }
 

@@ -34,7 +34,7 @@ public abstract class Scene {
     public final String name;
     private static Texture iconTexture;
     private Skybox skybox;
-    protected ShadowMap shadowMap;
+    private ShadowMap shadowMap;
     
     private static final Vector3f noValue = new Vector3f();
     
@@ -182,6 +182,11 @@ public abstract class Scene {
         if(skybox != null) skybox.render(viewMatrix);
     }
     
+    void render(Map<String, GLProgram> glPrograms, int viewportID, Camera camera) {
+        if(shadowMap != null) render(glPrograms, viewportID, camera, shadowMap.depthTexHandle);
+        else                  render(glPrograms, viewportID, camera, -1);
+    }
+    
     /**
      * Organizes and updates the game logic of the scene and every entity 
      * inhabiting it. Called automatically by the engine once every game tick. 
@@ -206,7 +211,7 @@ public abstract class Scene {
      * @param camera     the {@link Camera} object of the current 
      *                   {@link Viewport} being rendered
      */
-    public abstract void render(Map<String, GLProgram> glPrograms, int viewportID, Camera camera);
+    public abstract void render(Map<String, GLProgram> glPrograms, int viewportID, Camera camera, int depthTexHandle);
     
     /**
      * Called by the engine when this scene is left for another. Any 

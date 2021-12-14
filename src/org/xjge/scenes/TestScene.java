@@ -2,15 +2,12 @@ package org.xjge.scenes;
 
 import java.util.Map;
 import org.joml.Vector3f;
-import static org.lwjgl.glfw.GLFW.GLFW_JOYSTICK_1;
 import org.xjge.core.Camera;
 import org.xjge.core.Scene;
 import org.xjge.core.Skybox;
 import org.xjge.graphics.Color;
 import org.xjge.graphics.GLProgram;
 import org.xjge.core.Light;
-import org.xjge.core.XJGE;
-import org.xjge.test.TestWidget;
 
 /**
  * Nov 9, 2021
@@ -78,9 +75,9 @@ public class TestScene extends Scene {
     }
 
     @Override
-    public void render(Map<String, GLProgram> glPrograms, int viewportID, Camera camera) {
+    public void render(Map<String, GLProgram> glPrograms, int viewportID, Camera camera, int depthTexHandle) {
         glPrograms.get("default").use();
-        entities.values().forEach(entity -> entity.render(glPrograms.get("default"), camera, lights, shadowMap.depthTexHandle));
+        entities.values().forEach(entity -> entity.render(glPrograms.get("default"), camera, lights, depthTexHandle));
     }
 
     @Override
