@@ -29,7 +29,9 @@ public class PlaneScene extends Scene {
         //setSkybox(skybox);
         
         //ShadowMap shadowMap = new ShadowMap();
-        //ShadowMap shadowMap = new ShadowMap(0.00003, 0.0009, 100f, 100f, true, 1920, 1920, false, 1);
+        ShadowMap shadowMap = new ShadowMap(0.00003f, 0.0009f, 50f, 100f, true, 1920, 1920, true, 1);
+        
+        setShadowMap(shadowMap);
         
         Game.setClearColor(Color.BLACK);
         

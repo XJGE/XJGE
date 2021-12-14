@@ -99,8 +99,8 @@ public final class ShadowMap {
     
     public void setShowBounds(boolean value) {
         float[] borderColor = (value) 
-                            ? new float[] {1, 1, 1, 1} 
-                            : new float[] {0, 0, 0, 0};
+                            ? new float[] {0, 0, 0, 0} 
+                            : new float[] {1, 1, 1, 1};
         
         glBindTexture(GL_TEXTURE_2D, depthTexHandle);
             glTexParameterfv(GL_TEXTURE_2D, GL_TEXTURE_BORDER_COLOR, borderColor);

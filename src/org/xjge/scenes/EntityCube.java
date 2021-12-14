@@ -108,7 +108,7 @@ public class EntityCube extends Entity {
         g.modelMatrix.translation(position);
         
         if(rotate) {
-            g.modelMatrix.rotateY((float) Math.toRadians(angle -= 0.02f));
+            g.modelMatrix.rotateY((float) Math.toRadians(angle -= 0.5f));
             g.modelMatrix.rotateZ((float) -Math.toRadians(angle));
         }
     }

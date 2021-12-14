@@ -76,8 +76,6 @@ public abstract class Scene {
      */
     public Scene(String name) {
         this.name = name;
-        
-        //shadowMap = new ShadowMap(); //TDOO: temp
     }
     
     /**
@@ -151,6 +149,10 @@ public abstract class Scene {
         } else {
             XJGE.getDefaultGLProgram().setUniform("uShadowMapActive", 0);
         }
+    }
+    
+    protected void setShadowMap(ShadowMap shadowMap) {
+        this.shadowMap = shadowMap;
     }
     
     /**
