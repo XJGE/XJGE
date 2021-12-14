@@ -24,7 +24,10 @@ uniform int uType;
 uniform int uNumLights;
 uniform int uPCFValue;
 uniform int uShine;
+uniform int uShadowMapActive;
 uniform float uOpacity;
+uniform float uMinShadowBias;
+uniform float uMaxShadowBias;
 uniform vec3 uCamPos;
 uniform sampler2D uTexture;
 uniform sampler2D uShadowMap;
@@ -64,7 +67,7 @@ float calcShadow(float dotLightNormal) {
     if(pos.z > 1) pos.z = 1;
     
     float depth = texture(uShadowMap, pos.xy).r;
-    float bias  = max(0.0009 * (1 - dotLightNormal), 0.00003);
+    float bias  = max(uMaxShadowBias * (1 - dotLightNormal), uMinShadowBias);
     
     if(uPCFValue > 0) {
         vec2 texelSize = 1.0 / textureSize(uShadowMap, 0);
@@ -106,7 +109,10 @@ vec3 calcWorldLight(Light light, vec3 normal) {
     vec3 specular   = spec * light.specular;
     
     float dotLightNormal = dot(lightDir, normal);
-    float shadow         = calcShadow(dotLightNormal);
+    
+    float shadow = (uShadowMapActive == 1) 
+                 ? calcShadow(dotLightNormal)
+                 : 1.0f;
     
     vec3 lighting = (uShine != 0) 
                   ? (shadow * diffuse + ambient + specular) * ioColor 

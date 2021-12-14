@@ -266,7 +266,10 @@ public final class XJGE {
                 defaultProgram.addUniform(BufferType.INT,   "uShadowMap");
                 defaultProgram.addUniform(BufferType.INT,   "uSkyTexture");
                 defaultProgram.addUniform(BufferType.INT,   "uBloomTexture");
+                defaultProgram.addUniform(BufferType.INT,   "uShadowMapActive");
                 defaultProgram.addUniform(BufferType.FLOAT, "uOpacity");
+                defaultProgram.addUniform(BufferType.FLOAT, "uMinShadowBias");
+                defaultProgram.addUniform(BufferType.FLOAT, "uMaxShadowBias");
                 defaultProgram.addUniform(BufferType.VEC2,  "uTexCoords");
                 defaultProgram.addUniform(BufferType.VEC3,  "uColor");
                 defaultProgram.addUniform(BufferType.VEC3,  "uCamPos");

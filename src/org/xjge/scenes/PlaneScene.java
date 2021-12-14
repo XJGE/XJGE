@@ -8,6 +8,7 @@ import org.xjge.core.Scene;
 import org.xjge.graphics.Color;
 import org.xjge.graphics.GLProgram;
 import org.xjge.core.Light;
+import org.xjge.core.ShadowMap;
 import org.xjge.core.XJGE;
 import org.xjge.test.TestWidget;
 
@@ -26,6 +27,9 @@ public class PlaneScene extends Scene {
         
         //Skybox skybox = new Skybox("sky_noon_top.png", "sky_noon_center.png", "sky_noon_bottom.png", true);
         //setSkybox(skybox);
+        
+        //ShadowMap shadowMap = new ShadowMap();
+        //ShadowMap shadowMap = new ShadowMap(0.00003, 0.0009, 100f, 100f, true, 1920, 1920, false, 1);
         
         Game.setClearColor(Color.BLACK);
         
