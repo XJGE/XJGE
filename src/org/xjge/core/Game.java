@@ -7,7 +7,6 @@ import java.util.Queue;
 import org.joml.Matrix4f;
 import static org.lwjgl.glfw.GLFW.*;
 import static org.lwjgl.opengl.GL30.*;
-import static org.xjge.core.Scene.MAX_LIGHTS;
 import static org.xjge.core.XJGE.glPrograms;
 import org.xjge.graphics.GLProgram;
 
@@ -25,10 +24,11 @@ import org.xjge.graphics.GLProgram;
  * <ul>
  * <li>{@linkplain #addEntity(String, Entity)}</li>
  * <li>{@linkplain #addEvent(Event)}</li>
- * <li>{@linkplain #addLight(Light)}</li>
+ * <li>{@linkplain #addLight(int, Light)}</li>
  * <li>{@linkplain #setClearColor(Color)}</li>
  * <li>{@linkplain #setScene(Scene)}</li>
  * <li>{@linkplain #tick(int)}</li>
+ * <li>{@linkplain #setBloomThreshold(float)}</li>
  * </ul>
  * 
  * @author J Hoffman
@@ -69,8 +69,6 @@ public final class Game {
      *                     the bloom framebuffer textures
      */
     static void loop(int fbo, Viewport[] viewports, Terminal terminal, DebugInfo debugInfo, GLProgram depthProgram, GLProgram blurProgram) {
-        //TODO: add doc for new arguments
-        
         int cycles = 0;
         final double TARGET_DELTA = 1 / 60.0;
         double prevTime = glfwGetTime();

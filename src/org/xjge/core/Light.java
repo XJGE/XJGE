@@ -12,8 +12,12 @@ import org.xjge.graphics.Texture;
 //Created: Jun 12, 2021
 
 /**
- * Data structure that contains information which can be used to simulate 
- * visible light.
+ * Represents a source of visible light at some point in 3D space. This can be 
+ * best conceptualized as a physical object that emits light, such as a light 
+ * bulb.
+ * <p>
+ * This data structure is used internally by the engine for its own lighting 
+ * utilities.
  * 
  * @author J Hoffman
  * @since  2.0.0
@@ -52,7 +56,7 @@ public final class Light {
      * @param diffuseColor  the color that will be dispersed into nearby entity 
      *                      from the general direction of the light source
      * @param specularColor the color that will be reflected off entities 
-     *                      depending on their shininess
+     *                      depending on their shininess value
      */
     public Light(float brightness, float contrast, float distance, Vector3f position, Color ambientColor, Color diffuseColor, Color specularColor) {        
         this.brightness    = Math.abs(brightness);
@@ -113,14 +117,32 @@ public final class Light {
         this(brightness, contrast, distance, position, color, color, color);
     }
     
+    /**
+     * 
+     * @param minValue
+     * @param maxValue
+     * @return 
+     */
     private static float randomValue(float minValue, float maxValue) {
         return (float) (minValue + Math.random() * (maxValue - minValue));
     }
     
+    /**
+     * Supplies the light class with a texture containing icons that will 
+     * indicate individual light positions within the current scene.
+     * 
+     * @param engineIcons the texture atlas containing all the icons used by 
+     *                    the engine
+     */
     static void setIconTexture(Texture engineIcons) {
         iconTexture = engineIcons;
     }
     
+    /**
+     * Updates the current position and icon of the light object.
+     *
+     * @param index a unique number used to identify the light
+     */
     void update(int index) {
         g.modelMatrix.translation(position);
         
@@ -128,6 +150,17 @@ public final class Light {
         else           texCoords.set(atlas.subImageWidth * 2, atlas.subImageHeight);
     }
     
+    /**
+     * Renders an icon representing the current position of the light source in 
+     * the game world. Light source visibility can be toggled by pressing F3 
+     * while debug mode is enabled.
+     * 
+     * @param camPos the current position of the viewports camera object
+     * @param camDir the direction in which the viewports camera is currently 
+     *               facing
+     * @param camUp  the direction considered upwards relative to the viewports 
+     *               camera
+     */
     void render(Vector3f camPos, Vector3f camDir, Vector3f camUp) {
         g.modelMatrix.billboardSpherical(position, camPos, camUp);
         g.modelMatrix.scale(camPos.distance(position) / 10);
