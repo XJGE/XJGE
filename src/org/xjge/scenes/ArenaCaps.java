@@ -1,7 +1,7 @@
 package org.xjge.scenes;
 
 import static org.lwjgl.opengl.GL11C.*;
-import org.xjge.graphics.GLCapabilities;
+import org.xjge.graphics.GLCaps;
 
 /**
  * Nov 9, 2021
@@ -11,7 +11,7 @@ import org.xjge.graphics.GLCapabilities;
  * @author J Hoffman
  * @since  
  */
-public class ArenaCaps extends GLCapabilities {
+public class ArenaCaps extends GLCaps {
 
     @Override
     public void enable() {

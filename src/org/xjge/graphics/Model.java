@@ -66,7 +66,7 @@ public class Model {
     private final ArrayList<Bone> bones = new ArrayList<>();
     private Map<String, SkeletalAnimation> animations;
     
-    private class DefaultCaps extends GLCapabilities {
+    private class DefaultCaps extends GLCaps {
         @Override
         public void enable() {
             glEnable(GL_DEPTH_TEST);
@@ -744,7 +744,7 @@ public class Model {
      *                  scene
      * @param capabilities an object that can be used to enable various OpenGL capabilities
      */
-    public void render(GLProgram glProgram, Light[] lights, GLCapabilities capabilities, int shineValue, int shadowMapTexHandle) {
+    public void render(GLProgram glProgram, Light[] lights, GLCaps capabilities, int shineValue, int shadowMapTexHandle) {
         if(capabilities != null) capabilities.enable();
         
         glProgram.use();
