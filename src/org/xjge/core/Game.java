@@ -55,12 +55,18 @@ public final class Game {
      * Central game loop that decouples game time progression from processor 
      * speed and framerate.
      * 
-     * @param fbo       the handle of the framebuffer object used to render 
-     *                  viewports
-     * @param viewports an array of the viewports to render during split screen
-     * @param terminal  a command terminal that can be used to interact with 
-     *                  the engine
-     * @param debugInfo an interface detailing the current state of the engine
+     * @param fbo          the handle of the framebuffer object used to render 
+     *                     viewports
+     * @param viewports    an array of the viewports to render during split 
+     *                     screen
+     * @param terminal     a command terminal that can be used to interact with 
+     *                     the engine
+     * @param debugInfo    an interface detailing the current state of the 
+     *                     engine
+     * @param depthProgram the shader program used to generate the shadow maps
+     *                     framebuffer texture
+     * @param blurProgram  the shader program used to apply a Gaussian blur to
+     *                     the bloom framebuffer textures
      */
     static void loop(int fbo, Viewport[] viewports, Terminal terminal, DebugInfo debugInfo, GLProgram depthProgram, GLProgram blurProgram) {
         //TODO: add doc for new arguments
@@ -233,7 +239,10 @@ public final class Game {
     
     /**
      * Inserts a light object into the current scenes 
-     * {@linkplain Scene#lights lights array} at the specified index.
+     * {@linkplain Scene#lights light array} at the specified index. This 
+     * method is particularly useful in instances where lighting effects need 
+     * to exhibit some level of dynamic behavior- such as an explosion in a 
+     * dark tunnel emitting light for a brief period of time, etc.
      * 
      * @param index the index the light object will be placed at
      * @param light the light object to add
@@ -308,9 +317,12 @@ public final class Game {
     }
     
     /**
+     * Specifies the value which will be used to indicate how bright the surface 
+     * of an object must be before the bloom effect is applied to it. The lower 
+     * the brightness threshold, the more abundant bloom will be.
      * 
-     * 
-     * @param value 
+     * @param value a number between 0 and 10 that the brightness of a surface
+     *              will need to exceed
      */
     public static void setBloomThreshold(float value) {
         bloomThreshold = XJGE.clampValue(0f, 10f, value);
