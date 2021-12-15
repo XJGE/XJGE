@@ -8,7 +8,8 @@ import org.xjge.graphics.Graphics;
 //Created: Dec 13, 2021
 
 /**
- * Produces a "glowing" type effect around surfaces that exceed a certain 
+ * Produces a "glowing" effect around the edges of surfaces that exceed a 
+ * some 
  * {@linkplain Game#setBloomThreshold(float) brightness threshold}.
  * <p>
  * More specifically, the Bloom class manages the framebuffer objects and 
@@ -43,8 +44,8 @@ final class Bloom {
      * Creates several OpenGL texture objects that will be provided to various
      * framebuffers in the form of texture attachments.
      * 
-     * @param width  the width of the texture (in pixels)
-     * @param height the height of the texture (in pixels)
+     * @param width  the width of the framebuffer texture (in pixels)
+     * @param height the height of the framebuffer texture (in pixels)
      */
     void createTextureAttachments(int width, int height) {
         for(int i = 0; i < 3; i++) {

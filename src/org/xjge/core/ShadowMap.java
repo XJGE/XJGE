@@ -10,8 +10,8 @@ import org.xjge.graphics.GLProgram;
 //Created: Nov 9, 2021
 
 /**
- * Shadow maps generate a 2D texture that is subsequently projected over the 
- * scene to create the appearance of shadows.
+ * Shadow maps generate a 2D texture that is then projected over the scene to 
+ * create the appearance of dynamic shadows.
  * <p>
  * More specifically, the shadow map projects a frustum from the position of 
  * the global light source towards the scenes origin point (0, 0, 0) and renders 
@@ -60,7 +60,7 @@ public final class ShadowMap {
      * @param frustumSize     the size of the area the shadow map will attempt 
      *                        to cover. Values may not correspond perfectly to 
      *                        world space.
-     * @param range           the maximum distance or depth the shadow maps 
+     * @param range           the maximum distance or depth of the shadow maps 
      *                        influence
      * @param useLinearFilter if true, the texture will exhibit linear 
      *                        filtering otherwise nearest neighbor filtering 
@@ -114,7 +114,8 @@ public final class ShadowMap {
      *                      be used to generate the shadow map texture
      * @param worldLightPos the current position of the global light source
      * @param entities      the current scenes 
-     *                      {@linkplain Scene#entities entities collection}.
+     *                      {@linkplain Scene#entities entities collection} to
+     *                      iterate through
      */
     void generate(Vector3f camUp, GLProgram depthProgram, Vector3f worldLightPos, LinkedHashMap<String, Entity> entities) {
         lightProj.setOrtho(-frustumSize, frustumSize, -frustumSize, frustumSize, 1f, range);
@@ -178,11 +179,12 @@ public final class ShadowMap {
     }
     
     /**
-     * Sets whether the edges of the shadow maps area of influence will be 
-     * exposed or hidden. It's often useful to make the bounds of the shadow 
-     * map visible for debugging purposes.
+     * Sets whether the areas beyond the shadow maps frustum are darkened or 
+     * not. It's often useful to expose the edges of the shadow maps influence 
+     * for debugging purposes.
      * 
-     * @param value if true, the edges of the shadow texture will be darkened
+     * @param value if true, the edges beyond the shadow maps influence will be 
+     *              darkened
      */
     public void setShowBounds(boolean value) {
         float[] borderColor = (value) 

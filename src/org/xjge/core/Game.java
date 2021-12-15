@@ -237,12 +237,12 @@ public final class Game {
     
     /**
      * Inserts a light object into the current scenes 
-     * {@linkplain Scene#lights light array} at the specified index. This 
+     * {@linkplain Scene#lights lights array} at the specified index. This 
      * method is particularly useful in instances where lighting effects need 
      * to exhibit some level of dynamic behavior- such as an explosion in a 
      * dark tunnel emitting light for a brief period of time, etc.
      * 
-     * @param index the index the light object will be placed at
+     * @param index the index in the array to place the light object at
      * @param light the light object to add
      */
     public static void addLight(int index, Light light) {
@@ -316,7 +316,7 @@ public final class Game {
     
     /**
      * Specifies the value which will be used to indicate how bright the surface 
-     * of an object must be before the bloom effect is applied to it. The lower 
+     * of objects must be before the bloom effect is applied to it. The lower 
      * the brightness threshold, the more abundant bloom will be.
      * 
      * @param value a number between 0 and 10 that the brightness of a surface
