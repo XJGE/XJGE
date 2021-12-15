@@ -790,7 +790,7 @@ public class Model {
     
     /**
      * Alternate version of {@link render render()} that uses the default 
-     * {@link GLCapabilities} provided by the engine which includes backface 
+     * {@linkplain GLCaps capabilties} provided by the engine which includes backface 
      * culling and depth testing.
      * 
      * @param glProgram the shader program that will be used to render this 

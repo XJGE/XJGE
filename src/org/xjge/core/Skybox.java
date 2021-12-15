@@ -45,7 +45,7 @@ public final class Skybox {
     }
     
     /**
-     * Overloaded version of {@link Skybox(String, String, String)}. This 
+     * Overloaded version of {@link Skybox(String, String, String, boolean)}. This 
      * variant permits more variation between faces of the skybox.
      * 
      * @param rightFilename  the filename of the image to use for the right 
