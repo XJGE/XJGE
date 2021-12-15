@@ -2,34 +2,10 @@
 <project-private xmlns="http://www.netbeans.org/ns/project-private/1">
     <editor-bookmarks xmlns="http://www.netbeans.org/ns/editor-bookmarks/2" lastBookmarkId="58">
         <file>
-            <url>src/org/xjge/scenes/TestScene.java</url>
-            <bookmark id="53">
-                <name/>
-                <line>57</line>
-                <key/>
-            </bookmark>
-        </file>
-        <file>
-            <url>src/org/xjge/core/Entity.java</url>
-            <bookmark id="50">
-                <name/>
-                <line>78</line>
-                <key/>
-            </bookmark>
-        </file>
-        <file>
             <url>src/dev/theskidster/xjge2/input/Input.java</url>
             <bookmark id="9">
                 <name/>
                 <line>16</line>
-                <key/>
-            </bookmark>
-        </file>
-        <file>
-            <url>src/org/xjge/test/Main.java</url>
-            <bookmark id="57">
-                <name/>
-                <line>19</line>
                 <key/>
             </bookmark>
         </file>
@@ -44,13 +20,10 @@
     </editor-bookmarks>
     <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
         <group>
-            <file>file:/C:/Users/thesk/Documents/Projects/XJGE/XJGE-2/src/org/xjge/core/Game.java</file>
-            <file>file:/C:/Users/thesk/Documents/Projects/XJGE/XJGE-2/src/org/xjge/core/Scene.java</file>
-            <file>file:/C:/Users/thesk/Documents/Projects/XJGE/XJGE-2/src/org/xjge/scenes/PlaneScene.java</file>
-            <file>file:/C:/Users/thesk/Documents/Projects/XJGE/XJGE-2/src/org/xjge/core/XJGE.java</file>
-            <file>file:/C:/Users/thesk/Documents/Projects/XJGE/XJGE-2/src/org/xjge/core/Viewport.java</file>
-            <file>file:/C:/Users/thesk/Documents/Projects/XJGE/XJGE-2/src/org/xjge/core/Bloom.java</file>
-            <file>file:/C:/Users/thesk/Documents/Projects/XJGE/XJGE-2/src/org/xjge/assets/blurFragment.glsl</file>
+            <file>file:/C:/Users/thesk/Documents/Projects/XJGE/XJGE-2/src/org/xjge/core/Entity.java</file>
+            <file>file:/C:/Users/thesk/Documents/Projects/XJGE/XJGE-2/src/org/xjge/scenes/EntityFortress.java</file>
+            <file>file:/C:/Users/thesk/Documents/Projects/XJGE/XJGE-2/src/org/xjge/scenes/EntityTeapot.java</file>
+            <file>file:/C:/Users/thesk/Documents/Projects/XJGE/XJGE-2/src/org/xjge/graphics/Model.java</file>
         </group>
     </open-files>
 </project-private>

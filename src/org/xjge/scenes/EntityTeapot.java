@@ -43,7 +43,10 @@ public class EntityTeapot extends Entity {
 
     @Override
     public void render(GLProgram glProgram, Camera camera, Light[] lights, int shadowMapTexHandle) {
+        glProgram.use();
+        glProgram.setUniform("uBloomOverride", 1);
         teapot.render(glProgram, lights, 16, shadowMapTexHandle);
+        glProgram.setUniform("uBloomOverride", 0);
     }
 
     @Override

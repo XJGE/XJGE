@@ -25,6 +25,7 @@ uniform int uNumLights;
 uniform int uPCFValue;
 uniform int uShine;
 uniform int uShadowMapActive;
+uniform int uBloomOverride;
 uniform float uOpacity;
 uniform float uMinShadowBias;
 uniform float uMaxShadowBias;
@@ -202,6 +203,11 @@ void main() {
             break;
     }
     
-    float brightness = dot(ioFragColor.rgb, vec3(0.2126, 0.7152, 0.0722));
-    ioBrightColor    = (brightness > uBloomThreshold) ? vec4(ioFragColor.rgb, 1) : vec4(0, 0, 0, 1);
+    if(uBloomOverride == 0) {
+        float brightness = dot(ioFragColor.rgb, vec3(0.2126, 0.7152, 0.0722));
+        ioBrightColor    = (brightness > uBloomThreshold) ? vec4(ioFragColor.rgb, 1) : vec4(0, 0, 0, 1);
+    } else {
+        ioBrightColor = ioFragColor;
+    }
+    
 }
