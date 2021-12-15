@@ -63,10 +63,10 @@ public final class Game {
      *                     the engine
      * @param debugInfo    an interface detailing the current state of the 
      *                     engine
-     * @param depthProgram the shader program used to generate the shadow maps
-     *                     framebuffer texture
+     * @param depthProgram the shader program provided by the engine that will 
+     *                     be used to generate the shadow map texture
      * @param blurProgram  the shader program used to apply a Gaussian blur to
-     *                     the bloom framebuffer textures
+     *                     the bloom framebuffer texture
      */
     static void loop(int fbo, Viewport[] viewports, Terminal terminal, DebugInfo debugInfo, GLProgram depthProgram, GLProgram blurProgram) {
         int cycles = 0;

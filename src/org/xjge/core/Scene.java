@@ -16,8 +16,10 @@ import org.joml.Vector3f;
  * @since  2.0.0
  * 
  * @see Entity
- * @see LightSource
+ * @see Light
  * @see Camera
+ * @see Skybox
+ * @see ShadowMap
  */
 public abstract class Scene {
 
@@ -59,7 +61,24 @@ public abstract class Scene {
      */
     protected final LinkedHashMap<String, Entity> entities = new LinkedHashMap<>();
     
-    //TODO: add doc on how to properly use
+    /**
+     * An array that contains every {@link Light} object currently present 
+     * within the scene.
+     * <p>
+     * Like the {@linkplain entities entities collection} the engine makes use
+     * of this array in other places- however it permits a greater degree of 
+     * freedom as the values contained by the light objects are generic and can 
+     * be used for custom lighting solutions should the implementing application 
+     * decide not to utilize the engines built-in lighting utilities.
+     * <p>
+     * NOTE: When using the engines built-in lighting utilities the index of 
+     * zero is reserved for the scenes global light source. This light source 
+     * will illuminate all entities within the scene regardless of their  
+     * physical location or proximity to the light. Additionally, if a shadow 
+     * map is present, it will project its frustum in the direction of the 
+     * origin from the global light source. Any light object placed at the index 
+     * of zero will instantly assume the role of the global light source.
+     */
     protected final Light[] lights = new Light[MAX_LIGHTS];
     
     /**
@@ -83,8 +102,8 @@ public abstract class Scene {
     
     /**
      * Supplies every light struct in the default fragment shader with uniform 
-     * values from their corresponding {@link LightSource} objects. This 
-     * method is called automatically by the engine.
+     * values from their corresponding {@link Light} objects. This method is 
+     * called automatically by the engine.
      */
     void setLightingUniforms() {
         for(int i = 0; i < Scene.MAX_LIGHTS; i++) {
@@ -110,6 +129,10 @@ public abstract class Scene {
         }
     }
     
+    /**
+     * Updates the current position and icon of every initialized light object.
+     * This method is called automatically by the engine.
+     */
     void updateLightSources() {
         if(XJGE.getLightSourcesVisible()) {
             for(int i = 0; i < MAX_LIGHTS; i++) {
@@ -134,6 +157,11 @@ public abstract class Scene {
         }
     }
     
+    /**
+     * Supplies the values from the fields of the current {@link ShadowMap} 
+     * object to their corresponding uniform variables in the default fragment 
+     * shader. This method is called automatically by the engine.
+     */
     void setShadowUniforms() {
         if(shadowMap != null) {
             XJGE.getDefaultGLProgram().setUniform("uLightSpace", false, shadowMap.lightSpace);
@@ -146,6 +174,12 @@ public abstract class Scene {
         }
     }
     
+    /**
+     * Sets the current shadow map that will be used to cast shadows onto 
+     * various entities within the scene.
+     * 
+     * @param shadowMap the shadow map object to use
+     */
     protected final void setShadowMap(ShadowMap shadowMap) {
         this.shadowMap = shadowMap;
     }
@@ -184,6 +218,22 @@ public abstract class Scene {
         if(skybox != null) skybox.render(viewMatrix);
     }
     
+    /**
+     * Variant of the 
+     * {@linkplain render(Map, int, Camera, int) render()} method that's 
+     * intentionally kept beyond the implementations reach and used to populate 
+     * the value of the {@code depthTexHandle} argument. This method is called 
+     * automatically by the engine. 
+     * 
+     * @param glPrograms an immutable collection containing the shader programs 
+     *                    compiled during startup
+     * @param viewportID the ID number of the viewport currently rendering the 
+     *                    scene. Supplied here in case certain objects are to 
+     *                    be included or omitted from the viewports rendering 
+     *                    pass
+     * @param camera     the {@link Camera} object of the current 
+     *                    {@link Viewport} being rendered
+     */
     void render(Map<String, GLProgram> glPrograms, int viewportID, Camera camera) {
         if(shadowMap != null) render(glPrograms, viewportID, camera, shadowMap.depthTexHandle);
         else                  render(glPrograms, viewportID, camera, -1);
@@ -205,13 +255,16 @@ public abstract class Scene {
      * objects located in the game world. This method is called automatically 
      * by the engine.
      * 
-     * @param glPrograms an immutable collection containing the shader programs 
-     *                   compiled during startup
-     * @param viewportID the ID number of the viewport currently rendering the 
-     *                   scene. Supplied here in case certain objects are to be
-     *                   included or omitted from the viewports rendering pass
-     * @param camera     the {@link Camera} object of the current 
-     *                   {@link Viewport} being rendered
+     * @param glPrograms     an immutable collection containing the shader 
+     *                        programs compiled during startup
+     * @param viewportID     the ID number of the viewport currently rendering 
+     *                        the scene. Supplied here in case certain objects 
+     *                        are to be included or omitted from the viewports 
+     *                        rendering pass
+     * @param camera         the {@link Camera} object of the current 
+     *                        {@link Viewport} being rendered
+     * @param depthTexHandle the handle of the texture generated by the current
+     *                        shadow map or -1 if one has not been set
      */
     public abstract void render(Map<String, GLProgram> glPrograms, int viewportID, Camera camera, int depthTexHandle);
     
