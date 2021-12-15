@@ -10,7 +10,19 @@ import org.xjge.graphics.GLProgram;
 //Created: Nov 9, 2021
 
 /**
- * 
+ * Shadow maps generate a 2D texture that is subsequently projected over the 
+ * scene to create the appearance of shadows.
+ * <p>
+ * More specifically, the shadow map projects a frustum from the position of 
+ * the global light source towards the scenes origin point (0, 0, 0) and renders 
+ * the scene an extra time. The texture created by this process is then 
+ * formatted as a depth attachment within a framebuffer object.
+ * <p>
+ * NOTE: Entities that wish to produce shadows can do so by supplying their 
+ * model matrix (and texture if necessary) to the depth shader program made 
+ * accessible through their 
+ * {@linkplain Entity#renderShadow(org.xjge.graphics.GLProgram) renderShadow()} 
+ * methods.
  * 
  * @author J Hoffman
  * @since  2.0.0
@@ -37,16 +49,31 @@ public final class ShadowMap {
     final Matrix4f lightSpace = new Matrix4f();
     
     /**
+     * Creates a new shadow map object using the settings specified. The 
+     * settings listed here can be used to combat issues such as peter-panning 
+     * and shadow acne.
      * 
-     * @param minBias
-     * @param maxBias
-     * @param frustumSize
-     * @param range
-     * @param useLinearFilter
-     * @param textureWidth
-     * @param textureHeight
-     * @param showBounds
-     * @param PCFValue 
+     * @param minBias         a small value indicating the minimum amount of 
+     *                        shadow bias to offset the depth of all surfaces by
+     * @param maxBias         a small value indicating the maximum amount of 
+     *                        shadow bias to offset the depth of all surfaces by
+     * @param frustumSize     the size of the area the shadow map will attempt 
+     *                        to cover. Values may not correspond perfectly to 
+     *                        world space.
+     * @param range           the maximum distance or depth the shadow maps 
+     *                        influence
+     * @param useLinearFilter if true, the texture will exhibit linear 
+     *                        filtering otherwise nearest neighbor filtering 
+     *                        will be used
+     * @param textureWidth    the width of the shadow map texture (in pixels)
+     * @param textureHeight   the height of the shadow map texture (in pixels)
+     * @param showBounds      if true, the edges of the shadow texture will be 
+     *                        darkened. This is useful in instances where the 
+     *                        effected area of the shadow map needs to be 
+     *                        exposed for debugging purposes
+     * @param PCFValue        indicates how much to blur the edges of shadows. 
+     *                        Passing a value of zero will produce hard edges 
+     *                        whereas higher numbers will apply the filter more.
      */
     public ShadowMap(float minBias, float maxBias, float frustumSize, float range, boolean useLinearFilter,
                      int textureWidth, int textureHeight, boolean showBounds, int PCFValue) {
@@ -70,18 +97,24 @@ public final class ShadowMap {
     }
     
     /**
-     * 
+     * Creates a new shadow map object using the default settings provided by 
+     * the engine.
      */
     public ShadowMap() {
         this(0.00003f, 0.0009f, 100f, 100f, true, 1920, 1920, false, 1);
     }
     
     /**
+     * Generates a 2D texture containing every shadow produced by each entity
+     * in the current scene. This method is called automatically by the engine.
      * 
-     * @param camUp
-     * @param depthProgram
-     * @param worldLightPos
-     * @param entities 
+     * @param camUp         the direction considered upwards relative to the 
+     *                      viewports camera
+     * @param depthProgram  the shader program provided by the engine that will 
+     *                      be used to generate the shadow map texture
+     * @param worldLightPos the current position of the global light source
+     * @param entities      the current scenes 
+     *                      {@linkplain Scene#entities entities collection}.
      */
     void generate(Vector3f camUp, GLProgram depthProgram, Vector3f worldLightPos, LinkedHashMap<String, Entity> entities) {
         lightProj.setOrtho(-frustumSize, frustumSize, -frustumSize, frustumSize, 1f, range);
@@ -100,10 +133,13 @@ public final class ShadowMap {
     }
     
     /**
+     * Updates the parameters of the shadow maps texture.
      * 
-     * @param useLinearFilter
-     * @param textureWidth
-     * @param textureHeight 
+     * @param useLinearFilter if true, the texture will exhibit linear 
+     *                        filtering otherwise nearest neighbor filtering 
+     *                        will be used
+     * @param textureWidth    the width of the shadow map texture (in pixels)
+     * @param textureHeight   the height of the shadow map texture (in pixels)
      */
     private void updateTexture(boolean useLinearFilter, int textureWidth, int textureHeight) {
         this.useLinearFilter = useLinearFilter;
@@ -120,25 +156,33 @@ public final class ShadowMap {
     }
     
     /**
+     * Sets the dimensions of the texture the shadow map will generate.
      * 
-     * @param width
-     * @param height 
+     * @param width  the width of the shadow map texture (in pixels)
+     * @param height the height of the shadow map texture (in pixels)
      */
     public void setTextureSize(int width, int height) {
         updateTexture(useLinearFilter, width, height);
     }
     
     /**
+     * Sets the type of filtering (linear or nearest neighbor) the shadow maps
+     * texture will use.
      * 
-     * @param useLinearFilter 
+     * @param useLinearFilter if true, the texture will exhibit linear 
+     *                        filtering otherwise nearest neighbor filtering 
+     *                        will be used
      */
     public void setTextureFilter(boolean useLinearFilter) {
         updateTexture(useLinearFilter, textureWidth, textureHeight);
     }
     
     /**
+     * Sets whether the edges of the shadow maps area of influence will be 
+     * exposed or hidden. It's often useful to make the bounds of the shadow 
+     * map visible for debugging purposes.
      * 
-     * @param value 
+     * @param value if true, the edges of the shadow texture will be darkened
      */
     public void setShowBounds(boolean value) {
         float[] borderColor = (value) 

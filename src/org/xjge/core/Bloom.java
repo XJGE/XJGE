@@ -5,13 +5,13 @@ import org.lwjgl.system.MemoryStack;
 import org.xjge.graphics.GLProgram;
 import org.xjge.graphics.Graphics;
 
-/**
- * Dec 13, 2021
- */
+//Created: Dec 13, 2021
 
 /**
+ * 
+ * 
  * @author J Hoffman
- * @since  
+ * @since  2.0.0
  */
 final class Bloom {
     
@@ -20,6 +20,11 @@ final class Bloom {
     
     private Graphics g = new Graphics();
     
+    /**
+     * 
+     * @param width
+     * @param height 
+     */
     Bloom(int width, int height) {
         glGenFramebuffers(fbos);
         glGenTextures(textures);
@@ -27,6 +32,11 @@ final class Bloom {
         createTextureAttachments(width, height);
     }
     
+    /**
+     * 
+     * @param width
+     * @param height 
+     */
     void createTextureAttachments(int width, int height) {
         for(int i = 0; i < 3; i++) {
             glBindTexture(GL_TEXTURE_2D, textures[i]);
@@ -71,6 +81,12 @@ final class Bloom {
         glEnableVertexAttribArray(2);
     }
     
+    /**
+     * 
+     * @param blurProgram
+     * @param texHandle
+     * @param horizontal 
+     */
     void applyBlur(GLProgram blurProgram, int texHandle, boolean horizontal) {
         glActiveTexture(GL_TEXTURE0);
         glBindTexture(GL_TEXTURE_2D, texHandle);

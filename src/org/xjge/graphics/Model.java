@@ -805,8 +805,12 @@ public class Model {
         
         meshes.forEach(mesh -> {
             glBindVertexArray(mesh.vao);
+            glActiveTexture(GL_TEXTURE0);
             glBindTexture(GL_TEXTURE_2D, textures[mesh.textureID].handle);
+            
+            depthProgram.setUniform("uTexture", 0);
             depthProgram.setUniform("uModel", false, mesh.modelMatrix);
+            
             glDrawElements(GL_TRIANGLES, mesh.indices.capacity(), GL_UNSIGNED_INT, 0);
         });
         

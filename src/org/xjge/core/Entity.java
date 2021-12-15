@@ -56,8 +56,6 @@ public abstract class Entity {
      */
     public abstract void render(GLProgram glProgram, Camera camera, Light[] lights, int depthTexHandle);
     
-    //TODO: change render method signature, remove lights (maybe?), include current texture attachment slot number
-    
     /**
      * Used to organize calls to the OpenGL API and other code pertaining to
      * rendering.
@@ -78,7 +76,12 @@ public abstract class Entity {
      */
     public abstract void render(Map<String, GLProgram> glPrograms, Camera camera, Light[] lights, int depthTexHandle);
     
-    //TODO: add doc
+    /**
+     * 
+     * 
+     * @param depthProgram the shader program provided by the engine that will 
+     *                     be used to generate the shadow map texture
+     */
     public abstract void renderShadow(GLProgram depthProgram);
     
     /**

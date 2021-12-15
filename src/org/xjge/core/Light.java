@@ -118,10 +118,13 @@ public final class Light {
     }
     
     /**
+     * Generates a random number between the specified minimum and maximum 
+     * values.
      * 
-     * @param minValue
-     * @param maxValue
-     * @return 
+     * @param minValue the minimum value this method may return
+     * @param maxValue the maximum value this method may return
+     * 
+     * @return a random floating point number between the specified values
      */
     private static float randomValue(float minValue, float maxValue) {
         return (float) (minValue + Math.random() * (maxValue - minValue));
