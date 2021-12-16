@@ -264,7 +264,8 @@ public class GLProgram {
     }
     
     /**
-     * 
+     * Checks whether this shader program contains a uniform variable at any 
+     * stage in its pipeline.
      * 
      * @param name the unique name used to identify the uniform variable as it 
      *              appears in the .glsl source file
