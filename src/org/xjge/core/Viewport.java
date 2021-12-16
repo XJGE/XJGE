@@ -149,9 +149,10 @@ final class Viewport {
             case "camera" -> {
                 currCamera.render(glPrograms);
                 glPrograms.values().forEach(glProgram -> {
-                    try {
+                    if(glProgram.containsUniform("uCamPos")) {
+                        glProgram.use();
                         glProgram.setUniform("uCamPos", currCamera.position);
-                    } catch(NullPointerException e) {}
+                    }
                 });
             }
             
@@ -169,7 +170,6 @@ final class Viewport {
                 glBindTexture(GL_TEXTURE_2D, bloom.textures[1]);
                 glBindVertexArray(g.vao);
                 
-                glPrograms.get("default").use();
                 glPrograms.get("default").setUniform("uType", 0);
                 glPrograms.get("default").setUniform("uTexture", 0);
                 glPrograms.get("default").setUniform("uBloomTexture", 3);

@@ -1,0 +1,27 @@
+--------------------------------------------------------------------------------
+INFO: OS NAME:		Windows 10
+INFO: JAVA VER:		15.0.2
+INFO: GLFW VER:		3.4.0 Win32 WGL EGL OSMesa VisualC DLL
+INFO: OPENAL VER:	1.1 ALSOFT 1.19.1
+INFO: OPENGL VER:	4.6.0 NVIDIA 497.09
+INFO: GFX CARD:		NVIDIA GeForce GTX 960M/PCIe/SSE2
+INFO: MONITORS:		Found: 2, Primary: "Generic PnP Monitor" (1920x1080 16:9 60hz)
+INFO: SPEAKERS:		Found: 1, Primary: "Speakers (Realtek High Definition Audio)
+INFO: GAMEPADS:		Found: 0
+--------------------------------------------------------------------------------
+
+INFO (shaderutils): Shader program "game" linked successfully.
+INFO (core): Current scene changed to "test"
+
+
+12-15-2021 6:50PM
+ERROR: OpenGL Error: (1282) invalid operation
+
+java.lang.RuntimeException
+	org.xjge.core.Logger.logSevere(Logger.java:215)
+	org.xjge.core.ErrorUtils.checkGLError(ErrorUtils.java:58)
+	org.xjge.core.Viewport.render(Viewport.java:166)
+	org.xjge.core.Game.loop(Game.java:171)
+	org.xjge.core.XJGE.start(XJGE.java:513)
+	org.xjge.scenes.Main.main(Main.java:55)
+

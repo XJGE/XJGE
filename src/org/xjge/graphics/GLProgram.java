@@ -263,4 +263,17 @@ public class GLProgram {
         }
     }
     
+    /**
+     * 
+     * 
+     * @param name the unique name used to identify the uniform variable as it 
+     *              appears in the .glsl source file
+     * 
+     * @return true if this program contains a uniform variable by the name
+     *          specified
+     */
+    public boolean containsUniform(String name) {
+        return uniforms.containsKey(name);
+    }
+    
 }
