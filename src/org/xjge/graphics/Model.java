@@ -742,7 +742,8 @@ public class Model {
      *                  model
      * @param lights    an array of light source objects inhabiting the current 
      *                  scene
-     * @param capabilities an object that can be used to enable various OpenGL capabilities
+     * @param capabilities   an object that can be used to enable various OpenGL 
+     *                       capabilities
      * @param shineValue     a temporary parameter indicating the shininess of 
      *                        the object until be parse this information from the 
      *                        model file directly
@@ -790,13 +791,13 @@ public class Model {
     
     /**
      * Alternate version of {@link render render()} that uses the default 
-     * {@linkplain GLCaps capabilties} provided by the engine which includes backface 
-     * culling and depth testing.
+     * {@linkplain GLCaps capabilties} provided by the engine which includes 
+     * backface culling and depth testing.
      * 
-     * @param glProgram the shader program that will be used to render this 
-     *                  model
-     * @param lights    an array of light source objects inhabiting the current 
-     *                  scene
+     * @param glProgram      the shader program that will be used to render 
+     *                        this model
+     * @param lights         an array of light source objects inhabiting the 
+     *                        current scene
      * @param shineValue     a temporary parameter indicating the shininess of 
      *                        the object until be parse this information from the 
      *                        model file directly
@@ -808,8 +809,10 @@ public class Model {
     }
     
     /**
-     * Used to cast a shadow using the model matrix of each mesh (and texture if 
-     * necessary) by passing them as uniforms to the depth program.
+     * Alternate version of 
+     * {@link renderShadow(GLProgram, GLCaps) renderShadow()} that uses the 
+     * default {@linkplain GLCaps capabilties} provided by the engine which 
+     * includes backface culling and depth testing.
      * 
      * @param depthProgram the shader program provided by the engine that will 
      *                     be used to generate the shadow map texture
@@ -818,6 +821,8 @@ public class Model {
         glEnable(GL_DEPTH_TEST);
         glEnable(GL_CULL_FACE);
         glCullFace(GL_FRONT);
+        
+        depthProgram.use();
         
         meshes.forEach(mesh -> {
             glBindVertexArray(mesh.vao);
@@ -833,6 +838,38 @@ public class Model {
         glCullFace(GL_BACK);
         glDisable(GL_CULL_FACE);
         glDisable(GL_DEPTH_TEST);
+        
+        ErrorUtils.checkGLError();
+    }
+    
+    /**
+     * Used to cast a shadow using the model matrix of each mesh (and texture if 
+     * necessary) by passing them as uniforms to the depth program.
+     * 
+     * @param depthProgram the shader program provided by the engine that will 
+     *                      be used to generate the shadow map texture
+     * @param capabiltites an object that can be used to enable various OpenGL 
+     *                      capabilities
+     * 
+     * @see renderShadow(GLProgram)
+     */
+    public void renderShadow(GLProgram depthProgram, GLCaps capabiltites) {
+        capabiltites.enable();
+        
+        depthProgram.use();
+        
+        meshes.forEach(mesh -> {
+            glBindVertexArray(mesh.vao);
+            glActiveTexture(GL_TEXTURE0);
+            glBindTexture(GL_TEXTURE_2D, textures[mesh.textureID].handle);
+            
+            depthProgram.setUniform("uTexture", 0);
+            depthProgram.setUniform("uModel", false, mesh.modelMatrix);
+            
+            glDrawElements(GL_TRIANGLES, mesh.indices.capacity(), GL_UNSIGNED_INT, 0);
+        });
+        
+        capabiltites.disable();
         
         ErrorUtils.checkGLError();
     }
