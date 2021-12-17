@@ -147,6 +147,8 @@ public final class Game {
                         viewport.bindDrawBuffers(Game.enableBloom);
                         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
                         
+                        viewport.resetCamera(glPrograms);
+                        
                         viewport.render(glPrograms, "camera");
                         scene.renderSkybox(viewport.currCamera.viewMatrix);
                         scene.render(glPrograms, viewport.id, viewport.currCamera);
