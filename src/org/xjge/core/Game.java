@@ -146,8 +146,6 @@ public final class Game {
                         glClearColor(clearColor.r, clearColor.g, clearColor.b, 0);
                         viewport.bindDrawBuffers(Game.enableBloom);
                         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-
-                        viewport.resetCamera(glPrograms);
                         
                         viewport.render(glPrograms, "camera");
                         scene.renderSkybox(viewport.currCamera.viewMatrix);
@@ -164,6 +162,8 @@ public final class Game {
                     }
                     
                     glViewport(viewport.botLeft.x, viewport.botLeft.y, viewport.topRight.x, viewport.topRight.y);
+                    
+                    viewport.resetCamera(glPrograms);
                     
                     glPrograms.get("default").use();
                     glPrograms.get("default").setUniform("uProjection", false, projMatrix);
