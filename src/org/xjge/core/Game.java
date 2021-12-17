@@ -134,7 +134,7 @@ public final class Game {
             //Render scene from the perspective of each active viewport.
             for(Viewport viewport : viewports) {
                 if(viewport.active) {
-                    scene.renderShadows(viewport.currCamera.up, depthProgram);
+                    scene.renderShadowMap(viewport.currCamera.up, depthProgram);
                     
                     if(viewport.id == 0) {
                         glClearColor(0, 0, 0, 0);

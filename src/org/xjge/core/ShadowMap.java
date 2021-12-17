@@ -113,13 +113,10 @@ public final class ShadowMap {
      * @param depthProgram  the shader program provided by the engine that will 
      *                      be used to generate the shadow map texture
      * @param worldLightPos the current position of the global light source
-     * @param entities      the current scenes 
-     *                      {@linkplain Scene#entities entities collection} to
-     *                      iterate through
      */
-    void generate(Vector3f camUp, GLProgram depthProgram, Vector3f worldLightPos, LinkedHashMap<String, Entity> entities) {
+    void generate(Vector3f camUp, GLProgram depthProgram, Scene scene) {
         lightProj.setOrtho(-frustumSize, frustumSize, -frustumSize, frustumSize, 1f, range);
-        lightView.setLookAt(worldLightPos, lightDir, camUp);
+        lightView.setLookAt(scene.lights[0].position, lightDir, camUp);
         lightProj.mul(lightView, lightSpace);
         
         depthProgram.use();
@@ -129,7 +126,7 @@ public final class ShadowMap {
         glBindFramebuffer(GL_FRAMEBUFFER, fbo);
             glClear(GL_DEPTH_BUFFER_BIT);
             glBindTexture(GL_TEXTURE_2D, depthTexHandle);
-            entities.values().forEach(entity -> entity.renderShadow(depthProgram));
+            scene.renderShadows(depthProgram);
         glBindFramebuffer(GL_FRAMEBUFFER, 0);
     }
     

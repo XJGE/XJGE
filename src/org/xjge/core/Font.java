@@ -82,7 +82,7 @@ public final class Font {
      * a single font in different sizes you should create a new font object for 
      * each desired size.
      * <p>
-     * NOTE: the size specified in this constructor encompasses the entire 
+     * NOTE: The size specified in this constructor encompasses the entire 
      * glyph, including its advance, descent, and bearing space. As such, the 
      * actual visible portion of the glyph produced may not correspond directly 
      * to the desired size in pixels.

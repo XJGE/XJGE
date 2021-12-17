@@ -84,7 +84,7 @@ public abstract class Command {
      * Provides subclasses with a value that denotes some preference of the 
      * input device currently being used to execute this command.
      * <p>
-     * NOTE: by default the engine provides deadzone settings for both the left
+     * NOTE: By default the engine provides deadzone settings for both the left
      * and right analog sticks of each input device. These settings determine 
      * how much a stick will need to be moved before its input is recognized. 
      * The values of these settings can be queried with "leftDeadzone" and 

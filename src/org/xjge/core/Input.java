@@ -419,7 +419,7 @@ public final class Input {
      * exposed to the user- such as an interface that allows the user to edit 
      * their devices preferences.
      * <p>
-     * NOTE: by default the engine provides deadzone settings for both the left
+     * NOTE: By default the engine provides deadzone settings for both the left
      * and right analog sticks of each input device. These settings determine 
      * how much a stick will need to be moved before its input is recognized. 
      * The values of these settings can be queried with "leftDeadzone" and 
@@ -587,7 +587,7 @@ public final class Input {
     /**
      * Obtains the letter/symbol of a keyboard key.
      * <p>
-     * NOTE: this method assumes that the keyboard producing the input is an 
+     * NOTE: This method assumes that the keyboard producing the input is an 
      * unmodified english model. As such, the letter/symbol of the key in 
      * question must correspond to an ASCII character between the ranges of 
      * 32-127, any characters outside of this range will return <b>null</b>.

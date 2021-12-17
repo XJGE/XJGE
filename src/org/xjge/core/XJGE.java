@@ -708,7 +708,7 @@ public final class XJGE {
      * Obtains the current position of the mouse cursor within the game windows 
      * content area.
      * <p>
-     * NOTE: if the engine was supplied with a resolution during 
+     * NOTE: If the engine was supplied with a resolution during 
      * {@linkplain #init initialization} the value returned by this method will
      * be converted to correspond to the coordinate system of the resolution.
      * 
@@ -722,7 +722,7 @@ public final class XJGE {
      * Obtains the current position of the mouse cursor within the game windows 
      * content area.
      * <p>
-     * NOTE: if the engine was supplied with a resolution during 
+     * NOTE: If the engine was supplied with a resolution during 
      * {@linkplain #init initialization} the value returned by this method will
      * be converted to correspond to the coordinate system of the resolution.
      * 

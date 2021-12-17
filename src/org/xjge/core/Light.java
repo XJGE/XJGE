@@ -231,7 +231,7 @@ public final class Light {
     
     /**
      * Provides implementing applications with a predefined light object that 
-     * resembles a bright green glowstick. NOTE: this light does not produce 
+     * resembles a bright green glowstick. NOTE: This light does not produce 
      * specular highlights be design. 
      * 
      * @return a new engine-defined light object

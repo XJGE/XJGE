@@ -716,7 +716,7 @@ public class Model {
      * this method must be made regularly inside the update loop for models to 
      * utilize the engines animation utilities properly.
      * <p>
-     * NOTE: the value passed to the delta parameter should be one of 
+     * NOTE: The value passed to the delta parameter should be one of 
      * {@code targetDelta} or {@code trueDelta} provided by the 
      * {@linkplain org.xjge.core.Scene#update(double, double) update()} method 
      * of the Scene class.

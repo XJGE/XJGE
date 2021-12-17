@@ -192,9 +192,9 @@ public abstract class Scene {
      * @param depthProgram the shader program provided by the engine that will 
      *                     be used to generate the shadow map texture
      */
-    void renderShadows(Vector3f camUp, GLProgram depthProgram) {
+    void renderShadowMap(Vector3f camUp, GLProgram depthProgram) {
         if(shadowMap != null && lights[0] != null) {
-            shadowMap.generate(camUp, depthProgram, lights[0].position, entities);
+            shadowMap.generate(camUp, depthProgram, this);
         }
     }
     
@@ -267,6 +267,20 @@ public abstract class Scene {
      *                        shadow map or -1 if one has not been set
      */
     public abstract void render(Map<String, GLProgram> glPrograms, int viewportID, Camera camera, int depthTexHandle);
+    
+    /**
+     * Used to organize calls to the OpenGL API by entities and other objects 
+     * within the scene who wish to cast shadows. This method is called 
+     * automatically by the engine.
+     * <p>
+     * NOTE: The depth shader program is provided here exclusively by the engine 
+     * and is not accessible through other means such as the {@code glPrograms} 
+     * collection.
+     * 
+     * @param depthProgram the shader program provided by the engine that will 
+     *                      be used to generate the shadow map texture
+     */
+    public abstract void renderShadows(GLProgram depthProgram);
     
     /**
      * Called by the engine when this scene is left for another. Any 

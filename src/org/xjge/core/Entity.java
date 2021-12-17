@@ -81,7 +81,7 @@ public abstract class Entity {
      * necessary) by passing them as uniforms to the depth program.
      * 
      * @param depthProgram the shader program provided by the engine that will 
-     *                     be used to generate the shadow map texture
+     *                      be used to generate the shadow map texture
      */
     public abstract void renderShadow(GLProgram depthProgram);
     
