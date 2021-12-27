@@ -1,6 +1,5 @@
 package org.xjge.core;
 
-import java.util.LinkedHashMap;
 import org.joml.Matrix4f;
 import org.joml.Vector3f;
 import static org.lwjgl.opengl.GL30.*;
