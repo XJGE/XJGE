@@ -114,7 +114,7 @@ public final class ShadowMap {
      * @param worldLightPos the current position of the global light source
      */
     void generate(Vector3f camUp, GLProgram depthProgram, Scene scene) {
-        lightProj.setOrtho(-frustumSize, frustumSize, -frustumSize, frustumSize, 1f, range);
+        lightProj.setOrtho(-frustumSize, frustumSize, -frustumSize, frustumSize, 0f, range);
         lightView.setLookAt(scene.lights[0].position, lightDir, camUp);
         lightProj.mul(lightView, lightSpace);
         

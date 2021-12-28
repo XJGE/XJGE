@@ -21,12 +21,13 @@ public class Camera2D extends Camera {
     @Override
     public void update() {
     }
-
+    
     @Override
     public void render(Map<String, GLProgram> glPrograms) {
         glPrograms.values().forEach(glProgram -> {
             glProgram.use();
             viewMatrix.translation(Math.round(position.x), Math.round(position.y), 0);
+            //viewMatrix.lookAt(position, direction, up);
             glProgram.setUniform("uView", false, viewMatrix);
         });
     }

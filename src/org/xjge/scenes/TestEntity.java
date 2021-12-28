@@ -59,7 +59,7 @@ public class TestEntity extends Entity {
     private Vector2f texCoords = new Vector2f();
     private Matrix3f normal    = new Matrix3f();
     
-    TestEntity(float x, float y, float z, float size) {
+    TestEntity(float x, float y, float z, float size, boolean isBG) {
         super(new Vector3f(x, y, z));
         
         texture = new Texture("img_null.png");
@@ -77,11 +77,19 @@ public class TestEntity extends Entity {
             
             float halfSize = size / 2;
             
-            //(vec3 position), (vec2 texCoords)
-            g.vertices.put(-halfSize).put(-halfSize).put(0) .put(0).put(1);
-            g.vertices.put(-halfSize) .put(halfSize).put(0) .put(0).put(0);
-            g.vertices .put(halfSize) .put(halfSize).put(0) .put(1).put(0);
-            g.vertices .put(halfSize).put(-halfSize).put(0) .put(1).put(1);
+            if(!isBG) {
+                //(vec3 position), (vec2 texCoords)
+                g.vertices.put(-halfSize).put(-halfSize).put(0) .put(0).put(1);
+                g.vertices.put(-halfSize) .put(halfSize).put(0) .put(0).put(0);
+                g.vertices .put(halfSize) .put(halfSize).put(0) .put(1).put(0);
+                g.vertices .put(halfSize).put(-halfSize).put(0) .put(1).put(1);
+            } else {
+                //(vec3 position), (vec2 texCoords)
+                g.vertices.put(-halfSize).put(-halfSize).put(0) .put(0).put(0);
+                g.vertices.put(-halfSize) .put(halfSize).put(0) .put(0).put(0);
+                g.vertices .put(halfSize) .put(halfSize).put(0) .put(0).put(0);
+                g.vertices .put(halfSize).put(-halfSize).put(0) .put(0).put(0);
+            }
             
             g.indices.put(0).put(1).put(2);
             g.indices.put(2).put(3).put(0);
