@@ -93,40 +93,76 @@ public abstract class Scene {
     }
     
     /**
-     * Safely removes entity objects from the scenes {@link entities} 
-     * collection. This method is called automatically by the engine.
+     * Used to validate whether a shader program has defined a uniform variable
+     * that can be used to store light data provided by the engine.
+     * 
+     * @param glProgram the program to query
+     * @param name      the name of the uniform variable to check for
+     * @param value     the value to pass to the uniform variable
      */
-    void processRemoveRequests() {
-        entities.entrySet().removeIf(entry -> entry.getValue().removalRequested());
+    private void setLightUniform(GLProgram glProgram, String name, float value) {
+        if(glProgram.containsUniform(name)) glProgram.setUniform(name, value);
+    }
+    
+    /**
+     * Variant of 
+     * {@link setLightUniform(GLProgram, String, float) setLightProgram()} that 
+     * accepts a 3-component floating point vector.
+     * 
+     * @param glProgram the program to query
+     * @param name      the name of the uniform variable to check for
+     * @param value     the value to pass to the uniform variable
+     */
+    private void setLightUniform(GLProgram glProgram, String name, Vector3f value) {
+        if(glProgram.containsUniform(name)) glProgram.setUniform(name, value);
     }
     
     /**
      * Supplies every light struct in the default fragment shader with uniform 
-     * values from their corresponding {@link Light} objects. This method is 
-     * called automatically by the engine.
+     * values from their corresponding {@link Light} objects. Custom shaders 
+     * may also utilize this data provided they include a light struct and 
+     * corresponding uniform array that exhibits the following structure;
+     * <blockquote><pre>
+     * struct Light {
+     *     float brightness;
+     *     float contrast;
+     *     float distance;
+     *     vec3 position;
+     *     vec3 ambient;
+     *     vec3 diffuse;
+     *     vec3 specular;
+     * };
+     * 
+     * ...
+     * 
+     * uniform Light uLights[32]; //Must be no larger than 32!
+     * </pre></blockquote>
+     * This method is called automatically by the engine.
      */
     void setLightingUniforms() {
-        for(int i = 0; i < Scene.MAX_LIGHTS; i++) {
-            if(lights[i] != null) {
-                if(lights[i].enabled) {
-                    XJGE.getDefaultGLProgram().setUniform("uLights[" + i + "].brightness", lights[i].brightness);
-                    XJGE.getDefaultGLProgram().setUniform("uLights[" + i + "].contrast",   lights[i].contrast);
-                    XJGE.getDefaultGLProgram().setUniform("uLights[" + i + "].distance",   lights[i].distance);
-                    XJGE.getDefaultGLProgram().setUniform("uLights[" + i + "].position",   lights[i].position);
-                    XJGE.getDefaultGLProgram().setUniform("uLights[" + i + "].ambient",    lights[i].ambientColor.asVec3());
-                    XJGE.getDefaultGLProgram().setUniform("uLights[" + i + "].diffuse",    lights[i].diffuseColor.asVec3());
-                    XJGE.getDefaultGLProgram().setUniform("uLights[" + i + "].specular",   lights[i].specularColor.asVec3());
-                } else {
-                    XJGE.getDefaultGLProgram().setUniform("uLights[" + i + "].brightness", 0);
-                    XJGE.getDefaultGLProgram().setUniform("uLights[" + i + "].contrast",   0);
-                    XJGE.getDefaultGLProgram().setUniform("uLights[" + i + "].distance",   0);
-                    XJGE.getDefaultGLProgram().setUniform("uLights[" + i + "].position",   noValue);
-                    XJGE.getDefaultGLProgram().setUniform("uLights[" + i + "].ambient",    noValue);
-                    XJGE.getDefaultGLProgram().setUniform("uLights[" + i + "].diffuse",    noValue);
-                    XJGE.getDefaultGLProgram().setUniform("uLights[" + i + "].specular",   noValue);
+        XJGE.glPrograms.values().forEach(glProgram -> {
+            for(int i = 0; i < Scene.MAX_LIGHTS; i++) {                
+                if(lights[i] != null) {
+                    if(lights[i].enabled) {
+                        setLightUniform(glProgram, "uLights[" + i + "].brightness", lights[i].brightness);
+                        setLightUniform(glProgram, "uLights[" + i + "].contrast",   lights[i].contrast);
+                        setLightUniform(glProgram, "uLights[" + i + "].distance",   lights[i].distance);
+                        setLightUniform(glProgram, "uLights[" + i + "].position",   lights[i].position);
+                        setLightUniform(glProgram, "uLights[" + i + "].ambient",    lights[i].ambientColor.asVec3());
+                        setLightUniform(glProgram, "uLights[" + i + "].diffuse",    lights[i].diffuseColor.asVec3());
+                        setLightUniform(glProgram, "uLights[" + i + "].specular",   lights[i].specularColor.asVec3());
+                    } else {
+                        setLightUniform(glProgram, "uLights[" + i + "].brightness", 0);
+                        setLightUniform(glProgram, "uLights[" + i + "].contrast",   0);
+                        setLightUniform(glProgram, "uLights[" + i + "].distance",   0);
+                        setLightUniform(glProgram, "uLights[" + i + "].position",   noValue);
+                        setLightUniform(glProgram, "uLights[" + i + "].ambient",    noValue);
+                        setLightUniform(glProgram, "uLights[" + i + "].diffuse",    noValue);
+                        setLightUniform(glProgram, "uLights[" + i + "].specular",   noValue);
+                    }
                 }
             }
-        }
+        });
     }
     
     /**
@@ -166,7 +202,7 @@ public abstract class Scene {
      * of the uniforms within the program themselves <i>must</i> conform to the 
      * layout specified below;
      * <table><caption></caption>
-     * <tr><td><b>Name</b></td><td><b>Type</b></td></tr>
+     * <tr><td><b>NAME:</b></td><td><b>TYPE:</b></td></tr>
      * <tr><td>uLightSpace</td><td>mat4</td></tr>
      * <tr><td>uPCFValue</td><td>int</td></tr>
      * <tr><td>uMinShadowBias</td><td>float</td></tr>
@@ -269,6 +305,14 @@ public abstract class Scene {
     void render(Map<String, GLProgram> glPrograms, int viewportID, Camera camera) {
         if(shadowMap != null) render(glPrograms, viewportID, camera, shadowMap.depthTexHandle);
         else                  render(glPrograms, viewportID, camera, -1);
+    }
+    
+    /**
+     * Safely removes entity objects from the scenes {@link entities} 
+     * collection. This method is called automatically by the engine.
+     */
+    void processRemoveRequests() {
+        entities.entrySet().removeIf(entry -> entry.getValue().removalRequested());
     }
     
     /**
