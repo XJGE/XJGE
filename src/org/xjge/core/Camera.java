@@ -62,7 +62,8 @@ public abstract class Camera {
      */
     void setOrtho(GLProgram glProgram, int width, int height) {
         glProgram.use();
-        projMatrix.setOrtho(0, width, 0, height, 0, Integer.MAX_VALUE);
+        //projMatrix.setOrtho(0, width, 0, height, 0, Integer.MAX_VALUE);
+        projMatrix.setOrtho(0, width, 0, height, -128, 127);
         glProgram.setUniform("uProjection", false, projMatrix);
     }
     

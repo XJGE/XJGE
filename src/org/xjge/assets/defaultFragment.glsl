@@ -201,6 +201,10 @@ void main() {
             makeTransparent(texture(uSkyTexture, ioSkyTexCoords).a);
             ioFragColor = texture(uSkyTexture, ioSkyTexCoords);
             break;
+        
+        case 11:
+            ioFragColor = texture(uTexture, ioTexCoords);
+            break;
     }
     
     if(uBloomOverride == 0) {

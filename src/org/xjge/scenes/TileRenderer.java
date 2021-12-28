@@ -140,15 +140,17 @@ public class TileRenderer {
         glActiveTexture(GL_TEXTURE0);
         glBindTexture(GL_TEXTURE_2D, tileTexture.handle);
         
-        /*
-        glActiveTexture(GL_TEXTURE1);
-        glBindTexture(GL_TEXTURE_2D, depthTexHandle);
-        */
+        //glActiveTexture(GL_TEXTURE1);
+        //glBindTexture(GL_TEXTURE_2D, depthTexHandle);
         
         glBindVertexArray(g.vao);
         
         offsetPosition(tiles);
         offsetTexture(tiles);
+        
+        gameProgram.setUniform("uType", 11);
+        gameProgram.setUniform("uTexture", 0);
+        //gameProgram.setUniform("uShadowMap", 1);
         
         glDrawElementsInstanced(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0, tiles.size());
         
