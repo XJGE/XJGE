@@ -12,7 +12,6 @@ import org.xjge.core.ShadowMap;
 import org.xjge.core.XJGE;
 import org.xjge.graphics.Color;
 import org.xjge.graphics.GLProgram;
-import static org.xjge.scenes.TileRenderer.TILE_SIZE;
 
 /**
  * Dec 27, 2021

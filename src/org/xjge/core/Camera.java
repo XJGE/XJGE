@@ -24,6 +24,9 @@ public abstract class Camera {
     
     protected float fov = 45.0f;
     
+    private static float orthoNear = Short.MIN_VALUE;
+    private static float orthoFar  = Short.MAX_VALUE;
+    
     boolean isOrtho;
     
     public Vector3f position  = new Vector3f();
@@ -53,6 +56,14 @@ public abstract class Camera {
     /**
      * Performs an orthographic transformation on the cameras projection matrix, 
      * effectively flattening the game world into 2D space.
+     * <p>
+     * NOTE: The engine makes no assumptions about the size (in bits) of the 
+     * depth buffer. As such, the near/far clipping distance defined by the 
+     * orthographic projection is between -32768 and 32767 by default, or the 
+     * minimum and maximum values of a 16-bit half-precision float- the lowest 
+     * format supported by OpenGL. These values can be changed with the help of
+     * the static {@link setOrthoDepthRange(float, float)} method however doing
+     * so may result in undefined behavior.
      * 
      * @param glProgram the shader program that the value of the cameras 
      *                  projection matrix will be sent to through a uniform 
@@ -62,8 +73,7 @@ public abstract class Camera {
      */
     void setOrtho(GLProgram glProgram, int width, int height) {
         glProgram.use();
-        //projMatrix.setOrtho(0, width, 0, height, 0, Integer.MAX_VALUE);
-        projMatrix.setOrtho(0, width, 0, height, -128, 127);
+        projMatrix.setOrtho(0, width, 0, height, orthoNear, orthoFar);
         glProgram.setUniform("uProjection", false, projMatrix);
     }
     
@@ -110,6 +120,25 @@ public abstract class Camera {
      */
     public void setProjectionType(boolean isOrtho) {
         this.isOrtho = isOrtho;
+    }
+    
+    /**
+     * Sets the near/far clipping distance the depth buffer will use while 
+     * cameras are in orthographic mode. Objects which lay outside of this range 
+     * will be invisible.
+     * <p>
+     * NOTE: Because the engine makes no assumptions about the size of the 
+     * depth buffer, the near/far clipping distance is between -32768 and 32767 
+     * by default. These values correspond to the lowest depth buffer size 
+     * allowed by OpenGL (a half-precision 16-bit float). Changing these may 
+     * result in undefined behavior on some machines.
+     * 
+     * @param near the distance considered closest to the camera
+     * @param far  the distance considered furthest from the camera
+     */
+    public static void setOrthoDepthRange(float near, float far) {
+        orthoNear = Math.abs(near);
+        orthoFar  = Math.abs(far);
     }
     
 }
