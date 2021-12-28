@@ -53,14 +53,19 @@ import org.xjge.graphics.Texture;
  */
 public class TestEntity extends Entity {
 
+    private boolean isBG;
+    
     private Texture texture;
     private Graphics g;
     
     private Vector2f texCoords = new Vector2f();
     private Matrix3f normal    = new Matrix3f();
     
+    private Color offWhite = Color.create(230, 230, 230);
+    
     TestEntity(float x, float y, float z, float size, boolean isBG) {
         super(new Vector3f(x, y, z));
+        this.isBG = isBG;
         
         texture = new Texture("img_null.png");
             glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
@@ -131,7 +136,7 @@ public class TestEntity extends Entity {
         glBindVertexArray(g.vao);
         
         glProgram.setUniform("uType", 9);
-        glProgram.setUniform("uColor", Color.WHITE.asVec3());
+        glProgram.setUniform("uColor", (isBG) ? offWhite.asVec3() : Color.WHITE.asVec3());
         glProgram.setUniform("uNormal", true, normal);
         glProgram.setUniform("uTexCoords", texCoords);
         glProgram.setUniform("uModel", false, g.modelMatrix);

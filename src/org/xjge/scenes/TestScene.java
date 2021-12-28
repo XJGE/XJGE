@@ -23,7 +23,7 @@ import org.xjge.graphics.GLProgram;
  */
 public class TestScene extends Scene {
 
-    private TestEntity background = new TestEntity(64, 64, 0, 128, true);
+    private TestEntity background = new TestEntity(64, 64, -10, 128, true);
     
     private TileRenderer tileRenderer = new TileRenderer();
     private Map<Vector2i, Tile> tiles = new HashMap<>();
@@ -33,13 +33,15 @@ public class TestScene extends Scene {
         
         XJGE.setViewportCamera(GLFW_JOYSTICK_1, new Camera2D());
         
-        entities.put("test1", new TestEntity(40, 40, 8, 16, false));
-        entities.put("test2", new TestEntity(44, 48, 3, 16, false));
+        entities.put("test2", new TestEntity(44, 48, 4, 16, false));
+        entities.put("test1", new TestEntity(40, 40, 0, 16, false));
         
         lights[0] = new Light(1, 0.55f, 1, new Vector3f(-30, 30, 60), Color.WHITE);
         setShadowMap(new ShadowMap(0.00003f, 0.0009f, 200f, 100f, true, 1920, 1920, true, 0));
         
         tiles.put(new Vector2i(), new Tile(1, new Vector3f(48, 48, -3)));
+        
+        //TODO: implement instanced objects that can be shaded by shadowsM
         
         //Game.enableBloom = true;
     }
