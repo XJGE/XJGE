@@ -263,7 +263,7 @@ public final class XJGE {
                 defaultProgram.addUniform(BufferType.INT,   "uShine");
                 defaultProgram.addUniform(BufferType.INT,   "uNumLights");
                 defaultProgram.addUniform(BufferType.INT,   "uTexture");
-                defaultProgram.addUniform(BufferType.INT,   "uShadowMap");
+                defaultProgram.addUniform(BufferType.INT,   "uDepthTexture");
                 defaultProgram.addUniform(BufferType.INT,   "uSkyTexture");
                 defaultProgram.addUniform(BufferType.INT,   "uBloomTexture");
                 defaultProgram.addUniform(BufferType.INT,   "uShadowMapActive");

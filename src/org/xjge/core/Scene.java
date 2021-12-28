@@ -101,7 +101,10 @@ public abstract class Scene {
      * @param value     the value to pass to the uniform variable
      */
     private void setLightUniform(GLProgram glProgram, String name, float value) {
-        if(glProgram.containsUniform(name)) glProgram.setUniform(name, value);
+        if(glProgram.containsUniform(name)) {
+            glProgram.use();
+            glProgram.setUniform(name, value);
+        }
     }
     
     /**
@@ -114,7 +117,10 @@ public abstract class Scene {
      * @param value     the value to pass to the uniform variable
      */
     private void setLightUniform(GLProgram glProgram, String name, Vector3f value) {
-        if(glProgram.containsUniform(name)) glProgram.setUniform(name, value);
+        if(glProgram.containsUniform(name)) {
+            glProgram.use();
+            glProgram.setUniform(name, value);
+        }
     }
     
     /**
@@ -225,6 +231,8 @@ public abstract class Scene {
                     };
                     
                     if(glProgram.containsUniform(uniformName)) {
+                        glProgram.use();
+                        
                         switch(uniformName) {
                             case "uLightSpace"      -> glProgram.setUniform("uLightSpace", false, shadowMap.lightSpace);
                             case "uPCFValue"        -> glProgram.setUniform("uPCFValue", shadowMap.PCFValue);

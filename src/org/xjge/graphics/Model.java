@@ -775,7 +775,7 @@ public class Model {
             glProgram.setUniform("uOpacity", opacity);
             glProgram.setUniform("uTexture", 0);
             
-            if(depthTexHandle != -1) glProgram.setUniform("uShadowMap", 1);
+            if(depthTexHandle != -1) glProgram.setUniform("uDepthTexture", 1);
             
             if(currAnimation != null) {
                 glProgram.setUniform("uBoneTransforms", false, currAnimation.getCurrFrame().transforms);
