@@ -130,7 +130,7 @@ void main() {
             gl_Position = uProjection * uView * uModel * vec4(aPosition, 1);
             break;
         
-        case 11:
+        case 11: //TODO: implement instanced objects that can be shaded by shadows
             ioTexCoords = aTexCoords + aTexOffset;
             gl_Position = uProjection * uView * vec4(aPosition + aPosOffset, 1);
             break;

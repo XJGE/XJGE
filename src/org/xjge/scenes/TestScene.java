@@ -41,7 +41,7 @@ public class TestScene extends Scene {
         
         tiles.put(new Vector2i(), new Tile(1, new Vector3f(48, 48, -3)));
         
-        //TODO: implement instanced objects that can be shaded by shadowsM
+        //TODO: implement instanced objects that can be shaded by shadows
         
         //Game.enableBloom = true;
     }
