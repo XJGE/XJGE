@@ -32,7 +32,7 @@ uniform float uMaxShadowBias;
 uniform float uBloomThreshold;
 uniform vec3 uCamPos;
 uniform sampler2D uTexture;
-uniform sampler2D uShadowMap;
+uniform sampler2D uDepthTexture;
 uniform sampler2D uBloomTexture;
 uniform samplerCube uSkyTexture;
 uniform Light uLights[MAX_LIGHTS];
@@ -68,17 +68,17 @@ float calcShadow(float dotLightNormal) {
 
     if(pos.z > 1) pos.z = 1;
     
-    float depth = texture(uShadowMap, pos.xy).r;
+    float depth = texture(uDepthTexture, pos.xy).r;
     float bias  = max(uMaxShadowBias * (1 - dotLightNormal), uMinShadowBias);
     
     if(uPCFValue > 0) {
-        vec2 texelSize = 1.0 / textureSize(uShadowMap, 0);
+        vec2 texelSize = 1.0 / textureSize(uDepthTexture, 0);
         float pcfValue = 0;
         float factor   = 1 / (uPCFValue * 2.0 + 1.0);
 
         for(int x = -uPCFValue; x <= uPCFValue; x++) {
             for(int y = -uPCFValue; y <= uPCFValue; y++) {
-                float pcfDepth = texture(uShadowMap, pos.xy + vec2(x, y) * texelSize).r; 
+                float pcfDepth = texture(uDepthTexture, pos.xy + vec2(x, y) * texelSize).r; 
 
                 if(pos.z + bias < pcfDepth) {
                     pcfValue += factor;
