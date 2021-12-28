@@ -49,7 +49,6 @@ final class Noclip extends Camera {
         glPrograms.values().forEach(glProgram -> {
             if(glProgram.containsUniform("uView")) {
                 glProgram.use();
-                
                 viewMatrix.setLookAt(position, position.add(direction, tempFront), up);
                 glProgram.setUniform("uView", false, viewMatrix);
             }

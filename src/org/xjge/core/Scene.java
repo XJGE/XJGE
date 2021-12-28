@@ -160,17 +160,49 @@ public abstract class Scene {
     /**
      * Supplies the values from the fields of the current {@link ShadowMap} 
      * object to their corresponding uniform variables in the default fragment 
-     * shader. This method is called automatically by the engine.
+     * shader and any shader program provided to the engine by the 
+     * implementation that wishes to capture shadow map data. Custom shaders can 
+     * include or omit uniforms as they see fit however the names and data types 
+     * of the uniforms within the program themselves <i>must</i> conform to the 
+     * layout specified below;
+     * <table><caption></caption>
+     * <tr><td><b>Name</b></td><td><b>Type</b></td></tr>
+     * <tr><td>uLightSpace</td><td>mat4</td></tr>
+     * <tr><td>uPCFValue</td><td>int</td></tr>
+     * <tr><td>uMinShadowBias</td><td>float</td></tr>
+     * <tr><td>uMaxShadowBias</td><td>float</td></tr>
+     * <tr><td>uShadowMapActive</td><td>int</td></tr>
+     * </table>
+     * <p>
+     * This method is called automatically by the engine.
      */
     void setShadowUniforms() {
         if(shadowMap != null) {
-            XJGE.getDefaultGLProgram().setUniform("uLightSpace", false, shadowMap.lightSpace);
-            XJGE.getDefaultGLProgram().setUniform("uPCFValue", shadowMap.PCFValue);
-            XJGE.getDefaultGLProgram().setUniform("uMinShadowBias", shadowMap.minBias);
-            XJGE.getDefaultGLProgram().setUniform("uMaxShadowBias", shadowMap.minBias);
-            XJGE.getDefaultGLProgram().setUniform("uShadowMapActive", 1);
+            XJGE.glPrograms.values().forEach(glProgram -> {
+                for(int i = 0; i < 5; i++) {
+                    String uniformName = switch(i) {
+                        case 1  -> "uPCFValue";
+                        case 2  -> "uMinShadowBias";
+                        case 3  -> "uMaxShadowBias";
+                        case 4  -> "uShadowMapActive";
+                        default -> "uLightSpace";
+                    };
+                    
+                    if(glProgram.containsUniform(uniformName)) {
+                        switch(uniformName) {
+                            case "uLightSpace"      -> glProgram.setUniform("uLightSpace", false, shadowMap.lightSpace);
+                            case "uPCFValue"        -> glProgram.setUniform("uPCFValue", shadowMap.PCFValue);
+                            case "uMinShadowBias"   -> glProgram.setUniform("uMinShadowBias", shadowMap.minBias);
+                            case "uMaxShadowBias"   -> glProgram.setUniform("uMaxShadowBias", shadowMap.minBias);
+                            case "uShadowMapActive" -> glProgram.setUniform("uShadowMapActive", 1);
+                        }
+                    }
+                }
+            });
         } else {
-            XJGE.getDefaultGLProgram().setUniform("uShadowMapActive", 0);
+            XJGE.glPrograms.values().forEach(glProgram -> {
+                if(glProgram.containsUniform("uShadowMapActive")) glProgram.setUniform("uShadowMapActive", 0);
+            });
         }
     }
     

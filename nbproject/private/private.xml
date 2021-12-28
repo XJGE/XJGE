@@ -1,11 +1,27 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project-private xmlns="http://www.netbeans.org/ns/project-private/1">
-    <editor-bookmarks xmlns="http://www.netbeans.org/ns/editor-bookmarks/2" lastBookmarkId="58">
+    <editor-bookmarks xmlns="http://www.netbeans.org/ns/editor-bookmarks/2" lastBookmarkId="60">
+        <file>
+            <url>src/org/xjge/scenes/TestScene.java</url>
+            <bookmark id="59">
+                <name/>
+                <line>43</line>
+                <key/>
+            </bookmark>
+        </file>
         <file>
             <url>src/dev/theskidster/xjge2/input/Input.java</url>
             <bookmark id="9">
                 <name/>
                 <line>16</line>
+                <key/>
+            </bookmark>
+        </file>
+        <file>
+            <url>src/org/xjge/assets/defaultVertex.glsl</url>
+            <bookmark id="60">
+                <name/>
+                <line>132</line>
                 <key/>
             </bookmark>
         </file>
@@ -23,10 +39,7 @@
             <file>file:/C:/Users/thesk/Documents/Projects/XJGE/XJGE-2/src/org/xjge/scenes/TileRenderer.java</file>
             <file>file:/C:/Users/thesk/Documents/Projects/XJGE/XJGE-2/src/org/xjge/scenes/TestScene.java</file>
             <file>file:/C:/Users/thesk/Documents/Projects/XJGE/XJGE-2/src/org/xjge/assets/defaultFragment.glsl</file>
-            <file>file:/C:/Users/thesk/Documents/Projects/XJGE/XJGE-2/src/org/xjge/scenes/TestEntity.java</file>
             <file>file:/C:/Users/thesk/Documents/Projects/XJGE/XJGE-2/src/org/xjge/assets/defaultVertex.glsl</file>
-            <file>file:/C:/Users/thesk/Documents/Projects/XJGE/XJGE-2/src/org/xjge/core/Camera.java</file>
-            <file>file:/C:/Users/thesk/Documents/Projects/XJGE/XJGE-2/src/org/xjge/scenes/Main.java</file>
         </group>
     </open-files>
 </project-private>

@@ -203,7 +203,16 @@ void main() {
             break;
         
         case 11:
-            ioFragColor = texture(uTexture, ioTexCoords);
+            vec3 lightDir        = normalize(uLights[0].position);
+            float dotLightNormal = dot(lightDir, normalize(ioNormal));
+            
+            float shadow = (uShadowMapActive == 1) 
+                         ? calcShadow(dotLightNormal)
+                         : 1.0f;
+            
+            if(shadow == 0) shadow = (1 - uLights[0].contrast);
+            
+            ioFragColor = texture(uTexture, ioTexCoords) * shadow;
             break;
     }
     

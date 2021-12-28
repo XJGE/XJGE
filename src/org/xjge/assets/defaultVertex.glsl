@@ -132,6 +132,9 @@ void main() {
         
         case 11: //TODO: implement instanced objects that can be shaded by shadows
             ioTexCoords = aTexCoords + aTexOffset;
+            ioNormal    = uNormal * aNormal;
+            ioFragPos   = vec3(uModel * vec4(aPosition + aPosOffset, 1));
+            ioLightFrag = uLightSpace * vec4(ioFragPos, 1);
             gl_Position = uProjection * uView * vec4(aPosition + aPosOffset, 1);
             break;
     }

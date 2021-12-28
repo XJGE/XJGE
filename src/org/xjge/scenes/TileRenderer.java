@@ -88,10 +88,10 @@ public class TileRenderer {
         g.bindBuffers();
         
         glVertexAttribPointer(0, 3, GL_FLOAT, false, (5 * Float.BYTES), 0);
-        glVertexAttribPointer(1, 2, GL_FLOAT, false, (5 * Float.BYTES), (3 * Float.BYTES));
+        glVertexAttribPointer(2, 2, GL_FLOAT, false, (5 * Float.BYTES), (3 * Float.BYTES));
         
         glEnableVertexAttribArray(0);
-        glEnableVertexAttribArray(1);
+        glEnableVertexAttribArray(2);
     }
     
     private void offsetPosition(Map<Vector2i, Tile> tiles) {
@@ -140,8 +140,8 @@ public class TileRenderer {
         glActiveTexture(GL_TEXTURE0);
         glBindTexture(GL_TEXTURE_2D, tileTexture.handle);
         
-        //glActiveTexture(GL_TEXTURE1);
-        //glBindTexture(GL_TEXTURE_2D, depthTexHandle);
+        glActiveTexture(GL_TEXTURE1);
+        glBindTexture(GL_TEXTURE_2D, depthTexHandle);
         
         glBindVertexArray(g.vao);
         
@@ -149,8 +149,10 @@ public class TileRenderer {
         offsetTexture(tiles);
         
         gameProgram.setUniform("uType", 11);
+        gameProgram.setUniform("uNormal", true, normal);
+        gameProgram.setUniform("uModel", false, g.modelMatrix);
         gameProgram.setUniform("uTexture", 0);
-        //gameProgram.setUniform("uShadowMap", 1);
+        gameProgram.setUniform("uShadowMap", 1);
         
         glDrawElementsInstanced(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0, tiles.size());
         

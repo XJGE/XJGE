@@ -34,14 +34,13 @@ public class TestScene extends Scene {
         XJGE.setViewportCamera(GLFW_JOYSTICK_1, new Camera2D());
         
         entities.put("test2", new TestEntity(44, 48, 4, 16, false));
-        entities.put("test1", new TestEntity(40, 40, 0, 16, false));
+        entities.put("test1", new TestEntity(40, 40, -4, 16, false));
         
         lights[0] = new Light(1, 0.55f, 1, new Vector3f(-30, 30, 60), Color.WHITE);
         setShadowMap(new ShadowMap(0.00003f, 0.0009f, 200f, 100f, true, 1920, 1920, true, 0));
         
-        tiles.put(new Vector2i(), new Tile(1, new Vector3f(48, 48, -3)));
-        
-        //TODO: implement instanced objects that can be shaded by shadows
+        tiles.put(new Vector2i(0, 0), new Tile(1, new Vector3f(48, 44, 0)));
+        tiles.put(new Vector2i(1, 0), new Tile(2, new Vector3f(64, 44, 0)));
         
         //Game.enableBloom = true;
     }
@@ -50,13 +49,15 @@ public class TestScene extends Scene {
     public void update(double targetDelta, double trueDelta) {
         entities.values().forEach(entity -> entity.update(targetDelta, trueDelta));
         background.update(targetDelta, trueDelta);
+        
+        //entities.get("test2").position.x += 0.1f;
     }
 
     @Override
     public void render(Map<String, GLProgram> glPrograms, int viewportID, Camera camera, int depthTexHandle) {
         background.render(glPrograms.get("default"), camera, lights, depthTexHandle);
         entities.values().forEach(entity -> entity.render(glPrograms.get("default"), camera, lights, depthTexHandle));
-        //tileRenderer.draw(glPrograms.get("default"), tiles, depthTexHandle);
+        tileRenderer.draw(glPrograms.get("default"), tiles, depthTexHandle);
     }
 
     @Override
