@@ -192,4 +192,16 @@ public final class ShadowMap {
         glBindTexture(GL_TEXTURE_2D, 0);
     }
     
+    /**
+     * Sets the direction the world light will point towards. By default this is
+     * the scenes origin point (0, 0, 0).
+     * 
+     * @param x the location along the x axis to point towards
+     * @param y the location along the y axis to point towards
+     * @param z the location along the z axis to point towards
+     */
+    public void setLightDirection(float x, float y, float z) {
+        lightDir.set(x, y, z);
+    }
+    
 }
