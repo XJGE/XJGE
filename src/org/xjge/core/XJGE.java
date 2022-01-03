@@ -76,6 +76,8 @@ public final class XJGE {
     private static int resolutionX;
     private static int resolutionY;
     
+    static float noclipSpeedFactor = 1.0f;
+    
     private static double cursorX;
     private static double cursorY;
     
@@ -936,6 +938,21 @@ public final class XJGE {
         }
         
         Logger.setDomain(null);
+    }
+    
+    /**
+     * Sets the speed at which the camera will move while noclip mode is 
+     * enabled. This includes base speed and boost speed.
+     * <p>
+     * More specifically, the factor number provided here will influence the 
+     * base speed of the camera. That is, lower values will make the camera 
+     * move slower, whereas higher values will make it move faster. By default
+     * the cameras speed factor is 1.
+     * 
+     * @param factor the value that will effect the cameras movement speed
+     */
+    public static void setNoclipSpeedFactor(float factor) {
+        noclipSpeedFactor = clampValue(0, Float.MAX_VALUE, factor);
     }
     
 }

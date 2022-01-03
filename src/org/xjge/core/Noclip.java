@@ -15,7 +15,7 @@ import org.joml.Vector3f;
  */
 final class Noclip extends Camera {
 
-    private float speed = 0.25f;
+    private float speed = 0.25f * XJGE.noclipSpeedFactor;
     private float pitch;
     private float yaw               = -90f;
     private final float sensitivity = 0.10f;
@@ -73,7 +73,7 @@ final class Noclip extends Camera {
      * @param enable if true, the camera will move faster
      */
     void setSpeedBoostEnabled(boolean enable) {
-        speed = (enable) ? 0.75f : 0.25f;
+        speed = ((enable) ? 0.75f : 0.25f) * XJGE.noclipSpeedFactor;
     }
     
     /**
