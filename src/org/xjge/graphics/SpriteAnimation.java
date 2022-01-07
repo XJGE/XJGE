@@ -2,6 +2,7 @@ package org.xjge.graphics;
 
 import org.xjge.core.Game;
 import java.util.ArrayList;
+import org.joml.Vector2f;
 import org.joml.Vector2i;
 
 //Created: Jun 13, 2021
@@ -49,10 +50,34 @@ public class SpriteAnimation {
      * 
      * @param atlas the texture atlas (or sprite sheet) to use for this animation
      */
-    public void updateAnimation(Atlas atlas) {
+    public void update(Atlas atlas) {
         if(currFrame < frames.size()) {
             if(Game.tick(speed)) {
                 atlas.texCoords.set(
+                        atlas.subImageOffsets.get(frames.get(currFrame)).x,
+                        atlas.subImageOffsets.get(frames.get(currFrame)).y);
+                currFrame++;
+            }
+        } else {
+            currFrame = 0;
+        }
+    }
+    
+    /**
+     * Overloaded variant of the {@link update update()} method which stores 
+     * the texture coordinates in the provided vector object. This is useful 
+     * anytime you want to reuse the data from a texture atlas without 
+     * altering its own {@code texCoords} field.
+     * 
+     * @param texCoords the vector object that can be passed to a shader 
+     *                   program
+     * @param atlas     the texture atlas (or sprite sheet) to use for this 
+     *                   animation
+     */
+    public void update(Vector2f texCoords, Atlas atlas) {
+        if(currFrame < frames.size()) {
+            if(Game.tick(speed)) {
+                texCoords.set(
                         atlas.subImageOffsets.get(frames.get(currFrame)).x,
                         atlas.subImageOffsets.get(frames.get(currFrame)).y);
                 currFrame++;
