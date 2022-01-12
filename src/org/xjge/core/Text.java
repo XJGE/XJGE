@@ -68,8 +68,6 @@ public final class Text {
         if(valueChanged(prevValue, currValue)) prevValue.put(drawOrder, currValue);
     }
     
-    int trueCount = 0;
-    
     /**
      * Draws a string of text to the screen.
      * 
@@ -120,6 +118,8 @@ public final class Text {
         updateValue(prevPosition, prevPosition.get(drawOrder).set(position));
         updateValue(prevColor, color);
     }
+    
+    //TODO: add BitmapFont drawString variant.
     
     /**
      * Draws a string of text that exhibits syntax highlighting.
