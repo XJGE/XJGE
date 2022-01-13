@@ -33,8 +33,8 @@ import org.xjge.graphics.Texture;
  * be passed to the 
  * {@linkplain Widget#drawString(Font, String, Vector2i, Color) drawString()} 
  * method of a {@link Widget} to render text in some desired 
- * font. TrueType .ttf is the preferred file format of this engine for vector 
- * fonts.
+ * font. TrueType (.ttf) and Bitmap (.bmf) are the preferred file formats of 
+ * this engine for fonts.
  * 
  * @author J Hoffman
  * @since  2.0.0
@@ -93,7 +93,8 @@ public final class Font {
      * NOTE: The size specified in this constructor encompasses the entire 
      * glyph, including its advance, descent, and bearing space. As such, the 
      * actual visible portion of the glyph produced may not correspond directly 
-     * to the desired size in pixels.
+     * to the desired size in pixels. This value will be discarded if a .bmf 
+     * file is used.
      * 
      * @param filename the name of the file to load. Expects the file extension 
      *                 to be included.
@@ -126,6 +127,13 @@ public final class Font {
         ErrorUtils.checkGLError();
     }
     
+    /**
+     * Parses font data from a .bmf (bitmap font) file. This format is used 
+     * exclusively by the engine for low-resolution fonts such as those that 
+     * would accompany a "retro" aesthetic.
+     * 
+     * @param file the file to parse font data from
+     */
     private void loadBitmapFont(InputStream file) {
         try {
             XMLStreamReader xmlReader = XMLInputFactory.newInstance().createXMLStreamReader(file);
@@ -144,6 +152,7 @@ public final class Font {
                 switch(xmlReader.next()) {
                     case XMLStreamConstants.START_ELEMENT -> {
                         if(xmlReader.getName().getLocalPart().equals("font")) {
+                            
                             texture = new Texture(xmlReader.getAttributeValue(null, "texture"));
                                 glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
                                 glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
@@ -194,7 +203,7 @@ public final class Font {
             
             float charPosX = 0;
             float charPosY = 0;
-
+            
             for(char c : charset.toCharArray()) {
                 if(c != '\r') {
                     texOffsets.put(c, new Vector2f(charPosX, charPosY));
@@ -205,7 +214,8 @@ public final class Font {
                 }
             }
         } catch(XMLStreamException e) {
-            
+            Logger.setDomain("core");
+            Logger.logSevere("Failed to parse bitmap font file data.", e);
         }
     }
     
@@ -219,6 +229,7 @@ public final class Font {
      */
     private void loadVectorFont(InputStream file, int size) {
         this.size = size;
+        
         texHandle = glGenTextures();
         glBindTexture(GL_TEXTURE_2D, texHandle);
         
@@ -314,6 +325,7 @@ public final class Font {
             glTexImage2D(GL_TEXTURE_2D, 0, GL_ALPHA, bitmapWidth, bitmapHeight, 0, GL_ALPHA, GL_UNSIGNED_BYTE, imageBuf);
             glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
             glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+            glBindTexture(GL_TEXTURE_2D, 0);
             
             MemoryUtil.memFree(imageBuf);
             MemoryUtil.memFree(fontBuf);
@@ -337,7 +349,7 @@ public final class Font {
             
         } catch(IOException e) {
             Logger.setDomain("core");
-            Logger.logSevere("Failed to parse font data.", e);
+            Logger.logSevere("Failed to parse vector font file data.", e);
         }
     }
     
