@@ -145,12 +145,24 @@ public final class Font {
                     case XMLStreamConstants.START_ELEMENT -> {
                         if(xmlReader.getName().getLocalPart().equals("font")) {
                             texture = new Texture(xmlReader.getAttributeValue(null, "texture"));
+                                glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+                                glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+                            glBindTexture(GL_TEXTURE_2D, 0);
                             
                             texHandle         = texture.handle;
                             largestGlyphWidth = Integer.parseInt(xmlReader.getAttributeValue(null, "width"));
                             size              = Integer.parseInt(xmlReader.getAttributeValue(null, "height"));
-                            subImageWidth     = (float) largestGlyphWidth / (float) texture.getWidth();
-                            subImageHeight    = (float) size / (float) texture.getHeight();
+                            bitmapWidth       = texture.getWidth();
+                            bitmapHeight      = texture.getHeight();
+                            
+                            subImageWidth     = (float) largestGlyphWidth / bitmapWidth;
+                            subImageHeight    = (float) size / bitmapHeight;
+                            
+                            System.out.println(size);
+                            System.out.println(bitmapHeight);
+                            System.out.println(subImageWidth);
+                            System.out.println(subImageHeight);
+                            System.out.println();
                             
                         } else if(xmlReader.getName().getLocalPart().equals("group")) {
                             advance = Integer.parseInt(xmlReader.getAttributeValue(null, "advance"));

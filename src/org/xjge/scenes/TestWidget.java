@@ -35,7 +35,7 @@ public class TestWidget extends Widget {
 
     @Override
     public void render(Map<String, GLProgram> glPrograms) {
-        drawString(font, "yo!", textPos, Color.BLACK);
+        drawString(font, "The quick brown fox jumps over the lazy dog.", textPos, Color.WHITE);
     }
 
     @Override
