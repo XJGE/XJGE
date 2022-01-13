@@ -25,8 +25,8 @@ public class TestWidget extends Widget {
     public TestWidget() {
         super(new Vector3i(), 384, 216);
         
-        font    = new Font("fnt_expositsans.bmf", 12);
-        textPos = new Vector2i();
+        font    = new Font("fnt_expositsans.bmf", 1);
+        textPos = new Vector2i(20, 20);
     }
 
     @Override
@@ -35,7 +35,7 @@ public class TestWidget extends Widget {
 
     @Override
     public void render(Map<String, GLProgram> glPrograms) {
-        //drawString(font, "bleh", textPos, Color.WHITE);
+        drawString(font, "yo!", textPos, Color.BLACK);
     }
 
     @Override

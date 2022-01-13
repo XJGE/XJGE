@@ -1,12 +1,15 @@
 package org.xjge.core;
 
+import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.StringReader;
 import java.nio.ByteBuffer;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 import javax.xml.stream.XMLInputFactory;
+import javax.xml.stream.XMLStreamConstants;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 import org.joml.Vector2f;
@@ -21,6 +24,7 @@ import org.lwjgl.system.MemoryStack;
 import org.lwjgl.system.MemoryUtil;
 import static org.lwjgl.system.MemoryUtil.NULL;
 import org.xjge.graphics.Color;
+import org.xjge.graphics.Texture;
 
 //Created: Jun 3, 2021
 
@@ -39,8 +43,8 @@ public final class Font {
     
     final static int DEFAULT_SIZE = 24;
     
-    final int texHandle;
-    final int size;
+    int texHandle;
+    int size;
     
     private int bitmapWidth;
     private int bitmapHeight;
@@ -52,13 +56,6 @@ public final class Font {
     
     private final HashMap<Character, Vector2i> posOffsets   = new HashMap<>();
     private final HashMap<Character, Integer> advanceValues = new HashMap<>();
-    
-    private final String charset = " !\"#$%&\'()*+,-./" +
-                                    "0123456789:;<=>?"   +
-                                    "@ABCDEFGHIJKLMNO"   +
-                                    "PQRSTUVWXYZ[\\]^_"  + 
-                                    "`abcdefghijklmno"   +
-                                    "pqrstuvwxyz{|}~";
     
     /**
      * Creates a new font object using the default font metrics of the engine.
@@ -104,11 +101,6 @@ public final class Font {
      *                 glyphs at
      */
     public Font(String filename, int size) {
-        this.size = size;
-        
-        texHandle = glGenTextures();
-        glBindTexture(GL_TEXTURE_2D, texHandle);
-        
         try(InputStream file = Font.class.getResourceAsStream(XJGE.getAssetsFilepath() + filename)) {
             if(size <= 0) throw new IllegalStateException("Invalid font size " + size + " used.");
             
@@ -138,11 +130,74 @@ public final class Font {
         try {
             XMLStreamReader xmlReader = XMLInputFactory.newInstance().createXMLStreamReader(file);
             
+            Texture texture;
             int advance = 0;
             int descent = 0;
             
+            float subImageWidth  = 0;
+            float subImageHeight = 0;
             
+            while(xmlReader.hasNext()) {
+                final int ADVANCE = advance;
+                final int DESCENT = descent;
+                
+                switch(xmlReader.next()) {
+                    case XMLStreamConstants.START_ELEMENT -> {
+                        if(xmlReader.getName().getLocalPart().equals("font")) {
+                            texture = new Texture(xmlReader.getAttributeValue(null, "texture"));
+                            
+                            texHandle         = texture.handle;
+                            largestGlyphWidth = Integer.parseInt(xmlReader.getAttributeValue(null, "width"));
+                            size              = Integer.parseInt(xmlReader.getAttributeValue(null, "height"));
+                            subImageWidth     = (float) largestGlyphWidth / (float) texture.getWidth();
+                            subImageHeight    = (float) size / (float) texture.getHeight();
+                            
+                        } else if(xmlReader.getName().getLocalPart().equals("group")) {
+                            advance = Integer.parseInt(xmlReader.getAttributeValue(null, "advance"));
+                            descent = Integer.parseInt(xmlReader.getAttributeValue(null, "descent"));
+                        }
+                    }
+                        
+                    case XMLStreamConstants.END_ELEMENT -> {
+                        if(xmlReader.getName().getLocalPart().equals("font")) {
+                            xmlReader.close();
+                        }
+                    }
+                    
+                    case XMLStreamConstants.CHARACTERS -> {
+                        BufferedReader reader = new BufferedReader(new StringReader(xmlReader.getText().trim()));
+                        
+                        reader.lines().forEach(line -> {
+                            for(String value : line.trim().split(",")) {
+                                char character = (char) Integer.parseInt(value);
+                                
+                                advanceValues.put(character, ADVANCE);
+                                posOffsets.put(character, new Vector2i(0, DESCENT));
+                            }
+                        });
+                    }
+                }
+            }
             
+            String charset = " !\"#$%&\'()*+,-./" + "\r" +
+                             "0123456789:;<=>?"   + "\r" +
+                             "@ABCDEFGHIJKLMNO"   + "\r" +
+                             "PQRSTUVWXYZ[\\]^_"  + "\r" + 
+                             "`abcdefghijklmno"   + "\r" +
+                             "pqrstuvwxyz{|}~";
+            
+            float charPosX = 0;
+            float charPosY = 0;
+
+            for(char c : charset.toCharArray()) {
+                if(c != '\r') {
+                    texOffsets.put(c, new Vector2f(charPosX, charPosY));
+                    charPosX += subImageWidth;
+                } else {
+                    charPosX = 0;
+                    charPosY += subImageHeight;
+                }
+            }
         } catch(XMLStreamException e) {
             
         }
@@ -157,6 +212,10 @@ public final class Font {
      *             at
      */
     private void loadVectorFont(InputStream file, int size) {
+        this.size = size;
+        texHandle = glGenTextures();
+        glBindTexture(GL_TEXTURE_2D, texHandle);
+        
         try(MemoryStack stack = MemoryStack.stackPush()) {
             byte[] data = file.readAllBytes();
             
@@ -173,6 +232,13 @@ public final class Font {
             
             bitmapWidth  = 0;
             bitmapHeight = 0;
+            
+            String charset = " !\"#$%&\'()*+,-./" +
+                             "0123456789:;<=>?"   +
+                             "@ABCDEFGHIJKLMNO"   +
+                             "PQRSTUVWXYZ[\\]^_"  + 
+                             "`abcdefghijklmno"   +
+                             "pqrstuvwxyz{|}~";
             
             ByteBuffer imageBuf                = MemoryUtil.memAlloc(bitmapWidth * bitmapHeight);
             STBTTBakedChar.Buffer bakedCharBuf = STBTTBakedChar.malloc(charset.length());
