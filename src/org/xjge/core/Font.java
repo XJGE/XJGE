@@ -6,9 +6,11 @@ import java.nio.ByteBuffer;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
+import javax.xml.stream.XMLInputFactory;
+import javax.xml.stream.XMLStreamException;
+import javax.xml.stream.XMLStreamReader;
 import org.joml.Vector2f;
 import org.joml.Vector2i;
-import static org.lwjgl.opengl.GL11.glDeleteTextures;
 import static org.lwjgl.opengl.GL11C.*;
 import org.lwjgl.stb.STBTTBakedChar;
 import org.lwjgl.stb.STBTTFontinfo;
@@ -18,6 +20,7 @@ import static org.lwjgl.stb.STBTruetype.*;
 import org.lwjgl.system.MemoryStack;
 import org.lwjgl.system.MemoryUtil;
 import static org.lwjgl.system.MemoryUtil.NULL;
+import org.xjge.graphics.Color;
 
 //Created: Jun 3, 2021
 
@@ -26,7 +29,8 @@ import static org.lwjgl.system.MemoryUtil.NULL;
  * be passed to the 
  * {@linkplain Widget#drawString(Font, String, Vector2i, Color) drawString()} 
  * method of a {@link Widget} to render text in some desired 
- * font. TrueType .ttf is the preferred file format of this engine for fonts.
+ * font. TrueType .ttf is the preferred file format of this engine for vector 
+ * fonts.
  * 
  * @author J Hoffman
  * @since  2.0.0
@@ -49,6 +53,13 @@ public final class Font {
     private final HashMap<Character, Vector2i> posOffsets   = new HashMap<>();
     private final HashMap<Character, Integer> advanceValues = new HashMap<>();
     
+    private final String charset = " !\"#$%&\'()*+,-./" +
+                                    "0123456789:;<=>?"   +
+                                    "@ABCDEFGHIJKLMNO"   +
+                                    "PQRSTUVWXYZ[\\]^_"  + 
+                                    "`abcdefghijklmno"   +
+                                    "pqrstuvwxyz{|}~";
+    
     /**
      * Creates a new font object using the default font metrics of the engine.
      */
@@ -56,7 +67,7 @@ public final class Font {
         this.size = DEFAULT_SIZE;
         texHandle = glGenTextures();
         glBindTexture(GL_TEXTURE_2D, texHandle);
-        loadFont(Font.class.getResourceAsStream("/org/xjge/assets/fnt_debug_mono.ttf"), size);
+        loadVectorFont(Font.class.getResourceAsStream("/org/xjge/assets/fnt_debug_mono.ttf"), size);
     }
     
     /**
@@ -100,16 +111,41 @@ public final class Font {
         
         try(InputStream file = Font.class.getResourceAsStream(XJGE.getAssetsFilepath() + filename)) {
             if(size <= 0) throw new IllegalStateException("Invalid font size " + size + " used.");
-            loadFont(file, size);
+            
+            int periodIndex = filename.lastIndexOf(".");
+            
+            if(periodIndex > 0) {
+                if(filename.substring(periodIndex + 1).equals("bmf")) {
+                    loadBitmapFont(file);
+                } else {
+                    loadVectorFont(file, size);
+                }
+            } else {
+                throw new IllegalStateException("Font filename has no extension.");
+            }
         } catch(Exception e) {
             Logger.setDomain("ui");
             Logger.logWarning("Failed to load font \"" + filename + "\"", e);
             Logger.setDomain(null);
             
-            loadFont(Font.class.getResourceAsStream("/org/xjge/assets/fnt_debug_mono.ttf"), DEFAULT_SIZE);
+            loadVectorFont(Font.class.getResourceAsStream("/org/xjge/assets/fnt_debug_mono.ttf"), DEFAULT_SIZE);
         }
         
         ErrorUtils.checkGLError();
+    }
+    
+    private void loadBitmapFont(InputStream file) {
+        try {
+            XMLStreamReader xmlReader = XMLInputFactory.newInstance().createXMLStreamReader(file);
+            
+            int advance = 0;
+            int descent = 0;
+            
+            
+            
+        } catch(XMLStreamException e) {
+            
+        }
     }
     
     /**
@@ -120,7 +156,7 @@ public final class Font {
      * @param size the desired size (in pixels) to generate this fonts glyphs 
      *             at
      */
-    private void loadFont(InputStream file, int size) {
+    private void loadVectorFont(InputStream file, int size) {
         try(MemoryStack stack = MemoryStack.stackPush()) {
             byte[] data = file.readAllBytes();
             
@@ -130,13 +166,6 @@ public final class Font {
             if(!stbtt_InitFont(info, fontBuf)) {
                 throw new IllegalStateException("Failed to parse font information.");
             }
-            
-            String charset = " !\"#$%&\'()*+,-./" +
-                             "0123456789:;<=>?"   +
-                             "@ABCDEFGHIJKLMNO"   +
-                             "PQRSTUVWXYZ[\\]^_"  + 
-                             "`abcdefghijklmno"   +
-                             "pqrstuvwxyz{|}~";
             
             int bitmapSizeInPixels = 128;
             int exitStatus         = -1;

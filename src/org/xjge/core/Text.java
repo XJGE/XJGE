@@ -119,8 +119,6 @@ public final class Text {
         updateValue(prevColor, color);
     }
     
-    //TODO: add BitmapFont drawString variant.
-    
     /**
      * Draws a string of text that exhibits syntax highlighting.
      * 
