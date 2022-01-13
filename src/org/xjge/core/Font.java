@@ -155,14 +155,8 @@ public final class Font {
                             bitmapWidth       = texture.getWidth();
                             bitmapHeight      = texture.getHeight();
                             
-                            subImageWidth     = (float) largestGlyphWidth / bitmapWidth;
-                            subImageHeight    = (float) size / bitmapHeight;
-                            
-                            System.out.println(size);
-                            System.out.println(bitmapHeight);
-                            System.out.println(subImageWidth);
-                            System.out.println(subImageHeight);
-                            System.out.println();
+                            subImageWidth  = (float) largestGlyphWidth / bitmapWidth;
+                            subImageHeight = (float) size / bitmapHeight;
                             
                         } else if(xmlReader.getName().getLocalPart().equals("group")) {
                             advance = Integer.parseInt(xmlReader.getAttributeValue(null, "advance"));

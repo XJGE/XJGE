@@ -47,13 +47,7 @@ final class FontVertexData {
             indices  = stack.mallocInt(6);
             
             float subImageWidth  = (float) font.getLargestGlyphWidth() / font.getBitmapWidth();
-            float subImageHeight = (float) font.size / font.getBitmapWidth();
-            
-            System.out.println("L: " + font.size);
-            System.out.println(font.getBitmapHeight());
-            System.out.println(subImageWidth);
-            System.out.println(subImageHeight);
-            System.out.println();
+            float subImageHeight = (float) font.size / font.getBitmapHeight();
             
             //(vec3 position), (vec2 texCoords)
             vertices.put(0)                          .put(font.size).put(0) .put(0)            .put(0);

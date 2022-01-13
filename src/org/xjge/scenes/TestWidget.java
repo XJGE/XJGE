@@ -19,14 +19,18 @@ import org.xjge.graphics.GLProgram;
  */
 public class TestWidget extends Widget {
 
-    Font font;
-    Vector2i textPos;
+    Font font1;
+    Font font2;
+    Vector2i textPos1;
+    Vector2i textPos2;
     
     public TestWidget() {
         super(new Vector3i(), 384, 216);
         
-        font    = new Font("fnt_expositsans.bmf", 1);
-        textPos = new Vector2i(20, 20);
+        font1 = new Font("fnt_dosmono.bmf", 8);
+        font2 = new Font("fnt_expositsans.bmf", 8);
+        textPos1 = new Vector2i(20, 60);
+        textPos2 = new Vector2i(20, 20);
     }
 
     @Override
@@ -35,7 +39,8 @@ public class TestWidget extends Widget {
 
     @Override
     public void render(Map<String, GLProgram> glPrograms) {
-        drawString(font, "The quick brown fox jumps over the lazy dog.", textPos, Color.WHITE);
+        drawString(font1, "The quick brown fox jumps over the lazy dog.", textPos1, Color.WHITE);
+        drawString(font2, "The quick brown fox jumps over the lazy dog.", textPos2, Color.WHITE);
     }
 
     @Override
