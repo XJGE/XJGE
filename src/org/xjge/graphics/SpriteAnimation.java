@@ -29,8 +29,8 @@ public class SpriteAnimation {
      *              changed
      */
     public SpriteAnimation(Vector2i frame) {
-        speed = 1;
         frames.add(frame);
+        speed = 1;
     }
     
     /**
@@ -39,9 +39,9 @@ public class SpriteAnimation {
      * @param frames the frames that comprise the animation in sequence
      * @param speed  the speed of the animation in game ticks
      */
-    public SpriteAnimation(int speed, ArrayList<Vector2i> frames) {
-        this.speed  = speed;
+    public SpriteAnimation(ArrayList<Vector2i> frames, int speed) {
         this.frames = frames;
+        this.speed  = speed;
     }
     
     /**
