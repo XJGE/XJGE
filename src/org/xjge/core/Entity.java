@@ -114,7 +114,7 @@ public abstract class Entity {
      * 
      * @return true if the entity has requested removal
      */
-    public boolean removalRequested() {
+    public final boolean removalRequested() {
         if(remove) destroy();
         return remove;
     }
