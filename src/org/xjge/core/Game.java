@@ -200,6 +200,89 @@ public final class Game {
     }
     
     /**
+     * Obtains engine runtime information.
+     * 
+     * @return the number of consecutive frames that have been rendered since 
+     *         the last game tick
+     */
+    static int getFPS() {
+        return fps;
+    }
+    
+    /**
+     * Obtains engine runtime information.
+     * <p>
+     * NOTE: The current delta value returned by this method is truncated and 
+     * intended for display/debug purposes only. A more accurate version can be 
+     * found in the {@linkplain Scene#update(double, double) update method} of
+     * the current scene under the {@code trueDelta} argument.
+     * 
+     * @return the time (in seconds) it took the engine to complete an update 
+     *         cycle
+     */
+    static float getDelta() {
+        return (float) deltaMetric;
+    }
+    
+    /**
+     * Obtains engine runtime information.
+     * 
+     * @return true of the game has completed a pass of its update cycle
+     */
+    static boolean getTicked() {
+        return ticked;
+    }
+    
+    /**
+     * Obtains the total number of cycles that the engines update loop has 
+     * completed since the start of the application.
+     * <p>
+     * NOTE: 
+     * 
+     * @return the number of cycles (or ticks) that have elapsed
+     */
+    public static int getTickCount() {
+        return tickCount;
+    }
+    
+    /**
+     * Changes the color OpenGL will use to clear color buffers. Often used to 
+     * set background or sky colors.
+     * 
+     * @param color the color empty space will be filled with
+     */
+    public static void setClearColor(Color color) {
+        clearColor = color;
+    }
+    
+    /**
+     * Exits the current scene and enters the one specified.
+     * 
+     * @param scene the new scene to enter
+     */
+    public static void setScene(Scene scene) {
+        Logger.setDomain("core");
+        Logger.logInfo("Current scene changed to \"" + scene.name + "\"");
+        Logger.newLine();
+        Logger.setDomain(null);
+        
+        if(Game.scene != null) scene.exit();
+        Game.scene = scene;
+    }
+    
+    /**
+     * Specifies the value which will be used to indicate how bright the surface 
+     * of objects must be before the bloom effect is applied to it. The lower 
+     * the brightness threshold, the more abundant bloom will be.
+     * 
+     * @param value a number between 0 and 10 that the brightness of a surface
+     *              will need to exceed
+     */
+    public static void setBloomThreshold(float value) {
+        bloomThreshold = XJGE.clampValue(0f, 10f, value);
+    }
+    
+    /**
      * Returns true whenever the specified number of update iterations 
      * (or cycles) has been reached. Intended to be used in for game systems 
      * that don't require the decoupled precision of the {@link Timer} class.
@@ -256,77 +339,6 @@ public final class Game {
             Logger.logWarning("Failed to add light at index " + index + ".", e);
             Logger.setDomain(null);
         }
-    }
-    
-    /**
-     * Obtains engine runtime information.
-     * 
-     * @return the number of consecutive frames that have been rendered since 
-     *         the last game tick
-     */
-    public static int getFPS() {
-        return fps;
-    }
-    
-    /**
-     * Obtains engine runtime information.
-     * <p>
-     * NOTE: The current delta value returned by this method is truncated and 
-     * intended for display/debug purposes only. A more accurate version can be 
-     * found in the {@linkplain Scene#update(double, double) update method} of
-     * the current scene under the {@code trueDelta} argument.
-     * 
-     * @return the time (in seconds) it took the engine to complete an update 
-     *         cycle
-     */
-    public static float getDelta() {
-        return (float) deltaMetric;
-    }
-    
-    /**
-     * Obtains engine runtime information.
-     * 
-     * @return true of the game has completed a pass of its update cycle
-     */
-    public static boolean getTicked() {
-        return ticked;
-    }
-    
-    /**
-     * Changes the color OpenGL will use to clear color buffers. Often used to 
-     * set background or sky colors.
-     * 
-     * @param color the color empty space will be filled with
-     */
-    public static void setClearColor(Color color) {
-        clearColor = color;
-    }
-    
-    /**
-     * Exits the current scene and enters the one specified.
-     * 
-     * @param scene the new scene to enter
-     */
-    public static void setScene(Scene scene) {
-        Logger.setDomain("core");
-        Logger.logInfo("Current scene changed to \"" + scene.name + "\"");
-        Logger.newLine();
-        Logger.setDomain(null);
-        
-        if(Game.scene != null) scene.exit();
-        Game.scene = scene;
-    }
-    
-    /**
-     * Specifies the value which will be used to indicate how bright the surface 
-     * of objects must be before the bloom effect is applied to it. The lower 
-     * the brightness threshold, the more abundant bloom will be.
-     * 
-     * @param value a number between 0 and 10 that the brightness of a surface
-     *              will need to exceed
-     */
-    public static void setBloomThreshold(float value) {
-        bloomThreshold = XJGE.clampValue(0f, 10f, value);
     }
     
 }
