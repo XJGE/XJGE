@@ -38,6 +38,7 @@ public final class Game {
 
     private static int fps;
     private static int tickCount = 0;
+    private final static int TICKS_PER_HOUR = 3599999;
     
     private static float bloomThreshold = 1.0f;
     
@@ -93,7 +94,7 @@ public final class Game {
                 
                 delta     -= TARGET_DELTA;
                 ticked    = true;
-                tickCount = (tickCount == Integer.MAX_VALUE) ? 0 : tickCount + 1;
+                tickCount = (tickCount == TICKS_PER_HOUR) ? 0 : tickCount + 1;
                 
                 //Process any unresolved events otherwise update the scene normally.
                 if(events.size() > 0) {
@@ -237,7 +238,10 @@ public final class Game {
      * Obtains the total number of cycles that the engines update loop has 
      * completed since the start of the application.
      * <p>
-     * NOTE: 
+     * NOTE: The tick count will roll over to zero every hour, with one hour 
+     * being equivalent to approximately 3,600,000 ticks. Gameplay systems that
+     * require durations longer than this should consider instead utilizing the 
+     * {@link Timer} class.
      * 
      * @return the number of cycles (or ticks) that have elapsed
      */

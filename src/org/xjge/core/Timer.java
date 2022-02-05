@@ -31,7 +31,7 @@ public class Timer {
      * @param time  the total number of steps the timer must complete before it 
      *              is finished
      * @param speed the number of game ticks to wait before stepping forward. A 
-     *              single tick typically takes a millisecond.
+     *              single tick typically takes 16 milliseconds.
      * 
      * @see Game#tick(int)
      */
@@ -113,7 +113,9 @@ public class Timer {
     public void update() {
         if(start) {
             if(time != 0) {
-                if(Game.tick(speed)) time--;
+                if(Game.tick(speed)) {
+                    time--;
+                }
             } else {
                 finished = true;
                 observable.notifyObservers("finished", finished);
