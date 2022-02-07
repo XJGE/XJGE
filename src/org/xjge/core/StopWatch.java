@@ -4,7 +4,7 @@ package org.xjge.core;
 
 /**
  * Provides a simple timing mechanism that exhibits greater accuracy than 
- * {@link Game#tick(int))} alone by capturing the timestamp of the initial game 
+ * {@link Game#tick(int)} alone by capturing the timestamp of the initial game 
  * tick from which {@link tick(int, int, boolean)} was called and comparing it 
  * to subsequent ticks until the specified number of cycles have passed.
  * 

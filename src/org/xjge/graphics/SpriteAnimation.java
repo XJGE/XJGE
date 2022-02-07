@@ -1,6 +1,5 @@
 package org.xjge.graphics;
 
-import org.xjge.core.Game;
 import java.util.ArrayList;
 import org.joml.Vector2f;
 import org.joml.Vector2i;
@@ -21,7 +20,7 @@ public class SpriteAnimation {
     public int currFrame;
     public int speed;
     
-    private StopWatch stopWatch = new StopWatch();
+    private final StopWatch stopWatch = new StopWatch();
     
     public ArrayList<Vector2i> frames = new ArrayList<>();
     
@@ -79,7 +78,7 @@ public class SpriteAnimation {
      */
     public void update(Vector2f texCoords, Atlas atlas) {
         if(currFrame < frames.size()) {
-            if(Game.tick(speed)) {
+            if(stopWatch.tick(speed)) {
                 texCoords.set(
                         atlas.subImageOffsets.get(frames.get(currFrame)).x,
                         atlas.subImageOffsets.get(frames.get(currFrame)).y);
