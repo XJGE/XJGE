@@ -250,6 +250,16 @@ public final class Game {
     }
     
     /**
+     * Obtains the current number of events in the event queue. Used primarily
+     * for debugging purposes.
+     * 
+     * @return the number of currently unresolved events in the event queue
+     */
+    public static int getNumEvents() {
+        return events.size();
+    }
+    
+    /**
      * Changes the color OpenGL will use to clear color buffers. Often used to 
      * set background or sky colors.
      * 
