@@ -3,6 +3,11 @@ package org.xjge.core;
 //Created: Feb 5, 2022
 
 /**
+ * Provides a simple timing mechanism that exhibits greater accuracy than 
+ * {@link Game#tick(int))} alone by capturing the timestamp of the initial game 
+ * tick from which {@link tick(int, int, boolean)} was called and comparing it 
+ * to subsequent ticks until the specified number of cycles have passed.
+ * 
  * @author J Hoffman
  * @since  2.0.0
  */
@@ -13,6 +18,31 @@ public class StopWatch {
     
     boolean startTickSet;
     
+    /**
+     * Returns true anytime the specified number of update iterations (or 
+     * cycles) have been reached following the current game tick this method 
+     * was initially called at. 
+     * <p>
+     * The number of ticks (provided through 
+     * {@link getTime()}) will reset upon reaching the value specified in the 
+     * {@code time} argument. However, if {@code false} is passed to the 
+     * {@code increment} argument, it will instead reset upon reaching zero.
+     * <p>
+     * NOTE: The value of {@code time} is zero-inclusive. As such, passing a 
+     * value of five (counting down) will actually start at four, and reset 
+     * after zero has been reached. This method will always return true on the 
+     * first call.
+     * 
+     * @param time      the total number of intervals the timer must complete 
+     *                  before it restarts
+     * @param speed     the number of game ticks to wait before changing the 
+     *                  time value. A single tick typically takes 16 
+     *                  milliseconds.
+     * @param increment if true, the stopwatch will count upwards. Otherwise it 
+     *                  will count down.
+     * 
+     * @return true every time the specified number of cycles has been reached
+     */
     public boolean tick(int time, int speed, boolean increment) {
         if(startTickSet) {
             if(increment) {
@@ -49,6 +79,11 @@ public class StopWatch {
         return false;
     }
     
+    /**
+     * Obtains the current value of the time field.
+     * 
+     * @return the current time the stopwatch is at
+     */
     public int getTime() {
         return currTime;
     }

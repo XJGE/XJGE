@@ -1,6 +1,5 @@
 package org.xjge.core;
 
-import java.util.ArrayList;
 import org.xjge.graphics.Color;
 import java.util.Comparator;
 import java.util.PriorityQueue;
@@ -288,9 +287,10 @@ public final class Game {
     }
     
     /**
-     * Returns true whenever the specified number of update iterations 
-     * (or cycles) has been reached. Intended to be used in for game systems 
-     * that don't require the precision of the {@link Timer} class.
+     * Returns true anytime the specified number of update iterations 
+     * (or cycles) have been reached. Intended to be used in for game systems 
+     * that don't require the precision of the {@link Timer} or 
+     * {@link StopWatch} classes.
      * 
      * @param speed the number of cycles to wait until the next tick will 
      *              occur

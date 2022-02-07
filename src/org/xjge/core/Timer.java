@@ -132,6 +132,11 @@ public class Timer {
         reset();
     }
     
+    /**
+     * Obtains the current value of the time field.
+     * 
+     * @return the current time the timer is at
+     */
     public int getTime() {
         return stopWatch.currTime;
     }
