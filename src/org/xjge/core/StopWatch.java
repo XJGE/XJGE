@@ -19,6 +19,20 @@ public class StopWatch {
     boolean startTickSet;
     
     /**
+     * Simplified version of {@link tick(int, int, boolean)} that mimics the 
+     * functionality of the {@link Game#tick(int)} method but with improved 
+     * accuracy.
+     * 
+     * @param speed the number of game ticks to wait before changing the time 
+     *              value. A single tick typically takes 16 milliseconds.
+     * 
+     * @return true every time the specified number of cycles has been reached
+     */
+    public boolean tick(int speed) {
+        return tick(2, speed, false);
+    }
+    
+    /**
      * Returns true anytime the specified number of update iterations (or 
      * cycles) have been reached following the current game tick this method 
      * was initially called at. 
