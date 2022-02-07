@@ -14,31 +14,31 @@ import java.util.List;
  */
 public class Timer {
     
-    public int time;
-    public int speed;
-    private int startTick;
-    private final int initialTime;
+    private final int time;
+    private final int speed;
     
     private boolean finished;
     private boolean start;
     
+    private final StopWatch stopWatch   = new StopWatch();
     private final Observable observable = new Observable(this);
     
     /**
      * Creates a new timer object that will step forward every time the 
      * specified number of update cycles have passed.
      * 
-     * @param time  the total number of steps the timer must complete before it 
-     *              is finished
+     * @param time  the total number of intervals the timer must complete 
+     *              before it is finished
      * @param speed the number of game ticks to wait before stepping forward. A 
      *              single tick typically takes 16 milliseconds.
      * 
      * @see Game#tick(int)
      */
     public Timer(int time, int speed) {
-        this.time   = time;
-        this.speed  = speed;
-        initialTime = time;
+        this.time  = time;
+        this.speed = speed;
+        
+        stopWatch.currTime = time;
     }
     
     /**
@@ -58,8 +58,8 @@ public class Timer {
     public Timer(int time, int speed, PropertyChangeListener observer) {
         this.time   = time;
         this.speed  = speed;
-        initialTime = time;
         
+        stopWatch.currTime = time;
         observable.properties.put("finished", finished);
         observable.addObserver(observer);
     }
@@ -81,8 +81,8 @@ public class Timer {
     public Timer(int time, int speed, List<PropertyChangeListener> observers) {
         this.time   = time;
         this.speed  = speed;
-        initialTime = time;
         
+        stopWatch.currTime = time;
         observable.properties.put("finished", finished);
         observers.forEach(observer -> observable.addObserver(observer));
     }
@@ -90,10 +90,7 @@ public class Timer {
     /**
      * Starts the timer.
      */
-    public void start() {
-        start     = true;
-        startTick = Game.getTickCount();
-    }
+    public void start() { start = true; }
     
     /**
      * Stops the timer. Doing so will pause it at its current time.
@@ -103,7 +100,7 @@ public class Timer {
     /**
      * Resets the time of the timer to its initial duration.
      */
-    public void reset() { time = initialTime; }
+    public void reset() { stopWatch.currTime = time; }
     
     /**
      * Updates the timer. It is expected that implementing objects using a 
@@ -112,10 +109,8 @@ public class Timer {
      */
     public void update() {
         if(start) {
-            if(time != 0) {
-                if(Game.tick(speed)) {
-                    time--;
-                }
+            if(stopWatch.currTime != 0 && !finished) {
+                stopWatch.tick(time, speed, false);
             } else {
                 finished = true;
                 observable.notifyObservers("finished", finished);
@@ -135,6 +130,10 @@ public class Timer {
         
         observable.notifyObservers("finished", finished);
         reset();
+    }
+    
+    public int getTime() {
+        return stopWatch.currTime;
     }
     
 }

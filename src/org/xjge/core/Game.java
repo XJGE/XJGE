@@ -1,5 +1,6 @@
 package org.xjge.core;
 
+import java.util.ArrayList;
 import org.xjge.graphics.Color;
 import java.util.Comparator;
 import java.util.PriorityQueue;
@@ -38,7 +39,7 @@ public final class Game {
 
     private static int fps;
     private static int tickCount = 0;
-    private final static int TICKS_PER_HOUR = 3599999;
+    final static int TICKS_PER_HOUR = 3599999;
     
     private static float bloomThreshold = 1.0f;
     
@@ -289,15 +290,15 @@ public final class Game {
     /**
      * Returns true whenever the specified number of update iterations 
      * (or cycles) has been reached. Intended to be used in for game systems 
-     * that don't require the decoupled precision of the {@link Timer} class.
+     * that don't require the precision of the {@link Timer} class.
      * 
-     * @param cycles the number of cycles to wait until the next tick will 
-     *               occur
+     * @param speed the number of cycles to wait until the next tick will 
+     *              occur
      * 
      * @return true every time the specified number of cycles has been reached
      */
-    public static boolean tick(int cycles) {
-        return tickCount % cycles == 0;
+    public static boolean tick(int speed) {
+        return tickCount % speed == 0;
     }
     
     /**
