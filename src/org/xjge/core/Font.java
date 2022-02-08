@@ -389,7 +389,11 @@ public final class Font {
      * @return the horizontal advance of the specified glyph
      */
     int getGlyphAdvance(char c) {
-        return advanceValues.get(c);
+        if(!advanceValues.containsKey(c)) {
+            return advanceValues.get('');
+        } else {
+            return advanceValues.get(c);
+        }
     }
     
     /**
@@ -401,7 +405,11 @@ public final class Font {
      * @return the horizontal bearing space of the specified glyph
      */
     int getGlyphBearing(char c) {
-        return posOffsets.get(c).x;
+        if(!posOffsets.containsKey(c)) {
+            return posOffsets.get('').x;
+        } else {
+            return posOffsets.get(c).x;
+        }
     }
     
     /**
@@ -413,7 +421,11 @@ public final class Font {
      * @return the descent of the specified glyph
      */
     int getGlyphDescent(char c) {
-        return posOffsets.get(c).y;
+        if(!posOffsets.containsKey(c)) {
+            return posOffsets.get('').y;
+        } else {
+            return posOffsets.get(c).y;
+        }
     }
     
     /**

@@ -5,7 +5,6 @@ import org.lwjgl.openal.AL;
 import org.lwjgl.openal.ALC;
 import static org.lwjgl.openal.ALC10.*;
 import org.lwjgl.openal.ALCCapabilities;
-import org.lwjgl.openal.ALCapabilities;
 
 //Created: Jun 20, 2021
 

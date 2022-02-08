@@ -253,7 +253,7 @@ public final class Game {
      * Obtains the current number of events in the event queue. Used primarily
      * for debugging purposes.
      * 
-     * @return the number of currently unresolved events in the event queue
+     * @return the current number of unresolved events in the event queue
      */
     public static int getNumEvents() {
         return events.size();
