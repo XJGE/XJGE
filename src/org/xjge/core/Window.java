@@ -201,7 +201,7 @@ public final class Window {
      *             {@link org.lwjgl.glfw.GLFW#GLFW_LOCK_KEY_MODS GLFW_LOCK_KEY_MODS}, or
      *             {@link org.lwjgl.glfw.GLFW#GLFW_RAW_MOUSE_MOTION GLFW_RAW_MOUSE_MOTION}.
      * 
-     * @return 
+     * @return the current state of the queried mode
      */
     public int getInputMode(int mode) {
         return glfwGetInputMode(HANDLE, mode);
