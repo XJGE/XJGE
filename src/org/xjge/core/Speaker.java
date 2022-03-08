@@ -59,4 +59,11 @@ public final class Speaker {
         }
     }
     
+    //TODO: display capabilities?
+    //TODO: explore EFX
+    
+    public void listExtensions() {
+        Logger.logInfo(alcGetString(handle, ALC_DEVICE_SPECIFIER));
+    }
+    
 }

@@ -74,8 +74,8 @@ public final class Skybox {
                 case 1 -> images.put(GL_TEXTURE_CUBE_MAP_NEGATIVE_X, leftFilename);
                 case 2 -> images.put(GL_TEXTURE_CUBE_MAP_POSITIVE_Y, topFilename);
                 case 3 -> images.put(GL_TEXTURE_CUBE_MAP_NEGATIVE_Y, bottomFilename);
-                case 4 -> images.put(GL_TEXTURE_CUBE_MAP_POSITIVE_Z, frontFilename);
-                case 5 -> images.put(GL_TEXTURE_CUBE_MAP_NEGATIVE_Z, backFilename);
+                case 4 -> images.put(GL_TEXTURE_CUBE_MAP_NEGATIVE_Z, frontFilename);
+                case 5 -> images.put(GL_TEXTURE_CUBE_MAP_POSITIVE_Z, backFilename);
             }
         }
         
