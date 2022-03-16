@@ -39,4 +39,4 @@ All notable changes to this project will be documented in this file. The format 
 - The showInputInfo command since this information is displayed along with other debug information when F1 is pressed.
 - LightSource objects as they were almost entirely redundant. Light objects may now be created freely.
 
-[2.0.0]: null
+[2.0.0]: https://github.com/XJGE/XJGE-2/releases/tag/2.0.0
