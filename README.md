@@ -54,10 +54,10 @@ public class TestScene extends Scene {
     @Override
     public void renderShadows(GLProgram depthProgram) {
         /*
-        Specailized method that can be used to generate a depth texture.
+        Specialized method that can be used to generate a depth texture.
         Only called when a ShadowMap object has been provided to the scene
-        and game entities are providing their mesh data to the default 
-        shader program.
+        and game entities are providing their mesh/model matrix data to the 
+        depth shader program through uniforms.
         */
     }
 
