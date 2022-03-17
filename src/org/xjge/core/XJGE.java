@@ -129,7 +129,7 @@ public final class XJGE {
      * IDEs package explorer. A call to this method might look something like 
      * the following:
      * <blockquote><pre>
-     * init(<i>"/dev/theskidster/game/assets/"</i>, <i>"dev.theskidster.game.scenes."</i>, <b>true</b>, <b>null</b>, <b>true</b>);
+     * init(<i>"/dev/theskidster/game/assets/"</i>, <i>"dev.theskidster.game.scenes."</i>, <b>null</b>, ...);
      * </pre></blockquote>
      * 
      * @param assetsFilepath the relative filepath to the folder that contains 
