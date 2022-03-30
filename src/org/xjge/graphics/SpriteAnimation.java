@@ -53,6 +53,8 @@ public class SpriteAnimation {
      * @param atlas the texture atlas (or sprite sheet) to use for this animation
      */
     public void update(Atlas atlas) {
+        if(speed == 0) return;
+        
         if(currFrame < frames.size()) {
             if(stopWatch.tick(speed)) {
                 atlas.texCoords.set(
@@ -77,6 +79,8 @@ public class SpriteAnimation {
      *                   animation
      */
     public void update(Vector2f texCoords, Atlas atlas) {
+        if(speed == 0) return;
+        
         if(currFrame < frames.size()) {
             if(stopWatch.tick(speed)) {
                 texCoords.set(
