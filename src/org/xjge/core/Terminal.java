@@ -350,6 +350,7 @@ final class Terminal implements PropertyChangeListener {
         if(commands.containsKey(name)) {
             commands.get(name).execute(args);
             output = commands.get(name).getOutput();
+            commands.get(name).output = null; //Reset the state of the ouput.
         } else {
             output = new TerminalOutput("ERROR: Command not recognized. Check syntax or use help.\n", Color.RED);
         }
