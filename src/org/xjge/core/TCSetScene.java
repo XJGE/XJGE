@@ -3,8 +3,7 @@ package org.xjge.core;
 import org.xjge.graphics.Color;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Parameter;
-import java.util.HashMap;
+import java.util.ArrayList;
 import java.util.List;
 
 //Created: Jun 27, 2021
@@ -41,42 +40,43 @@ final class TCSetScene extends TerminalCommand {
         if(args.isEmpty()) {
             setOutput(errorNotEnoughArgs(1), Color.RED);
         } else {
-            if(args.size() > 1) {
-                setOutput(errorTooManyArgs(args.size(), 1), Color.RED);
-            } else {
-                try {
-                    Class<?> c = Class.forName(XJGE.getScenesFilepath() + args.get(0));
+            try {
+                Class<?> c = Class.forName(XJGE.getScenesFilepath() + args.get(0));
 
-                    if(!c.getSimpleName().equals("Scene") && Scene.class.isAssignableFrom(c)) {
-                        
-                        var constructors = new HashMap<Constructor, Parameter[]>();
-                        
-                        Constructor[] cons = c.getConstructors();
-                        
-                        System.out.println(cons[0].getParameterCount());
-                        
-                        Constructor con = c.getConstructor(Scene.class.getClasses());
-                        
-                        System.out.println("asdf");
-                        
-                        Parameter[] params = con.getParameters();
-                        
-                        if(params.length == 0) {
-                            Game.setScene((Scene) con.newInstance(new Object[0]));
-                            setOutput("Current scene changed to \"" + Game.getSceneName() + "\"", Color.WHITE);
+                if(!c.getSimpleName().equals("Scene") && Scene.class.isAssignableFrom(c)) {
+                    Constructor[] cons   = c.getConstructors();
+                    Constructor conToUse = null;
+                    
+                    for(int i = 0; i < cons.length && conToUse == null; i++) {
+                        if(cons[i].getParameterCount() == args.size() - 1) {
+                            conToUse = cons[i];
+                        }
+                    }
+                    
+                    if(conToUse != null) {
+                            if(args.size() == 1) {
+                            Game.setScene((Scene) conToUse.newInstance());
                         } else {
-                            Game.setScene((Scene) con.newInstance(new Object[0]));
+                            var params = new ArrayList<String>();
+                            for(int i = 1; i < args.size(); i++) params.add(args.get(i));
+                            Game.setScene((Scene) conToUse.newInstance((Object[]) params.toArray()));
                         }
                     } else {
-                        setOutput("ERROR: Invalid argument. Must be a subclass of Scene.", Color.RED);
+                        //TODO: throw exception.
+                        System.out.println("con is null");
                     }
-                } catch(ClassNotFoundException | IllegalAccessException | IllegalArgumentException | 
-                        InstantiationException | NoSuchMethodException | SecurityException | 
-                        InvocationTargetException | NoClassDefFoundError ex) {
-                    setOutput("ERROR: \"" + ex.getClass().getSimpleName() + "\" caught while " + 
-                              "attempting to change the current scene.", 
-                              Color.RED);
+
+                    setOutput("Current scene changed to \"" + Game.getSceneName() + "\"", Color.WHITE);
+                } else {
+                    setOutput("ERROR: Invalid argument. Must be a subclass of Scene.", Color.RED);
                 }
+            } catch(ClassNotFoundException | IllegalAccessException | IllegalArgumentException | 
+                    InstantiationException | InvocationTargetException | NoClassDefFoundError ex) {
+                setOutput("ERROR: \"" + ex.getClass().getSimpleName() + "\" caught while " + 
+                          "attempting to change the current scene.", 
+                          Color.RED);
+                
+                System.out.println(ex);
             }
         }
     }

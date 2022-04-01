@@ -17,8 +17,24 @@ import org.xjge.graphics.GLProgram;
  */
 public class TestScene2 extends Scene {
 
-    public TestScene2(Color color) {
+    public TestScene2() {
         super("test2");
+        
+        Game.setClearColor(Color.RED);
+    }
+    
+    public TestScene2(String s) {
+        super("test2");
+        
+        System.out.println("String: " + s);
+        
+        Game.setClearColor(Color.RED);
+    }
+    
+    public TestScene2(int bleh) {
+        super("test2");
+        
+        System.out.println("Int: " + bleh);
         
         Game.setClearColor(Color.RED);
     }
