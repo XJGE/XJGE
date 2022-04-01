@@ -1,9 +1,7 @@
 package org.xjge.core;
 
 import org.xjge.graphics.Color;
-import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
-import java.util.ArrayList;
 import java.util.List;
 
 //Created: Jun 27, 2021
@@ -11,9 +9,8 @@ import java.util.List;
 /**
  * Changes the current scene to render.
  * <p>
- * NOTE: The package containing the scenes returned by 
- * {@link org.xjge.core.XJGE#getScenesFilepath() XJGE.getScenesFilepath()} must 
- * be named "scenes" otherwise this command will fail.
+ * NOTE: Scene subclasses must provide a default constructor with no parameters
+ * otherwise using this command will generate an exception.
  * 
  * @author J Hoffman
  * @since  2.0.0
@@ -40,43 +37,26 @@ final class TCSetScene extends TerminalCommand {
         if(args.isEmpty()) {
             setOutput(errorNotEnoughArgs(1), Color.RED);
         } else {
-            try {
-                Class<?> c = Class.forName(XJGE.getScenesFilepath() + args.get(0));
+            if(args.size() > 1) {
+                setOutput(errorTooManyArgs(args.size(), 1), Color.RED);
+            } else {
+                try {
+                    Class<?> c = Class.forName(XJGE.getScenesFilepath() + args.get(0));
 
-                if(!c.getSimpleName().equals("Scene") && Scene.class.isAssignableFrom(c)) {
-                    Constructor[] cons   = c.getConstructors();
-                    Constructor conToUse = null;
-                    
-                    for(int i = 0; i < cons.length && conToUse == null; i++) {
-                        if(cons[i].getParameterCount() == args.size() - 1) {
-                            conToUse = cons[i];
-                        }
-                    }
-                    
-                    if(conToUse != null) {
-                            if(args.size() == 1) {
-                            Game.setScene((Scene) conToUse.newInstance());
-                        } else {
-                            var params = new ArrayList<String>();
-                            for(int i = 1; i < args.size(); i++) params.add(args.get(i));
-                            Game.setScene((Scene) conToUse.newInstance((Object[]) params.toArray()));
-                        }
+                    if(!c.getSimpleName().equals("Scene") && Scene.class.isAssignableFrom(c)) {
+                        //Assumes the scenes constructor has no parameters.
+                        Game.setScene((Scene) c.getConstructor().newInstance());
+                        setOutput("Current scene changed to \"" + Game.getSceneName() + "\"", Color.WHITE);
                     } else {
-                        //TODO: throw exception.
-                        System.out.println("con is null");
+                        setOutput("ERROR: Invalid argument. Must be a subclass of Scene.", Color.RED);
                     }
-
-                    setOutput("Current scene changed to \"" + Game.getSceneName() + "\"", Color.WHITE);
-                } else {
-                    setOutput("ERROR: Invalid argument. Must be a subclass of Scene.", Color.RED);
+                } catch(ClassNotFoundException | IllegalAccessException | IllegalArgumentException | 
+                        InstantiationException | InvocationTargetException | NoSuchMethodException | 
+                        NoClassDefFoundError ex) {
+                    setOutput("ERROR: \"" + ex.getClass().getSimpleName() + "\" caught while " + 
+                              "attempting to change the current scene.", 
+                              Color.RED);
                 }
-            } catch(ClassNotFoundException | IllegalAccessException | IllegalArgumentException | 
-                    InstantiationException | InvocationTargetException | NoClassDefFoundError ex) {
-                setOutput("ERROR: \"" + ex.getClass().getSimpleName() + "\" caught while " + 
-                          "attempting to change the current scene.", 
-                          Color.RED);
-                
-                System.out.println(ex);
             }
         }
     }

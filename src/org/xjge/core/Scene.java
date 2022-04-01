@@ -11,6 +11,9 @@ import org.joml.Vector3f;
 /**
  * A 3D representation of the game world that contains entities, light sources, 
  * and camera objects.
+ * <p>
+ * NOTE: The constructors of Scene subclasses should exhibit no parameters 
+ * otherwise the {@link org.xjge.core.TCSetScene setScene} command will fail.
  * 
  * @author J Hoffman
  * @since  2.0.0

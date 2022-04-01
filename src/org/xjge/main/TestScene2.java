@@ -22,22 +22,6 @@ public class TestScene2 extends Scene {
         
         Game.setClearColor(Color.RED);
     }
-    
-    public TestScene2(String s) {
-        super("test2");
-        
-        System.out.println("String: " + s);
-        
-        Game.setClearColor(Color.RED);
-    }
-    
-    public TestScene2(int bleh) {
-        super("test2");
-        
-        System.out.println("Int: " + bleh);
-        
-        Game.setClearColor(Color.RED);
-    }
 
     @Override
     public void update(double targetDelta, double trueDelta) {
