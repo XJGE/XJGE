@@ -51,7 +51,8 @@ public final class Game {
     private static Scene scene;
     
     /**
-     * TODO: mention the variables that can be listened to
+     * An {@link Observable} object that can be used to detect state changes 
+     * occurring within the Game class.
      */
     public final static Observable observable = new Observable(Game.class);
     
@@ -297,7 +298,9 @@ public final class Game {
         Logger.setDomain(null);
         
         if(Game.scene != null) scene.exit();
+        
         Game.scene = scene;
+        observable.notifyObservers("sceneChanged", Game.scene);
     }
     
     /**
