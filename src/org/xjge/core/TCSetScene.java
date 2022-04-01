@@ -4,6 +4,7 @@ import org.xjge.graphics.Color;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Parameter;
+import java.util.HashMap;
 import java.util.List;
 
 //Created: Jun 27, 2021
@@ -48,7 +49,7 @@ final class TCSetScene extends TerminalCommand {
 
                     if(!c.getSimpleName().equals("Scene") && Scene.class.isAssignableFrom(c)) {
                         
-                        
+                        var constructors = new HashMap<Constructor, Parameter[]>();
                         
                         Constructor[] cons = c.getConstructors();
                         

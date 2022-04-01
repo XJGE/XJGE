@@ -49,6 +49,10 @@ public final class Game {
     
     private static Color clearColor = Color.create(92, 148, 252);
     private static Scene scene;
+    
+    /**
+     * TODO: mention the variables that can be listened to
+     */
     public final static Observable observable = new Observable(Game.class);
     
     private static final Queue<Event> events = new PriorityQueue<>(Comparator.comparing(Event::getPriority));
@@ -262,6 +266,11 @@ public final class Game {
         return events.size();
     }
     
+    /**
+     * Obtains the display name of the current Scene being rendered.
+     * 
+     * @return the name of the current scene
+     */
     public static String getSceneName() {
         return scene.name;
     }
