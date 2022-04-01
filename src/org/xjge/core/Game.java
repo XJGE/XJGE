@@ -49,6 +49,7 @@ public final class Game {
     
     private static Color clearColor = Color.create(92, 148, 252);
     private static Scene scene;
+    public final static Observable observable = new Observable(Game.class);
     
     private static final Queue<Event> events = new PriorityQueue<>(Comparator.comparing(Event::getPriority));
     
@@ -70,6 +71,8 @@ public final class Game {
      *                     the bloom framebuffer texture
      */
     static void loop(int fbo, Viewport[] viewports, Terminal terminal, DebugInfo debugInfo, GLProgram depthProgram, GLProgram blurProgram) {
+        observable.properties.put("sceneChanged", scene);
+        
         int cycles = 0;
         final double TARGET_DELTA = 1 / 60.0;
         double prevTime = glfwGetTime();
@@ -257,6 +260,10 @@ public final class Game {
      */
     public static int getNumEvents() {
         return events.size();
+    }
+    
+    public static String getSceneName() {
+        return scene.name;
     }
     
     /**

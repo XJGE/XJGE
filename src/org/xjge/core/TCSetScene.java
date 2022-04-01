@@ -3,6 +3,7 @@ package org.xjge.core;
 import org.xjge.graphics.Color;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Parameter;
 import java.util.List;
 
 //Created: Jun 27, 2021
@@ -25,8 +26,9 @@ final class TCSetScene extends TerminalCommand {
     TCSetScene() {
         super("Changes the current scene to render.", 
 
-              "Pass the class name of the desired level, should not include " + 
-              "parentheses or extension.",
+              "Pass the class name of the scene you want to enter. Class names " +
+              "are case sensitive and should not include parenthesis or file " +
+              "extensions.",
 
               "setScene (<string>)");
     }
@@ -43,17 +45,36 @@ final class TCSetScene extends TerminalCommand {
             } else {
                 try {
                     Class<?> c = Class.forName(XJGE.getScenesFilepath() + args.get(0));
-                    
+
                     if(!c.getSimpleName().equals("Scene") && Scene.class.isAssignableFrom(c)) {
+                        
+                        
+                        
+                        Constructor[] cons = c.getConstructors();
+                        
+                        System.out.println(cons[0].getParameterCount());
+                        
                         Constructor con = c.getConstructor(Scene.class.getClasses());
-                        Game.setScene((Scene) con.newInstance(new Object[0]));
+                        
+                        System.out.println("asdf");
+                        
+                        Parameter[] params = con.getParameters();
+                        
+                        if(params.length == 0) {
+                            Game.setScene((Scene) con.newInstance(new Object[0]));
+                            setOutput("Current scene changed to \"" + Game.getSceneName() + "\"", Color.WHITE);
+                        } else {
+                            Game.setScene((Scene) con.newInstance(new Object[0]));
+                        }
                     } else {
                         setOutput("ERROR: Invalid argument. Must be a subclass of Scene.", Color.RED);
                     }
                 } catch(ClassNotFoundException | IllegalAccessException | IllegalArgumentException | 
                         InstantiationException | NoSuchMethodException | SecurityException | 
                         InvocationTargetException | NoClassDefFoundError ex) {
-                    setOutput(errorInvalidArg(args.get(0), "<string>"), Color.RED);
+                    setOutput("ERROR: \"" + ex.getClass().getSimpleName() + "\" caught while " + 
+                              "attempting to change the current scene.", 
+                              Color.RED);
                 }
             }
         }
