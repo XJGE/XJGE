@@ -45,6 +45,7 @@ final class TCSetScene extends TerminalCommand {
 
                     if(!c.getSimpleName().equals("Scene") && Scene.class.isAssignableFrom(c)) {
                         //Assumes the scenes constructor has no parameters.
+                        //TODO: allow constructors with parameters?
                         Game.setScene((Scene) c.getConstructor().newInstance());
                         setOutput("Current scene changed to \"" + Game.getSceneName() + "\"", Color.WHITE);
                     } else {
