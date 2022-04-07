@@ -599,7 +599,7 @@ public final class XJGE {
      * 
      * @return a value between desired minimum and maximum ranges
      */
-    static float clampValue(float minValue, float maxValue, float userValue) {
+    public static float clampValue(float minValue, float maxValue, float userValue) {
         float result = 0;
         
         if(userValue > maxValue) {
