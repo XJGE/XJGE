@@ -187,6 +187,7 @@ final class FontVertexData {
         
         XJGE.getDefaultGLProgram().setUniform("uType", 1);
         XJGE.getDefaultGLProgram().setUniform("uTexture", 0);
+        XJGE.getDefaultGLProgram().setUniform("uIsBitmapFont", (font.isBitmapFont) ? 1 : 0);
         
         glDrawElementsInstanced(GL_TRIANGLES, indices.capacity(), GL_UNSIGNED_INT, 0, glyphs.size());
         glDisable(GL_BLEND);

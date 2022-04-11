@@ -52,6 +52,8 @@ public final class Font {
     
     private final float SCALE = 1.5f;
     
+    boolean isBitmapFont;
+    
     Map<Character, Vector2f> texOffsets = new HashMap<>();
     
     private final HashMap<Character, Vector2i> posOffsets   = new HashMap<>();
@@ -135,6 +137,8 @@ public final class Font {
      * @param file the file to parse font data from
      */
     private void loadBitmapFont(InputStream file) {
+        isBitmapFont = true;
+        
         try {
             XMLStreamReader xmlReader = XMLInputFactory.newInstance().createXMLStreamReader(file);
             

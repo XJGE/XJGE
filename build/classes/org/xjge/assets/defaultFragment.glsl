@@ -26,6 +26,7 @@ uniform int uPCFValue;
 uniform int uShine;
 uniform int uShadowMapActive;
 uniform int uBloomOverride;
+uniform int uIsBitmapFont;
 uniform float uOpacity;
 uniform float uMinShadowBias;
 uniform float uMaxShadowBias;
@@ -171,7 +172,10 @@ void main() {
             break;
 
         case 1: //Used for text rendering.
-            ioFragColor = vec4(ioColor * texture(uTexture, ioTexCoords).xyz, texture(uTexture, ioTexCoords).a);
+            vec3 textColorOutput = (uIsBitmapFont == 1) 
+                                 ? ioColor * texture(uTexture, ioTexCoords).xyz 
+                                 : ioColor;
+            ioFragColor = vec4(textColorOutput, texture(uTexture, ioTexCoords).a);
             break;
 
         case 2: case 3: case 10: //Used for rendering "bloom volumes" and UI shapes like polygons and rectangles.
