@@ -171,7 +171,7 @@ void main() {
             break;
 
         case 1: //Used for text rendering.
-            ioFragColor = vec4(ioColor, texture(uTexture, ioTexCoords).a);
+            ioFragColor = vec4(ioColor * texture(uTexture, ioTexCoords).xyz, texture(uTexture, ioTexCoords).a);
             break;
 
         case 2: case 3: case 10: //Used for rendering "bloom volumes" and UI shapes like polygons and rectangles.
