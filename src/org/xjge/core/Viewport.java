@@ -268,16 +268,19 @@ final class Viewport {
      * @param name the name of the widget to remove
      */
     void removeUIWidget(String name) {
+        Logger.setDomain("ui");
+        
         if(ui.containsKey(name)) {
             ui.get(name).destroy();
             ui.remove(name);
+            Logger.logInfo("Removed widget \"" + name + "\" from viewport " + id + "");
         } else {
-            Logger.setDomain("ui");
             Logger.logWarning("Failed to remove UI widget \"" + name + "\". No " + 
                               "such widget exists for viewport " + id + ".", 
                               null);
-            Logger.setDomain(null);
         }
+        
+        Logger.setDomain(null);
     }
     
     /**
