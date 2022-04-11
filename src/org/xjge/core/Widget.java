@@ -20,6 +20,14 @@ public abstract class Widget {
     protected int width;
     protected int height;
     
+    /**
+     * Used to resolve a special event that occurs when a gamepad is 
+     * disconnected. You should set its value to be the result of some kind of
+     * test like {@link Input#getDevicePresent(int) } if the implementing class
+     * will be used as the games {@link Input#missingGamepad} widget.
+     */
+    public boolean resolveEvent;
+    
     protected static Font defaultFont;
     
     private final Text text  = new Text();
