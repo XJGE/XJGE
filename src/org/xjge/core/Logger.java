@@ -69,6 +69,7 @@ public final class Logger {
         horizontalLine();
         logInfo("OS NAME:\t\t" + System.getProperty("os.name"));
         logInfo("JAVA VER:\t\t" + System.getProperty("java.version"));
+        logInfo("XJGE VER:\t\t" + XJGE.VERSION);
         logInfo("GLFW VER:\t\t" + glfwGetVersionString());
         logInfo("OPENAL VER:\t" + alGetString(AL_VERSION));
         logInfo("OPENGL VER:\t" + glGetString(GL_VERSION));
