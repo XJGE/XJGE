@@ -243,6 +243,10 @@ final class Viewport {
      * @param widget the widget to add
      */
     void addUIWidget(String name, Widget widget) {
+        Logger.setDomain("ui");
+        Logger.logInfo("Added new widget \"" + name + "\" to viewport " + id);
+        Logger.setDomain(null);
+        
         ui.put(name, widget);
         
         List<Map.Entry<String, Widget>> widgetList = new LinkedList<>(ui.entrySet());
@@ -264,8 +268,16 @@ final class Viewport {
      * @param name the name of the widget to remove
      */
     void removeUIWidget(String name) {
-        ui.get(name).destroy();
-        ui.remove(name);
+        if(ui.containsKey(name)) {
+            ui.get(name).destroy();
+            ui.remove(name);
+        } else {
+            Logger.setDomain("ui");
+            Logger.logWarning("Failed to remove UI widget \"" + name + "\". No " + 
+                              "such widget exists for viewport " + id + ".", 
+                              null);
+            Logger.setDomain(null);
+        }
     }
     
     /**

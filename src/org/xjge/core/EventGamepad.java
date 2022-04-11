@@ -36,8 +36,9 @@ final class EventGamepad extends Event {
                 for(int i = GLFW_JOYSTICK_1; i < GLFW_JOYSTICK_5; i++) {
                     if(Input.getDevicePresent(i)) Input.revertEnabledState(i);
                 }
-
-                XJGE.removeUIWidget(jid, "discon " + jid);
+                
+                if(!XJGE.getViewportActive(jid)) XJGE.removeUIWidget(GLFW_JOYSTICK_1, "discon " + jid);
+                else                             XJGE.removeUIWidget(jid, "discon " + jid);
             }
         } else {
             resolved = Input.getDevicePresent(jid);
