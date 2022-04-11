@@ -90,7 +90,7 @@ public final class XJGE {
     private static boolean firstMouse = true;
     
     public static final Path PWD       = Path.of("").toAbsolutePath();
-    public static final String VERSION = "2.0.3";
+    public static final String VERSION = "2.0.4";
     
     private static Split split = Split.NONE;
     
@@ -686,6 +686,16 @@ public final class XJGE {
         switch(viewportID) {
             case 0, 1, 2, 3 -> viewports[viewportID].removeUIWidget(name);
         }
+    }
+    
+    /**
+     * Removes every widget currently attached to the specified viewport.
+     * 
+     * @param viewportID the ID number of the viewport that will clear its UI 
+     *                   of all widgets
+     */
+    public static final void clearWidgets(int viewportID) {
+        viewports[viewportID].clearWidgets();
     }
     
     /**

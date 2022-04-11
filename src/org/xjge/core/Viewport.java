@@ -267,6 +267,13 @@ final class Viewport {
         ui.remove(name);
     }
     
+    /**
+     * Removes every UI widget currently attached to this viewport.
+     */
+    void clearWidgets() {
+        ui.clear();
+    }
+    
     void bindDrawBuffers(boolean both) {
         if(both) glDrawBuffers(colorAttachments);
         else     glDrawBuffer(colorAttachments[0]);
