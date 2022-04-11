@@ -264,6 +264,7 @@ final class Viewport {
      * @param name the name of the widget to remove
      */
     void removeUIWidget(String name) {
+        ui.get(name).destroy();
         ui.remove(name);
     }
     
@@ -271,6 +272,7 @@ final class Viewport {
      * Removes every UI widget currently attached to this viewport.
      */
     void clearWidgets() {
+        ui.forEach((name, widget) -> widget.destroy());
         ui.clear();
     }
     

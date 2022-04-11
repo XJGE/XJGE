@@ -86,6 +86,12 @@ public abstract class Widget {
     public abstract void processKeyInput(int key, int action, int mods);
     
     /**
+     * Used to free resources used by the widget when its removed from a 
+     * viewport.
+     */
+    public abstract void destroy();
+    
+    /**
      * Compares the z-position of this widget to another to determine the order 
      * in which they're to be rendered. Widgets with a higher z-index will be 
      * drawn further into the background.
