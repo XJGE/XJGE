@@ -2,7 +2,8 @@ package org.xjge.core;
 
 import static org.lwjgl.glfw.GLFW.GLFW_JOYSTICK_1;
 import static org.lwjgl.glfw.GLFW.GLFW_JOYSTICK_5;
-import static org.lwjgl.glfw.GLFW.glfwJoystickPresent;
+import static org.xjge.core.Input.AI_GAMEPAD_1;
+import static org.xjge.core.Input.AI_GAMEPAD_16;
 
 //Created: May 9, 2021
 
@@ -31,17 +32,23 @@ final class EventGamepad extends Event {
     public void resolve() {
         if(Input.missingGamepad != null) {
             resolved = Input.getDevicePresent(jid) && Input.missingGamepad.resolveEvent;
-            
-            if(resolved) {
-                for(int i = GLFW_JOYSTICK_1; i < GLFW_JOYSTICK_5; i++) {
-                    if(Input.getDevicePresent(i)) Input.revertEnabledState(i);
-                }
-                
-                if(!XJGE.getViewportActive(jid)) XJGE.removeUIWidget(GLFW_JOYSTICK_1, "discon " + jid);
-                else                             XJGE.removeUIWidget(jid, "discon " + jid);
-            }
         } else {
             resolved = Input.getDevicePresent(jid);
+        }
+        
+        if(resolved) {
+            //Revert the state of every AI controlled input device.
+            for(int i = AI_GAMEPAD_1; i >= AI_GAMEPAD_16; i--) {
+                Input.revertEnabledState(i);
+            }
+
+            //Revert the state of every player controlled input device.
+            for(int i = GLFW_JOYSTICK_1; i < GLFW_JOYSTICK_5; i++) {
+                if(Input.getDevicePresent(i)) Input.revertEnabledState(i);
+            }
+
+            if(!XJGE.getViewportActive(jid)) XJGE.removeUIWidget(GLFW_JOYSTICK_1, "discon " + jid);
+            else                             XJGE.removeUIWidget(jid, "discon " + jid);
         }
     }
 

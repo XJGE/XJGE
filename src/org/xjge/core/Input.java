@@ -215,7 +215,7 @@ public final class Input {
                     if(jid < GLFW_JOYSTICK_5 && Window.visible) {
                         connected[jid] = false;
                         
-                        disableAllExcept(jid, false);
+                        disableAllExcept(jid, true);
                         addDisConWidget(jid);
                         
                         Game.addEvent(new EventGamepad(jid));
@@ -417,15 +417,17 @@ public final class Input {
     /**
      * Checks whether or not an input device is currently connected to the 
      * system.
+     * <p>
+     * NOTE: The keyboard/mouse along with virtual AI controlled gamepads
+     * are always connected by default.
      * 
      * @param deviceID the number which corresponds to the input device in 
      *                 question. One of: 
      * <table><caption></caption>
      * <tr><td>{@link org.lwjgl.glfw.GLFW#GLFW_JOYSTICK_1 GLFW_JOYSTICK_1}</td>
      * <td>{@link org.lwjgl.glfw.GLFW#GLFW_JOYSTICK_2 GLFW_JOYSTICK_2}</td>
-     * <td>{@link org.lwjgl.glfw.GLFW#GLFW_JOYSTICK_3 GLFW_JOYSTICK_3}</td></tr>
-     * <tr><td>{@link org.lwjgl.glfw.GLFW#GLFW_JOYSTICK_4 GLFW_JOYSTICK_4}</td> 
-     * <td>{@link KEY_MOUSE_COMBO}</td></tr>
+     * <td>{@link org.lwjgl.glfw.GLFW#GLFW_JOYSTICK_3 GLFW_JOYSTICK_3}</td>
+     * <td>{@link org.lwjgl.glfw.GLFW#GLFW_JOYSTICK_4 GLFW_JOYSTICK_4}</td></tr>
      * </table>
      * 
      * @return true if the input device is connected
@@ -493,9 +495,17 @@ public final class Input {
      * <table><caption></caption>
      * <tr><td>{@link org.lwjgl.glfw.GLFW#GLFW_JOYSTICK_1 GLFW_JOYSTICK_1}</td>
      * <td>{@link org.lwjgl.glfw.GLFW#GLFW_JOYSTICK_2 GLFW_JOYSTICK_2}</td>
-     * <td>{@link org.lwjgl.glfw.GLFW#GLFW_JOYSTICK_3 GLFW_JOYSTICK_3}</td></tr>
-     * <tr><td>{@link org.lwjgl.glfw.GLFW#GLFW_JOYSTICK_4 GLFW_JOYSTICK_4}</td> 
-     * <td>{@link KEY_MOUSE_COMBO}</td></tr>
+     * <td>{@link org.lwjgl.glfw.GLFW#GLFW_JOYSTICK_3 GLFW_JOYSTICK_3}</td>
+     * <td>{@link org.lwjgl.glfw.GLFW#GLFW_JOYSTICK_4 GLFW_JOYSTICK_4}</td></tr>
+     * <tr><td>{@link KEY_MOUSE_COMBO}</td><td>{@link AI_GAMEPAD_1}</td>
+     * <td>{@link AI_GAMEPAD_2}</td><td>{@link AI_GAMEPAD_3}</td></tr>
+     * <tr><td>{@link AI_GAMEPAD_4}</td><td>{@link AI_GAMEPAD_5}</td>
+     * <td>{@link AI_GAMEPAD_6}</td><td>{@link AI_GAMEPAD_7}</td></tr>
+     * <tr><td>{@link AI_GAMEPAD_8}</td><td>{@link AI_GAMEPAD_9}</td>
+     * <td>{@link AI_GAMEPAD_10}</td><td>{@link AI_GAMEPAD_11}</td></tr>
+     * <tr><td>{@link AI_GAMEPAD_12}</td><td>{@link AI_GAMEPAD_13}</td>
+     * <td>{@link AI_GAMEPAD_14}</td><td>{@link AI_GAMEPAD_15}</td></tr>
+     * <tr><td>{@link AI_GAMEPAD_16}</td></tr>
      * </table>
      * 
      * @return true if the input device is in an enabled state
@@ -522,9 +532,17 @@ public final class Input {
      * <table><caption></caption>
      * <tr><td>{@link org.lwjgl.glfw.GLFW#GLFW_JOYSTICK_1 GLFW_JOYSTICK_1}</td>
      * <td>{@link org.lwjgl.glfw.GLFW#GLFW_JOYSTICK_2 GLFW_JOYSTICK_2}</td>
-     * <td>{@link org.lwjgl.glfw.GLFW#GLFW_JOYSTICK_3 GLFW_JOYSTICK_3}</td></tr>
-     * <tr><td>{@link org.lwjgl.glfw.GLFW#GLFW_JOYSTICK_4 GLFW_JOYSTICK_4}</td> 
-     * <td>{@link KEY_MOUSE_COMBO}</td></tr>
+     * <td>{@link org.lwjgl.glfw.GLFW#GLFW_JOYSTICK_3 GLFW_JOYSTICK_3}</td>
+     * <td>{@link org.lwjgl.glfw.GLFW#GLFW_JOYSTICK_4 GLFW_JOYSTICK_4}</td></tr>
+     * <tr><td>{@link KEY_MOUSE_COMBO}</td><td>{@link AI_GAMEPAD_1}</td>
+     * <td>{@link AI_GAMEPAD_2}</td><td>{@link AI_GAMEPAD_3}</td></tr>
+     * <tr><td>{@link AI_GAMEPAD_4}</td><td>{@link AI_GAMEPAD_5}</td>
+     * <td>{@link AI_GAMEPAD_6}</td><td>{@link AI_GAMEPAD_7}</td></tr>
+     * <tr><td>{@link AI_GAMEPAD_8}</td><td>{@link AI_GAMEPAD_9}</td>
+     * <td>{@link AI_GAMEPAD_10}</td><td>{@link AI_GAMEPAD_11}</td></tr>
+     * <tr><td>{@link AI_GAMEPAD_12}</td><td>{@link AI_GAMEPAD_13}</td>
+     * <td>{@link AI_GAMEPAD_14}</td><td>{@link AI_GAMEPAD_15}</td></tr>
+     * <tr><td>{@link AI_GAMEPAD_16}</td></tr>
      * </table>
      * 
      * @return a human-readable description of the input device
@@ -561,7 +579,7 @@ public final class Input {
      * @see setDeviceControls(int, Map)
      */
     public static Map<Control, Integer> getDeviceControls(int deviceID) {
-        if(inputDevices.containsKey(deviceID)) {
+        if(inputDevices.containsKey(deviceID) && deviceID > AI_GAMEPAD_1 && deviceID < GLFW_JOYSTICK_5) {
             return Collections.unmodifiableMap(controlConfigs.get(deviceID));
         } else {
             return null;
@@ -590,9 +608,17 @@ public final class Input {
      * <table><caption></caption>
      * <tr><td>{@link org.lwjgl.glfw.GLFW#GLFW_JOYSTICK_1 GLFW_JOYSTICK_1}</td>
      * <td>{@link org.lwjgl.glfw.GLFW#GLFW_JOYSTICK_2 GLFW_JOYSTICK_2}</td>
-     * <td>{@link org.lwjgl.glfw.GLFW#GLFW_JOYSTICK_3 GLFW_JOYSTICK_3}</td></tr>
-     * <tr><td>{@link org.lwjgl.glfw.GLFW#GLFW_JOYSTICK_4 GLFW_JOYSTICK_4}</td> 
-     * <td>{@link KEY_MOUSE_COMBO}</td></tr>
+     * <td>{@link org.lwjgl.glfw.GLFW#GLFW_JOYSTICK_3 GLFW_JOYSTICK_3}</td>
+     * <td>{@link org.lwjgl.glfw.GLFW#GLFW_JOYSTICK_4 GLFW_JOYSTICK_4}</td></tr>
+     * <tr><td>{@link KEY_MOUSE_COMBO}</td><td>{@link AI_GAMEPAD_1}</td>
+     * <td>{@link AI_GAMEPAD_2}</td><td>{@link AI_GAMEPAD_3}</td></tr>
+     * <tr><td>{@link AI_GAMEPAD_4}</td><td>{@link AI_GAMEPAD_5}</td>
+     * <td>{@link AI_GAMEPAD_6}</td><td>{@link AI_GAMEPAD_7}</td></tr>
+     * <tr><td>{@link AI_GAMEPAD_8}</td><td>{@link AI_GAMEPAD_9}</td>
+     * <td>{@link AI_GAMEPAD_10}</td><td>{@link AI_GAMEPAD_11}</td></tr>
+     * <tr><td>{@link AI_GAMEPAD_12}</td><td>{@link AI_GAMEPAD_13}</td>
+     * <td>{@link AI_GAMEPAD_14}</td><td>{@link AI_GAMEPAD_15}</td></tr>
+     * <tr><td>{@link AI_GAMEPAD_16}</td></tr>
      * </table>
      * 
      * @return the current puppet object of the specified input device or 
@@ -676,12 +702,18 @@ public final class Input {
     public static void setDeviceSetting(int deviceID, String name, float value) {
         Logger.setDomain("input");
         
-        if(inputDevices.containsKey(deviceID)) {
-            inputDevices.get(deviceID).settings.put(name, value);
-            settingConfigs.get(deviceID).put(name, value);
+        if(deviceID > AI_GAMEPAD_1) {
+            if(inputDevices.containsKey(deviceID)) {
+                inputDevices.get(deviceID).settings.put(name, value);
+                settingConfigs.get(deviceID).put(name, value);
+            } else {
+                Logger.logWarning("Failed to add extra configuration \"" + name + "\". Could " + 
+                                  "not find an input device at index " + deviceID + ".",
+                                  null);
+            }
         } else {
-            Logger.logWarning("Failed to add extra configuration \"" + name + "\". Could " + 
-                              "not find an input device at index " + deviceID + ".",
+            Logger.logWarning("Failed to add extra configuration \"" + name + "\". AI " + 
+                              "controlled gamepads do not exhibit individualized user settings.", 
                               null);
         }
         
@@ -696,9 +728,17 @@ public final class Input {
      * <table><caption></caption>
      * <tr><td>{@link org.lwjgl.glfw.GLFW#GLFW_JOYSTICK_1 GLFW_JOYSTICK_1}</td>
      * <td>{@link org.lwjgl.glfw.GLFW#GLFW_JOYSTICK_2 GLFW_JOYSTICK_2}</td>
-     * <td>{@link org.lwjgl.glfw.GLFW#GLFW_JOYSTICK_3 GLFW_JOYSTICK_3}</td></tr>
-     * <tr><td>{@link org.lwjgl.glfw.GLFW#GLFW_JOYSTICK_4 GLFW_JOYSTICK_4}</td> 
-     * <td>{@link KEY_MOUSE_COMBO}</td></tr>
+     * <td>{@link org.lwjgl.glfw.GLFW#GLFW_JOYSTICK_3 GLFW_JOYSTICK_3}</td>
+     * <td>{@link org.lwjgl.glfw.GLFW#GLFW_JOYSTICK_4 GLFW_JOYSTICK_4}</td></tr>
+     * <tr><td>{@link KEY_MOUSE_COMBO}</td><td>{@link AI_GAMEPAD_1}</td>
+     * <td>{@link AI_GAMEPAD_2}</td><td>{@link AI_GAMEPAD_3}</td></tr>
+     * <tr><td>{@link AI_GAMEPAD_4}</td><td>{@link AI_GAMEPAD_5}</td>
+     * <td>{@link AI_GAMEPAD_6}</td><td>{@link AI_GAMEPAD_7}</td></tr>
+     * <tr><td>{@link AI_GAMEPAD_8}</td><td>{@link AI_GAMEPAD_9}</td>
+     * <td>{@link AI_GAMEPAD_10}</td><td>{@link AI_GAMEPAD_11}</td></tr>
+     * <tr><td>{@link AI_GAMEPAD_12}</td><td>{@link AI_GAMEPAD_13}</td>
+     * <td>{@link AI_GAMEPAD_14}</td><td>{@link AI_GAMEPAD_15}</td></tr>
+     * <tr><td>{@link AI_GAMEPAD_16}</td></tr>
      * </table>
      * @param enabled if true, the device will allow the engine to process its 
      *                input actions
@@ -732,9 +772,17 @@ public final class Input {
      * <table><caption></caption>
      * <tr><td>{@link org.lwjgl.glfw.GLFW#GLFW_JOYSTICK_1 GLFW_JOYSTICK_1}</td>
      * <td>{@link org.lwjgl.glfw.GLFW#GLFW_JOYSTICK_2 GLFW_JOYSTICK_2}</td>
-     * <td>{@link org.lwjgl.glfw.GLFW#GLFW_JOYSTICK_3 GLFW_JOYSTICK_3}</td></tr>
-     * <tr><td>{@link org.lwjgl.glfw.GLFW#GLFW_JOYSTICK_4 GLFW_JOYSTICK_4}</td> 
-     * <td>{@link KEY_MOUSE_COMBO}</td></tr>
+     * <td>{@link org.lwjgl.glfw.GLFW#GLFW_JOYSTICK_3 GLFW_JOYSTICK_3}</td>
+     * <td>{@link org.lwjgl.glfw.GLFW#GLFW_JOYSTICK_4 GLFW_JOYSTICK_4}</td></tr>
+     * <tr><td>{@link KEY_MOUSE_COMBO}</td><td>{@link AI_GAMEPAD_1}</td>
+     * <td>{@link AI_GAMEPAD_2}</td><td>{@link AI_GAMEPAD_3}</td></tr>
+     * <tr><td>{@link AI_GAMEPAD_4}</td><td>{@link AI_GAMEPAD_5}</td>
+     * <td>{@link AI_GAMEPAD_6}</td><td>{@link AI_GAMEPAD_7}</td></tr>
+     * <tr><td>{@link AI_GAMEPAD_8}</td><td>{@link AI_GAMEPAD_9}</td>
+     * <td>{@link AI_GAMEPAD_10}</td><td>{@link AI_GAMEPAD_11}</td></tr>
+     * <tr><td>{@link AI_GAMEPAD_12}</td><td>{@link AI_GAMEPAD_13}</td>
+     * <td>{@link AI_GAMEPAD_14}</td><td>{@link AI_GAMEPAD_15}</td></tr>
+     * <tr><td>{@link AI_GAMEPAD_16}</td></tr>
      * </table>
      */
     public static void revertEnabledState(int deviceID) {
@@ -742,10 +790,11 @@ public final class Input {
             InputDevice device = inputDevices.get(deviceID);
             
             try {
-                device.enabledStates.pop();
-                device.enabled = device.enabledStates.peek();
+                device.enabled = device.enabledStates.pop();
             } catch(EmptyStackException e) {
-                device.enabled = true;
+                if(device != null) {
+                    device.enabled = !(device instanceof VirtualGamepad);
+                }
             }
         } else {
             Logger.setDomain("input");

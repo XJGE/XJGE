@@ -1,8 +1,9 @@
 package org.xjge.main;
 
-import static org.lwjgl.glfw.GLFW.GLFW_JOYSTICK_3;
+import static org.lwjgl.glfw.GLFW.GLFW_JOYSTICK_2;
 import org.xjge.core.Game;
 import org.xjge.core.Input;
+import static org.xjge.core.Input.AI_GAMEPAD_1;
 import org.xjge.core.XJGE;
 
 /**
@@ -19,7 +20,8 @@ public class Main {
         
         XJGE.init("/org/xjge/assets/", "org.xjge.main.", null);
         
-        System.out.println(Input.getDevicePresent(GLFW_JOYSTICK_3));
+        Input.setDeviceEnabled(AI_GAMEPAD_1, true);
+        Input.setDeviceEnabled(GLFW_JOYSTICK_2, false);
         
         Game.setScene(new TestScene("test"));
         

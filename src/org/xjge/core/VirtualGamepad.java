@@ -18,7 +18,7 @@ class VirtualGamepad extends InputDevice {
     
     VirtualGamepad(int id) {
         super(id, new HashMap<>(), new HashMap<>());
-        name    = "virtual gamepad " + id;
+        name    = "Virtual Gamepad " + (Math.abs(id) - 1);
         enabled = false;
     }
 
