@@ -976,7 +976,7 @@ public final class Input {
     }
     
     /**
-     * Changes the input value of a virtual gamepads control components. Use 
+     * Changes the input value of a virtual gamepads control component. Use 
      * this if you'd like to hook up an AI to an existing puppet object.
      * 
      * @param deviceID the number which corresponds to the input device in 
