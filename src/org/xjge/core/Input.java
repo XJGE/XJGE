@@ -975,4 +975,31 @@ public final class Input {
         Logger.setDomain(null);
     }
     
+    /**
+     * Changes the input value of a virtual gamepads control components. Use 
+     * this if you'd like to hook up an AI to an existing puppet object.
+     * 
+     * @param deviceID the number which corresponds to the input device in 
+     *                 question. One of: 
+     * <table><caption></caption>
+     * <tr><td>{@link AI_GAMEPAD_1}</td><td>{@link AI_GAMEPAD_2}</td>
+     * <td>{@link AI_GAMEPAD_3}</td><td>{@link AI_GAMEPAD_4}</td></tr>
+     * <tr><td>{@link AI_GAMEPAD_5}</td><td>{@link AI_GAMEPAD_6}</td>
+     * <td>{@link AI_GAMEPAD_7}</td><td>{@link AI_GAMEPAD_8}</td></tr>
+     * <tr><td>{@link AI_GAMEPAD_9}</td><td>{@link AI_GAMEPAD_10}</td>
+     * <td>{@link AI_GAMEPAD_11}</td><td>{@link AI_GAMEPAD_12}</td></tr>
+     * <tr><td>{@link AI_GAMEPAD_13}</td><td>{@link AI_GAMEPAD_14}</td>
+     * <td>{@link AI_GAMEPAD_15}</td><td>{@link AI_GAMEPAD_16}</td></tr>
+     * </table>
+     * @param control    a component such as a button whos input value will 
+     *                   be changed
+     * @param inputValue the input value denoting to what extent the control 
+     *                   was manipulated or zero if not at all
+     */
+    public static void setVirtualGamepadInput(int deviceID, Control control, float inputValue) {
+        if(deviceID <= AI_GAMEPAD_1 && deviceID >= AI_GAMEPAD_16) {
+            ((VirtualGamepad) inputDevices.get(deviceID)).inputValues.put(control, inputValue);
+        }
+    }
+    
 }
