@@ -1,11 +1,6 @@
 package org.xjge.core;
 
 import java.util.HashMap;
-import static org.lwjgl.glfw.GLFW.glfwGetGamepadState;
-import static org.xjge.core.Control.LEFT_STICK_Y;
-import static org.xjge.core.Control.R2;
-import static org.xjge.core.Control.RIGHT_STICK_X;
-import static org.xjge.core.Control.RIGHT_STICK_Y;
 
 /**
  * Apr 12, 2022
@@ -21,14 +16,15 @@ class VirtualGamepad extends InputDevice {
         
     }
     
-    VirtualGamepad(int id, HashMap<Control, Integer> controls, HashMap<String, Float> settings) {
-        super(id, controls, settings);
+    VirtualGamepad(int id) {
+        super(id, new HashMap<>(), new HashMap<>());
         name    = "virtual gamepad " + id;
         enabled = false;
     }
 
     @Override
     protected void poll() {
+        /*
         if(!puppets.empty() && puppets.peek() != null) {
             puppets.peek().commands.forEach((control, command) -> {
                 switch(control) {
@@ -44,6 +40,7 @@ class VirtualGamepad extends InputDevice {
         }
         
         resolvePuppetSetRequest();
+        */
     }
     
 }

@@ -187,6 +187,10 @@ public final class Input {
             controlConfigs.put(i, gamepadConfig);
         }
         
+        for(int i = -2; i >= AI_GAMEPAD_16; i--) {
+            inputDevices.put(i, new VirtualGamepad(i));
+        }
+        
         glfwSetJoystickCallback((jid, event) -> {
             switch(event) {
                 case GLFW_CONNECTED -> {
@@ -428,7 +432,11 @@ public final class Input {
      */
     public static boolean getDevicePresent(int deviceID) {
         if(inputDevices.containsKey(deviceID)) {
-            return connected[deviceID];
+            return switch(deviceID) {
+                case GLFW_JOYSTICK_1, GLFW_JOYSTICK_2, 
+                     GLFW_JOYSTICK_3, GLFW_JOYSTICK_4 -> connected[deviceID];
+                default -> true;
+            };
         } else {
             return false;
         }
