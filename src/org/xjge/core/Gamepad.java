@@ -19,6 +19,8 @@ final class Gamepad extends InputDevice {
 
     private GLFWGamepadState state;
     
+    //TODO: add VirtualGamepad class for AI input override.
+    
     /**
      * Creates a new gamepad object and applies the users settings to its 
      * control configuration.

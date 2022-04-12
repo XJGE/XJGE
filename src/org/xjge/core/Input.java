@@ -28,6 +28,23 @@ import static org.lwjgl.glfw.GLFW.*;
  */
 public final class Input {
 
+    public static final int AI_GAMEPAD_1  = -2;
+    public static final int AI_GAMEPAD_2  = -3;
+    public static final int AI_GAMEPAD_3  = -4;
+    public static final int AI_GAMEPAD_4  = -5;
+    public static final int AI_GAMEPAD_5  = -6;
+    public static final int AI_GAMEPAD_6  = -7;
+    public static final int AI_GAMEPAD_7  = -8;
+    public static final int AI_GAMEPAD_8  = -9;
+    public static final int AI_GAMEPAD_9  = -10;
+    public static final int AI_GAMEPAD_10 = -11;
+    public static final int AI_GAMEPAD_11 = -12;
+    public static final int AI_GAMEPAD_12 = -13;
+    public static final int AI_GAMEPAD_13 = -14;
+    public static final int AI_GAMEPAD_14 = -15;
+    public static final int AI_GAMEPAD_15 = -16;
+    public static final int AI_GAMEPAD_16 = -17;
+    
     /**
      * Special case value associated with the {@link KeyMouseCombo} input 
      * device.
@@ -194,7 +211,7 @@ public final class Input {
                     if(jid < GLFW_JOYSTICK_5 && Window.visible) {
                         connected[jid] = false;
                         
-                        disableAllExcept(jid);
+                        disableAllExcept(jid, false);
                         addDisConWidget(jid);
                         
                         Game.addEvent(new EventGamepad(jid));
@@ -208,13 +225,21 @@ public final class Input {
      * Ceases capturing input from all currently connected input devices except 
      * the one specified.
      * 
-     * @param deviceID the ID number of the input device that will remain 
-     *                 active
+     * @param deviceID          the ID number of the input device that will 
+     *                          remain active
+     * @param includeAIGamepads if true, AI controlled input devices will also
+     *                          be disabled
      */
-    private static void disableAllExcept(int deviceID) {
+    private static void disableAllExcept(int deviceID, boolean includeAIGamepads) {
         inputDevices.forEach((id, device) -> {
-            if(device instanceof Gamepad) {
-                ((Gamepad) device).enabled = (id == deviceID);
+            if(includeAIGamepads) {
+                if(device instanceof Gamepad || device instanceof VirtualGamepad) {
+                    device.enabled = (id == deviceID);
+                }
+            } else {
+                if(device instanceof Gamepad) {
+                    device.enabled = (id == deviceID);
+                }
             }
         });
     }
@@ -382,7 +407,7 @@ public final class Input {
      * @return the number of connected input devices
      */
     public static int getNumDevices() {
-        return inputDevices.size() - 1;
+        return inputDevices.size() - 17;
     }
     
     /**
