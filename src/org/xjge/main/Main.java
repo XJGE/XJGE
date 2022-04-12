@@ -20,8 +20,13 @@ public class Main {
         
         XJGE.init("/org/xjge/assets/", "org.xjge.main.", null);
         
+        System.out.println(Input.getDeviceEnabled(AI_GAMEPAD_1));
+        
         Input.setDeviceEnabled(AI_GAMEPAD_1, true);
         Input.setDeviceEnabled(GLFW_JOYSTICK_2, false);
+        Input.setDeviceEnabled(GLFW_JOYSTICK_2, true);
+        
+        Input.revertEnabledState(GLFW_JOYSTICK_2);
         
         Game.setScene(new TestScene("test"));
         

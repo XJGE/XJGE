@@ -238,11 +238,13 @@ public final class Input {
         inputDevices.forEach((id, device) -> {
             if(includeAIGamepads) {
                 if(device instanceof Gamepad || device instanceof VirtualGamepad) {
-                    device.enabled = (id == deviceID);
+                    device.enabledStates.add(id == deviceID);
+                    device.enabled = device.enabledStates.peek();
                 }
             } else {
                 if(device instanceof Gamepad) {
-                    device.enabled = (id == deviceID);
+                    device.enabledStates.add(id == deviceID);
+                    device.enabled = device.enabledStates.peek();
                 }
             }
         });
@@ -788,9 +790,10 @@ public final class Input {
     public static void revertEnabledState(int deviceID) {
         if(inputDevices.containsKey(deviceID)) {
             InputDevice device = inputDevices.get(deviceID);
-            
+
             try {
-                device.enabled = device.enabledStates.pop();
+                device.enabledStates.pop();
+                device.enabled = device.enabledStates.peek();
             } catch(EmptyStackException e) {
                 if(device != null) {
                     device.enabled = !(device instanceof VirtualGamepad);
@@ -798,11 +801,11 @@ public final class Input {
             }
         } else {
             Logger.setDomain("input");
-            
+
             Logger.logWarning("Failed to revert the enabled state of input device " + 
                               deviceID + " Could not find an input device at this index.",
                               null);
-            
+
             Logger.setDomain(null);
         }
     }
@@ -844,14 +847,21 @@ public final class Input {
     public static void setDeviceControls(int deviceID, Map<Control, Integer> config) {
         Logger.setDomain("input");
         
-        if(inputDevices.containsKey(deviceID)) {
-            controlConfigs.get(deviceID).putAll(config);
-            
-            Logger.logInfo("Changed the button configuration of input device " + 
-                           deviceID + " \"" + inputDevices.get(deviceID).name + "\"");
+        if(deviceID > AI_GAMEPAD_1) {
+            if(inputDevices.containsKey(deviceID)) {
+                controlConfigs.get(deviceID).putAll(config);
+
+                Logger.logInfo("Changed the button configuration of input device " + 
+                               deviceID + " \"" + inputDevices.get(deviceID).name + "\"");
+            } else {
+                Logger.logWarning("Failed to change the button configuration of input device " + 
+                                  deviceID + " Could not find an input device at this index.",
+                                  null);
+            }
         } else {
             Logger.logWarning("Failed to change the button configuration of input device " + 
-                              deviceID + " Could not find an input device at this index.",
+                              deviceID + " AI controlled gamepads do not exhibit " + 
+                              "control preferences.", 
                               null);
         }
         
@@ -885,9 +895,17 @@ public final class Input {
      * <table><caption></caption>
      * <tr><td>{@link org.lwjgl.glfw.GLFW#GLFW_JOYSTICK_1 GLFW_JOYSTICK_1}</td>
      * <td>{@link org.lwjgl.glfw.GLFW#GLFW_JOYSTICK_2 GLFW_JOYSTICK_2}</td>
-     * <td>{@link org.lwjgl.glfw.GLFW#GLFW_JOYSTICK_3 GLFW_JOYSTICK_3}</td></tr>
-     * <tr><td>{@link org.lwjgl.glfw.GLFW#GLFW_JOYSTICK_4 GLFW_JOYSTICK_4}</td> 
-     * <td>{@link KEY_MOUSE_COMBO}</td></tr>
+     * <td>{@link org.lwjgl.glfw.GLFW#GLFW_JOYSTICK_3 GLFW_JOYSTICK_3}</td>
+     * <td>{@link org.lwjgl.glfw.GLFW#GLFW_JOYSTICK_4 GLFW_JOYSTICK_4}</td></tr>
+     * <tr><td>{@link KEY_MOUSE_COMBO}</td><td>{@link AI_GAMEPAD_1}</td>
+     * <td>{@link AI_GAMEPAD_2}</td><td>{@link AI_GAMEPAD_3}</td></tr>
+     * <tr><td>{@link AI_GAMEPAD_4}</td><td>{@link AI_GAMEPAD_5}</td>
+     * <td>{@link AI_GAMEPAD_6}</td><td>{@link AI_GAMEPAD_7}</td></tr>
+     * <tr><td>{@link AI_GAMEPAD_8}</td><td>{@link AI_GAMEPAD_9}</td>
+     * <td>{@link AI_GAMEPAD_10}</td><td>{@link AI_GAMEPAD_11}</td></tr>
+     * <tr><td>{@link AI_GAMEPAD_12}</td><td>{@link AI_GAMEPAD_13}</td>
+     * <td>{@link AI_GAMEPAD_14}</td><td>{@link AI_GAMEPAD_15}</td></tr>
+     * <tr><td>{@link AI_GAMEPAD_16}</td></tr>
      * </table>
      * @param puppet the puppet object the input device will use
      * 
@@ -921,9 +939,17 @@ public final class Input {
      * <table><caption></caption>
      * <tr><td>{@link org.lwjgl.glfw.GLFW#GLFW_JOYSTICK_1 GLFW_JOYSTICK_1}</td>
      * <td>{@link org.lwjgl.glfw.GLFW#GLFW_JOYSTICK_2 GLFW_JOYSTICK_2}</td>
-     * <td>{@link org.lwjgl.glfw.GLFW#GLFW_JOYSTICK_3 GLFW_JOYSTICK_3}</td></tr>
-     * <tr><td>{@link org.lwjgl.glfw.GLFW#GLFW_JOYSTICK_4 GLFW_JOYSTICK_4}</td> 
-     * <td>{@link KEY_MOUSE_COMBO}</td></tr>
+     * <td>{@link org.lwjgl.glfw.GLFW#GLFW_JOYSTICK_3 GLFW_JOYSTICK_3}</td>
+     * <td>{@link org.lwjgl.glfw.GLFW#GLFW_JOYSTICK_4 GLFW_JOYSTICK_4}</td></tr>
+     * <tr><td>{@link KEY_MOUSE_COMBO}</td><td>{@link AI_GAMEPAD_1}</td>
+     * <td>{@link AI_GAMEPAD_2}</td><td>{@link AI_GAMEPAD_3}</td></tr>
+     * <tr><td>{@link AI_GAMEPAD_4}</td><td>{@link AI_GAMEPAD_5}</td>
+     * <td>{@link AI_GAMEPAD_6}</td><td>{@link AI_GAMEPAD_7}</td></tr>
+     * <tr><td>{@link AI_GAMEPAD_8}</td><td>{@link AI_GAMEPAD_9}</td>
+     * <td>{@link AI_GAMEPAD_10}</td><td>{@link AI_GAMEPAD_11}</td></tr>
+     * <tr><td>{@link AI_GAMEPAD_12}</td><td>{@link AI_GAMEPAD_13}</td>
+     * <td>{@link AI_GAMEPAD_14}</td><td>{@link AI_GAMEPAD_15}</td></tr>
+     * <tr><td>{@link AI_GAMEPAD_16}</td></tr>
      * </table>
      */
     public static void bindPreviousPuppet(int deviceID) {
