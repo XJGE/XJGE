@@ -21,8 +21,6 @@ public class SpriteAnimation {
     public int currFrame;
     public int speed;
     
-    public boolean sync;
-    
     private final StopWatch stopWatch = new StopWatch();
     
     public ArrayList<Vector2i> frames = new ArrayList<>();
@@ -54,8 +52,9 @@ public class SpriteAnimation {
      * sprite sheet and subsequently the sub-image rendered.
      * 
      * @param atlas the texture atlas (or sprite sheet) to use for this animation
+     * @param sync  if true, the animation wont use a stopwatch as its timing mechanism
      */
-    public void update(Atlas atlas) {
+    public void update(Atlas atlas, boolean sync) {
         if(speed == 0) return;
         
         if(currFrame < frames.size()) {
@@ -80,8 +79,10 @@ public class SpriteAnimation {
      *                   program
      * @param atlas     the texture atlas (or sprite sheet) to use for this 
      *                   animation
+     * @param sync      if true, the animation wont use a stopwatch as its 
+     *                   timing mechanism
      */
-    public void update(Vector2f texCoords, Atlas atlas) {
+    public void update(Vector2f texCoords, Atlas atlas, boolean sync) {
         if(speed == 0) return;
         
         if(currFrame < frames.size()) {
