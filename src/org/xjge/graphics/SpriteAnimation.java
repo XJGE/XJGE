@@ -3,6 +3,7 @@ package org.xjge.graphics;
 import java.util.ArrayList;
 import org.joml.Vector2f;
 import org.joml.Vector2i;
+import org.xjge.core.Game;
 import org.xjge.core.StopWatch;
 
 //Created: Jun 13, 2021
@@ -19,6 +20,8 @@ public class SpriteAnimation {
 
     public int currFrame;
     public int speed;
+    
+    public boolean sync;
     
     private final StopWatch stopWatch = new StopWatch();
     
@@ -56,7 +59,7 @@ public class SpriteAnimation {
         if(speed == 0) return;
         
         if(currFrame < frames.size()) {
-            if(stopWatch.tick(speed)) {
+            if(!(sync) ? stopWatch.tick(speed) : Game.tick(speed)) {
                 atlas.texCoords.set(
                         atlas.subImageOffsets.get(frames.get(currFrame)).x,
                         atlas.subImageOffsets.get(frames.get(currFrame)).y);
@@ -82,7 +85,7 @@ public class SpriteAnimation {
         if(speed == 0) return;
         
         if(currFrame < frames.size()) {
-            if(stopWatch.tick(speed)) {
+            if(!(sync) ? stopWatch.tick(speed) : Game.tick(speed)) {
                 texCoords.set(
                         atlas.subImageOffsets.get(frames.get(currFrame)).x,
                         atlas.subImageOffsets.get(frames.get(currFrame)).y);
