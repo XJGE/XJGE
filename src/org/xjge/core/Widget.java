@@ -28,6 +28,8 @@ public abstract class Widget {
      */
     public boolean resolveEvent;
     
+    boolean remove;
+    
     protected static Font defaultFont;
     
     private final Text text  = new Text();

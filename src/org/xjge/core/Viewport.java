@@ -205,7 +205,9 @@ final class Viewport {
      *               where held (such as shift or control)
      */
     void processKeyInput(int key, int action, int mods) {        
-        ui.values().forEach(widget -> widget.processKeyInput(key, action, mods));
+        ui.values().forEach(widget -> {
+            if(!widget.remove) widget.processKeyInput(key, action, mods);
+        });
     }
     
     /**
@@ -271,9 +273,8 @@ final class Viewport {
         Logger.setDomain("ui");
         
         if(ui.containsKey(name)) {
-            ui.get(name).destroy();
-            ui.remove(name);
-            Logger.logInfo("Removed widget \"" + name + "\" from viewport " + id + "");
+            ui.get(name).remove = true;
+            Logger.logInfo("Requested removal of widget \"" + name + "\" from viewport " + id + "");
         } else {
             Logger.logWarning("Failed to remove UI widget \"" + name + "\". No " + 
                               "such widget exists for viewport " + id + ".", 
@@ -287,8 +288,7 @@ final class Viewport {
      * Removes every UI widget currently attached to this viewport.
      */
     void clearWidgets() {
-        ui.forEach((name, widget) -> widget.destroy());
-        ui.clear();
+        ui.forEach((name, widget) -> widget.remove = true);
     }
     
     void bindDrawBuffers(boolean both) {

@@ -105,7 +105,7 @@ public final class Game {
                 tickCount = (tickCount == TICKS_PER_HOUR) ? 0 : tickCount + 1;
                 
                 //Process any unresolved events otherwise update the scene normally.
-                if(events.size() > 0) {
+                if(!events.isEmpty()) {
                     Event event = events.peek();
                     
                     if(!event.resolved) event.resolve();
@@ -120,7 +120,12 @@ public final class Game {
                 for(Viewport viewport : viewports) {
                     if(viewport.active && viewport.currCamera != null) {
                         viewport.currCamera.update();
-                        viewport.ui.forEach((name, component) -> component.update());
+                        
+                        viewport.ui.values().forEach(widget -> {
+                            if(!widget.remove) widget.update();
+                            else               widget.destroy();
+                        });
+                        viewport.ui.values().removeIf(widget -> widget.remove);
 
                         Audio.setViewportCamData(viewport.id, viewport.currCamera.position, viewport.currCamera.direction);
                     }
