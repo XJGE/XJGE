@@ -109,7 +109,7 @@ public final class XJGE {
     
     static GLProgram depthProgram;
     static GLProgram blurProgram;
-    static Map<String, GLProgram> glPrograms   = new HashMap<>();
+    static Map<String, GLProgram> glPrograms  = new HashMap<>();
     private static final Viewport[] viewports = new Viewport[4];
     
     /**
@@ -669,7 +669,7 @@ public final class XJGE {
      */
     public static final void addUIWidget(int viewportID, String name, Widget widget) {
         switch(viewportID) {
-            case 0, 1, 2, 3 -> viewports[viewportID].addUIWidget(name, widget);
+            case 0, 1, 2, 3 -> Game.widgetQueue.add(new WidgetAddEvent(viewportID, name, widget));
         }
     }
     

@@ -274,10 +274,9 @@ final class Viewport {
         
         if(ui.containsKey(name)) {
             ui.get(name).remove = true;
-            Logger.logInfo("Requested removal of widget \"" + name + "\" from viewport " + id + "");
         } else {
             Logger.logWarning("Failed to remove UI widget \"" + name + "\". No " + 
-                              "such widget exists for viewport " + id + ".", 
+                              "such widget exists for viewport " + id, 
                               null);
         }
         

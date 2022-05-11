@@ -2,6 +2,7 @@ package org.xjge.core;
 
 import org.xjge.graphics.Color;
 import java.util.Comparator;
+import java.util.LinkedList;
 import java.util.PriorityQueue;
 import java.util.Queue;
 import org.joml.Matrix4f;
@@ -37,7 +38,7 @@ import org.xjge.graphics.GLProgram;
 public final class Game {
 
     private static int fps;
-    private static int tickCount = 0;
+    private static int tickCount    = 0;
     final static int TICKS_PER_HOUR = 3599999;
     
     private static float bloomThreshold = 1.0f;
@@ -56,7 +57,8 @@ public final class Game {
      */
     public final static Observable observable = new Observable(Game.class);
     
-    private static final Queue<Event> events = new PriorityQueue<>(Comparator.comparing(Event::getPriority));
+    static final Queue<WidgetAddEvent> widgetQueue = new LinkedList<>();
+    private static final Queue<Event> events       = new PriorityQueue<>(Comparator.comparing(Event::getPriority));
     
     /**
      * Central game loop that decouples game time progression from processor 
@@ -116,14 +118,31 @@ public final class Game {
                     scene.processRemoveRequests();
                 }
                 
-                //Update viewport camera objects.
+                //Add new widget to a viewport asynchronously.
+                if(!widgetQueue.isEmpty()) {
+                    WidgetAddEvent widgetEvent = widgetQueue.peek();
+                    Viewport viewport          = viewports[widgetEvent.viewportID];
+                    
+                    viewport.addUIWidget(widgetEvent.name, widgetEvent.widget);
+                    widgetEvent.resolved = true;
+                }
+                widgetQueue.removeIf(widgetEvent -> widgetEvent.resolved);
+                
+                //Update viewport cameras and UI widgets.
                 for(Viewport viewport : viewports) {
                     if(viewport.active && viewport.currCamera != null) {
                         viewport.currCamera.update();
                         
-                        viewport.ui.values().forEach(widget -> {
-                            if(!widget.remove) widget.update();
-                            else               widget.destroy();
+                        viewport.ui.forEach((name, widget) -> {
+                            if(!widget.remove) {
+                                widget.update();
+                            } else {
+                                widget.destroy();
+                                
+                                Logger.setDomain("ui");
+                                Logger.logInfo("Successfully removed widget \"" + name + "\" from viewport " + viewport.id);
+                                Logger.setDomain(null);
+                            }
                         });
                         viewport.ui.values().removeIf(widget -> widget.remove);
 
