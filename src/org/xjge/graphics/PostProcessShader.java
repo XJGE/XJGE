@@ -85,7 +85,8 @@ public abstract class PostProcessShader {
      * @param projMatrix     A temporary projection matrix used by the engine. 
      *                       You'll want to pass this to your custom post-process 
      *                       shader during the vertex stage.
+     * @param g              the graphics object used by the viewport
      */
-    public abstract void render(int viewTexHandle, int bloomTexHandle, Matrix4f projMatrix);
+    public abstract void render(int viewTexHandle, int bloomTexHandle, Matrix4f projMatrix, Graphics g);
     
 }

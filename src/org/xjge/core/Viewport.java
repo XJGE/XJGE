@@ -173,7 +173,7 @@ final class Viewport {
             
             case "texture" -> {
                 if(postProcessShader != null) {
-                    postProcessShader.render(viewTexHandle, bloomTexHandle, projMatrix);
+                    postProcessShader.render(viewTexHandle, bloomTexHandle, projMatrix, g);
                 } else {
                     glActiveTexture(GL_TEXTURE0);
                     glBindTexture(GL_TEXTURE_2D, viewTexHandle);
