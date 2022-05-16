@@ -6,10 +6,9 @@ import org.joml.Matrix4f;
 //Created: May 16, 2022
 
 /**
- * These objects are used to apply post-processing effects to the framebuffer of
- * a viewport. They achieve this by rerouting the flow of the viewports render
- * process away from the definition provided by the engines default shaders and 
- * towards the render method of this class
+ * These objects are used to apply post-processing effects to the framebuffer 
+ * texture of a viewport. They achieve this by changing which shader program the 
+ * framebuffer object will use during its rendering cycle.
  * <p>
  * NOTE: When defining a shaders for post processing effects take care to make 
  * sure the vertex layout is organized correctly. More specifically the vertex 
@@ -20,11 +19,9 @@ import org.joml.Matrix4f;
  * layout (location = 0) in vec3  aPosition;
  * layout (location = 2) in vec2  aTexCoords;
  * ...
- * 
  * </pre></blockquote>
- * 
  * <p>
- * NOTE: Because framebuffers write to texture objects any shader program that 
+ * Additionally, because framebuffers write to texture objects any shader program that 
  * wishes to apply post-processing effects should contain (at minimum) the 
  * following code;
  * 
@@ -65,16 +62,29 @@ public abstract class PostProcessShader {
 
     public final GLProgram glProgram;
     
+    /**
+     * Creates a new object that can be used to reroute the render cycle of a 
+     * viewport object and apply post-processing effects to its framebuffer 
+     * texture.
+     * 
+     * @param glProgram the shader program that will be used to render the 
+     *                  framebuffer texture
+     */
     public PostProcessShader(GLProgram glProgram) {
         this.glProgram = glProgram;
     }
     
     /**
+     * Acts like any other render method does within the engine with the 
+     * exception that it runs 
      * 
-     * 
-     * @param viewTexHandle
-     * @param bloomTexHandle 
-     * @param projMatrix 
+     * @param viewTexHandle  the handle of the framebuffer texture containing
+     *                       color information
+     * @param bloomTexHandle the handle of another framebuffer texture generated
+     *                       by the engine when bloom effects are enabled
+     * @param projMatrix     A temporary projection matrix used by the engine. 
+     *                       You'll want to pass this to your custom post-process 
+     *                       shader during the vertex stage.
      */
     public abstract void render(int viewTexHandle, int bloomTexHandle, Matrix4f projMatrix);
     

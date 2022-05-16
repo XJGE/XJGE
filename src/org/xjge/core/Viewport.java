@@ -15,7 +15,6 @@ import static org.lwjgl.glfw.GLFW.GLFW_JOYSTICK_3;
 import static org.lwjgl.glfw.GLFW.GLFW_JOYSTICK_4;
 import static org.lwjgl.opengl.GL30.*;
 import org.lwjgl.system.MemoryStack;
-import static org.xjge.core.XJGE.glPrograms;
 import org.xjge.graphics.PostProcessShader;
 
 //Created: May 11, 2021
