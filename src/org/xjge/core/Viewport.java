@@ -7,6 +7,7 @@ import java.util.LinkedHashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import org.joml.Matrix4f;
 import org.joml.Vector2i;
 import static org.lwjgl.glfw.GLFW.GLFW_JOYSTICK_1;
 import static org.lwjgl.glfw.GLFW.GLFW_JOYSTICK_2;
@@ -14,6 +15,8 @@ import static org.lwjgl.glfw.GLFW.GLFW_JOYSTICK_3;
 import static org.lwjgl.glfw.GLFW.GLFW_JOYSTICK_4;
 import static org.lwjgl.opengl.GL30.*;
 import org.lwjgl.system.MemoryStack;
+import static org.xjge.core.XJGE.glPrograms;
+import org.xjge.graphics.PostProcessShader;
 
 //Created: May 11, 2021
 
@@ -43,6 +46,8 @@ final class Viewport {
     Vector2i topRight = new Vector2i();
     Camera prevCamera = new Noclip();
     Camera currCamera = new Noclip();
+    
+    PostProcessShader postProcessShader;
     
     LinkedHashMap<String, Widget> ui = new LinkedHashMap<>();
     
@@ -143,8 +148,9 @@ final class Viewport {
      * @param glPrograms an immutable collection containing the shader programs 
      *                   compiled during startup
      * @param stage      the stage denoting the viewports current render pass
+     * @param projMatrix 
      */
-    void render(Map<String, GLProgram> glPrograms, String stage) {
+    void render(Map<String, GLProgram> glPrograms, String stage, Matrix4f projMatrix) {
         switch(stage) {
             case "camera" -> {
                 currCamera.render(glPrograms);
@@ -157,6 +163,9 @@ final class Viewport {
             }
             
             case "ui" -> {
+                glPrograms.get("default").use();
+                glPrograms.get("default").setUniform("uProjection", false, projMatrix);
+                
                 currCamera.setOrtho(glPrograms.get("default"), width, height);
                 ui.values().forEach(widget -> widget.render(glPrograms));
                 ui.values().forEach(widget -> widget.resetStringIndex());
@@ -164,18 +173,25 @@ final class Viewport {
             }
             
             case "texture" -> {
-                glActiveTexture(GL_TEXTURE0);
-                glBindTexture(GL_TEXTURE_2D, viewTexHandle);
-                glActiveTexture(GL_TEXTURE3);
-                glBindTexture(GL_TEXTURE_2D, bloom.textures[1]);
-                glBindVertexArray(g.vao);
-                
-                glPrograms.get("default").setUniform("uType", 0);
-                glPrograms.get("default").setUniform("uTexture", 0);
-                glPrograms.get("default").setUniform("uBloomTexture", 3);
-                
-                glDrawElements(GL_TRIANGLES, g.indices.capacity(), GL_UNSIGNED_INT, 0);
-                ErrorUtils.checkGLError();
+                if(postProcessShader != null) {
+                    postProcessShader.render(viewTexHandle, bloomTexHandle, projMatrix);
+                } else {
+                    glActiveTexture(GL_TEXTURE0);
+                    glBindTexture(GL_TEXTURE_2D, viewTexHandle);
+                    glActiveTexture(GL_TEXTURE3);
+                    glBindTexture(GL_TEXTURE_2D, bloom.textures[1]);
+                    glBindVertexArray(g.vao);
+                    
+                    glPrograms.get("default").use();
+                    
+                    glPrograms.get("default").setUniform("uType", 0);
+                    glPrograms.get("default").setUniform("uTexture", 0);
+                    glPrograms.get("default").setUniform("uBloomTexture", 3);
+                    glPrograms.get("default").setUniform("uProjection", false, projMatrix);
+                    
+                    glDrawElements(GL_TRIANGLES, g.indices.capacity(), GL_UNSIGNED_INT, 0);
+                    ErrorUtils.checkGLError();
+                }
             }
         }
     }

@@ -32,6 +32,7 @@ import static org.lwjgl.opengl.GL32.*;
 import static org.lwjgl.opengl.GLUtil.setupDebugMessageCallback;
 import static org.xjge.core.Input.KEY_MOUSE_COMBO;
 import static org.xjge.core.Window.HANDLE;
+import org.xjge.graphics.PostProcessShader;
 
 //Created: Apr 28, 2021
 
@@ -90,7 +91,7 @@ public final class XJGE {
     private static boolean firstMouse = true;
     
     public static final Path PWD       = Path.of("").toAbsolutePath();
-    public static final String VERSION = "2.1.8";
+    public static final String VERSION = "2.1.9";
     
     private static Split split = Split.NONE;
     
@@ -697,6 +698,19 @@ public final class XJGE {
      */
     public static final void clearWidgets(int viewportID) {
         viewports[viewportID].clearWidgets();
+    }
+    
+    /**
+     * Applies post-processing effects to the desired viewport by changing 
+     * which shader program its framebuffer object will use during rendering.
+     * 
+     * @param viewportID        the ID number of the viewport to apply the 
+     *                          filter to
+     * @param postProcessShader an object containing the custom shader program 
+     *                          to use or null to use the engines default shaders
+     */
+    public static final void usePostProcessShader(int viewportID, PostProcessShader postProcessShader) {
+        viewports[viewportID].postProcessShader = postProcessShader;
     }
     
     /**

@@ -182,7 +182,7 @@ public final class Game {
                         
                         viewport.resetCamera(glPrograms);
                         
-                        viewport.render(glPrograms, "camera");
+                        viewport.render(glPrograms, "camera", projMatrix);
                         scene.renderSkybox(viewport.currCamera.viewMatrix);
                         scene.render(glPrograms, viewport.id, viewport.currCamera);
                         scene.renderLightSources(viewport.currCamera);
@@ -200,11 +200,8 @@ public final class Game {
                     
                     viewport.resetCamera(glPrograms);
                     
-                    glPrograms.get("default").use();
-                    glPrograms.get("default").setUniform("uProjection", false, projMatrix);
-                    
-                    viewport.render(glPrograms, "texture");
-                    viewport.render(glPrograms, "ui");
+                    viewport.render(glPrograms, "texture", projMatrix);
+                    viewport.render(glPrograms, "ui", projMatrix);
                 }
             }
             
