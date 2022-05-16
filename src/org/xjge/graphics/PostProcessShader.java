@@ -10,49 +10,54 @@ import org.joml.Matrix4f;
  * texture of a viewport. They achieve this by changing which shader program the 
  * framebuffer object will use during its rendering cycle.
  * <p>
- * NOTE: When defining a shaders for post processing effects take care to make 
- * sure the vertex layout is organized correctly. More specifically the vertex 
- * layout for a framebuffer texture includes a vec3 at location 0 (for its 
- * position) and a vec2 at location 2 (for its texture coordinates). It should
- * look a little something like this;
+ * NOTE: When defining shaders for post processing effects take care to make 
+ * sure that the vertex layout is organized correctly (this consists of a vec3 
+ * at location 0, and a vec2 at location 2). It's also worth mentioning that 
+ * framebuffers write to texture objects so any shader program that wishes to 
+ * apply post-processing effects should contain (at minimum) the following code;
  * <blockquote><pre>
- * layout (location = 0) in vec3  aPosition;
- * layout (location = 2) in vec2  aTexCoords;
- * ...
- * </pre></blockquote>
- * <p>
- * Additionally, because framebuffers write to texture objects any shader program that 
- * wishes to apply post-processing effects should contain (at minimum) the 
- * following code;
+ * //Vertex Shader
+ * #version 330 core
  * 
- * <blockquote><pre>
- * //Vertex shader
- * ...
- * ioTexCoords = aTexCoords;
- * gl_Position = uProjection * vec4(aPosition, 1);
- * ...
+ * layout (location = 0) in vec3 aPosition;
+ * layout (location = 2) in vec2 aTexCoords;
  * 
- * //Fragment shader
- * ...
- * vec2 vRes = textureSize(uTexture, 0);
- *
- * vec3 sceneColor = texture(uTexture, vec2(
- *     sharpen(ioTexCoords.x * vRes.x) / vRes.x,
- *     sharpen(ioTexCoords.y * vRes.y) / vRes.y
- * )).rgb;
+ * uniform mat4 uProjection;
  * 
- * ioFragColor = vec4(sceneColor, 1);
- * ...
+ * out vec2 ioTexCoords;
  * 
- * //The sharpen method helps retain a pixelated look at odd resolutions:
- * ...
+ * void main() {
+ *     ioTexCoords = aTexCoords;
+ *     gl_Position = uProjection * vec4(aPosition, 1);
+ * }
+ * 
+ * 
+ * //Fragment Shader
+ * #version 330 core
+ * 
+ * in vec2 ioTexCoords;
+ * 
+ * uniform sampler2D uTexture;
+ * 
  * float sharpen(float pixArray) {
  *     float normal  = (fract(pixArray) - 0.5) * 2.0;
  *     float normal2 = normal * normal;
  * 
  *     return floor(pixArray) + normal * pow(normal2, 2.0) / 2.0 + 0.5;
  * }
- * ...
+ * 
+ * void main() {
+ *     vec2 vRes = textureSize(uTexture, 0);
+ * 
+ *     vec3 sceneColor = texture(uTexture, vec2(
+ *         sharpen(ioTexCoords.x * vRes.x) / vRes.x,
+ *	   sharpen(ioTexCoords.y * vRes.y) / vRes.y
+ *     )).rgb;
+ * 
+ *     sceneColor.r = 0;
+ *     
+ *     gl_FragColor = vec4(sceneColor, 1);
+ * }
  * </pre></blockquote>
  * 
  * @author J Hoffman
