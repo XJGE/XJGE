@@ -711,6 +711,30 @@ public final class XJGE {
      */
     public static final void usePostProcessShader(int viewportID, PostProcessShader postProcessShader) {
         viewports[viewportID].postProcessShader = postProcessShader;
+        Logger.setDomain("graphics");
+        
+        if(postProcessShader == null) {
+            Logger.logInfo("Removed post processing effects from viewport " + viewportID);
+        } else {
+            Logger.logInfo("Applied post processing effects to viewport " + viewportID);
+        }
+        
+        Logger.setDomain(null);
+    }
+    
+    /**
+     * Changes the filter type applied to the framebuffer texture of a viewport.
+     * 
+     * @param viewportID      the ID number of the viewport who's framebuffer 
+     *                        texture we want to change
+     * @param useLinearFilter if true, the textures will be filtered without 
+     *                        hard edges
+     */
+    public static final void changeFramebufferFilter(int viewportID, boolean useLinearFilter) {
+        glBindTexture(GL_TEXTURE_2D, viewports[viewportID].viewTexHandle);
+            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, (useLinearFilter) ? GL_LINEAR : GL_NEAREST);
+            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, (useLinearFilter) ? GL_LINEAR : GL_NEAREST);
+        glBindTexture(GL_TEXTURE_2D, 0);
     }
     
     /**
