@@ -23,6 +23,8 @@ import org.lwjgl.system.MemoryStack;
  */
 public final class Icon {
 
+    private float opacity = 1.0f;
+    
     private Vector2f currCell = new Vector2f();
     private final Graphics g  = new Graphics();
     private final Texture texture;
@@ -118,6 +120,15 @@ public final class Icon {
     }
     
     /**
+     * Changes the transparency of the icon.
+     * 
+     * @param opacity a number between 0 and 1 used to indicate how transparent the icon will be
+     */
+    public void setOpacity(float opacity) {
+        this.opacity = XJGE.clampValue(0, 1, opacity);
+    }
+    
+    /**
      * Renders the icon image.
      */
     public void render() {
@@ -130,6 +141,7 @@ public final class Icon {
         glBindVertexArray(g.vao);
         
         XJGE.getDefaultGLProgram().setUniform("uType", 4);
+        XJGE.getDefaultGLProgram().setUniform("uOpacity", opacity);
         XJGE.getDefaultGLProgram().setUniform("uColor", color.asVec3());
         XJGE.getDefaultGLProgram().setUniform("uModel", false, g.modelMatrix);
         XJGE.getDefaultGLProgram().setUniform("uTexCoords", currCell);
