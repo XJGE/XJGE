@@ -183,7 +183,7 @@ void main() {
             break;
 
         case 4: case 7: //Used for drawing icons and sprites.
-            ioFragColor = texture(uTexture, ioTexCoords) * vec4(ioColor, 1.0);
+            ioFragColor = texture(uTexture, ioTexCoords) * vec4(ioColor, uOpacity);
             break;
 
         case 5: case 9: //Used for rendering 3D models and 2D sprites that exhbit lighting effects.

@@ -711,15 +711,6 @@ public final class XJGE {
      */
     public static final void usePostProcessShader(int viewportID, PostProcessShader postProcessShader) {
         viewports[viewportID].postProcessShader = postProcessShader;
-        Logger.setDomain("graphics");
-        
-        if(postProcessShader == null) {
-            Logger.logInfo("Removed post processing effects from viewport " + viewportID);
-        } else {
-            Logger.logInfo("Applied post processing effects to viewport " + viewportID);
-        }
-        
-        Logger.setDomain(null);
     }
     
     /**
