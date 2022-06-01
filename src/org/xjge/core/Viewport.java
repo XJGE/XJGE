@@ -302,6 +302,7 @@ final class Viewport {
         ui.forEach((name, widget) -> widget.remove = true);
     }
     
+    //TODO: wheres the javadoc for this?
     void bindDrawBuffers(boolean both) {
         if(both) glDrawBuffers(colorAttachments);
         else     glDrawBuffer(colorAttachments[0]);

@@ -186,6 +186,12 @@ public final class Game {
                         scene.renderSkybox(viewport.currCamera.viewMatrix);
                         scene.render(glPrograms, viewport.id, viewport.currCamera);
                         scene.renderLightSources(viewport.currCamera);
+                        
+                        /*
+                        TODO:
+                        we probably could get away with calling the ui phase here, however it may
+                        inadventantly exhibit bloom effects as a result.
+                        */
                     glBindFramebuffer(GL_FRAMEBUFFER, 0);
                     
                     projMatrix.setOrtho(viewport.width, 0, 0, viewport.height, 0, 1);
