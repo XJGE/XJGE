@@ -147,7 +147,7 @@ final class Viewport {
      * @param glPrograms an immutable collection containing the shader programs 
      *                   compiled during startup
      * @param stage      the stage denoting the viewports current render pass
-     * @param projMatrix 
+     * @param projMatrix the projection matrix managed internally by the engine
      */
     void render(Map<String, GLProgram> glPrograms, String stage, Matrix4f projMatrix) {
         switch(stage) {
@@ -162,9 +162,6 @@ final class Viewport {
             }
             
             case "ui" -> {
-                glPrograms.get("default").use();
-                glPrograms.get("default").setUniform("uProjection", false, projMatrix);
-                
                 currCamera.setOrtho(glPrograms.get("default"), width, height);
                 ui.values().forEach(widget -> widget.render(glPrograms));
                 ui.values().forEach(widget -> widget.resetStringIndex());
