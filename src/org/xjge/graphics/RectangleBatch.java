@@ -9,8 +9,8 @@ import org.lwjgl.system.MemoryUtil;
 //Created: May 26, 2021
 
 /**
- * Used to batch render rectangles. A batch should be done inside of a 
- * components render method like so:
+ * Used to batch render rectangles. A batch should be done inside of a widgets 
+ * render method like so:
  * <blockquote><pre>
  * batchStart(1.0f);
  *     drawRectangle()
