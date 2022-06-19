@@ -2,7 +2,33 @@
 
 All notable changes to this project will be documented in this file. The format of this file follows that specified by [Keep a Changelog](https://keepachangelog.com/en/1.0.0/). This project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [2.1.9] - 2022-06-19
 
+### Added
+- Observable object in the Game class which notifies observers whenever the scene is changed.
+- New clearWidgets() method in XJGE class can be used to quickly remove all widgets from a viewport.
+- The engines version number has been included in the system information displayed during startup.
+- New "resolveEvent" field to Widget class that will need to be changed to true before a missing gamepad event can be resolved.
+- The logger now outputs a message anytime a widget object is added or removed from a viewport.
+- New VirtualGamepad class that an AI can use to interface with controllable game objects much in the same way a player would.
+- New setVirtualGamepadInput() method in the input class can be used to supply input values to the individual components of virtual gamepads.
+- New PostProcessShader object can apply custom post-processing effects to the framebuffer texture of a viewport using XJGE.changeFramebufferFilter()
+- New setOpacity() method to Icon class.
+- Included missing javadoc to some methods in the Viewport class.
+
+### Changed
+- Fixed issue with the SpriteAnimation class where setting the speed to zero would cause an ArithmeticException.
+- Fixed bug where the command terminal would output error even if a command completed successfully.
+- Made static clampValue() method in XJGE class public since it's so darn useful.
+- The Widget class now includes a destory() method to free resources after it's removed from a viewport.
+- Modified default fragment shader so bitmap font texture data can influence color output.
+- Fixed issue where the widget used during a missing gamepad event wouldn't be removed after the event was resolved.
+- Included extra parameter to disableAllExcept() method that can also be used to disable the virtual input devices of AI controlled entities.
+- Fixed bug where using values outside of GLFW_JOYSTICK_1-4 in Input.getDevicePresent() would cause an ArrayIndexOutOfBoundsException.
+- Fixed bug inside Input.disableAllExcept() that would not renable some devices even after a missing gamepad event was resolved.
+- Update() methods of SpriteAnimation class now include a "sync" parameter that can be used to synchronize animations with the game loop.
+- UI widgets are now added and removed asynchronously after doing so would before would cause ConcurrentModificationExceptions.
+- Refactored texture stage of viewport render process to allow for custom functionality using post-process shader objects.
 
 ## [2.0.0] - 2022-03-15
 
@@ -40,3 +66,4 @@ All notable changes to this project will be documented in this file. The format 
 - LightSource objects as they were almost entirely redundant. Light objects may now be created freely.
 
 [2.0.0]: https://github.com/XJGE/XJGE-2/releases/tag/2.0.0
+[2.1.9]: 
