@@ -66,4 +66,4 @@ All notable changes to this project will be documented in this file. The format 
 - LightSource objects as they were almost entirely redundant. Light objects may now be created freely.
 
 [2.0.0]: https://github.com/XJGE/XJGE-2/releases/tag/2.0.0
-[2.1.9]: 
+[2.1.9]: https://github.com/XJGE/XJGE-2/releases/tag/2.1.9
