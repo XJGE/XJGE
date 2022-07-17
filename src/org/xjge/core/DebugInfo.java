@@ -242,7 +242,7 @@ final class DebugInfo {
             text.drawString(font, Input.getDevicePresent(jid) ? Input.getDeviceName(jid) : "N/A", textPos[i + 1], Color.WHITE);
         }
         
-        text.drawString(font, "XJGE v" + XJGE.VERSION, textPos[24], Color.PINK);
+        text.drawString(font, "XJGE v" + XJGE.VERSION, textPos[24], Color.MAGENTA);
         
         text.resetStringIndex();
     }
