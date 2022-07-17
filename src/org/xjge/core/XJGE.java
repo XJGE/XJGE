@@ -1011,6 +1011,7 @@ public final class XJGE {
         if(resolutionX != width || resolutionY != height) {
             resolutionX = width;
             resolutionY = height;
+            createRenderbuffer();
             setScreenSplit(getScreenSplit());
         }
     }
