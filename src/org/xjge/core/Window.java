@@ -41,7 +41,7 @@ public final class Window {
      * Adapts the window configuration to the video mode of the current 
      * monitor.
      */
-    static void reconfigure() {
+    static void reconfigure() {        
         if(fullscreen) {
             width  = monitor.getWidth();
             height = monitor.getHeight();
@@ -350,7 +350,7 @@ public final class Window {
         NavigableMap<Integer, Monitor> monitors = Hardware.findMonitors();
         Monitor newMonitor = null;
         
-        if(monitors.size() > 0) {
+        if(!monitors.isEmpty()) {
             switch(operation) {
                 case "next" -> {
                     newMonitor = (!monitors.ceilingKey(monitors.lastKey()).equals(monitor.id))

@@ -20,7 +20,7 @@ public class TestWidget extends Widget {
         super(new Vector3i(40, 60, 0), 400, 400);
         
         for(int i = 0; i < shapes.length; i++) {
-            shapes[i] = new Rectangle(position.x + (40 * i), 0, 40, 40);
+            shapes[i] = new Rectangle(position.x + (16 * i), 100, 16, 16);
         }
     }
     

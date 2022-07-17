@@ -91,7 +91,7 @@ public final class XJGE {
     private static boolean firstMouse = true;
     
     public static final Path PWD       = Path.of("").toAbsolutePath();
-    public static final String VERSION = "2.1.9";
+    public static final String VERSION = "2.1.10";
     
     private static Split split = Split.NONE;
     
@@ -993,6 +993,26 @@ public final class XJGE {
      */
     public static void setNoclipSpeedFactor(float factor) {
         noclipSpeedFactor = clampValue(0, Float.MAX_VALUE, factor);
+    }
+    
+    /**
+     * Changes the internal resolution the engine will display the game at. 
+     * Often this is used to fix "stretching" caused by a change in the 
+     * monitors aspect ratio at runtime.
+     * <p>
+     * NOTE: This method will fail if it's called before {@link start}, 
+     * you should instead specify the starting resolution through the {@link init} 
+     * method.
+     * 
+     * @param width  the desired horizontal resolution of the game window (in pixels)
+     * @param height the desired vertical resolution of the game window (in pixels)
+     */
+    public static void setResolution(int width, int height) {
+        if(resolutionX != width || resolutionY != height) {
+            resolutionX = width;
+            resolutionY = height;
+            setScreenSplit(getScreenSplit());
+        }
     }
     
 }
