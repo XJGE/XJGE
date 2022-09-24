@@ -13,11 +13,11 @@ import org.xjge.core.XJGE;
  */
 public final class Color {
     
-    public static final Color WHITE      = new Color(1);
-    public static final Color SILVER     = new Color(0.753f);
-    public static final Color GRAY       = new Color(0.502f);
-    public static final Color STONE      = new Color(0.251f);
-    public static final Color BLACK      = new Color(0);
+    public static final Color WHITE      = new Color(1f);
+    public static final Color SILVER     = new Color(192);
+    public static final Color GRAY       = new Color(128);
+    public static final Color STONE      = new Color(64);
+    public static final Color BLACK      = new Color(0f);
     public static final Color SKY        = new Color(64, 128, 255);
     public static final Color RED        = new Color(255, 0, 0);
     public static final Color MAROON     = new Color(128, 0, 0);
@@ -55,6 +55,11 @@ public final class Color {
         conversion = new Vector3f(scalar);
     }
     
+    private Color(int value) {
+        r = g = b = XJGE.clampValue(0, 255, value);
+        conversion = new Vector3f(value);
+    }
+    
     /**
      * Creates a new color object using the values of the three RGB components 
      * supplied. Component values are expected to be within the range of 0 to 
@@ -66,8 +71,8 @@ public final class Color {
      */
     private Color(int r, int g, int b) {
         this.r = (XJGE.clampValue(0, 255, r) / 255f);
-        this.g = (XJGE.clampValue(0, 255, r) / 255f);
-        this.b = (XJGE.clampValue(0, 255, r) / 255f);
+        this.g = (XJGE.clampValue(0, 255, g) / 255f);
+        this.b = (XJGE.clampValue(0, 255, b) / 255f);
         
         conversion = new Vector3f(this.r, this.g, this.b);
     }
