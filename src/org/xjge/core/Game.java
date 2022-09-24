@@ -48,7 +48,7 @@ public final class Game {
     private static boolean ticked;
     public static boolean enableBloom;
     
-    private static Color clearColor = Color.create(92, 148, 252);
+    private static Color clearColor = Color.SKY;
     private static Scene scene;
     
     /**
