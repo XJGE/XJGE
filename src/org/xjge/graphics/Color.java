@@ -1,6 +1,7 @@
 package org.xjge.graphics;
 
 import org.joml.Vector3f;
+import org.xjge.core.XJGE;
 
 //Created: May 8, 2021
 
@@ -50,7 +51,7 @@ public final class Color {
      *               1)
      */
     private Color(float scalar) {
-        r = g = b = scalar;
+        r = g = b = XJGE.clampValue(0f, 1f, scalar);
         conversion = new Vector3f(scalar);
     }
     
@@ -64,9 +65,9 @@ public final class Color {
      * @param b the blue color component
      */
     private Color(int r, int g, int b) {
-        this.r = (r / 255f);
-        this.g = (g / 255f);
-        this.b = (b / 255f);
+        this.r = (XJGE.clampValue(0, 255, r) / 255f);
+        this.g = (XJGE.clampValue(0, 255, r) / 255f);
+        this.b = (XJGE.clampValue(0, 255, r) / 255f);
         
         conversion = new Vector3f(this.r, this.g, this.b);
     }
@@ -124,8 +125,8 @@ public final class Color {
             return true;
         } else {
             return this.r == other.r && 
-                    this.g == other.g && 
-                    this.b == other.b;
+                   this.g == other.g && 
+                   this.b == other.b;
         }
     }
     
