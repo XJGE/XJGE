@@ -55,9 +55,15 @@ public final class Color {
         conversion = new Vector3f(scalar);
     }
     
+    /**
+     * Creates a new achromatic shade (gray) using the provided value.
+     * 
+     * @param value the value all RGB components will be set to (between 0 and
+     *              255)
+     */
     private Color(int value) {
-        r = g = b = XJGE.clampValue(0, 255, value);
-        conversion = new Vector3f(value);
+        r = g = b = (XJGE.clampValue(0, 255, value) / 255f);
+        conversion = new Vector3f(r);
     }
     
     /**
