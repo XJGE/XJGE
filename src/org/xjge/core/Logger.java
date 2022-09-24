@@ -45,6 +45,8 @@ import static org.lwjgl.opengl.GL11.glGetString;
  */
 public final class Logger {
     
+    //TODO: add restriction to log file size.
+    
     private static String domain = "";
     
     private static PrintWriter logText;
