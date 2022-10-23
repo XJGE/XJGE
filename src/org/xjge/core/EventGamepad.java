@@ -30,11 +30,9 @@ final class EventGamepad extends Event {
 
     @Override
     public void resolve() {
-        if(Input.missingGamepad != null) {
-            resolved = Input.getDevicePresent(jid) && Input.missingGamepad.resolveEvent;
-        } else {
-            resolved = Input.getDevicePresent(jid);
-        }
+        resolved = (Input.missingGamepad != null) 
+                 ? Input.missingGamepad.resolveEvent
+                 : Input.getDevicePresent(jid);
         
         if(resolved) {
             //Revert the state of every AI controlled input device.
