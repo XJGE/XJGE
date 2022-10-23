@@ -69,7 +69,7 @@ abstract class InputDevice {
      * device is using.
      */
     protected void resolvePuppetSetRequest() {
-        if(puppetSetEvents.size() > 0) {
+        if(!puppetSetEvents.isEmpty()) {
             puppets.push(puppetSetEvents.poll());
         }
     }
