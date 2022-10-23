@@ -76,12 +76,12 @@ final class Gamepad extends InputDevice {
             puppets.peek().commands.forEach((control, command) -> {
                 switch(control) {
                     case LEFT_STICK_X, LEFT_STICK_Y, RIGHT_STICK_X, RIGHT_STICK_Y -> {
-                        command.execute(state.axes(controls.get(control)), this, control);
+                        command.execute(state.axes(controls.get(control)), this, control, controls.get(control));
                     }
                     
-                    case L2, R2 -> command.execute(state.axes(controls.get(control)), this, control);
+                    case L2, R2 -> command.execute(state.axes(controls.get(control)), this, control, controls.get(control));
                     
-                    default -> command.execute(state.buttons(controls.get(control)), this, control);
+                    default -> command.execute(state.buttons(controls.get(control)), this, control, controls.get(control));
                 }
             });
         }

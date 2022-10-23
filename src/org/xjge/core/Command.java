@@ -35,6 +35,7 @@ import static org.lwjgl.glfw.GLFW.GLFW_PRESS;
 public abstract class Command {
 
     private int deviceID;
+    private int glfwButtonID;
     
     private float inputValue;
     
@@ -47,16 +48,18 @@ public abstract class Command {
      * Captures the state of the input device executing this command and 
      * provides it to the subclass.
      * 
-     * @param inputValue the floating point value of a single interactive 
-     *                   component
-     * @param device     the input device that is executing this command
-     * @param control    the current interactive component being acted upon
+     * @param inputValue   the floating point value of a single interactive 
+     *                     component
+     * @param device       the input device that is executing this command
+     * @param control      the current interactive component being acted upon
+     * @param glfwButtonID 
      */
-    void execute(float inputValue, InputDevice device, Control control) {
-        this.inputValue = inputValue;
-        this.device     = device;
-        this.control    = control;
-        this.deviceID   = device.id;
+    void execute(float inputValue, InputDevice device, Control control, int glfwButtonID) {
+        this.inputValue   = inputValue;
+        this.device       = device;
+        this.control      = control;
+        this.deviceID     = device.id;
+        this.glfwButtonID = glfwButtonID;
         
         execute();
     }
@@ -81,6 +84,25 @@ public abstract class Command {
     }
     
     /**
+     * Obtains a value used by GLFW to identify an interactive component. More
+     * specifically, this method can be used to return which GLFW button has 
+     * been assigned to the current {@link Control} object being used to execute 
+     * this command. This is particularly useful in instances where we want to 
+     * give users the ability to manually reconfigure the layout of the 
+     * interactive components on their input devices.
+     * <p>
+     * NOTE: This should <i>not</i> be used to supplement the functionality of 
+     * the control object- which exists to decouple device-specific button 
+     * layouts from game-defined ones.
+     * 
+     * @return the GLFW value used to identify the interactive component 
+     *         executing this command
+     */
+    protected int getButtonID() {
+        return glfwButtonID;
+    }
+    
+    /**
      * Provides subclasses with a value that denotes some preference of the 
      * input device currently being used to execute this command.
      * <p>
@@ -96,7 +118,7 @@ public abstract class Command {
      * @param name the name of the setting to parse a value from
      * 
      * @return the value of the setting or {@code NaN} if the setting of the 
-     *          name specified could not be found
+     *         name specified could not be found
      */
     protected float getDeviceSetting(String name) {
         if(device.settings.containsKey(name)) {

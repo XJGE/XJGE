@@ -82,11 +82,11 @@ final class KeyMouseCombo extends InputDevice {
                         int key2 = (controls.get(control) & ((control == LEFT_STICK_X) ? axisValues[1] : axisValues[3]));
                         
                         if(glfwGetKey(Window.HANDLE, key1) == GLFW_PRESS) {
-                            command.execute(-1, this, control);
+                            command.execute(-1, this, control, controls.get(control));
                         } else if(glfwGetKey(Window.HANDLE, key2) == GLFW_PRESS) {
-                            command.execute(1, this, control);
+                            command.execute(1, this, control, controls.get(control));
                         } else {
-                            command.execute(0, this, control);
+                            command.execute(0, this, control, controls.get(control));
                         }
                     }
                     
@@ -94,7 +94,7 @@ final class KeyMouseCombo extends InputDevice {
                         glfwGetCursorPos(Window.HANDLE, cursorPosX, cursorPosY);
 
                         if((float) cursorPosX.get(0) != prevAxisX) {
-                            command.execute(findAxisValue((float) cursorPosX.get(0), prevAxisX), this, control);
+                            command.execute(findAxisValue((float) cursorPosX.get(0), prevAxisX), this, control, controls.get(control));
                             prevAxisX = (float) cursorPosX.get(0);
                         }
                     }
@@ -103,14 +103,14 @@ final class KeyMouseCombo extends InputDevice {
                         glfwGetCursorPos(Window.HANDLE, cursorPosX, cursorPosY);
                         
                         if((float) cursorPosY.get(0) != prevAxisY) {
-                            command.execute(findAxisValue((float) cursorPosY.get(0), prevAxisY), this, control);
+                            command.execute(findAxisValue((float) cursorPosY.get(0), prevAxisY), this, control, controls.get(control));
                             prevAxisY = (float) cursorPosY.get(0);
                         }
                     }
                         
-                    case L2, R2 -> command.execute(glfwGetMouseButton(Window.HANDLE, controls.get(control)), this, control);
+                    case L2, R2 -> command.execute(glfwGetMouseButton(Window.HANDLE, controls.get(control)), this, control, controls.get(control));
                     
-                    default -> command.execute(glfwGetKey(Window.HANDLE, controls.get(control)), this, control);
+                    default -> command.execute(glfwGetKey(Window.HANDLE, controls.get(control)), this, control, controls.get(control));
                 }
             });
         }
