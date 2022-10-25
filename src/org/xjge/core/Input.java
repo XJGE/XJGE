@@ -57,7 +57,9 @@ public final class Input {
      * A widget object provided by the engine that will be rendered anytime an 
      * input device is disconnected. This object is left uninitialized by 
      * default so you will need to initialize it with your own {@link Widget} 
-     * subclass for it to appear.
+     * subclass for it to appear. Initializing this will cause the game to 
+     * temporarily halt until the device is reconnected or the object is given
+     * a <b>null</b> assignment.
      */
     public static Widget missingGamepad;
     
@@ -215,14 +217,25 @@ public final class Input {
                     if(jid < GLFW_JOYSTICK_5 && Window.visible) {
                         connected[jid] = false;
                         
-                        disableAllExcept(jid, true);
-                        addDisConWidget(jid);
-                        
-                        Game.addEvent(new EventGamepad(jid));
+                        if(missingGamepadInitialized()) {
+                            disableAllExcept(jid, true);
+                            addDisConWidget(jid);
+                            
+                            Game.addEvent(new EventGamepad(jid));
+                        }
                     }
                 }
             }
         });
+    }
+    
+    /**
+     * Checks if the {@link missingGamepad} object has been initialized.
+     * 
+     * @return true if the value of missingGamepad is not null
+     */
+    static boolean missingGamepadInitialized() {
+        return missingGamepad != null;
     }
     
     /**

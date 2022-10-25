@@ -17,8 +17,6 @@ import org.joml.Vector3i;
  */
 public abstract class Widget {
     
-    int jid = -100;
-    
     protected int width;
     protected int height;
     
@@ -116,18 +114,6 @@ public abstract class Widget {
      */
     int compareTo(Widget widget) {
         return this.position.z - widget.position.z;
-    }
-    
-    /**
-     * If this widget is being used as the {@link Input#missingGamepad }, this 
-     * method can be used to retrieve the ID number the device that was 
-     * disconnected.
-     * 
-     * @return the number used to identify the device or -100 if one has not 
-     *         been assigned
-     */
-    protected int getGamepadID() {
-        return jid;
     }
     
     /**
