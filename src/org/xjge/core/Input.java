@@ -207,6 +207,8 @@ public final class Input {
                 }
                 
                 case GLFW_DISCONNECTED -> {
+                    //TODO: Add option to gracefully disconnect devices.
+                    
                     findInputDevices();
                     
                     Logger.setDomain("input");
