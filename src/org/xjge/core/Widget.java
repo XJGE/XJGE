@@ -16,15 +16,18 @@ import org.joml.Vector3i;
  * @since  2.0.0
  */
 public abstract class Widget {
-
+    
+    int jid = -100;
+    
     protected int width;
     protected int height;
     
     /**
      * Used to resolve a special event that occurs when a gamepad is 
      * disconnected. You should set its value to be the result of some kind of
-     * test like {@link Input#getDevicePresent(int) } if the implementing class
-     * will be used as the games {@link Input#missingGamepad} widget.
+     * test like {@link Input#getDevicePresent(int) 
+     * Input.getDevicePresent(getGampadID())} if the implementing class will be 
+     * used as the games {@link Input#missingGamepad} widget.
      */
     public boolean resolveEvent;
     
@@ -113,6 +116,18 @@ public abstract class Widget {
      */
     int compareTo(Widget widget) {
         return this.position.z - widget.position.z;
+    }
+    
+    /**
+     * If this widget is being used as the {@link Input#missingGamepad }, this 
+     * method can be used to retrieve the ID number the device that was 
+     * disconnected.
+     * 
+     * @return the number used to identify the device or -100 if one has not 
+     *         been assigned
+     */
+    protected int getGamepadID() {
+        return jid;
     }
     
     /**

@@ -30,9 +30,12 @@ final class EventGamepad extends Event {
 
     @Override
     public void resolve() {
-        resolved = (Input.missingGamepad != null) 
-                 ? Input.missingGamepad.resolveEvent
-                 : Input.getDevicePresent(jid);
+        if(Input.missingGamepad != null) {
+            Input.missingGamepad.jid = jid;
+            resolved = Input.missingGamepad.resolveEvent;
+        } else {
+            resolved = Input.getDevicePresent(jid);
+        }
         
         if(resolved) {
             //Revert the state of every AI controlled input device.
@@ -47,6 +50,8 @@ final class EventGamepad extends Event {
 
             if(!XJGE.getViewportActive(jid)) XJGE.removeUIWidget(GLFW_JOYSTICK_1, "discon " + jid);
             else                             XJGE.removeUIWidget(jid, "discon " + jid);
+            
+            if(Input.missingGamepad != null) Input.missingGamepad.jid = -100;
         }
     }
 
