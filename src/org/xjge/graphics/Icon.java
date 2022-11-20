@@ -24,6 +24,7 @@ import org.lwjgl.system.MemoryStack;
 public final class Icon {
 
     private float opacity = 1.0f;
+    private float scale   = 1.0f;
     
     private Vector2f currCell = new Vector2f();
     private final Graphics g  = new Graphics();
@@ -126,6 +127,16 @@ public final class Icon {
      */
     public void setOpacity(float opacity) {
         this.opacity = XJGE.clampValue(0, 1, opacity);
+    }
+    
+    /**
+     * Changes the size of the icon.
+     * 
+     * @param scale a non-negative number that will be used to scale the icon
+     */
+    public void setScale(float scale) {
+        this.scale = Math.abs(scale);
+        g.modelMatrix.scale(this.scale);
     }
     
     /**
