@@ -91,7 +91,7 @@ public final class XJGE {
     private static boolean firstMouse = true;
     
     public static final Path PWD       = Path.of("").toAbsolutePath();
-    public static final String VERSION = "2.1.15";
+    public static final String VERSION = "2.1.16";
     
     private static Split split = Split.NONE;
     
@@ -698,6 +698,20 @@ public final class XJGE {
      */
     public static final void clearWidgets(int viewportID) {
         viewports[viewportID].clearWidgets();
+    }
+    
+    /**
+     * Used to determine if the viewport currently contains a widget using the 
+     * name we gave it when it was added.
+     * 
+     * @param viewportID the ID number of the viewport to remove the widget 
+     *                   from
+     * @param name       the name of the widget to remove
+     * 
+     * @return true if the viewport contains a widget by the specified name
+     */
+    public static boolean containsWidget(int viewportID, String name) {
+        return viewports[viewportID].containsWidget(name);
     }
     
     /**

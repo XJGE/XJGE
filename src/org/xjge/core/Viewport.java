@@ -303,6 +303,18 @@ final class Viewport {
     }
     
     /**
+     * Used to determine if the viewport contains a widget using the name we 
+     * gave it when it was added.
+     * 
+     * @param name the name used to identify the widget
+     * 
+     * @return true if the viewport contains a widget by the specified name
+     */
+    boolean containsWidget(String name) {
+        return ui.containsKey(name);
+    }
+    
+    /**
      * Binds one or both color buffer texture attachments associated with this
      * viewports framebuffer.
      * 
