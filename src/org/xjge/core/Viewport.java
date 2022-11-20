@@ -277,44 +277,6 @@ final class Viewport {
     }
     
     /**
-     * Removes a widget from this viewports user interface.
-     * 
-     * @param name the name of the widget to remove
-     */
-    void removeUIWidget(String name) {
-        Logger.setDomain("ui");
-        
-        if(ui.containsKey(name)) {
-            ui.get(name).remove = true;
-        } else {
-            Logger.logWarning("Failed to remove UI widget \"" + name + "\". No " + 
-                              "such widget exists for viewport " + id, 
-                              null);
-        }
-        
-        Logger.setDomain(null);
-    }
-    
-    /**
-     * Removes every UI widget currently attached to this viewport.
-     */
-    void clearWidgets() {
-        ui.forEach((name, widget) -> widget.remove = true);
-    }
-    
-    /**
-     * Used to determine if the viewport contains a widget using the name we 
-     * gave it when it was added.
-     * 
-     * @param name the name used to identify the widget
-     * 
-     * @return true if the viewport contains a widget by the specified name
-     */
-    boolean containsWidget(String name) {
-        return ui.containsKey(name);
-    }
-    
-    /**
      * Binds one or both color buffer texture attachments associated with this
      * viewports framebuffer.
      * 

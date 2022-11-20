@@ -669,9 +669,7 @@ public final class XJGE {
      * @see Viewport
      */
     public static final void addUIWidget(int viewportID, String name, Widget widget) {
-        switch(viewportID) {
-            case 0, 1, 2, 3 -> Game.widgetQueue.add(new WidgetAddEvent(viewportID, name, widget));
-        }
+        Game.widgetQueue.add(new WidgetAddEvent(viewportID, name, widget));
     }
     
     /**
@@ -685,9 +683,19 @@ public final class XJGE {
      * @see Widget
      */
     public static final void removeUIWidget(int viewportID, String name) {
-        switch(viewportID) {
-            case 0, 1, 2, 3 -> viewports[viewportID].removeUIWidget(name);
+        Logger.setDomain("ui");
+        
+        Viewport viewport = viewports[viewportID];
+        
+        if(viewport.ui.containsKey(name)) {
+            viewport.ui.get(name).remove = true;
+        } else {
+            Logger.logWarning("Failed to remove UI widget \"" + name + "\". No " + 
+                              "such widget exists for viewport " + viewport.id, 
+                              null);
         }
+        
+        Logger.setDomain(null);
     }
     
     /**
@@ -697,7 +705,7 @@ public final class XJGE {
      *                   of all widgets
      */
     public static final void clearWidgets(int viewportID) {
-        viewports[viewportID].clearWidgets();
+        viewports[viewportID].ui.forEach((name, widget) -> widget.remove = true);
     }
     
     /**
@@ -711,7 +719,7 @@ public final class XJGE {
      * @return true if the viewport contains a widget by the specified name
      */
     public static boolean containsWidget(int viewportID, String name) {
-        return viewports[viewportID].containsWidget(name);
+        return viewports[viewportID].ui.containsKey(name);
     }
     
     /**
