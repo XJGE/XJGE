@@ -256,10 +256,12 @@ final class Viewport {
      *               widget later
      * @param widget the widget to add
      */
-    void addUIWidget(String name, Widget widget) {
-        Logger.setDomain("ui");
-        Logger.logInfo("Added new widget \"" + name + "\" to viewport " + id);
-        Logger.setDomain(null);
+    void addUIWidget(boolean debugEnabled, String name, Widget widget) {
+        if(debugEnabled) {
+            Logger.setDomain("ui");
+            Logger.logInfo("Added new widget \"" + name + "\" to viewport " + id);
+            Logger.setDomain(null);
+        }
         
         ui.put(name, widget);
         

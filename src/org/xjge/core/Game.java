@@ -76,8 +76,11 @@ public final class Game {
      *                     be used to generate the shadow map texture
      * @param blurProgram  the shader program used to apply a Gaussian blur to
      *                     the bloom framebuffer texture
+     * @param debugEnabled if true the engine will provide additional debug 
+     *                     information through the logger
      */
-    static void loop(int fbo, Viewport[] viewports, Terminal terminal, DebugInfo debugInfo, GLProgram depthProgram, GLProgram blurProgram) {
+    static void loop(int fbo, Viewport[] viewports, Terminal terminal, DebugInfo debugInfo, GLProgram depthProgram, 
+                     GLProgram blurProgram, boolean debugEnabled) {
         observable.properties.put("sceneChanged", scene);
         
         int cycles = 0;
@@ -123,7 +126,7 @@ public final class Game {
                     WidgetAddEvent widgetEvent = widgetQueue.peek();
                     Viewport viewport          = viewports[widgetEvent.viewportID];
                     
-                    viewport.addUIWidget(widgetEvent.name, widgetEvent.widget);
+                    viewport.addUIWidget(debugEnabled, widgetEvent.name, widgetEvent.widget);
                     widgetEvent.resolved = true;
                 }
                 widgetQueue.removeIf(widgetEvent -> widgetEvent.resolved);
@@ -139,9 +142,11 @@ public final class Game {
                             } else {
                                 widget.destroy();
                                 
-                                Logger.setDomain("ui");
-                                Logger.logInfo("Successfully removed widget \"" + name + "\" from viewport " + viewport.id);
-                                Logger.setDomain(null);
+                                if(debugEnabled) {
+                                    Logger.setDomain("ui");
+                                    Logger.logInfo("Successfully removed widget \"" + name + "\" from viewport " + viewport.id);
+                                    Logger.setDomain(null);
+                                }
                             }
                         });
                         viewport.ui.values().removeIf(widget -> widget.remove);

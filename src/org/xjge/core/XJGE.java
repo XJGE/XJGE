@@ -83,6 +83,7 @@ public final class XJGE {
     private static double cursorY;
     
     private static boolean initCalled;
+    private static boolean debugModeEnabled;
     private static boolean restrict4KResolutions;
     private static boolean matchWindowResolution;
     private static boolean noclipEnabled;
@@ -91,7 +92,7 @@ public final class XJGE {
     private static boolean firstMouse = true;
     
     public static final Path PWD       = Path.of("").toAbsolutePath();
-    public static final String VERSION = "2.1.16";
+    public static final String VERSION = "2.1.17";
     
     private static Split split = Split.NONE;
     
@@ -162,7 +163,8 @@ public final class XJGE {
             
             if(!glfwInit()) Logger.logSevere("Failed to initialize GLFW.", null);
             
-            boolean fullscreen = false;
+            boolean fullscreen    = false;
+            debugModeEnabled      = debugEnabled;
             restrict4KResolutions = restrict4K;
             
             //Load settings from engine configuration file.
@@ -514,7 +516,7 @@ public final class XJGE {
             debugInfo.updatePosition();
         });
         
-        Game.loop(fbo, viewports, terminal, debugInfo, depthProgram, blurProgram);
+        Game.loop(fbo, viewports, terminal, debugInfo, depthProgram, blurProgram, debugModeEnabled);
         
         engineFont.freeTexture();
         engineIcons.freeTexture();
