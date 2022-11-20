@@ -25,6 +25,7 @@ public final class Icon {
 
     private float opacity = 1.0f;
     private float scale   = 1.0f;
+    private float angle;
     
     private Vector2f currCell = new Vector2f();
     private final Graphics g  = new Graphics();
@@ -40,8 +41,10 @@ public final class Icon {
      * @param texture    the texture image to use
      * @param cellWidth  the width of each sub-image cell in pixels
      * @param cellHeight the height of each sub-image cell in pixels
+     * @param fromCenter if true the icon will be positioned from its center 
+     *                   instead of its bottom left corner
      */
-    public Icon(Texture texture, int cellWidth, int cellHeight) {
+    public Icon(Texture texture, int cellWidth, int cellHeight, boolean fromCenter) {
         this.texture = texture;
         
         glBindTexture(GL_TEXTURE_2D, texture.handle);
@@ -57,11 +60,19 @@ public final class Icon {
             g.vertices = stack.mallocFloat(20);
             g.indices  = stack.mallocInt(6);
             
-            //(vec3 position), (vec2 tex coords)
-            g.vertices.put(0)              .put(atlas.cellHeight).put(0)    .put(0)                  .put(0);
-            g.vertices.put(atlas.cellWidth).put(atlas.cellHeight).put(0)    .put(atlas.subImageWidth).put(0);
-            g.vertices.put(atlas.cellWidth).put(0)               .put(0)    .put(atlas.subImageWidth).put(atlas.subImageHeight);
-            g.vertices.put(0)              .put(0)               .put(0)    .put(0)                  .put(atlas.subImageHeight);
+            if(fromCenter) {
+                //(vec3 position), (vec2 tex coords)
+                g.vertices.put(-atlas.cellWidth / 2).put( atlas.cellHeight / 2).put(0)  .put(0)                  .put(0);
+                g.vertices.put( atlas.cellWidth / 2).put( atlas.cellHeight / 2).put(0)  .put(atlas.subImageWidth).put(0);
+                g.vertices.put( atlas.cellWidth / 2).put(-atlas.cellHeight / 2).put(0)  .put(atlas.subImageWidth).put(atlas.subImageHeight);
+                g.vertices.put(-atlas.cellWidth / 2).put(-atlas.cellHeight / 2).put(0)  .put(0)                  .put(atlas.subImageHeight);
+            } else {
+                //(vec3 position), (vec2 tex coords)
+                g.vertices.put(0)              .put(atlas.cellHeight).put(0)    .put(0)                  .put(0);
+                g.vertices.put(atlas.cellWidth).put(atlas.cellHeight).put(0)    .put(atlas.subImageWidth).put(0);
+                g.vertices.put(atlas.cellWidth).put(0)               .put(0)    .put(atlas.subImageWidth).put(atlas.subImageHeight);
+                g.vertices.put(0)              .put(0)               .put(0)    .put(0)                  .put(atlas.subImageHeight);
+            }
             
             g.indices.put(0).put(1).put(2);
             g.indices.put(2).put(3).put(0);
@@ -77,6 +88,22 @@ public final class Icon {
         
         glEnableVertexAttribArray(0);
         glEnableVertexAttribArray(2);
+    }
+    
+    /**
+     * Creates a new icon object which can be used to comprise part of a larger 
+     * user interface.
+     * <p>
+     * NOTE: A new version of this method exists as of version 2.1.17, which 
+     * adds another parameter that can be used to position the icon by it's 
+     * center.
+     * 
+     * @param texture    the texture image to use
+     * @param cellWidth  the width of each sub-image cell in pixels
+     * @param cellHeight the height of each sub-image cell in pixels
+     */
+    public Icon(Texture texture, int cellWidth, int cellHeight) {
+        this(texture, cellWidth, cellHeight, false);
     }
     
     /**
@@ -137,6 +164,21 @@ public final class Icon {
     public void setScale(float scale) {
         this.scale = Math.abs(scale);
         g.modelMatrix.scale(this.scale);
+    }
+    
+    /**
+     * Changes the rotation angle of the icon.
+     * <p>
+     * Icons will rotate in a clockwise fashion. That is, if you supply this 
+     * method with an value of 90 degrees the icon will rotate right, a value
+     * of -90 will rotate it left, and so on. The maximum accepted rotation 
+     * value in either direction is 360.
+     * 
+     * @param angle the new angle to rotate the icon by
+     */
+    public void setRotation(float angle) {
+        this.angle = (float) Math.toRadians(angle) * -1;
+        g.modelMatrix.rotateZ(this.angle);
     }
     
     /**
