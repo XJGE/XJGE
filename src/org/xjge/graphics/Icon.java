@@ -1,5 +1,6 @@
 package org.xjge.graphics;
 
+import org.joml.Matrix4f;
 import org.xjge.core.ErrorUtils;
 import org.xjge.core.Logger;
 import org.xjge.core.XJGE;
@@ -107,6 +108,16 @@ public final class Icon {
     }
     
     /**
+     * Obtains the model matrix of the icon so it may be used to perform 
+     * translation/rotate/scaling operations with greater fidelity.
+     * 
+     * @return the model matrix the icon uses during rendering
+     */
+    public Matrix4f getModelMatrix() {
+        return g.modelMatrix;
+    }
+    
+    /**
      * Sets the current position of the icon.
      * 
      * @param position the position to set this icon to in the viewport
@@ -177,7 +188,7 @@ public final class Icon {
      * @param angle the new angle to rotate the icon by
      */
     public void setRotation(float angle) {
-        this.angle = (float) Math.toRadians(angle) * -1;
+        this.angle = (float) Math.toRadians(angle * -1f);
         g.modelMatrix.rotateZ(this.angle);
     }
     
