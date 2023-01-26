@@ -42,6 +42,17 @@ public class PaletteProcess extends PostProcessShader {
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
         
+        /*
+        TODO:
+        
+        Attempt to use post process effect to limit number of colors generated
+        during fragment stage, the regular function used to blur and draw the
+        framebuffer texture will still be called after.
+        
+        Consider letting these objects be called before and after the framebuffer
+        texture draw.
+        */
+        
         glBindVertexArray(g.vao);
         
         glProgram.use();

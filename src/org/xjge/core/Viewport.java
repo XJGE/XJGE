@@ -169,7 +169,7 @@ final class Viewport {
             }
             
             case "texture" -> {
-                if(postProcessShader != null) {
+                if(postProcessShader != null) { //TODO: technically a pre-process no?
                     postProcessShader.render(viewTexHandle, bloomTexHandle, projMatrix, g);
                 }
 

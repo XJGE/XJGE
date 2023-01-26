@@ -79,6 +79,8 @@ public abstract class PostProcessShader {
         this.glProgram = glProgram;
     }
     
+    //TODO: clean up this documentation.
+    
     /**
      * Acts like any other render method does within the engine with the 
      * exception that it runs 
@@ -93,5 +95,8 @@ public abstract class PostProcessShader {
      * @param g              the graphics object used by the viewport
      */
     public abstract void render(int viewTexHandle, int bloomTexHandle, Matrix4f projMatrix, Graphics g);
+    
+    //TODO: renderBefore
+    //TODO: renderAfter
     
 }
