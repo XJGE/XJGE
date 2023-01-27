@@ -17,6 +17,9 @@ public class Main {
         
         XJGE.init("/org/xjge/assets/", "org.xjge.test.", new Vector2i(16, 9));
         Game.setScene(new TestScene());
+        
+        
+        
         XJGE.start();
         
     }

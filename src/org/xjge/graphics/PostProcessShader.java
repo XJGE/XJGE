@@ -2,7 +2,6 @@ package org.xjge.graphics;
 
 import org.joml.Matrix4f;
 
-
 //Created: May 16, 2022
 
 /**
