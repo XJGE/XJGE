@@ -35,7 +35,7 @@ public class PaletteProcess extends PostProcessShader {
     }
     
     @Override
-    public void render(int viewTexHandle, int bloomTexHandle, Matrix4f projMatrix, Graphics g) {
+    public void renderBefore(int viewTexHandle, int bloomTexHandle, Matrix4f projMatrix, Graphics g) {
         glActiveTexture(GL_TEXTURE0);
         glBindTexture(GL_TEXTURE_2D, viewTexHandle);
         
@@ -65,6 +65,11 @@ public class PaletteProcess extends PostProcessShader {
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
         
         ErrorUtils.checkGLError();
+    }
+
+    @Override
+    public void renderAfter(int viewTexHandle, int bloomTexHandle, Matrix4f projMatrix, Graphics g) {
+        //Unused
     }
 
 }

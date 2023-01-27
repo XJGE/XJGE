@@ -169,8 +169,8 @@ final class Viewport {
             }
             
             case "texture" -> {
-                if(postProcessShader != null) { //TODO: technically a pre-process no?
-                    postProcessShader.render(viewTexHandle, bloomTexHandle, projMatrix, g);
+                if(postProcessShader != null) {
+                    postProcessShader.renderBefore(viewTexHandle, bloomTexHandle, projMatrix, g);
                 }
 
                 glActiveTexture(GL_TEXTURE0);
@@ -188,6 +188,10 @@ final class Viewport {
 
                 glDrawElements(GL_TRIANGLES, g.indices.capacity(), GL_UNSIGNED_INT, 0);
                 ErrorUtils.checkGLError();
+                
+                if(postProcessShader != null) {
+                    postProcessShader.renderAfter(viewTexHandle, bloomTexHandle, projMatrix, g);
+                }
             }
         }
     }

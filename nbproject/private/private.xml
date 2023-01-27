@@ -2,6 +2,12 @@
 <project-private xmlns="http://www.netbeans.org/ns/project-private/1">
     <editor-bookmarks xmlns="http://www.netbeans.org/ns/editor-bookmarks/2" lastBookmarkId="0"/>
     <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
-        <group/>
+        <group>
+            <file>file:/C:/Users/thesk/OneDrive/Documents/Projects/XJGE/XJGE-2/src/org/xjge/graphics/PostProcessShader.java</file>
+            <file>file:/C:/Users/thesk/OneDrive/Documents/Projects/XJGE/XJGE-2/src/org/xjge/core/Viewport.java</file>
+            <file>file:/C:/Users/thesk/OneDrive/Documents/Projects/XJGE/XJGE-2/src/org/xjge/assets/defaultVertex.glsl</file>
+            <file>file:/C:/Users/thesk/OneDrive/Documents/Projects/XJGE/XJGE-2/src/org/xjge/core/Game.java</file>
+            <file>file:/C:/Users/thesk/OneDrive/Documents/Projects/XJGE/XJGE-2/src/org/xjge/assets/defaultFragment.glsl</file>
+        </group>
     </open-files>
 </project-private>
