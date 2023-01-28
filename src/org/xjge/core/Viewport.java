@@ -170,27 +170,23 @@ final class Viewport {
             
             case "texture" -> {
                 if(postProcessShader != null) {
-                    postProcessShader.renderBefore(viewTexHandle, bloomTexHandle, projMatrix, g);
-                }
-
-                glActiveTexture(GL_TEXTURE0);
-                glBindTexture(GL_TEXTURE_2D, viewTexHandle);
-                glActiveTexture(GL_TEXTURE3);
-                glBindTexture(GL_TEXTURE_2D, bloom.textures[1]);
-                glBindVertexArray(g.vao);
-
-                glPrograms.get("default").use();
-
-                glPrograms.get("default").setUniform("uType", 0);
-                glPrograms.get("default").setUniform("uTexture", 0);
-                glPrograms.get("default").setUniform("uBloomTexture", 3);
-                glPrograms.get("default").setUniform("uProjection", false, projMatrix);
-
-                glDrawElements(GL_TRIANGLES, g.indices.capacity(), GL_UNSIGNED_INT, 0);
-                ErrorUtils.checkGLError();
-                
-                if(postProcessShader != null) {
-                    postProcessShader.renderAfter(viewTexHandle, bloomTexHandle, projMatrix, g);
+                    postProcessShader.render(viewTexHandle, bloomTexHandle, projMatrix, g);
+                } else {
+                    glActiveTexture(GL_TEXTURE0);
+                    glBindTexture(GL_TEXTURE_2D, viewTexHandle);
+                    glActiveTexture(GL_TEXTURE3);
+                    glBindTexture(GL_TEXTURE_2D, bloom.textures[1]);
+                    glBindVertexArray(g.vao);
+                    
+                    glPrograms.get("default").use();
+                    
+                    glPrograms.get("default").setUniform("uType", 0);
+                    glPrograms.get("default").setUniform("uTexture", 0);
+                    glPrograms.get("default").setUniform("uBloomTexture", 3);
+                    glPrograms.get("default").setUniform("uProjection", false, projMatrix);
+                    
+                    glDrawElements(GL_TRIANGLES, g.indices.capacity(), GL_UNSIGNED_INT, 0);
+                    ErrorUtils.checkGLError();
                 }
             }
         }
