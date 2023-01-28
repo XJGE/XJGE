@@ -39,19 +39,8 @@ public class PaletteProcess extends PostProcessShader {
         glActiveTexture(GL_TEXTURE0);
         glBindTexture(GL_TEXTURE_2D, viewTexHandle);
         
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
-        
-        /*
-        TODO:
-        
-        Attempt to use post process effect to limit number of colors generated
-        during fragment stage, the regular function used to blur and draw the
-        framebuffer texture will still be called after.
-        
-        Consider letting these objects be called before and after the framebuffer
-        texture draw.
-        */
+        //glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+        //glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
         
         glBindVertexArray(g.vao);
         
@@ -59,10 +48,12 @@ public class PaletteProcess extends PostProcessShader {
         glProgram.setUniform("uTexture", 0);
         glProgram.setUniform("uProjection", false, projMatrix);
         
-        glDrawElements(GL_TRIANGLES, g.indices.capacity(), GL_UNSIGNED_INT, 0);
+        //TODO: add colors through uniform variable array in fragment stage.
         
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+        //glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+        //glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+        
+        glDrawElements(GL_TRIANGLES, g.indices.capacity(), GL_UNSIGNED_INT, 0);
         
         ErrorUtils.checkGLError();
     }
