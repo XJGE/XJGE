@@ -18,10 +18,6 @@ import org.xjge.graphics.Shader;
  * @since  
  */
 public class Main {
-
-    /*
-    Entity textures are kept grayscale then color is applied using lookup table and seperate texture.    
-    */
     
     public static void main(String args[]) {
         
@@ -40,6 +36,10 @@ public class Main {
             palProgram.addUniform(BufferType.MAT4, "uModel");
             palProgram.addUniform(BufferType.MAT4, "uView");
             palProgram.addUniform(BufferType.MAT4, "uProjection");
+            
+            for(int i = 0; i < 6; i++) {
+                palProgram.addUniform(BufferType.VEC3, "uPalette[" + i + "]");
+            }
             
             XJGE.addGLProgram("palShader", palProgram);
         }
