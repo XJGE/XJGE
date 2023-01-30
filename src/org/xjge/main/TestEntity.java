@@ -10,6 +10,7 @@ import org.xjge.core.Camera;
 import org.xjge.core.Entity;
 import org.xjge.core.ErrorUtils;
 import org.xjge.core.Light;
+import org.xjge.graphics.Color;
 import org.xjge.graphics.GLProgram;
 import org.xjge.graphics.Graphics;
 import org.xjge.graphics.Texture;
@@ -24,8 +25,17 @@ class TestEntity extends Entity {
     private final Texture texture;
     private final Graphics g;
     
+    private final Color[] palette = new Color[6];
+    
     TestEntity(float x, float y, float z, float size) {
         super(new Vector3f(x, y, z));
+        
+        palette[0] = Color.BLACK;
+        palette[1] = Color.create(64, 4, 38);
+        palette[2] = Color.create(0, 61, 166);
+        palette[3] = Color.create(244, 36, 36);
+        palette[4] = Color.create(255, 160, 128);
+        palette[5] = Color.WHITE;
         
         texture = new Texture("img_mario.png");
             glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
@@ -80,6 +90,10 @@ class TestEntity extends Entity {
         
         glProgram.setUniform("uModel", false, g.modelMatrix);
         glProgram.setUniform("uTexture", 0);
+        
+        for(int i = 0; i < palette.length; i++) {
+            glProgram.setUniform("uPalette[" + i + "]", palette[i].asVec3());
+        }
         
         glDrawElements(GL_TRIANGLES, g.indices.limit(), GL_UNSIGNED_INT, 0);
         
