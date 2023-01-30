@@ -12,18 +12,22 @@ import org.xjge.graphics.GLProgram;
  * @author J Hoffman
  * @since  
  */
-public class TestScene extends Scene {
+class TestScene extends Scene {
 
-    public TestScene() {
+    TestScene() {
         super("test");
+        
+        entities.put("test", new TestEntity(0, 0, -10, 20));
     }
     
     @Override
     public void update(double targetDelta, double trueDelta) {
+        entities.entrySet().forEach(entity -> entity.getValue().update(targetDelta, trueDelta));
     }
 
     @Override
     public void render(Map<String, GLProgram> glPrograms, int viewportID, Camera camera, int depthTexHandle) {
+        entities.entrySet().forEach(entity -> entity.getValue().render(glPrograms.get("palShader"), camera, lights, depthTexHandle));
     }
 
     @Override
