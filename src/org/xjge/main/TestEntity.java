@@ -9,6 +9,7 @@ import org.lwjgl.system.MemoryStack;
 import org.xjge.core.Camera;
 import org.xjge.core.Entity;
 import org.xjge.core.ErrorUtils;
+import org.xjge.core.Game;
 import org.xjge.core.Light;
 import org.xjge.graphics.Color;
 import org.xjge.graphics.GLProgram;
@@ -22,6 +23,8 @@ import org.xjge.graphics.Texture;
  */
 class TestEntity extends Entity {
 
+    boolean changed;
+    
     private final Texture texture;
     private final Graphics g;
     
@@ -75,6 +78,11 @@ class TestEntity extends Entity {
     @Override
     public void update(double targetDelta, double trueDelta) {
         g.modelMatrix.translation(position);
+        
+        if(Game.tick(60)) {
+            changed    = !changed;
+            palette[3] = (changed) ? Color.RED : Color.GREEN;
+        }
     }
 
     @Override
