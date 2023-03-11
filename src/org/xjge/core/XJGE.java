@@ -153,7 +153,7 @@ public final class XJGE {
      *                        the size of the window at runtime
      */
     public static void init(String assetsFilepath, String scenesFilepath, Vector2i resolution, boolean createOpenGLLog, 
-                              boolean debugEnabled, boolean restrict4K, boolean retainFullscreen, boolean windowResizable) {
+                            boolean debugEnabled, boolean restrict4K, boolean retainFullscreen, boolean windowResizable) {
         if(!initCalled) {
             if(System.getProperty("java.version").compareTo("15.0.2") < 0) {
                 Logger.logSevere("Unsupported Java version. Required 15.0.2, " + 
@@ -176,9 +176,9 @@ public final class XJGE {
                     switch(xmlReader.next()) {
                         case XMLStreamConstants.START_ELEMENT -> {
                             if(xmlReader.getName().getLocalPart().equals("config")) {
-                                final float soundMaster  = Float.parseFloat(xmlReader.getAttributeValue(null, "soundMaster"));
-                                final float musicMaster  = Float.parseFloat(xmlReader.getAttributeValue(null, "musicMaster"));
-                                final boolean vSync      = Boolean.parseBoolean(xmlReader.getAttributeValue(null, "vSync"));
+                                final float soundMaster = Float.parseFloat(xmlReader.getAttributeValue(null, "soundMaster"));
+                                final float musicMaster = Float.parseFloat(xmlReader.getAttributeValue(null, "musicMaster"));
+                                final boolean vSync     = Boolean.parseBoolean(xmlReader.getAttributeValue(null, "vSync"));
                                 
                                 Audio.setMasterVolumePreferences(soundMaster, musicMaster);
                                 Hardware.setVSyncPreference(vSync);
