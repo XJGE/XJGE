@@ -237,7 +237,7 @@ public final class Light {
      * @return a new engine-defined light object
      */
     public static final Light glowstick() {
-        return new Light(0.8f, 0.7f, 0.52f, new Vector3f(), Color.LIME, Color.LIME, Color.BLACK);
+        return new Light(0.8f, 0.7f, 0.52f, new Vector3f(), Color.GREEN, Color.GREEN, Color.BLACK);
     }
     
     /**

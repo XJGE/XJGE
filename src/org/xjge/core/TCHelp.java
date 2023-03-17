@@ -41,7 +41,7 @@ final class TCHelp extends TerminalCommand {
                               "to exit the terminal. A full list of commands can " + 
                               "be viewed by using showCommands.";
                 
-                setOutput(info, Color.LIME);
+                setOutput(info, Color.GREEN);
             }
 
             case 1 -> {

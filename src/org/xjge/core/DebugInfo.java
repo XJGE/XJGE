@@ -219,9 +219,9 @@ final class DebugInfo {
         text.drawString(font, "TICKED: " + Game.getTicked(), textPos[2], Color.WHITE);
         text.drawString(font, "MEM FREE: " + Runtime.getRuntime().freeMemory(), textPos[3], Color.CYAN);
         
-        text.drawString(font, "OS NAME: " + System.getProperty("os.name"), textPos[4],  Color.LIME);
-        text.drawString(font, "JAVA VER: " + System.getProperty("java.version"), textPos[5],  Color.LIME);
-        text.drawString(font, "GLFW VER: " + glfwGetVersionString(), textPos[6], Color.LIME);
+        text.drawString(font, "OS NAME: " + System.getProperty("os.name"), textPos[4],  Color.GREEN);
+        text.drawString(font, "JAVA VER: " + System.getProperty("java.version"), textPos[5],  Color.GREEN);
+        text.drawString(font, "GLFW VER: " + glfwGetVersionString(), textPos[6], Color.GREEN);
         
         text.drawString(font, "OPENAL VER: " + alGetString(AL_VERSION), textPos[7], Color.WHITE);
         text.drawString(font, "SPEAKER: \"" + Audio.speaker.name.substring(15) + "\"", textPos[8], Color.YELLOW);
