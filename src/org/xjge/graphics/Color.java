@@ -15,7 +15,7 @@ public final class Color {
     
     public static final Color WHITE   = new Color(1f);
     public static final Color SILVER  = new Color(191);
-    public static final Color GRAY    = new Color(63);
+    public static final Color GRAY    = new Color(127);
     public static final Color BLACK   = new Color(0f);
     public static final Color RED     = new Color(255,   0,   0);
     public static final Color BROWN   = new Color(127,  63,   0);
