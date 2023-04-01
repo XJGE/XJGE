@@ -92,7 +92,7 @@ public final class XJGE {
     private static boolean firstMouse = true;
     
     public static final Path PWD       = Path.of("").toAbsolutePath();
-    public static final String VERSION = "2.1.17";
+    public static final String VERSION = "2.1.18";
     
     private static Split split = Split.NONE;
     
@@ -631,7 +631,7 @@ public final class XJGE {
      *         numbers
      */
     public static float lerp(float startValue, float targetValue, float factor) {
-        return (1 - factor) * startValue + factor * clampValue(0, 1, factor);
+        return (1 - clampValue(0, 1, factor)) * startValue + clampValue(0, 1, factor) * targetValue;
     }
     
     /**
