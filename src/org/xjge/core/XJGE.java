@@ -618,6 +618,23 @@ public final class XJGE {
     }
     
     /**
+     * Performs a linear interpolation between two floating-point numbers and 
+     * returns the result. This is often useful in instances where you need to 
+     * gradually transition between two values such as player movement speed.
+     * 
+     * @param startValue  the initial value to evaluate
+     * @param targetValue the target value to reach
+     * @param factor      the floating-point interpolation factor (between 0 
+     *                    and 1)
+     * 
+     * @return the linearly-interpolated value between the starting and target 
+     *         numbers
+     */
+    public static float lerp(float startValue, float targetValue, float factor) {
+        return (1 - factor) * startValue + factor * clampValue(0, 1, factor);
+    }
+    
+    /**
      * Adds a custom {@link GLProgram} to an immutable collection which can be 
      * accessed through a scenes {@linkplain Scene#render render()} method to 
      * draw the various objects and entities within it.
