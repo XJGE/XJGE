@@ -311,10 +311,15 @@ public final class Input {
     /**
      * Processes the input actions of every input device connected to the 
      * system that isn't currently in a disabled state.
+     *
+     * @param targetDelta a constant value denoting the desired time (in 
+     *                    seconds) it should take for one game tick to complete
+     * @param trueDelta   the actual time (in seconds) it took the current game
+     *                    tick to complete
      */
-    static void pollInput() {
+    static void pollInput(double targetDelta, double trueDelta) {
         inputDevices.forEach((id, device) -> {
-            if(device.enabled) device.poll();
+            if(device.enabled) device.poll(targetDelta, trueDelta);
         });
     }
     

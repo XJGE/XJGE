@@ -59,10 +59,10 @@ class VirtualGamepad extends InputDevice {
     }
 
     @Override
-    protected void poll() {
+    protected void poll(double targetDelta, double trueDelta) {
         if(!puppets.empty() && puppets.peek() != null) {
             puppets.peek().commands.forEach((control, command) -> {
-                command.execute(inputValues.get(control), this, control, -1);
+                command.execute(inputValues.get(control), this, control, -1, targetDelta, trueDelta);
             });
         }
         

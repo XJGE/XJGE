@@ -71,17 +71,35 @@ final class Gamepad extends InputDevice {
     }
     
     @Override
-    protected void poll() {
+    protected void poll(double targetDelta, double trueDelta) {
         if(glfwGetGamepadState(id, state) && !puppets.empty() && puppets.peek() != null) {
             puppets.peek().commands.forEach((control, command) -> {
                 switch(control) {
                     case LEFT_STICK_X, LEFT_STICK_Y, RIGHT_STICK_X, RIGHT_STICK_Y -> {
-                        command.execute(state.axes(controls.get(control)), this, control, controls.get(control));
+                        command.execute(state.axes(controls.get(control)), 
+                                        this, 
+                                        control, 
+                                        controls.get(control), 
+                                        targetDelta, trueDelta);
                     }
                     
-                    case L2, R2 -> command.execute(state.axes(controls.get(control)), this, control, controls.get(control));
+                    case L2, R2 -> {
+                        command.execute(state.axes(
+                                controls.get(control)), 
+                                this, 
+                                control, 
+                                controls.get(control), 
+                                targetDelta, trueDelta);
+                    }
                     
-                    default -> command.execute(state.buttons(controls.get(control)), this, control, controls.get(control));
+                    default -> {
+                        command.execute(
+                                state.buttons(controls.get(control)), 
+                                this, 
+                                control, 
+                                controls.get(control), 
+                                targetDelta, trueDelta);
+                    }
                 }
             });
         }

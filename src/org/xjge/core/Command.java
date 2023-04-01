@@ -52,23 +52,33 @@ public abstract class Command {
      *                     component
      * @param device       the input device that is executing this command
      * @param control      the current interactive component being acted upon
-     * @param glfwButtonID 
+     * @param glfwButtonID the number used by GLFW to identify an interactive
+     *                     component
+     * @param targetDelta  a constant value denoting the desired time (in 
+     *                     seconds) it should take for one game tick to complete
+     * @param trueDelta    the actual time (in seconds) it took the current game
+     *                     tick to complete
      */
-    void execute(float inputValue, InputDevice device, Control control, int glfwButtonID) {
+    void execute(float inputValue, InputDevice device, Control control, int glfwButtonID, double targetDelta, double trueDelta) {
         this.inputValue   = inputValue;
         this.device       = device;
         this.control      = control;
         this.deviceID     = device.id;
         this.glfwButtonID = glfwButtonID;
         
-        execute();
+        execute(targetDelta, trueDelta);
     }
     
     /**
      * Organizes the input logic used to control player actions. This method is 
      * called automatically once every game tick.
+     * 
+     * @param targetDelta a constant value denoting the desired time (in 
+     *                    seconds) it should take for one game tick to complete
+     * @param trueDelta   the actual time (in seconds) it took the current game
+     *                    tick to complete
      */
-    public abstract void execute();
+    public abstract void execute(double targetDelta, double trueDelta);
     
     /**
      * Provides subclasses with a value describing the current state of the 

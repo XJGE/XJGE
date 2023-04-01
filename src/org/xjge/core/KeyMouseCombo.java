@@ -73,7 +73,7 @@ final class KeyMouseCombo extends InputDevice {
     }
     
     @Override
-    protected void poll() {
+    protected void poll(double targetDelta, double trueDelta) {
         if(!puppets.empty() && puppets.peek() != null) {
             puppets.peek().commands.forEach((control, command) -> {
                 switch(control) {
@@ -82,11 +82,11 @@ final class KeyMouseCombo extends InputDevice {
                         int key2 = (controls.get(control) & ((control == LEFT_STICK_X) ? axisValues[1] : axisValues[3]));
                         
                         if(glfwGetKey(Window.HANDLE, key1) == GLFW_PRESS) {
-                            command.execute(-1, this, control, controls.get(control));
+                            command.execute(-1, this, control, controls.get(control), targetDelta, trueDelta);
                         } else if(glfwGetKey(Window.HANDLE, key2) == GLFW_PRESS) {
-                            command.execute(1, this, control, controls.get(control));
+                            command.execute(1, this, control, controls.get(control), targetDelta, trueDelta);
                         } else {
-                            command.execute(0, this, control, controls.get(control));
+                            command.execute(0, this, control, controls.get(control), targetDelta, trueDelta);
                         }
                     }
                     
@@ -94,7 +94,11 @@ final class KeyMouseCombo extends InputDevice {
                         glfwGetCursorPos(Window.HANDLE, cursorPosX, cursorPosY);
 
                         if((float) cursorPosX.get(0) != prevAxisX) {
-                            command.execute(findAxisValue((float) cursorPosX.get(0), prevAxisX), this, control, controls.get(control));
+                            command.execute(findAxisValue((float) cursorPosX.get(0), prevAxisX), 
+                                            this, 
+                                            control, 
+                                            controls.get(control), 
+                                            targetDelta, trueDelta);
                             prevAxisX = (float) cursorPosX.get(0);
                         }
                     }
@@ -103,14 +107,29 @@ final class KeyMouseCombo extends InputDevice {
                         glfwGetCursorPos(Window.HANDLE, cursorPosX, cursorPosY);
                         
                         if((float) cursorPosY.get(0) != prevAxisY) {
-                            command.execute(findAxisValue((float) cursorPosY.get(0), prevAxisY), this, control, controls.get(control));
+                            command.execute(findAxisValue((float) cursorPosY.get(0), prevAxisY), 
+                                            this, 
+                                            control, 
+                                            controls.get(control), 
+                                            targetDelta, trueDelta);
                             prevAxisY = (float) cursorPosY.get(0);
                         }
                     }
                         
-                    case L2, R2 -> command.execute(glfwGetMouseButton(Window.HANDLE, controls.get(control)), this, control, controls.get(control));
+                    case L2, R2 -> {
+                        command.execute(glfwGetMouseButton(Window.HANDLE, controls.get(control)), 
+                                        this, control, 
+                                        controls.get(control), 
+                                        targetDelta, trueDelta);
+                    }
                     
-                    default -> command.execute(glfwGetKey(Window.HANDLE, controls.get(control)), this, control, controls.get(control));
+                    default -> {
+                        command.execute(glfwGetKey(Window.HANDLE, controls.get(control)), 
+                                        this, 
+                                        control, 
+                                        controls.get(control), 
+                                        targetDelta, trueDelta);
+                    }
                 }
             });
         }

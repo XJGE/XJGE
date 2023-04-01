@@ -60,9 +60,14 @@ abstract class InputDevice {
     
     /**
      * Processes the input actions of a device by looking for state changes in 
-     * its interactive components. 
+     * its interactive components.
+     * 
+     * @param targetDelta a constant value denoting the desired time (in 
+     *                    seconds) it should take for one game tick to complete
+     * @param trueDelta   the actual time (in seconds) it took the current game
+     *                    tick to complete
      */
-    protected abstract void poll();
+    protected abstract void poll(double targetDelta, double trueDelta);
     
     /**
      * Resolves a request to update the current {@link Puppet} object an input 

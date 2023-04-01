@@ -335,7 +335,7 @@ public abstract class Scene {
      * @param targetDelta a constant value denoting the desired time (in 
      *                    seconds) it should take for one game tick to complete
      * @param trueDelta   the actual time (in seconds) it took the current game
-     *                    tick to complete.
+     *                    tick to complete
      */
     public abstract void update(double targetDelta, double trueDelta);
     
