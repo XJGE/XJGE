@@ -56,11 +56,10 @@ public class SpriteAnimation {
      */
     public void update(Atlas atlas, boolean sync) {
         if(speed == 0) return;
-        
-        if(currFrame < frames.size()) {
-            if(!(sync) ? stopWatch.tick(speed) : Game.tick(speed)) currFrame++;
-        } else {
-            currFrame = 0;
+                
+        if(!(sync) ? stopWatch.tick(speed) : Game.tick(speed)) {
+            currFrame++;
+            if(currFrame >= frames.size()) currFrame = 0;
         }
         
         atlas.texCoords.set(atlas.subImageOffsets.get(frames.get(currFrame)).x,
