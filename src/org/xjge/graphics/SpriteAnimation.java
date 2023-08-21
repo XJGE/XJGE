@@ -58,15 +58,13 @@ public class SpriteAnimation {
         if(speed == 0) return;
         
         if(currFrame < frames.size()) {
-            if(!(sync) ? stopWatch.tick(speed) : Game.tick(speed)) {
-                atlas.texCoords.set(
-                        atlas.subImageOffsets.get(frames.get(currFrame)).x,
-                        atlas.subImageOffsets.get(frames.get(currFrame)).y);
-                currFrame++;
-            }
+            if(!(sync) ? stopWatch.tick(speed) : Game.tick(speed)) currFrame++;
         } else {
             currFrame = 0;
         }
+        
+        atlas.texCoords.set(atlas.subImageOffsets.get(frames.get(currFrame)).x,
+                            atlas.subImageOffsets.get(frames.get(currFrame)).y);
     }
     
     /**
