@@ -52,7 +52,7 @@ public class SpriteAnimation {
      * sprite sheet and subsequently the sub-image rendered.
      * 
      * @param atlas the texture atlas (or sprite sheet) to use for this animation
-     * @param sync  if true, the animation wont use a stopwatch as its timing mechanism
+     * @param sync  if true, the animation will use a stopwatch as its timing mechanism
      */
     public void update(Atlas atlas, boolean sync) {
         if(speed == 0) return;
