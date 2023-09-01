@@ -77,7 +77,7 @@ public class StopWatch {
         if(!startTickSet) {
             startTick    = Game.getTickCount();
             startTickSet = true;
-            if(!increment) currTime = time - 1;
+            currTime     = (!increment) ? time - 1 : 0;
             return true;
         }
         
@@ -100,6 +100,15 @@ public class StopWatch {
      */
     public int getTime() {
         return currTime;
+    }
+    
+    /**
+     * Resets the stopwatch. The {@link getTime()} method will return its 
+     * starting value following the next call to 
+     * {@link tick(int, int, boolean)}.
+     */
+    public void reset() {
+        startTickSet = false;
     }
     
 }

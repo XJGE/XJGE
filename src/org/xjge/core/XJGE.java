@@ -92,7 +92,7 @@ public final class XJGE {
     private static boolean firstMouse = true;
     
     public static final Path PWD       = Path.of("").toAbsolutePath();
-    public static final String VERSION = "2.2.1";
+    public static final String VERSION = "2.3.2";
     
     private static Split split = Split.NONE;
     

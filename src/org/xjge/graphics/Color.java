@@ -14,21 +14,21 @@ import org.xjge.core.XJGE;
 public final class Color {
     
     public static final Color WHITE   = new Color(1f);
-    public static final Color SILVER  = new Color(192);
-    public static final Color GRAY    = new Color(128);
+    public static final Color SILVER  = new Color(176);
+    public static final Color GRAY    = new Color(96);
     public static final Color BLACK   = new Color(0f);
-    public static final Color RED     = new Color(255,   0,   0);
-    public static final Color BROWN   = new Color(128,  64,   0);
-    public static final Color YELLOW  = new Color(255, 255,   0);
-    public static final Color ORANGE  = new Color(255, 128,   0);
-    public static final Color GREEN   = new Color(  0, 255,   0);
-    public static final Color EMERALD = new Color(  0, 128,   0);
-    public static final Color CYAN    = new Color(  0, 255, 255);
-    public static final Color TEAL    = new Color(  0, 128, 128);
-    public static final Color BLUE    = new Color(  0,   0, 255);
-    public static final Color NAVY    = new Color(  0,   0, 128);
-    public static final Color MAGENTA = new Color(255,   0, 255);
-    public static final Color PURPLE  = new Color(128,   0, 128);
+    public static final Color RED     = new Color(255,  64,  64);
+    public static final Color BROWN   = new Color(144,  80,   0);
+    public static final Color YELLOW  = new Color(255, 255,  80);
+    public static final Color ORANGE  = new Color(255, 176,   0);
+    public static final Color GREEN   = new Color( 64, 255,  64);
+    public static final Color EMERALD = new Color(  0, 176,   0);
+    public static final Color CYAN    = new Color(128, 255, 255);
+    public static final Color TEAL    = new Color(  0, 144, 144);
+    public static final Color BLUE    = new Color( 64,  64, 255);
+    public static final Color NAVY    = new Color(  0,   0, 176);
+    public static final Color MAGENTA = new Color(255,  80, 255);
+    public static final Color PURPLE  = new Color(144,  48, 176);
     
     public final float r;
     public final float g;

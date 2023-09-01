@@ -21,8 +21,9 @@ public class SpriteAnimation {
     public int currFrame;
     public int speed;
     
-    private final StopWatch stopWatch = new StopWatch();
+    private final int initialSpeed;
     
+    private final StopWatch stopWatch = new StopWatch();
     public ArrayList<Vector2i> frames = new ArrayList<>();
     
     /**
@@ -33,7 +34,8 @@ public class SpriteAnimation {
      */
     public SpriteAnimation(Vector2i frame) {
         frames.add(frame);
-        speed = 1;
+        speed        = 1;
+        initialSpeed = speed;
     }
     
     /**
@@ -43,8 +45,9 @@ public class SpriteAnimation {
      * @param speed  the speed of the animation in game ticks
      */
     public SpriteAnimation(ArrayList<Vector2i> frames, int speed) {
-        this.frames = frames;
-        this.speed  = speed;
+        this.frames  = frames;
+        this.speed   = speed;
+        initialSpeed = speed;
     }
     
     /**
@@ -52,19 +55,20 @@ public class SpriteAnimation {
      * sprite sheet and subsequently the sub-image rendered.
      * 
      * @param atlas the texture atlas (or sprite sheet) to use for this animation
-     * @param sync  if true, the animation will use a stopwatch as its timing mechanism
+     * @param sync if true, the animation will use a global timing mechanism. 
+     *             This is useful for synchronizing animations between objects.
      */
     public void update(Atlas atlas, boolean sync) {
         if(speed == 0) return;
         
         if(sync) {
-            if(stopWatch.tick(frames.size(), speed, true)) {
-                currFrame = stopWatch.getTime();
-            }
-        } else {
             if(Game.tick(speed)) {
                 currFrame++;
                 if(currFrame >= frames.size()) currFrame = 0;
+            }
+        } else {
+            if(stopWatch.tick(frames.size(), speed, true)) {
+                currFrame = stopWatch.getTime();
             }
         }
         
@@ -79,25 +83,43 @@ public class SpriteAnimation {
      * altering its own {@code texCoords} field.
      * 
      * @param texCoords the vector object that can be passed to a shader 
-     *                   program
-     * @param atlas     the texture atlas (or sprite sheet) to use for this 
-     *                   animation
-     * @param sync      if true, the animation wont use a stopwatch as its 
-     *                   timing mechanism
+     *                  program
+     * @param atlas the texture atlas (or sprite sheet) to use for this 
+     *              animation
+     * @param sync if true, the animation will use a global timing mechanism. 
+     *             This is useful for synchronizing animations between objects.
      */
     public void update(Vector2f texCoords, Atlas atlas, boolean sync) {
         if(speed == 0) return;
         
-        if(currFrame < frames.size()) {
-            if(!(sync) ? stopWatch.tick(speed) : Game.tick(speed)) {
-                texCoords.set(
-                        atlas.subImageOffsets.get(frames.get(currFrame)).x,
-                        atlas.subImageOffsets.get(frames.get(currFrame)).y);
+        if(sync) {
+            if(Game.tick(speed)) {
                 currFrame++;
+                if(currFrame >= frames.size()) currFrame = 0;
             }
         } else {
-            currFrame = 0;
+            if(stopWatch.tick(frames.size(), speed, true)) {
+                currFrame = stopWatch.getTime();
+            }
         }
+        
+        texCoords.set(atlas.subImageOffsets.get(frames.get(currFrame)).x,
+                      atlas.subImageOffsets.get(frames.get(currFrame)).y);
+    }
+    
+    /**
+     * Restores the sprite animation to its initial settings including changing
+     * the current frame to the first in sequence, and reverting the speed to
+     * that which was specified through its constructor.
+     * <p>
+     * Often this is useful in instances where an animation was stopped partway 
+     * through and you don't want to resume it from the previous frame it was 
+     * on before it stopped.
+     */
+    public void reset() {
+        currFrame = 0;
+        speed     = initialSpeed;
+        stopWatch.reset();
     }
     
 }
