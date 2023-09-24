@@ -118,7 +118,7 @@ final class Terminal implements PropertyChangeListener {
         commandOutput.height = outputTop;
         commandOutput.render(0.5f, Color.BLACK);
         
-        text.drawString(font, ">", caretPos, Color.WHITE);
+        text.drawString(font, ">", caretPos, Color.WHITE, 1f);
         
         for(int i = 0; i <= shiftElements; i++) {
             text.drawOutput(font, cmdOutput, cmdOutput[i], i, executed, opaqueRectangles[i]);
@@ -130,12 +130,12 @@ final class Terminal implements PropertyChangeListener {
         
         executed = false;
         
-        if(suggest) text.drawString(font, suggestion, commandPos, Color.GRAY);
-        if(cursorBlink) text.drawString(font, "_", cursorPos, Color.WHITE);
+        if(suggest) text.drawString(font, suggestion, commandPos, Color.GRAY, 1f);
+        if(cursorBlink) text.drawString(font, "_", cursorPos, Color.WHITE, 1f);
         
         if(typed.length() > 0) {
             if(validate()) text.drawCommand(font, typed.toString(), commandPos);
-            else           text.drawString(font, typed.toString(), commandPos, Color.WHITE);
+            else           text.drawString(font, typed.toString(), commandPos, Color.WHITE, 1f);
         }
         
         text.resetStringIndex();

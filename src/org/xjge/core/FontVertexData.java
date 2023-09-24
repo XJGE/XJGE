@@ -169,8 +169,10 @@ final class FontVertexData {
      *                drawn
      * @param changed if true, the updated vertex data will be passed to the 
      *                GPU
+     * @param opacity a value between 0 and 1 indicating the opacity 
+     *                (or transparency) of the text
      */
-    void render(Font font, HashMap<Integer, Glyph> glyphs, boolean changed) {
+    void render(Font font, HashMap<Integer, Glyph> glyphs, boolean changed, float opacity) {
         XJGE.getDefaultGLProgram().use();
         
         glEnable(GL_BLEND);
@@ -187,6 +189,7 @@ final class FontVertexData {
         
         XJGE.getDefaultGLProgram().setUniform("uType", 1);
         XJGE.getDefaultGLProgram().setUniform("uTexture", 0);
+        XJGE.getDefaultGLProgram().setUniform("uOpacity", XJGE.clampValue(0, 1, opacity));
         XJGE.getDefaultGLProgram().setUniform("uIsBitmapFont", (font.isBitmapFont) ? 1 : 0);
         
         glDrawElementsInstanced(GL_TRIANGLES, indices.capacity(), GL_UNSIGNED_INT, 0, glyphs.size());

@@ -214,35 +214,35 @@ final class DebugInfo {
             icons[i].render();
         }
         
-        text.drawString(font, "FPS: " + Game.getFPS(), textPos[0], Color.WHITE);
-        text.drawString(font, "DELTA: " + Game.getDelta(), textPos[1], Color.WHITE);
-        text.drawString(font, "TICKED: " + Game.getTicked(), textPos[2], Color.WHITE);
-        text.drawString(font, "MEM FREE: " + Runtime.getRuntime().freeMemory(), textPos[3], Color.CYAN);
+        text.drawString(font, "FPS: " + Game.getFPS(), textPos[0], Color.WHITE, 1f);
+        text.drawString(font, "DELTA: " + Game.getDelta(), textPos[1], Color.WHITE, 1f);
+        text.drawString(font, "TICKED: " + Game.getTicked(), textPos[2], Color.WHITE, 1f);
+        text.drawString(font, "MEM FREE: " + Runtime.getRuntime().freeMemory(), textPos[3], Color.CYAN, 1f);
         
-        text.drawString(font, "OS NAME: " + System.getProperty("os.name"), textPos[4],  Color.GREEN);
-        text.drawString(font, "JAVA VER: " + System.getProperty("java.version"), textPos[5],  Color.GREEN);
-        text.drawString(font, "GLFW VER: " + glfwGetVersionString(), textPos[6], Color.GREEN);
+        text.drawString(font, "OS NAME: " + System.getProperty("os.name"), textPos[4],  Color.GREEN, 1f);
+        text.drawString(font, "JAVA VER: " + System.getProperty("java.version"), textPos[5],  Color.GREEN, 1f);
+        text.drawString(font, "GLFW VER: " + glfwGetVersionString(), textPos[6], Color.GREEN, 1f);
         
-        text.drawString(font, "OPENAL VER: " + alGetString(AL_VERSION), textPos[7], Color.WHITE);
-        text.drawString(font, "SPEAKER: \"" + Audio.speaker.name.substring(15) + "\"", textPos[8], Color.YELLOW);
-        text.drawString(font, "SOUND MASTER VOLUME: " + Audio.getSoundMasterVolume(), textPos[9], Color.CYAN);
-        text.drawString(font, "MUSIC MASTER VOLUME: " + Audio.getMusicMasterVolume(), textPos[10], Color.CYAN);
+        text.drawString(font, "OPENAL VER: " + alGetString(AL_VERSION), textPos[7], Color.WHITE, 1f);
+        text.drawString(font, "SPEAKER: \"" + Audio.speaker.name.substring(15) + "\"", textPos[8], Color.YELLOW, 1f);
+        text.drawString(font, "SOUND MASTER VOLUME: " + Audio.getSoundMasterVolume(), textPos[9], Color.CYAN, 1f);
+        text.drawString(font, "MUSIC MASTER VOLUME: " + Audio.getMusicMasterVolume(), textPos[10], Color.CYAN, 1f);
         
-        text.drawString(font, "OPENGL VER: " + glGetString(GL_VERSION), textPos[11], Color.WHITE);
-        text.drawString(font, "GFX CARD: " + glGetString(GL_RENDERER), textPos[12], Color.YELLOW);
-        text.drawString(font, "DISPLAY: \"" + Window.monitor.name + "\" (" + Window.monitor.getInfo() + ")", textPos[13], Color.YELLOW);
-        text.drawString(font, "VSYNC: " + Hardware.getVSyncEnabled(), textPos[14], Color.CYAN);
+        text.drawString(font, "OPENGL VER: " + glGetString(GL_VERSION), textPos[11], Color.WHITE, 1f);
+        text.drawString(font, "GFX CARD: " + glGetString(GL_RENDERER), textPos[12], Color.YELLOW, 1f);
+        text.drawString(font, "DISPLAY: \"" + Window.monitor.name + "\" (" + Window.monitor.getInfo() + ")", textPos[13], Color.YELLOW, 1f);
+        text.drawString(font, "VSYNC: " + Hardware.getVSyncEnabled(), textPos[14], Color.CYAN, 1f);
         
-        text.drawString(font, Input.getDeviceEnabled(KEY_MOUSE_COMBO) ? "Enabled" : "Disabled", textPos[15], Color.WHITE);
+        text.drawString(font, Input.getDeviceEnabled(KEY_MOUSE_COMBO) ? "Enabled" : "Disabled", textPos[15], Color.WHITE, 1f);
         
         for(int i = 16; i < textPos.length - 1; i += 2) {
             int jid = (i % 16) / 2;
             
-            text.drawString(font, jid + "", textPos[i], Color.YELLOW);
-            text.drawString(font, Input.getDevicePresent(jid) ? Input.getDeviceName(jid) : "N/A", textPos[i + 1], Color.WHITE);
+            text.drawString(font, jid + "", textPos[i], Color.YELLOW, 1f);
+            text.drawString(font, Input.getDevicePresent(jid) ? Input.getDeviceName(jid) : "N/A", textPos[i + 1], Color.WHITE, 1f);
         }
         
-        text.drawString(font, "XJGE v" + XJGE.VERSION, textPos[24], Color.MAGENTA);
+        text.drawString(font, "XJGE v" + XJGE.VERSION, textPos[24], Color.MAGENTA, 1f);
         
         text.resetStringIndex();
     }

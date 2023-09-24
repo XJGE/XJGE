@@ -31,7 +31,7 @@ import org.xjge.graphics.Texture;
 /**
  * Supplies the data parsed from a font file as an immutable object which can 
  * be passed to the 
- * {@linkplain Widget#drawString(Font, String, Vector2i, Color) drawString()} 
+ * {@linkplain Widget#drawString(Font, String, Vector2i, Color, float) drawString()} 
  * method of a {@link Widget} to render text in some desired 
  * font. TrueType (.ttf) and Bitmap (.bmf) are the preferred file formats of 
  * this engine for fonts.

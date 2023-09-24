@@ -175,7 +175,7 @@ void main() {
             vec3 textColorOutput = (uIsBitmapFont == 1) 
                                  ? ioColor * texture(uTexture, ioTexCoords).xyz 
                                  : ioColor;
-            ioFragColor = vec4(textColorOutput, texture(uTexture, ioTexCoords).a);
+            ioFragColor = vec4(textColorOutput, texture(uTexture, ioTexCoords).a * uOpacity);
             break;
 
         case 2: case 3: case 10: //Used for rendering "bloom volumes" and UI shapes like polygons and rectangles.

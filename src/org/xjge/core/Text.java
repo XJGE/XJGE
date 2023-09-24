@@ -76,8 +76,10 @@ public final class Text {
      * @param position the position in the window at which the text string will 
      *                 be rendered
      * @param color    the color the text will be rendered in
+     * @param opacity  a value between 0 and 1 indicating the opacity 
+     *                 (or transparency) of the text
      */
-    void drawString(Font font, String text, Vector2i position, Color color) {
+    void drawString(Font font, String text, Vector2i position, Color color, float opacity) {
         drawOrder++;
         
         if(!prevPosition.containsKey(drawOrder)) prevPosition.put(drawOrder, new Vector2i());
@@ -111,7 +113,7 @@ public final class Text {
             }
         }
         
-        fontData.get(drawOrder).render(font, glyphs.get(drawOrder), changed);
+        fontData.get(drawOrder).render(font, glyphs.get(drawOrder), changed, opacity);
         
         updateValue(prevFont, font);
         updateValue(prevText, text);
@@ -160,7 +162,7 @@ public final class Text {
             }
         }
         
-        fontData.get(drawOrder).render(font, glyphs.get(drawOrder), changed);
+        fontData.get(drawOrder).render(font, glyphs.get(drawOrder), changed, 1f);
         
         updateValue(prevText, text);
         updateValue(prevPosition, prevPosition.get(drawOrder).set(position));
@@ -222,7 +224,7 @@ public final class Text {
             rectangle.height = Math.abs(descent);
         }
         
-        fontData.get(drawOrder).render(font, glyphs.get(drawOrder), executed);
+        fontData.get(drawOrder).render(font, glyphs.get(drawOrder), executed, 1f);
     }
     
     /**
