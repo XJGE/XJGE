@@ -53,7 +53,7 @@ final class Cubemap {
                 Logger.logWarning("Failed to load cubemap texture \"" + filename + "\"", e);
                 Logger.setDomain(null);
                 
-                loadCubemapTexture(target, Cubemap.class.getResourceAsStream("/org/xjge/assets/img_null.png"));
+                loadCubemapTexture(target, Cubemap.class.getResourceAsStream("/org/xjge/assets/xjge_missingtexture.png"));
             }
         });
         

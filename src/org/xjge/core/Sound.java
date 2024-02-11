@@ -54,7 +54,7 @@ public final class Sound {
             Logger.logWarning("Failed to load sound \"" + filename + "\"", e);
             Logger.setDomain(null);
             
-            loadSound(Sound.class.getResourceAsStream("/org/xjge/assets/sfx_beep.ogg"));
+            loadSound(Sound.class.getResourceAsStream("/org/xjge/assets/xjge_beep.ogg"));
         }
         
         if(!isSongPart) addToCollection(filename);

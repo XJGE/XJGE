@@ -2,6 +2,27 @@
 
 All notable changes to this project will be documented in this file. The format of this file follows that specified by [Keep a Changelog](https://keepachangelog.com/en/1.0.0/). This project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [2.4.2] - 2024-02-10
+
+### Added
+- New setResolution() method to the XJGE class that can be used to change the resolutions of framebuffers at runtime.
+- New getButtonID() method to the Command class that returns a number used by GLFW to identify
+the components of an input device.
+- New containsWidget() method to XJGE class to test whether a viewport contains a specified widget.
+- Various new methods to Icon class to give developers greater control over how they appear on screen.
+- New lerp() utility function to XJGE class.
+- New reset() method to StopWatch and SpriteAnimation classes.
+
+### Changed
+- Fixed issue that caused sprites to display incorrectly due to the value of texCoords only changing during the update cycles where sync was enabled.
+- Filenames of various assets used by the engine to reflect new conventions.
+- Font used by engine utilities to Source Code Pro.
+- Fixed issue with Color(r, g, b) constructor where only the value of 'r' would be used.
+- Minor changes made to default color palette to be more consistent across different platforms.
+
+### Removed
+- Restriction that required gamepads to be reconnected to resolve missing input device event, developers can now enable this feature optionally depending on the needs of their project.
+
 ## [2.1.9] - 2022-06-19
 
 ### Added

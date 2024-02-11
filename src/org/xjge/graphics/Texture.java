@@ -64,7 +64,7 @@ public final class Texture {
             Logger.logWarning("Failed to load texture \"" + filename + "\"", e);
             Logger.setDomain(null);
             
-            loadTexture(Texture.class.getResourceAsStream("/org/xjge/assets/img_null.png"), target);
+            loadTexture(Texture.class.getResourceAsStream("/org/xjge/assets/xjge_missingtexture.png"), target);
         }
         
         ErrorUtils.checkGLError();

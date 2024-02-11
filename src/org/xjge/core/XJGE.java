@@ -215,7 +215,7 @@ public final class XJGE {
                 
                 Window.monitor = Hardware.findMonitors().get(1);
                 Window.setFullscreenPreference(fullscreen);
-                Window.setIcon("img_null.png");
+                Window.setIcon("xjge_missingtexture.png");
             }
             
             glfwMakeContextCurrent(Window.HANDLE);
@@ -256,8 +256,8 @@ public final class XJGE {
             //Initialize the default shader program that will be provided to the implementation.
             {
                 var shaderSourceFiles = new LinkedList<Shader>() {{
-                    add(new Shader("defaultVertex.glsl", GL_VERTEX_SHADER));
-                    add(new Shader("defaultFragment.glsl", GL_FRAGMENT_SHADER));
+                    add(new Shader("shader_default_vertex.glsl", GL_VERTEX_SHADER));
+                    add(new Shader("shader_default_fragment.glsl", GL_FRAGMENT_SHADER));
                 }};
                 
                 GLProgram defaultProgram = new GLProgram(shaderSourceFiles, "default");
@@ -304,8 +304,8 @@ public final class XJGE {
             //Create shader program that will generate shadow map output.
             {
                 var shaderSourceFiles = new LinkedList<Shader>() {{
-                    add(new Shader("depthVertex.glsl", GL_VERTEX_SHADER));
-                    add(new Shader("depthFragment.glsl", GL_FRAGMENT_SHADER));
+                    add(new Shader("shader_depth_vertex.glsl", GL_VERTEX_SHADER));
+                    add(new Shader("shader_depth_fragment.glsl", GL_FRAGMENT_SHADER));
                 }};
                 
                 depthProgram = new GLProgram(shaderSourceFiles, "default");
@@ -319,8 +319,8 @@ public final class XJGE {
             //Create shader program for applying gaussian blur.
             {
                 var shaderSourceFiles = new LinkedList<Shader>() {{
-                    add(new Shader("blurVertex.glsl", GL_VERTEX_SHADER));
-                    add(new Shader("blurFragment.glsl", GL_FRAGMENT_SHADER));
+                    add(new Shader("shader_blur_vertex.glsl", GL_VERTEX_SHADER));
+                    add(new Shader("shader_blur_fragment.glsl", GL_FRAGMENT_SHADER));
                 }};
                 
                 blurProgram = new GLProgram(shaderSourceFiles, "default");
@@ -333,8 +333,8 @@ public final class XJGE {
             }
             
             engineFont  = new Font();
-            engineIcons = new Texture("spr_engineicons.png");
-            beep        = new Sound("sfx_beep.ogg");
+            engineIcons = new Texture("xjge_engineicons.png");
+            beep        = new Sound("xjge_beep.ogg");
             
             Light.setIconTexture(engineIcons);
             Logger.printSystemInfo();

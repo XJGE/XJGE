@@ -66,7 +66,7 @@ public final class Font {
         this.size = DEFAULT_SIZE;
         texHandle = glGenTextures();
         glBindTexture(GL_TEXTURE_2D, texHandle);
-        loadVectorFont(Font.class.getResourceAsStream("/org/xjge/assets/fnt_fontina_mono.ttf"), size);
+        loadVectorFont(Font.class.getResourceAsStream("/org/xjge/assets/font_vector_sourcecodepro.ttf"), size);
     }
     
     /**
