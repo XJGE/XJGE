@@ -88,3 +88,4 @@ the components of an input device.
 
 [2.0.0]: https://github.com/XJGE/XJGE-2/releases/tag/2.0.0
 [2.1.9]: https://github.com/XJGE/XJGE-2/releases/tag/2.1.9
+[2.4.2]: https://github.com/XJGE/XJGE-2/releases/tag/2.4.2
