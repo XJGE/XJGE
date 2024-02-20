@@ -14,8 +14,8 @@ import org.xjge.core.XJGE;
 public final class Color {
     
     public static final Color WHITE   = new Color(1f);
-    public static final Color SILVER  = new Color(176);
-    public static final Color GRAY    = new Color(96);
+    public static final Color SILVER  = new Color(192);
+    public static final Color GRAY    = new Color(128);
     public static final Color BLACK   = new Color(0f);
     public static final Color RED     = new Color(255,  64,  64);
     public static final Color BROWN   = new Color(144,  80,   0);
