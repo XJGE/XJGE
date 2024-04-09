@@ -65,7 +65,7 @@ public abstract class Widget {
     
     /**
      * Called automatically anytime a change to the applications viewports 
-     * occurs.Using this method, widgets can update the positions of their 
+     * occurs. Using this method, widgets can update the positions of their 
      * elements to better suit the size of the viewport.
      * <p>
      * The arguments found here are provided out of convenience and can be 
@@ -78,7 +78,7 @@ public abstract class Widget {
      * @param viewportHeight the height (in internal resolution pixels) of the
      *                       viewport rendering this widget
      */
-    public abstract void setSplitPosition(Split split, int viewportWidth, int viewportHeight);
+    public abstract void relocate(Split split, int viewportWidth, int viewportHeight);
     
     /**
      * Processes input from the keyboard captured by the game window.

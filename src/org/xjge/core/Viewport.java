@@ -242,7 +242,7 @@ final class Viewport {
         bloom.createTextureAttachments(width, height);
         
         ui.values().forEach(widget -> {
-            widget.setSplitPosition(XJGE.getScreenSplit(), width, height);
+            widget.relocate(XJGE.getScreenSplit(), width, height);
         });
     }
     
