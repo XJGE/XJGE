@@ -262,14 +262,19 @@ public final class Logger {
 
         try(FileWriter logFile = new FileWriter(file.getName())) {
             //Check size make sure we dont produce a crazy large file.
-            String text = (output.toString().length() >= Integer.MAX_VALUE) 
-                        ? output.substring(0, Integer.MAX_VALUE) 
+            byte[] size = output.toString().getBytes("UTF-8");
+            int maxSize = 3 * 1024 * 1024; //Roughly 3mb
+            
+            String text = (size.length >= maxSize) 
+                        ? output.substring(output.length() - (maxSize - 1), output.length() - 1) 
                         : output.toString();
             
             logText = new PrintWriter(logFile);
             logText.append(text);
             logText.close();
-        } catch(Exception ex) {}
+        } catch(Exception ex) {
+            System.err.println(ex);
+        }
         
         System.exit(-1);
     }

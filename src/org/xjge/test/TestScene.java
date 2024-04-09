@@ -4,6 +4,8 @@ package org.xjge.test;
 
 import java.util.Map;
 import org.xjge.core.Camera;
+import org.xjge.core.Game;
+import org.xjge.core.Logger;
 import org.xjge.core.Scene;
 import org.xjge.core.XJGE;
 import org.xjge.graphics.GLProgram;
@@ -15,6 +17,8 @@ import org.xjge.graphics.GLProgram;
  */
 public class TestScene extends Scene {
 
+    int count;
+    
     boolean texLoaded;
     
     public TestScene() {
@@ -25,7 +29,13 @@ public class TestScene extends Scene {
 
     @Override
     public void update(double targetDelta, double trueDelta) {
+        Logger.logInfo("test");
         
+        if(Game.tick(60)) {
+            count++;
+        }
+        
+        if(count > 10) Logger.logSevere("Terminated", null);
     }
 
     @Override
