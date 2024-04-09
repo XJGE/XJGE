@@ -45,6 +45,7 @@ final class Viewport {
     Vector2i topRight = new Vector2i();
     Camera prevCamera = new Noclip();
     Camera currCamera = new Noclip();
+    Mouse mouse       = new Mouse();
     
     PostProcessShader postProcessShader;
     
@@ -219,6 +220,19 @@ final class Viewport {
     void processKeyInput(int key, int action, int mods) {        
         ui.values().forEach(widget -> {
             if(!widget.remove) widget.processKeyInput(key, action, mods);
+        });
+    }
+    
+    /**
+     * Processes input from the mouse captured by the game window.
+     */
+    void processMouseInput() {
+        ui.values().forEach(widget -> {
+            if(!widget.remove) {
+                widget.processMouseInput(mouse.cursorPosX, mouse.cursorPosY, 
+                                         mouse.button, mouse.action, mouse.mods, 
+                                         mouse.scrollX, mouse.scrollY);
+            }
         });
     }
     

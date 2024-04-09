@@ -89,12 +89,34 @@ public abstract class Widget {
      * @param key    the value supplied by GLFW of a single key on the keyboard
      * @param action an action supplied by GLFW that describes the nature of 
      *               the key press
-     * @param mods   a value supplied by GLFW denoting whether any mod keys 
+     * @param mods   a value supplied by GLFW denoting whether any modifier keys 
      *               where held (such as shift or control)
      * 
      * @see Input#getKeyChar(int, int)
      */
     public abstract void processKeyInput(int key, int action, int mods);
+    
+    /**
+     * Processes input captured from the mouse by the game window.
+     * <p>
+     * NOTE: Only the first viewport (ID: 0) will receive input from the 
+     * keyboard.
+     * 
+     * @param cursorPosX the current position of the mouse cursor inside the 
+     *                   game window along the x-axis
+     * @param cursorPosY the current position of the mouse cursor inside the 
+     *                   game window along the y-axis
+     * @param button the value supplied by GLFW of a single button on the mouse
+     * @param action an action supplied by GLFW that describes the nature of 
+     *               the button press
+     * @param mods a value supplied by GLFW denoting whether any modifier keys 
+     *             where held (such as shift or control)
+     * @param scrollX a value supplied by GLFW that represents input from a 
+     *                horizontally aligned scroll wheel on the mouse
+     * @param scrollY a value supplied by GLFW that represents input from a 
+     *                vertically aligned scroll wheel on the mouse
+     */
+    public abstract void processMouseInput(double cursorPosX, double cursorPosY, int button, int action, int mods, double scrollX, double scrollY);
     
     /**
      * Used to free resources used by the widget when its removed from a 

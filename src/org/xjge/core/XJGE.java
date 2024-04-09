@@ -31,7 +31,6 @@ import org.lwjgl.opengl.GL;
 import static org.lwjgl.opengl.GL32.*;
 import static org.lwjgl.opengl.GLUtil.setupDebugMessageCallback;
 import static org.xjge.core.Input.KEY_MOUSE_COMBO;
-import static org.xjge.core.Window.HANDLE;
 import org.xjge.graphics.PostProcessShader;
 
 //Created: Apr 28, 2021
@@ -92,7 +91,7 @@ public final class XJGE {
     private static boolean firstMouse = true;
     
     public static final Path PWD       = Path.of("").toAbsolutePath();
-    public static final String VERSION = "2.4.6";
+    public static final String VERSION = "2.4.7";
     
     private static Split split = Split.NONE;
     
@@ -436,24 +435,41 @@ public final class XJGE {
                 else                     viewports[0].processKeyInput(key, action, mods);
             });
 
-            glfwSetCursorPosCallback(HANDLE, (window, xpos, ypos) -> {
+            glfwSetCursorPosCallback(Window.HANDLE, (window, x, y) -> {
                 float scaleX = (float) resolutionX / Window.getWidth();
                 float scaleY = (float) resolutionY / Window.getHeight();
                 
-                cursorX = (double) (xpos * scaleX);
-                cursorY = (double) Math.abs((ypos * scaleY) - resolutionY);
+                cursorX = (double) (x * scaleX);
+                cursorY = (double) Math.abs((y * scaleY) - resolutionY);
                 
                 if(noclipEnabled && !terminalEnabled) {
                     if(firstMouse) {
-                        freeCam.prevX = xpos;
-                        freeCam.prevY = ypos;
+                        freeCam.prevX = x;
+                        freeCam.prevY = y;
                         firstMouse    = false;
                     }
                     
-                    freeCam.setDirection(xpos, ypos);
+                    freeCam.setDirection(x, y);
                 } else {
                     firstMouse = true;
                 }
+                
+                viewports[0].mouse.cursorPosX = x;
+                viewports[0].mouse.cursorPosY = (Window.getHeight() - y);
+                viewports[0].processMouseInput();
+            });
+            
+            glfwSetMouseButtonCallback(Window.HANDLE, (window, button, action, mods) -> {
+                viewports[0].mouse.button = button;
+                viewports[0].mouse.action = action;
+                viewports[0].mouse.mods   = mods;
+                viewports[0].processMouseInput();
+            });
+            
+            glfwSetScrollCallback(Window.HANDLE, (window, scrollX, scrollY) -> {
+                viewports[0].mouse.scrollX = scrollX;
+                viewports[0].mouse.scrollY = scrollY;
+                viewports[0].processMouseInput();
             });
         } else {
             Logger.setDomain("core");
@@ -507,7 +523,7 @@ public final class XJGE {
         updateRenderbufferDimensions();
         setScreenSplit(getScreenSplit());
         
-        glfwSetWindowSizeCallback(HANDLE, (window, w, h) -> {
+        glfwSetWindowSizeCallback(Window.HANDLE, (window, w, h) -> {
             Window.updateDimensions(w, h);
 
             updateRenderbufferDimensions();
