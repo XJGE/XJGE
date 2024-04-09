@@ -87,13 +87,25 @@ public class Rectangle {
     /**
      * Determines if the specified point has intersected this rectangle.
      * 
-     * @param point the point to check
+     * @param pointX a value indicating the horizontal position of the point to check
+     * @param pointY a value indicating the vertical position of the point to check
+     * 
+     * @return true if an intersection was detected
+     */
+    public boolean contains(int pointX, int pointY) {
+        return (pointX > xPos && pointX < xPos + width) && 
+               (pointY > yPos && pointY < yPos + height);
+    }
+    
+    /**
+     * Vector2i variant of the {@link contains(int, int)} method.
+     * 
+     * @param point a 2D point inside the game window to check
      * 
      * @return true if an intersection was detected
      */
     public boolean contains(Vector2i point) {
-        return (point.x > xPos && point.x < xPos + width) && 
-               (point.y > yPos && point.y < yPos + height);
+        return contains(point.x, point.y);
     }
     
     /**
