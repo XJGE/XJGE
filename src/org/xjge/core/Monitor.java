@@ -69,7 +69,7 @@ public final class Monitor {
                 videoModes.put(getInfo(), videoMode);
             }
         } else {
-            Logger.setDomain("winkit");
+            Logger.setDomain("hardware");
             Logger.logWarning("Unable to find any additional video " +
                               "modes for monitor " + id + " \"" + name + "\"", 
                               null);
@@ -188,11 +188,6 @@ public final class Monitor {
                 } else {
                     videoMode = videoModes.firstEntry().getValue();
                 }
-                
-                Logger.setDomain("winkit");
-                Logger.logInfo("Changed the current video mode of monitor " + 
-                               id + " \"" + name + "\" to (" + getInfo() + ")");
-                Logger.setDomain(null);
             } 
             
             case "prev" -> {
@@ -201,11 +196,6 @@ public final class Monitor {
                 } else {
                     videoMode = videoModes.lastEntry().getValue();
                 }
-                
-                Logger.setDomain("winkit");
-                Logger.logInfo("Changed the current video mode of monitor " + 
-                               id + " \"" + name + "\" to (" + getInfo() + ")");
-                Logger.setDomain(null);
             }
             
             default -> {
@@ -222,23 +212,18 @@ public final class Monitor {
                     
                     if(tempKeys.get(index) != null && tempValues.get(index) != null) {
                         videoMode = tempValues.get(index);
-                        
-                        Logger.setDomain("winkit");
-                        Logger.logInfo("Changed the current video mode of monitor " + 
-                                       id + " \"" + name + "\" to (" + getInfo() + ")");
-                        Logger.setDomain(null);
                     } else {
-                        Logger.setDomain("winkit");
+                        Logger.setDomain("hardware");
                         Logger.logWarning("Failed to change the current video mode of monitor " + 
                                           id + " \"" + name + "\". Could not find a video mode " + 
-                                          "object at index " + index + ".", 
+                                          "object at index " + index, 
                                           null);
                         Logger.setDomain(null);
                     }
                 } catch(NumberFormatException | IndexOutOfBoundsException e) {
-                    Logger.setDomain("winkit");
+                    Logger.setDomain("hardware");
                     Logger.logWarning("Failed to change the current video mode for monitor " + 
-                                      id + " \"" + name + "\". Invalid index used.", 
+                                      id + " \"" + name + "\". Invalid index used", 
                                       e);
                     Logger.setDomain(null);
                 }

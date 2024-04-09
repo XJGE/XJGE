@@ -105,7 +105,7 @@ public final class Font {
      */
     public Font(String filename, int size) {
         try(InputStream file = Font.class.getResourceAsStream(XJGE.getAssetsFilepath() + filename)) {
-            if(size <= 0) throw new IllegalStateException("Invalid font size " + size + " used.");
+            if(size <= 0) throw new IllegalStateException("Invalid font size " + size + " used");
             
             int periodIndex = filename.lastIndexOf(".");
             
@@ -116,14 +116,14 @@ public final class Font {
                     loadVectorFont(file, size);
                 }
             } else {
-                throw new IllegalStateException("Font filename has no extension.");
+                throw new IllegalStateException("Font filename has no extension");
             }
         } catch(Exception e) {
             Logger.setDomain("ui");
             Logger.logWarning("Failed to load font \"" + filename + "\"", e);
             Logger.setDomain(null);
             
-            loadVectorFont(Font.class.getResourceAsStream("/org/xjge/assets/fnt_debug_mono.ttf"), DEFAULT_SIZE);
+            loadVectorFont(Font.class.getResourceAsStream("/org/xjge/assets/font_vector_sourcecodepro.ttf"), DEFAULT_SIZE);
         }
         
         ErrorUtils.checkGLError();
@@ -218,8 +218,8 @@ public final class Font {
                 }
             }
         } catch(XMLStreamException e) {
-            Logger.setDomain("core");
-            Logger.logSevere("Failed to parse bitmap font file data.", e);
+            Logger.setDomain("ui");
+            Logger.logSevere("Failed to parse bitmap font file data", e);
         }
     }
     
@@ -244,7 +244,7 @@ public final class Font {
             STBTTFontinfo info = STBTTFontinfo.mallocStack(stack);
             
             if(!stbtt_InitFont(info, fontBuf)) {
-                throw new IllegalStateException("Failed to parse font information.");
+                throw new IllegalStateException("Failed to parse font information");
             }
             
             int bitmapSizeInPixels = 128;
@@ -352,8 +352,8 @@ public final class Font {
             MemoryUtil.memFree(packedCharBuf);
             
         } catch(IOException e) {
-            Logger.setDomain("core");
-            Logger.logSevere("Failed to parse vector font file data.", e);
+            Logger.setDomain("ui");
+            Logger.logSevere("Failed to parse vector font file data", e);
         }
     }
     

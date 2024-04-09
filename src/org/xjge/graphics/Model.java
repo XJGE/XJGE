@@ -442,7 +442,7 @@ public class Model {
             
             Logger.setDomain("graphics");
             Logger.logWarning("Failed to bind the texture of mesh \"" + meshName + 
-                              "\" no such mesh is present in this model.", null);
+                              "\" no such mesh is present in this model", null);
             Logger.setDomain(null);
         }
     }
@@ -632,7 +632,7 @@ public class Model {
             Logger.setDomain("graphics");
             Logger.logWarning(
                     "Failed to set animation: \"" + name + "\". Model contains " + 
-                    "no such animation.",
+                    "no such animation",
                     null);
             Logger.setDomain(null);
             return;
@@ -641,7 +641,7 @@ public class Model {
         if(currAnimation != null && numFrames > 1) {
             if(currAnimation.name.equals(name)) {
                 Logger.setDomain("graphics");
-                Logger.logInfo("Animation: \"" + name +"\" is already playing.");
+                Logger.logInfo("Animation: \"" + name +"\" is already playing");
                 Logger.setDomain(null);
                 return;
             }

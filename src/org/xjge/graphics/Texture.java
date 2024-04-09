@@ -126,7 +126,7 @@ public final class Texture {
             
         } catch(IOException e) {
             Logger.setDomain("graphics");
-            Logger.logSevere("Failed to parse texture image data.", e);
+            Logger.logSevere("Failed to parse texture image data", e);
         }
     }
     

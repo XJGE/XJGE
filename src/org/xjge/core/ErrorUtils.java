@@ -2,8 +2,6 @@ package org.xjge.core;
 
 import static org.lwjgl.openal.AL10.*;
 import static org.lwjgl.opengl.GL30.*;
-import org.lwjgl.opengl.GL43;
-import org.lwjgl.system.MemoryStack;
 
 //Created: May 8, 2021
 
@@ -33,6 +31,7 @@ public final class ErrorUtils {
                 case AL_OUT_OF_MEMORY     -> desc = "out of memory";
             }
 
+            Logger.setDomain("audio");
             Logger.logSevere("OpenAL Error: (" + alError + ") " + desc, null);
         }
     }
@@ -55,6 +54,7 @@ public final class ErrorUtils {
                 case GL_OUT_OF_MEMORY     -> desc = "out of memory";
             }
             
+            Logger.setDomain("graphics");
             Logger.logSevere("OpenGL Error: (" + glError + ") " + desc, null);
         }
     }
@@ -84,7 +84,7 @@ public final class ErrorUtils {
                 case GL_FRAMEBUFFER_UNDEFINED                     -> desc = "undefined";
             }
             
-            Logger.setDomain("core");
+            Logger.setDomain("graphics");
             Logger.logSevere("Framebuffer Error: (" + status + ") " + desc, null);
         }
     }

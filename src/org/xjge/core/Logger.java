@@ -57,7 +57,8 @@ public final class Logger {
      * information.
      */
     private static void horizontalLine() {
-        String line = "--------------------------------------------------------------------------------";
+        String line = "**************************************************" +
+                      "**************************************************";
         System.out.println(line);
         output.append(line)
               .append(System.lineSeparator());
@@ -69,18 +70,18 @@ public final class Logger {
      */
     static void printSystemInfo() {
         horizontalLine();
-        logInfo("OS NAME:\t\t" + System.getProperty("os.name"));
-        logInfo("JAVA VER:\t\t" + System.getProperty("java.version"));
-        logInfo("XJGE VER:\t\t" + XJGE.VERSION);
-        logInfo("GLFW VER:\t\t" + glfwGetVersionString());
-        logInfo("OPENAL VER:\t" + alGetString(AL_VERSION));
-        logInfo("OPENGL VER:\t" + glGetString(GL_VERSION));
-        logInfo("GFX CARD:\t\t" + glGetString(GL_RENDERER));
-        logInfo("MONITORS:\t\t" + "Found: " + Hardware.getNumMonitors() + 
-                ", Primary: \"" + Window.monitor.name + "\" (" + Window.monitor.getInfo() + ")");
-        logInfo("SPEAKERS:\t\t" + "Found: " + Hardware.getNumSpeakers() + 
-                ", Primary: \"" + Audio.speaker.name.substring(15));
-        logInfo("GAMEPADS:\t\t" + "Found: " + Input.getNumDevices());
+        logUnspecified("OS NAME:\t" + System.getProperty("os.name"));
+        logUnspecified("JAVA VER:\t" + System.getProperty("java.version"));
+        logUnspecified("XJGE VER:\t" + XJGE.VERSION);
+        logUnspecified("GLFW VER:\t" + glfwGetVersionString());
+        logUnspecified("OPENAL VER:\t" + alGetString(AL_VERSION));
+        logUnspecified("OPENGL VER:\t" + glGetString(GL_VERSION));
+        logUnspecified("GFX CARD:\t" + glGetString(GL_RENDERER));
+        logUnspecified("MONITORS:\t" + "Found: " + Hardware.getNumMonitors() + 
+                       ", Primary: \"" + Window.monitor.name + "\" (" + Window.monitor.getInfo() + ")");
+        logUnspecified("SPEAKERS:\t" + "Found: " + Hardware.getNumSpeakers() + 
+                       ", Primary: \"" + Audio.speaker.name.substring(15));
+        logUnspecified("GAMEPADS:\t" + "Found: " + Input.getNumDevices());
         horizontalLine();
         newLine();
     }
@@ -95,7 +96,20 @@ public final class Logger {
     }
     
     /**
-     * Appends the name of a module to the log message following the priority 
+     * Writes text to the applications console and log file with no timestamp, 
+     * severity, or domain. Used internally by the engine.
+     * 
+     * @param message the text to appear as output in the console/log file 
+     */
+    static void logUnspecified(String message) {
+        System.out.println(message);
+        
+        output.append(message)
+              .append(System.lineSeparator());
+    }
+    
+    /**
+     * Appends the name of a domain to the log message following the priority 
      * indicator (INFO, WARNING, etc). Included so log messages can be better 
      * located within different domains of the engine. You likely won't need to 
      * make use of it in your game project unless you really want to.
@@ -111,10 +125,10 @@ public final class Logger {
      * setDomain(null);
      * </pre></blockquote>
      * 
-     * @param domain the name of the module to append to the log message
+     * @param domain the name of the domain to append to the log message
      */
     public static void setDomain(String domain) {
-        Logger.domain = (domain != null) ? " (" + domain + ")" : "";
+        Logger.domain = (domain != null) ? domain : "project";
     }
     
     /**
@@ -125,11 +139,17 @@ public final class Logger {
      * @param message the text to appear as output in the console/log file 
      */
     public static void logInfo(String message) {
-        System.out.println("INFO" + domain + ": " + message);
+        String date = new SimpleDateFormat("MMM dd").format(new Date());
+        String time = new SimpleDateFormat("hh:mm:ssa").format(new Date());
         
-        output.append("INFO")
+        String timestamp = date + ", " + time.toLowerCase();
+        
+        System.out.println(timestamp + ", [INFO], [" + domain + "]: " + message);
+        
+        output.append(timestamp)
+              .append(", [INFO], [")
               .append(domain)
-              .append(": ")
+              .append("]: ")
               .append(message)
               .append(System.lineSeparator());
     }
@@ -146,17 +166,17 @@ public final class Logger {
      *                be displayed.
      */
     public static void logWarning(String message, Exception e) {
-        String timestamp = new SimpleDateFormat("MM-dd-yyyy h:mma").format(new Date());
+        String date = new SimpleDateFormat("MMM dd").format(new Date());
+        String time = new SimpleDateFormat("hh:mm:ssa").format(new Date());
         
-        System.out.println(System.lineSeparator() + timestamp);
-        System.out.println("WARNING" + domain + ": " + message + System.lineSeparator());
+        String timestamp = date + ", " + time.toLowerCase();
         
-        output.append(System.lineSeparator())
-              .append(timestamp)
-              .append(System.lineSeparator())
-              .append("WARNING")
+        System.out.println(timestamp + ", [WARNING], [" + domain + "]: " + message + System.lineSeparator());
+        
+        output.append(timestamp)
+              .append(", [WARNING], [")
               .append(domain)
-              .append(": ")
+              .append("]: ")
               .append(message)
               .append(System.lineSeparator())
               .append(System.lineSeparator());
@@ -196,20 +216,17 @@ public final class Logger {
      *                nondescript {@link RuntimeException}.
      */
     public static void logSevere(String message, Exception e) {
-        String date = new SimpleDateFormat("MM-dd-yyyy").format(new Date());
-        String time = new SimpleDateFormat("h:mma").format(new Date());
+        String date = new SimpleDateFormat("MMM dd").format(new Date());
+        String time = new SimpleDateFormat("hh:mm:ssa").format(new Date());
         
-        String timestamp = date + " " + time;
-                
-        System.err.println(System.lineSeparator() + timestamp);
-        System.err.println("ERROR" + domain + ": " + message + System.lineSeparator());
+        String timestamp = date + ", " + time.toLowerCase();
+        
+        System.err.println(timestamp + ", [ERROR], [" + domain + "]: " + message + System.lineSeparator());
 
-        output.append(System.lineSeparator())
-              .append(timestamp)
-              .append(System.lineSeparator())
-              .append("ERROR")
+        output.append(timestamp)
+              .append(", [ERROR], [")
               .append(domain)
-              .append(": ")
+              .append("]: ")
               .append(message)
               .append(System.lineSeparator())
               .append(System.lineSeparator());
@@ -233,12 +250,14 @@ public final class Logger {
         System.err.println();
         output.append(System.lineSeparator());
         
-        File file = new File("log " + date + ".txt");
+        String fileDate = new SimpleDateFormat("MM-dd-yyyy").format(new Date());
+        
+        File file = new File("log-" + fileDate + ".txt");
         int duplicate = 0;
         
         while(file.exists()) {
             duplicate++;
-            file = new File("log " + date + " (" + duplicate + ").txt");
+            file = new File("log-" + fileDate + " (" + duplicate + ").txt");
         }
 
         try(FileWriter logFile = new FileWriter(file.getName())) {

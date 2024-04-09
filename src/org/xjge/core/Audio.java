@@ -379,10 +379,6 @@ public final class Audio {
             for(SoundSource source : soundSources) {
                 alSourcef(source.handle, AL_GAIN, masterVolume);
             }
-            
-            Logger.setDomain("audio");
-            Logger.logInfo("Sound master volume changed: (" + masterVolume + ")");
-            Logger.setDomain(null);
         }
     }
     
@@ -397,10 +393,6 @@ public final class Audio {
         if(masterVolume >= 0 && masterVolume <= 1) {
             musicMasterVolume = masterVolume;
             alSourcef(musicSource.handle, AL_GAIN, masterVolume);
-            
-            Logger.setDomain("audio");
-            Logger.logInfo("Music master volume changed: (" + masterVolume + ")");
-            Logger.setDomain(null);
         }
     }
     
@@ -451,7 +443,9 @@ public final class Audio {
                     case AL_STOPPED -> alSourceStop(handle);
                 }
             } else {
-                Logger.logWarning("Could not find source by the handle of " + handle + ".", null);
+                Logger.setDomain("audio");
+                Logger.logWarning("Could not find a sound source with the handle " + handle, null);
+                Logger.setDomain(null);
             }
         }
         

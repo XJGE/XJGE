@@ -78,13 +78,13 @@ public final class Window {
         glfwFocusWindow(HANDLE);
         
         glfwSetMonitorCallback((monHandle, event) -> {
-            Logger.setDomain("winkit");
+            Logger.setDomain("hardware");
             
             switch(event) {
                 case GLFW_CONNECTED -> {
                     Hardware.findMonitors();
                     Monitor conMon = Hardware.getMonitor(monHandle);
-                    Logger.logInfo("Monitor " + conMon.id + " \"" + conMon.name + "\" has been connected.");
+                    Logger.logInfo("Monitor " + conMon.id + " \"" + conMon.name + "\" has been connected");
                 }
                 
                 /*
@@ -94,20 +94,20 @@ public final class Window {
                 */
                 case GLFW_DISCONNECTED -> {
                     if(monitor.handle == monHandle) {
-                        Logger.logWarning("The windows current monitor (ID:" + monitor.id + ", \"" + 
+                        Logger.logWarning("The current monitor (ID: " + monitor.id + ", \"" + 
                                           monitor.name + "\") has been disconnected. Attempting " + 
                                           "to move the window to the next available monitor...", 
                                           null);
                         
                         Hardware.removeMonitor(monHandle);
                         monitor = Hardware.getAnyMonitor();
-                        enableFullscreen(false);
+                        setFullscreen(false);
                         
                         Logger.logInfo("Moved the window to monitor " + monitor.id + " \"" + monitor.name + "\"");
                     } else {
                         Monitor disconMon = Hardware.getMonitor(monHandle);
                         
-                        Logger.logInfo("Monitor " + disconMon.id + " \"" + disconMon.name + "\" has been disconnected.");
+                        Logger.logInfo("Monitor " + disconMon.id + " \"" + disconMon.name + "\" has been disconnected");
                         Hardware.removeMonitor(monHandle);
                     }
                 }
@@ -273,27 +273,13 @@ public final class Window {
     }
     
     /**
-     * Changes the game window between fullscreen and windowed modes.
-     * 
-     * @param fullscreen if true, the window will cover the entire screen 
-     *                   including taskbars
-     */
-    public static void setFullscreen(boolean fullscreen) {
-        Logger.setDomain("winkit");
-        Logger.logInfo("Toggled fullscreen (" + fullscreen + ")");
-        Logger.setDomain(null);
-        
-        enableFullscreen(fullscreen);
-    }
-    
-    /**
-     * Updates the current value of the windows fullscreen field and 
+     * Changes the game window between fullscreen and windowed modes and 
      * reconfigures it to better fit the monitor.
      * 
      * @param fullscreen if true, the window will cover the entire screen 
      *                   including taskbars
      */
-    static void enableFullscreen(boolean fullscreen) {
+    public static void setFullscreen(boolean fullscreen) {
         Window.fullscreen = fullscreen;
         reconfigure();
     }
@@ -316,16 +302,12 @@ public final class Window {
      * @param monitor the monitor that the window will be switched to
      */
     public static void setMonitor(Monitor monitor) {
-        enableFullscreen(!fullscreen);
+        setFullscreen(!fullscreen);
 
         Window.monitor = monitor;
         reconfigure();
 
-        Logger.setDomain("winkit");
-        Logger.logInfo("Moved the window to monitor " + monitor.id + " \"" + monitor.name + "\"");
-        Logger.setDomain(null);
-
-        enableFullscreen(!fullscreen);
+        setFullscreen(!fullscreen);
     }
     
     /**
@@ -338,8 +320,8 @@ public final class Window {
      *                  respectively.
      */
     public static void setMonitor(String operation) {
-        enableFullscreen(!fullscreen);
-        Logger.setDomain("winkit");
+        setFullscreen(!fullscreen);
+        Logger.setDomain("hardware");
         
         try {
             Thread.sleep(100);
@@ -372,12 +354,12 @@ public final class Window {
                             newMonitor = monitors.get(index);
                         } else {
                             Logger.logWarning("Failed to change the windows current monitor. Could " + 
-                                              "not find a monitor object at index " + index + ".", 
+                                              "not find a monitor object at index " + index, 
                                               null);
                         }
                     } catch(NumberFormatException e) {
                         Logger.logWarning("Failed to change the windows current " + 
-                                          "monitor. Invalid index used.", 
+                                          "monitor. Invalid index used", 
                                           e);
                     }
                 }
@@ -386,12 +368,12 @@ public final class Window {
             if(newMonitor != null) setMonitor(newMonitor);
         } else {
             Logger.logWarning("Failed to change windows current monitor." + 
-                              " No monitors are currently connected.", 
+                              " No monitors are currently connected", 
                               null);
         }
         
         Logger.setDomain(null);
-        enableFullscreen(!fullscreen);
+        setFullscreen(!fullscreen);
     }
     
     /**
@@ -425,9 +407,9 @@ public final class Window {
             stbi_image_free(icon);
             
         } catch(Exception e) {
-            Logger.setDomain("winkit");
+            Logger.setDomain("hardware");
             Logger.logWarning("Failed to set window icon using \"" + filename + 
-                              "\". Check the files name, path, or extension.", 
+                              "\". Check the filename, path, or extension", 
                               e);
             Logger.setDomain(null);
         }

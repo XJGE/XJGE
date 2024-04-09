@@ -202,7 +202,7 @@ public final class Input {
                     
                     Logger.setDomain("input");
                     Logger.logInfo("Input device \"" + getDeviceName(jid) + "\" " +
-                                   "connected at position " + jid + ".");
+                                   "connected at position " + jid);
                     Logger.setDomain(null);
                 }
                 
@@ -213,7 +213,7 @@ public final class Input {
                     
                     Logger.setDomain("input");
                     Logger.logInfo("Input device \"" + getDeviceName(jid) + "\" " +
-                                   "disconnected at position " + jid + ".");
+                                   "disconnected at position " + jid);
                     Logger.setDomain(null);
                     
                     if(jid < GLFW_JOYSTICK_5 && Window.visible) {
@@ -279,9 +279,9 @@ public final class Input {
         } else {
             Logger.setDomain("input");
             Logger.logWarning("No warning message has been provided to users " + 
-                              "regarding disconnected controllers. Supply one " + 
+                              "regarding disconnected controllers, supply one " + 
                               "by initializing the Input.missingGamepad object " + 
-                              "with a custom Widget.", 
+                              "with a custom Widget", 
                               null);
             Logger.setDomain(null);
         }
@@ -368,7 +368,7 @@ public final class Input {
             }
         } catch(FileNotFoundException | XMLStreamException | IllegalArgumentException e) {
             Logger.setDomain("input");
-            Logger.logWarning("Failed to import user-defined controls.", e);
+            Logger.logWarning("Failed to import user-defined controls", e);
             Logger.setDomain(null);
         }
     }
@@ -420,7 +420,7 @@ public final class Input {
             }
         } catch(IOException e) {
             Logger.setDomain("input");
-            Logger.logWarning("Failed to export user defined controls.", e);
+            Logger.logWarning("Failed to export user defined controls", e);
             Logger.setDomain(null);
         }
     }
@@ -654,7 +654,7 @@ public final class Input {
             } catch(EmptyStackException e) {
                 Logger.setDomain("input");
                 Logger.logWarning("Input device " + deviceID + " \"" + inputDevices.get(deviceID).name + 
-                                  "\" has no currently bound puppet object.", 
+                                  "\" has no currently bound puppet object", 
                                   e);
                 Logger.setDomain(null);
                 
@@ -730,12 +730,12 @@ public final class Input {
                 settingConfigs.get(deviceID).put(name, value);
             } else {
                 Logger.logWarning("Failed to add extra configuration \"" + name + "\". Could " + 
-                                  "not find an input device at index " + deviceID + ".",
+                                  "not find an input device at index " + deviceID,
                                   null);
             }
         } else {
             Logger.logWarning("Failed to add extra configuration \"" + name + "\". AI " + 
-                              "controlled gamepads do not exhibit individualized user settings.", 
+                              "controlled gamepads do not exhibit individualized user settings", 
                               null);
         }
         
@@ -777,7 +777,7 @@ public final class Input {
             Logger.setDomain("input");
             
             Logger.logWarning("Failed to change the enabled state of input device " + 
-                              deviceID + "Could not find an input device at this index.",
+                              deviceID + ". Could not find an input device at this index",
                               null);
             
             Logger.setDomain(null);
@@ -823,7 +823,7 @@ public final class Input {
             Logger.setDomain("input");
 
             Logger.logWarning("Failed to revert the enabled state of input device " + 
-                              deviceID + " Could not find an input device at this index.",
+                              deviceID + ". Could not find an input device at this index",
                               null);
 
             Logger.setDomain(null);
@@ -875,13 +875,13 @@ public final class Input {
                                deviceID + " \"" + inputDevices.get(deviceID).name + "\"");
             } else {
                 Logger.logWarning("Failed to change the button configuration of input device " + 
-                                  deviceID + " Could not find an input device at this index.",
+                                  deviceID + ". Could not find an input device at this index",
                                   null);
             }
         } else {
             Logger.logWarning("Failed to change the button configuration of input device " + 
-                              deviceID + " AI controlled gamepads do not exhibit " + 
-                              "control preferences.", 
+                              deviceID + ". AI controlled gamepads do not exhibit " + 
+                              "control preferences", 
                               null);
         }
         
@@ -941,7 +941,7 @@ public final class Input {
                             inputDevices.get(deviceID).name + "\" to (" + puppet.object.getClass().getCanonicalName() + ")");
         } else {
             Logger.logWarning("Failed to change the devices current puppet object. " + 
-                              "Could not find an input device at index " + deviceID + ".",
+                              "Could not find an input device at index " + deviceID,
                               null);
         }
         
@@ -983,12 +983,12 @@ public final class Input {
                 setDevicePuppet(deviceID, device.puppets.peek());
             } else {
                 Logger.logWarning("Failed to bind the previous puppet object for input device " + deviceID + 
-                                  " \"" + device.name + "\". This device has no prior puppet objects.", 
+                                  " \"" + device.name + "\". This device has no prior puppet objects", 
                                   null);
             }
         } else {
             Logger.logWarning("Failed to bind previous puppet for input device " + deviceID + 
-                              ". Could not find an input device at this index.",
+                              ". Could not find an input device at this index",
                               null);
         }
         

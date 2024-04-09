@@ -88,7 +88,7 @@ final class Cubemap {
             if(texture != null) {
                 glTexImage2D(target, 0, GL_RGBA, widthBuf.get(), heightBuf.get(), 0, GL_RGBA, GL_UNSIGNED_BYTE, texture);
             } else {
-                throw new NullPointerException("STBI failed to parse texture image data.");
+                throw new NullPointerException("STBI could not generate a texture from the file supplied");
             }
             
             stbi_image_free(texture);
@@ -96,7 +96,7 @@ final class Cubemap {
             
         } catch(IOException e) {
             Logger.setDomain("graphics");
-            Logger.logSevere("Failed to parse texture image data.", e);
+            Logger.logSevere("Invalid data", e);
         }
     }
     

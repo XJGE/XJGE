@@ -152,7 +152,7 @@ public final class Icon {
         } else {
             Logger.setDomain("graphics");
             Logger.logWarning("Failed to set icon sprite. The cell: (" + cellX +
-                              ", " + cellY + ") is out of bounds.",
+                              ", " + cellY + ") is out of bounds",
                               null);
             Logger.setDomain(null);
         }

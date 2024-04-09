@@ -100,8 +100,9 @@ public final class Hardware {
                 }
             }
         } else {
-            Logger.setDomain("core");
-            Logger.logSevere("Failed to find any available speakers.", null);
+            Logger.setDomain("hardware");
+            Logger.logWarning("Failed to find any available speakers", null);
+            Logger.setDomain(null);
         }
         
         return Collections.unmodifiableNavigableMap(speakers);
@@ -123,8 +124,9 @@ public final class Hardware {
                 }
             }
         } else {
-            Logger.setDomain("core");
-            Logger.logSevere("Failed to find any available monitors.", null);
+            Logger.setDomain("hardware");
+            Logger.logWarning("Failed to find any available monitors", null);
+            Logger.setDomain(null);
         }
         
         return Collections.unmodifiableNavigableMap(monitors);
@@ -187,10 +189,6 @@ public final class Hardware {
     public static void setVSyncEnabled(boolean vSyncEnabled) {
         Hardware.vSyncEnabled = vSyncEnabled;
         glfwSwapInterval(vSyncEnabled ? 1 : 0);
-        
-        Logger.setDomain("winkit");
-        Logger.logInfo("Toggled VSync (" + vSyncEnabled + ")");
-        Logger.setDomain(null);
     }
     
     /**
@@ -212,8 +210,9 @@ public final class Hardware {
         
         findSpeakers();
         
+        Logger.setDomain("hardware");
         try {
-            if(speakers.size() > 0) {
+            if(!speakers.isEmpty()) {
                 switch(operation) {
                     case "next" -> {
                         if(!speakers.ceilingKey(speakers.lastKey()).equals(Audio.speaker.id)) {
@@ -254,7 +253,7 @@ public final class Hardware {
                                         "Failed to set audio device. Could not find device at index " + index + ".", null);
                             }
                         } catch(NumberFormatException e) {
-                            Logger.logWarning("Failed to set audio device. Invalid index value passed.", null);
+                            Logger.logWarning("Failed to set audio device. Invalid index value used", null);
                         }
                     }
                 }
@@ -262,6 +261,7 @@ public final class Hardware {
         } catch(NullPointerException e) {
             Logger.logWarning("Failed to set audio device. No such device is available", e);
         }
+        Logger.setDomain(null);
     }
     
 }

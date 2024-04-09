@@ -92,7 +92,7 @@ public final class XJGE {
     private static boolean firstMouse = true;
     
     public static final Path PWD       = Path.of("").toAbsolutePath();
-    public static final String VERSION = "2.4.3";
+    public static final String VERSION = "2.4.4";
     
     private static Split split = Split.NONE;
     
@@ -161,7 +161,7 @@ public final class XJGE {
                                  null);
             }
             
-            if(!glfwInit()) Logger.logSevere("Failed to initialize GLFW.", null);
+            if(!glfwInit()) Logger.logSevere("Failed to initialize GLFW", null);
             
             boolean fullscreen    = false;
             debugModeEnabled      = debugEnabled;
@@ -199,7 +199,7 @@ public final class XJGE {
             } catch(FileNotFoundException | NumberFormatException | XMLStreamException e) {
                 Logger.setDomain("core");
                 Logger.logWarning("Failed to parse engine configuration " + 
-                                  "file, using default configuration.", 
+                                  "file, using default configuration", 
                                   e);
                 Logger.setDomain(null);
             }
@@ -374,7 +374,7 @@ public final class XJGE {
                     PrintStream stream = new PrintStream(file);
                     setupDebugMessageCallback(stream);
                 } catch(FileNotFoundException e) {
-                    Logger.logWarning("Failed to create OpenGL log file.", e);
+                    Logger.logWarning("Failed to create OpenGL log file", e);
                 }
             }
             
@@ -410,7 +410,7 @@ public final class XJGE {
                         Logger.setDomain("core");
                         Logger.logInfo("Freecam access denied, command terminal " + 
                                        "is currently in use. Close the command " + 
-                                       "terminal and try again.");
+                                       "terminal and try again");
                         Logger.setDomain(null);
                     }
                 }
@@ -457,7 +457,7 @@ public final class XJGE {
             });
         } else {
             Logger.setDomain("core");
-            Logger.logWarning("XJGE has already been initialized.", null);
+            Logger.logWarning("XJGE has already been initialized", null);
             Logger.setDomain(null);
         }
         
@@ -541,7 +541,7 @@ public final class XJGE {
             }
         } catch(IOException e) {
             Logger.setDomain("core");
-            Logger.logWarning("Failed to export engine configuration.", e);
+            Logger.logWarning("Failed to export engine configuration", e);
             Logger.setDomain(null);
         }
         
@@ -648,7 +648,7 @@ public final class XJGE {
         } else {
             Logger.setDomain("core");
             Logger.logWarning("Failed to add program \"" + name + "\". This " + 
-                              " name is reserved for engine use- pick another.", 
+                              " name is reserved for engine use, please choose another", 
                               null);
             Logger.setDomain(null);
         }
@@ -666,7 +666,7 @@ public final class XJGE {
             Logger.setDomain("core");
             Logger.logWarning("Failed to add command \"" + name + "\". A command " + 
                               "by this name already exists as a part of the engines " +
-                              "core features.", 
+                              "core features", 
                               null);
             Logger.setDomain(null);
         } else {
@@ -1005,10 +1005,10 @@ public final class XJGE {
         
         if(camera == null) {
             Logger.logInfo("Failed to set viewport camera. Null is not " + 
-                           "accepted as a value of this function.");
+                           "accepted as a value of this function");
         } else if(viewportID < GLFW_JOYSTICK_1 || viewportID > GLFW_JOYSTICK_4) {
             Logger.logInfo("Failed to set viewport camera. No viewport "+ 
-                           "by the ID of " + viewportID + " exists.");
+                           "by the ID of " + viewportID + " exists");
         } else {
             if(viewports[viewportID].currCamera == freeCam) {
                 //Added in case noclip is enabled when this was called.

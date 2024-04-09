@@ -100,7 +100,7 @@ public final class Sound {
             
         } catch(IOException e) {
             Logger.setDomain("audio");
-            Logger.logSevere("Failed to parse sound data.", e);
+            Logger.logSevere("Failed to parse data from sound file", e);
         }
     }
     
