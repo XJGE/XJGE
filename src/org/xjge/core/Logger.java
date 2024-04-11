@@ -171,14 +171,13 @@ public final class Logger {
         
         String timestamp = date + ", " + time.toLowerCase();
         
-        System.out.println(timestamp + ", [WARNING], [" + domain + "]: " + message + System.lineSeparator());
+        System.out.println(timestamp + ", [WARNING], [" + domain + "]: " + message);
         
         output.append(timestamp)
               .append(", [WARNING], [")
               .append(domain)
               .append("]: ")
               .append(message)
-              .append(System.lineSeparator())
               .append(System.lineSeparator());
         
         //Output the stack trace if an exception if it's provided.
@@ -196,9 +195,6 @@ public final class Logger {
                       .append(element.toString())
                       .append(System.lineSeparator());
             }
-            
-            System.out.println();
-            output.append(System.lineSeparator());
         }
     }
     
@@ -246,9 +242,6 @@ public final class Logger {
                   .append(element.toString())
                   .append(System.lineSeparator());
         }
-
-        System.err.println();
-        output.append(System.lineSeparator());
         
         String fileDate = new SimpleDateFormat("MM-dd-yyyy").format(new Date());
         
