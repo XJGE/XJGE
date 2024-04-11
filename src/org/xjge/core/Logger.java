@@ -224,7 +224,6 @@ public final class Logger {
               .append(domain)
               .append("]: ")
               .append(message)
-              .append(System.lineSeparator())
               .append(System.lineSeparator());
 
         //If no exception is provided we'll throw our own.
