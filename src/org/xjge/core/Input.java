@@ -10,7 +10,9 @@ import java.io.PrintWriter;
 import java.util.Collections;
 import java.util.EmptyStackException;
 import java.util.HashMap;
+import java.util.LinkedList;
 import java.util.Map;
+import java.util.Queue;
 import javax.xml.stream.XMLInputFactory;
 import javax.xml.stream.XMLStreamConstants;
 import javax.xml.stream.XMLStreamException;
@@ -28,6 +30,8 @@ import static org.lwjgl.glfw.GLFW.*;
  */
 public final class Input {
 
+    public static final int NO_DEVICE = -18;
+    
     public static final int AI_GAMEPAD_1  = -2;
     public static final int AI_GAMEPAD_2  = -3;
     public static final int AI_GAMEPAD_3  = -4;
@@ -64,6 +68,9 @@ public final class Input {
     public static Widget missingGamepad;
     
     private static final HashMap<Integer, InputDevice> inputDevices = new HashMap<>();
+    
+    private static final Queue<Puppet> puppetAddEvents   = new LinkedList<>();
+    private static final HashMap<String, Puppet> puppets = new HashMap<>();
     
     private static final HashMap<Integer, HashMap<Control, Integer>> controlConfigs = new HashMap<>();
     private static final HashMap<Integer, HashMap<String, Float>> settingConfigs    = new HashMap<>();
@@ -253,13 +260,11 @@ public final class Input {
         inputDevices.forEach((id, device) -> {
             if(includeAIGamepads) {
                 if(device instanceof Gamepad || device instanceof VirtualGamepad) {
-                    device.enabledStates.add(id == deviceID);
-                    device.enabled = device.enabledStates.peek();
+                    device.enabled = id == deviceID;
                 }
             } else {
                 if(device instanceof Gamepad) {
-                    device.enabledStates.add(id == deviceID);
-                    device.enabled = device.enabledStates.peek();
+                    device.enabled = id == deviceID;
                 }
             }
         });
@@ -310,17 +315,25 @@ public final class Input {
     
     /**
      * Processes the input actions of every input device connected to the 
-     * system that isn't currently in a disabled state.
+     * system that isn't currently in a disabled state and updates the 
+     * internally maintained list of usable puppet objects.
      *
      * @param targetDelta a constant value denoting the desired time (in 
      *                    seconds) it should take for one game tick to complete
      * @param trueDelta   the actual time (in seconds) it took the current game
      *                    tick to complete
      */
-    static void pollInput(double targetDelta, double trueDelta) {
-        inputDevices.forEach((id, device) -> {
-            if(device.enabled) device.poll(targetDelta, trueDelta);
+    static void update(double targetDelta, double trueDelta) {
+        while(!puppetAddEvents.isEmpty()) {
+            Puppet puppet = puppetAddEvents.poll();
+            puppets.put(puppet.name, puppet);
+        }
+        
+        puppets.forEach((name, puppet) -> {
+            puppet.processInput(targetDelta, trueDelta);
         });
+        
+        puppets.values().removeIf(puppet -> puppet.removalRequested());
     }
     
     /**
@@ -348,7 +361,7 @@ public final class Input {
                                 if(attribName.equals("id")) {
                                     id = Integer.parseInt(xmlReader.getAttributeValue(null, "id"));
                                 } else {
-                                    settings.put(attribName, Float.parseFloat(xmlReader.getAttributeValue(null, attribName)));
+                                    settings.put(attribName, Float.valueOf(xmlReader.getAttributeValue(null, attribName)));
                                 }
                             }
                         } else if(xmlReader.getName().getLocalPart().equals("mapping")) {
@@ -424,6 +437,14 @@ public final class Input {
             Logger.setDomain(null);
         }
     }
+    
+    static void addPuppet(Puppet puppet) {
+        puppetAddEvents.add(puppet);
+    }
+    
+    static InputDevice getDevice(int deviceID) {
+        return inputDevices.get(deviceID);
+    } 
     
     /**
      * Obtains the amount of input devices that are currently connected to the 
@@ -620,49 +641,6 @@ public final class Input {
      */
     public static int[] getKeyMouseAxisValues() {
         return ((KeyMouseCombo) inputDevices.get(KEY_MOUSE_COMBO)).axisValues;
-    }
-    
-    /**
-     * Obtains the current puppet object an input device is using (if any).
-     * 
-     * @param deviceID the number which corresponds to the input device in 
-     *                 question. One of: 
-     * <table><caption></caption>
-     * <tr><td>{@link org.lwjgl.glfw.GLFW#GLFW_JOYSTICK_1 GLFW_JOYSTICK_1}</td>
-     * <td>{@link org.lwjgl.glfw.GLFW#GLFW_JOYSTICK_2 GLFW_JOYSTICK_2}</td>
-     * <td>{@link org.lwjgl.glfw.GLFW#GLFW_JOYSTICK_3 GLFW_JOYSTICK_3}</td>
-     * <td>{@link org.lwjgl.glfw.GLFW#GLFW_JOYSTICK_4 GLFW_JOYSTICK_4}</td></tr>
-     * <tr><td>{@link KEY_MOUSE_COMBO}</td><td>{@link AI_GAMEPAD_1}</td>
-     * <td>{@link AI_GAMEPAD_2}</td><td>{@link AI_GAMEPAD_3}</td></tr>
-     * <tr><td>{@link AI_GAMEPAD_4}</td><td>{@link AI_GAMEPAD_5}</td>
-     * <td>{@link AI_GAMEPAD_6}</td><td>{@link AI_GAMEPAD_7}</td></tr>
-     * <tr><td>{@link AI_GAMEPAD_8}</td><td>{@link AI_GAMEPAD_9}</td>
-     * <td>{@link AI_GAMEPAD_10}</td><td>{@link AI_GAMEPAD_11}</td></tr>
-     * <tr><td>{@link AI_GAMEPAD_12}</td><td>{@link AI_GAMEPAD_13}</td>
-     * <td>{@link AI_GAMEPAD_14}</td><td>{@link AI_GAMEPAD_15}</td></tr>
-     * <tr><td>{@link AI_GAMEPAD_16}</td></tr>
-     * </table>
-     * 
-     * @return the current puppet object of the specified input device or 
-     *         <b>null</b> if no puppet object is bound/the device cannot be 
-     *         found
-     */
-    public static Puppet getDevicePuppet(int deviceID) {
-        if(inputDevices.containsKey(deviceID)) {
-            try {
-                return inputDevices.get(deviceID).puppets.peek();
-            } catch(EmptyStackException e) {
-                Logger.setDomain("input");
-                Logger.logWarning("Input device " + deviceID + " \"" + inputDevices.get(deviceID).name + 
-                                  "\" has no currently bound puppet object", 
-                                  e);
-                Logger.setDomain(null);
-                
-                return null;
-            }
-        } else {
-            return null;
-        }
     }
     
     /**
@@ -905,94 +883,6 @@ public final class Input {
         ((KeyMouseCombo) inputDevices.get(KEY_MOUSE_COMBO)).axisValues[1] = x2;
         ((KeyMouseCombo) inputDevices.get(KEY_MOUSE_COMBO)).axisValues[2] = y1;
         ((KeyMouseCombo) inputDevices.get(KEY_MOUSE_COMBO)).axisValues[3] = y2;
-    }
-    
-    /**
-     * Sets the current puppet object an input device will control.
-     * 
-     * @param deviceID the number which corresponds to the input device in 
-     *                 question. One of: 
-     * <table><caption></caption>
-     * <tr><td>{@link org.lwjgl.glfw.GLFW#GLFW_JOYSTICK_1 GLFW_JOYSTICK_1}</td>
-     * <td>{@link org.lwjgl.glfw.GLFW#GLFW_JOYSTICK_2 GLFW_JOYSTICK_2}</td>
-     * <td>{@link org.lwjgl.glfw.GLFW#GLFW_JOYSTICK_3 GLFW_JOYSTICK_3}</td>
-     * <td>{@link org.lwjgl.glfw.GLFW#GLFW_JOYSTICK_4 GLFW_JOYSTICK_4}</td></tr>
-     * <tr><td>{@link KEY_MOUSE_COMBO}</td><td>{@link AI_GAMEPAD_1}</td>
-     * <td>{@link AI_GAMEPAD_2}</td><td>{@link AI_GAMEPAD_3}</td></tr>
-     * <tr><td>{@link AI_GAMEPAD_4}</td><td>{@link AI_GAMEPAD_5}</td>
-     * <td>{@link AI_GAMEPAD_6}</td><td>{@link AI_GAMEPAD_7}</td></tr>
-     * <tr><td>{@link AI_GAMEPAD_8}</td><td>{@link AI_GAMEPAD_9}</td>
-     * <td>{@link AI_GAMEPAD_10}</td><td>{@link AI_GAMEPAD_11}</td></tr>
-     * <tr><td>{@link AI_GAMEPAD_12}</td><td>{@link AI_GAMEPAD_13}</td>
-     * <td>{@link AI_GAMEPAD_14}</td><td>{@link AI_GAMEPAD_15}</td></tr>
-     * <tr><td>{@link AI_GAMEPAD_16}</td></tr>
-     * </table>
-     * @param puppet the puppet object the input device will use
-     * 
-     * @see getDevicePuppet(int)
-     */
-    public static void setDevicePuppet(int deviceID, Puppet puppet) {
-        Logger.setDomain("input");
-        
-        if(inputDevices.containsKey(deviceID)) {
-            inputDevices.get(deviceID).puppetSetEvents.add(puppet);
-            
-            Logger.logInfo("Changed the current puppet object of input device " + deviceID + " \"" + 
-                            inputDevices.get(deviceID).name + "\" to (" + puppet.object.getClass().getCanonicalName() + ")");
-        } else {
-            Logger.logWarning("Failed to change the devices current puppet object. " + 
-                              "Could not find an input device at index " + deviceID,
-                              null);
-        }
-        
-        Logger.setDomain(null);
-    }
-    
-    /**
-     * Reverts the binding of an input device to its previous puppet object if 
-     * it had one. This is useful in instances such as vehicles where the 
-     * player may assume control of a puppet temporarily before switching back 
-     * to their main binding.
-     * 
-     * @param deviceID the number which corresponds to the input device in 
-     *                 question. One of: 
-     * <table><caption></caption>
-     * <tr><td>{@link org.lwjgl.glfw.GLFW#GLFW_JOYSTICK_1 GLFW_JOYSTICK_1}</td>
-     * <td>{@link org.lwjgl.glfw.GLFW#GLFW_JOYSTICK_2 GLFW_JOYSTICK_2}</td>
-     * <td>{@link org.lwjgl.glfw.GLFW#GLFW_JOYSTICK_3 GLFW_JOYSTICK_3}</td>
-     * <td>{@link org.lwjgl.glfw.GLFW#GLFW_JOYSTICK_4 GLFW_JOYSTICK_4}</td></tr>
-     * <tr><td>{@link KEY_MOUSE_COMBO}</td><td>{@link AI_GAMEPAD_1}</td>
-     * <td>{@link AI_GAMEPAD_2}</td><td>{@link AI_GAMEPAD_3}</td></tr>
-     * <tr><td>{@link AI_GAMEPAD_4}</td><td>{@link AI_GAMEPAD_5}</td>
-     * <td>{@link AI_GAMEPAD_6}</td><td>{@link AI_GAMEPAD_7}</td></tr>
-     * <tr><td>{@link AI_GAMEPAD_8}</td><td>{@link AI_GAMEPAD_9}</td>
-     * <td>{@link AI_GAMEPAD_10}</td><td>{@link AI_GAMEPAD_11}</td></tr>
-     * <tr><td>{@link AI_GAMEPAD_12}</td><td>{@link AI_GAMEPAD_13}</td>
-     * <td>{@link AI_GAMEPAD_14}</td><td>{@link AI_GAMEPAD_15}</td></tr>
-     * <tr><td>{@link AI_GAMEPAD_16}</td></tr>
-     * </table>
-     */
-    public static void bindPreviousPuppet(int deviceID) {
-        Logger.setDomain("input");
-        
-        if(inputDevices.containsKey(deviceID)) {
-            InputDevice device = inputDevices.get(deviceID);
-            
-            if(device.puppets.size() > 1) {
-                device.puppets.pop();
-                setDevicePuppet(deviceID, device.puppets.peek());
-            } else {
-                Logger.logWarning("Failed to bind the previous puppet object for input device " + deviceID + 
-                                  " \"" + device.name + "\". This device has no prior puppet objects", 
-                                  null);
-            }
-        } else {
-            Logger.logWarning("Failed to bind previous puppet for input device " + deviceID + 
-                              ". Could not find an input device at this index",
-                              null);
-        }
-        
-        Logger.setDomain(null);
     }
     
     /**

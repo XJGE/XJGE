@@ -100,7 +100,7 @@ public final class Game {
             ticked   = false;
             
             while(delta >= TARGET_DELTA) {
-                Input.pollInput(TARGET_DELTA, deltaMetric);
+                Input.update(TARGET_DELTA, deltaMetric);
                 if(XJGE.getTerminalEnabled()) terminal.update();
                 
                 deltaMetric = delta;

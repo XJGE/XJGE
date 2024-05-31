@@ -73,68 +73,62 @@ final class KeyMouseCombo extends InputDevice {
     }
     
     @Override
-    protected void poll(double targetDelta, double trueDelta) {
-        if(!puppets.empty() && puppets.peek() != null) {
-            puppets.peek().commands.forEach((control, command) -> {
-                switch(control) {
-                    case LEFT_STICK_X, LEFT_STICK_Y -> {
-                        int key1 = (controls.get(control) & ((control == LEFT_STICK_X) ? axisValues[0] : axisValues[2]));
-                        int key2 = (controls.get(control) & ((control == LEFT_STICK_X) ? axisValues[1] : axisValues[3]));
-                        
-                        if(glfwGetKey(Window.HANDLE, key1) == GLFW_PRESS) {
-                            command.execute(-1, this, control, controls.get(control), targetDelta, trueDelta);
-                        } else if(glfwGetKey(Window.HANDLE, key2) == GLFW_PRESS) {
-                            command.execute(1, this, control, controls.get(control), targetDelta, trueDelta);
-                        } else {
-                            command.execute(0, this, control, controls.get(control), targetDelta, trueDelta);
-                        }
-                    }
-                    
-                    case RIGHT_STICK_X ->  {
-                        glfwGetCursorPos(Window.HANDLE, cursorPosX, cursorPosY);
+    protected void poll(double targetDelta, double trueDelta, Puppet puppet, Control control, Command command) {
+        switch(control) {
+            case LEFT_STICK_X, LEFT_STICK_Y -> {
+                int key1 = (controls.get(control) & ((control == LEFT_STICK_X) ? axisValues[0] : axisValues[2]));
+                int key2 = (controls.get(control) & ((control == LEFT_STICK_X) ? axisValues[1] : axisValues[3]));
 
-                        if((float) cursorPosX.get(0) != prevAxisX) {
-                            command.execute(findAxisValue((float) cursorPosX.get(0), prevAxisX), 
-                                            this, 
-                                            control, 
-                                            controls.get(control), 
-                                            targetDelta, trueDelta);
-                            prevAxisX = (float) cursorPosX.get(0);
-                        }
-                    }
-                        
-                    case RIGHT_STICK_Y -> {
-                        glfwGetCursorPos(Window.HANDLE, cursorPosX, cursorPosY);
-                        
-                        if((float) cursorPosY.get(0) != prevAxisY) {
-                            command.execute(findAxisValue((float) cursorPosY.get(0), prevAxisY), 
-                                            this, 
-                                            control, 
-                                            controls.get(control), 
-                                            targetDelta, trueDelta);
-                            prevAxisY = (float) cursorPosY.get(0);
-                        }
-                    }
-                        
-                    case L2, R2 -> {
-                        command.execute(glfwGetMouseButton(Window.HANDLE, controls.get(control)), 
-                                        this, control, 
-                                        controls.get(control), 
-                                        targetDelta, trueDelta);
-                    }
-                    
-                    default -> {
-                        command.execute(glfwGetKey(Window.HANDLE, controls.get(control)), 
-                                        this, 
-                                        control, 
-                                        controls.get(control), 
-                                        targetDelta, trueDelta);
-                    }
+                if(glfwGetKey(Window.HANDLE, key1) == GLFW_PRESS) {
+                    command.execute(-1, this, control, controls.get(control), targetDelta, trueDelta);
+                } else if(glfwGetKey(Window.HANDLE, key2) == GLFW_PRESS) {
+                    command.execute(1, this, control, controls.get(control), targetDelta, trueDelta);
+                } else {
+                    command.execute(0, this, control, controls.get(control), targetDelta, trueDelta);
                 }
-            });
+            }
+
+            case RIGHT_STICK_X ->  {
+                glfwGetCursorPos(Window.HANDLE, cursorPosX, cursorPosY);
+
+                if((float) cursorPosX.get(0) != prevAxisX) {
+                    command.execute(findAxisValue((float) cursorPosX.get(0), prevAxisX), 
+                                    this, 
+                                    control, 
+                                    controls.get(control), 
+                                    targetDelta, trueDelta);
+                    prevAxisX = (float) cursorPosX.get(0);
+                }
+            }
+
+            case RIGHT_STICK_Y -> {
+                glfwGetCursorPos(Window.HANDLE, cursorPosX, cursorPosY);
+
+                if((float) cursorPosY.get(0) != prevAxisY) {
+                    command.execute(findAxisValue((float) cursorPosY.get(0), prevAxisY), 
+                                    this, 
+                                    control, 
+                                    controls.get(control), 
+                                    targetDelta, trueDelta);
+                    prevAxisY = (float) cursorPosY.get(0);
+                }
+            }
+
+            case L2, R2 -> {
+                command.execute(glfwGetMouseButton(Window.HANDLE, controls.get(control)), 
+                                this, control, 
+                                controls.get(control), 
+                                targetDelta, trueDelta);
+            }
+
+            default -> {
+                command.execute(glfwGetKey(Window.HANDLE, controls.get(control)), 
+                                this, 
+                                control, 
+                                controls.get(control), 
+                                targetDelta, trueDelta);
+            }
         }
-        
-        resolvePuppetSetRequest();
     }
 
 }

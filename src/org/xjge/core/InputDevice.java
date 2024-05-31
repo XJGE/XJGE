@@ -1,8 +1,6 @@
 package org.xjge.core;
 
 import java.util.HashMap;
-import java.util.LinkedList;
-import java.util.Queue;
 import java.util.Stack;
 
 //Created: May 3, 2021
@@ -22,8 +20,6 @@ abstract class InputDevice {
     protected String name;
     
     Stack<Boolean> enabledStates  = new Stack<>();
-    Stack<Puppet> puppets         = new Stack<>();
-    Queue<Puppet> puppetSetEvents = new LinkedList<>();
     
     final HashMap<Control, Integer> controls;
     final HashMap<String, Float> settings;
@@ -49,13 +45,11 @@ abstract class InputDevice {
      * @param inputDevice the input device to copy
      */
     InputDevice(InputDevice inputDevice) {
-        id              = inputDevice.id;
-        enabled         = inputDevice.enabled;
-        enabledStates   = inputDevice.enabledStates;
-        puppets         = inputDevice.puppets;
-        puppetSetEvents = inputDevice.puppetSetEvents;
-        controls        = inputDevice.controls;
-        settings        = inputDevice.settings;
+        id            = inputDevice.id;
+        enabled       = inputDevice.enabled;
+        controls      = inputDevice.controls;
+        enabledStates = inputDevice.enabledStates;
+        settings      = inputDevice.settings;
     }
     
     /**
@@ -67,16 +61,6 @@ abstract class InputDevice {
      * @param trueDelta   the actual time (in seconds) it took the current game
      *                    tick to complete
      */
-    protected abstract void poll(double targetDelta, double trueDelta);
-    
-    /**
-     * Resolves a request to update the current {@link Puppet} object an input 
-     * device is using.
-     */
-    protected void resolvePuppetSetRequest() {
-        if(!puppetSetEvents.isEmpty()) {
-            puppets.push(puppetSetEvents.poll());
-        }
-    }
+    protected abstract void poll(double targetDelta, double trueDelta, Puppet puppet, Control control, Command command);
     
 }
