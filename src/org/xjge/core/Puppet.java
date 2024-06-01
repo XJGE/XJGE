@@ -76,7 +76,7 @@ public final class Puppet {
      *                    tick to complete
      */
     void processInput(double targetDelta, double trueDelta) {
-        if(device != null && glfwJoystickPresent(device.id) && device.enabled) {
+        if(device != null && device.enabled) {
             commands.forEach((control, command) -> {
                 device.poll(targetDelta, trueDelta, this, control, command);
             });
