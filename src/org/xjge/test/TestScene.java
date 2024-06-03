@@ -68,7 +68,7 @@ public class TestScene extends Scene {
 
         @Override
         public void execute(double targetDelta, double trueDelta) {
-            System.out.println(getInputValue());
+            if(buttonPressedOnce()) System.out.println(getButtonID());
         }
         
     }

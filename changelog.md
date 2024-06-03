@@ -2,12 +2,28 @@
 
 All notable changes to this project will be documented in this file. The format of this file follows that specified by [Keep a Changelog](https://keepachangelog.com/en/1.0.0/). This project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [3.0.0] - prerelease
+
+### Added
+- Maximum filesize on log files so they can roll over instead of missing details.
+- New abstract processMouseInput() method to Widget superclass that provides input information from a users mouse. Like processKeyInput(), this only listens on viewport 0.
+- New setInputDevice() method to Puppet class. This effectively flips input on its head an prevents puppets from being controlled by more than one input device at a time.
+
+### Changed
+- Altered log format to make them easier to read and search.
+- setSplitScreen() method in Widget class to relocate().
+- Input.pollInput() method to the more generic update() to reflect its altered usage.
+- Fixed fatal bug in Font class that would fail to load the default engine font if another file couldn't be read/found.
+
+### Removed
+- Mechanisms that allowed input devices to maintain a list of the puppet objects they'd used.
+- getDevicePuppet(), setDevicePuppet(), and bindPreviousPuppet() from the Input class.
+
 ## [2.4.2] - 2024-02-10
 
 ### Added
 - New setResolution() method to the XJGE class that can be used to change the resolutions of framebuffers at runtime.
-- New getButtonID() method to the Command class that returns a number used by GLFW to identify
-the components of an input device.
+- New getButtonID() method to the Command class that returns a number used by GLFW to identify the components of an input device.
 - New containsWidget() method to XJGE class to test whether a viewport contains a specified widget.
 - Various new methods to Icon class to give developers greater control over how they appear on screen.
 - New lerp() utility function to XJGE class.
