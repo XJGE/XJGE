@@ -240,7 +240,7 @@ public final class Input {
      * @param includeAIGamepads if true, AI controlled input devices will also
      *                          be disabled
      */
-    private static void disableAllExcept(int deviceID, boolean includeAIGamepads) {
+    public static void disableAllExcept(int deviceID, boolean includeAIGamepads) {
         inputDevices.forEach((id, device) -> {
             if(includeAIGamepads) {
                 if(device instanceof Gamepad || device instanceof VirtualGamepad) {
@@ -493,9 +493,9 @@ public final class Input {
      * <table><caption></caption>
      * <tr><td>{@link org.lwjgl.glfw.GLFW#GLFW_JOYSTICK_1 GLFW_JOYSTICK_1}</td>
      * <td>{@link org.lwjgl.glfw.GLFW#GLFW_JOYSTICK_2 GLFW_JOYSTICK_2}</td>
-     * <td>{@link org.lwjgl.glfw.GLFW#GLFW_JOYSTICK_3 GLFW_JOYSTICK_3}</td></tr>
-     * <tr><td>{@link org.lwjgl.glfw.GLFW#GLFW_JOYSTICK_4 GLFW_JOYSTICK_4}</td> 
-     * <td>{@link KEY_MOUSE_COMBO}</td></tr>
+     * <td>{@link org.lwjgl.glfw.GLFW#GLFW_JOYSTICK_3 GLFW_JOYSTICK_3}</td>
+     * <td>{@link org.lwjgl.glfw.GLFW#GLFW_JOYSTICK_4 GLFW_JOYSTICK_4}</td></tr>
+     * <tr><td>{@link KEY_MOUSE_COMBO}</td></tr>
      * </table>
      * @param name     the name of the setting to parse a value from
      * 
@@ -521,19 +521,12 @@ public final class Input {
      * @param deviceID the number which corresponds to the input device in 
      *                 question. One of: 
      * <table><caption></caption>
-     * <tr><td>{@link org.lwjgl.glfw.GLFW#GLFW_JOYSTICK_1 GLFW_JOYSTICK_1}</td>
+     * <tr><td>{@link org.lwjgl.glfw.GLFW#GLFW_JOYSTICK_2 GLFW_JOYSTICK_1}</td>
      * <td>{@link org.lwjgl.glfw.GLFW#GLFW_JOYSTICK_2 GLFW_JOYSTICK_2}</td>
      * <td>{@link org.lwjgl.glfw.GLFW#GLFW_JOYSTICK_3 GLFW_JOYSTICK_3}</td>
      * <td>{@link org.lwjgl.glfw.GLFW#GLFW_JOYSTICK_4 GLFW_JOYSTICK_4}</td></tr>
      * <tr><td>{@link KEY_MOUSE_COMBO}</td><td>{@link AI_GAMEPAD_1}</td>
-     * <td>{@link AI_GAMEPAD_2}</td><td>{@link AI_GAMEPAD_3}</td></tr>
-     * <tr><td>{@link AI_GAMEPAD_4}</td><td>{@link AI_GAMEPAD_5}</td>
-     * <td>{@link AI_GAMEPAD_6}</td><td>{@link AI_GAMEPAD_7}</td></tr>
-     * <tr><td>{@link AI_GAMEPAD_8}</td><td>{@link AI_GAMEPAD_9}</td>
-     * <td>{@link AI_GAMEPAD_10}</td><td>{@link AI_GAMEPAD_11}</td></tr>
-     * <tr><td>{@link AI_GAMEPAD_12}</td><td>{@link AI_GAMEPAD_13}</td>
-     * <td>{@link AI_GAMEPAD_14}</td><td>{@link AI_GAMEPAD_15}</td></tr>
-     * <tr><td>{@link AI_GAMEPAD_16}</td></tr>
+     * <td>{@link AI_GAMEPAD_2}</td><td>{@link AI_GAMEPAD_3}...</td></tr>
      * </table>
      * 
      * @return true if the input device is in an enabled state
