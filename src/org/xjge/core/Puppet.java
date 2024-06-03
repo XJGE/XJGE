@@ -47,6 +47,26 @@ public final class Puppet {
         this.commands = commands;
     }
     
+    /**
+     * Binds the specified input device to this puppet. While bound, the puppet 
+     * will actively monitor state changes to the input devices controls and 
+     * execute the commands that have been assigned to them. Passing 
+     * {@link Input#NO_DEVICE NO_DEVICE} will unbind the current device from the
+     * puppet.
+     * 
+     * @param deviceID a number used to identify the input device. One of: 
+     * <table><caption></caption>
+     * <tr><td>{@link Input#NO_DEVICE NO_DEVICE}</td>
+     * <td>{@link Input#KEY_MOUSE_COMBO KEY_MOUSE_COMBO}</td></tr>
+     * <tr><td>{@link org.lwjgl.glfw.GLFW#GLFW_JOYSTICK_2 GLFW_JOYSTICK_1}</td>
+     * <td>{@link org.lwjgl.glfw.GLFW#GLFW_JOYSTICK_2 GLFW_JOYSTICK_2}</td>
+     * <td>{@link org.lwjgl.glfw.GLFW#GLFW_JOYSTICK_3 GLFW_JOYSTICK_3}</td>
+     * <td>{@link org.lwjgl.glfw.GLFW#GLFW_JOYSTICK_4 GLFW_JOYSTICK_4}</td></tr>
+     * <tr><td>{@link Input#AI_GAMEPAD_1 AI_GAMEPAD_1}</td>
+     * <td>{@link Input#AI_GAMEPAD_2 AI_GAMEPAD_2}</td>
+     * <td>{@link Input#AI_GAMEPAD_3 AI_GAMEPAD_3}...</td></tr>
+     * </table>
+     */
     public void setInputDevice(int deviceID) {
         if(deviceID == NO_DEVICE) {
             remove = true;

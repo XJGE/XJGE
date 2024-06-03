@@ -14,10 +14,13 @@ All notable changes to this project will be documented in this file. The format 
 - setSplitScreen() method in Widget class to relocate().
 - Input.pollInput() method to the more generic update() to reflect its altered usage.
 - Fixed fatal bug in Font class that would fail to load the default engine font if another file couldn't be read/found.
+- Values of device IDs assigned in Input class. KEY_MOUSE_COMBO is now using index 16, and the AI_GAMEPAD values now range from 17 to 32.
 
 ### Removed
 - Mechanisms that allowed input devices to maintain a list of the puppet objects they'd used.
 - getDevicePuppet(), setDevicePuppet(), and bindPreviousPuppet() from the Input class.
+- Missing gamepad event and widget since their functionality has been moved to the engine observer.
+- addDisConWidget() and missingGamepadInitialized() methods from input class.
 
 ## [2.4.2] - 2024-02-10
 

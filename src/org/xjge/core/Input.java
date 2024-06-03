@@ -30,42 +30,36 @@ import static org.lwjgl.glfw.GLFW.*;
  */
 public final class Input {
 
-    public static final int NO_DEVICE = -18;
+    /**
+     * Used to remove an input device from a puppet object or signify that none
+     * is currently set.
+     */
+    public static final int NO_DEVICE = -1;
     
-    public static final int AI_GAMEPAD_1  = -2;
-    public static final int AI_GAMEPAD_2  = -3;
-    public static final int AI_GAMEPAD_3  = -4;
-    public static final int AI_GAMEPAD_4  = -5;
-    public static final int AI_GAMEPAD_5  = -6;
-    public static final int AI_GAMEPAD_6  = -7;
-    public static final int AI_GAMEPAD_7  = -8;
-    public static final int AI_GAMEPAD_8  = -9;
-    public static final int AI_GAMEPAD_9  = -10;
-    public static final int AI_GAMEPAD_10 = -11;
-    public static final int AI_GAMEPAD_11 = -12;
-    public static final int AI_GAMEPAD_12 = -13;
-    public static final int AI_GAMEPAD_13 = -14;
-    public static final int AI_GAMEPAD_14 = -15;
-    public static final int AI_GAMEPAD_15 = -16;
-    public static final int AI_GAMEPAD_16 = -17;
+    public static final int AI_GAMEPAD_1  = 17;
+    public static final int AI_GAMEPAD_2  = 18;
+    public static final int AI_GAMEPAD_3  = 19;
+    public static final int AI_GAMEPAD_4  = 20;
+    public static final int AI_GAMEPAD_5  = 21;
+    public static final int AI_GAMEPAD_6  = 22;
+    public static final int AI_GAMEPAD_7  = 23;
+    public static final int AI_GAMEPAD_8  = 24;
+    public static final int AI_GAMEPAD_9  = 25;
+    public static final int AI_GAMEPAD_10 = 26;
+    public static final int AI_GAMEPAD_11 = 27;
+    public static final int AI_GAMEPAD_12 = 28;
+    public static final int AI_GAMEPAD_13 = 29;
+    public static final int AI_GAMEPAD_14 = 30;
+    public static final int AI_GAMEPAD_15 = 31;
+    public static final int AI_GAMEPAD_16 = 32;
     
     /**
      * Special case value associated with the {@link KeyMouseCombo} input 
      * device.
      */
-    public static final int KEY_MOUSE_COMBO = -1;
+    public static final int KEY_MOUSE_COMBO = 16;
     
     private static final boolean connected[] = new boolean[4];
-    
-    /**
-     * A widget object provided by the engine that will be rendered anytime an 
-     * input device is disconnected. This object is left uninitialized by 
-     * default so you will need to initialize it with your own {@link Widget} 
-     * subclass for it to appear. Initializing this will cause the game to 
-     * temporarily halt until the device is reconnected or the object is given
-     * a <b>null</b> assignment.
-     */
-    public static Widget missingGamepad;
     
     private static final HashMap<Integer, InputDevice> inputDevices = new HashMap<>();
     
@@ -131,13 +125,17 @@ public final class Input {
         
         keyChars = Collections.unmodifiableMap(keys);
         
-        for(int i = -1; i < GLFW_JOYSTICK_5; i++) {
-            HashMap<String, Float> settings = new HashMap<>(){{
-                put("leftDeadzone", 0.15f);
-                put("rightDeadzone", 0.15f);
-            }};
-            
-            settingConfigs.put(i, settings);
+        for(int i = 0; i < 17; i++) {
+            switch(i) {
+                case GLFW_JOYSTICK_1, GLFW_JOYSTICK_2, GLFW_JOYSTICK_3, GLFW_JOYSTICK_4, KEY_MOUSE_COMBO -> {
+                    HashMap<String, Float> settings = new HashMap<>(){{
+                        put("leftDeadzone", 0.15f);
+                        put("rightDeadzone", 0.15f);
+                    }};
+
+                    settingConfigs.put(i, settings);
+                }
+            }
         }
         
         var keyMouseConfig = new HashMap<Control, Integer>() {{
@@ -196,7 +194,7 @@ public final class Input {
             controlConfigs.put(i, gamepadConfig);
         }
         
-        for(int i = -2; i >= AI_GAMEPAD_16; i--) {
+        for(int i = 17; i <= AI_GAMEPAD_16; i++) {
             inputDevices.put(i, new VirtualGamepad(i));
         }
         
@@ -226,25 +224,11 @@ public final class Input {
                     if(jid < GLFW_JOYSTICK_5 && Window.visible) {
                         connected[jid] = false;
                         
-                        if(missingGamepadInitialized()) {
-                            disableAllExcept(jid, true);
-                            addDisConWidget(jid);
-                            
-                            Game.addEvent(new EventGamepad(jid));
-                        }
+                        //TODO: update engine observer
                     }
                 }
             }
         });
-    }
-    
-    /**
-     * Checks if the {@link missingGamepad} object has been initialized.
-     * 
-     * @return true if the value of missingGamepad is not null
-     */
-    static boolean missingGamepadInitialized() {
-        return missingGamepad != null;
     }
     
     /**
@@ -268,28 +252,6 @@ public final class Input {
                 }
             }
         });
-    }
-    
-    /**
-     * Displays the implementation-defined widget used to indicate that a 
-     * controller has been disconnected.
-     * 
-     * @param jid the unique value provided by GLFW used to identify the input 
-     *            device
-     */
-    private static void addDisConWidget(int jid) {
-        if(missingGamepad != null) {
-            if(!XJGE.getViewportActive(jid)) XJGE.addUIWidget(GLFW_JOYSTICK_1, "discon " + jid, missingGamepad);
-            else                             XJGE.addUIWidget(jid, "discon " + jid, missingGamepad);
-        } else {
-            Logger.setDomain("input");
-            Logger.logWarning("No warning message has been provided to users " + 
-                              "regarding disconnected controllers, supply one " + 
-                              "by initializing the Input.missingGamepad object " + 
-                              "with a custom Widget", 
-                              null);
-            Logger.setDomain(null);
-        }
     }
     
     /**
@@ -438,10 +400,33 @@ public final class Input {
         }
     }
     
+    /**
+     * Adds the specified puppet object to a collection maintained internally by
+     * the engine. Once puppet objects have been added, they will begin polling
+     * input from whichever input device has been assigned to it.
+     * 
+     * @param puppet the puppet object to add
+     */
     static void addPuppet(Puppet puppet) {
         puppetAddEvents.add(puppet);
     }
     
+    /**
+     * Obtains an input device at the specified index.
+     * 
+     * @param deviceID the number used to identify the input device. One of: 
+     * <table><caption></caption>
+     * <tr><td>{@link NO_DEVICE}</td><td>{@link KEY_MOUSE_COMBO}</td></tr>
+     * <tr><td>{@link org.lwjgl.glfw.GLFW#GLFW_JOYSTICK_2 GLFW_JOYSTICK_1}</td>
+     * <td>{@link org.lwjgl.glfw.GLFW#GLFW_JOYSTICK_2 GLFW_JOYSTICK_2}</td>
+     * <td>{@link org.lwjgl.glfw.GLFW#GLFW_JOYSTICK_3 GLFW_JOYSTICK_3}</td>
+     * <td>{@link org.lwjgl.glfw.GLFW#GLFW_JOYSTICK_4 GLFW_JOYSTICK_4}</td></tr>
+     * <tr><td>{@link AI_GAMEPAD_1}</td><td>{@link AI_GAMEPAD_2}</td>
+     * <td>{@link AI_GAMEPAD_3}...</td></tr>
+     * </table>
+     * 
+     * @return the object representing some peripheral input device
+     */
     static InputDevice getDevice(int deviceID) {
         return inputDevices.get(deviceID);
     } 
