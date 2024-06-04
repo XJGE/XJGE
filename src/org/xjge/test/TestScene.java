@@ -38,10 +38,12 @@ public class TestScene extends Scene {
         puppet = new Puppet("test", controls);
         
         puppet.setInputDevice(KEY_MOUSE_COMBO);
+        puppet.setInputDevice(KEY_MOUSE_COMBO);
     }
 
     @Override
     public void update(double targetDelta, double trueDelta) {
+        /*
         if(Game.tick(60)) {
             count++;
         }
@@ -50,6 +52,7 @@ public class TestScene extends Scene {
             puppet.setInputDevice(GLFW_JOYSTICK_1);
             System.out.println("changed input device puppet to joystick 1");
         }
+        */
     }
 
     @Override

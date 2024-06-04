@@ -19,7 +19,7 @@ abstract class InputDevice {
     
     protected String name;
     
-    Stack<Boolean> enabledStates  = new Stack<>();
+    Stack<Boolean> enabledStates = new Stack<>();
     
     final HashMap<Control, Integer> controls;
     final HashMap<String, Float> settings;
