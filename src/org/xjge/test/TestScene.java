@@ -2,13 +2,13 @@ package org.xjge.test;
 
 //Created: May 30, 2024
 
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
 import java.util.HashMap;
 import java.util.Map;
-import static org.lwjgl.glfw.GLFW.GLFW_JOYSTICK_1;
 import org.xjge.core.Camera;
 import org.xjge.core.Command;
 import org.xjge.core.Control;
-import org.xjge.core.Game;
 import static org.xjge.core.Input.KEY_MOUSE_COMBO;
 import org.xjge.core.Puppet;
 import org.xjge.core.Scene;
@@ -19,7 +19,7 @@ import org.xjge.graphics.GLProgram;
  * @author J Hoffman
  * @since  
  */
-public class TestScene extends Scene {
+public class TestScene extends Scene implements PropertyChangeListener {
 
     int count;
     
@@ -65,6 +65,11 @@ public class TestScene extends Scene {
 
     @Override
     public void exit() {
+    }
+
+    @Override
+    public void propertyChange(PropertyChangeEvent evt) {
+        System.out.println(evt.getPropertyName() + " " + evt.getNewValue());
     }
     
     public class CommandTest extends Command {

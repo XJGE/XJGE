@@ -650,7 +650,7 @@ public final class XJGE {
      * 
      * @param observer the class to be notified of engine state changes
      */
-    public static void addObserver(PropertyChangeListener observer) {
+    public static final void addObserver(PropertyChangeListener observer) {
         observable.addObserver(observer);
     }
     
