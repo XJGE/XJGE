@@ -39,7 +39,7 @@ final class KeyMouseCombo extends InputDevice {
     KeyMouseCombo(int id, HashMap<Control, Integer> controls, HashMap<String, Float> settings) {
         super(id, controls, settings);
         
-        name = "KeyMouseCombo";
+        name = "Keyboard and Mouse";
         
         try(MemoryStack stack = MemoryStack.stackPush()) {
             cursorPosX = stack.mallocDouble(1);

@@ -383,7 +383,7 @@ public final class XJGE {
                         XJGE.terminalEnabled = !terminalEnabled;
                         
                         if(terminalEnabled) Input.setDeviceEnabled(KEY_MOUSE_COMBO, false);
-                        else                Input.revertEnabledState(KEY_MOUSE_COMBO);
+                        else                Input.revertKeyboardEnabledState();
                     } else {
                         debugInfo.show = !debugInfo.show;
                     }
@@ -401,7 +401,7 @@ public final class XJGE {
                             viewports[0].prevCamera = viewports[0].currCamera;
                             viewports[0].currCamera = freeCam;
                         } else {
-                            Input.revertEnabledState(KEY_MOUSE_COMBO);
+                            Input.revertKeyboardEnabledState();
                             glfwSetInputMode(Window.HANDLE, GLFW_CURSOR, Window.cursorMode);
                             viewports[0].currCamera = viewports[0].prevCamera;
                         }

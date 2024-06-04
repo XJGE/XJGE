@@ -232,26 +232,26 @@ public final class Input {
     }
     
     /**
-     * Ceases capturing input from all currently connected input devices except 
-     * the one specified.
-     * 
-     * @param deviceID          the ID number of the input device that will 
-     *                          remain active
-     * @param includeAIGamepads if true, AI controlled input devices will also
-     *                          be disabled
+     * Processes the input actions of every input device connected to the 
+     * system that isn't currently in a disabled state and updates the 
+     * internally maintained list of usable puppet objects.
+     *
+     * @param targetDelta a constant value denoting the desired time (in 
+     *                    seconds) it should take for one game tick to complete
+     * @param trueDelta   the actual time (in seconds) it took the current game
+     *                    tick to complete
      */
-    public static void disableAllExcept(int deviceID, boolean includeAIGamepads) {
-        inputDevices.forEach((id, device) -> {
-            if(includeAIGamepads) {
-                if(device instanceof Gamepad || device instanceof VirtualGamepad) {
-                    device.enabled = id == deviceID;
-                }
-            } else {
-                if(device instanceof Gamepad) {
-                    device.enabled = id == deviceID;
-                }
-            }
+    static void update(double targetDelta, double trueDelta) {
+        while(!puppetAddEvents.isEmpty()) {
+            Puppet puppet = puppetAddEvents.poll();
+            puppets.put(puppet.name, puppet);
+        }
+        
+        puppets.forEach((name, puppet) -> {
+            puppet.processInput(targetDelta, trueDelta);
         });
+        
+        puppets.values().removeIf(puppet -> puppet.removalRequested());
     }
     
     /**
@@ -273,29 +273,6 @@ public final class Input {
         
         inputDevices.get(KEY_MOUSE_COMBO).controls.putAll(controlConfigs.get(KEY_MOUSE_COMBO));
         inputDevices.get(KEY_MOUSE_COMBO).settings.putAll(settingConfigs.get(KEY_MOUSE_COMBO));
-    }
-    
-    /**
-     * Processes the input actions of every input device connected to the 
-     * system that isn't currently in a disabled state and updates the 
-     * internally maintained list of usable puppet objects.
-     *
-     * @param targetDelta a constant value denoting the desired time (in 
-     *                    seconds) it should take for one game tick to complete
-     * @param trueDelta   the actual time (in seconds) it took the current game
-     *                    tick to complete
-     */
-    static void update(double targetDelta, double trueDelta) {
-        while(!puppetAddEvents.isEmpty()) {
-            Puppet puppet = puppetAddEvents.poll();
-            puppets.put(puppet.name, puppet);
-        }
-        
-        puppets.forEach((name, puppet) -> {
-            puppet.processInput(targetDelta, trueDelta);
-        });
-        
-        puppets.values().removeIf(puppet -> puppet.removalRequested());
     }
     
     /**
@@ -412,18 +389,39 @@ public final class Input {
     }
     
     /**
+     * Used internally by the engine to revert the enabled state of the 
+     * keyboard and mouse.
+     */
+    static void revertKeyboardEnabledState() {
+        InputDevice keyboard = inputDevices.get(KEY_MOUSE_COMBO);
+        
+        try {
+            keyboard.enabledStates.pop();
+            keyboard.enabled = keyboard.enabledStates.peek();
+        } catch(EmptyStackException e) {
+            keyboard.enabled = true;
+        }
+    }
+    
+    /**
      * Obtains an input device at the specified index.
      * 
      * @param deviceID the number used to identify the input device. One of: 
      * <table><caption></caption>
-     * <tr><td>{@link NO_DEVICE}</td><td>{@link KEY_MOUSE_COMBO}</td></tr>
+     * <tr><td>{@link NO_DEVICE}</td>
+     * <td>{@link KEY_MOUSE_COMBO}</td></tr>
      * <tr><td>{@link org.lwjgl.glfw.GLFW#GLFW_JOYSTICK_2 GLFW_JOYSTICK_1}</td>
      * <td>{@link org.lwjgl.glfw.GLFW#GLFW_JOYSTICK_2 GLFW_JOYSTICK_2}</td>
      * <td>{@link org.lwjgl.glfw.GLFW#GLFW_JOYSTICK_3 GLFW_JOYSTICK_3}</td>
      * <td>{@link org.lwjgl.glfw.GLFW#GLFW_JOYSTICK_4 GLFW_JOYSTICK_4}</td></tr>
      * <tr><td>{@link AI_GAMEPAD_1}</td><td>{@link AI_GAMEPAD_2}</td>
-     * <td>{@link AI_GAMEPAD_3}...</td></tr>
-     * </table>
+     * <td>{@link AI_GAMEPAD_3}</td><td>{@link AI_GAMEPAD_4}</td></tr>
+     * <tr><td>{@link AI_GAMEPAD_5}</td><td>{@link AI_GAMEPAD_6}</td>
+     * <td>{@link AI_GAMEPAD_7}</td><td>{@link AI_GAMEPAD_8}</td></tr>
+     * <tr><td>{@link AI_GAMEPAD_9}</td><td>{@link AI_GAMEPAD_10}</td>
+     * <td>{@link AI_GAMEPAD_11}</td><td>{@link AI_GAMEPAD_12}</td></tr>
+     * <tr><td>{@link AI_GAMEPAD_13}</td><td>{@link AI_GAMEPAD_14}</td>
+     * <td>{@link AI_GAMEPAD_15}</td><td>{@link AI_GAMEPAD_16}</td></tr></table>
      * 
      * @return the object representing some peripheral input device
      */
@@ -449,8 +447,7 @@ public final class Input {
      * NOTE: The keyboard/mouse along with virtual AI controlled gamepads
      * are always connected by default.
      * 
-     * @param deviceID the number which corresponds to the input device in 
-     *                 question. One of: 
+     * @param deviceID the number used to identify the input device. One of: 
      * <table><caption></caption>
      * <tr><td>{@link org.lwjgl.glfw.GLFW#GLFW_JOYSTICK_1 GLFW_JOYSTICK_1}</td>
      * <td>{@link org.lwjgl.glfw.GLFW#GLFW_JOYSTICK_2 GLFW_JOYSTICK_2}</td>
@@ -488,16 +485,14 @@ public final class Input {
      * The values of these settings can be queried with "leftDeadzone" and 
      * "rightDeadzone" respectively.
      * 
-     * @param deviceID the number which corresponds to the input device in 
-     *                 question. One of: 
+     * @param deviceID the number used to identify the input device. One of:  
      * <table><caption></caption>
      * <tr><td>{@link org.lwjgl.glfw.GLFW#GLFW_JOYSTICK_1 GLFW_JOYSTICK_1}</td>
      * <td>{@link org.lwjgl.glfw.GLFW#GLFW_JOYSTICK_2 GLFW_JOYSTICK_2}</td>
      * <td>{@link org.lwjgl.glfw.GLFW#GLFW_JOYSTICK_3 GLFW_JOYSTICK_3}</td>
      * <td>{@link org.lwjgl.glfw.GLFW#GLFW_JOYSTICK_4 GLFW_JOYSTICK_4}</td></tr>
-     * <tr><td>{@link KEY_MOUSE_COMBO}</td></tr>
-     * </table>
-     * @param name     the name of the setting to parse a value from
+     * <tr><td>{@link KEY_MOUSE_COMBO}</td></tr></table>
+     * @param name the name of the setting to parse a value from
      * 
      * @return the value of the setting or {@code NaN} if the device and/or 
      *         setting could not be found
@@ -518,16 +513,21 @@ public final class Input {
      * Checks whether or not an input device is currently allowing the engine 
      * to process its input actions.
      * 
-     * @param deviceID the number which corresponds to the input device in 
-     *                 question. One of: 
+     * @param deviceID the number used to identify the input device. One of:  
      * <table><caption></caption>
+     * <tr><td>{@link NO_DEVICE}</td><td>{@link KEY_MOUSE_COMBO}</td></tr>
      * <tr><td>{@link org.lwjgl.glfw.GLFW#GLFW_JOYSTICK_2 GLFW_JOYSTICK_1}</td>
      * <td>{@link org.lwjgl.glfw.GLFW#GLFW_JOYSTICK_2 GLFW_JOYSTICK_2}</td>
      * <td>{@link org.lwjgl.glfw.GLFW#GLFW_JOYSTICK_3 GLFW_JOYSTICK_3}</td>
      * <td>{@link org.lwjgl.glfw.GLFW#GLFW_JOYSTICK_4 GLFW_JOYSTICK_4}</td></tr>
-     * <tr><td>{@link KEY_MOUSE_COMBO}</td><td>{@link AI_GAMEPAD_1}</td>
-     * <td>{@link AI_GAMEPAD_2}</td><td>{@link AI_GAMEPAD_3}...</td></tr>
-     * </table>
+     * <tr><td>{@link AI_GAMEPAD_1}</td><td>{@link AI_GAMEPAD_2}</td>
+     * <td>{@link AI_GAMEPAD_3}</td><td>{@link AI_GAMEPAD_4}</td></tr>
+     * <tr><td>{@link AI_GAMEPAD_5}</td><td>{@link AI_GAMEPAD_6}</td>
+     * <td>{@link AI_GAMEPAD_7}</td><td>{@link AI_GAMEPAD_8}</td></tr>
+     * <tr><td>{@link AI_GAMEPAD_9}</td><td>{@link AI_GAMEPAD_10}</td>
+     * <td>{@link AI_GAMEPAD_11}</td><td>{@link AI_GAMEPAD_12}</td></tr>
+     * <tr><td>{@link AI_GAMEPAD_13}</td><td>{@link AI_GAMEPAD_14}</td>
+     * <td>{@link AI_GAMEPAD_15}</td><td>{@link AI_GAMEPAD_16}</td></tr></table>
      * 
      * @return true if the input device is in an enabled state
      * 
@@ -548,23 +548,22 @@ public final class Input {
      * reflect the model and/or manufacturer. This information can often help 
      * better identify a device, but shouldn't be used to refer to it.
      * 
-     * @param deviceID the number which corresponds to the input device in 
-     *                 question. One of: 
+     * @param deviceID the number used to identify the input device. One of: 
      * <table><caption></caption>
-     * <tr><td>{@link org.lwjgl.glfw.GLFW#GLFW_JOYSTICK_1 GLFW_JOYSTICK_1}</td>
+     * <tr><td>{@link Input#NO_DEVICE NO_DEVICE}</td>
+     * <td>{@link Input#KEY_MOUSE_COMBO KEY_MOUSE_COMBO}</td></tr>
+     * <tr><td>{@link org.lwjgl.glfw.GLFW#GLFW_JOYSTICK_2 GLFW_JOYSTICK_1}</td>
      * <td>{@link org.lwjgl.glfw.GLFW#GLFW_JOYSTICK_2 GLFW_JOYSTICK_2}</td>
      * <td>{@link org.lwjgl.glfw.GLFW#GLFW_JOYSTICK_3 GLFW_JOYSTICK_3}</td>
      * <td>{@link org.lwjgl.glfw.GLFW#GLFW_JOYSTICK_4 GLFW_JOYSTICK_4}</td></tr>
-     * <tr><td>{@link KEY_MOUSE_COMBO}</td><td>{@link AI_GAMEPAD_1}</td>
-     * <td>{@link AI_GAMEPAD_2}</td><td>{@link AI_GAMEPAD_3}</td></tr>
-     * <tr><td>{@link AI_GAMEPAD_4}</td><td>{@link AI_GAMEPAD_5}</td>
-     * <td>{@link AI_GAMEPAD_6}</td><td>{@link AI_GAMEPAD_7}</td></tr>
-     * <tr><td>{@link AI_GAMEPAD_8}</td><td>{@link AI_GAMEPAD_9}</td>
-     * <td>{@link AI_GAMEPAD_10}</td><td>{@link AI_GAMEPAD_11}</td></tr>
-     * <tr><td>{@link AI_GAMEPAD_12}</td><td>{@link AI_GAMEPAD_13}</td>
-     * <td>{@link AI_GAMEPAD_14}</td><td>{@link AI_GAMEPAD_15}</td></tr>
-     * <tr><td>{@link AI_GAMEPAD_16}</td></tr>
-     * </table>
+     * <tr><td>{@link AI_GAMEPAD_1}</td><td>{@link AI_GAMEPAD_2}</td>
+     * <td>{@link AI_GAMEPAD_3}</td><td>{@link AI_GAMEPAD_4}</td></tr>
+     * <tr><td>{@link AI_GAMEPAD_5}</td><td>{@link AI_GAMEPAD_6}</td>
+     * <td>{@link AI_GAMEPAD_7}</td><td>{@link AI_GAMEPAD_8}</td></tr>
+     * <tr><td>{@link AI_GAMEPAD_9}</td><td>{@link AI_GAMEPAD_10}</td>
+     * <td>{@link AI_GAMEPAD_11}</td><td>{@link AI_GAMEPAD_12}</td></tr>
+     * <tr><td>{@link AI_GAMEPAD_13}</td><td>{@link AI_GAMEPAD_14}</td>
+     * <td>{@link AI_GAMEPAD_15}</td><td>{@link AI_GAMEPAD_16}</td></tr></table>
      * 
      * @return a human-readable description of the input device
      */
@@ -584,15 +583,13 @@ public final class Input {
      * {@linkplain Control controls} on an input device will be mapped to 
      * actions in game.
      * 
-     * @param deviceID the number which corresponds to the input device in 
-     *                 question. One of: 
+     * @param deviceID the number used to identify the input device. One of:  
      * <table><caption></caption>
      * <tr><td>{@link org.lwjgl.glfw.GLFW#GLFW_JOYSTICK_1 GLFW_JOYSTICK_1}</td>
      * <td>{@link org.lwjgl.glfw.GLFW#GLFW_JOYSTICK_2 GLFW_JOYSTICK_2}</td>
      * <td>{@link org.lwjgl.glfw.GLFW#GLFW_JOYSTICK_3 GLFW_JOYSTICK_3}</td></tr>
      * <tr><td>{@link org.lwjgl.glfw.GLFW#GLFW_JOYSTICK_4 GLFW_JOYSTICK_4}</td> 
-     * <td>{@link KEY_MOUSE_COMBO}</td></tr>
-     * </table>
+     * <td>{@link KEY_MOUSE_COMBO}</td></tr></table>
      * 
      * @return an immutable collection containing the current control 
      *         configuration of an input device
@@ -629,7 +626,7 @@ public final class Input {
      * question must correspond to an ASCII character between the ranges of 
      * 32-127, any characters outside of this range will return <b>null</b>.
      * 
-     * @param key  the value supplied by GLFW of a single key on the keyboard
+     * @param key the value supplied by GLFW of a single key on the keyboard
      * @param mods a value supplied by GLFW denoting whether any mod keys 
      *             where held (such as shift or control)
      * 
@@ -663,15 +660,13 @@ public final class Input {
      * XJGE.start()...
      * </pre></blockquote>
      * 
-     * @param deviceID the number which corresponds to the input device in 
-     *                 question. One of: 
+     * @param deviceID the number used to identify the input device. One of: 
      * <table><caption></caption>
      * <tr><td>{@link org.lwjgl.glfw.GLFW#GLFW_JOYSTICK_1 GLFW_JOYSTICK_1}</td>
      * <td>{@link org.lwjgl.glfw.GLFW#GLFW_JOYSTICK_2 GLFW_JOYSTICK_2}</td>
      * <td>{@link org.lwjgl.glfw.GLFW#GLFW_JOYSTICK_3 GLFW_JOYSTICK_3}</td></tr>
      * <tr><td>{@link org.lwjgl.glfw.GLFW#GLFW_JOYSTICK_4 GLFW_JOYSTICK_4}</td> 
-     * <td>{@link KEY_MOUSE_COMBO}</td></tr>
-     * </table>
+     * <td>{@link KEY_MOUSE_COMBO}</td></tr></table>
      * @param name  the name of the setting that will be changed
      * @param value the new value to change the setting to
      * 
@@ -701,23 +696,22 @@ public final class Input {
     /**
      * Sets the current enabled state of an input device.
      * 
-     * @param deviceID the number which corresponds to the input device in 
-     *                 question. One of: 
+     * @param deviceID the number used to identify the input device. One of: 
      * <table><caption></caption>
-     * <tr><td>{@link org.lwjgl.glfw.GLFW#GLFW_JOYSTICK_1 GLFW_JOYSTICK_1}</td>
+     * <tr><td>{@link Input#NO_DEVICE NO_DEVICE}</td>
+     * <td>{@link Input#KEY_MOUSE_COMBO KEY_MOUSE_COMBO}</td></tr>
+     * <tr><td>{@link org.lwjgl.glfw.GLFW#GLFW_JOYSTICK_2 GLFW_JOYSTICK_1}</td>
      * <td>{@link org.lwjgl.glfw.GLFW#GLFW_JOYSTICK_2 GLFW_JOYSTICK_2}</td>
      * <td>{@link org.lwjgl.glfw.GLFW#GLFW_JOYSTICK_3 GLFW_JOYSTICK_3}</td>
      * <td>{@link org.lwjgl.glfw.GLFW#GLFW_JOYSTICK_4 GLFW_JOYSTICK_4}</td></tr>
-     * <tr><td>{@link KEY_MOUSE_COMBO}</td><td>{@link AI_GAMEPAD_1}</td>
-     * <td>{@link AI_GAMEPAD_2}</td><td>{@link AI_GAMEPAD_3}</td></tr>
-     * <tr><td>{@link AI_GAMEPAD_4}</td><td>{@link AI_GAMEPAD_5}</td>
-     * <td>{@link AI_GAMEPAD_6}</td><td>{@link AI_GAMEPAD_7}</td></tr>
-     * <tr><td>{@link AI_GAMEPAD_8}</td><td>{@link AI_GAMEPAD_9}</td>
-     * <td>{@link AI_GAMEPAD_10}</td><td>{@link AI_GAMEPAD_11}</td></tr>
-     * <tr><td>{@link AI_GAMEPAD_12}</td><td>{@link AI_GAMEPAD_13}</td>
-     * <td>{@link AI_GAMEPAD_14}</td><td>{@link AI_GAMEPAD_15}</td></tr>
-     * <tr><td>{@link AI_GAMEPAD_16}</td></tr>
-     * </table>
+     * <tr><td>{@link AI_GAMEPAD_1}</td><td>{@link AI_GAMEPAD_2}</td>
+     * <td>{@link AI_GAMEPAD_3}</td><td>{@link AI_GAMEPAD_4}</td></tr>
+     * <tr><td>{@link AI_GAMEPAD_5}</td><td>{@link AI_GAMEPAD_6}</td>
+     * <td>{@link AI_GAMEPAD_7}</td><td>{@link AI_GAMEPAD_8}</td></tr>
+     * <tr><td>{@link AI_GAMEPAD_9}</td><td>{@link AI_GAMEPAD_10}</td>
+     * <td>{@link AI_GAMEPAD_11}</td><td>{@link AI_GAMEPAD_12}</td></tr>
+     * <tr><td>{@link AI_GAMEPAD_13}</td><td>{@link AI_GAMEPAD_14}</td>
+     * <td>{@link AI_GAMEPAD_15}</td><td>{@link AI_GAMEPAD_16}</td></tr></table>
      * @param enabled if true, the device will allow the engine to process its 
      *                input actions
      * 
@@ -741,49 +735,41 @@ public final class Input {
     }
     
     /**
-     * Reverts the enabled state of an input device to its previous value. This 
-     * is useful in the case of an event or cutscene where the players input 
-     * device may have been temporarily disabled.
+     * Ceases capturing input from all currently connected input devices except 
+     * the one specified.
      * 
-     * @param deviceID the number which corresponds to the input device in 
-     *                 question. One of: 
+     * @param deviceID the number used to identify the input device that will
+     *                 remain active. One of: 
      * <table><caption></caption>
-     * <tr><td>{@link org.lwjgl.glfw.GLFW#GLFW_JOYSTICK_1 GLFW_JOYSTICK_1}</td>
+     * <tr><td>{@link Input#NO_DEVICE NO_DEVICE}</td>
+     * <td>{@link Input#KEY_MOUSE_COMBO KEY_MOUSE_COMBO}</td></tr>
+     * <tr><td>{@link org.lwjgl.glfw.GLFW#GLFW_JOYSTICK_2 GLFW_JOYSTICK_1}</td>
      * <td>{@link org.lwjgl.glfw.GLFW#GLFW_JOYSTICK_2 GLFW_JOYSTICK_2}</td>
      * <td>{@link org.lwjgl.glfw.GLFW#GLFW_JOYSTICK_3 GLFW_JOYSTICK_3}</td>
      * <td>{@link org.lwjgl.glfw.GLFW#GLFW_JOYSTICK_4 GLFW_JOYSTICK_4}</td></tr>
-     * <tr><td>{@link KEY_MOUSE_COMBO}</td><td>{@link AI_GAMEPAD_1}</td>
-     * <td>{@link AI_GAMEPAD_2}</td><td>{@link AI_GAMEPAD_3}</td></tr>
-     * <tr><td>{@link AI_GAMEPAD_4}</td><td>{@link AI_GAMEPAD_5}</td>
-     * <td>{@link AI_GAMEPAD_6}</td><td>{@link AI_GAMEPAD_7}</td></tr>
-     * <tr><td>{@link AI_GAMEPAD_8}</td><td>{@link AI_GAMEPAD_9}</td>
-     * <td>{@link AI_GAMEPAD_10}</td><td>{@link AI_GAMEPAD_11}</td></tr>
-     * <tr><td>{@link AI_GAMEPAD_12}</td><td>{@link AI_GAMEPAD_13}</td>
-     * <td>{@link AI_GAMEPAD_14}</td><td>{@link AI_GAMEPAD_15}</td></tr>
-     * <tr><td>{@link AI_GAMEPAD_16}</td></tr>
-     * </table>
+     * <tr><td>{@link AI_GAMEPAD_1}</td><td>{@link AI_GAMEPAD_2}</td>
+     * <td>{@link AI_GAMEPAD_3}</td><td>{@link AI_GAMEPAD_4}</td></tr>
+     * <tr><td>{@link AI_GAMEPAD_5}</td><td>{@link AI_GAMEPAD_6}</td>
+     * <td>{@link AI_GAMEPAD_7}</td><td>{@link AI_GAMEPAD_8}</td></tr>
+     * <tr><td>{@link AI_GAMEPAD_9}</td><td>{@link AI_GAMEPAD_10}</td>
+     * <td>{@link AI_GAMEPAD_11}</td><td>{@link AI_GAMEPAD_12}</td></tr>
+     * <tr><td>{@link AI_GAMEPAD_13}</td><td>{@link AI_GAMEPAD_14}</td>
+     * <td>{@link AI_GAMEPAD_15}</td><td>{@link AI_GAMEPAD_16}</td></tr></table>
+     * @param includeAIGamepads if true, AI controlled input devices will also
+     *                          be disabled
      */
-    public static void revertEnabledState(int deviceID) {
-        if(inputDevices.containsKey(deviceID)) {
-            InputDevice device = inputDevices.get(deviceID);
-
-            try {
-                device.enabledStates.pop();
-                device.enabled = device.enabledStates.peek();
-            } catch(EmptyStackException e) {
-                if(device != null) {
-                    device.enabled = !(device instanceof VirtualGamepad);
+    public static void disableAllExcept(int deviceID, boolean includeAIGamepads) {
+        inputDevices.forEach((id, device) -> {
+            if(includeAIGamepads) {
+                if(device instanceof Gamepad || device instanceof VirtualGamepad) {
+                    device.enabled = id == deviceID;
+                }
+            } else {
+                if(device instanceof Gamepad) {
+                    device.enabled = id == deviceID;
                 }
             }
-        } else {
-            Logger.setDomain("input");
-
-            Logger.logWarning("Failed to revert the enabled state of input device " + 
-                              deviceID + ". Could not find an input device at this index",
-                              null);
-
-            Logger.setDomain(null);
-        }
+        });
     }
     
     /**
@@ -806,15 +792,13 @@ public final class Input {
      * }};
      * </pre></blockquote>
      * 
-     * @param deviceID the number which corresponds to the input device in 
-     *                 question. One of: 
+     * @param deviceID the number used to identify the input device. One of:  
      * <table><caption></caption>
      * <tr><td>{@link org.lwjgl.glfw.GLFW#GLFW_JOYSTICK_1 GLFW_JOYSTICK_1}</td>
      * <td>{@link org.lwjgl.glfw.GLFW#GLFW_JOYSTICK_2 GLFW_JOYSTICK_2}</td>
      * <td>{@link org.lwjgl.glfw.GLFW#GLFW_JOYSTICK_3 GLFW_JOYSTICK_3}</td></tr>
      * <tr><td>{@link org.lwjgl.glfw.GLFW#GLFW_JOYSTICK_4 GLFW_JOYSTICK_4}</td> 
-     * <td>{@link KEY_MOUSE_COMBO}</td></tr>
-     * </table>
+     * <td>{@link KEY_MOUSE_COMBO}</td></tr></table>
      * @param config the collection containing the new control configuration to 
      *               apply
      * 
@@ -867,8 +851,7 @@ public final class Input {
      * Changes the input value of a virtual gamepads control component. Use 
      * this if you'd like to hook up an AI to an existing puppet object.
      * 
-     * @param deviceID the number which corresponds to the input device in 
-     *                 question. One of: 
+     * @param deviceID the number used to identify the input device. One of: 
      * <table><caption></caption>
      * <tr><td>{@link AI_GAMEPAD_1}</td><td>{@link AI_GAMEPAD_2}</td>
      * <td>{@link AI_GAMEPAD_3}</td><td>{@link AI_GAMEPAD_4}</td></tr>
@@ -877,8 +860,7 @@ public final class Input {
      * <tr><td>{@link AI_GAMEPAD_9}</td><td>{@link AI_GAMEPAD_10}</td>
      * <td>{@link AI_GAMEPAD_11}</td><td>{@link AI_GAMEPAD_12}</td></tr>
      * <tr><td>{@link AI_GAMEPAD_13}</td><td>{@link AI_GAMEPAD_14}</td>
-     * <td>{@link AI_GAMEPAD_15}</td><td>{@link AI_GAMEPAD_16}</td></tr>
-     * </table>
+     * <td>{@link AI_GAMEPAD_15}</td><td>{@link AI_GAMEPAD_16}</td></tr></table>
      * @param control    a component such as a button whos input value will 
      *                   be changed
      * @param inputValue the input value denoting to what extent the control 

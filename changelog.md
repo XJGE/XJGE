@@ -21,6 +21,7 @@ All notable changes to this project will be documented in this file. The format 
 - getDevicePuppet(), setDevicePuppet(), and bindPreviousPuppet() from the Input class.
 - Missing gamepad event and widget since their functionality has been moved to the engine observer.
 - addDisConWidget() and missingGamepadInitialized() methods from input class.
+- revertEnabledState() method from input class. This was only ever used internally to renable the keyboard after using noclip or the command terminal.
 
 ## [2.4.2] - 2024-02-10
 
