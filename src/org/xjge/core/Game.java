@@ -51,12 +51,6 @@ public final class Game {
     private static Color clearColor = Color.create(64, 128, 255);
     private static Scene scene;
     
-    /**
-     * An {@link Observable} object that can be used to detect state changes 
-     * occurring within the Game class.
-     */
-    public final static Observable observable = new Observable(Game.class);
-    
     static final Queue<WidgetAddEvent> widgetQueue = new LinkedList<>();
     private static final Queue<Event> events       = new PriorityQueue<>(Comparator.comparing(Event::getPriority));
     
@@ -81,7 +75,7 @@ public final class Game {
      */
     static void loop(int fbo, Viewport[] viewports, Terminal terminal, DebugInfo debugInfo, GLProgram depthProgram, 
                      GLProgram blurProgram, boolean debugEnabled) {
-        observable.properties.put("sceneChanged", scene);
+        XJGE.observable.properties.put("SCENE_CHANGED", scene);
         
         int cycles = 0;
         final double TARGET_DELTA = 1 / 60.0;
@@ -326,7 +320,7 @@ public final class Game {
         if(Game.scene != null) scene.exit();
         
         Game.scene = scene;
-        observable.notifyObservers("sceneChanged", Game.scene);
+        XJGE.observable.notifyObservers("SCENE_CHANGED", Game.scene);
     }
     
     /**

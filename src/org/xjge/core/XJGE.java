@@ -1,5 +1,6 @@
 package org.xjge.core;
 
+import java.beans.PropertyChangeListener;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -112,6 +113,8 @@ public final class XJGE {
     static GLProgram blurProgram;
     static Map<String, GLProgram> glPrograms  = new HashMap<>();
     private static final Viewport[] viewports = new Viewport[4];
+    
+    static final Observable observable = new Observable(XJGE.class);
     
     /**
      * Default constructor provided here to keep it out of the implementations 
@@ -597,19 +600,6 @@ public final class XJGE {
     }
     
     /**
-     * Obtains the current status of the viewport used to indicate its 
-     * visibility.
-     * 
-     * @param viewportID the ID number of the viewport to query
-     * 
-     * @return true if the viewport of the specified ID number is currently 
-     *         visible
-     */
-    static boolean getViewportActive(int viewportID) {
-        return viewports[viewportID].active;
-    }
-    
-    /**
      * Restricts an input value from a user to one between the minimum and 
      * maximum ranges specified.
      * 
@@ -648,6 +638,30 @@ public final class XJGE {
      */
     public static float lerp(float startValue, float targetValue, float factor) {
         return (1 - clampValue(0, 1, factor)) * startValue + clampValue(0, 1, factor) * targetValue;
+    }
+    
+    /**
+     * Notifies the game implementation of engine state changes. These state 
+     * changes include the following:
+     * <ol><li>SCENE_CHANGED - this fires anytime the current game scene is 
+     * changed</li>
+     * <li>INPUT_DEVICE_#_CONNECTED - (where # is the ID of the device) fires 
+     * whenever an input device is connected</li>
+     * <li>INPUT_DEVICE_#_DISCONNECTED - (where # is the ID of the device) fires
+     * whenever a previously connected device is disconnected</li>
+     * <li>MONITOR_CONNECTED - fires whenever a monitor is conected to the 
+     * system</li>
+     * <li>MONITOR_DISCONNECTED - fires whenever a monitor is disconnected from
+     * the system</li>
+     * <li>AUDIO_DEVICE_CONNECTED - fires whenever an audio device is connected 
+     * to the system</li>
+     * <li>AUDIO_DEVICE_DISCONNECTED - fires whenever an audio device is disconnected 
+     * from the system</li></ol>
+     * 
+     * @param observer the class to be notified of engine state changes
+     */
+    public static void addObserver(PropertyChangeListener observer) {
+        observable.addObserver(observer);
     }
     
     /**

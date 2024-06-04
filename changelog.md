@@ -8,6 +8,7 @@ All notable changes to this project will be documented in this file. The format 
 - Maximum filesize on log files so they can roll over instead of missing details.
 - New abstract processMouseInput() method to Widget superclass that provides input information from a users mouse. Like processKeyInput(), this only listens on viewport 0.
 - New setInputDevice() method to Puppet class. This effectively flips input on its head an prevents puppets from being controlled by more than one input device at a time.
+- New addObserver() method to XJGE class. This can be used to notify the implementing game project of engine state changes.
 
 ### Changed
 - Altered log format to make them easier to read and search.

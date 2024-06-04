@@ -198,6 +198,8 @@ public final class Input {
             inputDevices.put(i, new VirtualGamepad(i));
         }
         
+        //XJGE.observable.properties.put("", L1)
+        
         glfwSetJoystickCallback((jid, event) -> {
             switch(event) {
                 case GLFW_CONNECTED -> {
