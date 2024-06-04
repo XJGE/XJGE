@@ -202,7 +202,7 @@ final class Terminal implements PropertyChangeListener {
                 }
                 
                 case GLFW_KEY_DOWN -> {
-                    if(cmdHistory.size() > 0) {
+                    if(!cmdHistory.isEmpty()) {
                         yIndex = (yIndex >= cmdHistory.size() - 1) ? cmdHistory.size() - 1 : yIndex + 1;
                         charPos.clear();
                         if(cmdHistory.get(yIndex) != null) autoComplete(cmdHistory.get(yIndex));
@@ -210,7 +210,7 @@ final class Terminal implements PropertyChangeListener {
                 }
                 
                 case GLFW_KEY_UP -> {
-                    if(cmdHistory.size() > 0) {
+                    if(!cmdHistory.isEmpty()) {
                         yIndex = (yIndex == 0) ? 0 : yIndex - 1;
                         charPos.clear();
                         if(cmdHistory.get(yIndex) != null) autoComplete(cmdHistory.get(yIndex));
