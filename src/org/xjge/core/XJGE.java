@@ -643,20 +643,10 @@ public final class XJGE {
     /**
      * Notifies the game implementation of engine state changes. These state 
      * changes include the following:
-     * <ol><li>SCENE_CHANGED - this fires anytime the current game scene is 
-     * changed</li>
-     * <li>INPUT_DEVICE_#_CONNECTED - (where # is the ID of the device) fires 
-     * whenever an input device is connected</li>
-     * <li>INPUT_DEVICE_#_DISCONNECTED - (where # is the ID of the device) fires
-     * whenever a previously connected device is disconnected</li>
-     * <li>MONITOR_CONNECTED - fires whenever a monitor is conected to the 
-     * system</li>
-     * <li>MONITOR_DISCONNECTED - fires whenever a monitor is disconnected from
-     * the system</li>
-     * <li>AUDIO_DEVICE_CONNECTED - fires whenever an audio device is connected 
-     * to the system</li>
-     * <li>AUDIO_DEVICE_DISCONNECTED - fires whenever an audio device is disconnected 
-     * from the system</li></ol>
+     * <ol><li>SCENE_CHANGED - Fires anytime the game scene is changed and 
+     * passes the current one as its value</li>
+     * <li>GAMEPAD_#_CONNECTED - (where # is the ID of the device) Fires 
+     * whenever a gamepad is connected or disconnected from the system.</li></ol>
      * 
      * @param observer the class to be notified of engine state changes
      */

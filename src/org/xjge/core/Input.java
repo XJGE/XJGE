@@ -134,6 +134,10 @@ public final class Input {
                     }};
 
                     settingConfigs.put(i, settings);
+                    
+                    if(i != KEY_MOUSE_COMBO) {
+                        XJGE.observable.properties.put("GAMEPAD_" + i + "_CONNECTED", connected[i]);
+                    }
                 }
             }
         }
@@ -198,14 +202,15 @@ public final class Input {
             inputDevices.put(i, new VirtualGamepad(i));
         }
         
-        //XJGE.observable.properties.put("", L1)
-        
         glfwSetJoystickCallback((jid, event) -> {
             switch(event) {
                 case GLFW_CONNECTED -> {
                     findInputDevices();
                     
-                    if(jid < GLFW_JOYSTICK_5) connected[jid] = true;
+                    if(jid < GLFW_JOYSTICK_5) {
+                        connected[jid] = true;
+                        XJGE.observable.notifyObservers("GAMEPAD_" + jid + "_CONNECTED", connected[jid]);
+                    }
                     
                     Logger.setDomain("input");
                     Logger.logInfo("Input device \"" + getDeviceName(jid) + "\" " +
@@ -214,20 +219,17 @@ public final class Input {
                 }
                 
                 case GLFW_DISCONNECTED -> {
-                    //TODO: Add option to gracefully disconnect devices.
-                    
                     findInputDevices();
+                    
+                    if(jid < GLFW_JOYSTICK_5 && Window.visible) {
+                        connected[jid] = false;
+                        XJGE.observable.notifyObservers("GAMEPAD_" + jid + "_CONNECTED", connected[jid]);
+                    }
                     
                     Logger.setDomain("input");
                     Logger.logInfo("Input device \"" + getDeviceName(jid) + "\" " +
                                    "disconnected at position " + jid);
                     Logger.setDomain(null);
-                    
-                    if(jid < GLFW_JOYSTICK_5 && Window.visible) {
-                        connected[jid] = false;
-                        
-                        //TODO: update engine observer
-                    }
                 }
             }
         });
