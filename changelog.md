@@ -2,7 +2,7 @@
 
 All notable changes to this project will be documented in this file. The format of this file follows that specified by [Keep a Changelog](https://keepachangelog.com/en/1.0.0/). This project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [3.0.0] - prerelease
+## [3.0.0] - 2024-06-04
 
 ### Added
 - Maximum filesize on log files so they can roll over instead of missing details.
@@ -107,6 +107,7 @@ All notable changes to this project will be documented in this file. The format 
 - The showInputInfo command since this information is displayed along with other debug information when F1 is pressed.
 - LightSource objects as they were almost entirely redundant. Light objects may now be created freely.
 
-[2.0.0]: https://github.com/XJGE/XJGE-2/releases/tag/2.0.0
-[2.1.9]: https://github.com/XJGE/XJGE-2/releases/tag/2.1.9
-[2.4.2]: https://github.com/XJGE/XJGE-2/releases/tag/2.4.2
+[2.0.0]: https://github.com/XJGE/XJGE/releases/tag/2.0.0
+[2.1.9]: https://github.com/XJGE/XJGE/releases/tag/2.1.9
+[2.4.2]: https://github.com/XJGE/XJGE/releases/tag/2.4.2
+[3.0.0]: https://github.com/XJGE/XJGE/releases/tag/3.0.0

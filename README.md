@@ -1,13 +1,13 @@
-# XJGE - Extensible Java Game Engine 2
+# XJGE - Extensible Java Game Engine
 XJGE provides developers with an extensible architecture that can be used to facilitate the creation of both 2D and 3D games. It takes the form of a Java library packaged as an executable .jar file that's coupled to several low-level dependencies. XJGE was built using the [Lightweight Java Game Library](https://www.lwjgl.org/).
 
 XJGE is open source and provided free of change under a GNU Lesser General Public License (or LGPL). The source code of the engine may be copied, modified, and redistributed so long as derivative works contain the same notice.
 
-XJGE 2 is a clean rewrite of the legacy version which can be located here: https://github.com/XJGE/XJGE-legacy
+This is a clean rewrite of the legacy version which can be located here: https://github.com/XJGE/XJGE-legacy
 
 Resources:
 - [Tutorials](https://xjge.org/tutorials.html)
-- [Changelog](https://github.com/XJGE/XJGE-2/blob/master/changelog.md)
+- [Changelog](https://github.com/XJGE/XJGE/blob/master/changelog.md)
 - [JavaDoc](https://xjge.org/javadoc/index.html)
 
 ### Getting Started
