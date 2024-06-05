@@ -21,9 +21,6 @@ import static org.xjge.core.Input.*;
  * 
  * @author J Hoffman
  * @since  2.0.0
- * 
- * @see Input#setDevicePuppet(int, Puppet) 
- * @see Input#bindPreviousPuppet(int)
  */
 public final class Puppet {
     
