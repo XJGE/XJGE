@@ -1,11 +1,6 @@
 package org.xjge.core;
 
 import java.util.HashMap;
-import static org.lwjgl.glfw.GLFW.GLFW_JOYSTICK_1;
-import static org.lwjgl.glfw.GLFW.GLFW_JOYSTICK_2;
-import static org.lwjgl.glfw.GLFW.GLFW_JOYSTICK_3;
-import static org.lwjgl.glfw.GLFW.GLFW_JOYSTICK_4;
-import static org.lwjgl.glfw.GLFW.glfwJoystickPresent;
 import static org.xjge.core.Input.*;
 
 //Created: May 3, 2021
@@ -29,7 +24,10 @@ public final class Puppet {
     public final String name;
     private InputDevice device;
     
-    private final HashMap<Control, Command> commands;
+    /**
+     * A collection of commands this puppet will execute.
+     */
+    public final HashMap<Control, Command> commands = new HashMap<>();
     
     /**
      * Creates a new puppet object.It is expected that implementing objects 
@@ -37,11 +35,9 @@ public final class Puppet {
      * constructor following the puppet objects initialization.
      * 
      * @param name the name used to identify this puppet internally by the engine
-     * @param commands a collection of commands this puppet will execute
      */
-    public Puppet(String name, HashMap<Control, Command> commands) {
-        this.name     = name;
-        this.commands = commands;
+    public Puppet(String name) {
+        this.name = name;
     }
     
     /**
@@ -54,7 +50,7 @@ public final class Puppet {
      *                    tick to complete
      */
     void processInput(double targetDelta, double trueDelta) {
-        if(device != null && device.enabled) {
+        if(device != null && device.enabled && !commands.isEmpty()) {
             commands.forEach((control, command) -> {
                 device.poll(targetDelta, trueDelta, this, control, command);
             });
@@ -123,6 +119,15 @@ public final class Puppet {
                 Logger.setDomain(null);
             }
         }
+    }
+    
+    /**
+     * Obtains the ID number of the input device currently bound to this puppet.
+     * 
+     * @return the number used to identify the input device
+     */
+    public int getInputDeviceID() {
+        return (device == null) ? NO_DEVICE : device.id;
     }
     
 }
