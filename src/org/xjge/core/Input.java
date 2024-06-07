@@ -601,7 +601,7 @@ public final class Input {
      * @see setDeviceControls(int, Map)
      */
     public static Map<Control, Integer> getDeviceControls(int deviceID) {
-        if(inputDevices.containsKey(deviceID) && deviceID > AI_GAMEPAD_1 && deviceID < GLFW_JOYSTICK_5) {
+        if(inputDevices.containsKey(deviceID) && (deviceID > NO_DEVICE && deviceID < GLFW_JOYSTICK_5 || deviceID == KEY_MOUSE_COMBO)) {
             return Collections.unmodifiableMap(controlConfigs.get(deviceID));
         } else {
             return null;
