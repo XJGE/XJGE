@@ -295,8 +295,8 @@ final class Terminal implements PropertyChangeListener {
         if(typed.length() > 0) {
             int xOffset = 0;
             
-            if(charPos.get(charPos.size() - 1) + glyphAdvance > XJGE.getResolutionX() - (glyphAdvance * 2)) {
-                xOffset = (XJGE.getResolutionX() - glyphAdvance) - (charPos.get(charPos.size() - 1) + glyphAdvance);
+            if(charPos.get(charPos.size() - 1) + glyphAdvance > Window.getWidth() - (glyphAdvance * 2)) {
+                xOffset = (Window.getWidth() - glyphAdvance) - (charPos.get(charPos.size() - 1) + glyphAdvance);
                 
                 if(cursorPos.x - 8 <= Math.abs(xOffset)) {
                     int x = (xIndex < 1) ? 0 : glyphAdvance;
