@@ -116,7 +116,7 @@ final class Terminal implements PropertyChangeListener {
         
         commandOutput.width  = Window.getWidth();
         commandOutput.height = outputTop;
-        commandOutput.render(0.6f, Color.BLACK);
+        commandOutput.render(0.5f, Color.BLACK);
         
         text.drawString(font, ">", caretPos, Color.WHITE, 1f);
         
