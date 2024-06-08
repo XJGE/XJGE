@@ -48,7 +48,7 @@ public final class Game {
     private static boolean ticked;
     public static boolean enableBloom;
     
-    private static Color clearColor = Color.create(64, 128, 255);
+    private static Color clearColor = Color.create(119, 136, 255);
     private static Scene scene;
     
     static final Queue<WidgetAddEvent> widgetQueue = new LinkedList<>();

@@ -116,7 +116,7 @@ final class Terminal implements PropertyChangeListener {
         
         commandOutput.width  = Window.getWidth();
         commandOutput.height = outputTop;
-        commandOutput.render(0.5f, Color.BLACK);
+        commandOutput.render(0.6f, Color.BLACK);
         
         text.drawString(font, ">", caretPos, Color.WHITE, 1f);
         
@@ -352,7 +352,7 @@ final class Terminal implements PropertyChangeListener {
             output = commands.get(name).getOutput();
             commands.get(name).output = null; //Reset the state of the ouput.
         } else {
-            output = new TerminalOutput("ERROR: Command not recognized. Check syntax or use help.\n", Color.RED);
+            output = new TerminalOutput("ERROR: Command not recognized. Check syntax or type \"help\".\n", Color.RED);
         }
         
         if(output != null) {

@@ -27,7 +27,7 @@ import static org.lwjgl.opengl.GL11.glGetString;
  */
 final class DebugInfo {
     
-    private final int PADDING = 6;
+    private final int PADDING = 8;
     
     boolean show;
     

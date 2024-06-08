@@ -41,7 +41,7 @@ import org.xjge.graphics.Texture;
  */
 public final class Font {
     
-    final static int DEFAULT_SIZE = 24;
+    final static int DEFAULT_SIZE = 30;
     
     int texHandle;
     int size;
