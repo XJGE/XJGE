@@ -28,8 +28,8 @@ abstract class InputDevice {
      * Creates a new input device object and applies the users settings to its 
      * control configuration.
      * 
-     * @param id       the unique number used to identify the device in 
-     *                 other parts of the engine
+     * @param id the unique number used to identify the device in other parts of 
+     *           the engine
      * @param controls a collection of various {@link Control} mappings
      * @param settings a collection containing additional user preferences
      */
@@ -58,8 +58,8 @@ abstract class InputDevice {
      * 
      * @param targetDelta a constant value denoting the desired time (in 
      *                    seconds) it should take for one game tick to complete
-     * @param trueDelta   the actual time (in seconds) it took the current game
-     *                    tick to complete
+     * @param trueDelta the actual time (in seconds) it took the current game
+     *                  tick to complete
      */
     protected abstract void poll(double targetDelta, double trueDelta, Puppet puppet, Control control, Command command);
     

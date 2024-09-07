@@ -90,8 +90,7 @@ public abstract class Scene {
      * Creates a new 3D scene that will contain entities, light sources, and 
      * camera objects.
      * 
-     * @param name the name used to refer to the scene in other parts of the 
-     *             engine
+     * @param name the name used to refer to the scene in other parts of the engine
      */
     public Scene(String name) {
         this.name = name;
@@ -102,8 +101,8 @@ public abstract class Scene {
      * that can be used to store light data provided by the engine.
      * 
      * @param glProgram the program to query
-     * @param name      the name of the uniform variable to check for
-     * @param value     the value to pass to the uniform variable
+     * @param name the name of the uniform variable to check for
+     * @param value the value to pass to the uniform variable
      */
     private void setLightUniform(GLProgram glProgram, String name, float value) {
         if(glProgram.containsUniform(name)) {
@@ -113,13 +112,12 @@ public abstract class Scene {
     }
     
     /**
-     * Variant of 
-     * {@link setLightUniform(GLProgram, String, float) setLightProgram()} that 
-     * accepts a 3-component floating point vector.
+     * Variant of {@link setLightUniform(GLProgram, String, float) setLightProgram()} 
+     * that accepts a 3-component floating point vector.
      * 
      * @param glProgram the program to query
-     * @param name      the name of the uniform variable to check for
-     * @param value     the value to pass to the uniform variable
+     * @param name the name of the uniform variable to check for
+     * @param value the value to pass to the uniform variable
      */
     private void setLightUniform(GLProgram glProgram, String name, Vector3f value) {
         if(glProgram.containsUniform(name)) {
@@ -292,8 +290,8 @@ public abstract class Scene {
      * Renders the scenes current {@link Skybox} (if one exists). This method 
      * is called automatically by the engine. 
      * 
-     * @param viewMatrix the view matrix of the viewport whos camera is 
-     *                   currently rendering the scene
+     * @param viewMatrix the view matrix of the viewport whos camera is currently 
+     *                   rendering the scene
      */
     void renderSkybox(Matrix4f viewMatrix) {
         if(skybox != null) skybox.render(viewMatrix);
@@ -307,13 +305,13 @@ public abstract class Scene {
      * automatically by the engine. 
      * 
      * @param glPrograms an immutable collection containing the shader programs 
-     *                    compiled during startup
+     *                   compiled during startup
      * @param viewportID the ID number of the viewport currently rendering the 
-     *                    scene. Supplied here in case certain objects are to 
-     *                    be included or omitted from the viewports rendering 
-     *                    pass
-     * @param camera     the {@link Camera} object of the current 
-     *                    {@link Viewport} being rendered
+     *                   scene. Supplied here in case certain objects are to 
+     *                   be included or omitted from the viewports rendering 
+     *                   pass
+     * @param camera the {@link Camera} object of the current {@link Viewport} 
+     *               being rendered
      */
     void render(Map<String, GLProgram> glPrograms, int viewportID, Camera camera) {
         if(shadowMap != null) render(glPrograms, viewportID, camera, shadowMap.depthTexHandle);
@@ -334,8 +332,8 @@ public abstract class Scene {
      * 
      * @param targetDelta a constant value denoting the desired time (in 
      *                    seconds) it should take for one game tick to complete
-     * @param trueDelta   the actual time (in seconds) it took the current game
-     *                    tick to complete
+     * @param trueDelta the actual time (in seconds) it took the current game
+     *                  tick to complete
      */
     public abstract void update(double targetDelta, double trueDelta);
     
@@ -344,16 +342,15 @@ public abstract class Scene {
      * objects located in the game world. This method is called automatically 
      * by the engine.
      * 
-     * @param glPrograms     an immutable collection containing the shader 
-     *                        programs compiled during startup
-     * @param viewportID     the ID number of the viewport currently rendering 
-     *                        the scene. Supplied here in case certain objects 
-     *                        are to be included or omitted from the viewports 
-     *                        rendering pass
-     * @param camera         the {@link Camera} object of the current 
-     *                        {@link Viewport} being rendered
+     * @param glPrograms an immutable collection containing the shader programs 
+     *                   compiled during startup
+     * @param viewportID the ID number of the viewport currently rendering the 
+     *                   scene. Supplied here in case certain objects are to be
+     *                   included or omitted from the viewports rendering pass
+     * @param camera the {@link Camera} object of the current {@link Viewport} 
+     *               being rendered
      * @param depthTexHandle the handle of the texture generated by the current
-     *                        shadow map or -1 if one has not been set
+     *                       shadow map or -1 if one has not been set
      */
     public abstract void render(Map<String, GLProgram> glPrograms, int viewportID, Camera camera, int depthTexHandle);
     
@@ -367,7 +364,7 @@ public abstract class Scene {
      * collection.
      * 
      * @param depthProgram the shader program provided by the engine that will 
-     *                      be used to generate the shadow map texture
+     *                     be used to generate the shadow map texture
      */
     public abstract void renderShadows(GLProgram depthProgram);
     

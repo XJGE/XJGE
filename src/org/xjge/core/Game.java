@@ -18,8 +18,8 @@ import org.xjge.graphics.GLProgram;
  * <p>
  * More specifically the game class can be used to change the current scene 
  * being rendered or the flow of execution through its access to the engines 
- * central event queue. In addition to these features the Game class also 
- * provides some convenience methods useful for general gameplay operations.
+ * central event queue. In addition to these features it also provides some 
+ * convenience methods useful for general gameplay operations.
  * <p>
  * These gameplay methods include:
  * <ul>
@@ -58,18 +58,14 @@ public final class Game {
      * Central game loop that decouples game time progression from processor 
      * speed and framerate.
      * 
-     * @param fbo          the handle of the framebuffer object used to render 
-     *                     viewports
-     * @param viewports    an array of the viewports to render during split 
-     *                     screen
-     * @param terminal     a command terminal that can be used to interact with 
-     *                     the engine
-     * @param debugInfo    an interface detailing the current state of the 
-     *                     engine
+     * @param fbo the handle of the framebuffer object used to render viewports
+     * @param viewports an array of the viewports to render during split screen
+     * @param terminal a command terminal that can be used to interact with the engine
+     * @param debugInfo an interface detailing the current state of the engine
      * @param depthProgram the shader program provided by the engine that will 
      *                     be used to generate the shadow map texture
-     * @param blurProgram  the shader program used to apply a Gaussian blur to
-     *                     the bloom framebuffer texture
+     * @param blurProgram the shader program used to apply a Gaussian blur to
+     *                    the bloom framebuffer texture
      * @param debugEnabled if true the engine will provide additional debug 
      *                     information through the logger
      */
@@ -103,7 +99,7 @@ public final class Game {
                 ticked    = true;
                 tickCount = (tickCount == TICKS_PER_HOUR) ? 0 : tickCount + 1;
                 
-                //Process any unresolved events otherwise update the scene normally.
+                //Process any unresolved events otherwise update the scene normally
                 if(!events.isEmpty()) {
                     Event event = events.peek();
                     
@@ -115,7 +111,7 @@ public final class Game {
                     scene.processRemoveRequests();
                 }
                 
-                //Add new widget to a viewport asynchronously.
+                //Add new widget to a viewport asynchronously
                 if(!widgetQueue.isEmpty()) {
                     WidgetAddEvent widgetEvent = widgetQueue.peek();
                     Viewport viewport          = viewports[widgetEvent.viewportID];
@@ -125,7 +121,7 @@ public final class Game {
                 }
                 widgetQueue.removeIf(widgetEvent -> widgetEvent.resolved);
                 
-                //Update viewport cameras and UI widgets.
+                //Update viewport cameras and UI widgets
                 for(Viewport viewport : viewports) {
                     if(viewport.active && viewport.currCamera != null) {
                         viewport.currCamera.update();
@@ -163,7 +159,7 @@ public final class Game {
             scene.setShadowUniforms();
             scene.setLightingUniforms();
             
-            //Render scene from the perspective of each active viewport.
+            //Render scene from the perspective of each active viewport
             for(Viewport viewport : viewports) {
                 if(viewport.active) {
                     scene.renderShadowMap(viewport.currCamera.up, depthProgram);
@@ -247,8 +243,7 @@ public final class Game {
      * found in the {@linkplain Scene#update(double, double) update method} of
      * the current scene under the {@code trueDelta} argument.
      * 
-     * @return the time (in seconds) it took the engine to complete an update 
-     *         cycle
+     * @return the time (in seconds) it took the engine to complete an update cycle
      */
     static float getDelta() {
         return (float) deltaMetric;
@@ -336,13 +331,11 @@ public final class Game {
     }
     
     /**
-     * Returns true anytime the specified number of update iterations 
-     * (or cycles) have been reached. Intended to be used in for game systems 
-     * that don't require the precision of the {@link Timer} or 
-     * {@link StopWatch} classes.
+     * Returns true anytime the specified number of update iterations (or cycles) 
+     * have been reached. Intended to be used in for game systems that don't 
+     * require the precision of the {@link Timer} or {@link StopWatch} classes.
      * 
-     * @param speed the number of cycles to wait until the next tick will 
-     *              occur
+     * @param speed the number of cycles to wait until the next tick will occur
      * 
      * @return true every time the specified number of cycles has been reached
      */
@@ -356,8 +349,8 @@ public final class Game {
      * otherwise entity objects should be managed directly from within the 
      * scene subclass itself.
      * 
-     * @param name   the name that will be used to identify the entity in the 
-     *               current scenes {@linkplain Scene#entities entity collection}
+     * @param name the name that will be used to identify the entity in the 
+     *             current scenes {@linkplain Scene#entities entity collection}
      * @param entity the entity object to add
      */
     public static final void addEntity(String name, Entity entity) {

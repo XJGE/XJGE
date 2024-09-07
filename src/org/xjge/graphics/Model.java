@@ -92,13 +92,10 @@ public class Model {
      * 
      * @param filename the name of the file to load. Expects the file extension 
      *                 to be included.
-     * @param aiArgs   the Assimp arguments to use for post processing such as 
-     *                 {@link org.lwjgl.assimp.Assimp#aiProcess_Triangulate 
-     *                 aiProcess_Triangulate}, 
-     *                 {@link org.lwjgl.assimp.Assimp#aiProcess_GenSmoothNormals 
-     *                 aiProcess_GenSmoothNormals}, 
-     *                 {@link org.lwjgl.assimp.Assimp#aiProcess_FixInfacingNormals 
-     *                 aiProcess_FixInfacingNormals}, etc.
+     * @param aiArgs the Assimp arguments to use for post processing such as 
+     *               {@link org.lwjgl.assimp.Assimp#aiProcess_Triangulate aiProcess_Triangulate}, 
+     *               {@link org.lwjgl.assimp.Assimp#aiProcess_GenSmoothNormals aiProcess_GenSmoothNormals}, 
+     *               {@link org.lwjgl.assimp.Assimp#aiProcess_FixInfacingNormals aiProcess_FixInfacingNormals}, etc.
      */
     public Model(String filename, int aiArgs) {
         this.filename = filename;
@@ -131,14 +128,11 @@ public class Model {
      * Specifies various file open/read/close procedures and then constructs a 
      * new model instance using the data parsed from the file.
      * 
-     * @param file     the file to extract model data from
-     * @param aiArgs   the Assimp arguments to use for post processing such as 
-     *                 {@link org.lwjgl.assimp.Assimp#aiProcess_Triangulate 
-     *                 aiProcess_Triangulate}, 
-     *                 {@link org.lwjgl.assimp.Assimp#aiProcess_GenSmoothNormals 
-     *                 aiProcess_GenSmoothNormals}, 
-     *                 {@link org.lwjgl.assimp.Assimp#aiProcess_FixInfacingNormals 
-     *                 aiProcess_FixInfacingNormals}, etc.
+     * @param file the file to extract model data from
+     * @param aiArgs the Assimp arguments to use for post processing such as 
+     *               {@link org.lwjgl.assimp.Assimp#aiProcess_Triangulate aiProcess_Triangulate}, 
+     *               {@link org.lwjgl.assimp.Assimp#aiProcess_GenSmoothNormals aiProcess_GenSmoothNormals}, 
+     *               {@link org.lwjgl.assimp.Assimp#aiProcess_FixInfacingNormals aiProcess_FixInfacingNormals}, etc.
      */
     private void loadModel(InputStream file, int aiArgs) throws Exception {
         byte[] data = file.readAllBytes();
@@ -220,8 +214,8 @@ public class Model {
      * Translates the structure of the model file into a hierarchy that can be 
      * used by the engine.
      * 
-     * @param aiNode the Assimp data structure from which a new node object 
-     *               will be constructed
+     * @param aiNode the Assimp data structure from which a new node object will 
+     *               be constructed
      * @param parent the parent of the unprocessed Assimp node or null if this 
      *               is the root node
      * 
@@ -248,7 +242,7 @@ public class Model {
     /**
      * Parses mesh data used by this model.
      * 
-     * @param meshBuf    the buffer of model mesh data provided by Assimp
+     * @param meshBuf the buffer of model mesh data provided by Assimp
      * 
      * @throws Exception if the data parsed from the file is invalid
      */
@@ -355,11 +349,12 @@ public class Model {
     }
     
     /**
-     * Generates the final transforms of each {@link Node} that will be used to move the bones of the model during a 
-     * {@link SkeletalAnimation}.
+     * Generates the final transforms of each {@link Node} that will be used to 
+     * move the bones of the model during a {@link SkeletalAnimation}.
      * 
-     * @param aiNodeAnim the Assimp structure that will be parsed to calculate a nodes transformations
-     * @param node       the node that will contain the calculated transformations
+     * @param aiNodeAnim the Assimp structure that will be parsed to calculate a 
+     *                   nodes transformations
+     * @param node the node that will contain the calculated transformations
      */
     private void genTransforms(AINodeAnim aiNodeAnim, Node node) {
         AIVectorKey.Buffer aiPosKeyBuf   = aiNodeAnim.mPositionKeys();
@@ -431,8 +426,7 @@ public class Model {
      * NOTE: By default textures are loaded by the model class using 
      * mirrored-repeat wrapping and a nearest neighbor filter.
      * 
-     * @param mesh the mesh who's texture we want to set as the current bind 
-     *              target
+     * @param mesh the mesh who's texture we want to set as the current bind target
      */
     public void bindMeshTexture(Mesh mesh) {
         if(meshes.contains(mesh)) {
@@ -456,7 +450,7 @@ public class Model {
      * silently.
      * 
      * @param name the name that corresponds to the mesh we want to set as the 
-     *              bind target
+     *             bind target
      */
     public void bindMeshTexture(String name) {
         meshes.forEach(mesh -> {
@@ -539,8 +533,7 @@ public class Model {
     /**
      * Scales the entire 3D model by the factor specified.
      * 
-     * @param factor the factor with which the models size will be multiplied 
-     *               by
+     * @param factor the factor with which the models size will be multiplied by
      */
     public void scale(float factor) {
         meshes.forEach(mesh -> mesh.modelMatrix.scale(factor));
@@ -622,8 +615,7 @@ public class Model {
      * transition animation will be generated if the value passed to the 
      * {@code numFrames} argument is greater than zero.
      * 
-     * @param name      the name of the animation as it appears in the model 
-     *                  file
+     * @param name the name of the animation as it appears in the model file
      * @param numFrames the number of frames to transition between the current 
      *                  animation and the new one
      */
@@ -721,8 +713,7 @@ public class Model {
      * {@linkplain org.xjge.core.Scene#update(double, double) update()} method 
      * of the Scene class.
      * 
-     * @param delta the time (in seconds) it took to complete a single game 
-     *              tick
+     * @param delta the time (in seconds) it took to complete a single game tick
      */
     public void updateAnimation(double delta) {
         if(currAnimation != null) {
@@ -738,17 +729,15 @@ public class Model {
      * Renders the 3D model. Should be called from within the implementing 
      * entities {@link org.xjge.core.Entity#render(GLProgram, Camera, Light[], int) render()} method.
      * 
-     * @param glProgram the shader program that will be used to render this 
-     *                  model
-     * @param lights    an array of light source objects inhabiting the current 
-     *                  scene
-     * @param capabilities   an object that can be used to enable various OpenGL 
-     *                       capabilities
-     * @param shineValue     a temporary parameter indicating the shininess of 
-     *                        the object until be parse this information from the 
-     *                        model file directly
+     * @param glProgram the shader program that will be used to render this model
+     * @param lights an array of light source objects inhabiting the current scene
+     * @param capabilities an object that can be used to enable various OpenGL 
+     *                     capabilities
+     * @param shineValue a temporary parameter indicating the shininess of the 
+     *                   object until be parse this information from the model 
+     *                   file directly
      * @param depthTexHandle the handle of the texture generated by the current
-     *                        shadow map or -1 if one has not been set
+     *                       shadow map or -1 if one has not been set
      */
     public void render(GLProgram glProgram, Light[] lights, GLCaps capabilities, int shineValue, int depthTexHandle) {
         if(capabilities != null) capabilities.enable();
@@ -794,15 +783,13 @@ public class Model {
      * {@linkplain GLCaps capabilties} provided by the engine which includes 
      * backface culling and depth testing.
      * 
-     * @param glProgram      the shader program that will be used to render 
-     *                        this model
-     * @param lights         an array of light source objects inhabiting the 
-     *                        current scene
-     * @param shineValue     a temporary parameter indicating the shininess of 
-     *                        the object until be parse this information from the 
-     *                        model file directly
+     * @param glProgram the shader program that will be used to render this model
+     * @param lights an array of light source objects inhabiting the current scene
+     * @param shineValue a temporary parameter indicating the shininess of the 
+     *                   object until be parse this information from the model 
+     *                   file directly
      * @param depthTexHandle the handle of the texture generated by the current
-     *                        shadow map or -1 if one has not been set
+     *                       shadow map or -1 if one has not been set
      */
     public void render(GLProgram glProgram, Light[] lights, int shineValue, int depthTexHandle) {
         render(glProgram, lights, defaultCaps, shineValue, depthTexHandle);
@@ -847,9 +834,9 @@ public class Model {
      * necessary) by passing them as uniforms to the depth program.
      * 
      * @param depthProgram the shader program provided by the engine that will 
-     *                      be used to generate the shadow map texture
+     *                     be used to generate the shadow map texture
      * @param capabiltites an object that can be used to enable various OpenGL 
-     *                      capabilities
+     *                     capabilities
      * 
      * @see renderShadow(GLProgram)
      */

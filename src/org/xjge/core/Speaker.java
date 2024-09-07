@@ -28,8 +28,8 @@ public final class Speaker {
     /**
      * Creates a new audio device.
      * 
-     * @param id   the unique number used to identify the device in other parts 
-     *             of the engine
+     * @param id the unique number used to identify the device in other parts of 
+     *           the engine
      * @param name the name of the device as provided by OpenAL
      */
     Speaker(int id, String name) {

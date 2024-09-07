@@ -82,7 +82,7 @@ public class Observable {
     /**
      * Notifies all observers of state changes in this object.
      * 
-     * @param name     the name of the property (field) we're observing 
+     * @param name the name of the property (field) we're observing 
      * @param property an object representing the value of the property changed
      */
     public void notifyObservers(String name, Object property) {

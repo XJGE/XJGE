@@ -27,7 +27,7 @@ public class TerminalOutput {
     /**
      * Creates a response to show the user with the data provided.
      * 
-     * @param text  the text to show the user
+     * @param text the text to show the user
      * @param color the color the text will be rendered in
      */
     TerminalOutput(String text, Color color) {

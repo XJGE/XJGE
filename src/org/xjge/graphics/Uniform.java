@@ -25,8 +25,8 @@ final class Uniform {
      * 
      * @param location the unique number supplied by OpenGL used to identify 
      *                 the uniform variable
-     * @param buffer   a type-neutral data buffer used to store the value of 
-     *                 the uniform variable
+     * @param buffer a type-neutral data buffer used to store the value of the 
+     *               uniform variable
      */
     Uniform(int location, Buffer buffer) {
         this.location = location;
@@ -37,8 +37,7 @@ final class Uniform {
      * Provides the data buffer holding the value of the uniform variable 
      * associated with this object.
      * 
-     * @return the value of the uniform variable contained in an 
-     *         {@code IntBuffer}
+     * @return the value of the uniform variable contained in an {@code IntBuffer}
      */
     IntBuffer asIntBuffer() {
         return (IntBuffer) buffer;
@@ -48,8 +47,7 @@ final class Uniform {
      * Provides the data buffer holding the value of the uniform variable 
      * associated with this object.
      * 
-     * @return the value of the uniform variable contained in a 
-     *         {@code FloatBuffer}
+     * @return the value of the uniform variable contained in a {@code FloatBuffer}
      */
     FloatBuffer asFloatBuffer() {
         return (FloatBuffer) buffer;

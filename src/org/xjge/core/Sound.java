@@ -36,8 +36,8 @@ public final class Sound {
      * file cannot be found, the engine will instead use a fallback sound in 
      * its place.
      * 
-     * @param filename   the name of the file to load. Expects the file 
-     *                   extension to be included.
+     * @param filename the name of the file to load. Expects the file extension 
+     *                 to be included.
      * @param isSongPart if true, the sound will not be included in the audio 
      *                   classes sound collection
      */

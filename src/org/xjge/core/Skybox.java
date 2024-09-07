@@ -31,14 +31,10 @@ public final class Skybox {
      * exhibit the same width/height dimensions in pixels and may exhibit 
      * transparency. 
      * 
-     * @param topFilename    the filename of the image to use for the top of 
-     *                       the skybox
-     * @param centerFilename the filename of the image to use for the sides of 
-     *                       the skybox
-     * @param bottomFilename the filename of the image to use for the bottom of 
-     *                       the skybox
-     * @param useLinearFilter if true, the textures will be filtered without 
-     *                        hard edges
+     * @param topFilename the filename of the image to use for the top of the skybox
+     * @param centerFilename the filename of the image to use for the sides of the skybox
+     * @param bottomFilename the filename of the image to use for the bottom of the skybox
+     * @param useLinearFilter if true, the textures will be filtered without hard edges
      */
     public Skybox(String topFilename, String centerFilename, String bottomFilename, boolean useLinearFilter) {
         this(centerFilename, centerFilename, topFilename, bottomFilename, centerFilename, centerFilename, useLinearFilter);
@@ -48,20 +44,13 @@ public final class Skybox {
      * Overloaded version of {@link Skybox(String, String, String, boolean)}. This 
      * variant permits more variation between faces of the skybox.
      * 
-     * @param rightFilename  the filename of the image to use for the right 
-     *                       side of the skybox
-     * @param leftFilename   the filename of the image to use for the left side 
-     *                       of the skybox
-     * @param topFilename    the filename of the image to use for the top of 
-     *                       the skybox
-     * @param bottomFilename the filename of the image to use for the bottom of 
-     *                       the skybox
-     * @param frontFilename  the filename of the image to use for the front of 
-     *                       the skybox
-     * @param backFilename   the filename of the image to use for the back of 
-     *                       the skybox
-     * @param useLinearFilter if true, the textures will be filtered without 
-     *                        hard edges
+     * @param rightFilename the filename of the image to use for the right side of the skybox
+     * @param leftFilename the filename of the image to use for the left side of the skybox
+     * @param topFilename the filename of the image to use for the top of the skybox
+     * @param bottomFilename the filename of the image to use for the bottom of the skybox
+     * @param frontFilename the filename of the image to use for the front of the skybox
+     * @param backFilename the filename of the image to use for the back of the skybox
+     * @param useLinearFilter if true, the textures will be filtered without hard edges
      */
     public Skybox(String rightFilename, String leftFilename, String topFilename, String bottomFilename, 
                   String frontFilename, String backFilename, boolean useLinearFilter) {

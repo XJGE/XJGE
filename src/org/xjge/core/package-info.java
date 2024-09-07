@@ -1,6 +1,6 @@
 /**
  * Contains various classes, objects, and utilities many of which are essential 
- * to the function of the engine. These are listed in greater detail below:
+ * to the function of the engine.
  * <br><br>
  * <table border="1"><caption>Core Classes:</caption>
  * <tr><td><b>Name</b></td><td><b>Description</b></td></tr>

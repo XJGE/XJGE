@@ -9,8 +9,7 @@ import org.joml.Vector2i;
 
 /**
  * Represents a texture atlas (or sprite sheet) that will provide the texture 
- * coordinates of sub-images within a larger 
- * {@link Texture}.
+ * coordinates of sub-images within a larger {@link Texture}.
  * <p>
  * More specifically the data provided by this object includes:
  * <ul>
@@ -55,8 +54,8 @@ public final class Atlas {
      * NOTE: The dimensions of the texture should be evenly divisible by the 
      * cell width and height.
      * 
-     * @param texture    the texture image to use
-     * @param cellWidth  the width of each sub-image cell in pixels
+     * @param texture the texture image to use
+     * @param cellWidth the width of each sub-image cell in pixels
      * @param cellHeight the height of each sub-image cell in pixels
      */
     public Atlas(Texture texture, int cellWidth, int cellHeight) {

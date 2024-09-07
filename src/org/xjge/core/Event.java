@@ -3,10 +3,10 @@ package org.xjge.core;
 //Created: May 9, 2021
 
 /**
- * Objects of this type represent a game or engine event (such as a pause, 
- * cutscene, or error) that temporarily disrupts the normal flow of execution. 
- * Events should be used anytime two systems need to be decoupled in time, 
- * otherwise an {@link Observable Observable} should be considered.
+ * Objects of this type represent an event such as a pause, transition, or 
+ * cutscene that temporarily disrupts the normal flow of execution. While 
+ * queued, events will prevent the engine from completing its normal 
+ * update/render cycle until it's been resolved.
  * 
  * @author J Hoffman
  * @since  2.0.0
@@ -18,12 +18,9 @@ public abstract class Event {
     protected boolean resolved;
     
     /**
-     * Creates a new event that will block execution until resolved. Events use 
-     * numbers to indicate the precedence in which they are to be resolved, 
-     * with lower values denoting higher priority. 
-     * <p>
-     * NOTE: Priorities 0-3 are restricted to engine use only so you should 
-     * start at 4 or greater.
+     * Creates a new event that will redirect execution until resolved. Events 
+     * use numbers to indicate the priority in which they are to be resolved, 
+     * with lower values denoting higher priority.
      * 
      * @param priority the priority of the event
      */

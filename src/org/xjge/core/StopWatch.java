@@ -47,11 +47,10 @@ public class StopWatch {
      * after zero has been reached. This method will always return true on the 
      * first call.
      * 
-     * @param time      the total number of intervals the timer must complete 
-     *                  before it restarts
-     * @param speed     the number of game ticks to wait before changing the 
-     *                  time value. A single tick typically takes 16 
-     *                  milliseconds.
+     * @param time the total number of intervals the timer must complete before 
+     *             it restarts
+     * @param speed the number of game ticks to wait before changing the time 
+     *              value. A single tick typically takes 16 milliseconds.
      * @param increment if true, the stopwatch will count upwards. Otherwise it 
      *                  will count down.
      * 
@@ -104,8 +103,7 @@ public class StopWatch {
     
     /**
      * Resets the stopwatch. The {@link getTime()} method will return its 
-     * starting value following the next call to 
-     * {@link tick(int, int, boolean)}.
+     * starting value following the next call to {@link tick(int, int, boolean)}.
      */
     public void reset() {
         startTickSet = false;

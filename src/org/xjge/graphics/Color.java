@@ -39,8 +39,7 @@ public final class Color {
     /**
      * Creates a new achromatic shade (gray) using the specified scalar value. 
      * 
-     * @param scalar the value all RGB components will be set to (between 0 and 
-     *               1)
+     * @param scalar the value all RGB components will be set to (between 0 and 1)
      */
     private Color(float scalar) {
         r = g = b = XJGE.clampValue(0f, 1f, scalar);
@@ -50,8 +49,7 @@ public final class Color {
     /**
      * Creates a new achromatic shade (gray) using the provided value.
      * 
-     * @param value the value all RGB components will be set to (between 0 and
-     *              255)
+     * @param value the value all RGB components will be set to (between 0 and 255)
      */
     private Color(int value) {
         r = g = b = (XJGE.clampValue(0, 255, value) / 255f);
@@ -60,8 +58,7 @@ public final class Color {
     
     /**
      * Creates a new color object using the values of the three RGB components 
-     * supplied. Component values are expected to be within the range of 0 to 
-     * 255.
+     * supplied. Component values are expected to be within the range of 0 to 255.
      * 
      * @param r the red color component
      * @param g the green color component
@@ -77,8 +74,7 @@ public final class Color {
     
     /**
      * Creates a new color object using the values of the three RGB components 
-     * supplied. Component values are expected to be within the range of 0 to 
-     * 255.
+     * supplied. Component values are expected to be within the range of 0 to 255.
      * 
      * @param r the red color component
      * @param g the green color component

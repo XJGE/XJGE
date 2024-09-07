@@ -38,9 +38,9 @@ public class Rectangle {
     /**
      * Creates a new rectangle object using the data specified.
      * 
-     * @param xPos   the x-coordinate of the rectangles position
-     * @param yPos   the y-coordinate of the rectangles position
-     * @param width  the width of the rectangle
+     * @param xPos the x-coordinate of the rectangles position
+     * @param yPos the y-coordinate of the rectangles position
+     * @param width the width of the rectangle
      * @param height the height of the rectangle
      */
     public Rectangle(int xPos, int yPos, int width, int height) {
@@ -115,7 +115,7 @@ public class Rectangle {
      * {@link RectangleBatch} should instead be used in place of this method.
      * 
      * @param opacity the transparency value of the rectangle
-     * @param color   the color to draw the rectangle in
+     * @param color the color to draw the rectangle in
      */
     public void render(float opacity, Color color) {
         if(vao == -1) genBuffers();

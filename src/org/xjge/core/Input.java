@@ -54,8 +54,7 @@ public final class Input {
     public static final int AI_GAMEPAD_16 = 32;
     
     /**
-     * Special case value associated with the {@link KeyMouseCombo} input 
-     * device.
+     * Special case value associated with the {@link KeyMouseCombo} input device.
      */
     public static final int KEY_MOUSE_COMBO = 16;
     
@@ -236,14 +235,14 @@ public final class Input {
     }
     
     /**
-     * Processes the input actions of every input device connected to the 
-     * system that isn't currently in a disabled state and updates the 
-     * internally maintained list of usable puppet objects.
+     * Processes the input actions of every input device connected to the system 
+     * that isn't currently in a disabled state and updates the internally 
+     * maintained list of usable puppet objects.
      *
      * @param targetDelta a constant value denoting the desired time (in 
      *                    seconds) it should take for one game tick to complete
-     * @param trueDelta   the actual time (in seconds) it took the current game
-     *                    tick to complete
+     * @param trueDelta the actual time (in seconds) it took the current game
+     *                  tick to complete
      */
     static void update(double targetDelta, double trueDelta) {
         while(!puppetAddEvents.isEmpty()) {
@@ -445,8 +444,7 @@ public final class Input {
     }
     
     /**
-     * Checks whether or not an input device is currently connected to the 
-     * system.
+     * Checks whether or not an input device is currently connected to the system.
      * <p>
      * NOTE: The keyboard/mouse along with virtual AI controlled gamepads
      * are always connected by default.
@@ -610,8 +608,7 @@ public final class Input {
     
     /**
      * Obtains an array of values denoting which GLFW keys will be used by the 
-     * {@link KeyMouseCombo} input device to mimic the action of an analog 
-     * stick.
+     * {@link KeyMouseCombo} input device to mimic the action of an analog stick.
      * 
      * @return an array containing the axis values corresponding to various 
      *         GLFW keyboard keys

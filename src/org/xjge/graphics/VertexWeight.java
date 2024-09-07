@@ -20,10 +20,9 @@ class VertexWeight {
      * Creates a new vertex weight that couples the bone to the vertex it 
      * influences.
      * 
-     * @param boneID   an index value used to identify the bone in the vertex 
-     *                 shader
+     * @param boneID an index value used to identify the bone in the vertex shader
      * @param vertexID the id of the vertex this weight will effect
-     * @param weight   the total influence of this weight between 0 and 1
+     * @param weight the total influence of this weight between 0 and 1
      */
     VertexWeight(int boneID, int vertexID, float weight) {
         this.boneID   = boneID;

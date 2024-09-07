@@ -80,13 +80,13 @@ final class Noclip extends Camera {
      * Sets the current direction the camera will face using the position of 
      * the mouse cursor inside the applications {@link Window}.
      * 
-     * @param xpos the position of the cursor along the x-axis
-     * @param ypos the position of the cursor along the y-axis
+     * @param xPos the position of the cursor along the x-axis
+     * @param yPos the position of the cursor along the y-axis
      */
-    void setDirection(double xpos, double ypos) {
-        if(xpos != prevX || ypos != prevY) {
-            yaw   += getChangeIntensity(xpos, prevX) * 2;
-            pitch += getChangeIntensity(ypos, prevY) * 2;
+    void setDirection(double xPos, double yPos) {
+        if(xPos != prevX || yPos != prevY) {
+            yaw   += getChangeIntensity(xPos, prevX) * 2;
+            pitch += getChangeIntensity(yPos, prevY) * 2;
             
             if(pitch > 89f)  pitch = 89;
             if(pitch < -89f) pitch = -89;
@@ -95,8 +95,8 @@ final class Noclip extends Camera {
             direction.y = (float) Math.sin(Math.toRadians(pitch)) * -1;
             direction.z = (float) (Math.sin(Math.toRadians(yaw)) * Math.cos(Math.toRadians(pitch)));
             
-            prevX = xpos;
-            prevY = ypos;
+            prevX = xPos;
+            prevY = yPos;
         }
     }
     

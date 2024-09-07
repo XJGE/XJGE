@@ -9,10 +9,9 @@ import org.lwjgl.system.MemoryStack;
 //Created: Jun 15, 2021
 
 /**
- * Objects of this class can be used as part of a larger 
- * {@link org.xjge.core.Widget UI widget} to represent a 
- * regular 2D shape such as a pentagon, hexagon, or circle by utilizing the 
- * number of sides specified through its constructor.
+ * Objects of this class can be used as part of a larger {@link org.xjge.core.Widget UI widget} 
+ * to represent a regular 2D shape such as a pentagon, hexagon, or circle by
+ * utilizing the number of sides specified through its constructor.
  * 
  * @author J Hoffman
  * @since  2.0.0
@@ -30,14 +29,11 @@ public class Polygon {
      * 
      * @param numSides the number of sides this shape will exhibit, (5 for a 
      *                 pentagon, 6 for a hexagon, etc.)
-     * @param fill     if true, the shape will be filled with the specified 
-     *                 color
-     * @param radius   the radius used to determine the size of the polygon
-     * @param color    the color to render this shape in
-     * @param xPos     the x-coordinate of the shapes initial position in the 
-     *                 viewport
-     * @param yPos     the y-coordinate of the shapes initial position in the 
-     *                 viewport
+     * @param fill if true, the shape will be filled with the specified color
+     * @param radius the radius used to determine the size of the polygon
+     * @param color the color to render this shape in
+     * @param xPos the x-coordinate of the shapes initial position in the viewport
+     * @param yPos the y-coordinate of the shapes initial position in the viewport
      */
     public Polygon(int numSides, boolean fill, float radius, Color color, int xPos, int yPos) {
         this.numSides = numSides;
@@ -68,16 +64,14 @@ public class Polygon {
     }
     
     /**
-     * Alternate version of the 
-     * {@link Polygon(int, boolean, float, Color, int, int) Polygon()} 
+     * Alternate version of the {@link Polygon(int, boolean, float, Color, int, int) Polygon()} 
      * constructor.
      * 
      * @param numSides the number of sides this shape will exhibit, (5 for a 
      *                 pentagon, 6 for a hexagon, etc.)
-     * @param fill     if true, the shape will be filled with the specified 
-     *                 color
-     * @param radius   the radius used to determine the size of the polygon
-     * @param color    the color to render this shape in
+     * @param fill if true, the shape will be filled with the specified color
+     * @param radius the radius used to determine the size of the polygon
+     * @param color the color to render this shape in
      * @param position the position at which the shape will be placed initially
      */
     public Polygon(int numSides, boolean fill, float radius, Color color, Vector2i position) {

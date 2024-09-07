@@ -48,7 +48,7 @@ public final class Mesh {
      * 
      * @param aiMesh the mesh object provided by the Assimp library with which 
      *               vertex data will be parsed
-     * @param bones  a collection of the bones located within the mesh
+     * @param bones a collection of the bones located within the mesh
      */
     Mesh(AIMesh aiMesh, ArrayList<Bone> bones) {
         glBindVertexArray(vao);
@@ -66,7 +66,7 @@ public final class Mesh {
         glEnableVertexAttribArray(2); //texture coordinates
         glEnableVertexAttribArray(3); //normal
         
-        if(bones.size() > 0) {
+        if(!bones.isEmpty()) {
             glEnableVertexAttribArray(7); //boneIDs
             glEnableVertexAttribArray(8); //weights
         }

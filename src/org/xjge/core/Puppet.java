@@ -6,13 +6,11 @@ import static org.xjge.core.Input.*;
 //Created: May 3, 2021
 
 /**
- * Component object that enables implementing objects to make use of input 
- * actions captured from an input device by coupling 
- * {@linkplain Control interactive components} to some 
- * {@linkplain Command meaningful action}.
+ * Puppet objects serve as a coupling between a {@link Control} from an 
+ * {@link InputDevice} and an {@linkplain Command action} that can be performed 
+ * by the player.
  * <p>
- * Any object that can be controlled by a player should utilize a puppet 
- * object.
+ * Any object that can be controlled by a player should utilize a puppet object.
  * 
  * @author J Hoffman
  * @since  2.0.0
@@ -25,14 +23,14 @@ public final class Puppet {
     private InputDevice device;
     
     /**
-     * A collection of commands this puppet will execute.
+     * A collection of commands this puppet will execute when a control is acted on.
      */
     public final HashMap<Control, Command> commands = new HashMap<>();
     
     /**
-     * Creates a new puppet object.It is expected that implementing objects 
-     * will populate the puppets {@link commands} collection inside of its 
-     * constructor following the puppet objects initialization.
+     * Creates a new puppet object.It is expected that implementing objects will 
+     * populate the puppets {@link commands} collection inside of its constructor 
+     * following the puppet objects initialization.
      * 
      * @param name the name used to identify this puppet internally by the engine
      */
@@ -44,10 +42,10 @@ public final class Puppet {
      * Executes the commands associated with this puppet object if an input 
      * device has been bound to it.
      * 
-     * @param targetDelta a constant value denoting the desired time (in 
-     *                    seconds) it should take for one game tick to complete
-     * @param trueDelta   the actual time (in seconds) it took the current game
-     *                    tick to complete
+     * @param targetDelta a constant value denoting the desired time (in  seconds) 
+     *                    it should take for one game tick to complete
+     * @param trueDelta the actual time (in seconds) it took the current game
+     *                  tick to complete
      */
     void processInput(double targetDelta, double trueDelta) {
         if(device != null && device.enabled && !commands.isEmpty()) {

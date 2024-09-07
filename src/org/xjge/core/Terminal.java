@@ -73,8 +73,7 @@ final class Terminal implements PropertyChangeListener {
      * with the game engine at runtime.
      * 
      * @param commands the commands the terminal will use
-     * @param font     the font supplied by the engine that the interface will 
-     *                 be rendered in
+     * @param font the font supplied by the engine that the terminal will use
      */
     Terminal(TreeMap<String, TerminalCommand> commands, Font font) {
         this.commands = commands;
@@ -146,11 +145,11 @@ final class Terminal implements PropertyChangeListener {
     /**
      * Processes input from the keyboard captured by the game window.
      * 
-     * @param key    the value supplied by GLFW of a single key on the keyboard
+     * @param key the value supplied by GLFW of a single key on the keyboard
      * @param action an action supplied by GLFW that describes the nature of 
      *               the key press
-     * @param mods   a value supplied by GLFW denoting whether any mod keys 
-     *               where held (such as shift or control)
+     * @param mods a value supplied by GLFW denoting whether any mod keys where 
+     *             held (such as shift or control)
      */
     void processKeyInput(int key, int action, int mods) {
         if(action == GLFW_PRESS || action == GLFW_REPEAT) {

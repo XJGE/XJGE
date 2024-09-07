@@ -34,11 +34,11 @@ final class SoundSource {
     /**
      * Creates a new sound source from an existing one.
      * 
-     * @param source       the sound source to copy
-     * @param sound        the sound to load this source with
+     * @param source the sound source to copy
+     * @param sound the sound to load this source with
      * @param sourceSample the current sample of the source used to offset the 
      *                     point from which the sound will continue playing
-     * @param sourceState  the state to set the source object to
+     * @param sourceState the state to set the source object to
      */
     SoundSource(SoundSource source, Sound sound, int sourceSample, int sourceState) {
         handle = alGenSources();
@@ -66,11 +66,11 @@ final class SoundSource {
      * Variant of {@link SoundSource(SoundSource, Sound, int, int)} for copying 
      * a sound source that was playing music.
      * 
-     * @param source        the sound source to copy
-     * @param sound         the sound to load this source with
-     * @param sourceSample  the current sample of the source used to offset the 
-     *                      point from which the sound will continue playing
-     * @param sourceState   the state to set the source object to
+     * @param source the sound source to copy
+     * @param sound the sound to load this source with
+     * @param sourceSample the current sample of the source used to offset the 
+     *                     point from which the sound will continue playing
+     * @param sourceState the state to set the source object to
      * @param introFinished if true, the intro sequence of the current song has 
      *                      finished and the body may now be looped
      */
@@ -142,7 +142,7 @@ final class SoundSource {
      * the game world relative to the orientation of the nearest viewports 
      * {@link Camera} object.
      * 
-     * @param position  the current position of the viewports camera
+     * @param position the current position of the viewports camera
      * @param direction the direction the viewports camera is currently facing
      */
     void setSourcePosition(Vector3f position, Vector3f direction) {
@@ -173,8 +173,7 @@ final class SoundSource {
      * continue indefinitely until specified otherwise or the sound source 
      * enters a {@link org.lwjgl.openal.AL11#AL_PAUSED AL_STOPPED} state.
      * 
-     * @param loop if true, the sound used by this source object will play in a 
-     *             loop
+     * @param loop if true, the sound used by this source object will play in a loop
      */
     void setLooping(boolean loop) {
         this.loop = loop;

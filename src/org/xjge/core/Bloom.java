@@ -23,7 +23,7 @@ final class Bloom {
     final int[] fbos     = new int[2];
     final int[] textures = new int[3];
     
-    private Graphics g = new Graphics();
+    private final Graphics g = new Graphics();
     
     /**
      * Creates a new bloom object that will be used to produce a "glowing" 

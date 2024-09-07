@@ -13,8 +13,7 @@ import org.xjge.graphics.Texture;
 
 /**
  * Represents a source of visible light at some point in 3D space. This can be 
- * best conceptualized as a physical object that emits light, such as a light 
- * bulb.
+ * best understood as a physical object that emits light, such as a light bulb.
  * <p>
  * This data structure is used internally by the engine for its own lighting 
  * utilities.
@@ -44,17 +43,17 @@ public final class Light {
      * Creates a new light object that contains data which can be used by a 
      * fragment shader during lighting calculations.
      * 
-     * @param brightness    the intensity of the light
-     * @param contrast      the noticeable difference between the intensity of 
-     *                      the ambient and diffuse colors of this light. Should 
-     *                      be a non-negative value between 0 and 1.
-     * @param distance      the range of the lights influence. NOTE: this value 
-     *                      may not correlate to world space perfectly.
-     * @param position      the position from which the light will be emitted
-     * @param ambientColor  the color that will be used to shade the side of 
-     *                      the entity which is not facing the light source 
-     * @param diffuseColor  the color that will be dispersed into nearby entity 
-     *                      from the general direction of the light source
+     * @param brightness the intensity of the light
+     * @param contrast the noticeable difference between the intensity of the 
+     *                 ambient and diffuse colors of this light. Should be a 
+     *                 non-negative value between 0 and 1.
+     * @param distance the range of the lights influence. NOTE: this value may 
+     *                 not correlate to world space perfectly.
+     * @param position the position from which the light will be emitted
+     * @param ambientColor the color that will be used to shade the side of the 
+     *                     entity which is not facing the light source 
+     * @param diffuseColor the color that will be dispersed into nearby entity 
+     *                     from the general direction of the light source
      * @param specularColor the color that will be reflected off entities 
      *                      depending on their shininess value
      */
@@ -98,28 +97,25 @@ public final class Light {
     }
     
     /**
-     * Variant of 
-     * {@link Light(float, float, float, Vector3f, Color, Color, Color)} that 
-     * will initialize each color used in the Phong lighting model to the same
-     * value.
+     * Variant of {@link Light(float, float, float, Vector3f, Color, Color, Color)} 
+     * that will initialize each color used in the Phong lighting model to the same value.
      * 
      * @param brightness the intensity of the light
-     * @param contrast   the noticeable difference between the intensity of 
-     *                   the ambient and diffuse colors of this light. Should 
-     *                   be a non-negative value between 0 and 1.
-     * @param distance   the range of the lights influence. NOTE: this value 
-     *                   may not correlate to world space perfectly.
-     * @param position   the position from which the light will be emitted
-     * @param color      the color that each Phong component (ambient, diffuse, 
-     *                   specular) will be set to
+     * @param contrast the noticeable difference between the intensity of the 
+     *                 ambient and diffuse colors of this light. Should be a 
+     *                 non-negative value between 0 and 1.
+     * @param distance the range of the lights influence. NOTE: this value may 
+     *                 not correlate to world space perfectly.
+     * @param position the position from which the light will be emitted
+     * @param color the color that each Phong component (ambient, diffuse, specular) 
+     *              will be set to
      */
     public Light(float brightness, float contrast, float distance, Vector3f position, Color color) {
         this(brightness, contrast, distance, position, color, color, color);
     }
     
     /**
-     * Generates a random number between the specified minimum and maximum 
-     * values.
+     * Generates a random number between the specified minimum and maximum values.
      * 
      * @param minValue the minimum value this method may return
      * @param maxValue the maximum value this method may return
@@ -134,8 +130,7 @@ public final class Light {
      * Supplies the light class with a texture containing icons that will 
      * indicate individual light positions within the current scene.
      * 
-     * @param engineIcons the texture atlas containing all the icons used by 
-     *                    the engine
+     * @param engineIcons the texture atlas containing all the icons used by the engine
      */
     static void setIconTexture(Texture engineIcons) {
         iconTexture = engineIcons;
@@ -159,10 +154,8 @@ public final class Light {
      * while debug mode is enabled.
      * 
      * @param camPos the current position of the viewports camera object
-     * @param camDir the direction in which the viewports camera is currently 
-     *               facing
-     * @param camUp  the direction considered upwards relative to the viewports 
-     *               camera
+     * @param camDir the direction in which the viewports camera is currently facing
+     * @param camUp the direction considered upwards relative to the viewports camera
      */
     void render(Vector3f camPos, Vector3f camDir, Vector3f camUp) {
         g.modelMatrix.billboardSpherical(position, camPos, camUp);
@@ -232,7 +225,7 @@ public final class Light {
     /**
      * Provides implementing applications with a predefined light object that 
      * resembles a bright green glowstick. NOTE: This light does not produce 
-     * specular highlights be design. 
+     * specular highlights by design. 
      * 
      * @return a new engine-defined light object
      */

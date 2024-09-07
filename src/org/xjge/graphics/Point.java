@@ -7,27 +7,36 @@ import org.lwjgl.system.MemoryStack;
 import org.xjge.core.ErrorUtils;
 import org.xjge.core.XJGE;
 
+//Created Sep 6, 2024
+
 /**
- *
- * @author thesk
+ * Represents a single point in 3D space. Largely used for debugging purposes.
+ * 
+ * @author J Hoffman
+ * @since  3.0.3
  */
 public class Point {
 
-    private int vao;
-    private int vbo;
+    private final int vao;
+    private final int vbo;
     
-    private FloatBuffer vertices;
+    private final FloatBuffer vertices;
     
     public final Vector3f position;
     
+    /**
+     * Creates a new object representing a single point in 3D space.
+     * 
+     * @param x the location of the point along the x-axis
+     * @param y the location of the point along the y-axis
+     * @param z the location of the point along the z-axis
+     */
     public Point(float x, float y, float z) {
         position = new Vector3f(x, y, z);
         
         try(MemoryStack stack = MemoryStack.stackPush()) {
             vertices = stack.mallocFloat(6);
-            
             vertices.put(x).put(y).put(z).put(0).put(0).put(0);
-            
             vertices.flip();
         }
         
@@ -46,6 +55,11 @@ public class Point {
         glEnableVertexAttribArray(1);
     }
     
+    /**
+     * Renders the point using the default engine shaders.
+     * 
+     * @param size the size (in pixels) of the dot that will appear
+     */
     public void render(int size) {
         glPointSize(size);
         

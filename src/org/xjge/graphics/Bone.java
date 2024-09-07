@@ -22,10 +22,9 @@ class Bone {
      * the position of the bone relative to the local space of the 
      * {@link Model} with which it's associated.
      * 
-     * @param id     an index value used to identify the bone in the vertex 
-     *               shader
-     * @param name   the unique name of this bone that will correspond to a 
-     *               {@link Node} object in the model files hierarchy
+     * @param id an index value used to identify the bone in the vertex shader
+     * @param name the unique name of this bone that will correspond to a 
+     *             {@link Node} object in the model files hierarchy
      * @param offset a matrix representing this bones position offset relative 
      *               to the model origin
      */

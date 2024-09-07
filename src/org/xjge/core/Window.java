@@ -242,7 +242,7 @@ public final class Window {
      * Updates the values of the windows width and height fields without 
      * alerting GLFW.
      * 
-     * @param width  the new width of the window in pixels
+     * @param width the new width of the window in pixels
      * @param height the new height of the window in pixels
      */
     static void updateDimensions(int width, int height) {
@@ -264,7 +264,7 @@ public final class Window {
     /**
      * Sets the size of the windows content area in pixels.
      * 
-     * @param width  the desired width of the window
+     * @param width the desired width of the window
      * @param height the desired height of the window
      */
     public static void setDimensions(int width, int height) {

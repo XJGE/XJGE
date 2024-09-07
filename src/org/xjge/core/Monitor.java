@@ -32,10 +32,9 @@ public final class Monitor {
      * Provides the information parsed from a visual display device as an 
      * object.
      * 
-     * @param id     the unique number used to identify the device in other 
-     *               parts of the engine
-     * @param handle a unique value provided by GLFW used to identify the 
-     *               device
+     * @param id the unique number used to identify the device in other parts of 
+     *           the engine
+     * @param handle a unique value provided by GLFW used to identify the  device
      */
     Monitor(int id, long handle) {
         this.id     = id;
@@ -63,7 +62,7 @@ public final class Monitor {
             });
             
             //We'll supply the default video mode of the monitor in the off 
-            //chance it doesn't support one of our preferred video modes.
+            //chance it doesn't support one of our preferred video modes
             
             if(!videoModes.containsKey(getInfo())) {
                 videoModes.put(getInfo(), videoMode);
@@ -81,7 +80,7 @@ public final class Monitor {
      * Finds the greatest common divisor given two numbers. Used to calculate 
      * the aspect ratios of the monitors various video modes.
      * 
-     * @param width  the width of the video mode
+     * @param width the width of the video mode
      * @param height the height of the video mode
      * 
      * @return the greatest common divisor

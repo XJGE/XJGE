@@ -18,9 +18,8 @@ import static org.lwjgl.opengl.GL11.glGetString;
 //Created: Jun 10, 2021
 
 /**
- * Provides users with a interface detailing engine diagnostics and other 
- * information useful for debugging at runtime. This object is rendered 
- * independent of player {@link Viewport}.
+ * Provides users with a diagnostic interface useful for debugging at runtime. 
+ * This object is rendered independent of player {@link Viewport}.
  * 
  * @author J Hoffman
  * @since  2.0.0
@@ -43,10 +42,8 @@ final class DebugInfo {
     /**
      * Creates a new debug interface using the supplied font and texture.
      * 
-     * @param font        the font supplied by the engine that the interface 
-     *                    will be rendered in
-     * @param iconTexture the texture to use for the various icons in the 
-     *                    interface
+     * @param font the font supplied by the engine that the interface will use
+     * @param iconTexture the texture containing the various icons in the interface
      */
     DebugInfo(Font font, Texture iconTexture) {
         this.font = font;
@@ -63,7 +60,7 @@ final class DebugInfo {
      * the dimensions of the window.
      */
     void updatePosition() {
-        //Group 1: runtime info.
+        //Group 1: Runtime Info
         {
             rectangles[0].width  = 320 + (PADDING * 2);
             rectangles[0].height = (Font.DEFAULT_SIZE * 4) + PADDING;
@@ -74,7 +71,7 @@ final class DebugInfo {
             }
         }
         
-        //Group 2: system info.
+        //Group 2: System Info
         {
             String[] strings     = new String[3];
             String longestString = "";
@@ -97,7 +94,7 @@ final class DebugInfo {
             }
         }
         
-        //Group 3: audio info.
+        //Group 3: Audio Info
         {
             String[] strings     = new String[4];
             String longestString = "";
@@ -122,7 +119,7 @@ final class DebugInfo {
             }
         }
         
-        //Group 4: graphics info.
+        //Group 4: Graphics Info
         {
             String[] strings     = new String[4];
             String longestString = "";
@@ -147,7 +144,7 @@ final class DebugInfo {
             }
         }
         
-        //Group 5: input info.
+        //Group 5: Input Info
         {
             String longestString = "N/A";
             
@@ -182,7 +179,7 @@ final class DebugInfo {
             }
         }
         
-        //Group 6: engine info.
+        //Group 6: Engine Info
         {
             rectangles[5].width  = Text.lengthInPixels("XJGE v" + XJGE.VERSION, font) + (PADDING * 2);
             rectangles[5].height = 24 + PADDING;

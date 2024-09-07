@@ -92,7 +92,7 @@ public final class XJGE {
     private static boolean firstMouse = true;
     
     public static final Path PWD       = Path.of("").toAbsolutePath();
-    public static final String VERSION = "3.0.0";
+    public static final String VERSION = "3.0.1";
     
     private static Split split = Split.NONE;
     
@@ -140,9 +140,8 @@ public final class XJGE {
      *                       all of the games assets
      * @param scenesFilepath the relative filepath to the package that contains 
      *                       all of the games scene subclasses
-     * @param resolution the internal resolution the engine will display the 
-     *                   game at or <b>null</b> to copy the resolution of the 
-     *                   window
+     * @param resolution the internal resolution the engine will display the game 
+     *                   at or <b>null</b> to copy the resolution of the window
      * @param createOpenGLLog if true, the engine will create a text file 
      *                        containing messages sent by the OpenGL API
      * @param debugEnabled if true, the engine will provide debugging 
@@ -169,7 +168,7 @@ public final class XJGE {
             debugModeEnabled      = debugEnabled;
             restrict4KResolutions = restrict4K;
             
-            //Load settings from engine configuration file.
+            //Load settings from engine configuration file
             try {
                 InputStream stream = new FileInputStream(PWD.toString() + "/engine.cfg");
                 XMLStreamReader xmlReader = XMLInputFactory.newInstance().createXMLStreamReader(stream);
@@ -206,12 +205,12 @@ public final class XJGE {
                 Logger.setDomain(null);
             }
             
-            { //Initialize 3D audio utilities.
+            { //Initialize 3D audio utilities
                 Audio.speaker = Hardware.findSpeakers().get(1);
                 Audio.speaker.setContextCurrent();
             }
             
-            { //Initialize the game window.
+            { //Initialize the game window
                 glfwWindowHint(GLFW_RESIZABLE, (windowResizable && resolution == null) ? GLFW_TRUE : GLFW_FALSE);
                 glfwWindowHint(GLFW_VISIBLE, GLFW_FALSE);
                 
@@ -255,7 +254,7 @@ public final class XJGE {
             
             ErrorUtils.checkFBStatus(GL_FRAMEBUFFER);
             
-            //Initialize the default shader program that will be provided to the implementation.
+            //Initialize the default shader program that will be provided to the implementation
             {
                 var shaderSourceFiles = new LinkedList<Shader>() {{
                     add(new Shader("shader_default_vertex.glsl", GL_VERTEX_SHADER));
@@ -303,7 +302,7 @@ public final class XJGE {
                 glPrograms.put("default", defaultProgram);
             }
             
-            //Create shader program that will generate shadow map output.
+            //Create shader program that will generate shadow map output
             {
                 var shaderSourceFiles = new LinkedList<Shader>() {{
                     add(new Shader("shader_depth_vertex.glsl", GL_VERTEX_SHADER));
@@ -318,7 +317,7 @@ public final class XJGE {
                 depthProgram.addUniform(BufferType.MAT4, "uLightSpace");
             }
             
-            //Create shader program for applying gaussian blur.
+            //Create shader program for applying gaussian blur
             {
                 var shaderSourceFiles = new LinkedList<Shader>() {{
                     add(new Shader("shader_blur_vertex.glsl", GL_VERTEX_SHADER));
@@ -492,9 +491,8 @@ public final class XJGE {
      *                       all of the games assets
      * @param scenesFilepath the relative filepath to the package that contains 
      *                       all of the games scene subclasses
-     * @param resolution     the internal resolution the engine will display 
-     *                       the game at or <b>null</b> to copy the resolution 
-     *                       of the window
+     * @param resolution the internal resolution the engine will display the game
+     *                   at or <b>null</b> to copy the resolution of the window
      */
     public static void init(String assetsFilepath, String scenesFilepath, Vector2i resolution) {
         init(assetsFilepath, scenesFilepath, resolution, false, true, true, false, false);
@@ -543,7 +541,7 @@ public final class XJGE {
         terminal.freeBuffers();
         debugInfo.freeBuffers();
         
-        //Export engine configuration.
+        //Export engine configuration
         try {
             FileWriter file = new FileWriter("engine.cfg");
             
@@ -603,8 +601,8 @@ public final class XJGE {
      * Restricts an input value from a user to one between the minimum and 
      * maximum ranges specified.
      * 
-     * @param minValue  the minimum permitted value
-     * @param maxValue  the maximum permitted value
+     * @param minValue the minimum permitted value
+     * @param maxValue the maximum permitted value
      * @param userValue the value entered by the user
      * 
      * @return a value between desired minimum and maximum ranges
@@ -628,10 +626,9 @@ public final class XJGE {
      * returns the result. This is often useful in instances where you need to 
      * gradually transition between two values such as player movement speed.
      * 
-     * @param startValue  the initial value to evaluate
+     * @param startValue the initial value to evaluate
      * @param targetValue the target value to reach
-     * @param factor      the floating-point interpolation factor (between 0 
-     *                    and 1)
+     * @param factor the floating-point interpolation factor (between 0 and 1)
      * 
      * @return the linearly-interpolated value between the starting and target 
      *         numbers
@@ -659,7 +656,7 @@ public final class XJGE {
      * accessed through a scenes {@linkplain Scene#render render()} method to 
      * draw the various objects and entities within it.
      * 
-     * @param name      the name that will be used to refer to the program
+     * @param name the name that will be used to refer to the program
      * @param glProgram the object representing the compiled shader program
      */
     public static void addGLProgram(String name, GLProgram glProgram) {
@@ -678,7 +675,7 @@ public final class XJGE {
      * Adds a new user-defined command that can be accessed through the engines 
      * {@link Terminal} and used to debug the application at runtime.
      * 
-     * @param name    the name the terminal will use to refer to the command
+     * @param name the name the terminal will use to refer to the command
      * @param command an object used to organize the commands internal logic
      */
     public static void addCommand(String name, TerminalCommand command) {
@@ -701,9 +698,8 @@ public final class XJGE {
      * rendered in front of a component with a z-position of 1.
      * 
      * @param viewportID the ID number of the viewport to add the widget to
-     * @param name       the name that will be used to identify and remove the 
-     *                   widget later
-     * @param widget     the widget object to add
+     * @param name the name that will be used to identify/remove the widget
+     * @param widget the widget object to add
      * 
      * @see Viewport
      */
@@ -714,9 +710,8 @@ public final class XJGE {
     /**
      * Removes a widget from the specified viewports user interface.
      * 
-     * @param viewportID the ID number of the viewport to remove the widget 
-     *                   from
-     * @param name       the name of the widget to remove
+     * @param viewportID the ID number of the viewport to remove the widget from
+     * @param name the name of the widget to remove
      * 
      * @see Viewport
      * @see Widget
@@ -751,9 +746,8 @@ public final class XJGE {
      * Used to determine if the viewport currently contains a widget using the 
      * name we gave it when it was added.
      * 
-     * @param viewportID the ID number of the viewport to remove the widget 
-     *                   from
-     * @param name       the name of the widget to remove
+     * @param viewportID the ID number of the viewport to remove the widget from
+     * @param name the name of the widget to remove
      * 
      * @return true if the viewport contains a widget by the specified name
      */
@@ -765,8 +759,7 @@ public final class XJGE {
      * Applies post-processing effects to the desired viewport by changing 
      * which shader program its framebuffer object will use during rendering.
      * 
-     * @param viewportID        the ID number of the viewport to apply the 
-     *                          filter to
+     * @param viewportID the ID number of the viewport to apply the filter to
      * @param postProcessShader an object containing the custom shader program 
      *                          to use or null to use the engines default shaders
      */
@@ -777,10 +770,9 @@ public final class XJGE {
     /**
      * Changes the filter type applied to the framebuffer texture of a viewport.
      * 
-     * @param viewportID      the ID number of the viewport who's framebuffer 
-     *                        texture we want to change
-     * @param useLinearFilter if true, the textures will be filtered without 
-     *                        hard edges
+     * @param viewportID the ID number of the viewport who's framebuffer texture 
+     *                   we want to change
+     * @param useLinearFilter if true, the textures will be filtered without hard edges
      */
     public static final void changeFramebufferFilter(int viewportID, boolean useLinearFilter) {
         glBindTexture(GL_TEXTURE_2D, viewports[viewportID].viewTexHandle);
@@ -909,8 +901,7 @@ public final class XJGE {
      * Sets the current split value the engine will use to divide the screen 
      * during split screen mode.
      * 
-     * @param split a value that determines how the screen will be divided. One 
-     *              of: 
+     * @param split a value that determines how the screen will be divided. One of: 
      * <table><caption></caption><tr>
      * <td>{@link Split#NONE NONE}</td><td>{@link Split#HORIZONTAL HORIZONTAL}</td>
      * <td>{@link Split#VERTICAL VERTICAL}</td></tr><tr>
@@ -1016,9 +1007,8 @@ public final class XJGE {
     /**
      * Sets the current camera object a viewport will use.
      * 
-     * @param viewportID the ID number of the viewport whos camera we want to 
-     *                   set
-     * @param camera     the camera object being assigned to the viewport
+     * @param viewportID the ID number of the viewport whos camera we want to set
+     * @param camera the camera object being assigned to the viewport
      */
     public static final void setViewportCamera(int viewportID, Camera camera) {
         Logger.setDomain("core");
@@ -1065,7 +1055,7 @@ public final class XJGE {
      * you should instead specify the starting resolution through the {@link init} 
      * method.
      * 
-     * @param width  the desired horizontal resolution of the game window (in pixels)
+     * @param width the desired horizontal resolution of the game window (in pixels)
      * @param height the desired vertical resolution of the game window (in pixels)
      */
     public static void setResolution(int width, int height) {

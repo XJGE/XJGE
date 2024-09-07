@@ -32,11 +32,9 @@ public final class RectangleBatch {
     private final Graphics g = new Graphics();
     
     /**
-     * Establishes a system through which vertex data may be streamed to draw 
-     * rectangles. 
+     * Establishes a system through which vertex data may be streamed to draw rectangles. 
      * 
-     * @param numRectangles the maximum number of rectangles this batch is 
-     *                      allowed to draw
+     * @param numRectangles the maximum number of rectangles this batch is allowed to draw
      */
     public RectangleBatch(int numRectangles) {
         g.vertices = MemoryUtil.memAllocFloat(24 * numRectangles);
@@ -112,11 +110,11 @@ public final class RectangleBatch {
      * Draws a rectangle using the data provided. The shape will be drawn 
      * starting from the position of its bottom-left corner.
      * 
-     * @param x      the x-coordinate of the rectangles bottom-left corner
-     * @param y      the y-coordinate of the rectangles bottom-left corner
+     * @param x the x-coordinate of the rectangles bottom-left corner
+     * @param y the y-coordinate of the rectangles bottom-left corner
      * @param width  the width (in pixels) of the rectangle
      * @param height the height (in pixels) of the rectangle
-     * @param color  the color to draw the rectangle in
+     * @param color the color to draw the rectangle in
      */
     public void drawRectangle(int x, int y, int width, int height, Color color) {
         int startIndex = (numVertices / 24) * Float.BYTES;
@@ -136,10 +134,10 @@ public final class RectangleBatch {
      * Draws a rectangle using the data provided. The shape will be drawn 
      * starting from the position of its bottom-left corner.
      * 
-     * @param pos    the position in the viewport to draw the rectangle from
-     * @param width  the width (in pixels) of the rectangle
+     * @param pos the position in the viewport to draw the rectangle from
+     * @param width the width (in pixels) of the rectangle
      * @param height the height (in pixels) of the rectangle
-     * @param color  the color to draw the rectangle in
+     * @param color the color to draw the rectangle in
      */
     public void drawRectangle(Vector2i pos, int width, int height, Color color) {
         drawRectangle(pos.x, pos.y, width, height, color);
@@ -149,7 +147,7 @@ public final class RectangleBatch {
      * Draws a rectangle using the data provided.
      * 
      * @param rectangle the rectangle to draw
-     * @param color     the color to draw the rectangle in
+     * @param color the color to draw the rectangle in
      */
     public void drawRectangle(Rectangle rectangle, Color color) {
         drawRectangle(

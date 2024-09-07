@@ -45,8 +45,6 @@ import static org.lwjgl.opengl.GL11.glGetString;
  */
 public final class Logger {
     
-    //TODO: add restriction to log file size.
-    
     private static String domain = "";
     
     private static PrintWriter logText;
@@ -161,9 +159,8 @@ public final class Logger {
      * produce undefined behavior.
      * 
      * @param message the text to appear as output in the console/log file 
-     * @param e       an optional exception used to output a stack trace. If 
-     *                {@code null} is passed, no stack trace information will 
-     *                be displayed.
+     * @param e an optional exception used to output a stack trace. If {@code null} 
+     *          is passed, no stack trace information will be displayed.
      */
     public static void logWarning(String message, Exception e) {
         String date = new SimpleDateFormat("MMM dd").format(new Date());
@@ -180,7 +177,7 @@ public final class Logger {
               .append(message)
               .append(System.lineSeparator());
         
-        //Output the stack trace if an exception if it's provided.
+        //Output the stack trace if an exception if it's provided
         if(e != null) {
             var stackTrace = e.getStackTrace();
             
@@ -207,9 +204,8 @@ public final class Logger {
      * directory from which the application was launched.
      * 
      * @param message the text to appear as output in the console/log file 
-     * @param e       an optional exception used to output a stack trace. If 
-     *                {@code null} is passed, JLogger will generate a 
-     *                nondescript {@link RuntimeException}.
+     * @param e an optional exception used to output a stack trace. If {@code null} 
+     *          is passed, the logger will generate a generic {@link RuntimeException}.
      */
     public static void logSevere(String message, Exception e) {
         String date = new SimpleDateFormat("MMM dd").format(new Date());
@@ -226,7 +222,7 @@ public final class Logger {
               .append(message)
               .append(System.lineSeparator());
 
-        //If no exception is provided we'll throw our own.
+        //If no exception is provided we'll throw our own
         if(e == null) e = new RuntimeException();
         var stackTrace = e.getStackTrace();
         
@@ -253,7 +249,7 @@ public final class Logger {
         }
 
         try(FileWriter logFile = new FileWriter(file.getName())) {
-            //Check size make sure we dont produce a crazy large file.
+            //Check size make sure we dont produce a crazy large file
             byte[] size = output.toString().getBytes("UTF-8");
             int maxSize = 3 * 1024 * 1024; //Roughly 3mb
             

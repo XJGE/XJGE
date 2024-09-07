@@ -82,7 +82,8 @@ public final class Graphics {
      * engine understands.
      * 
      * @param aiMatrix the Assimp matrix data we want to convert
-     * @return         a new four-component engine-friendly matrix object
+     * 
+     * @return a new four-component engine-friendly matrix object
      */
     static Matrix4f convertFromAssimp(AIMatrix4x4 aiMatrix) {
         Matrix4f conversion = new Matrix4f();

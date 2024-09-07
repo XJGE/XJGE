@@ -32,8 +32,8 @@ public abstract class Widget {
      * elements of a user interface.
      * 
      * @param position the position of the widget on the screen
-     * @param width    the width of the widget
-     * @param height   the height of the widget
+     * @param width the width of the widget
+     * @param height the height of the widget
      */
     public Widget(Vector3i position, int width, int height) {
         this.position = position;
@@ -63,9 +63,9 @@ public abstract class Widget {
      * accessed statically though the {@link XJGE} class if the implementation 
      * prefers.
      * 
-     * @param split          the current split value used to divide the screen
-     * @param viewportWidth  the width (in internal resolution pixels) of the 
-     *                       viewport rendering this widget
+     * @param split the current split value used to divide the screen
+     * @param viewportWidth the width (in internal resolution pixels) of the 
+     *                      viewport rendering this widget
      * @param viewportHeight the height (in internal resolution pixels) of the
      *                       viewport rendering this widget
      */
@@ -77,11 +77,11 @@ public abstract class Widget {
      * NOTE: Only the first viewport (ID: 0) will receive input from the 
      * keyboard.
      * 
-     * @param key    the value supplied by GLFW of a single key on the keyboard
+     * @param key the value supplied by GLFW of a single key on the keyboard
      * @param action an action supplied by GLFW that describes the nature of 
      *               the key press
-     * @param mods   a value supplied by GLFW denoting whether any modifier keys 
-     *               where held (such as shift or control)
+     * @param mods a value supplied by GLFW denoting whether any modifier keys 
+     *             where held (such as shift or control)
      * 
      * @see Input#getKeyChar(int, int)
      */
@@ -132,13 +132,13 @@ public abstract class Widget {
     /**
      * Draws a string of text to the screen.
      * 
-     * @param font     the font the text will be drawn in
-     * @param text     the string of text to display
+     * @param font the font the text will be drawn in
+     * @param text the string of text to display
      * @param position the position in the window at which the text string will 
      *                 be rendered
-     * @param color    the color the text will be rendered in
-     * @param opacity  a value between 0 and 1 indicating the opacity 
-     *                 (or transparency) of the text
+     * @param color the color the text will be rendered in
+     * @param opacity a value between 0 and 1 indicating the opacity (or 
+     *                transparency) of the text
      */
     protected void drawString(Font font, String text, Vector2i position, Color color, float opacity) {
         this.text.drawString(font, text, position, color, opacity);

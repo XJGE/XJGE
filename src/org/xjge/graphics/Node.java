@@ -29,7 +29,7 @@ class Node {
      * Constructs a new node object that will couple the name of a node 
      * (most often corresponding to a {@link Bone}) to a parent if one exists.
      * 
-     * @param name   the unique name used identify the node in the hierarchy
+     * @param name the unique name used identify the node in the hierarchy
      * @param parent the parent node of this node
      */
     Node(String name, Node parent) {
@@ -40,7 +40,7 @@ class Node {
     /**
      * Calculates the transformation of a node relative to its parents.
      * 
-     * @param node     the top level node to start calculating from
+     * @param node the top level node to start calculating from
      * @param frameNum the index of the animations current {@link KeyFrame}.
      * 
      * @return the final calculated transformation matrix
@@ -55,7 +55,7 @@ class Node {
             Matrix4f nodeTransform;
             
             if(frameNum < transforms.size()) nodeTransform = transforms.get(frameNum);
-            else if(transforms.size() > 0)   nodeTransform = transforms.get(transforms.size() - 1);
+            else if(!transforms.isEmpty())   nodeTransform = transforms.get(transforms.size() - 1);
             else                             nodeTransform = new Matrix4f();
             
             return parentTransform.mul(nodeTransform);

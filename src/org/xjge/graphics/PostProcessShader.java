@@ -38,14 +38,14 @@ public abstract class PostProcessShader {
      * Analogous to any other render method in the engine with the exception 
      * that it is used to render the framebuffer texture of a viewport.
      * 
-     * @param viewTexHandle  the handle of the framebuffer texture containing
-     *                       color information
+     * @param viewTexHandle the handle of the framebuffer texture containing
+     *                      color information
      * @param bloomTexHandle the handle of another framebuffer texture generated
      *                       by the engine when bloom effects are enabled
-     * @param projMatrix     A temporary projection matrix used by the engine,
-     *                       you'll want to pass this to your custom post-process 
-     *                       shader during the vertex stage
-     * @param g              the graphics object used by the viewport
+     * @param projMatrix A temporary projection matrix used by the engine,  you'll 
+     *                   want to pass this to your custom post-process shader 
+     *                   during the vertex stage
+     * @param g the graphics object used by the viewport
      */
     public abstract void render(int viewTexHandle, int bloomTexHandle, Matrix4f projMatrix, Graphics g);
     

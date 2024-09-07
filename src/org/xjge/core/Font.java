@@ -29,11 +29,9 @@ import org.xjge.graphics.Texture;
 //Created: Jun 3, 2021
 
 /**
- * Supplies the data parsed from a font file as an immutable object which can 
- * be passed to the 
- * {@linkplain Widget#drawString(Font, String, Vector2i, Color, float) drawString()} 
- * method of a {@link Widget} to render text in some desired 
- * font. TrueType (.ttf) and Bitmap (.bmf) are the preferred file formats of 
+ * Parses data from a font file and provides it as an object that can be passed 
+ * to the {@linkplain Widget#drawString(Font, String, Vector2i, Color, float) drawString()} 
+ * method. TrueType (.ttf) and Bitmap (.bmf) are the preferred file formats of 
  * this engine for fonts.
  * 
  * @author J Hoffman
@@ -100,8 +98,7 @@ public final class Font {
      * 
      * @param filename the name of the file to load. Expects the file extension 
      *                 to be included.
-     * @param size     the desired size (in pixels) to generate this fonts 
-     *                 glyphs at
+     * @param size the desired size (in pixels) to generate this fonts glyphs at
      */
     public Font(String filename, int size) {
         try(InputStream file = Font.class.getResourceAsStream(XJGE.getAssetsFilepath() + filename)) {
@@ -228,8 +225,7 @@ public final class Font {
      * instanced rendering.
      * 
      * @param file the file to parse font data from
-     * @param size the desired size (in pixels) to generate this fonts glyphs 
-     *             at
+     * @param size the desired size (in pixels) to generate this fonts glyphs at
      */
     private void loadVectorFont(InputStream file, int size) {
         this.size = size;

@@ -50,10 +50,8 @@ public class GLProgram {
      * Creates a new shader program with the code supplied from the compiled 
      * .glsl source files.
      * 
-     * @param shaders the objects representing various stages of the rendering 
-     *                pipeline
-     * @param name    the name used to identify the program should it fail to 
-     *                link properly
+     * @param shaders the objects representing various stages of the rendering pipeline
+     * @param name the name used to identify the program should it fail to link properly
      */
     public GLProgram(LinkedList<Shader> shaders, String name) {
         this.name = name;
@@ -77,10 +75,10 @@ public class GLProgram {
     /**
      * Generates a new {@link Uniform} object.
      * 
-     * @param name   the unique name used to identify the uniform variable as 
-     *               it appears in the .glsl source file
-     * @param buffer the data buffer that stores the value which will be 
-     *               supplied to the GPU at runtime
+     * @param name the unique name used to identify the uniform variable as it 
+     *             appears in the .glsl source file
+     * @param buffer the data buffer that stores the value which will be supplied 
+     *               to the GPU at runtime
      * 
      * @return a new uniform object
      */
@@ -132,8 +130,8 @@ public class GLProgram {
     /**
      * Supplies the specified uniform variable with a new value.
      * 
-     * @param name  the unique name used to identify the uniform variable as it 
-     *              appears in the .glsl source file
+     * @param name the unique name used to identify the uniform variable as it 
+     *             appears in the .glsl source file
      * @param value the new value of the uniform variable
      */
     public void setUniform(String name, int value) {
@@ -143,8 +141,8 @@ public class GLProgram {
     /**
      * Supplies the specified uniform variable with a new value.
      * 
-     * @param name  the unique name used to identify the uniform variable as it 
-     *              appears in the .glsl source file
+     * @param name the unique name used to identify the uniform variable as it 
+     *             appears in the .glsl source file
      * @param value the new value of the uniform variable
      */
     public void setUniform(String name, float value) {
@@ -154,8 +152,8 @@ public class GLProgram {
     /**
      * Supplies the specified uniform variable with a new value.
      * 
-     * @param name  the unique name used to identify the uniform variable as it 
-     *              appears in the .glsl source file
+     * @param name the unique name used to identify the uniform variable as it 
+     *             appears in the .glsl source file
      * @param value the new value of the uniform variable
      */
     public void setUniform(String name, Vector2f value) {
@@ -167,8 +165,8 @@ public class GLProgram {
     /**
      * Supplies the specified uniform variable with a new value.
      * 
-     * @param name  the unique name used to identify the uniform variable as it 
-     *              appears in the .glsl source file
+     * @param name the unique name used to identify the uniform variable as it 
+     *             appears in the .glsl source file
      * @param value the new value of the uniform variable
      */
     public void setUniform(String name, Vector3f value) {
@@ -180,8 +178,8 @@ public class GLProgram {
     /**
      * Supplies the specified uniform variable with a new value.
      * 
-     * @param name  the unique name used to identify the uniform variable as it 
-     *              appears in the .glsl source file
+     * @param name the unique name used to identify the uniform variable as it 
+     *             appears in the .glsl source file
      * @param value the new value of the uniform variable
      */
     public void setUniform(String name, Vector4f value) {
@@ -193,11 +191,11 @@ public class GLProgram {
     /**
      * Supplies the specified uniform variable with a new value.
      * 
-     * @param name      the unique name used to identify the uniform variable 
-     *                  as it appears in the .glsl source file
-     * @param transpose if true, the matrix data provided in the value 
-     *                  parameter will be transposed before it is read
-     * @param value     the new value of the uniform variable
+     * @param name the unique name used to identify the uniform variable as it 
+     *             appears in the .glsl source file
+     * @param transpose if true, the matrix data provided in the value parameter 
+     *                  will be transposed before it is read
+     * @param value the new value of the uniform variable
      */
     public void setUniform(String name, boolean transpose, Matrix2f value) {
         glUniformMatrix2fv(
@@ -209,11 +207,11 @@ public class GLProgram {
     /**
      * Supplies the specified uniform variable with a new value.
      * 
-     * @param name      the unique name used to identify the uniform variable 
-     *                  as it appears in the .glsl source file
-     * @param transpose if true, the matrix data provided in the value 
-     *                  parameter will be transposed before it is read
-     * @param value     the new value of the uniform variable
+     * @param name the unique name used to identify the uniform variable as it 
+     *             appears in the .glsl source file
+     * @param transpose if true, the matrix data provided in the value parameter
+     *                  will be transposed before it is read
+     * @param value the new value of the uniform variable
      */
     public void setUniform(String name, boolean transpose, Matrix3f value) {
         glUniformMatrix3fv(
@@ -225,11 +223,11 @@ public class GLProgram {
     /**
      * Supplies the specified uniform variable with a new value.
      * 
-     * @param name      the unique name used to identify the uniform variable 
-     *                  as it appears in the .glsl source file
-     * @param transpose if true, the matrix data provided in the value 
-     *                  parameter will be transposed before it is read
-     * @param value     the new value of the uniform variable
+     * @param name the unique name used to identify the uniform variable as it 
+     *             appears in the .glsl source file
+     * @param transpose if true, the matrix data provided in the value parameter 
+     *                  will be transposed before it is read
+     * @param value the new value of the uniform variable
      */
     public void setUniform(String name, boolean transpose, Matrix4f value) {
         glUniformMatrix4fv(
@@ -244,10 +242,10 @@ public class GLProgram {
      * single name- specifically for instances where the uniform variable in 
      * question is actually a collection such as an array.
      * 
-     * @param name      the unique name used to identify the uniform variable 
-     *                  array as it appears in the .glsl source file
-     * @param transpose if true, the matrix data provided in the value 
-     *                  parameter will be transposed before it is read
+     * @param name the unique name used to identify the uniform variable array 
+     *             as it appears in the .glsl source file
+     * @param transpose if true, the matrix data provided in the value parameter 
+     *                  will be transposed before it is read
      * @param values    a collection of values of the uniform variable array
      */
     public void setUniform(String name, boolean transpose, List<Matrix4f> values) {
@@ -268,10 +266,9 @@ public class GLProgram {
      * stage in its pipeline.
      * 
      * @param name the unique name used to identify the uniform variable as it 
-     *              appears in the .glsl source file
+     *             appears in the .glsl source file
      * 
-     * @return true if this program contains a uniform variable by the name
-     *          specified
+     * @return true if this program contains a uniform variable by the name specified
      */
     public boolean containsUniform(String name) {
         return uniforms.containsKey(name);

@@ -37,8 +37,7 @@ public final class Hardware {
      * Removes the specified display device from a collection of currently 
      * connected peripheral devices.
      * 
-     * @param handle a unique value provided by GLFW used to identify the 
-     *               device
+     * @param handle a unique value provided by GLFW used to identify the device
      */
     static void removeMonitor(long handle) {
         monitors.values().removeIf(monitor -> monitor.handle == handle);
@@ -48,10 +47,9 @@ public final class Hardware {
      * Obtains a display device from a collection of currently connected 
      * peripheral devices.
      * 
-     * @param handle a unique value provided by GLFW used to identify the 
-     *               device
+     * @param handle a unique value provided by GLFW used to identify the device
      * 
-     * @return the monitor object whos handle corresponds to the one supplied
+     * @return the monitor object whose handle corresponds to the one supplied
      */
     static Monitor getMonitor(long handle) {
         return monitors.values().stream()
@@ -64,8 +62,7 @@ public final class Hardware {
      * Obtains any available monitor currently connected and subject to the 
      * engines influence.
      * 
-     * @return a monitor object that's available to the engine for immediate 
-     *         use 
+     * @return a monitor object that's available to the engine for immediate use 
      */
     static Monitor getAnyMonitor() {
         return monitors.values().stream().findAny().get();
@@ -74,8 +71,7 @@ public final class Hardware {
     /**
      * Sets the value of vsync using data from the engine configuration file.
      * 
-     * @param enabled if true, vsync will be enabled when the engine is 
-     *                initialized
+     * @param enabled if true, vsync will be enabled when the engine is initialized
      */
     static void setVSyncPreference(boolean enabled) {
         vSyncEnabled = enabled;
@@ -161,8 +157,7 @@ public final class Hardware {
     
     /**
      * Obtains an object which represents the current monitor the window is 
-     * using. This method is identical in function to 
-     * {@link Window#getMonitor()}.
+     * using. This method is identical in function to {@link Window#getMonitor()}.
      * 
      * @return the current monitor object of the window
      */
@@ -181,8 +176,7 @@ public final class Hardware {
     
     /**
      * Determines whether the application will take advantage of vertical sync 
-     * (or VSync) while rendering frames. VSync is enabled by default on 
-     * startup.
+     * (or VSync) while rendering frames. VSync is enabled by default on startup.
      * 
      * @param vSyncEnabled if true, vertical sync will be enabled
      */

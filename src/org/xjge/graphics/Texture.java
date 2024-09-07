@@ -40,7 +40,7 @@ public final class Texture {
      * 
      * @param filename the name of the file to load. Expects the file extension 
      *                 to be included.
-     * @param target   the OpenGL texture target. One of:
+     * @param target the OpenGL texture target. One of:
      * <table><caption></caption><tr>
      * <td>{@link org.lwjgl.opengl.GL11C#GL_TEXTURE_2D TEXTURE_2D}</td>
      * <td>{@link org.lwjgl.opengl.GL30#GL_TEXTURE_1D_ARRAY TEXTURE_1D_ARRAY}</td>
@@ -86,7 +86,7 @@ public final class Texture {
      * Parses the data of the image file specified and generates a new OpenGL 
      * texture object from its contents.
      * 
-     * @param file   the file to extract texture data from
+     * @param file the file to extract texture data from
      * @param target the OpenGL texture target. One of:
      * <table><tr>
      * <td>{@link org.lwjgl.opengl.GL11C#GL_TEXTURE_2D TEXTURE_2D}</td>

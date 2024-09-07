@@ -42,7 +42,7 @@ public final class Text {
      * Checks to see whether or not a property of the rendered text has 
      * changed.
      * 
-     * @param <T>       the data type of the property
+     * @param <T> the data type of the property
      * @param prevValue the previous value of the property being checked
      * @param currValue the current value of the property in question
      * 
@@ -60,7 +60,7 @@ public final class Text {
      * Updates the value of a property to reflect whatever changes have been 
      * made to the string of rendered text.
      * 
-     * @param <T>       the data type of the property
+     * @param <T> the data type of the property
      * @param prevValue the previous value of the property being checked
      * @param currValue the current value of the property in question
      */
@@ -71,13 +71,13 @@ public final class Text {
     /**
      * Draws a string of text to the screen.
      * 
-     * @param font     the font the text will be drawn in
-     * @param text     the string of text to display
+     * @param font the font the text will be drawn in
+     * @param text the string of text to display
      * @param position the position in the window at which the text string will 
      *                 be rendered
-     * @param color    the color the text will be rendered in
-     * @param opacity  a value between 0 and 1 indicating the opacity 
-     *                 (or transparency) of the text
+     * @param color the color the text will be rendered in
+     * @param opacity a value between 0 and 1 indicating the opacity (or transparency) 
+     *                of the text
      */
     void drawString(Font font, String text, Vector2i position, Color color, float opacity) {
         drawOrder++;
@@ -124,8 +124,8 @@ public final class Text {
     /**
      * Draws a string of text that exhibits syntax highlighting.
      * 
-     * @param font     the font the text will be drawn in
-     * @param text     the string of text to display
+     * @param font the font the text will be drawn in
+     * @param text the string of text to display
      * @param position the position in the window at which the text string will 
      *                 be rendered
      */
@@ -171,15 +171,14 @@ public final class Text {
     /**
      * Draws the output response of a terminal command.
      * 
-     * @param font      the font the text will be drawn in
-     * @param o1        an array containing the output objects generated from 
-     *                  previously executed commands
-     * @param o2        the output object representing the response of the 
-     *                  executed command
-     * @param index     the current index that the output occupies in the 
-     *                  command terminals output history
-     * @param executed  if true, a new command has been executed and the 
-     *                  properties of a rendered text will need to be updated
+     * @param font the font the text will be drawn in
+     * @param o1 an array containing the output objects generated from previously 
+     *           executed commands
+     * @param o2 the output object representing the response of the executed command
+     * @param index the current index that the output occupies in the command 
+     *              terminals output history
+     * @param executed if true, a new command has been executed and the properties 
+     *                 of a rendered text will need to be updated
      * @param rectangle the rectangle object that will serve as a background to 
      *                  the generated output string
      */
@@ -239,9 +238,9 @@ public final class Text {
      * Attempts to wrap a string inside of the width specified. Will not break 
      * words.
      * 
-     * @param text         the string of text to wrap
+     * @param text the string of text to wrap
      * @param advanceLimit the width that the string may not exceed
-     * @param font         the current font of the string being wrapped
+     * @param font the current font of the string being wrapped
      * 
      * @return a string formatted to fit inside the width specified
      */
@@ -313,7 +312,7 @@ public final class Text {
      * point.
      * 
      * @param text  the string of text to examine
-     * @param c     the character to search for
+     * @param c the character to search for
      * @param index the index to offset the search by. Any index preceding the 
      *              one specified will be omitted from the search.
      * 

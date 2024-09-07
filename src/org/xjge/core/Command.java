@@ -6,22 +6,17 @@ import static org.lwjgl.glfw.GLFW.GLFW_PRESS;
 //Created: May 3, 2021
 
 /**
- * Abstraction of the Gang of Four pattern by the same name- command objects 
- * serve as a point at which a {@link Control} from an {@link InputDevice} can 
- * be coupled to various player actions and passed to a {@link Puppet} object. 
+ * Command objects represent individual actions that can be performed by a player.
  * <p>
- * More generally, whenever you want to create a new action the player can 
- * perform- such as walking, jumping, or shooting, you'll define that 
+ * More specifically, whenever you want to create a new action the player can 
+ * perform, such as walking, jumping, or shooting, you'll define that 
  * behavior in an object that extends this class. Objects of this type are 
  * automatically supplied with information about the current state of the 
- * players input device. This information in conjunction with several 
- * convenience methods provided by the parent class can be used to create 
- * player actions that exhibit a high level of fidelity.
+ * players input device.
  * <p>
- * The command superclass lacks constructors by design to encourage subclasses 
- * to define their own. This open-ended approach allows subclasses to capture 
- * whatever supplemental information they require to sufficiently perform the 
- * player actions they've been assigned to.
+ * The command superclass lacks constructors by design, subclasses are expected 
+ * to provide their own and capture whatever supplemental information they may 
+ * need to sufficiently perform their actions.
  * 
  * @author J Hoffman
  * @since  2.0.0
@@ -48,16 +43,13 @@ public abstract class Command {
      * Captures the state of the input device executing this command and 
      * provides it to the subclass.
      * 
-     * @param inputValue   the floating point value of a single interactive 
-     *                     component
-     * @param device       the input device that is executing this command
-     * @param control      the current interactive component being acted upon
-     * @param glfwButtonID the number used by GLFW to identify an interactive
-     *                     component
-     * @param targetDelta  a constant value denoting the desired time (in 
-     *                     seconds) it should take for one game tick to complete
-     * @param trueDelta    the actual time (in seconds) it took the current game
-     *                     tick to complete
+     * @param inputValue a floating point value produced by a control
+     * @param device the current input device executing this command
+     * @param control the current interactive component being acted on
+     * @param glfwButtonID a number used by GLFW to identify the control
+     * @param targetDelta a constant value denoting the desired time (in seconds) 
+     *                    it should take for one game tick to complete
+     * @param trueDelta the actual time (in seconds) it took the current game tick to complete
      */
     void execute(float inputValue, InputDevice device, Control control, int glfwButtonID, double targetDelta, double trueDelta) {
         this.inputValue   = inputValue;
@@ -75,8 +67,8 @@ public abstract class Command {
      * 
      * @param targetDelta a constant value denoting the desired time (in 
      *                    seconds) it should take for one game tick to complete
-     * @param trueDelta   the actual time (in seconds) it took the current game
-     *                    tick to complete
+     * @param trueDelta the actual time (in seconds) it took the current game
+     *                  tick to complete
      */
     public abstract void execute(double targetDelta, double trueDelta);
     
@@ -84,7 +76,7 @@ public abstract class Command {
      * Provides subclasses with a value describing the current state of the 
      * {@link Control} coupled to this command. The value provided may be 
      * between -1 to 1 or 0 to 1 depending on the input device used and the 
-     * interactive component being pressed.
+     * interactive component being pressed/moved.
      * 
      * @return a value denoting the current state of a single interactive 
      *         component on the input device
@@ -102,7 +94,7 @@ public abstract class Command {
      * interactive components on their input devices.
      * <p>
      * NOTE: This should <i>not</i> be used to supplement the functionality of 
-     * the control object- which exists to decouple device-specific button 
+     * the control object, which exists to decouple device-specific button 
      * layouts from game-defined ones.
      * 
      * @return the GLFW value used to identify the interactive component 

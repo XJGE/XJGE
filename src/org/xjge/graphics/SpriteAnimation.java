@@ -29,8 +29,7 @@ public class SpriteAnimation {
     /**
      * Creates a new single-frame animation- a non-animation if you will.
      * 
-     * @param frame the frame to display indefinitely until the animation is 
-     *              changed
+     * @param frame the frame to display indefinitely until the animation is changed
      */
     public SpriteAnimation(Vector2i frame) {
         frames.add(frame);
@@ -42,7 +41,7 @@ public class SpriteAnimation {
      * Creates a new 2D animation using the frames provided.
      * 
      * @param frames the frames that comprise the animation in sequence
-     * @param speed  the speed of the animation in game ticks
+     * @param speed the speed of the animation in game ticks
      */
     public SpriteAnimation(ArrayList<Vector2i> frames, int speed) {
         this.frames  = frames;

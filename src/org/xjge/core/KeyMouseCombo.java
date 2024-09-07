@@ -31,8 +31,8 @@ final class KeyMouseCombo extends InputDevice {
      * Creates a new KeyMouseCombo object and applies the users settings to its 
      * control configuration.
      * 
-     * @param id       the unique number used to identify the device in 
-     *                 other parts of the engine
+     * @param id the unique number used to identify the device in other parts of
+     *           the engine
      * @param controls a collection of various {@link Control} mappings
      * @param settings a collection containing additional user preferences
      */

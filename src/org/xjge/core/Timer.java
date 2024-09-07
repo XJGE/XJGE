@@ -27,8 +27,8 @@ public class Timer {
      * Creates a new timer object that will step forward every time the 
      * specified number of update cycles have passed.
      * 
-     * @param time  the total number of intervals the timer must complete 
-     *              before it is finished
+     * @param time the total number of intervals the timer must complete before 
+     *             it is finished
      * @param speed the number of game ticks to wait before stepping forward. A 
      *              single tick typically takes 16 milliseconds.
      * 
@@ -46,10 +46,10 @@ public class Timer {
      * specified number of update cycles have passed. This constructor will 
      * notify an observer once the timer has finished.
      * 
-     * @param time     the total number of steps the timer must complete before 
-     *                 it is finished
-     * @param speed    the number of update ticks to wait before stepping 
-     *                 forward. A single tick typically takes a millisecond.
+     * @param time the total number of steps the timer must complete before it 
+     *             is finished
+     * @param speed the number of update ticks to wait before stepping forward. 
+     *              A single tick typically takes a millisecond.
      * @param observer the object waiting for this timer to finish
      * 
      * @see Observable
@@ -69,10 +69,10 @@ public class Timer {
      * specified number of update cycles have passed. This constructor will 
      * notify multiple observers once the timer has finished.
      * 
-     * @param time      the total number of steps the timer must complete 
-     *                  before it is finished
-     * @param speed     the number of update ticks to wait before stepping 
-     *                  forward. A single tick typically takes a millisecond.
+     * @param time the total number of steps the timer must complete before it 
+     *             is finished
+     * @param speed the number of update ticks to wait before stepping forward. 
+     *              A single tick typically takes a millisecond.
      * @param observers the objects waiting for this timer to finish
      * 
      * @see Observable

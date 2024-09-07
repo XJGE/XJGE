@@ -39,8 +39,8 @@ public final class Icon {
      * Creates a new icon object which can be used to comprise part of a larger 
      * user interface.
      * 
-     * @param texture    the texture image to use
-     * @param cellWidth  the width of each sub-image cell in pixels
+     * @param texture the texture image to use
+     * @param cellWidth the width of each sub-image cell in pixels
      * @param cellHeight the height of each sub-image cell in pixels
      * @param fromCenter if true the icon will be positioned from its center 
      *                   instead of its bottom left corner
@@ -99,8 +99,8 @@ public final class Icon {
      * adds another parameter that can be used to position the icon by it's 
      * center.
      * 
-     * @param texture    the texture image to use
-     * @param cellWidth  the width of each sub-image cell in pixels
+     * @param texture the texture image to use
+     * @param cellWidth the width of each sub-image cell in pixels
      * @param cellHeight the height of each sub-image cell in pixels
      */
     public Icon(Texture texture, int cellWidth, int cellHeight) {

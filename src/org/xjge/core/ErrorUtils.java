@@ -7,7 +7,7 @@ import static org.lwjgl.opengl.GL30.*;
 
 /**
  * Provides convenience methods for locating errors encountered by the engine 
- * at runtime.
+ * during runtime.
  * 
  * @author J Hoffman
  * @since  2.0.0

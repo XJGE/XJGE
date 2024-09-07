@@ -27,8 +27,8 @@ public class Instance2D {
      * Constructs a rectangular instance that uses a sprite image as its 
      * texture. Useful for text, tiles, etc.
      * 
-     * @param texture    the texture image to use
-     * @param cellWidth  the width of each sub-image cell in pixels
+     * @param texture the texture image to use
+     * @param cellWidth the width of each sub-image cell in pixels
      * @param cellHeight the height of each sub-image cell in pixels
      * @param fromCenter determines whether the instance will be offset by its 
      *                   center or bottom left corner relative to its position

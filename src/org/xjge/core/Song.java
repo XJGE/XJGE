@@ -35,8 +35,8 @@ public final class Song {
      * 
      * @param introFilename the name of the file to load for the intro section. 
      *                      Expects the file extension to be included.
-     * @param bodyFilename  the name of the file to load for the body section. 
-     *                      Expects the file extension to be included.
+     * @param bodyFilename the name of the file to load for the body section. 
+     *                     Expects the file extension to be included.
      * 
      * @see Audio#playMusic(Song) 
      */

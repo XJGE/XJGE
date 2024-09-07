@@ -15,11 +15,10 @@ import org.lwjgl.system.MemoryUtil;
 //Created: Jun 13, 2021
 
 /**
- * A cubemap is similar in function to a 
- * {@link org.xjge.graphics.Texture Texture} object, but instead 
- * uses the data supplied through multiple image files to generate a new 
- * three-dimensional texture object that can be used to map several individual 
- * images onto different faces of a mesh.
+ * A cubemap is similar in function to a {@link org.xjge.graphics.Texture Texture} 
+ * object, but instead uses the data supplied through multiple image files to 
+ * generate a new three-dimensional texture that can be used to map several 
+ * individual images onto different faces of a mesh.
  * 
  * @author J Hoffman
  * @since  2.0.0
@@ -30,16 +29,15 @@ final class Cubemap {
     
     /**
      * Creates a new cubemap texture object from the image files provided. Like 
-     * conventional {@link Texture} objects, the cubemap will provide a 
-     * fallback texture in place of missing images. 
+     * conventional {@link Texture} objects, the cubemap provides a fallback 
+     * texture in place of missing images.
      * <p>
      * NOTE: All images used by the cubemap must exhibit the same width/height 
      * dimensions in pixels otherwise it will appear black.
      * 
-     * @param images          a collection containing the names of each image 
-     *                        file to parse texture data from
-     * @param useLinearFilter if true, the textures will be filtered without 
-     *                        hard edges
+     * @param images a collection containing the names of each image file to 
+     *               parse texture data from
+     * @param useLinearFilter if true, the textures will be filtered without hard edges
      */
     Cubemap(Map<Integer, String> images, boolean useLinearFilter) {
         handle = glGenTextures();
@@ -72,7 +70,7 @@ final class Cubemap {
      * 
      * @param target the OpenGL texture target, this is specified automatically 
      *               through the cubemaps constructor
-     * @param file   the file to parse texture data from
+     * @param file the file to parse texture data from
      */
     private void loadCubemapTexture(int target, InputStream file) {
         try(MemoryStack stack = MemoryStack.stackPush()) {

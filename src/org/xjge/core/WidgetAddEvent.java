@@ -23,9 +23,8 @@ class WidgetAddEvent {
      * within the {@link Game} class.
      * 
      * @param viewportID the ID number of the viewport to add the widget to
-     * @param name       the name that will be used to identify and remove the 
-     *                   widget later
-     * @param widget     the widget object to add
+     * @param name the name that will be used to identify/remove the widget
+     * @param widget the widget object to add
      */
     WidgetAddEvent(int viewportID, String name, Widget widget) {
         this.viewportID = viewportID;

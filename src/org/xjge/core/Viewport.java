@@ -20,8 +20,8 @@ import org.xjge.graphics.PostProcessShader;
 //Created: May 11, 2021
 
 /**
- * Represents a rectangular region of the game window through which the 
- * perspective of a scene and its rendered objects may be viewed.
+ * Represents a rectangular section of the game window that serves as the players
+ * viewpoint.
  * 
  * @author J Hoffman
  * @since  2.0.0
@@ -56,8 +56,7 @@ final class Viewport {
      * 
      * @param id the unique number used to identify the viewport in other parts 
      *           of the engine. Corresponds directly with 
-     *           {@link org.lwjgl.glfw.GLFW#GLFW_JOYSTICK_1 GLFW_JOYSTICK} 
-     *           values.
+     *           {@link org.lwjgl.glfw.GLFW#GLFW_JOYSTICK_1 GLFW_JOYSTICK} values.
      */
     Viewport(int id) {
         this.id = id;
@@ -147,7 +146,7 @@ final class Viewport {
      * 
      * @param glPrograms an immutable collection containing the shader programs 
      *                   compiled during startup
-     * @param stage      the stage denoting the viewports current render pass
+     * @param stage the stage denoting the viewports current render pass
      * @param projMatrix the projection matrix managed internally by the engine
      */
     void render(Map<String, GLProgram> glPrograms, String stage, Matrix4f projMatrix) {
@@ -211,11 +210,11 @@ final class Viewport {
     /**
      * Processes input from the keyboard captured by the game window.
      * 
-     * @param key    the value supplied by GLFW of a single key on the keyboard
+     * @param key the value supplied by GLFW of a single key on the keyboard
      * @param action an action supplied by GLFW that describes the nature of 
      *               the key press
-     * @param mods   a value supplied by GLFW denoting whether any mod keys 
-     *               where held (such as shift or control)
+     * @param mods a value supplied by GLFW denoting whether any mod keys where 
+     *             held (such as shift or control)
      */
     void processKeyInput(int key, int action, int mods) {        
         ui.values().forEach(widget -> {
@@ -239,12 +238,12 @@ final class Viewport {
     /**
      * Sets the resolution and position of the viewport inside the game window.
      * 
-     * @param width  the width of the viewport in pixels
+     * @param width the width of the viewport in pixels
      * @param height the height of the viewport in pixels
-     * @param x1     the x-coordinate of the viewports bottom-left corner
-     * @param y1     the y-coordinate of the viewports bottom-left corner
-     * @param x2     the x-coordinate of the viewports top-right corner
-     * @param y2     the y-coordinate of the viewports top-right corner
+     * @param x1 the x-coordinate of the viewports bottom-left corner
+     * @param y1 the y-coordinate of the viewports bottom-left corner
+     * @param x2 the x-coordinate of the viewports top-right corner
+     * @param y2 the y-coordinate of the viewports top-right corner
      */
     void setBounds(int width, int height, int x1, int y1, int x2, int y2) {
         this.width  = width;
@@ -266,8 +265,7 @@ final class Viewport {
      * priority. For example, a component with a z-position of 0 will be 
      * rendered in front of a component with a z-position of 1.
      * 
-     * @param name   the name that will be used to identify and remove the 
-     *               widget later
+     * @param name the name that will be used to identify/remove the widget
      * @param widget the widget to add
      */
     void addUIWidget(boolean debugEnabled, String name, Widget widget) {

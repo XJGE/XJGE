@@ -39,9 +39,8 @@ public abstract class TerminalCommand {
      * </table>
      * 
      * @param description a description of what the command does
-     * @param usage       a description of how to use the command from the 
-     *                    terminal
-     * @param syntax      the syntax structure of the command
+     * @param usage a description of how to use the command from the terminal
+     * @param syntax the syntax structure of the command
      */
     public TerminalCommand(String description, String usage, String syntax) {
         this.description = description;
@@ -111,7 +110,7 @@ public abstract class TerminalCommand {
     /**
      * Provides a response to the user upon executing a command.
      * 
-     * @param text  the text to show the user
+     * @param text the text to show the user
      * @param color the color the text will be rendered in
      */
     protected void setOutput(String text, Color color) {
@@ -123,8 +122,7 @@ public abstract class TerminalCommand {
      * signature. Commands are considered "setter" style if they can be used to 
      * iterate and apply changes through some collection.
      * 
-     * @param diff the small difference used to better contextualize the 
-     *             response
+     * @param diff the small difference used to better contextualize the response
      * 
      * @return the generated message as a string
      */
@@ -139,8 +137,7 @@ public abstract class TerminalCommand {
      * signature. Commands are considered "showing" style if they control some 
      * boolean value.
      * 
-     * @param diff the small difference used to better contextualize the 
-     *             response
+     * @param diff the small difference used to better contextualize the response
      * 
      * @return the generated message as a string
      */
@@ -167,7 +164,7 @@ public abstract class TerminalCommand {
      * allowed by a command.
      * 
      * @param numPassed the number of arguments provided by the user
-     * @param maxArgs   the maximum number of arguments allowed by the command
+     * @param maxArgs the maximum number of arguments allowed by the command
      * 
      * @return an error message as a string that can be passed to 
      *         {@link setOutput setOutput()}
@@ -181,7 +178,7 @@ public abstract class TerminalCommand {
      * command which cannot be processed either due to differing data types or 
      * a syntax error.
      * 
-     * @param found    the argument provided by the user
+     * @param found the argument provided by the user
      * @param required the argument(s) or data types as accepted by the command
      * 
      * @return an error message as a string that can be passed to 

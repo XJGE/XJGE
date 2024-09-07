@@ -81,8 +81,7 @@ final class FontVertexData {
      * Offsets the position of each glyph in the string according to its 
      * individual spacing requirements.
      * 
-     * @param glyphs the collection of glyphs that comprise the string being 
-     *               drawn
+     * @param glyphs the collection of glyphs that comprise the string being drawn
      */
     private void offsetPosition(HashMap<Integer, Glyph> glyphs) {
         try(MemoryStack stack = MemoryStack.stackPush()) {
@@ -108,7 +107,7 @@ final class FontVertexData {
      * corresponding cells (or sub-images) as they appear in the bitmap image 
      * of the font provided.
      * 
-     * @param font   the font the text will be drawn in
+     * @param font the font the text will be drawn in
      * @param glyphs the collection of glyphs that comprise the string being drawn
      */
     private void offsetTexture(Font font, HashMap<Integer, Glyph> glyphs) {
@@ -138,8 +137,7 @@ final class FontVertexData {
      * Changes the color of each glyph instance according to its individual 
      * specifications.
      * 
-     * @param glyphs the collection of glyphs that comprise the string being 
-     *               drawn
+     * @param glyphs the collection of glyphs that comprise the string being drawn
      */
     private void offsetColor(HashMap<Integer, Glyph> glyphs) {
         try(MemoryStack stack = MemoryStack.stackPush()) {
@@ -164,11 +162,9 @@ final class FontVertexData {
      * Renders a string of text according to the glyph metrics of the font 
      * provided.
      * 
-     * @param font    the font the text will be drawn in
-     * @param glyphs  the collection of glyphs that comprise the string being 
-     *                drawn
-     * @param changed if true, the updated vertex data will be passed to the 
-     *                GPU
+     * @param font the font the text will be drawn in
+     * @param glyphs  the collection of glyphs that comprise the string being drawn
+     * @param changed if true, the updated vertex data will be passed to the GPU
      * @param opacity a value between 0 and 1 indicating the opacity 
      *                (or transparency) of the text
      */
