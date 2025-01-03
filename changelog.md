@@ -4,7 +4,7 @@ All notable changes to this project will be documented in this file. The format 
 
 ## [3.1.0] - 2025-01-03
 
-## Added
+### Added
 - New Scene.addEntity() method allows Entity objects to be safely added to scenes.
 - New Entity.getIndex() method returns the index number assigned to this entity by the engine when it was added to a scene using Scene.addEntity().
 
