@@ -23,7 +23,7 @@ import org.xjge.graphics.GLProgram;
  * <p>
  * These gameplay methods include:
  * <ul>
- * <li>{@linkplain #addEntity(String, Entity)}</li>
+ * <li>{@linkplain #addEntity(int, Entity)}</li>
  * <li>{@linkplain #addEvent(Event)}</li>
  * <li>{@linkplain #addLight(int, Light)}</li>
  * <li>{@linkplain #setClearColor(Color)}</li>
