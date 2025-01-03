@@ -2,7 +2,9 @@ package org.xjge.core;
 
 import org.xjge.graphics.GLProgram;
 import java.util.LinkedHashMap;
+import java.util.LinkedList;
 import java.util.Map;
+import java.util.Queue;
 import org.joml.Matrix4f;
 import org.joml.Vector3f;
 
@@ -34,11 +36,15 @@ public abstract class Scene {
      */
     public static final int MAX_LIGHTS = 32;
     
+    private static int nextEntityIndex;
+    
     public final String name;
     private Skybox skybox;
     private ShadowMap shadowMap;
     
     private static final Vector3f noValue = new Vector3f();
+    
+    private final Queue<Entity> entityAddQueue = new LinkedList<>();
     
     /**
      * A collection of every {@link Entity} object in the scene.
@@ -64,7 +70,7 @@ public abstract class Scene {
      * volume of entity objects lambda expressions like those shown above are 
      * usually sufficient for most cases.
      */
-    protected final LinkedHashMap<String, Entity> entities = new LinkedHashMap<>();
+    protected final LinkedHashMap<Integer, Entity> entities = new LinkedHashMap<>();
     
     /**
      * An array that contains every {@link Light} object currently present 
@@ -93,7 +99,8 @@ public abstract class Scene {
      * @param name the name used to refer to the scene in other parts of the engine
      */
     public Scene(String name) {
-        this.name = name;
+        this.name       = name;
+        nextEntityIndex = 0;
     }
     
     /**
@@ -319,6 +326,18 @@ public abstract class Scene {
     }
     
     /**
+     * Safely adds entity objects to the scenes {@link entities} collection. 
+     * This method is called automatically by the engine.
+     */
+    void processAddRequests() {
+        while(!entityAddQueue.isEmpty()) {
+            Entity entity = entityAddQueue.poll();
+            entity.index  = nextEntityIndex++;
+            entities.put(entity.index, entity);
+        }
+    }
+    
+    /**
      * Safely removes entity objects from the scenes {@link entities} 
      * collection. This method is called automatically by the engine.
      */
@@ -374,5 +393,16 @@ public abstract class Scene {
      * are no longer needed should be freed here.
      */
     public abstract void exit();
+    
+    /**
+     * Safely adds an entity to this scene. Calling this method will 
+     * automatically assign the entity with an index number corresponding to its
+     * key in the {@linkplain entities} collection.
+     * 
+     * @param entity the new entity object that will be added to this scene
+     */
+    public void addEntity(Entity entity) {
+        entityAddQueue.add(entity);
+    }
     
 }

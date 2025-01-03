@@ -14,6 +14,8 @@ import org.joml.Vector3f;
  */
 public abstract class Entity {
 
+    int index = -1;
+    
     private boolean remove;
     
     public final Vector3f position;
@@ -112,6 +114,20 @@ public abstract class Entity {
     public final boolean removalRequested() {
         if(remove) destroy();
         return remove;
+    }
+    
+    /**
+     * Obtains the index number automatically assigned to the entity when it was
+     * added to the scene with the 
+     * {@linkplain Scene#addEntity(org.xjge.core.Entity) Scene.addEntity()} 
+     * method.
+     * 
+     * @return the number used as this entities key in the 
+     *         {@linkplain Scene#entities entites} collection, or -1 if a number 
+     *         has not yet been assigned
+     */
+    public final int getIndex() {
+        return index;
     }
     
 }

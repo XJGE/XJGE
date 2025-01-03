@@ -4,10 +4,13 @@ All notable changes to this project will be documented in this file. The format 
 
 ## [3.1.0] - 2025-01-03
 
+## Added
+- New Scene.addEntity() method allows Entity objects to be safely added to scenes.
+- New Entity.getIndex() method returns the index number assigned to this entity by the engine when it was added to a scene using Scene.addEntity().
+
 ### Changed
-- Deprecated render() method in Entity that only used a single glProgram, this will be removed in a future version.
-- Entity collection in Scene now uses integers as keys instead of Strings.
-- 
+- Deprecated render() method in Entity that only used a single glProgram parameter, this will be removed in a future version.
+- Entity collection in Scene now uses integers as keys instead of Strings. Entites are assigned index numbers which correspond to their key if Scene.addEntity() is used.
 
 ## [3.0.0] - 2024-06-04
 

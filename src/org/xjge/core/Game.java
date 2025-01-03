@@ -106,6 +106,7 @@ public final class Game {
                     if(!event.resolved) event.resolve();
                     else                events.poll();
                 } else {
+                    scene.processAddRequests();
                     scene.update(TARGET_DELTA, deltaMetric);
                     scene.updateLightSources();
                     scene.processRemoveRequests();
@@ -344,17 +345,18 @@ public final class Game {
     }
     
     /**
-     * Adds an entity to the current scene. Generally speaking you'll only want 
-     * to use this for instances where a brute-force solution is required, 
-     * otherwise entity objects should be managed directly from within the 
-     * scene subclass itself.
+     * Adds an entity to the current scene at the specified index. Generally 
+     * speaking you'll only want to use this for debugging purposes. Otherwise 
+     * entity objects should be managed directly from within the scene subclass 
+     * itself, or through a call to a method like 
+     * {@linkplain Scene#addEntity(org.xjge.core.Entity) Scene.addEntity()}.
      * 
-     * @param name the name that will be used to identify the entity in the 
-     *             current scenes {@linkplain Scene#entities entity collection}
-     * @param entity the entity object to add
+     * @param index the index to place the entity at the current scenes 
+     *              {@linkplain Scene#entities entity collection}
+     * @param entity the new entity object that will be added to this scene
      */
-    public static final void addEntity(String name, Entity entity) {
-        scene.entities.put(name, entity);
+    public static final void addEntity(Integer index, Entity entity) {
+        scene.entities.put(index, entity);
     }
     
     /**
