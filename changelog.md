@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. The format of this file follows that specified by [Keep a Changelog](https://keepachangelog.com/en/1.0.0/). This project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [3.1.0] - 2025-01-03
+
+### Changed
+- Deprecated render() method in Entity that only used a single glProgram, this will be removed in a future version.
+- Entity collection in Scene now uses integers as keys instead of Strings.
+- 
+
 ## [3.0.0] - 2024-06-04
 
 ### Added

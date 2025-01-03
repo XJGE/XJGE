@@ -41,6 +41,9 @@ public abstract class Entity {
     /**
      * Used to organize calls to the OpenGL API and other code pertaining to
      * rendering.
+     * @deprecated
+     * The variant of this method that takes a collection of GLProgram objects
+     * should be used exclusively moving forward.
      * 
      * @param glProgram the shader program that will be used to render this entity
      * @param camera the camera of viewport currently completing its render cycle
@@ -50,14 +53,12 @@ public abstract class Entity {
      * 
      * @see render(Map, Camera, Light[], int)
      */
-    public abstract void render(GLProgram glProgram, Camera camera, Light[] lights, int depthTexHandle);
+    @Deprecated(since = "3.1.0", forRemoval = true)
+    public void render(GLProgram glProgram, Camera camera, Light[] lights, int depthTexHandle) {}
     
     /**
      * Used to organize calls to the OpenGL API and other code pertaining to
      * rendering.
-     * <p>
-     * This variant of the render method allows entities to utilize multiple 
-     * shader programs.
      * 
      * @param glPrograms an immutable collection containing the shader 
      *                   programs compiled during startup
