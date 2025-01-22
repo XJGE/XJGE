@@ -868,7 +868,7 @@ public final class Input {
      *                   was manipulated or zero if not at all
      */
     public static void setVirtualGamepadInput(int deviceID, Control control, float inputValue) {
-        if(deviceID <= AI_GAMEPAD_1 && deviceID >= AI_GAMEPAD_16) {
+        if(deviceID >= AI_GAMEPAD_1 && deviceID <= AI_GAMEPAD_16) {
             ((VirtualGamepad) inputDevices.get(deviceID)).inputValues.put(control, inputValue);
         }
     }
