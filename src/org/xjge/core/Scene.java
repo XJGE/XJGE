@@ -1,10 +1,11 @@
 package org.xjge.core;
 
+import java.util.HashMap;
 import org.xjge.graphics.GLProgram;
-import java.util.LinkedHashMap;
 import java.util.LinkedList;
 import java.util.Map;
 import java.util.Queue;
+import java.util.UUID;
 import org.joml.Matrix4f;
 import org.joml.Vector3f;
 
@@ -35,8 +36,6 @@ public abstract class Scene {
      * present in the scene at any given time.
      */
     public static final int MAX_LIGHTS = 32;
-    
-    private static int nextEntityIndex;
     
     public final String name;
     private Skybox skybox;
@@ -70,7 +69,7 @@ public abstract class Scene {
      * volume of entity objects lambda expressions like those shown above are 
      * usually sufficient for most cases.
      */
-    protected final LinkedHashMap<Integer, Entity> entities = new LinkedHashMap<>();
+    protected final Map<UUID, Entity> entities = new HashMap<>();
     
     /**
      * An array that contains every {@link Light} object currently present 
@@ -99,8 +98,7 @@ public abstract class Scene {
      * @param name the name used to refer to the scene in other parts of the engine
      */
     public Scene(String name) {
-        this.name       = name;
-        nextEntityIndex = 0;
+        this.name = name;
     }
     
     /**
@@ -332,8 +330,7 @@ public abstract class Scene {
     void processAddRequests() {
         while(!entityAddQueue.isEmpty()) {
             Entity entity = entityAddQueue.poll();
-            entity.index  = nextEntityIndex++;
-            entities.put(entity.index, entity);
+            entities.put(entity.uuid, entity);
         }
     }
     

@@ -355,8 +355,8 @@ public final class Game {
      *              {@linkplain Scene#entities entity collection}
      * @param entity the new entity object that will be added to this scene
      */
-    public static final void addEntity(int index, Entity entity) {
-        scene.entities.put(index, entity);
+    public static final void addEntity(Entity entity) {
+        scene.entities.put(entity.uuid, entity);
     }
     
     /**
