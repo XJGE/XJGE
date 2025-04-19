@@ -14,9 +14,9 @@ import static org.lwjgl.stb.STBImage.stbi_load_from_memory;
 import org.lwjgl.system.MemoryStack;
 import org.lwjgl.system.MemoryUtil;
 
-//Created: May 11, 2021
-
 /**
+ * Created: May 11, 2021
+ * <p>
  * Supplies the data parsed from an image file into a new two-dimensional 
  * texture object that can be used by the graphics pipeline. RBGA encoded .png 
  * is the preferred file format of this engine. OpenGL texture parameters are 

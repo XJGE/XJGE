@@ -24,9 +24,9 @@ import static org.lwjgl.system.MemoryUtil.NULL;
 import org.xjge.core.Camera;
 import org.xjge.core.Light;
 
-//Created: Jun 16, 2021
-
 /**
+ * Created: Jun 16, 2021
+ * <br><br>
  * Represents a 3D model. Models may possess animations, multiple meshes, 
  * textures, or a combination of these things. Various limitations are imposed 
  * by the engine to ensure models are loaded with consistency. The Autodesk 

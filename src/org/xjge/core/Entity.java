@@ -5,7 +5,7 @@ import java.util.Map;
 import java.util.UUID;
 
 /**
- * Created: Apr 8, 2025
+ * Created: May 7, 2021 (4.0.0 rewrite on Apr 8, 2025)
  * <p>
  * Used to represent a distinct object in the scene, typically composed of 
  * several {@linkplain Component components} which define its behavior.
@@ -15,7 +15,7 @@ import java.util.UUID;
  * functionality through their attached components.
  * 
  * @author J Hoffman
- * @since  4.0.0
+ * @since  2.0.0
  */
 public final class Entity {
 

@@ -3,9 +3,9 @@ package org.xjge.graphics;
 import org.joml.Vector3f;
 import org.xjge.core.XJGE;
 
-//Created: May 8, 2021
-
 /**
+ * Created: May 8, 2021
+ * <br><br>
  * An immutable object used to represent color.
  * 
  * @author J Hoffman

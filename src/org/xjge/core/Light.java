@@ -9,9 +9,9 @@ import org.xjge.graphics.Color;
 import org.xjge.graphics.Graphics;
 import org.xjge.graphics.Texture;
 
-//Created: Jun 12, 2021
-
 /**
+ * Created: Jun 12, 2021
+ * <p>
  * Represents a source of visible light at some point in 3D space. This can be 
  * best understood as a physical object that emits light, such as a light bulb.
  * <p>

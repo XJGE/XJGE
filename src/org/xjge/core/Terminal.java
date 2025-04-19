@@ -12,9 +12,9 @@ import java.util.TreeMap;
 import org.joml.Vector2i;
 import static org.lwjgl.glfw.GLFW.*;
 
-//Created: May 23, 2021
-
 /**
+ * Created: May 23, 2021
+ * <p>
  * Provides a command line through which the engine may be interacted with at
  * runtime.
  * <p>

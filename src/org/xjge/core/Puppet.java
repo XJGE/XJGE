@@ -3,9 +3,9 @@ package org.xjge.core;
 import java.util.HashMap;
 import static org.xjge.core.Input.*;
 
-//Created: May 3, 2021
-
 /**
+ * Created: May 3, 2021
+ * <p>
  * Puppet objects serve as a coupling between a {@link Control} from an 
  * {@link InputDevice} and an {@linkplain Command action} that can be performed 
  * by the player.

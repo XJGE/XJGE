@@ -6,9 +6,9 @@ import static org.lwjgl.glfw.GLFW.*;
 import org.lwjgl.glfw.GLFWGamepadState;
 import org.lwjgl.system.MemoryStack;
 
-//Created: May 3, 2021
-
 /**
+ * Created: May 3, 2021
+ * <p>
  * Represents a generic game controller held with two hands that exhibits two 
  * analog sticks, two or more triggers, and several buttons.
  * 

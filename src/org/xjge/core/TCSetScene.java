@@ -4,9 +4,9 @@ import org.xjge.graphics.Color;
 import java.lang.reflect.InvocationTargetException;
 import java.util.List;
 
-//Created: Jun 27, 2021
-
 /**
+ * Created: Jun 27, 2021
+ * <p>
  * Changes the current scene to render.
  * <p>
  * NOTE: Scene subclasses must provide a default constructor with no parameters

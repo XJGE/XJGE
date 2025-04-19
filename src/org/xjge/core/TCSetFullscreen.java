@@ -3,9 +3,9 @@ package org.xjge.core;
 import org.xjge.graphics.Color;
 import java.util.List;
 
-//Created: May 25, 2021
-
 /**
+ * Created: May 25, 2021
+ * <p>
  * Changes the game window between fullscreen and windowed modes.
  * 
  * @author J Hoffman

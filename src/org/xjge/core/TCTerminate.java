@@ -4,9 +4,9 @@ import org.xjge.graphics.Color;
 import java.util.List;
 import static org.lwjgl.glfw.GLFW.glfwSetWindowShouldClose;
 
-//Created: May 25, 2021
-
 /**
+ * Created: May 25, 2021
+ * <p>
  * Ceases execution and gracefully exits the application.
  * 
  * @author J Hoffman

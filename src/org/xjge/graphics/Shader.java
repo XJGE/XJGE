@@ -7,9 +7,9 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import static org.lwjgl.opengl.GL20.*;
 
-//Created: May 2, 2021
-
 /**
+ * Created: May 2, 2021
+ * <br><br>
  * Encapsulates an OpenGL shader object. These objects contain the compiled 
  * results of a .glsl source file and provide it as a single stage of a much 
  * larger {@link GLProgram}.

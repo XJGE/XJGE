@@ -2,9 +2,9 @@ package org.xjge.graphics;
 
 import org.joml.Matrix4f;
 
-//Created: May 16, 2022
-
 /**
+ * Created: May 16, 2022
+ * <br><br>
  * These objects are used to apply effects to the framebuffer texture of a 
  * viewport. They achieve this by supplementing the existing functionality of 
  * the default shader program during the texture render call of a viewport.

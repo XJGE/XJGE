@@ -1,8 +1,8 @@
 package org.xjge.core;
 
-//Created: May 11, 2021
-
 /**
+ * Created: May 11, 2021
+ * <p>
  * Represents a way in which the screen can be divided during split screen 
  * mode.
  * 

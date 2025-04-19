@@ -8,9 +8,9 @@ import org.lwjgl.system.MemoryStack;
 import org.xjge.core.ErrorUtils;
 import org.xjge.core.XJGE;
 
-//Created: May 25, 2021
-
 /**
+ * Created: May 25, 2021
+ * <br><br>
  * Data structure used by {@link RectangleBatch} objects to draw single color 
  * rectangles.
  * 

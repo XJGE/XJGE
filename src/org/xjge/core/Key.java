@@ -1,8 +1,8 @@
 package org.xjge.core;
 
-//Created: Jul 20, 2021
-
 /**
+ * Created: Jul 20, 2021
+ * <p>
  * Represents a single key on the keyboard.
  * 
  * @author J Hoffman

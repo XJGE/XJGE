@@ -6,9 +6,9 @@ import org.joml.Vector2i;
 import static org.lwjgl.opengl.GL30.*;
 import org.lwjgl.system.MemoryUtil;
 
-//Created: May 26, 2021
-
 /**
+ * Created: May 26, 2021
+ * <br><br>
  * Used to batch render rectangles. A batch should be done inside of a widgets 
  * render method like so:
  * <blockquote><pre>

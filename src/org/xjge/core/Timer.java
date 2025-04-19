@@ -3,9 +3,9 @@ package org.xjge.core;
 import java.beans.PropertyChangeListener;
 import java.util.List;
 
-//Created: May 7, 2021
-
 /**
+ * Created: May 7, 2021
+ * <p>
  * A simple monotonic timing mechanism. Useful for game events and other 
  * systems that require specialized timing intervals.
  * 

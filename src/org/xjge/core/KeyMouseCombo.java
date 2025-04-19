@@ -6,9 +6,9 @@ import java.util.HashMap;
 import static org.lwjgl.glfw.GLFW.*;
 import org.lwjgl.system.MemoryStack;
 
-//Created: May 3, 2021
-
 /**
+ * Created: May 3, 2021
+ * <p>
  * A virtual input device comprised of the keyboard and mouse that attempts to 
  * mimic the actions of a {@link Gamepad}.
  * 

@@ -9,9 +9,9 @@ import static org.lwjgl.glfw.GLFW.glfwGetVideoMode;
 import static org.lwjgl.glfw.GLFW.glfwGetVideoModes;
 import org.lwjgl.glfw.GLFWVidMode;
 
-//Created: Apr 29, 2021
-
 /**
+ * Created: Apr 29, 2021
+ * <p>
  * Represents a visual display device such as a computer monitor or television.
  * 
  * @author J Hoffman

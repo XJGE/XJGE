@@ -12,9 +12,9 @@ import static org.lwjgl.opengl.GL11.GL_RENDERER;
 import static org.lwjgl.opengl.GL11.GL_VERSION;
 import static org.lwjgl.opengl.GL11.glGetString;
 
-//Created: Apr 28, 2021
-
 /**
+ * Created: Apr 28, 2021
+ * <p>
  * A lightweight application logger comprised of a single static class which 
  * can be used to keep a chronological record of significant events occurring 
  * within the application at runtime.

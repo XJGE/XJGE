@@ -18,9 +18,9 @@ import org.lwjgl.assimp.AIVertexWeight;
 import static org.lwjgl.opengl.GL30.*;
 import org.lwjgl.system.MemoryUtil;
 
-//Created: Jun 16, 2021
-
 /**
+ * Created: Jun 16, 2021
+ * <br><br>
  * Represents a 3D polygonal collection of vertices, edges, and faces that will 
  * define the shape of a {@link Model}. Contains a single 4x4 matrix that can 
  * be used by the implementation to change the orientation of the mesh in world 

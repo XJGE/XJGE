@@ -8,9 +8,9 @@ import org.joml.Matrix4f;
 import static org.lwjgl.opengl.GL30.*;
 import org.lwjgl.system.MemoryUtil;
 
-//Created: Jun 13, 2021
-
 /**
+ * Created: Jun 13, 2021
+ * <p>
  * Enables a {@link Scene} to exhibit a greater level of detail in its 
  * environment by projecting a 3D texture onto the corresponding faces of a 
  * cuboid mesh, creating the illusion of an infinitely distant sky.

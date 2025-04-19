@@ -5,9 +5,9 @@ import java.util.Map;
 import org.joml.Vector2f;
 import org.joml.Vector2i;
 
-//Created: May 11, 2021
-
 /**
+ * Created: May 11, 2021
+ * <br><br>
  * Represents a texture atlas (or sprite sheet) that will provide the texture 
  * coordinates of sub-images within a larger {@link Texture}.
  * <p>

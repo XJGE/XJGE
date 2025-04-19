@@ -19,9 +19,9 @@ import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 import static org.lwjgl.glfw.GLFW.*;
 
-//Created: May 3, 2021
-
 /**
+ * Created: May 3, 2021
+ * <p>
  * Provides a single point of access through which the state of peripheral 
  * input devices may be managed.
  * 

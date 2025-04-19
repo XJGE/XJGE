@@ -3,9 +3,9 @@ package org.xjge.graphics;
 import org.joml.Matrix4f;
 import org.lwjgl.assimp.AIMatrix4x4;
 
-//Created: Jun 17, 2021
-
 /**
+ * Created: Jun 17, 2021
+ * <br><br>
  * Data structure which represents a single bone of a greater skeleton (or 
  * "Armature") that will be used to calculate the offset of one or more meshes 
  * vertex positions in a {@link SkeletalAnimation}.

@@ -5,9 +5,9 @@ import java.util.HashMap;
 import java.util.Map;
 import static org.xjge.core.Control.*;
 
-//Created: Apr 12, 2022
-
 /**
+ * Created: Apr 12, 2022
+ * <p>
  * A virtual input device that can be used to facilitate the actions of an 
  * AI on an existing {@link Puppet} object. This works by overriding the input
  * values of a theoretical input device with the 

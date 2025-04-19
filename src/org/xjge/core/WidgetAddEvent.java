@@ -1,8 +1,8 @@
 package org.xjge.core;
 
-//Created: May 11, 2022
-
 /**
+ * Created: May 11, 2022
+ * <br><br>
  * Simple struct added during the 2.1.8 patch that is used to carry widget 
  * information through an asynchronous event queue. This solved an issue that 
  * would otherwise produce a {@link java.util.ConcurrentModificationException} 

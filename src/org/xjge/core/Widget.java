@@ -6,9 +6,9 @@ import java.util.Map;
 import org.joml.Vector2i;
 import org.joml.Vector3i;
 
-//Created: May 12, 2021
-
 /**
+ * Created: May 12, 2021
+ * <br><br>
  * An abstract class which can be used to define subclasses that will 
  * comprise individual elements of a user interface.
  * 

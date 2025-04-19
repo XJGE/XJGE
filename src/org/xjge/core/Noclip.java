@@ -4,9 +4,9 @@ import org.xjge.graphics.GLProgram;
 import java.util.Map;
 import org.joml.Vector3f;
 
-//Created: May 8, 2021
-
 /**
+ * Created: May 8, 2021
+ * <p>
  * A camera object provided by the engine that permits free traversal of the 
  * game world.
  * 

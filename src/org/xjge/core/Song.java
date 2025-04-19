@@ -1,8 +1,8 @@
 package org.xjge.core;
 
-//Created: Jun 22, 2021
-
 /**
+ * Created: Jun 22, 2021
+ * <p>
  * Represents a musical composition, may or may not contain an intro which is 
  * played once before entering a looping body section. All {@link Sound} 
  * objects used by this object should be formatted as 16-bit stereo.

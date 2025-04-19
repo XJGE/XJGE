@@ -7,9 +7,9 @@ import org.lwjgl.system.MemoryStack;
 import org.xjge.core.ErrorUtils;
 import org.xjge.core.XJGE;
 
-//Created Sep 6, 2024
-
 /**
+ * Created Sep 6, 2024
+ * <br><br>
  * Represents a single point in 3D space. Largely used for debugging purposes.
  * 
  * @author J Hoffman

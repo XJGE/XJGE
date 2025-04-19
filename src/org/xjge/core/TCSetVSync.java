@@ -3,9 +3,9 @@ package org.xjge.core;
 import org.xjge.graphics.Color;
 import java.util.List;
 
-//Created: May 26, 2021
-
 /**
+ * Created: May 26, 2021
+ * <p>
  * Changes whether or not vertical sync is enabled.
  * 
  * @author J Hoffman

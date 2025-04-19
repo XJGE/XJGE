@@ -3,9 +3,9 @@ package org.xjge.core;
 import org.xjge.graphics.Color;
 import java.util.List;
 
-//Created: May 26, 2021
-
 /**
+ * Created: May 26, 2021
+ * <p>
  * Changes the display device the game window will use. Often this will cause 
  * the window to relocate.
  * 

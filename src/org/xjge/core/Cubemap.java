@@ -12,9 +12,9 @@ import static org.lwjgl.stb.STBImage.stbi_load_from_memory;
 import org.lwjgl.system.MemoryStack;
 import org.lwjgl.system.MemoryUtil;
 
-//Created: Jun 13, 2021
-
 /**
+ * Created: Jun 13, 2021
+ * <p>
  * A cubemap is similar in function to a {@link org.xjge.graphics.Texture Texture} 
  * object, but instead uses the data supplied through multiple image files to 
  * generate a new three-dimensional texture that can be used to map several 

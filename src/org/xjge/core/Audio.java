@@ -7,9 +7,9 @@ import java.util.TreeMap;
 import org.joml.Vector3f;
 import static org.lwjgl.openal.AL11.*;
 
-//Created: Jun 20, 2021
-
 /**
+ * Created: Jun 20, 2021
+ * <p>
  * Provides an abstraction of the OpenAL API through which sound effects and 
  * music can be played.
  * 

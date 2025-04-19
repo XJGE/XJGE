@@ -12,9 +12,9 @@ import static org.lwjgl.stb.STBImage.stbi_load_from_memory;
 import org.lwjgl.system.MemoryStack;
 import static org.lwjgl.system.MemoryUtil.NULL;
 
-//Created: Apr 29, 2021
-
 /**
+ * Created: Apr 29, 2021
+ * <br><br>
  * Provides a point of access which can be used to alter the properties of the 
  * game window at runtime.
  * 

@@ -5,9 +5,9 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
-//Created: May 25, 2021
-
 /**
+ * Created: May 25, 2021
+ * <p>
  * Abstract class used to define additional commands for the {@link Terminal}.
  * 
  * @author J Hoffman

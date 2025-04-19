@@ -5,9 +5,9 @@ import java.util.Map;
 import org.joml.Matrix4f;
 import org.joml.Vector3f;
 
-//Created: May 8, 2021
-
 /**
+ * Created: May 8, 2021
+ * <p>
  * Abstract class which can be used to create specialized objects that render 
  * the current perspective of a {@link Viewport}.
  * <p>

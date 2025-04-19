@@ -15,9 +15,9 @@ import static org.lwjgl.opengl.GL11.GL_RENDERER;
 import static org.lwjgl.opengl.GL11.GL_VERSION;
 import static org.lwjgl.opengl.GL11.glGetString;
 
-//Created: Jun 10, 2021
-
 /**
+ * Created: Jun 10, 2021
+ * <p>
  * Provides users with a diagnostic interface useful for debugging at runtime. 
  * This object is rendered independent of player {@link Viewport}.
  * 

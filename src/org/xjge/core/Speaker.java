@@ -6,9 +6,9 @@ import org.lwjgl.openal.ALC;
 import static org.lwjgl.openal.ALC10.*;
 import org.lwjgl.openal.ALCCapabilities;
 
-//Created: Jun 20, 2021
-
 /**
+ * Created: Jun 20, 2021
+ * <p>
  * Represents a peripheral audio output device such as a speaker, headset, or 
  * headphones.
  * 

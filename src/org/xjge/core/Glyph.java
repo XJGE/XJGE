@@ -3,9 +3,9 @@ package org.xjge.core;
 import org.xjge.graphics.Color;
 import org.joml.Vector2i;
 
-//Created: May 13, 2021
-
 /**
+ * Created: May 13, 2021
+ * <p>
  * Represents a single character/letter in a language. These objects are coupled 
  * with additional state that allows them to exhibit limited uniqueness during 
  * instanced rendering.

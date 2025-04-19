@@ -3,9 +3,9 @@ package org.xjge.core;
 import java.util.HashMap;
 import java.util.Stack;
 
-//Created: May 3, 2021
-
 /**
+ * Created: May 3, 2021
+ * <p>
  * Represents a peripheral device that can capture input actions from a user.
  * 
  * @author J Hoffman

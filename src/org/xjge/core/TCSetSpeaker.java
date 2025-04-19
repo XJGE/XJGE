@@ -3,9 +3,9 @@ package org.xjge.core;
 import org.xjge.graphics.Color;
 import java.util.List;
 
-//Created: Jun 24, 2021
-
 /**
+ * Created: Jun 24, 2021
+ * <p>
  * Changes the current audio output device.
  * 
  * @author J Hoffman

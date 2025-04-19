@@ -1,10 +1,8 @@
 package org.xjge.graphics;
 
 /**
- * Sep 7, 2021
- */
-
-/**
+ * Created: Sep 7, 2021
+ * <br><br>
  * Supplies a {@link Model} object with user-defined OpenGL capabilities.
  * <p>
  * By default model objects do not exhibit depth testing or face culling. This

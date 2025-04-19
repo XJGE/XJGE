@@ -11,9 +11,9 @@ import static org.lwjgl.opengl.GL30.*;
 import static org.xjge.core.XJGE.glPrograms;
 import org.xjge.graphics.GLProgram;
 
-//Created: May 11, 2021
-
 /**
+ * Created: May 11, 2021
+ * <p>
  * Provides utilities for managing high-level game logic.
  * <p>
  * More specifically the game class can be used to change the current scene 
@@ -345,14 +345,12 @@ public final class Game {
     }
     
     /**
-     * Adds an entity to the current scene at the specified index. Generally 
-     * speaking you'll only want to use this for debugging purposes. Otherwise 
-     * entity objects should be managed directly from within the scene subclass 
-     * itself, or through a call to a method like 
+     * Adds an entity to the current scene. Generally speaking you'll only want 
+     * to use this for debugging purposes. Otherwise entity objects should be 
+     * managed directly from within the scene subclass itself, or through a 
+     * call to a method like 
      * {@linkplain Scene#addEntity(org.xjge.core.Entity) Scene.addEntity()}.
      * 
-     * @param index the index to place the entity at the current scenes 
-     *              {@linkplain Scene#entities entity collection}
      * @param entity the new entity object that will be added to this scene
      */
     public static final void addEntity(Entity entity) {

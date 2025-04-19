@@ -6,9 +6,9 @@ import org.joml.Vector2i;
 import static org.lwjgl.opengl.GL30.*;
 import org.lwjgl.system.MemoryStack;
 
-//Created: Jun 15, 2021
-
 /**
+ * Created: Jun 15, 2021
+ * <br><br>
  * Objects of this class can be used as part of a larger {@link org.xjge.core.Widget UI widget} 
  * to represent a regular 2D shape such as a pentagon, hexagon, or circle by
  * utilizing the number of sides specified through its constructor.

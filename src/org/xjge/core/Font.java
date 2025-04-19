@@ -26,9 +26,9 @@ import static org.lwjgl.system.MemoryUtil.NULL;
 import org.xjge.graphics.Color;
 import org.xjge.graphics.Texture;
 
-//Created: Jun 3, 2021
-
 /**
+ * Created: Jun 3, 2021
+ * <p>
  * Parses data from a font file and provides it as an object that can be passed 
  * to the {@linkplain Widget#drawString(Font, String, Vector2i, Color, float) drawString()} 
  * method. TrueType (.ttf) and Bitmap (.bmf) are the preferred file formats of 

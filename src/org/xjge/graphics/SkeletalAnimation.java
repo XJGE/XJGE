@@ -4,9 +4,9 @@ import java.util.List;
 import org.joml.Matrix4f;
 import org.lwjgl.assimp.AIAnimation;
 
-//Created: Jun 17, 2021
-
 /**
+ * Created: Jun 17, 2021
+ * <br><br>
  * Skeletal animations utilize a series of interconnected bones (collectively 
  * known as an "Armature") to offset the vertex positions of a models mesh. 
  * More generally, the individual bones of the models armature are arranged 

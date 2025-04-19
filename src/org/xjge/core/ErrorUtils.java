@@ -3,9 +3,9 @@ package org.xjge.core;
 import static org.lwjgl.openal.AL10.*;
 import static org.lwjgl.opengl.GL30.*;
 
-//Created: May 8, 2021
-
 /**
+ * Created: May 8, 2021
+ * <p>
  * Provides convenience methods for locating errors encountered by the engine 
  * during runtime.
  * 

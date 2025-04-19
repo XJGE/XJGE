@@ -16,9 +16,9 @@ import org.joml.Vector4f;
 import static org.lwjgl.opengl.GL20.*;
 import org.lwjgl.system.MemoryStack;
 
-//Created: May 2, 2021
-
 /**
+ * Created: May 2, 2021
+ * <br><br>
  * Represents a completed shader program comprised of multiple {@link Shader} 
  * objects that specify how data sent to the GPU will be processed at different 
  * rendering stages while the program is active.

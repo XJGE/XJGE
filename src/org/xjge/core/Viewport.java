@@ -17,9 +17,9 @@ import static org.lwjgl.opengl.GL30.*;
 import org.lwjgl.system.MemoryStack;
 import org.xjge.graphics.PostProcessShader;
 
-//Created: May 11, 2021
-
 /**
+ * Created: May 11, 2021
+ * <p>
  * Represents a rectangular section of the game window that serves as the players
  * viewpoint.
  * 

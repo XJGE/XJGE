@@ -4,9 +4,9 @@ import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
 import java.util.HashMap;
 
-//Created: May 9, 2021
-
 /**
+ * Created: May 9, 2021
+ * <p>
  * A Component object which can be used to relay information about state 
  * changes occurring in the implementing object to one or more observers 
  * located anywhere in the codebase. 

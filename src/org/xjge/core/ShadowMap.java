@@ -6,9 +6,9 @@ import static org.lwjgl.opengl.GL30.*;
 import static org.lwjgl.system.MemoryUtil.NULL;
 import org.xjge.graphics.GLProgram;
 
-//Created: Nov 9, 2021
-
 /**
+ * Created: Nov 9, 2021
+ * <p>
  * Shadow maps generate a 2D texture that is then projected over the scene to 
  * create the appearance of dynamic shadows.
  * <p>

@@ -6,9 +6,9 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import org.joml.Vector2i;
 
-//Created: Jun 4, 2021
-
 /**
+ * Created: Jun 4, 2021
+ * <p>
  * Provides utilities for rendering text to the screen.
  * <p>
  * NOTE: The primary method used by this class to draw strings of text is 

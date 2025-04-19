@@ -1,8 +1,8 @@
 package org.xjge.core;
 
-//Created: May 9, 2021
-
 /**
+ * Created: May 9, 2021
+ * <p>
  * Objects of this type represent an event such as a pause, transition, or 
  * cutscene that temporarily disrupts the normal flow of execution. While 
  * queued, events will prevent the engine from completing its normal 

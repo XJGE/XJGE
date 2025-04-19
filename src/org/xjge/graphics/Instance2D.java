@@ -3,9 +3,9 @@ package org.xjge.graphics;
 import static org.lwjgl.opengl.GL20.*;
 import org.lwjgl.system.MemoryStack;
 
-//Created: May 13, 2021
-
 /**
+ * Created: May 13, 2021
+ * <br><br>
  * Defines a set of reusable vertex data that can be utilized to represent a 2D 
  * object that makes use of instanced rendering techniques.
  * 

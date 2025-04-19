@@ -4,9 +4,9 @@ import java.util.ArrayList;
 import java.util.List;
 import org.joml.Matrix4f;
 
-//Created: Jun 17, 2021
-
 /**
+ * Created: Jun 17, 2021
+ * <br><br>
  * Data structure that represents a single point of interest within a 
  * {@link Model} as defined by its file. Node objects are contained within a 
  * hierarchy and provide a unique name that can be used to traverse the tree. 

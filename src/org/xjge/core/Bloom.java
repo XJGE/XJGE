@@ -5,9 +5,9 @@ import org.lwjgl.system.MemoryStack;
 import org.xjge.graphics.GLProgram;
 import org.xjge.graphics.Graphics;
 
-//Created: Dec 13, 2021
-
 /**
+ * Created: Dec 13, 2021
+ * <p>
  * Produces a "glowing" effect around the edges of surfaces that exceed a 
  * some 
  * {@linkplain Game#setBloomThreshold(float) brightness threshold}.

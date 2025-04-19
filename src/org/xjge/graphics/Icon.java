@@ -9,9 +9,9 @@ import org.joml.Vector2i;
 import static org.lwjgl.opengl.GL30.*;
 import org.lwjgl.system.MemoryStack;
 
-//Created: Jun 8, 2021
-
 /**
+ * Created: Jun 8, 2021
+ * <br><br>
  * Represents a quickly comprehensible symbol included to help users better 
  * understand an interface. Icons make use of a {@link Atlas} and as such, 
  * provide utilities for quickly switching between individual sub-images as 

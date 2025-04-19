@@ -3,9 +3,9 @@ package org.xjge.core;
 import org.xjge.graphics.Color;
 import java.util.List;
 
-//Created: May 27, 2021
-
 /**
+ * Created: May 27, 2021
+ * <p>
  * Alters the video mode of the display device the game window is currently 
  * using.
  * 

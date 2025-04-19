@@ -10,9 +10,9 @@ import static org.lwjgl.openal.ALC11.*;
 import static org.lwjgl.openal.ALUtil.getStringList;
 import static org.lwjgl.system.MemoryUtil.NULL;
 
-//Created: Apr 29, 2021
-
 /**
+ * Created: Apr 29, 2021
+ * <p>
  * Provides utilities to manage the state of various connected peripheral 
  * devices not directly related to user input.
  * 

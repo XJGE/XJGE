@@ -34,9 +34,9 @@ import static org.lwjgl.opengl.GLUtil.setupDebugMessageCallback;
 import static org.xjge.core.Input.KEY_MOUSE_COMBO;
 import org.xjge.graphics.PostProcessShader;
 
-//Created: Apr 28, 2021
-
 /**
+ * Created: Apr 28, 2021
+ * <br><br>
  * Represents the game engine in its broadest sense and provides a point at 
  * which its functionality may be extended to better suit the individual 
  * requirements of the implementation.

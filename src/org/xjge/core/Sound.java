@@ -10,9 +10,9 @@ import static org.lwjgl.stb.STBVorbis.stb_vorbis_decode_memory;
 import org.lwjgl.system.MemoryStack;
 import org.lwjgl.system.MemoryUtil;
 
-//Created: Jun 22, 2021
-
 /**
+ * Created: Jun 22, 2021
+ * <p>
  * Supplies the data parsed from an audio file into a new sound object that can 
  * be used by the {@link Audio} class to play sound effects. The engine 
  * supports two formats, 8-bit mono (for sound effects), and 16-bit stereo 

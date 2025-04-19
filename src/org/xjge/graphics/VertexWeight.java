@@ -1,8 +1,8 @@
 package org.xjge.graphics;
 
-//Created: Jun 17, 2021
-
 /**
+ * Created: Jun 17, 2021
+ * <br><br>
  * Data structure that represents a vertex weight that will determine how much 
  * influence a {@link Bone} has on the vertices of a {@link Mesh}. Typically 
  * multiple weights will influence a single vertex to an extent.

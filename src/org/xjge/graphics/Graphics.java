@@ -6,9 +6,9 @@ import org.joml.Matrix4f;
 import org.lwjgl.assimp.AIMatrix4x4;
 import static org.lwjgl.opengl.GL30.*;
 
-//Created: May 7, 2021
-
 /**
+ * Created: May 7, 2021
+ * <br><br>
  * Component object that supplies implementing objects with the following:
  * <ul>
  * <li>A vertex buffer object - As a default buffer through which the 

@@ -3,9 +3,9 @@ package org.xjge.core;
 import org.joml.Vector3f;
 import static org.lwjgl.openal.AL11.*;
 
-//Created: Jun 23, 2021
-
 /**
+ * Created: Jun 23, 2021
+ * <p>
  * Represents an OpenAL source object.
  * <p>
  * These objects can be best conceptualized as invisible CD players/speakers 

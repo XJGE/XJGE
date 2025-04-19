@@ -4,9 +4,9 @@ import java.nio.Buffer;
 import java.nio.FloatBuffer;
 import java.nio.IntBuffer;
 
-//Created: May 2, 2021
-
 /**
+ * Created: May 2, 2021
+ * <br><br>
  * Provides a type-neutral data buffer which is used to store the value of a 
  * uniform variable. This value will be retrieved at a later point as the 
  * desired data type and supplied to the current {@linkplain GLProgram shader 

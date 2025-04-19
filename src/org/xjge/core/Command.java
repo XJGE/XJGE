@@ -3,9 +3,9 @@ package org.xjge.core;
 import static org.xjge.core.Control.*;
 import static org.lwjgl.glfw.GLFW.GLFW_PRESS;
 
-//Created: May 3, 2021
-
 /**
+ * Created: May 3, 2021
+ * <p>
  * Command objects represent individual actions that can be performed by a player.
  * <p>
  * More specifically, whenever you want to create a new action the player can 

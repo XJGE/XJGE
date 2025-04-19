@@ -1,8 +1,8 @@
 package org.xjge.core;
 
-//Created: Apr 9, 2024
-
 /**
+ * Created: Apr 9, 2024
+ * <p>
  * Stores the current input values of the mouse and supplies them to the 
  * {@link Widget#processMouseInput(double, double, int, int, int, double, double)} 
  * method.

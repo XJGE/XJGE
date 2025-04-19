@@ -3,9 +3,9 @@ package org.xjge.graphics;
 import java.util.ArrayList;
 import org.joml.Matrix4f;
 
-//Created: Jun 17, 2021
-
 /**
+ * Created: Jun 17, 2021
+ * <br><br>
  * Data structure which represents a single frame of a 
  * {@link SkeletalAnimation}. More specifically, a keyframe contains the 
  * individual transformations of each {@link Bone} in the models armature. Key 

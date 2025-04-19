@@ -1,8 +1,8 @@
 package org.xjge.graphics;
 
-//Created: May 2, 2021
-
 /**
+ * Created: May 2, 2021
+ * <br><br>
  * Represents a GLSL data type that will be used to allocate a data buffer of 
  * corresponding size.
  * 

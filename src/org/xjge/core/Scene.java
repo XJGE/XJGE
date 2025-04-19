@@ -393,9 +393,8 @@ public abstract class Scene {
     public abstract void exit();
     
     /**
-     * Safely adds an entity to this scene. Calling this method will 
-     * automatically assign the entity with an index number corresponding to its
-     * key in the {@linkplain entities} collection.
+     * Safely adds an entity to this scene. More specifically this will queue a 
+     * request to add the specified entity during the next game tick.
      * 
      * @param entity the new entity object that will be added to this scene
      */

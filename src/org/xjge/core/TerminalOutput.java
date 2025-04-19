@@ -2,9 +2,9 @@ package org.xjge.core;
 
 import org.xjge.graphics.Color;
 
-//Created: May 25, 2021
-
 /**
+ * Created: May 25, 2021
+ * <p>
  * A data structure which contains information pertaining to a commands 
  * response when executed.
  * 

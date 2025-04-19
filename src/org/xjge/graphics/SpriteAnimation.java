@@ -6,9 +6,9 @@ import org.joml.Vector2i;
 import org.xjge.core.Game;
 import org.xjge.core.StopWatch;
 
-//Created: Jun 13, 2021
-
 /**
+ * Created: Jun 13, 2021
+ * <br><br>
  * Represents a 2D sprite animation that iterates over a series of sub-images 
  * from a {@linkplain Atlas texture atlas} in sequence to create the illusion 
  * of movement.
