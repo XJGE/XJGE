@@ -6,8 +6,13 @@ import java.util.UUID;
 
 /**
  * Created: Apr 8, 2025
- * 
- * Used to represent objects in the scene.
+ * <p>
+ * Used to represent a distinct object in the scene, typically composed of 
+ * several {@linkplain Component components} which define its behavior.
+ * <p>
+ * This class serves as the foundation of the engines entity component system 
+ * (or ECS). Entity objects themselves are essentially just containers that gain
+ * functionality through their attached components.
  * 
  * @author J Hoffman
  * @since  4.0.0
