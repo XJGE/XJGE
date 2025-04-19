@@ -330,6 +330,7 @@ public abstract class Scene {
     void processAddRequests() {
         while(!entityAddQueue.isEmpty()) {
             Entity entity = entityAddQueue.poll();
+            entity.resetRemovalRequest();
             entities.put(entity.uuid, entity);
         }
     }

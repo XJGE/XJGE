@@ -2,6 +2,7 @@ package org.xjge.test;
 
 import java.util.Map;
 import org.xjge.core.Camera;
+import org.xjge.core.Entity;
 import org.xjge.core.Scene;
 import org.xjge.graphics.GLProgram;
 
@@ -15,6 +16,9 @@ public class TestScene extends Scene {
 
     public TestScene() {
         super("test");
+        
+        Entity entity = new Entity();
+        addEntity(entity);
     }
 
     @Override
