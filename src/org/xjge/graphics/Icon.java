@@ -48,7 +48,7 @@ public final class Icon {
     public Icon(Texture texture, int cellWidth, int cellHeight, boolean fromCenter) {
         this.texture = texture;
         
-        glBindTexture(GL_TEXTURE_2D, texture.handle);
+        texture.bind(GL_TEXTURE_2D);
             glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
             glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
             glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
@@ -201,7 +201,7 @@ public final class Icon {
         glEnable(GL_BLEND);
         glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
         glActiveTexture(GL_TEXTURE0);
-        glBindTexture(GL_TEXTURE_2D, texture.handle);
+        texture.bind(GL_TEXTURE_2D);
         glBindVertexArray(g.vao);
         
         XJGE.getDefaultGLProgram().setUniform("uType", 4);

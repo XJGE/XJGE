@@ -168,7 +168,7 @@ public final class Light {
         glEnable(GL_ALPHA_TEST);
         glAlphaFunc(GL_GREATER, 0);
         glActiveTexture(GL_TEXTURE0);
-        glBindTexture(GL_TEXTURE_2D, iconTexture.handle);
+        iconTexture.bind(GL_TEXTURE_2D);
         glBindVertexArray(g.vao);
         
         XJGE.getDefaultGLProgram().setUniform("uType", 6);

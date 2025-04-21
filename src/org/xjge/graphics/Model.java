@@ -310,7 +310,7 @@ public class Model {
             
             aiFilename.free();
             
-            glBindTexture(GL_TEXTURE_2D, textures[i].handle);
+            textures[i].bind(GL_TEXTURE_2D);
                 glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_MIRRORED_REPEAT);
                 glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_MIRRORED_REPEAT);
                 glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
@@ -430,7 +430,7 @@ public class Model {
      */
     public void bindMeshTexture(Mesh mesh) {
         if(meshes.contains(mesh)) {
-            glBindTexture(GL_TEXTURE_2D, textures[mesh.textureID].handle);
+            textures[mesh.textureID].bind(GL_TEXTURE_2D);
         } else {
             String meshName = (mesh == null) ? "null" : mesh.name;
             
@@ -455,7 +455,7 @@ public class Model {
     public void bindMeshTexture(String name) {
         meshes.forEach(mesh -> {
             if(mesh.name.equals(name)) {
-                glBindTexture(GL_TEXTURE_2D, textures[mesh.textureID].handle);
+                textures[mesh.textureID].bind(GL_TEXTURE_2D);
             } 
         });
     }
@@ -746,7 +746,7 @@ public class Model {
         
         meshes.forEach(mesh -> {
             glActiveTexture(GL_TEXTURE0);
-            glBindTexture(GL_TEXTURE_2D, textures[mesh.textureID].handle);
+            textures[mesh.textureID].bind(GL_TEXTURE_2D);
             
             if(depthTexHandle != -1) {
                 glActiveTexture(GL_TEXTURE1);
@@ -814,7 +814,7 @@ public class Model {
         meshes.forEach(mesh -> {
             glBindVertexArray(mesh.vao);
             glActiveTexture(GL_TEXTURE0);
-            glBindTexture(GL_TEXTURE_2D, textures[mesh.textureID].handle);
+            textures[mesh.textureID].bind(GL_TEXTURE_2D);
             
             depthProgram.setUniform("uTexture", 0);
             depthProgram.setUniform("uModel", false, mesh.modelMatrix);
@@ -848,7 +848,7 @@ public class Model {
         meshes.forEach(mesh -> {
             glBindVertexArray(mesh.vao);
             glActiveTexture(GL_TEXTURE0);
-            glBindTexture(GL_TEXTURE_2D, textures[mesh.textureID].handle);
+            textures[mesh.textureID].bind(GL_TEXTURE_2D);
             
             depthProgram.setUniform("uTexture", 0);
             depthProgram.setUniform("uModel", false, mesh.modelMatrix);
@@ -872,7 +872,7 @@ public class Model {
      * Frees the OpenGL texture objects used by this class.
      */
     public void freeTextures() {
-        for(Texture texture : textures) texture.freeTexture();
+        for(Texture texture : textures) texture.delete();
     }
     
 }

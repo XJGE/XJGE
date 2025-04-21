@@ -1,22 +1,21 @@
 package org.xjge.graphics;
 
-import org.xjge.core.ErrorUtils;
-import org.xjge.core.Logger;
-import org.xjge.core.XJGE;
-import java.io.IOException;
 import java.io.InputStream;
 import java.nio.ByteBuffer;
 import java.nio.IntBuffer;
 import static org.lwjgl.opengl.GL11.*;
 import static org.lwjgl.stb.STBImage.STBI_rgb_alpha;
+import static org.lwjgl.stb.STBImage.stbi_failure_reason;
 import static org.lwjgl.stb.STBImage.stbi_image_free;
 import static org.lwjgl.stb.STBImage.stbi_load_from_memory;
 import org.lwjgl.system.MemoryStack;
 import org.lwjgl.system.MemoryUtil;
+import org.xjge.core.Logger;
+import org.xjge.core.XJGE;
 
 /**
- * Created: May 11, 2021
- * <p>
+ * Created: May 11, 2021 (4.0.0 rewrite on Apr 21, 2025)
+ * <br><br>
  * Supplies the data parsed from an image file into a new two-dimensional 
  * texture object that can be used by the graphics pipeline. RBGA encoded .png 
  * is the preferred file format of this engine. OpenGL texture parameters are 
@@ -27,19 +26,21 @@ import org.lwjgl.system.MemoryUtil;
  * @since  2.0.0
  */
 public final class Texture {
+
+    private final int handle;
     
-    public final int handle;
-    private int width;
-    private int height;
-    private int channels;
+    public final int width;
+    public final int height;
+    public final int channels;
+    
+    private static final Texture missingTexture = new Texture("texture_missing.png");
     
     /**
      * Creates a new texture object from the image file specified. If the image 
      * file cannot be found, the engine will instead use a fallback texture in 
      * its place.
      * 
-     * @param filename the name of the file to load. Expects the file extension 
-     *                 to be included.
+     * @param filename the name of the file to load (with extension)
      * @param target the OpenGL texture target. One of:
      * <table><caption></caption><tr>
      * <td>{@link org.lwjgl.opengl.GL11C#GL_TEXTURE_2D TEXTURE_2D}</td>
@@ -54,20 +55,12 @@ public final class Texture {
      * </tr></table>
      */
     public Texture(String filename, int target) {
-        handle = glGenTextures();
-        glBindTexture(target, handle);
+        int[] info = loadTexture(filename, target);
         
-        try(InputStream file = Texture.class.getResourceAsStream(XJGE.getAssetsFilepath() + filename)) {
-            loadTexture(file, target);
-        } catch(Exception e) {
-            Logger.setDomain("graphics");
-            Logger.logWarning("Failed to load texture \"" + filename + "\"", e);
-            Logger.setDomain(null);
-            
-            loadTexture(Texture.class.getResourceAsStream("/org/xjge/assets/xjge_missingtexture.png"), target);
-        }
-        
-        ErrorUtils.checkGLError();
+        handle   = info[0];
+        width    = info[1];
+        height   = info[2];
+        channels = info[3];
     }
     
     /**
@@ -75,20 +68,82 @@ public final class Texture {
      * file cannot be found, the engine will instead use a fallback texture in 
      * its place.
      * 
-     * @param filename the name of the file to load. Expects the file extension 
-     *                 to be included.
+     * @param filename the name of the file to load (with extension)
      */
     public Texture(String filename) {
         this(filename, GL_TEXTURE_2D);
     }
     
     /**
-     * Parses the data of the image file specified and generates a new OpenGL 
-     * texture object from its contents.
+     * Parses data from the specified image file and generates a new OpenGL 
+     * texture object.
      * 
-     * @param file the file to extract texture data from
+     * @param filename the name of the file to load (with extension)
      * @param target the OpenGL texture target. One of:
-     * <table><tr>
+     * <table><caption></caption><tr>
+     * <td>{@link org.lwjgl.opengl.GL11C#GL_TEXTURE_2D TEXTURE_2D}</td>
+     * <td>{@link org.lwjgl.opengl.GL30#GL_TEXTURE_1D_ARRAY TEXTURE_1D_ARRAY}</td>
+     * <td>{@link org.lwjgl.opengl.GL31#GL_TEXTURE_RECTANGLE TEXTURE_RECTANGLE}</td>
+     * <td>{@link org.lwjgl.opengl.GL13#GL_TEXTURE_CUBE_MAP TEXTURE_CUBE_MAP}</td>
+     * </tr><tr>
+     * <td>{@link org.lwjgl.opengl.GL11C#GL_PROXY_TEXTURE_2D PROXY_TEXTURE_2D}</td>
+     * <td>{@link org.lwjgl.opengl.GL30#GL_PROXY_TEXTURE_1D_ARRAY PROXY_TEXTURE_1D_ARRAY}</td>
+     * <td>{@link org.lwjgl.opengl.GL31#GL_PROXY_TEXTURE_RECTANGLE PROXY_TEXTURE_RECTANGLE}</td>
+     * <td>{@link org.lwjgl.opengl.GL13#GL_PROXY_TEXTURE_CUBE_MAP PROXY_TEXTURE_CUBE_MAP}</td>
+     * </tr></table>
+     * @return an array of integers containing data parsed from the image file
+     */
+    private int[] loadTexture(String filename, int target) {
+        try(InputStream file = Texture.class.getResourceAsStream(XJGE.getAssetsFilepath() + filename)) {
+            int[] info = new int[4];
+            
+            info[0] = glGenTextures();
+            glBindTexture(target, info[0]);
+            
+            try(MemoryStack stack = MemoryStack.stackPush()) {
+                byte[] data = file.readAllBytes();
+                
+                ByteBuffer imageBuffer  = MemoryUtil.memAlloc(data.length).put(data).flip();
+                IntBuffer widthBuffer   = stack.mallocInt(1);
+                IntBuffer heightBuffer  = stack.mallocInt(1);
+                IntBuffer channelBuffer = stack.mallocInt(1);
+                
+                ByteBuffer texture = stbi_load_from_memory(imageBuffer, widthBuffer, heightBuffer, channelBuffer, STBI_rgb_alpha);
+                
+                if(texture == null) {
+                    MemoryUtil.memFree(imageBuffer);
+                    throw new RuntimeException("STBI failed to parse texture image data: " + stbi_failure_reason());
+                }
+                
+                info[1] = widthBuffer.get();
+                info[2] = heightBuffer.get();
+                info[3] = channelBuffer.get();
+                
+                glTexImage2D(target, 0, GL_RGBA, info[1], info[2], 0, GL_RGBA, GL_UNSIGNED_BYTE, texture);
+
+                stbi_image_free(texture);
+                MemoryUtil.memFree(imageBuffer);
+            }
+            
+            return info;
+            
+        } catch(Exception exception) {
+            Logger.logWarning("Failed to load texture \"" + filename + "\"", exception);
+            
+            return new int[] {
+                missingTexture.handle,
+                missingTexture.width,
+                missingTexture.height,
+                missingTexture.channels,
+            };
+        }
+    }
+    
+    /**
+     * Binds this texture to the specified target.
+     * 
+     * @param target the OpenGL texture target. One of:
+     * <table><caption></caption><tr>
      * <td>{@link org.lwjgl.opengl.GL11C#GL_TEXTURE_2D TEXTURE_2D}</td>
      * <td>{@link org.lwjgl.opengl.GL30#GL_TEXTURE_1D_ARRAY TEXTURE_1D_ARRAY}</td>
      * <td>{@link org.lwjgl.opengl.GL31#GL_TEXTURE_RECTANGLE TEXTURE_RECTANGLE}</td>
@@ -100,71 +155,18 @@ public final class Texture {
      * <td>{@link org.lwjgl.opengl.GL13#GL_PROXY_TEXTURE_CUBE_MAP PROXY_TEXTURE_CUBE_MAP}</td>
      * </tr></table>
      */
-    private void loadTexture(InputStream file, int target) {
-        try(MemoryStack stack = MemoryStack.stackPush()) {
-            byte[] data = file.readAllBytes();
-            
-            ByteBuffer imageBuf  = MemoryUtil.memAlloc(data.length).put(data).flip();
-            IntBuffer widthBuf   = stack.mallocInt(1);
-            IntBuffer heightBuf  = stack.mallocInt(1);
-            IntBuffer channelBuf = stack.mallocInt(1);
-            
-            ByteBuffer texture = stbi_load_from_memory(imageBuf, widthBuf, heightBuf, channelBuf, STBI_rgb_alpha);
-            
-            width    = widthBuf.get();
-            height   = heightBuf.get();
-            channels = channelBuf.get();
-            
-            if(texture != null) {
-                glTexImage2D(target, 0, GL_RGBA, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, texture);
-            } else {
-                throw new NullPointerException("STBI failed to parse texture image data.");
-            }
-            
-            stbi_image_free(texture);
-            MemoryUtil.memFree(imageBuf);
-            
-        } catch(IOException e) {
-            Logger.setDomain("graphics");
-            Logger.logSevere("Failed to parse texture image data", e);
-        }
+    public void bind(int target) {
+        glBindTexture(target, handle);
     }
     
     /**
-     * Obtains the width of the texture.
-     * 
-     * @return the textures width in pixels
-     */
-    public int getWidth() {
-        return width;
-    }
-    
-    /**
-     * Obtains the height of the texture.
-     * 
-     * @return the textures height in pixels
-     */
-    public int getHeight() {
-        return height;
-    }
-    
-    /**
-     * Obtains the amount of color channels this texture uses.
-     * 
-     * @return the number of color components the texture image exhibits
-     */
-    public int getChannels() {
-        return channels;
-    }
-    
-    /**
-     * Frees the OpenGL texture image associated with this object. Should be 
-     * used when a texture is no longer needed.
+     * Frees the OpenGL texture associated with this object and removes it from 
+     * the systems VRAM.
      * 
      * @see org.lwjgl.opengl.GL11#glDeleteTextures(int)
      */
-    public void freeTexture() {
-        glDeleteTextures(handle);
+    public void delete() {
+        if(handle != missingTexture.handle) glDeleteTextures(handle);
     }
     
 }

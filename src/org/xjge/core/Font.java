@@ -136,6 +136,7 @@ public final class Font {
     private void loadBitmapFont(InputStream file) {
         isBitmapFont = true;
         
+        /*
         try {
             XMLStreamReader xmlReader = XMLInputFactory.newInstance().createXMLStreamReader(file);
             
@@ -162,8 +163,8 @@ public final class Font {
                             texHandle         = texture.handle;
                             largestGlyphWidth = Integer.parseInt(xmlReader.getAttributeValue(null, "width"));
                             size              = Integer.parseInt(xmlReader.getAttributeValue(null, "height"));
-                            bitmapWidth       = texture.getWidth();
-                            bitmapHeight      = texture.getHeight();
+                            bitmapWidth       = texture.width;
+                            bitmapHeight      = texture.height;
                             
                             subImageWidth  = (float) largestGlyphWidth / bitmapWidth;
                             subImageHeight = (float) size / bitmapHeight;
@@ -218,6 +219,7 @@ public final class Font {
             Logger.setDomain("ui");
             Logger.logSevere("Failed to parse bitmap font file data", e);
         }
+        */
     }
     
     /**

@@ -536,7 +536,7 @@ public final class XJGE {
         Game.loop(fbo, viewports, terminal, debugInfo, depthProgram, blurProgram, debugModeEnabled);
         
         engineFont.freeTexture();
-        engineIcons.freeTexture();
+        engineIcons.delete();
         beep.freeSound();
         terminal.freeBuffers();
         debugInfo.freeBuffers();
