@@ -156,8 +156,8 @@ public final class XJGE {
     public static void init(String assetsFilepath, String scenesFilepath, Vector2i resolution, boolean createOpenGLLog, 
                             boolean debugEnabled, boolean restrict4K, boolean retainFullscreen, boolean windowResizable) {
         if(!initCalled) {
-            if(System.getProperty("java.version").compareTo("15.0.2") < 0) {
-                Logger.logSevere("Unsupported Java version. Required 15.0.2, " + 
+            if(System.getProperty("java.version").compareTo("22.0.2") < 0) {
+                Logger.logSevere("Unsupported Java version. Required 22.0.2, " + 
                                  "found: " + System.getProperty("java.version"), 
                                  null);
             }
@@ -216,7 +216,7 @@ public final class XJGE {
                 
                 Window.monitor = Hardware.findMonitors().get(1);
                 Window.setFullscreenPreference(fullscreen);
-                Window.setIcon("xjge_missingtexture.png");
+                Window.setIcon("xjge_texture_missing.png");
             }
             
             glfwMakeContextCurrent(Window.HANDLE);

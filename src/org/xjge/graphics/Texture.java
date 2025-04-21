@@ -33,7 +33,7 @@ public final class Texture {
     public final int height;
     public final int channels;
     
-    private static final Texture missingTexture = new Texture("texture_missing.png");
+    private static final Texture missingTexture = new Texture("xjge_texture_missing.png");
     
     /**
      * Creates a new texture object from the image file specified. If the image 
