@@ -39,7 +39,7 @@ public final class Game {
 
     private static int fps;
     private static int tickCount    = 0;
-    final static int TICKS_PER_HOUR = 3599999;
+    final static int TICKS_PER_HOUR = 225000;
     
     private static float bloomThreshold = 1.0f;
     
