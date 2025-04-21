@@ -96,9 +96,7 @@ public final class Hardware {
                 }
             }
         } else {
-            Logger.setDomain("hardware");
             Logger.logWarning("Failed to find any available speakers", null);
-            Logger.setDomain(null);
         }
         
         return Collections.unmodifiableNavigableMap(speakers);
@@ -120,9 +118,7 @@ public final class Hardware {
                 }
             }
         } else {
-            Logger.setDomain("hardware");
             Logger.logWarning("Failed to find any available monitors", null);
-            Logger.setDomain(null);
         }
         
         return Collections.unmodifiableNavigableMap(monitors);
@@ -204,7 +200,6 @@ public final class Hardware {
         
         findSpeakers();
         
-        Logger.setDomain("hardware");
         try {
             if(!speakers.isEmpty()) {
                 switch(operation) {
@@ -255,7 +250,6 @@ public final class Hardware {
         } catch(NullPointerException e) {
             Logger.logWarning("Failed to set audio device. No such device is available", e);
         }
-        Logger.setDomain(null);
     }
     
 }

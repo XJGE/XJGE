@@ -5,7 +5,7 @@ import java.util.Map;
 import java.util.UUID;
 
 /**
- * Created: May 7, 2021 (4.0.0 rewrite on Apr 8, 2025)
+ * Created: May 7, 2021
  * <p>
  * Used to represent a distinct object in the scene, typically composed of 
  * several {@linkplain Component components} which define its behavior.

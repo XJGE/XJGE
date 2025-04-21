@@ -78,8 +78,6 @@ public final class Window {
         glfwFocusWindow(HANDLE);
         
         glfwSetMonitorCallback((monHandle, event) -> {
-            Logger.setDomain("hardware");
-            
             switch(event) {
                 case GLFW_CONNECTED -> {
                     Hardware.findMonitors();
@@ -112,8 +110,6 @@ public final class Window {
                     }
                 }
             }
-            
-            Logger.setDomain(null);
         });
         
         glfwSetWindowPosCallback(HANDLE, (window, x, y) -> {
@@ -321,12 +317,11 @@ public final class Window {
      */
     public static void setMonitor(String operation) {
         setFullscreen(!fullscreen);
-        Logger.setDomain("hardware");
         
         try {
             Thread.sleep(100);
         } catch(InterruptedException e) {
-            Logger.logSevere(e.getMessage(), e);
+            Logger.logError(e.getMessage(), e);
         }
         
         NavigableMap<Integer, Monitor> monitors = Hardware.findMonitors();
@@ -372,7 +367,6 @@ public final class Window {
                               null);
         }
         
-        Logger.setDomain(null);
         setFullscreen(!fullscreen);
     }
     
@@ -407,11 +401,9 @@ public final class Window {
             stbi_image_free(icon);
             
         } catch(Exception e) {
-            Logger.setDomain("hardware");
             Logger.logWarning("Failed to set window icon using \"" + filename + 
                               "\". Check the filename, path, or extension", 
                               e);
-            Logger.setDomain(null);
         }
     }
     

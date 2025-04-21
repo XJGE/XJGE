@@ -50,10 +50,7 @@ public final class Sound {
         try(InputStream file = Sound.class.getResourceAsStream(XJGE.getAssetsFilepath() + filename)) {
             loadSound(file);
         } catch(Exception e) {
-            Logger.setDomain("audio");
             Logger.logWarning("Failed to load sound \"" + filename + "\"", e);
-            Logger.setDomain(null);
-            
             loadSound(Sound.class.getResourceAsStream("/org/xjge/assets/xjge_beep.ogg"));
         }
         
@@ -99,8 +96,7 @@ public final class Sound {
             MemoryUtil.memFree(soundBuf);
             
         } catch(IOException e) {
-            Logger.setDomain("audio");
-            Logger.logSevere("Failed to parse data from sound file", e);
+            Logger.logError("Failed to parse data from sound file", e);
         }
     }
     

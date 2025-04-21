@@ -1,17 +1,11 @@
 package org.xjge.core;
 
-import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.StringReader;
 import java.nio.ByteBuffer;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
-import javax.xml.stream.XMLInputFactory;
-import javax.xml.stream.XMLStreamConstants;
-import javax.xml.stream.XMLStreamException;
-import javax.xml.stream.XMLStreamReader;
 import org.joml.Vector2f;
 import org.joml.Vector2i;
 import static org.lwjgl.opengl.GL11C.*;
@@ -24,7 +18,6 @@ import org.lwjgl.system.MemoryStack;
 import org.lwjgl.system.MemoryUtil;
 import static org.lwjgl.system.MemoryUtil.NULL;
 import org.xjge.graphics.Color;
-import org.xjge.graphics.Texture;
 
 /**
  * Created: Jun 3, 2021
@@ -116,10 +109,7 @@ public final class Font {
                 throw new IllegalStateException("Font filename has no extension");
             }
         } catch(Exception e) {
-            Logger.setDomain("ui");
-            Logger.logWarning("Failed to load font \"" + filename + "\"", e);
-            Logger.setDomain(null);
-            
+            Logger.logError("Failed to load font \"" + filename + "\"", e);
             loadVectorFont(Font.class.getResourceAsStream("/org/xjge/assets/font_vector_sourcecodepro.ttf"), DEFAULT_SIZE);
         }
         
@@ -350,8 +340,7 @@ public final class Font {
             MemoryUtil.memFree(packedCharBuf);
             
         } catch(IOException e) {
-            Logger.setDomain("ui");
-            Logger.logSevere("Failed to parse vector font file data", e);
+            Logger.logError("Failed to parse vector font file data", e);
         }
     }
     

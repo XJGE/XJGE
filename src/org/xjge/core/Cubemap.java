@@ -47,10 +47,7 @@ final class Cubemap {
             try(InputStream file = Cubemap.class.getResourceAsStream(XJGE.getAssetsFilepath() + filename)) {
                 loadCubemapTexture(target, file);
             } catch(Exception e) {
-                Logger.setDomain("graphics");
                 Logger.logWarning("Failed to load cubemap texture \"" + filename + "\"", e);
-                Logger.setDomain(null);
-                
                 loadCubemapTexture(target, Cubemap.class.getResourceAsStream("/org/xjge/assets/xjge_missingtexture.png"));
             }
         });
@@ -93,8 +90,7 @@ final class Cubemap {
             MemoryUtil.memFree(imageBuf);
             
         } catch(IOException e) {
-            Logger.setDomain("graphics");
-            Logger.logSevere("Invalid data", e);
+            Logger.logError("Invalid data", e);
         }
     }
     

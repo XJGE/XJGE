@@ -68,11 +68,9 @@ public final class Monitor {
                 videoModes.put(getInfo(), videoMode);
             }
         } else {
-            Logger.setDomain("hardware");
             Logger.logWarning("Unable to find any additional video " +
                               "modes for monitor " + id + " \"" + name + "\"", 
                               null);
-            Logger.setDomain(null);
         }
     }
     
@@ -212,19 +210,15 @@ public final class Monitor {
                     if(tempKeys.get(index) != null && tempValues.get(index) != null) {
                         videoMode = tempValues.get(index);
                     } else {
-                        Logger.setDomain("hardware");
                         Logger.logWarning("Failed to change the current video mode of monitor " + 
                                           id + " \"" + name + "\". Could not find a video mode " + 
                                           "object at index " + index, 
                                           null);
-                        Logger.setDomain(null);
                     }
                 } catch(NumberFormatException | IndexOutOfBoundsException e) {
-                    Logger.setDomain("hardware");
                     Logger.logWarning("Failed to change the current video mode for monitor " + 
                                       id + " \"" + name + "\". Invalid index used", 
                                       e);
-                    Logger.setDomain(null);
                 }
             }
         }

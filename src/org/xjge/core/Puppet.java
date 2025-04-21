@@ -110,11 +110,9 @@ public final class Puppet {
                 device = Input.getDevice(deviceID);
                 Input.addPuppet(this);
             } else {
-                Logger.setDomain("input");
                 Logger.logWarning("Failed to set the input device of puppet \"" + name + 
                                   "\". Could not locate an input device at index " + deviceID, 
                                   null);
-                Logger.setDomain(null);
             }
         }
     }

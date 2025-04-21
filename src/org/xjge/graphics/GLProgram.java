@@ -61,13 +61,10 @@ public class GLProgram {
         glLinkProgram(handle);
         
         if(glGetProgrami(handle, GL_LINK_STATUS) != GL_TRUE) {
-            Logger.setDomain("graphics");
-            Logger.logSevere("Failed to link shader program \"" + name + "\" (" + glGetProgramInfoLog(handle) + ")", null);
+            Logger.logError("Failed to link shader program \"" + name + "\" (" + glGetProgramInfoLog(handle) + ")", null);
         } else {
             if(!name.equals("default")) {
-                Logger.setDomain("graphics");
                 Logger.logInfo("Shader program \"" + name + "\" linked successfully");
-                Logger.setDomain(null);
             }
         }
     }
@@ -103,8 +100,7 @@ public class GLProgram {
      */
     public void addUniform(BufferType type, String name) {
         if(glGetUniformLocation(handle, name) == -1) {
-            Logger.setDomain("graphics");
-            Logger.logSevere("Failed to find uniform variable \"" + name + "\". Check " + 
+            Logger.logError("Failed to find uniform variable \"" + name + "\". Check " + 
                              "variable name or GLSL source file where it is declared", 
                              null);
         }

@@ -422,9 +422,7 @@ public final class Audio {
                     case AL_STOPPED -> alSourceStop(handle);
                 }
             } else {
-                Logger.setDomain("audio");
                 Logger.logWarning("Could not find a sound source with the handle " + handle, null);
-                Logger.setDomain(null);
             }
         }
         

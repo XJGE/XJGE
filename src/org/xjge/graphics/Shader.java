@@ -48,8 +48,7 @@ public final class Shader {
                 output.append(line).append("\n");
             }
         } catch(Exception e) {
-            Logger.setDomain("graphics");
-            Logger.logSevere("Failed to parse GLSL file \"" + filename + "\". " + 
+            Logger.logError("Failed to parse GLSL file \"" + filename + "\". " + 
                              "Check filename, path, or extension", 
                              e);
         }
@@ -61,8 +60,7 @@ public final class Shader {
         glCompileShader(handle);
         
         if(glGetShaderi(handle, GL_COMPILE_STATUS) != GL_TRUE) {
-            Logger.setDomain("graphics");
-            Logger.logSevere("Failed to parse GLSL file \"" + filename + "\" (" + glGetShaderInfoLog(handle) + ")", null);
+            Logger.logError("Failed to parse GLSL file \"" + filename + "\" (" + glGetShaderInfoLog(handle) + ")", null);
         }
     }
     

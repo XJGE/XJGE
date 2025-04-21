@@ -211,10 +211,8 @@ public final class Input {
                         XJGE.observable.notifyObservers("GAMEPAD_" + jid + "_CONNECTED", connected[jid]);
                     }
                     
-                    Logger.setDomain("input");
                     Logger.logInfo("Input device \"" + getDeviceName(jid) + "\" " +
                                    "connected at position " + jid);
-                    Logger.setDomain(null);
                 }
                 
                 case GLFW_DISCONNECTED -> {
@@ -225,10 +223,8 @@ public final class Input {
                         XJGE.observable.notifyObservers("GAMEPAD_" + jid + "_CONNECTED", connected[jid]);
                     }
                     
-                    Logger.setDomain("input");
                     Logger.logInfo("Input device \"" + getDeviceName(jid) + "\" " +
                                    "disconnected at position " + jid);
-                    Logger.setDomain(null);
                 }
             }
         });
@@ -322,9 +318,7 @@ public final class Input {
                 }
             }
         } catch(FileNotFoundException | XMLStreamException | IllegalArgumentException e) {
-            Logger.setDomain("input");
             Logger.logWarning("Failed to import user-defined controls", e);
-            Logger.setDomain(null);
         }
     }
     
@@ -374,9 +368,7 @@ public final class Input {
                 output.append("</config>");
             }
         } catch(IOException e) {
-            Logger.setDomain("input");
             Logger.logWarning("Failed to export user defined controls", e);
-            Logger.setDomain(null);
         }
     }
     
@@ -674,8 +666,6 @@ public final class Input {
      * @see getDeviceSetting(int, String)
      */
     public static void setDeviceSetting(int deviceID, String name, float value) {
-        Logger.setDomain("input");
-        
         if(deviceID > AI_GAMEPAD_1) {
             if(inputDevices.containsKey(deviceID)) {
                 inputDevices.get(deviceID).settings.put(name, value);
@@ -690,8 +680,6 @@ public final class Input {
                               "controlled gamepads do not exhibit individualized user settings", 
                               null);
         }
-        
-        Logger.setDomain(null);
     }
     
     /**
@@ -725,13 +713,9 @@ public final class Input {
             device.enabledStates.add(enabled);
             device.enabled = device.enabledStates.peek();
         } else {
-            Logger.setDomain("input");
-            
             Logger.logWarning("Failed to change the enabled state of input device " + 
                               deviceID + ". Could not find an input device at this index",
                               null);
-            
-            Logger.setDomain(null);
         }
     }
     
@@ -806,8 +790,6 @@ public final class Input {
      * @see getDeviceControls(int)
      */
     public static void setDeviceControls(int deviceID, Map<Control, Integer> config) {
-        Logger.setDomain("input");
-        
         if(deviceID > AI_GAMEPAD_1) {
             if(inputDevices.containsKey(deviceID)) {
                 controlConfigs.get(deviceID).putAll(config);
@@ -825,8 +807,6 @@ public final class Input {
                               "control preferences", 
                               null);
         }
-        
-        Logger.setDomain(null);
     }
     
     /**

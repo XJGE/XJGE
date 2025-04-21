@@ -14,7 +14,7 @@ import org.xjge.core.Logger;
 import org.xjge.core.XJGE;
 
 /**
- * Created: May 11, 2021 (4.0.0 rewrite on Apr 21, 2025)
+ * Created: May 11, 2021
  * <br><br>
  * Supplies the data parsed from an image file into a new two-dimensional 
  * texture object that can be used by the graphics pipeline. RBGA encoded .png 

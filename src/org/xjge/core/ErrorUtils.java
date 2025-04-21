@@ -30,9 +30,8 @@ public final class ErrorUtils {
                 case AL_INVALID_OPERATION -> desc = "invalid operation";
                 case AL_OUT_OF_MEMORY     -> desc = "out of memory";
             }
-
-            Logger.setDomain("audio");
-            Logger.logSevere("OpenAL Error: (" + alError + ") " + desc, null);
+            
+            Logger.logError("OpenAL Error: (" + alError + ") " + desc, null);
         }
     }
     
@@ -54,8 +53,7 @@ public final class ErrorUtils {
                 case GL_OUT_OF_MEMORY     -> desc = "out of memory";
             }
             
-            Logger.setDomain("graphics");
-            Logger.logSevere("OpenGL Error: (" + glError + ") " + desc, null);
+            Logger.logError("OpenGL Error: (" + glError + ") " + desc, null);
         }
     }
     
@@ -84,8 +82,7 @@ public final class ErrorUtils {
                 case GL_FRAMEBUFFER_UNDEFINED                     -> desc = "undefined";
             }
             
-            Logger.setDomain("graphics");
-            Logger.logSevere("Framebuffer Error: (" + status + ") " + desc, null);
+            Logger.logError("Framebuffer Error: (" + status + ") " + desc, null);
         }
     }
     

@@ -150,11 +150,9 @@ public final class Icon {
         if(atlas.subImageOffsets.containsKey(key)) {
             currCell = atlas.subImageOffsets.get(key);
         } else {
-            Logger.setDomain("graphics");
             Logger.logWarning("Failed to set icon sprite. The cell: (" + cellX +
                               ", " + cellY + ") is out of bounds",
                               null);
-            Logger.setDomain(null);
         }
     }
     

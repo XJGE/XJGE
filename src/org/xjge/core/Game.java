@@ -134,9 +134,7 @@ public final class Game {
                                 widget.destroy();
                                 
                                 if(debugEnabled) {
-                                    Logger.setDomain("ui");
                                     Logger.logInfo("Removed widget \"" + name + "\" from viewport " + viewport.id);
-                                    Logger.setDomain(null);
                                 }
                             }
                         });
@@ -217,8 +215,7 @@ public final class Game {
                 try {
                     Thread.sleep(1);
                 } catch(InterruptedException e) {
-                    Logger.setDomain("core");
-                    Logger.logSevere(e.getMessage(), e);
+                    Logger.logError(e.getMessage(), e);
                 }
             } else {
                 cycles++;
@@ -309,9 +306,7 @@ public final class Game {
      * @param scene the new scene to enter
      */
     public static void setScene(Scene scene) {
-        Logger.setDomain("core");
         Logger.logInfo("Current scene changed to \"" + scene.name + "\"");
-        Logger.setDomain(null);
         
         if(Game.scene != null) scene.exit();
         
@@ -382,9 +377,7 @@ public final class Game {
         try {
             scene.lights[index] = light;
         } catch(IndexOutOfBoundsException e) {
-            Logger.setDomain("graphics");
             Logger.logWarning("Failed to add light at index " + index, e);
-            Logger.setDomain(null);
         }
     }
     

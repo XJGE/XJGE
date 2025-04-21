@@ -54,8 +54,7 @@ public final class Speaker {
             AL.createCapabilities(capabilities);
             Audio.applyContextConfig();
         } catch(IllegalStateException e) {
-            Logger.setDomain("hardware");
-            Logger.logSevere("Failed to initialize an OpenAL context on speaker \"" + name + "\"", e);
+            Logger.logError("Failed to initialize an OpenAL context on speaker \"" + name + "\"", e);
         }
     }
     

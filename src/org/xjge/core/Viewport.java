@@ -270,9 +270,7 @@ final class Viewport {
      */
     void addUIWidget(boolean debugEnabled, String name, Widget widget) {
         if(debugEnabled) {
-            Logger.setDomain("ui");
             Logger.logInfo("Added widget \"" + name + "\" to viewport " + id);
-            Logger.setDomain(null);
         }
         
         ui.put(name, widget);

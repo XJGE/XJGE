@@ -60,10 +60,7 @@ final class Gamepad extends InputDevice {
             }
         } else {
             name = glfwGetJoystickName(id);
-            
-            Logger.setDomain("input");
             Logger.logWarning("Unsupported controller \"" + name + "\" connected at index " + id, null);
-            Logger.setDomain(null);
         }
     }
     

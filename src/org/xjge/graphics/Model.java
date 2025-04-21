@@ -103,9 +103,7 @@ public class Model {
         try(InputStream file = Model.class.getResourceAsStream(XJGE.getAssetsFilepath() + filename)) {
             loadModel(file, aiArgs);
         } catch(Exception e) {
-            Logger.setDomain("graphics");
             Logger.logWarning("Failed to load model \"" + filename + "\"", e);
-            Logger.setDomain(null);
         }
     }
     
@@ -283,12 +281,10 @@ public class Model {
     private void parseTextureData(PointerBuffer materialBuf) throws Exception {
         if(aiScene.mNumMaterials() > MAX_TEXTURES) {
             textures = new Texture[MAX_TEXTURES];
-            Logger.setDomain("graphics");
             Logger.logWarning(
                     "Invalid number of textures. Limit of " + MAX_TEXTURES + 
                     " permitted, found " + aiScene.mNumMaterials(), 
                     null);
-            Logger.setDomain(null);
         } else {
             textures = new Texture[aiScene.mNumMaterials()];
         }
@@ -434,10 +430,8 @@ public class Model {
         } else {
             String meshName = (mesh == null) ? "null" : mesh.name;
             
-            Logger.setDomain("graphics");
             Logger.logWarning("Failed to bind the texture of mesh \"" + meshName + 
                               "\" no such mesh is present in this model", null);
-            Logger.setDomain(null);
         }
     }
     
@@ -543,11 +537,9 @@ public class Model {
      * Outputs a list to the console containing information about every 
      * animation baked into this model.
      */
-    public void listAnimations() {
-        Logger.setDomain("graphics");        
+    public void listAnimations() {      
         Logger.logInfo("Skeletal Animations for Model \"" + filename + "\":");
         animations.forEach((name, anim) -> Logger.logInfo("\"" + name + "\" (" + anim.duration + " sec)"));
-        Logger.setDomain(null);
     }
     
     /**
@@ -621,20 +613,16 @@ public class Model {
      */
     public void setCurrentAnimation(String name, int numFrames) {
         if(!animations.containsKey(name)) {
-            Logger.setDomain("graphics");
             Logger.logWarning(
                     "Failed to set animation: \"" + name + "\". Model contains " + 
                     "no such animation",
                     null);
-            Logger.setDomain(null);
             return;
         }
         
         if(currAnimation != null && numFrames > 1) {
             if(currAnimation.name.equals(name)) {
-                Logger.setDomain("graphics");
                 Logger.logInfo("Animation: \"" + name +"\" is already playing");
-                Logger.setDomain(null);
                 return;
             }
             

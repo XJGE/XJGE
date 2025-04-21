@@ -157,12 +157,12 @@ public final class XJGE {
                             boolean debugEnabled, boolean restrict4K, boolean retainFullscreen, boolean windowResizable) {
         if(!initCalled) {
             if(System.getProperty("java.version").compareTo("22.0.2") < 0) {
-                Logger.logSevere("Unsupported Java version. Required 22.0.2, " + 
+                Logger.logError("Unsupported Java version. Required 22.0.2, " + 
                                  "found: " + System.getProperty("java.version"), 
                                  null);
             }
             
-            if(!glfwInit()) Logger.logSevere("Failed to initialize GLFW", null);
+            if(!glfwInit()) Logger.logError("Failed to initialize GLFW", null);
             
             boolean fullscreen    = false;
             debugModeEnabled      = debugEnabled;
@@ -198,11 +198,9 @@ public final class XJGE {
                     }
                 }
             } catch(FileNotFoundException | NumberFormatException | XMLStreamException e) {
-                Logger.setDomain("core");
                 Logger.logWarning("Failed to parse engine configuration " + 
                                   "file, using default configuration", 
                                   e);
-                Logger.setDomain(null);
             }
             
             { //Initialize 3D audio utilities
@@ -338,7 +336,7 @@ public final class XJGE {
             beep        = new Sound("xjge_beep.ogg");
             
             Light.setIconTexture(engineIcons);
-            Logger.printSystemInfo();
+            Logger.logSystemInfo();
             
             XJGE.assetsFilepath = assetsFilepath;
             XJGE.scenesFilepath = scenesFilepath;
@@ -408,11 +406,9 @@ public final class XJGE {
                             viewports[0].currCamera = viewports[0].prevCamera;
                         }
                     } else {
-                        Logger.setDomain("core");
                         Logger.logInfo("Freecam access denied, command terminal " + 
                                        "is currently in use. Close the command " + 
                                        "terminal and try again");
-                        Logger.setDomain(null);
                     }
                 }
                 
@@ -474,9 +470,7 @@ public final class XJGE {
                 viewports[0].processMouseInput();
             });
         } else {
-            Logger.setDomain("core");
             Logger.logWarning("XJGE has already been initialized", null);
-            Logger.setDomain(null);
         }
         
         initCalled = true;
@@ -557,9 +551,7 @@ public final class XJGE {
                       .append("</config>");
             }
         } catch(IOException e) {
-            Logger.setDomain("core");
             Logger.logWarning("Failed to export engine configuration", e);
-            Logger.setDomain(null);
         }
         
         Hardware.freeSpeakers();
@@ -663,11 +655,9 @@ public final class XJGE {
         if(!name.equals("default")) {
             glPrograms.put(name, glProgram);
         } else {
-            Logger.setDomain("core");
             Logger.logWarning("Failed to add program \"" + name + "\". This " + 
                               " name is reserved for engine use, please choose another", 
                               null);
-            Logger.setDomain(null);
         }
     }
     
@@ -680,12 +670,10 @@ public final class XJGE {
      */
     public static void addCommand(String name, TerminalCommand command) {
         if(engineCommands.containsKey(name)) {
-            Logger.setDomain("core");
             Logger.logWarning("Failed to add command \"" + name + "\". A command " + 
                               "by this name already exists as a part of the engines " +
                               "core features", 
                               null);
-            Logger.setDomain(null);
         } else {
             userCommands.put(name, command);
         }
@@ -717,8 +705,6 @@ public final class XJGE {
      * @see Widget
      */
     public static final void removeUIWidget(int viewportID, String name) {
-        Logger.setDomain("ui");
-        
         Viewport viewport = viewports[viewportID];
         
         if(viewport.ui.containsKey(name)) {
@@ -728,8 +714,6 @@ public final class XJGE {
                               "such widget exists for viewport " + viewport.id, 
                               null);
         }
-        
-        Logger.setDomain(null);
     }
     
     /**
@@ -1011,8 +995,6 @@ public final class XJGE {
      * @param camera the camera object being assigned to the viewport
      */
     public static final void setViewportCamera(int viewportID, Camera camera) {
-        Logger.setDomain("core");
-        
         if(camera == null) {
             Logger.logInfo("Failed to set viewport camera. Null is not " + 
                            "accepted as a value of this function");
@@ -1027,8 +1009,6 @@ public final class XJGE {
                 viewports[viewportID].currCamera = camera;
             }
         }
-        
-        Logger.setDomain(null);
     }
     
     /**

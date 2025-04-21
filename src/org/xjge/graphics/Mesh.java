@@ -212,8 +212,7 @@ public final class Mesh {
                             boneIDBuf.put(weight.boneID);
                             weightBuf.put(weight.weight);
                         } else {
-                            Logger.setDomain("graphics");
-                            Logger.logSevere("Unable to find any vertex weight data", null);
+                            Logger.logError("Unable to find any vertex weight data", null);
                         }
                     } else {
                         boneIDBuf.put(0);
