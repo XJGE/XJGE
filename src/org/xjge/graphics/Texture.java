@@ -33,12 +33,23 @@ public final class Texture {
     public final int height;
     public final int channels;
     
-    private static final Texture missingTexture = new Texture("xjge_texture_missing.png");
+    private static final Texture missingTexture = new Texture();
+    
+    /**
+     * Default constructor used internally to load the placeholder texture.
+     */
+    private Texture() {
+        int[] info = loadTexture("/org/xjge/assets/", "xjge_texture_missing.png", GL_TEXTURE_2D);
+        
+        handle   = info[0];
+        width    = info[1];
+        height   = info[2];
+        channels = info[3];
+    }
     
     /**
      * Creates a new texture object from the image file specified. If the image 
-     * file cannot be found, the engine will instead use a fallback texture in 
-     * its place.
+     * file cannot be found, the engine will use a placeholder texture instead.
      * 
      * @param filename the name of the file to load (with extension)
      * @param target the OpenGL texture target. One of:
@@ -55,7 +66,7 @@ public final class Texture {
      * </tr></table>
      */
     public Texture(String filename, int target) {
-        int[] info = loadTexture(filename, target);
+        int[] info = loadTexture(XJGE.getAssetsFilepath(), filename, target);
         
         handle   = info[0];
         width    = info[1];
@@ -65,8 +76,7 @@ public final class Texture {
     
     /**
      * Creates a new texture object from the image file specified. If the image 
-     * file cannot be found, the engine will instead use a fallback texture in 
-     * its place.
+     * file cannot be found, the engine will use a placeholder texture instead.
      * 
      * @param filename the name of the file to load (with extension)
      */
@@ -93,8 +103,8 @@ public final class Texture {
      * </tr></table>
      * @return an array of integers containing data parsed from the image file
      */
-    private int[] loadTexture(String filename, int target) {
-        try(InputStream file = Texture.class.getResourceAsStream(XJGE.getAssetsFilepath() + filename)) {
+    private int[] loadTexture(String filepath, String filename, int target) {
+        try(InputStream file = Texture.class.getResourceAsStream(filename)) {
             int[] info = new int[4];
             
             info[0] = glGenTextures();
@@ -128,13 +138,13 @@ public final class Texture {
             return info;
             
         } catch(Exception exception) {
-            Logger.logWarning("Failed to load texture \"" + filename + "\"", exception);
+            Logger.logWarning("Failed to load texture \"" + filename + "\". A placeholder will be used instead.", exception);
             
             return new int[] {
                 missingTexture.handle,
                 missingTexture.width,
                 missingTexture.height,
-                missingTexture.channels,
+                missingTexture.channels
             };
         }
     }

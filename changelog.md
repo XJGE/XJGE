@@ -2,6 +2,30 @@
 
 All notable changes to this project will be documented in this file. The format of this file follows that specified by [Keep a Changelog](https://keepachangelog.com/en/1.0.0/). This project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [4.0.0] - 2025-
+
+### Added
+- New abstract Component class that can be used to define the behavior of Entity objects.
+- The ability to query, add, and remove components from an Entity object.
+- Randomly assigned UUIDs to identify entities at runtime.
+- New bind() method to the Texture class which is used instead of directly referencing its handle.
+
+### Changed
+- Fixed bug that wouldn't update the value of virtual gamepads when Input.setVirtualGamepadInput() was called.
+- Entity class to final, they may no longer be subclassed.
+- Texture class now provides public access to fields like width/height which remain immutable after initialization.
+- Texture handle is now hidden from the public API, you'll need to use Texture.bind() going forward.
+- Minimum required Java version updated to 22.0.2 (up from 15.0.2).
+- GLFW version to 3.5.0 (up from 3.4.0)
+- JOML version to 1.10.7 (up from 1.10.1)
+- The Logger class to include the class from which the log message was generated instead of manually setting the domain.
+- Logger.logSevere() method name to logError() for consistency.
+
+### Removed
+- Update/Render methods from the Entity class.
+- Getter methods from the Texture class.
+- setDomain() method from Logger class.
+
 ## [3.1.0] - 2025-01-03
 
 ### Added
