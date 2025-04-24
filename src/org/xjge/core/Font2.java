@@ -35,23 +35,22 @@ public final class Font2 {
     
     static final float SCALE = 1.5f;
     
-    private static final Font2 missingFont = new Font2();
+    private static final Font2 missingFont = new Font2("/org/xjge/assets/", "font_source_code_pro.ttf", DEFAULT_SIZE);
     
     private final Map<Character, Glyph2> glyphs = new HashMap<>();
     
-    private Font2() {
-        size = DEFAULT_SIZE;
-        loadVectorFont("/org/xjge/assets/", "font_source_code_pro.ttf");
-    }
-    
-    public Font2(String filename, int size) {
+    private Font2(String filepath, String filename, int size) {
         this.size = size;
         
-        int[] info = loadVectorFont(XJGE.getAssetsFilepath(), filename);
+        int[] info = loadVectorFont(filepath, filename);
         
         textureHandle      = info[0];
         vertexArrayObject  = info[1];
         vertexBufferObject = info[2];
+    }
+    
+    public Font2(String filename, int size) {
+        this(XJGE.getAssetsFilepath(), filename, size);
     }
     
     private int[] loadBitmapFont() {
@@ -59,7 +58,7 @@ public final class Font2 {
     }
     
     private int[] loadVectorFont(String filepath, String filename) {
-        try(InputStream file = Font.class.getResourceAsStream(filename)) {
+        try(InputStream file = Font.class.getResourceAsStream(filepath + filename)) {
             int[] info = new int[4];
             
             info[0] = glGenTextures();

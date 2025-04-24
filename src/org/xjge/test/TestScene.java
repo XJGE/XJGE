@@ -3,6 +3,7 @@ package org.xjge.test;
 import java.util.Map;
 import org.xjge.core.Camera;
 import org.xjge.core.Entity;
+import org.xjge.core.Font2;
 import org.xjge.core.Scene;
 import org.xjge.graphics.GLProgram;
 
@@ -16,6 +17,8 @@ public class TestScene extends Scene {
 
     public TestScene() {
         super("test");
+        
+        Font2.getLengthInPixels("dweeb");
         
         Entity entity = new Entity();
         addEntity(entity);

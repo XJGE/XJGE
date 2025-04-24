@@ -3,8 +3,16 @@
     <editor-bookmarks xmlns="http://www.netbeans.org/ns/editor-bookmarks/2" lastBookmarkId="0"/>
     <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
         <group>
+            <file>file:/C:/Users/jhoff/Projects/XJGE/src/org/xjge/graphics/Texture.java</file>
+            <file>file:/C:/Users/jhoff/Projects/XJGE/src/org/xjge/core/Font2.java</file>
+            <file>file:/C:/Users/jhoff/Projects/XJGE/src/org/xjge/core/Glyph.java</file>
+            <file>file:/C:/Users/jhoff/Projects/XJGE/src/org/xjge/core/Glyph2.java</file>
+            <file>file:/C:/Users/jhoff/Projects/XJGE/src/org/xjge/assets/shader_default_fragment.glsl</file>
+            <file>file:/C:/Users/jhoff/Projects/XJGE/src/org/xjge/assets/shader_default_vertex.glsl</file>
             <file>file:/C:/Users/jhoff/Projects/XJGE/src/org/xjge/core/Text.java</file>
             <file>file:/C:/Users/jhoff/Projects/XJGE/src/org/xjge/core/Font.java</file>
+            <file>file:/C:/Users/jhoff/Projects/XJGE/src/org/xjge/core/Terminal.java</file>
+            <file>file:/C:/Users/jhoff/Projects/XJGE/src/org/xjge/core/DebugInfo.java</file>
         </group>
     </open-files>
 </project-private>

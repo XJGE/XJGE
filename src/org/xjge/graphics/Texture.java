@@ -104,7 +104,7 @@ public final class Texture {
      * @return an array of integers containing data parsed from the image file
      */
     private int[] loadTexture(String filepath, String filename, int target) {
-        try(InputStream file = Texture.class.getResourceAsStream(filename)) {
+        try(InputStream file = Texture.class.getResourceAsStream(filepath + filename)) {
             int[] info = new int[4];
             
             info[0] = glGenTextures();
