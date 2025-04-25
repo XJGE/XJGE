@@ -177,6 +177,10 @@ void main() {
                                  : ioColor;
             ioFragColor = vec4(textColorOutput, texture(uTexture, ioTexCoords).a * uOpacity);
             break;
+            
+        case 11:
+            
+            break;
 
         case 2: case 3: case 10: //Used for rendering "bloom volumes" and UI shapes like polygons and rectangles.
             ioFragColor = vec4(ioColor, uOpacity);

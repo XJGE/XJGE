@@ -91,7 +91,7 @@ public final class XJGE {
     private static boolean showLightSources;
     private static boolean firstMouse = true;
     
-    public static final Path PWD       = Path.of("").toAbsolutePath();
+    public static final Path PRESENT_WORKING_DIRECTORY = Path.of("").toAbsolutePath();
     public static final String VERSION = "4.0.0";
     
     private static Split split = Split.NONE;
@@ -170,7 +170,7 @@ public final class XJGE {
             
             //Load settings from engine configuration file
             try {
-                InputStream stream = new FileInputStream(PWD.toString() + "/engine.cfg");
+                InputStream stream = new FileInputStream(PRESENT_WORKING_DIRECTORY.toString() + "/engine.cfg");
                 XMLStreamReader xmlReader = XMLInputFactory.newInstance().createXMLStreamReader(stream);
                 
                 while(xmlReader.hasNext()) {

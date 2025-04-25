@@ -27,13 +27,13 @@ import org.xjge.core.XJGE;
  */
 public final class Texture {
 
+    private static final Texture placeholder = new Texture();
+    
     private final int handle;
     
     public final int width;
     public final int height;
     public final int channels;
-    
-    private static final Texture missingTexture = new Texture();
     
     /**
      * Default constructor used internally to load the placeholder texture.
@@ -138,13 +138,13 @@ public final class Texture {
             return info;
             
         } catch(Exception exception) {
-            Logger.logWarning("Failed to load texture \"" + filename + "\". A placeholder will be used instead.", exception);
+            Logger.logWarning("Failed to load texture \"" + filename + "\". A placeholder will be used instead", exception);
             
             return new int[] {
-                missingTexture.handle,
-                missingTexture.width,
-                missingTexture.height,
-                missingTexture.channels
+                placeholder.handle,
+                placeholder.width,
+                placeholder.height,
+                placeholder.channels
             };
         }
     }
@@ -176,7 +176,7 @@ public final class Texture {
      * @see org.lwjgl.opengl.GL11#glDeleteTextures(int)
      */
     public void delete() {
-        if(handle != missingTexture.handle) glDeleteTextures(handle);
+        if(handle != placeholder.handle) glDeleteTextures(handle);
     }
     
 }

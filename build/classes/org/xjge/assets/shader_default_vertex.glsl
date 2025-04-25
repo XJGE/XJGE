@@ -47,6 +47,9 @@ void main() {
             gl_Position = uProjection * vec4(aPosition + aPosOffset, 1);
             break;
 
+        case 11:
+            break;
+
         case 2: //Used for drawing polygon objects on the UI.
             ioColor     = uColor;
             gl_Position = uProjection * uModel * vec4(aPosition, 1);

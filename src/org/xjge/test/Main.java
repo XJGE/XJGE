@@ -13,7 +13,7 @@ public class Main {
 
     public static void main(String args[]) {
         
-        XJGE.init("", "", null);
+        XJGE.init("/org/xjge/assets/", "org.xjge.test.", null);
         
         Game.setScene(new TestScene());
         
