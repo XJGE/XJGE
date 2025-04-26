@@ -21,10 +21,10 @@ import org.lwjgl.system.MemoryUtil;
  */
 public final class Font2 {
 
-    private static final float SCALE          = 1.5f;
+    private final float SCALE = 1.5f;
+    
     private static final int DEFAULT_SIZE     = 32;
     private static final int FLOATS_PER_GLYPH = 20;
-    private static final Font2 placeholder    = new Font2("/org/xjge/assets/", "font_source_code_pro.ttf", DEFAULT_SIZE);
     
     private final int textureHandle;
     private final int vertexArrayObject;
@@ -33,7 +33,9 @@ public final class Font2 {
     
     public final int size;
     
+    private static final Font2 placeholder = new Font2("/org/xjge/assets/", "font_source_code_pro.ttf", DEFAULT_SIZE);
     private final IntBuffer indices;
+    
     private final Map<Character, Glyph2> glyphs = new HashMap<>();
     
     private Font2(String filepath, String filename, int size) {
@@ -73,7 +75,7 @@ public final class Font2 {
     
     private int[] loadVectorFont(String filepath, String filename, int size) {
         try(InputStream file = Font.class.getResourceAsStream(filepath + filename)) {
-            int[] info = new int[5];
+            int[] info = new int[6];
             
             if(size <= 0) {
                 info[0] = DEFAULT_SIZE;
@@ -97,13 +99,26 @@ public final class Font2 {
                     throw new IllegalStateException("Failed to parse font information from file");
                 }
                 
-                String charset = IntStream.range(32, 128)
+                String charset = IntStream.range(32, 127)
                                           .mapToObj(i -> String.valueOf((char) i))
                                           .collect(Collectors.joining());
                 
+                int[] advanceWidth = new int[1];
+                int[] leftBearing  = new int[1];
+                float pixelScale   = stbtt_ScaleForPixelHeight(fontInfo, info[0]);
+                
                 for(int i = 0; i < charset.length(); i++) {
-                    //TODO: capture char info for instanced rendering
+                    char character = charset.charAt(i);
+                    
+                    stbtt_GetCodepointHMetrics(fontInfo, character, advanceWidth, leftBearing);
+                    float scaledAdvance = advanceWidth[0] * pixelScale;
+                    if(scaledAdvance > info[5]) info[5] = Math.round(scaledAdvance * SCALE);
+                    
+                    //TODO: pack glyphs
                 }
+                
+                System.out.println(info[5]);
+                
             }
             
             return info;

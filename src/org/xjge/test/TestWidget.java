@@ -7,7 +7,6 @@ import org.xjge.core.Font2;
 import org.xjge.core.Split;
 import org.xjge.core.Widget;
 import org.xjge.core.Window;
-import org.xjge.graphics.Color;
 import org.xjge.graphics.GLProgram;
 
 /**
