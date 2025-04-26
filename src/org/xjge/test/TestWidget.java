@@ -1,6 +1,7 @@
 package org.xjge.test;
 
 import java.util.Map;
+import org.joml.Vector2i;
 import org.joml.Vector3i;
 import org.xjge.core.Font2;
 import org.xjge.core.Split;
@@ -18,6 +19,7 @@ import org.xjge.graphics.GLProgram;
 public class TestWidget extends Widget {
 
     Font2 font = new Font2("font_source_code_pro.ttf", 24);
+    Vector2i textPos = new Vector2i(100, 200);
     
     public TestWidget() {
         super(new Vector3i(), Window.getWidth(), Window.getHeight());
@@ -30,6 +32,7 @@ public class TestWidget extends Widget {
     @Override
     public void render(Map<String, GLProgram> glPrograms) {
         //font.drawString("bleh", 100, 100, Color.WHITE, 1f);
+        //this.drawString(defaultFont, "bleh", textPos, Color.WHITE, width);
     }
 
     @Override

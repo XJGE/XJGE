@@ -8,10 +8,10 @@ package org.xjge.core;
  */
 record Glyph2(
     
-    float s0,
-    float s1,
-    float t0,
-    float t1,
+    float x0,
+    float x1,
+    float y0,
+    float y1,
     
     int advance,
     int width,
