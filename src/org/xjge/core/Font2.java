@@ -2,9 +2,10 @@ package org.xjge.core;
 
 import java.io.InputStream;
 import java.nio.ByteBuffer;
+import java.nio.FloatBuffer;
+import java.nio.IntBuffer;
 import java.util.HashMap;
 import java.util.Map;
-import static org.lwjgl.opengl.GL11.glDeleteTextures;
 import static org.lwjgl.opengl.GL31C.*;
 import org.lwjgl.stb.STBTTFontinfo;
 import org.lwjgl.stb.STBTTPackContext;
@@ -34,6 +35,16 @@ public final class Font2 {
     final int bitmapWidth;
     final int bitmapHeight;
     
+    private final int vaoHandle;
+    private final int vboHandle;
+    private final int iboHandle;
+    private final int posOffsetHandle;
+    private final int texOffsetHandle;
+    private final int colOffsetHandle;
+    
+    private final FloatBuffer vertexBuffer;
+    private final IntBuffer indexBuffer;
+    
     private static final Font2 placeholder = new Font2("/org/xjge/assets/", "font_source_code_pro.ttf", DEFAULT_SIZE);
     
     private final Map<Character, GlyphMetrics> glyphMetrics = new HashMap<>();
@@ -55,6 +66,46 @@ public final class Font2 {
         largestGlyphWidth = info[3];
         bitmapWidth       = info[4];
         bitmapHeight      = info[5];
+        vaoHandle         = info[6];
+        vboHandle         = info[7];
+        iboHandle         = info[8];
+        posOffsetHandle   = info[9];
+        texOffsetHandle   = info[10];
+        colOffsetHandle   = info[11];
+        
+        try(MemoryStack stack = MemoryStack.stackPush()) {
+            vertexBuffer = stack.mallocFloat(20);
+            indexBuffer  = stack.mallocInt(6);
+            
+            float subImageWidth  = (float) largestGlyphWidth / bitmapWidth;
+            float subImageHeight = (float) this.size / bitmapHeight;
+            
+            //(vec3 position), (vec2 texCoords)
+            vertexBuffer.put(0)                .put(this.size).put(0)   .put(0)            .put(0);
+            vertexBuffer.put(largestGlyphWidth).put(this.size).put(0)   .put(subImageWidth).put(0);
+            vertexBuffer.put(largestGlyphWidth).put(0)        .put(0)   .put(subImageWidth).put(subImageHeight);
+            vertexBuffer.put(0)                .put(0)        .put(0)   .put(0)            .put(subImageHeight);
+            
+            indexBuffer.put(0).put(1).put(2);
+            indexBuffer.put(2).put(3).put(0);
+            
+            vertexBuffer.flip();
+            indexBuffer.flip();
+        }
+        
+        glBindVertexArray(vaoHandle);
+        
+        glBindBuffer(GL_ARRAY_BUFFER, vboHandle);
+        glBufferData(GL_ARRAY_BUFFER, vertexBuffer, GL_STATIC_DRAW);
+        
+        glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, iboHandle);
+        glBufferData(GL_ELEMENT_ARRAY_BUFFER, indexBuffer, GL_STATIC_DRAW);
+        
+        glVertexAttribPointer(0, 3, GL_FLOAT, false, (5 * Float.BYTES), 0);
+        glVertexAttribPointer(2, 2, GL_FLOAT, false, (5 * Float.BYTES), (3 * Float.BYTES));
+
+        glEnableVertexAttribArray(0);
+        glEnableVertexAttribArray(2);
     }
     
     public Font2(String filename, int size) {
@@ -68,7 +119,7 @@ public final class Font2 {
     
     private int[] loadVectorFont(String filepath, String filename, int size) {
         try(InputStream file = Font.class.getResourceAsStream(filepath + filename)) {
-            int[] info = new int[6];
+            int[] info = new int[12];
             
             if(size <= 0 || size > 128) {
                 throw new IllegalStateException("Invalid font size used. Font size must be between 1 and 128");
@@ -158,6 +209,10 @@ public final class Font2 {
                 MemoryUtil.memFree(packedCharBuffer);
             }
             
+            //Initialize various OpenGL objects
+            info[6] = glGenVertexArrays();
+            for(int i = 7; i < 12; i++) info[i] = glGenBuffers();
+            
             return info;
             
         } catch(Exception exception) {
@@ -169,28 +224,34 @@ public final class Font2 {
                 placeholder.textureHandle,
                 placeholder.largestGlyphWidth,
                 placeholder.bitmapWidth,
-                placeholder.bitmapHeight
+                placeholder.bitmapHeight,
+                placeholder.vaoHandle,
+                placeholder.vboHandle,
+                placeholder.iboHandle,
+                placeholder.posOffsetHandle,
+                placeholder.texOffsetHandle,
+                placeholder.colOffsetHandle
             };
         }
     }
     
-    float getGlyphTexCoordX(char character) {
+    private float getGlyphTexCoordX(char character) {
         return glyphMetrics.get((!glyphMetrics.containsKey(character) ? '?' : character)).texCoordX;
     }
     
-    float getGlyphTexCoordY(char character) {
+    private float getGlyphTexCoordY(char character) {
         return glyphMetrics.get((!glyphMetrics.containsKey(character) ? '?' : character)).texCoordY;
     }
     
-    int getGlyphAdvance(char character) {
+    private int getGlyphAdvance(char character) {
         return glyphMetrics.get((!glyphMetrics.containsKey(character) ? '?' : character)).advance;
     }
     
-    int getGlyphLeftBearing(char character) {
+    private int getGlyphLeftBearing(char character) {
         return glyphMetrics.get((!glyphMetrics.containsKey(character) ? '?' : character)).leftBearing;
     }
     
-    int getGlyphDescent(char character) {
+    private int getGlyphDescent(char character) {
         return glyphMetrics.get((!glyphMetrics.containsKey(character) ? '?' : character)).descent;
     }
     
