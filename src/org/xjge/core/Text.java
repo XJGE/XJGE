@@ -85,7 +85,7 @@ public final class Text {
         if(!prevPosition.containsKey(drawOrder)) prevPosition.put(drawOrder, new Vector2i());
         
         boolean changed = valueChanged(prevFont, font) || valueChanged(prevText, text) || 
-                           valueChanged(prevPosition, position) || valueChanged(prevColor, color);
+                          valueChanged(prevPosition, position) || valueChanged(prevColor, color);
         
         if(changed) {
             if(glyphs.containsKey(drawOrder)) glyphs.get(drawOrder).clear();

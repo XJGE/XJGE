@@ -2,6 +2,8 @@ package org.xjge.core;
 
 import java.io.InputStream;
 import java.nio.ByteBuffer;
+import java.util.HashMap;
+import java.util.Map;
 import static org.lwjgl.opengl.GL31C.*;
 import org.lwjgl.stb.STBTTFontinfo;
 import org.lwjgl.stb.STBTTPackContext;
@@ -32,6 +34,8 @@ public final class Font2 {
     final int bitmapHeight;
     
     private static final Font2 placeholder = new Font2("/org/xjge/assets/", "font_source_code_pro.ttf", DEFAULT_SIZE);
+    
+    private final Map<Character, GlyphMetrics> glyphMetrics = new HashMap<>();
     
     private Font2(String filepath, String filename, int size) {
         int[] info = loadVectorFont(filepath, filename, size);
@@ -132,7 +136,14 @@ public final class Font2 {
                 
                 //Store glyph data in a format the engine can use
                 for(int i = 0; i < charset.length(); i++) {
-                    //TODO: populate texOffsets, posOffsets, and advanceValues maps.
+                    STBTTPackedchar glyph = packedCharBuffer.get(i);
+                    GlyphMetrics metrics  = new GlyphMetrics((float) (glyph.x0()) / info[4],
+                                                             (float) (glyph.y0()) / info[5],
+                                                             (int) glyph.xadvance(),
+                                                             (int) glyph.xoff(), 
+                                                             (int) (-glyph.yoff() - info[1]));
+                    
+                    glyphMetrics.put(charset.charAt(i), metrics);
                 }
                 
                 MemoryUtil.memFree(packedCharBuffer);
