@@ -36,12 +36,12 @@ public final class Font2 {
     private Font2(String filepath, String filename, int size) {
         int[] info = loadVectorFont(filepath, filename, size);
         
-        isBitmapFont        = info[0] == 1;
-        this.size           = info[1];
-        textureHandle       = info[2];
-        largestGlyphWidth   = info[3];
-        bitmapWidth         = info[4];
-        bitmapHeight        = info[5];
+        isBitmapFont      = info[0] == 1;
+        this.size         = info[1];
+        textureHandle     = info[2];
+        largestGlyphWidth = info[3];
+        bitmapWidth       = info[4];
+        bitmapHeight      = info[5];
     }
     
     public Font2(String filename, int size) {
@@ -99,6 +99,10 @@ public final class Font2 {
                 ByteBuffer imageBuffer = null;
                 STBTTPackedchar.Buffer packedCharBuffer = STBTTPackedchar.malloc(charset.length());
                 
+                /*
+                Generate a bitmap that evenly spaces each glyph according to the
+                dimensions of the largest one. This mitigates texture bleeding.
+                */
                 while(!containsAllGlyphs) {
                     info[4]     = Math.round(bitmapSizeInPixels * SCALE);
                     info[5]     = Math.round(bitmapSizeInPixels * SCALE);
