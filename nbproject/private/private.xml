@@ -1,11 +1,16 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project-private xmlns="http://www.netbeans.org/ns/project-private/1">
-    <editor-bookmarks xmlns="http://www.netbeans.org/ns/editor-bookmarks/2" lastBookmarkId="1">
+    <editor-bookmarks xmlns="http://www.netbeans.org/ns/editor-bookmarks/2" lastBookmarkId="4">
         <file>
             <url>src/org/xjge/core/Font2.java</url>
-            <bookmark id="1">
+            <bookmark id="2">
                 <name/>
-                <line>116</line>
+                <line>51</line>
+                <key/>
+            </bookmark>
+            <bookmark id="4">
+                <name/>
+                <line>134</line>
                 <key/>
             </bookmark>
         </file>

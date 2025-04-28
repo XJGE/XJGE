@@ -129,6 +129,13 @@ public final class Font2 {
 
                 MemoryUtil.memFree(imageBuffer);
                 MemoryUtil.memFree(fontBuffer);
+                
+                //Store glyph data in a format the engine can use
+                for(int i = 0; i < charset.length(); i++) {
+                    //TODO: populate texOffsets, posOffsets, and advanceValues maps.
+                }
+                
+                MemoryUtil.memFree(packedCharBuffer);
             }
             
             return info;
