@@ -20,6 +20,7 @@ All notable changes to this project will be documented in this file. The format 
 - JOML version to 1.10.7 (up from 1.10.1)
 - The Logger class to include the class from which the log message was generated instead of manually setting the domain.
 - Logger.logSevere() method name to logError() for consistency.
+- Font class now includes better fallback behavior and imposes minimum and maximum sizes.
 
 ### Removed
 - Update/Render methods from the Entity class.
