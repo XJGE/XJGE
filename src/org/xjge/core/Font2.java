@@ -4,6 +4,7 @@ import java.io.InputStream;
 import java.nio.ByteBuffer;
 import java.util.HashMap;
 import java.util.Map;
+import static org.lwjgl.opengl.GL11.glDeleteTextures;
 import static org.lwjgl.opengl.GL31C.*;
 import org.lwjgl.stb.STBTTFontinfo;
 import org.lwjgl.stb.STBTTPackContext;
@@ -36,6 +37,14 @@ public final class Font2 {
     private static final Font2 placeholder = new Font2("/org/xjge/assets/", "font_source_code_pro.ttf", DEFAULT_SIZE);
     
     private final Map<Character, GlyphMetrics> glyphMetrics = new HashMap<>();
+    
+    private record GlyphMetrics (
+        float texCoordX,
+        float texCoordY,
+        int advance,
+        int leftBearing,
+        int descent
+    ) {}
     
     private Font2(String filepath, String filename, int size) {
         int[] info = loadVectorFont(filepath, filename, size);
@@ -163,6 +172,30 @@ public final class Font2 {
                 placeholder.bitmapHeight
             };
         }
+    }
+    
+    float getGlyphTexCoordX(char character) {
+        return glyphMetrics.get((!glyphMetrics.containsKey(character) ? '?' : character)).texCoordX;
+    }
+    
+    float getGlyphTexCoordY(char character) {
+        return glyphMetrics.get((!glyphMetrics.containsKey(character) ? '?' : character)).texCoordY;
+    }
+    
+    int getGlyphAdvance(char character) {
+        return glyphMetrics.get((!glyphMetrics.containsKey(character) ? '?' : character)).advance;
+    }
+    
+    int getGlyphLeftBearing(char character) {
+        return glyphMetrics.get((!glyphMetrics.containsKey(character) ? '?' : character)).leftBearing;
+    }
+    
+    int getGlyphDescent(char character) {
+        return glyphMetrics.get((!glyphMetrics.containsKey(character) ? '?' : character)).descent;
+    }
+    
+    public void delete() {
+        if(textureHandle != placeholder.textureHandle) glDeleteTextures(textureHandle);
     }
     
 }
