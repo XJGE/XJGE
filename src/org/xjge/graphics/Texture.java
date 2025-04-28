@@ -138,7 +138,7 @@ public final class Texture {
             return info;
             
         } catch(Exception exception) {
-            Logger.logWarning("Failed to load texture \"" + filename + "\". A placeholder will be used instead", exception);
+            Logger.logWarning("Failed to load texture \"" + filename + "\" a placeholder will be used instead", exception);
             
             return new int[] {
                 placeholder.handle,

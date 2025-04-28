@@ -600,17 +600,21 @@ public final class XJGE {
      * @return a value between desired minimum and maximum ranges
      */
     public static float clampValue(float minValue, float maxValue, float userValue) {
-        float result = 0;
-        
-        if(userValue > maxValue) {
-            result = maxValue;
-        } else if(userValue < minValue) {
-            result = minValue;
-        } else {
-            result = userValue;
-        }
-        
-        return result;
+        return Math.max(minValue, Math.min(maxValue, userValue));
+    }
+    
+    /**
+     * Restricts an input value from a user to one between the minimum and 
+     * maximum ranges specified.
+     * 
+     * @param minValue the minimum permitted value
+     * @param maxValue the maximum permitted value
+     * @param userValue the value entered by the user
+     * 
+     * @return a value between desired minimum and maximum ranges
+     */
+    public static int clampValue(int minValue, int maxValue, int userValue) {
+        return Math.max(minValue, Math.min(maxValue, userValue));
     }
     
     /**
