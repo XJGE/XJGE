@@ -15,7 +15,9 @@ import org.joml.Vector2i;
  */
 final class Glyph {
     
-    char c;
+    boolean inUse;
+    
+    char character;
     
     Vector2i position;
     Color color;
@@ -23,14 +25,14 @@ final class Glyph {
     /**
      * Creates a new glyph object that exhibits the initial state provided.
      * 
-     * @param c the character/letter this glyph will represent
+     * @param character the character/letter this glyph will represent
      * @param position the position of this glyph on the screen
      * @param color the color this glyph will be rendered in
      */
-    Glyph(char c, Vector2i position, Color color) {
-        this.c        = c;
-        this.position = position;
-        this.color    = color;
+    Glyph(char character, Vector2i position, Color color) {
+        this.character = character;
+        this.position  = position;
+        this.color     = color;
     }
     
 }

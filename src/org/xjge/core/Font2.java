@@ -4,7 +4,9 @@ import java.io.InputStream;
 import java.nio.ByteBuffer;
 import java.nio.FloatBuffer;
 import java.nio.IntBuffer;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import static org.lwjgl.opengl.GL31C.*;
 import org.lwjgl.stb.STBTTFontinfo;
@@ -14,6 +16,7 @@ import static org.lwjgl.stb.STBTruetype.*;
 import org.lwjgl.system.MemoryStack;
 import org.lwjgl.system.MemoryUtil;
 import static org.lwjgl.system.MemoryUtil.NULL;
+import org.xjge.graphics.Color;
 
 /**
  * Created: Jun 3, 2021
@@ -23,11 +26,19 @@ import static org.lwjgl.system.MemoryUtil.NULL;
  */
 public final class Font2 {
 
-    final boolean isBitmapFont;
+    private final boolean isBitmapFont;
     
     private final float SCALE = 1.5f;
     
-    private static final int DEFAULT_SIZE = 32;
+    private static final int DEFAULT_FONT_SIZE = 32;
+    private static final int INITIAL_POOL_SIZE = 64;
+    
+    private final int vaoHandle;
+    private final int vboHandle;
+    private final int iboHandle;
+    private final int colOffsetHandle;
+    private final int posOffsetHandle;
+    private final int texOffsetHandle;
     
     final int size;
     final int textureHandle;
@@ -35,26 +46,20 @@ public final class Font2 {
     final int bitmapWidth;
     final int bitmapHeight;
     
-    private final int vaoHandle;
-    private final int vboHandle;
-    private final int iboHandle;
-    private final int posOffsetHandle;
-    private final int texOffsetHandle;
-    private final int colOffsetHandle;
+    private static final Font2 placeholder = new Font2("/org/xjge/assets/", "font_source_code_pro.ttf", DEFAULT_FONT_SIZE);
     
     private final FloatBuffer vertexBuffer;
     private final IntBuffer indexBuffer;
     
-    private static final Font2 placeholder = new Font2("/org/xjge/assets/", "font_source_code_pro.ttf", DEFAULT_SIZE);
-    
+    private final List<Glyph2> glyphPool = new ArrayList<>();
     private final Map<Character, GlyphMetrics> glyphMetrics = new HashMap<>();
     
     private record GlyphMetrics (
         float texCoordX,
         float texCoordY,
         int advance,
-        int leftBearing,
-        int descent
+        int bearingX,
+        int bearingY
     ) {}
     
     private Font2(String filepath, String filename, int size) {
@@ -69,9 +74,11 @@ public final class Font2 {
         vaoHandle         = info[6];
         vboHandle         = info[7];
         iboHandle         = info[8];
-        posOffsetHandle   = info[9];
-        texOffsetHandle   = info[10];
-        colOffsetHandle   = info[11];
+        colOffsetHandle   = info[9];
+        posOffsetHandle   = info[10];
+        texOffsetHandle   = info[11];
+        
+        for(int i = 0; i < INITIAL_POOL_SIZE; i++) glyphPool.add(new Glyph2());
         
         try(MemoryStack stack = MemoryStack.stackPush()) {
             vertexBuffer = stack.mallocFloat(20);
@@ -103,13 +110,45 @@ public final class Font2 {
         
         glVertexAttribPointer(0, 3, GL_FLOAT, false, (5 * Float.BYTES), 0);
         glVertexAttribPointer(2, 2, GL_FLOAT, false, (5 * Float.BYTES), (3 * Float.BYTES));
-
+        
         glEnableVertexAttribArray(0);
         glEnableVertexAttribArray(2);
     }
     
     public Font2(String filename, int size) {
         this(XJGE.getAssetsFilepath(), filename, size);
+    }
+    
+    private void offsetColor() {
+        
+    }
+    
+    private void offsetPosition() {
+        
+    }
+    
+    private void offsetTexture() {
+        
+    }
+    
+    private float getGlyphTexCoordX(char character) {
+        return glyphMetrics.get((!glyphMetrics.containsKey(character) ? '?' : character)).texCoordX;
+    }
+    
+    private float getGlyphTexCoordY(char character) {
+        return glyphMetrics.get((!glyphMetrics.containsKey(character) ? '?' : character)).texCoordY;
+    }
+    
+    private int getGlyphAdvance(char character) {
+        return glyphMetrics.get((!glyphMetrics.containsKey(character) ? '?' : character)).advance;
+    }
+    
+    private int getGlyphBearingX(char character) {
+        return glyphMetrics.get((!glyphMetrics.containsKey(character) ? '?' : character)).bearingX;
+    }
+    
+    private int getGlyphBearingY(char character) {
+        return glyphMetrics.get((!glyphMetrics.containsKey(character) ? '?' : character)).bearingY;
     }
     
     private int[] loadBitmapFont(String filepath, String filename, int size) {
@@ -220,7 +259,7 @@ public final class Font2 {
             
             return new int[] {
                 0,
-                DEFAULT_SIZE,
+                DEFAULT_FONT_SIZE,
                 placeholder.textureHandle,
                 placeholder.largestGlyphWidth,
                 placeholder.bitmapWidth,
@@ -235,28 +274,43 @@ public final class Font2 {
         }
     }
     
-    private float getGlyphTexCoordX(char character) {
-        return glyphMetrics.get((!glyphMetrics.containsKey(character) ? '?' : character)).texCoordX;
-    }
-    
-    private float getGlyphTexCoordY(char character) {
-        return glyphMetrics.get((!glyphMetrics.containsKey(character) ? '?' : character)).texCoordY;
-    }
-    
-    private int getGlyphAdvance(char character) {
-        return glyphMetrics.get((!glyphMetrics.containsKey(character) ? '?' : character)).advance;
-    }
-    
-    private int getGlyphLeftBearing(char character) {
-        return glyphMetrics.get((!glyphMetrics.containsKey(character) ? '?' : character)).leftBearing;
-    }
-    
-    private int getGlyphDescent(char character) {
-        return glyphMetrics.get((!glyphMetrics.containsKey(character) ? '?' : character)).descent;
-    }
-    
     public void delete() {
-        if(textureHandle != placeholder.textureHandle) glDeleteTextures(textureHandle);
+        if(textureHandle != placeholder.textureHandle) {
+            glDeleteTextures(textureHandle);
+            glDeleteVertexArrays(vaoHandle);
+            glDeleteBuffers(vboHandle);
+            glDeleteBuffers(iboHandle);
+        }
+    }
+    
+    public void drawString(String text, int positionX, int positionY, Color color, float opacity) {
+        
+        //Update object pool size to accommodate text requirements 
+        if(text.length() > glyphPool.size()) {
+            //for(int i = 0; i < text.length(); i++)
+        }
+        
+        XJGE.getDefaultGLProgram().use();
+        
+        glEnable(GL_BLEND);
+        glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+        glActiveTexture(GL_TEXTURE0);
+        glBindTexture(GL_TEXTURE_2D, textureHandle);
+        glBindVertexArray(vaoHandle);
+        
+        offsetPosition();
+        offsetTexture();
+        offsetColor();
+        
+        XJGE.getDefaultGLProgram().setUniform("uType", 1);
+        XJGE.getDefaultGLProgram().setUniform("uTexture", 0);
+        XJGE.getDefaultGLProgram().setUniform("uOpacity", XJGE.clampValue(0, 1, opacity));
+        XJGE.getDefaultGLProgram().setUniform("uIsBitmapFont", (isBitmapFont) ? 1 : 0);
+        
+        glDrawElementsInstanced(GL_TRIANGLES, indexBuffer.capacity(), GL_UNSIGNED_INT, 0, glyphPool.size());
+        glDisable(GL_BLEND);
+        
+        ErrorUtils.checkGLError();
     }
     
 }

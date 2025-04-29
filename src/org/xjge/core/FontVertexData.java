@@ -115,10 +115,10 @@ final class FontVertexData {
             FloatBuffer cells = stack.mallocFloat(glyphs.size() * Float.BYTES);
             
             glyphs.forEach((index, glyph) -> {
-                if(!font.texOffsets.containsKey(glyph.c)) {
+                if(!font.texOffsets.containsKey(glyph.character)) {
                     cells.put(font.texOffsets.get('').x).put(font.texOffsets.get('').y);
                 } else {
-                    cells.put(font.texOffsets.get(glyph.c).x).put(font.texOffsets.get(glyph.c).y);
+                    cells.put(font.texOffsets.get(glyph.character).x).put(font.texOffsets.get(glyph.character).y);
                 }
             });
             

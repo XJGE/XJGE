@@ -1,0 +1,10 @@
+Apr 28, 06:16:59pm, [ERROR], [Shader.java]: Failed to parse GLSL file "shader_default_fragment.glsl" (0(182) : error C1038: declaration of "textColorOutput" conflicts with previous declaration at 0(175)
+)
+java.lang.RuntimeException
+	org.xjge.core.Logger.log(Logger.java:57)
+	org.xjge.core.Logger.logError(Logger.java:141)
+	org.xjge.graphics.Shader.<init>(Shader.java:63)
+	org.xjge.core.XJGE$1.<init>(XJGE.java:259)
+	org.xjge.core.XJGE.init(XJGE.java:257)
+	org.xjge.core.XJGE.init(XJGE.java:492)
+	org.xjge.test.Main.main(Main.java:16)
