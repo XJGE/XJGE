@@ -7,6 +7,7 @@ import org.xjge.core.Font2;
 import org.xjge.core.Split;
 import org.xjge.core.Widget;
 import org.xjge.core.Window;
+import org.xjge.graphics.Color;
 import org.xjge.graphics.GLProgram;
 
 /**
@@ -30,8 +31,17 @@ public class TestWidget extends Widget {
 
     @Override
     public void render(Map<String, GLProgram> glPrograms) {
-        //font.drawString("bleh", 100, 100, Color.WHITE, 1f);
-        //this.drawString(defaultFont, "bleh", textPos, Color.WHITE, width);
+        /*
+        TODO:
+        - Test variable string lengths
+        - Profile efficency/garbage creation
+        - Impose maximum char count
+        - Add .bmf parsing
+        - Test \n netline creation
+        */
+        
+        font.drawString("bleh", 100, 100, Color.WHITE, 1f);
+        font.drawString("bleh2", 100, 80, Color.WHITE, 1f);
     }
 
     @Override

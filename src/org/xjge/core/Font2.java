@@ -30,8 +30,7 @@ public final class Font2 {
     
     private final float SCALE = 1.5f;
     
-    private static final int DEFAULT_FONT_SIZE = 32;
-    private static final int INITIAL_POOL_SIZE = 64;
+    private static final int DEFAULT_SIZE = 32;
     
     private final int vaoHandle;
     private final int vboHandle;
@@ -40,7 +39,6 @@ public final class Font2 {
     private final int posOffsetHandle;
     private final int texOffsetHandle;
     private int numGlyphsAllocated;
-    private int drawCount;
     
     final int size;
     final int textureHandle;
@@ -48,7 +46,7 @@ public final class Font2 {
     final int bitmapWidth;
     final int bitmapHeight;
     
-    private static final Font2 placeholder = new Font2("/org/xjge/assets/", "font_source_code_pro.ttf", DEFAULT_FONT_SIZE);
+    private static final Font2 placeholder = new Font2("/org/xjge/assets/", "font_source_code_pro.ttf", DEFAULT_SIZE);
     
     private final FloatBuffer vertexBuffer;
     private final IntBuffer indexBuffer;
@@ -79,8 +77,6 @@ public final class Font2 {
         colOffsetHandle   = info[9];
         posOffsetHandle   = info[10];
         texOffsetHandle   = info[11];
-        
-        for(int i = 0; i < INITIAL_POOL_SIZE; i++) glyphPool.add(new Glyph2());
         
         try(MemoryStack stack = MemoryStack.stackPush()) {
             vertexBuffer = stack.mallocFloat(20);
@@ -306,7 +302,7 @@ public final class Font2 {
             
             return new int[] {
                 0,
-                DEFAULT_FONT_SIZE,
+                DEFAULT_SIZE,
                 placeholder.textureHandle,
                 placeholder.largestGlyphWidth,
                 placeholder.bitmapWidth,
@@ -345,14 +341,25 @@ public final class Font2 {
             numGlyphsAllocated = text.length();
         }
         
+        int advance = 0;
+        int descent = 0;
+        
         //Update glyph values to match current requirements of text
         for(int i = 0; i < text.length(); i++) {
             Glyph2 glyph = glyphPool.get(i);
             
-            glyph.reset();
-            
-            glyph.character = text.charAt(i);
-            //TODO: update values, maybe reset isnt needed here?
+            if(text.charAt(i) != '\n') {
+                glyph.reset();
+                glyph.character = text.charAt(i);
+                glyph.positionX = positionX + advance + getGlyphBearingX(glyph.character);
+                glyph.positionY = positionY + descent + getGlyphBearingY(glyph.character);
+                glyph.color     = color;
+                
+                advance += getGlyphAdvance(glyph.character);
+            } else {
+                advance = 0;
+                descent -= size;
+            }
         }
         
         offsetPosition();
