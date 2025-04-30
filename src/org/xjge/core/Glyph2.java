@@ -15,7 +15,17 @@ final class Glyph2 {
     
     char character;
     
-    Vector2i position;
-    Color color;
+    int index = -1;
+    
+    Color color       = Color.WHITE;
+    Vector2i position = new Vector2i();
+    
+    void reset() {
+        inUse     = false;
+        character = 0;
+        index     = -1;
+        color     = Color.WHITE;
+        position.zero();
+    }
     
 }

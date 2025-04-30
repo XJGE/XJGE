@@ -8,7 +8,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import static org.lwjgl.opengl.GL31C.*;
+import static org.lwjgl.opengl.GL33C.*;
 import org.lwjgl.stb.STBTTFontinfo;
 import org.lwjgl.stb.STBTTPackContext;
 import org.lwjgl.stb.STBTTPackedchar;
@@ -39,6 +39,7 @@ public final class Font2 {
     private final int colOffsetHandle;
     private final int posOffsetHandle;
     private final int texOffsetHandle;
+    private int numGlyphsInUse;
     
     final int size;
     final int textureHandle;
@@ -120,15 +121,60 @@ public final class Font2 {
     }
     
     private void offsetColor() {
+        try(MemoryStack stack = MemoryStack.stackPush()) {
+            FloatBuffer colors = stack.mallocFloat(glyphPool.size() * Float.BYTES);
+            
+            glyphPool.forEach(glyph -> {
+                colors.put(glyph.color.r).put(glyph.color.g).put(glyph.color.b);
+            });
+            
+            colors.flip();
+            
+            glBindBuffer(GL_ARRAY_BUFFER, colOffsetHandle);
+            glBufferData(GL_ARRAY_BUFFER, colors, GL_STATIC_DRAW);
+        }
         
+        glVertexAttribPointer(6, 3, GL_FLOAT, false, (3 * Float.BYTES), 0);
+        glEnableVertexAttribArray(6);
+        glVertexAttribDivisor(6, 1);
     }
     
     private void offsetPosition() {
+        try(MemoryStack stack = MemoryStack.stackPush()) {
+            FloatBuffer positions = stack.mallocFloat(glyphPool.size() * Float.BYTES);
+            
+            glyphPool.forEach(glyph -> {
+                positions.put(glyph.position.x).put(glyph.position.y).put(0);
+            });
+            
+            positions.flip();
+            
+            glBindBuffer(GL_ARRAY_BUFFER, posOffsetHandle);
+            glBufferData(GL_ARRAY_BUFFER, positions, GL_STATIC_DRAW);
+        }
         
+        glVertexAttribPointer(4, 3, GL_FLOAT, false, (3 * Float.BYTES), 0);
+        glEnableVertexAttribArray(4);
+        glVertexAttribDivisor(4, 1);
     }
     
     private void offsetTexture() {
+        try(MemoryStack stack = MemoryStack.stackPush()) {
+            FloatBuffer cells = stack.mallocFloat(glyphPool.size() * Float.BYTES);
+            
+            glyphPool.forEach(glyph -> {
+                cells.put(getGlyphTexCoordX(glyph.character)).put(getGlyphTexCoordY(glyph.character));
+            });
+            
+            cells.flip();
+            
+            glBindBuffer(GL_ARRAY_BUFFER, texOffsetHandle);
+            glBufferData(GL_ARRAY_BUFFER, cells, GL_STATIC_DRAW);
+        }
         
+        glVertexAttribPointer(5, 2, GL_FLOAT, false, (2 * Float.BYTES), 0);
+        glEnableVertexAttribArray(5);
+        glVertexAttribDivisor(5, 1);
     }
     
     private float getGlyphTexCoordX(char character) {
@@ -284,12 +330,6 @@ public final class Font2 {
     }
     
     public void drawString(String text, int positionX, int positionY, Color color, float opacity) {
-        
-        //Update object pool size to accommodate text requirements 
-        if(text.length() > glyphPool.size()) {
-            //for(int i = 0; i < text.length(); i++)
-        }
-        
         XJGE.getDefaultGLProgram().use();
         
         glEnable(GL_BLEND);
@@ -297,6 +337,19 @@ public final class Font2 {
         glActiveTexture(GL_TEXTURE0);
         glBindTexture(GL_TEXTURE_2D, textureHandle);
         glBindVertexArray(vaoHandle);
+        
+        //Update object pool size to accommodate text requirements 
+        if(text.length() != numGlyphsInUse) {
+            glyphPool.forEach(Glyph2::reset);
+            
+            if(text.length() > numGlyphsInUse) {
+                //Use freelist here to avoid unnecessary allocations?
+            } else {
+                
+            }
+            
+            numGlyphsInUse = text.length();
+        }
         
         offsetPosition();
         offsetTexture();
