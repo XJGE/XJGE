@@ -39,7 +39,8 @@ public final class Font2 {
     private final int colOffsetHandle;
     private final int posOffsetHandle;
     private final int texOffsetHandle;
-    private int numGlyphsInUse;
+    private int numGlyphsAllocated;
+    private int drawCount;
     
     final int size;
     final int textureHandle;
@@ -144,7 +145,7 @@ public final class Font2 {
             FloatBuffer positions = stack.mallocFloat(glyphPool.size() * Float.BYTES);
             
             glyphPool.forEach(glyph -> {
-                positions.put(glyph.position.x).put(glyph.position.y).put(0);
+                positions.put(glyph.positionX).put(glyph.positionY).put(0);
             });
             
             positions.flip();
@@ -339,16 +340,19 @@ public final class Font2 {
         glBindVertexArray(vaoHandle);
         
         //Update object pool size to accommodate text requirements 
-        if(text.length() != numGlyphsInUse) {
-            glyphPool.forEach(Glyph2::reset);
+        if(text.length() > numGlyphsAllocated) { //TODO: impose maximum size
+            for(int i = glyphPool.size(); i < text.length(); i++) glyphPool.add(new Glyph2());
+            numGlyphsAllocated = text.length();
+        }
+        
+        //Update glyph values to match current requirements of text
+        for(int i = 0; i < text.length(); i++) {
+            Glyph2 glyph = glyphPool.get(i);
             
-            if(text.length() > numGlyphsInUse) {
-                //Use freelist here to avoid unnecessary allocations?
-            } else {
-                
-            }
+            glyph.reset();
             
-            numGlyphsInUse = text.length();
+            glyph.character = text.charAt(i);
+            //TODO: update values, maybe reset isnt needed here?
         }
         
         offsetPosition();
