@@ -37,11 +37,9 @@ public class TestWidget extends Widget {
         - Profile efficency/garbage creation
         - Impose maximum char count
         - Add .bmf parsing
-        - Test \n netline creation
         */
         
-        font.drawString("bleh", 100, 100, Color.WHITE, 1f);
-        font.drawString("bleh2", 100, 80, Color.WHITE, 1f);
+        font.drawString("bleh dweeb", 100, 100, Color.WHITE, 1f);
     }
 
     @Override
