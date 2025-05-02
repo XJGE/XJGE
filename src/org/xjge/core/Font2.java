@@ -14,7 +14,6 @@ import java.util.Map;
 import javax.xml.stream.XMLInputFactory;
 import javax.xml.stream.XMLStreamConstants;
 import javax.xml.stream.XMLStreamException;
-import org.joml.Vector2i;
 import static org.lwjgl.opengl.GL33C.*;
 import static org.lwjgl.stb.STBImage.STBI_rgb_alpha;
 import static org.lwjgl.stb.STBImage.stbi_failure_reason;
@@ -50,9 +49,9 @@ public final class Font2 {
     private final int vaoHandle;
     private final int vboHandle;
     private final int iboHandle;
-    private final int colOffsetHandle;
     private final int posOffsetHandle;
     private final int texOffsetHandle;
+    private final int colOffsetHandle;
     private int numGlyphsAllocated;
     
     final int size;
@@ -83,6 +82,10 @@ public final class Font2 {
         int bearingX,
         int bearingY
     ) {}
+    
+    public Font2(String filename, int size) {
+        this(XJGE.getAssetsFilepath(), filename, size);
+    }
     
     private Font2(String filepath, String filename, int size) {
         int[] info = loadFont(filepath, filename, size);
@@ -135,8 +138,52 @@ public final class Font2 {
         glEnableVertexAttribArray(2);
     }
     
-    public Font2(String filename, int size) {
-        this(XJGE.getAssetsFilepath(), filename, size);
+    private int[] loadFont(String filepath, String filename, int size) {
+        try(InputStream file = Font.class.getResourceAsStream(filepath + filename)) {
+            if(size <= 0 || size > 128) {
+                throw new IllegalStateException("Invalid font size used. Font size must be between 1 and 128");
+            }
+            
+            String extension = filename.substring(filename.length() - 3, filename.length());
+            
+            int[] info = new int[12];
+            
+            info[0] = extension.equals("bmf") ? 1 : 0;
+            info[1] = size;
+            info[2] = glGenTextures();
+            
+            if(extension.equals("bmf")) {
+                loadRasterFont(filepath, file, info);
+            } else {
+                loadVectorFont(file, info);
+            }
+            
+            //Initialize various OpenGL objects
+            info[6] = glGenVertexArrays();
+            for(int i = 7; i < 12; i++) info[i] = glGenBuffers();
+            
+            return info;
+            
+        } catch(Exception exception) {
+            Logger.logWarning("Failed to load font \"" + filename + "\" a placeholder will be used instead", exception);
+            
+            glyphMetrics.putAll(placeholder.glyphMetrics);
+            
+            return new int[] {
+                0,
+                DEFAULT_SIZE,
+                placeholder.textureHandle,
+                placeholder.largestGlyphWidth,
+                placeholder.bitmapWidth,
+                placeholder.bitmapHeight,
+                placeholder.vaoHandle,
+                placeholder.vboHandle,
+                placeholder.iboHandle,
+                placeholder.posOffsetHandle,
+                placeholder.texOffsetHandle,
+                placeholder.colOffsetHandle
+            };
+        }
     }
     
     private void loadRasterFont(String filepath, InputStream file, int[] info) throws XMLStreamException, IOException {
@@ -307,23 +354,24 @@ public final class Font2 {
         }
     }
     
-    private void offsetColor() {
-        try(MemoryStack stack = MemoryStack.stackPush()) {
-            FloatBuffer colors = stack.mallocFloat(glyphPool.size() * Float.BYTES);
-            
-            glyphPool.forEach(glyph -> {
-                colors.put(glyph.color.r).put(glyph.color.g).put(glyph.color.b);
-            });
-            
-            colors.flip();
-            
-            glBindBuffer(GL_ARRAY_BUFFER, colOffsetHandle);
-            glBufferData(GL_ARRAY_BUFFER, colors, GL_STATIC_DRAW);
-        }
-        
-        glVertexAttribPointer(6, 3, GL_FLOAT, false, (3 * Float.BYTES), 0);
-        glEnableVertexAttribArray(6);
-        glVertexAttribDivisor(6, 1);
+    private float getGlyphTexCoordX(char character) {
+        return glyphMetrics.get((!glyphMetrics.containsKey(character) ? '?' : character)).texCoordX;
+    }
+    
+    private float getGlyphTexCoordY(char character) {
+        return glyphMetrics.get((!glyphMetrics.containsKey(character) ? '?' : character)).texCoordY;
+    }
+    
+    private int getGlyphAdvance(char character) {
+        return glyphMetrics.get((!glyphMetrics.containsKey(character) ? '?' : character)).advance;
+    }
+    
+    private int getGlyphBearingX(char character) {
+        return glyphMetrics.get((!glyphMetrics.containsKey(character) ? '?' : character)).bearingX;
+    }
+    
+    private int getGlyphBearingY(char character) {
+        return glyphMetrics.get((!glyphMetrics.containsKey(character) ? '?' : character)).bearingY;
     }
     
     private void offsetPosition() {
@@ -364,81 +412,23 @@ public final class Font2 {
         glVertexAttribDivisor(5, 1);
     }
     
-    private float getGlyphTexCoordX(char character) {
-        return glyphMetrics.get((!glyphMetrics.containsKey(character) ? '?' : character)).texCoordX;
-    }
-    
-    private float getGlyphTexCoordY(char character) {
-        return glyphMetrics.get((!glyphMetrics.containsKey(character) ? '?' : character)).texCoordY;
-    }
-    
-    private int getGlyphAdvance(char character) {
-        return glyphMetrics.get((!glyphMetrics.containsKey(character) ? '?' : character)).advance;
-    }
-    
-    private int getGlyphBearingX(char character) {
-        return glyphMetrics.get((!glyphMetrics.containsKey(character) ? '?' : character)).bearingX;
-    }
-    
-    private int getGlyphBearingY(char character) {
-        return glyphMetrics.get((!glyphMetrics.containsKey(character) ? '?' : character)).bearingY;
-    }
-    
-    private int[] loadFont(String filepath, String filename, int size) {
-        try(InputStream file = Font.class.getResourceAsStream(filepath + filename)) {
-            if(size <= 0 || size > 128) {
-                throw new IllegalStateException("Invalid font size used. Font size must be between 1 and 128");
-            }
+    private void offsetColor() {
+        try(MemoryStack stack = MemoryStack.stackPush()) {
+            FloatBuffer colors = stack.mallocFloat(glyphPool.size() * Float.BYTES);
             
-            String extension = filename.substring(filename.length() - 3, filename.length());
+            glyphPool.forEach(glyph -> {
+                colors.put(glyph.color.r).put(glyph.color.g).put(glyph.color.b);
+            });
             
-            int[] info = new int[12];
+            colors.flip();
             
-            info[0] = extension.equals("bmf") ? 1 : 0;
-            info[1] = size;
-            info[2] = glGenTextures();
-            
-            if(extension.equals("bmf")) {
-                loadRasterFont(filepath, file, info);
-            } else {
-                loadVectorFont(file, info);
-            }
-            
-            //Initialize various OpenGL objects
-            info[6] = glGenVertexArrays();
-            for(int i = 7; i < 12; i++) info[i] = glGenBuffers();
-            
-            return info;
-            
-        } catch(Exception exception) {
-            Logger.logWarning("Failed to load font \"" + filename + "\" a placeholder will be used instead", exception);
-            
-            glyphMetrics.putAll(placeholder.glyphMetrics);
-            
-            return new int[] {
-                0,
-                DEFAULT_SIZE,
-                placeholder.textureHandle,
-                placeholder.largestGlyphWidth,
-                placeholder.bitmapWidth,
-                placeholder.bitmapHeight,
-                placeholder.vaoHandle,
-                placeholder.vboHandle,
-                placeholder.iboHandle,
-                placeholder.posOffsetHandle,
-                placeholder.texOffsetHandle,
-                placeholder.colOffsetHandle
-            };
+            glBindBuffer(GL_ARRAY_BUFFER, colOffsetHandle);
+            glBufferData(GL_ARRAY_BUFFER, colors, GL_STATIC_DRAW);
         }
-    }
-    
-    public void delete() {
-        if(textureHandle != placeholder.textureHandle) {
-            glDeleteTextures(textureHandle);
-            glDeleteVertexArrays(vaoHandle);
-            glDeleteBuffers(vboHandle);
-            glDeleteBuffers(iboHandle);
-        }
+        
+        glVertexAttribPointer(6, 3, GL_FLOAT, false, (3 * Float.BYTES), 0);
+        glEnableVertexAttribArray(6);
+        glVertexAttribDivisor(6, 1);
     }
     
     public void drawString(String text, int positionX, int positionY, Color color, float opacity) {
@@ -484,6 +474,15 @@ public final class Font2 {
         glDisable(GL_BLEND);
         
         ErrorUtils.checkGLError();
+    }
+    
+    public void delete() {
+        if(textureHandle != placeholder.textureHandle) {
+            glDeleteTextures(textureHandle);
+            glDeleteVertexArrays(vaoHandle);
+            glDeleteBuffers(vboHandle);
+            glDeleteBuffers(iboHandle);
+        }
     }
     
 }

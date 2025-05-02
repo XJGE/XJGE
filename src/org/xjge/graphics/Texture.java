@@ -27,24 +27,22 @@ import org.xjge.core.XJGE;
  */
 public final class Texture {
 
-    private static final Texture placeholder = new Texture();
-    
     private final int handle;
     
     public final int width;
     public final int height;
     public final int channels;
     
+    private static final Texture placeholder = new Texture("/org/xjge/assets/", "xjge_texture_missing.png", GL_TEXTURE_2D);
+    
     /**
-     * Default constructor used internally to load the placeholder texture.
+     * Creates a new texture object from the image file specified. If the image 
+     * file cannot be found, the engine will use a placeholder texture instead.
+     * 
+     * @param filename the name of the file to load (with extension)
      */
-    private Texture() {
-        int[] info = loadTexture("/org/xjge/assets/", "xjge_texture_missing.png", GL_TEXTURE_2D);
-        
-        handle   = info[0];
-        width    = info[1];
-        height   = info[2];
-        channels = info[3];
+    public Texture(String filename) {
+        this(XJGE.getAssetsFilepath(), filename, GL_TEXTURE_2D);
     }
     
     /**
@@ -66,22 +64,19 @@ public final class Texture {
      * </tr></table>
      */
     public Texture(String filename, int target) {
-        int[] info = loadTexture(XJGE.getAssetsFilepath(), filename, target);
+        this(XJGE.getAssetsFilepath(), filename, target);
+    }
+    
+    /**
+     * Default constructor used internally to load the placeholder texture.
+     */
+    private Texture(String filepath, String filename, int target) {
+        int[] info = loadTexture(filepath, filename, target);
         
         handle   = info[0];
         width    = info[1];
         height   = info[2];
         channels = info[3];
-    }
-    
-    /**
-     * Creates a new texture object from the image file specified. If the image 
-     * file cannot be found, the engine will use a placeholder texture instead.
-     * 
-     * @param filename the name of the file to load (with extension)
-     */
-    public Texture(String filename) {
-        this(filename, GL_TEXTURE_2D);
     }
     
     /**
