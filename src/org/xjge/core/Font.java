@@ -164,7 +164,7 @@ public final class Font {
                             descent = Integer.parseInt(xmlReader.getAttributeValue(null, "descent"));
                         }
                     }
-                        
+                       
                     case XMLStreamConstants.END_ELEMENT -> {
                         if(xmlReader.getName().getLocalPart().equals("font")) {
                             xmlReader.close();

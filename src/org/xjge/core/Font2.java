@@ -16,6 +16,10 @@ import javax.xml.stream.XMLStreamConstants;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 import static org.lwjgl.opengl.GL33C.*;
+import static org.lwjgl.stb.STBImage.STBI_rgb_alpha;
+import static org.lwjgl.stb.STBImage.stbi_failure_reason;
+import static org.lwjgl.stb.STBImage.stbi_image_free;
+import static org.lwjgl.stb.STBImage.stbi_load_from_memory;
 import org.lwjgl.stb.STBTTFontinfo;
 import org.lwjgl.stb.STBTTPackContext;
 import org.lwjgl.stb.STBTTPackedchar;
@@ -73,7 +77,7 @@ public final class Font2 {
         int bearingY
     ) {}
     
-    private Font2(String filepath, String filename, int size) {        
+    private Font2(String filepath, String filename, int size) {
         int[] info = loadFont(filepath, filename, size);
         
         isBitmapFont      = info[0] == 1;
@@ -207,19 +211,101 @@ public final class Font2 {
     
     private int[] loadFont(String filepath, String filename, int size) {
         try(InputStream file = Font.class.getResourceAsStream(filepath + filename)) {
-            String extension = filename.substring(filename.length() - 3, filename.length());
-            String charset   = " !\"#$%&\'()*+,-./"  +
-                                 "0123456789:;<=>?"  +
-                                 "@ABCDEFGHIJKLMNO"  +
-                                 "PQRSTUVWXYZ[\\]^_" + 
-                                 "`abcdefghijklmno"  +
-                                 "pqrstuvwxyz{|}~";
             
             if(size <= 0 || size > 128) {
                 throw new IllegalStateException("Invalid font size used. Font size must be between 1 and 128");
             }
             
-            return extension.equals("bmf") ? loadBitmapFont(file, charset, size) : loadVectorFont(file, charset, size);
+            int[] info = new int[12];
+            
+            info[0] = 0;
+            info[1] = size;
+            info[2] = glGenTextures();
+
+            try(MemoryStack stack = MemoryStack.stackPush()) {
+                byte[] data = file.readAllBytes();
+
+                ByteBuffer fontBuffer  = MemoryUtil.memAlloc(data.length).put(data).flip();
+                STBTTFontinfo fontInfo = STBTTFontinfo.malloc(stack);
+
+                if(!stbtt_InitFont(fontInfo, fontBuffer)) {
+                    throw new IllegalStateException("Failed to parse font information from file");
+                }
+
+                float pixelScale   = stbtt_ScaleForPixelHeight(fontInfo, info[1]);
+                int[] advanceWidth = new int[1];
+                int[] leftBearing  = new int[1];
+                String charset     = " !\"#$%&\'()*+,-./"  +
+                                     "0123456789:;<=>?"  +
+                                     "@ABCDEFGHIJKLMNO"  +
+                                     "PQRSTUVWXYZ[\\]^_" + 
+                                     "`abcdefghijklmno"  +
+                                     "pqrstuvwxyz{|}~";
+
+                //Find the width of the largest glyph
+                for(int i = 0; i < charset.length(); i++) {
+                    stbtt_GetCodepointHMetrics(fontInfo, charset.charAt(i), advanceWidth, leftBearing);
+                    float scaledAdvance = advanceWidth[0] * pixelScale;
+                    if(scaledAdvance > info[3]) info[3] = Math.round(scaledAdvance * SCALE);
+                }
+
+                boolean containsAllGlyphs = false;
+                int bitmapSizeInPixels    = 128;
+
+                ByteBuffer imageBuffer = null;
+                STBTTPackedchar.Buffer packedCharBuffer = STBTTPackedchar.malloc(charset.length());
+
+                /*
+                Generate a bitmap that evenly spaces each glyph according to the
+                dimensions of the largest one. This mitigates texture bleeding.
+                */
+                while(!containsAllGlyphs) {
+                    info[4]     = Math.round(bitmapSizeInPixels * SCALE);
+                    info[5]     = Math.round(bitmapSizeInPixels * SCALE);
+                    imageBuffer = MemoryUtil.memAlloc(info[4] * info[5]);
+
+                    try(STBTTPackContext context = STBTTPackContext.malloc()) {
+                        stbtt_PackBegin(context, imageBuffer, info[4], info[5], 0, (int) (info[3] * SCALE), NULL);
+                        stbtt_PackSetOversampling(context, 1, 1);
+                        containsAllGlyphs = stbtt_PackFontRange(context, fontBuffer, 0, info[1], 32, packedCharBuffer);
+                        stbtt_PackEnd(context);
+                    }
+
+                    if(containsAllGlyphs) break;
+
+                    MemoryUtil.memFree(imageBuffer);
+                    bitmapSizeInPixels += 16;
+                }
+
+                glBindTexture(GL_TEXTURE_2D, info[2]);
+                glTexImage2D(GL_TEXTURE_2D, 0, GL_ALPHA, info[4], info[5], 0, GL_ALPHA, GL_UNSIGNED_BYTE, imageBuffer);
+                glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+                glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+                glBindTexture(GL_TEXTURE_2D, 0);
+
+                MemoryUtil.memFree(imageBuffer);
+                MemoryUtil.memFree(fontBuffer);
+
+                //Store glyph data in a format the engine can use
+                for(int i = 0; i < charset.length(); i++) {
+                    STBTTPackedchar glyph = packedCharBuffer.get(i);
+                    GlyphMetrics metrics  = new GlyphMetrics((float) (glyph.x0()) / info[4],
+                                                             (float) (glyph.y0()) / info[5],
+                                                             (int) glyph.xadvance(),
+                                                             (int) glyph.xoff(), 
+                                                             (int) (-glyph.yoff() - info[1]));
+
+                    glyphMetrics.put(charset.charAt(i), metrics);
+                }
+
+                MemoryUtil.memFree(packedCharBuffer);
+            }
+
+            //Initialize various OpenGL objects
+            info[6] = glGenVertexArrays();
+            for(int i = 7; i < 12; i++) info[i] = glGenBuffers();
+
+            return info;
             
         } catch(Exception exception) {
             Logger.logWarning("Failed to load font \"" + filename + "\" a placeholder will be used instead", exception);
@@ -241,185 +327,6 @@ public final class Font2 {
                 placeholder.colOffsetHandle
             };
         }
-    }
-    
-    private int[] loadBitmapFont(InputStream file, String charset, int size) throws XMLStreamException {
-        int[] info = new int[12];
-        
-        info[0] = 1;
-        info[1] = size;
-        info[2] = glGenTextures();
-        
-        XMLStreamReader xmlReader = XMLInputFactory.newInstance().createXMLStreamReader(file);
-        
-        float subImageWidth  = 0;
-        float subImageHeight = 0;
-        
-        int advance = 0;
-        int descent = 0;
-        
-        var advanceValues = new HashMap<Character, Integer>();
-        var descentValues = new HashMap<Character, Integer>();
-        
-        while(xmlReader.hasNext()) {
-            final int ADVANCE = advance;
-            final int DESCENT = descent;
-            
-            switch(xmlReader.next()) {
-                case XMLStreamConstants.START_ELEMENT -> {
-                    if(xmlReader.getName().getLocalPart().equals("font")) {
-                        /*
-                        glBindTexture(GL_TEXTURE_2D, info[2]);
-                        glTexImage2D(GL_TEXTURE_2D, 0, GL_ALPHA, info[4], info[5], 0, GL_ALPHA, GL_UNSIGNED_BYTE, imageBuffer);
-                        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
-                        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
-                        glBindTexture(GL_TEXTURE_2D, 0);
-                        
-                        /*
-                        texture = new Texture(xmlReader.getAttributeValue(null, "texture"));
-                            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
-                            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
-                        glBindTexture(GL_TEXTURE_2D, 0);
-                        
-                        texHandle         = texture.handle;
-                        largestGlyphWidth = Integer.parseInt(xmlReader.getAttributeValue(null, "width"));
-                        size              = Integer.parseInt(xmlReader.getAttributeValue(null, "height"));
-                        bitmapWidth       = texture.width;
-                        bitmapHeight      = texture.height;
-                        */
-                        
-                        subImageWidth  = (float) info[3] / info[4];
-                        subImageHeight = (float) info[1] / info[5];
-                        
-                    } else if(xmlReader.getName().getLocalPart().equals("group")) {
-                        advance = Integer.parseInt(xmlReader.getAttributeValue(null, "advance"));
-                        descent = Integer.parseInt(xmlReader.getAttributeValue(null, "descent"));
-                    }
-                }
-                
-                case XMLStreamConstants.END_ELEMENT -> {
-                    if(xmlReader.getName().getLocalPart().equals("font")) xmlReader.close();
-                }
-                
-                case XMLStreamConstants.CHARACTERS -> {
-                    BufferedReader reader = new BufferedReader(new StringReader(xmlReader.getText().trim()));
-                    
-                    reader.lines().forEach(line -> {
-                        for(String value : line.trim().split(",")) {
-                            char character = (char) Integer.parseInt(value);
-                            advanceValues.put(character, ADVANCE);
-                            descentValues.put(character, DESCENT);
-                        }
-                    });
-                }
-            }
-        }
-
-        float texCoordX = 0;
-        float texCoordY = 0;
-
-        for(char character : charset.toCharArray()) {
-            if(character == '/' || character == '?' || character == 'O' || character == '_' || character == 'o') {
-                texCoordX = 0;
-                texCoordY += subImageHeight;
-            } else {
-                GlyphMetrics metrics  = new GlyphMetrics(texCoordX,texCoordY,
-                                                         advanceValues.get(character),
-                                                         0, descentValues.get(character));
-
-                glyphMetrics.put(character, metrics);
-                texCoordX += subImageWidth;
-            }
-        }
-        
-        return info;
-    }
-    
-    private int[] loadVectorFont(InputStream file, String charset, int size) throws IOException {
-        int[] info = new int[12];
-        
-        info[0] = 0;
-        info[1] = size;
-        info[2] = glGenTextures();
-        
-        try(MemoryStack stack = MemoryStack.stackPush()) {
-            byte[] data = file.readAllBytes();
-            
-            ByteBuffer fontBuffer  = MemoryUtil.memAlloc(data.length).put(data).flip();
-            STBTTFontinfo fontInfo = STBTTFontinfo.malloc(stack);
-            
-            if(!stbtt_InitFont(fontInfo, fontBuffer)) {
-                throw new IllegalStateException("Failed to parse font information from file");
-            }
-            
-            float pixelScale   = stbtt_ScaleForPixelHeight(fontInfo, info[1]);
-            int[] advanceWidth = new int[1];
-            int[] leftBearing  = new int[1];
-            
-            //Find the width of the largest glyph
-            for(int i = 0; i < charset.length(); i++) {
-                stbtt_GetCodepointHMetrics(fontInfo, charset.charAt(i), advanceWidth, leftBearing);
-                float scaledAdvance = advanceWidth[0] * pixelScale;
-                if(scaledAdvance > info[3]) info[3] = Math.round(scaledAdvance * SCALE);
-            }
-            
-            boolean containsAllGlyphs = false;
-            int bitmapSizeInPixels    = 128;
-            
-            ByteBuffer imageBuffer = null;
-            STBTTPackedchar.Buffer packedCharBuffer = STBTTPackedchar.malloc(charset.length());
-            
-            /*
-            Generate a bitmap that evenly spaces each glyph according to the
-            dimensions of the largest one. This mitigates texture bleeding.
-            */
-            while(!containsAllGlyphs) {
-                info[4]     = Math.round(bitmapSizeInPixels * SCALE);
-                info[5]     = Math.round(bitmapSizeInPixels * SCALE);
-                imageBuffer = MemoryUtil.memAlloc(info[4] * info[5]);
-                
-                try(STBTTPackContext context = STBTTPackContext.malloc()) {
-                    stbtt_PackBegin(context, imageBuffer, info[4], info[5], 0, (int) (info[3] * SCALE), NULL);
-                    stbtt_PackSetOversampling(context, 1, 1);
-                    containsAllGlyphs = stbtt_PackFontRange(context, fontBuffer, 0, info[1], 32, packedCharBuffer);
-                    stbtt_PackEnd(context);
-                }
-                
-                if(containsAllGlyphs) break;
-                
-                MemoryUtil.memFree(imageBuffer);
-                bitmapSizeInPixels += 16;
-            }
-            
-            glBindTexture(GL_TEXTURE_2D, info[2]);
-            glTexImage2D(GL_TEXTURE_2D, 0, GL_ALPHA, info[4], info[5], 0, GL_ALPHA, GL_UNSIGNED_BYTE, imageBuffer);
-            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
-            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
-            glBindTexture(GL_TEXTURE_2D, 0);
-            
-            MemoryUtil.memFree(imageBuffer);
-            MemoryUtil.memFree(fontBuffer);
-            
-            //Store glyph data in a format the engine can use
-            for(int i = 0; i < charset.length(); i++) {
-                STBTTPackedchar glyph = packedCharBuffer.get(i);
-                GlyphMetrics metrics  = new GlyphMetrics((float) (glyph.x0()) / info[4],
-                                                         (float) (glyph.y0()) / info[5],
-                                                         (int) glyph.xadvance(),
-                                                         (int) glyph.xoff(), 
-                                                         (int) (-glyph.yoff() - info[1]));
-                
-                glyphMetrics.put(charset.charAt(i), metrics);
-            }
-            
-            MemoryUtil.memFree(packedCharBuffer);
-        }
-        
-        //Initialize various OpenGL objects
-        info[6] = glGenVertexArrays();
-        for(int i = 7; i < 12; i++) info[i] = glGenBuffers();
-        
-        return info;
     }
     
     public void delete() {

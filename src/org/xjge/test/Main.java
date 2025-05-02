@@ -1,5 +1,6 @@
 package org.xjge.test;
 
+import org.joml.Vector2i;
 import org.xjge.core.Game;
 import org.xjge.core.XJGE;
 
@@ -13,7 +14,7 @@ public class Main {
 
     public static void main(String args[]) {
         
-        XJGE.init("/org/xjge/assets/", "org.xjge.test.", null);
+        XJGE.init("/org/xjge/assets/", "org.xjge.test.", new Vector2i(384, 216));
         
         Game.setScene(new TestScene());
         
