@@ -2,7 +2,7 @@ package org.xjge.test;
 
 import java.util.Map;
 import org.joml.Vector3i;
-import org.xjge.core.Font2;
+import org.xjge.core.Font;
 import org.xjge.core.Split;
 import org.xjge.core.Widget;
 import org.xjge.core.Window;
@@ -17,9 +17,9 @@ import org.xjge.graphics.GLProgram;
  */
 public class TestWidget extends Widget {
 
-    Font2 font = new Font2("font_source_code_pro.ttf", 24);
-    Font2 font2 = new Font2("font_settings_exposit.bmf", 1);
-    Font2 font3 = new Font2("font_settings_famisansmono.bmf", 1);
+    Font font = new Font("font_source_code_pro.ttf", 24);
+    Font font2 = new Font("font_settings_exposit.bmf", 1);
+    Font font3 = new Font("font_settings_famisansmono.bmf", 1);
     
     public TestWidget() {
         super(new Vector3i(), Window.getWidth(), Window.getHeight());
@@ -39,8 +39,8 @@ public class TestWidget extends Widget {
         - Add .bmf parsing
         */
         
-        //font.drawString("The quick brown fox jumps over the lazy dog. 1234567890", 50, 100, Color.WHITE, 1f);
-        font2.drawString("The quick brown fox jumps over the lazy dog.", 10, 30, Color.GREEN, 1f);
+        font.drawString("The quick brown fox jumps over the lazy dog. 1234567890", 50, 100, Color.WHITE, 1f);
+        font2.drawString("The quick brown fox jumps over the lazy dog.", 10, 30, Color.WHITE, 1f);
         
         /*
         font2.drawString(" !\"#$%&\'()*+,-./", 10, 120, Color.WHITE, 1f);
