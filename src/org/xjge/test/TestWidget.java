@@ -1,7 +1,6 @@
 package org.xjge.test;
 
 import java.util.Map;
-import org.joml.Vector2i;
 import org.joml.Vector3i;
 import org.xjge.core.Font2;
 import org.xjge.core.Split;
@@ -18,8 +17,8 @@ import org.xjge.graphics.GLProgram;
  */
 public class TestWidget extends Widget {
 
-    Font2 font = new Font2("Minecraftia-Regular.ttf", 11);
-    Vector2i textPos = new Vector2i(100, 200);
+    Font2 font = new Font2("Minecraftia-Regular.ttf", 11); //Size 11 for pixel perfection
+    //Font2 font = new Font2("font_source_code_pro.ttf", 24); //Size 11 for pixel perfection
     
     public TestWidget() {
         super(new Vector3i(), Window.getWidth(), Window.getHeight());
@@ -39,7 +38,7 @@ public class TestWidget extends Widget {
         - Add .bmf parsing
         */
         
-        font.drawString("The quick brown fox jumps over the lazy dog. 1234567890", 101, 99, Color.BLACK, 1f);
+        //font.drawString("The quick brown fox jumps over the lazy dog. 1234567890", 101, 99, Color.BLACK, 1f);
         font.drawString("The quick brown fox jumps over the lazy dog. 1234567890", 100, 100, Color.WHITE, 1f);
     }
 
