@@ -1,5 +1,6 @@
 package org.xjge.core;
 
+import org.xjge.graphics.Texture;
 import java.beans.PropertyChangeListener;
 import java.io.File;
 import java.io.FileInputStream;
@@ -10,7 +11,6 @@ import java.io.InputStream;
 import java.io.PrintStream;
 import java.io.PrintWriter;
 import org.xjge.core.Terminal.TCCLS;
-import org.xjge.graphics.Texture;
 import org.xjge.graphics.BufferType;
 import org.xjge.graphics.GLProgram;
 import org.xjge.graphics.Shader;

@@ -1,7 +1,9 @@
 package org.xjge.core;
 
+import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.StringReader;
 import java.nio.ByteBuffer;
 import java.nio.FloatBuffer;
 import java.nio.IntBuffer;
@@ -9,7 +11,15 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import javax.xml.stream.XMLInputFactory;
+import javax.xml.stream.XMLStreamConstants;
+import javax.xml.stream.XMLStreamException;
+import org.joml.Vector2i;
 import static org.lwjgl.opengl.GL33C.*;
+import static org.lwjgl.stb.STBImage.STBI_rgb_alpha;
+import static org.lwjgl.stb.STBImage.stbi_failure_reason;
+import static org.lwjgl.stb.STBImage.stbi_image_free;
+import static org.lwjgl.stb.STBImage.stbi_load_from_memory;
 import org.lwjgl.stb.STBTTFontinfo;
 import org.lwjgl.stb.STBTTPackContext;
 import org.lwjgl.stb.STBTTPackedchar;
@@ -31,7 +41,7 @@ import org.xjge.graphics.Color;
  */
 public final class Font2 {
 
-    private final boolean isBitmapFont;
+    private final boolean isRasterFont;
     
     private final float scale = 1.5f;
     
@@ -77,7 +87,7 @@ public final class Font2 {
     private Font2(String filepath, String filename, int size) {
         int[] info = loadFont(filepath, filename, size);
         
-        isBitmapFont      = info[0] == 1;
+        isRasterFont      = info[0] == 1;
         this.size         = info[1];
         textureHandle     = info[2];
         largestGlyphWidth = info[3];
@@ -129,8 +139,97 @@ public final class Font2 {
         this(XJGE.getAssetsFilepath(), filename, size);
     }
     
-    private void loadRasterFont(InputStream file, int[] info) {
+    private void loadRasterFont(String filepath, InputStream file, int[] info) throws XMLStreamException, IOException {
+        var xmlReader = XMLInputFactory.newInstance().createXMLStreamReader(file);
         
+        float subImageWidth  = 0;
+        float subImageHeight = 0;
+        int advance          = 0;
+        int descent          = 0;
+        var advanceValues    = new HashMap<Character, Integer>();
+        var descentValues    = new HashMap<Character, Integer>();
+        
+        while(xmlReader.hasNext()) {
+            final int ADVANCE = advance;
+            final int DESCENT = descent;
+            
+            switch(xmlReader.next()) {
+                case XMLStreamConstants.START_ELEMENT -> {
+                    if(xmlReader.getName().getLocalPart().equals("font")) {
+                        String imageFilename = xmlReader.getAttributeValue(null, "texture");
+                        info[3] = Integer.parseInt(xmlReader.getAttributeValue(null, "width"));
+                        info[1] = Integer.parseInt(xmlReader.getAttributeValue(null, "height"));
+                        
+                        try(InputStream imageFile = Font2.class.getResourceAsStream(filepath + imageFilename);
+                            MemoryStack stack = MemoryStack.stackPush()) {
+                            byte[] data = imageFile.readAllBytes();
+                            
+                            ByteBuffer imageBuffer  = MemoryUtil.memAlloc(data.length).put(data).flip();
+                            IntBuffer widthBuffer   = stack.mallocInt(1);
+                            IntBuffer heightBuffer  = stack.mallocInt(1);
+                            IntBuffer channelBuffer = stack.mallocInt(1);
+
+                            ByteBuffer image = stbi_load_from_memory(imageBuffer, widthBuffer, heightBuffer, channelBuffer, STBI_rgb_alpha);
+                            
+                            if(image == null) {
+                                MemoryUtil.memFree(imageBuffer);
+                                throw new RuntimeException("STBI failed to parse image data for raster font: " + stbi_failure_reason());
+                            }
+                            
+                            info[4] = widthBuffer.get();
+                            info[5] = heightBuffer.get();
+                            
+                            subImageWidth  = (float) info[3] / info[4];
+                            subImageHeight = (float) info[1] / info[4];
+                            
+                            glBindTexture(GL_TEXTURE_2D, info[2]);
+                            glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, info[1], info[2], 0, GL_RGBA, GL_UNSIGNED_BYTE, image);
+                            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+                            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+                            glBindTexture(GL_TEXTURE_2D, 0);
+                            
+                            stbi_image_free(image);
+                            MemoryUtil.memFree(imageBuffer);
+                        }
+                    } else if(xmlReader.getName().getLocalPart().equals("group")) {
+                        advance = Integer.parseInt(xmlReader.getAttributeValue(null, "advance"));
+                        descent = Integer.parseInt(xmlReader.getAttributeValue(null, "descent"));
+                    }
+                }
+                case XMLStreamConstants.END_ELEMENT -> {
+                    if(xmlReader.getName().getLocalPart().equals("font")) xmlReader.close();
+                }
+                case XMLStreamConstants.CHARACTERS -> {
+                    BufferedReader reader = new BufferedReader(new StringReader(xmlReader.getText().trim()));
+                        
+                    reader.lines().forEach(line -> {
+                        for(String value : line.trim().split(",")) {
+                            char character = (char) Integer.parseInt(value);
+                            advanceValues.put(character, ADVANCE);
+                            descentValues.put(character, DESCENT);
+                        }
+                    });
+                }
+            }
+        }
+        
+        float texCoordX = 0;
+        float texCoordY = 0;
+        
+        for(char character : charset.toCharArray()) {
+            if(character == '0' || character == '@' || character == 'P' || character == '`' || character == 'p') {
+                texCoordX = 0;
+                texCoordY += subImageHeight;
+            } else {
+                texCoordX += subImageWidth;
+            }
+            
+            GlyphMetrics metrics = new GlyphMetrics(texCoordX, texCoordY,
+                                                    advanceValues.get(character),
+                                                    0, descentValues.get(character));
+
+            glyphMetrics.put(character, metrics);
+        }
     }
     
     private void loadVectorFont(InputStream file, int[] info) throws IOException {
@@ -291,14 +390,16 @@ public final class Font2 {
                 throw new IllegalStateException("Invalid font size used. Font size must be between 1 and 128");
             }
             
+            String extension = filename.substring(filename.length() - 3, filename.length());
+            
             int[] info = new int[12];
             
-            info[0] = 0;
+            info[0] = extension.equals("bmf") ? 1 : 0;
             info[1] = size;
             info[2] = glGenTextures();
             
-            if(filename.substring(filename.length() - 3, filename.length()).equals("bmf")) {
-                loadRasterFont(file, info);
+            if(extension.equals("bmf")) {
+                loadRasterFont(filepath, file, info);
             } else {
                 loadVectorFont(file, info);
             }
@@ -366,7 +467,7 @@ public final class Font2 {
             glyph.positionX = positionX + advance + getGlyphBearingX(glyph.character);
             glyph.positionY = positionY + getGlyphBearingY(glyph.character);
             glyph.color     = color;
-
+            
             advance += getGlyphAdvance(glyph.character);
         }
         
@@ -374,10 +475,12 @@ public final class Font2 {
         offsetTexture();
         offsetColor();
         
+        System.out.println(isRasterFont);
+        
         XJGE.getDefaultGLProgram().setUniform("uType", 1);
         XJGE.getDefaultGLProgram().setUniform("uTexture", 0);
         XJGE.getDefaultGLProgram().setUniform("uOpacity", XJGE.clampValue(0, 1, opacity));
-        XJGE.getDefaultGLProgram().setUniform("uIsBitmapFont", (isBitmapFont) ? 1 : 0);
+        XJGE.getDefaultGLProgram().setUniform("uIsBitmapFont", (isRasterFont) ? 1 : 0); //TODO: rename uniform to uIsRasterFont
         
         glDrawElementsInstanced(GL_TRIANGLES, indexBuffer.capacity(), GL_UNSIGNED_INT, 0, glyphPool.size());
         glDisable(GL_BLEND);

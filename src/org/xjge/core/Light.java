@@ -1,5 +1,6 @@
 package org.xjge.core;
 
+import org.xjge.graphics.Texture;
 import org.joml.Vector2f;
 import org.joml.Vector3f;
 import static org.lwjgl.opengl.GL30.*;
@@ -7,7 +8,6 @@ import org.lwjgl.system.MemoryStack;
 import org.xjge.graphics.Atlas;
 import org.xjge.graphics.Color;
 import org.xjge.graphics.Graphics;
-import org.xjge.graphics.Texture;
 
 /**
  * Created: Jun 12, 2021

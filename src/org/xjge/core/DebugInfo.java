@@ -1,11 +1,11 @@
 package org.xjge.core;
 
+import org.xjge.graphics.Texture;
 import org.xjge.graphics.Rectangle;
 import org.xjge.graphics.Icon;
 import org.xjge.graphics.RectangleBatch;
 import static org.xjge.core.Input.KEY_MOUSE_COMBO;
 import org.xjge.graphics.Color;
-import org.xjge.graphics.Texture;
 import org.joml.Vector2i;
 import static org.lwjgl.glfw.GLFW.GLFW_JOYSTICK_5;
 import static org.lwjgl.glfw.GLFW.glfwGetVersionString;
