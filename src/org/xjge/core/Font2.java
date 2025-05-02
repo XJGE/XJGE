@@ -167,9 +167,8 @@ public final class Font2 {
                             ByteBuffer imageBuffer  = MemoryUtil.memAlloc(data.length).put(data).flip();
                             IntBuffer widthBuffer   = stack.mallocInt(1);
                             IntBuffer heightBuffer  = stack.mallocInt(1);
-                            IntBuffer channelBuffer = stack.mallocInt(1);
 
-                            ByteBuffer image = stbi_load_from_memory(imageBuffer, widthBuffer, heightBuffer, channelBuffer, STBI_rgb_alpha);
+                            ByteBuffer image = stbi_load_from_memory(imageBuffer, widthBuffer, heightBuffer, stack.mallocInt(1), STBI_rgb_alpha);
                             
                             if(image == null) {
                                 MemoryUtil.memFree(imageBuffer);
@@ -180,10 +179,10 @@ public final class Font2 {
                             info[5] = heightBuffer.get();
                             
                             subImageWidth  = (float) info[3] / info[4];
-                            subImageHeight = (float) info[1] / info[4];
+                            subImageHeight = (float) info[1] / info[5];
                             
                             glBindTexture(GL_TEXTURE_2D, info[2]);
-                            glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, info[1], info[2], 0, GL_RGBA, GL_UNSIGNED_BYTE, image);
+                            glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, info[4], info[5], 0, GL_RGBA, GL_UNSIGNED_BYTE, image);
                             glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
                             glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
                             glBindTexture(GL_TEXTURE_2D, 0);
@@ -474,8 +473,6 @@ public final class Font2 {
         offsetPosition();
         offsetTexture();
         offsetColor();
-        
-        System.out.println(isRasterFont);
         
         XJGE.getDefaultGLProgram().setUniform("uType", 1);
         XJGE.getDefaultGLProgram().setUniform("uTexture", 0);

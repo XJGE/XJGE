@@ -39,7 +39,7 @@ public class TestWidget extends Widget {
         */
         
         //font.drawString("The quick brown fox jumps over the lazy dog. 1234567890", 50, 100, Color.WHITE, 1f);
-        font2.drawString("lets have some fun!", 30, 30, Color.SILVER, 1f);
+        font2.drawString("wonder why", 30, 30, Color.WHITE, 1f);
     }
 
     @Override
