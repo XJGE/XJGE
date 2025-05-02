@@ -40,7 +40,7 @@ import org.xjge.graphics.Color;
  */
 public final class Font2 {
 
-    private final boolean isRasterFont;
+    private final boolean isBitmapFont;
     
     private final float scale = 1.5f;
     
@@ -90,7 +90,7 @@ public final class Font2 {
     private Font2(String filepath, String filename, int size) {
         int[] info = loadFont(filepath, filename, size);
         
-        isRasterFont      = info[0] == 1;
+        isBitmapFont      = info[0] == 1;
         this.size         = info[1];
         textureHandle     = info[2];
         largestGlyphWidth = info[3];
@@ -153,7 +153,7 @@ public final class Font2 {
             info[2] = glGenTextures();
             
             if(extension.equals("bmf")) {
-                loadRasterFont(filepath, file, info);
+                loadBitmapFont(filepath, file, info);
             } else {
                 loadVectorFont(file, info);
             }
@@ -186,7 +186,7 @@ public final class Font2 {
         }
     }
     
-    private void loadRasterFont(String filepath, InputStream file, int[] info) throws XMLStreamException, IOException {
+    private void loadBitmapFont(String filepath, InputStream file, int[] info) throws XMLStreamException, IOException {
         var xmlReader = XMLInputFactory.newInstance().createXMLStreamReader(file);
         
         float subImageWidth  = 0;
@@ -207,6 +207,10 @@ public final class Font2 {
                         info[3] = Integer.parseInt(xmlReader.getAttributeValue(null, "width"));
                         info[1] = Integer.parseInt(xmlReader.getAttributeValue(null, "height"));
                         
+                        /**
+                         * Create a new OpenGL texture object using the image 
+                         * provided by the XML file.
+                         */
                         try(InputStream imageFile = Font2.class.getResourceAsStream(filepath + imageFilename);
                             MemoryStack stack = MemoryStack.stackPush()) {
                             byte[] data = imageFile.readAllBytes();
@@ -262,6 +266,7 @@ public final class Font2 {
         float texCoordX = 0;
         float texCoordY = 0;
         
+        //Assign glyph metrics using data parsed from the XML file 
         for(char character : charset.toCharArray()) {
             if(character == ' ' || character == '0' || character == '@' ||
                character == 'P' || character == '`' || character == 'p') {
@@ -468,7 +473,7 @@ public final class Font2 {
         XJGE.getDefaultGLProgram().setUniform("uType", 1);
         XJGE.getDefaultGLProgram().setUniform("uTexture", 0);
         XJGE.getDefaultGLProgram().setUniform("uOpacity", XJGE.clampValue(0, 1, opacity));
-        XJGE.getDefaultGLProgram().setUniform("uIsBitmapFont", (isRasterFont) ? 1 : 0); //TODO: rename uniform to uIsRasterFont
+        XJGE.getDefaultGLProgram().setUniform("uIsBitmapFont", (isBitmapFont) ? 1 : 0);
         
         glDrawElementsInstanced(GL_TRIANGLES, indexBuffer.capacity(), GL_UNSIGNED_INT, 0, glyphPool.size());
         glDisable(GL_BLEND);
