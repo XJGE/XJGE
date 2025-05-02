@@ -19,6 +19,7 @@ public class TestWidget extends Widget {
 
     Font2 font = new Font2("font_source_code_pro.ttf", 24);
     Font2 font2 = new Font2("font_settings_exposit.bmf", 1);
+    Font2 font3 = new Font2("font_settings_famisansmono.bmf", 1);
     
     public TestWidget() {
         super(new Vector3i(), Window.getWidth(), Window.getHeight());
@@ -39,7 +40,18 @@ public class TestWidget extends Widget {
         */
         
         //font.drawString("The quick brown fox jumps over the lazy dog. 1234567890", 50, 100, Color.WHITE, 1f);
-        font2.drawString("wonder why", 30, 30, Color.WHITE, 1f);
+        font2.drawString("The quick brown fox jumps over the lazy dog.", 10, 30, Color.GREEN, 1f);
+        
+        /*
+        font2.drawString(" !\"#$%&\'()*+,-./", 10, 120, Color.WHITE, 1f);
+        font2.drawString("0123456789:;<=>?", 10, 100, Color.WHITE, 1f);
+        font2.drawString("@ABCDEFGHIJKLMNO", 10, 80, Color.WHITE, 1f);
+        font2.drawString("PQRSTUVWXYZ[\\]^_", 10, 60, Color.WHITE, 1f);
+        font2.drawString("`abcdefghijklmno", 10, 40, Color.WHITE, 1f);
+        font2.drawString("pqrstuvwxyz{|}~", 10, 20, Color.WHITE, 1f);
+        */
+        
+        //font3.drawString("The quick brown fox jumps over the lazy dog. 1234567890 !@#$%^&*()", 10, 60, Color.WHITE, 1f);
     }
 
     @Override

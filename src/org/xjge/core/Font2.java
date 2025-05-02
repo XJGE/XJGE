@@ -63,11 +63,11 @@ public final class Font2 {
     
     private static final Font2 placeholder = new Font2("/org/xjge/assets/", "font_source_code_pro.ttf", DEFAULT_SIZE);
     
-    private final String charset = " !\"#$%&\'()*+,-./"  +
-                                   "0123456789:;<=>?"  +
-                                   "@ABCDEFGHIJKLMNO"  +
-                                   "PQRSTUVWXYZ[\\]^_" + 
-                                   "`abcdefghijklmno"  +
+    private final String charset = " !\"#$%&\'()*+,-./" +
+                                   "0123456789:;<=>?"   +
+                                   "@ABCDEFGHIJKLMNO"   +
+                                   "PQRSTUVWXYZ[\\]^_"  + 
+                                   "`abcdefghijklmno"   +
                                    "pqrstuvwxyz{|}~";
     
     private final FloatBuffer vertexBuffer;
@@ -216,9 +216,10 @@ public final class Font2 {
         float texCoordY = 0;
         
         for(char character : charset.toCharArray()) {
-            if(character == '0' || character == '@' || character == 'P' || character == '`' || character == 'p') {
+            if(character == ' ' || character == '0' || character == '@' ||
+               character == 'P' || character == '`' || character == 'p') {
                 texCoordX = 0;
-                texCoordY += subImageHeight;
+                texCoordY += (character == ' ') ? 0 : subImageHeight;
             } else {
                 texCoordX += subImageWidth;
             }
