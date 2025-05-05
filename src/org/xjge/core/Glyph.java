@@ -10,7 +10,7 @@ import org.xjge.graphics.Color;
  */
 final class Glyph {
     
-    char character = 32;
+    char character = 32; //ASCII space
     
     int positionX;
     int positionY;

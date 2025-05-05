@@ -449,27 +449,32 @@ public final class Font {
     }
     
     void drawCommand(String text, int positionX, int positionY) {
+        prepareRender(text);
+        
         int advance = 0;
         int start   = 0;
         
-        //Update glyph values to match current requirements of text
-        for(int i = 0; i < text.length(); i++) {
+        for(int i = 0; i < glyphPool.size(); i++) {
             Glyph glyph = glyphPool.get(i);
-            
             glyph.reset();
-            glyph.character = text.charAt(i);
-            glyph.positionX = positionX + advance + getGlyphBearingX(glyph.character);
-            glyph.positionY = positionY + getGlyphBearingY(glyph.character);
             
-            if(glyph.character == ' ') start = i;
-            
-            glyph.color = switch(glyph.character) {
-                default -> (start != 0 && i > start) ? Color.YELLOW : Color.CYAN;
-                case '(', ')', ',', '<', '>' -> Color.WHITE;
-            };
-            
-            advance += getGlyphAdvance(glyph.character);
+            if(i < text.length()) {
+                glyph.character = text.charAt(i);
+                glyph.positionX = positionX + advance + getGlyphBearingX(glyph.character);
+                glyph.positionY = positionY + getGlyphBearingY(glyph.character);
+                
+                if(glyph.character == ' ') start = i;
+                
+                glyph.color = switch(glyph.character) {
+                    default -> (start != 0 && i > start) ? Color.YELLOW : Color.CYAN;
+                    case '(', ')', ',', '<', '>' -> Color.WHITE;
+                };
+                
+                advance += getGlyphAdvance(glyph.character);
+            }
         }
+        
+        executeRender(1f);
     }
     
     public void drawString(String text, int positionX, int positionY, Color color, float opacity) {
@@ -477,7 +482,7 @@ public final class Font {
         
         int advance = 0;
         
-        //Update glyph values to match current requirements of the text
+        //Update glyph values to match the current requirements of the text
         for(int i = 0; i < glyphPool.size(); i++) {
             Glyph glyph = glyphPool.get(i);
             glyph.reset();
