@@ -22,9 +22,6 @@ public abstract class Widget {
     
     boolean remove;
     
-    protected static Font defaultFont;
-    
-    private final Text text  = new Text();
     public Vector3i position = new Vector3i();
     
     /**
@@ -127,29 +124,6 @@ public abstract class Widget {
      */
     int compareTo(Widget widget) {
         return this.position.z - widget.position.z;
-    }
-    
-    /**
-     * Draws a string of text to the screen.
-     * 
-     * @param font the font the text will be drawn in
-     * @param text the string of text to display
-     * @param position the position in the window at which the text string will 
-     *                 be rendered
-     * @param color the color the text will be rendered in
-     * @param opacity a value between 0 and 1 indicating the opacity (or 
-     *                transparency) of the text
-     */
-    protected void drawString(Font font, String text, Vector2i position, Color color, float opacity) {
-        this.text.drawString(font, text, position, color, opacity);
-    }
-    
-    /**
-     * Resets the order in which the strings are rendered. This is called 
-     * automatically by the engine to further optimize text rendering.
-     */
-    void resetStringIndex() {
-        text.resetStringIndex();
     }
     
 }

@@ -164,7 +164,6 @@ final class Viewport {
             case "ui" -> {
                 currCamera.setOrtho(glPrograms.get("default"), width, height);
                 ui.values().forEach(widget -> widget.render(glPrograms));
-                ui.values().forEach(widget -> widget.resetStringIndex());
                 resetCamera(glPrograms);
             }
             

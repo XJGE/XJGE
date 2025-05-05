@@ -31,6 +31,7 @@ import static org.lwjgl.glfw.GLFW.*;
 import org.lwjgl.opengl.GL;
 import static org.lwjgl.opengl.GL32.*;
 import static org.lwjgl.opengl.GLUtil.setupDebugMessageCallback;
+import static org.xjge.core.Font.defaultFont;
 import static org.xjge.core.Input.KEY_MOUSE_COMBO;
 import org.xjge.graphics.PostProcessShader;
 
@@ -331,7 +332,6 @@ public final class XJGE {
                 blurProgram.addUniform(BufferType.MAT4,  "uProjection");
             }
             
-            engineFont  = new Font();
             engineIcons = new Texture("xjge_engineicons.png");
             beep        = new Sound("xjge_beep.ogg");
             
@@ -340,7 +340,6 @@ public final class XJGE {
             
             XJGE.assetsFilepath = assetsFilepath;
             XJGE.scenesFilepath = scenesFilepath;
-            Widget.defaultFont  = new Font(engineFont);
             
             engineCommands = new TreeMap<>() {{
                 put("cls",                  new TCCLS());
@@ -511,8 +510,8 @@ public final class XJGE {
         
         glPrograms = Collections.unmodifiableMap(glPrograms);
         freeCam    = new Noclip();
-        terminal   = new Terminal(engineCommands, engineFont);
-        debugInfo  = new DebugInfo(engineFont, engineIcons);
+        terminal   = new Terminal(engineCommands);
+        debugInfo  = new DebugInfo(engineIcons);
         
         Window.show();
         updateRenderbufferDimensions();
@@ -529,7 +528,7 @@ public final class XJGE {
         
         Game.loop(fbo, viewports, terminal, debugInfo, depthProgram, blurProgram, debugModeEnabled);
         
-        engineFont.freeTexture();
+        defaultFont.delete();
         engineIcons.delete();
         beep.freeSound();
         terminal.freeBuffers();

@@ -1,5 +1,6 @@
 package org.xjge.core;
 
+import static java.awt.SystemColor.text;
 import org.xjge.graphics.Rectangle;
 import static org.xjge.core.Font.DEFAULT_SIZE;
 import org.xjge.graphics.Color;
@@ -11,6 +12,8 @@ import java.util.List;
 import java.util.TreeMap;
 import org.joml.Vector2i;
 import static org.lwjgl.glfw.GLFW.*;
+import org.w3c.dom.Text;
+import static org.xjge.core.Font.defaultFont;
 
 /**
  * Created: May 23, 2021
@@ -50,8 +53,6 @@ final class Terminal implements PropertyChangeListener {
     private String suggestion = "";
     private String prevTyped  = "";
     
-    private final Font font;
-    private final Text text           = new Text();
     private final StringBuilder typed = new StringBuilder();
     private final Timer timer         = new Timer(1, 20, this);
     
@@ -73,13 +74,11 @@ final class Terminal implements PropertyChangeListener {
      * with the game engine at runtime.
      * 
      * @param commands the commands the terminal will use
-     * @param font the font supplied by the engine that the terminal will use
      */
-    Terminal(TreeMap<String, TerminalCommand> commands, Font font) {
+    Terminal(TreeMap<String, TerminalCommand> commands) {
         this.commands = commands;
-        this.font     = font;
         
-        glyphAdvance = (int) font.getGlyphAdvance('>');
+        glyphAdvance = (int) defaultFont.getGlyphAdvance('>');
         cursorPos.x  = glyphAdvance;
         commandPos.x = glyphAdvance;
     }
@@ -110,17 +109,17 @@ final class Terminal implements PropertyChangeListener {
      */
     void render() {
         commandLine.width  = Window.getWidth();
-        commandLine.height = font.size + 4;
+        commandLine.height = defaultFont.size + 4;
         commandLine.render(1, Color.BLACK);
         
         commandOutput.width  = Window.getWidth();
         commandOutput.height = outputTop;
         commandOutput.render(0.5f, Color.BLACK);
         
-        text.drawString(font, ">", caretPos, Color.WHITE, 1f);
+        defaultFont.drawString(">", caretPos.x, caretPos.y, Color.WHITE, 1f);
         
         for(int i = 0; i <= shiftElements; i++) {
-            text.drawOutput(font, cmdOutput, cmdOutput[i], i, executed, opaqueRectangles[i]);
+            //defaultFont.drawOutput(cmdOutput, cmdOutput[i], i, executed, opaqueRectangles[i]);
         }
         
         for(Rectangle rectangle : opaqueRectangles) {
@@ -129,15 +128,13 @@ final class Terminal implements PropertyChangeListener {
         
         executed = false;
         
-        if(suggest) text.drawString(font, suggestion, commandPos, Color.GRAY, 1f);
-        if(cursorBlink) text.drawString(font, "_", cursorPos, Color.WHITE, 1f);
+        if(suggest) defaultFont.drawString(suggestion, commandPos.x, commandPos.y, Color.GRAY, 1f);
+        if(cursorBlink) defaultFont.drawString("_", cursorPos.x, cursorPos.y, Color.WHITE, 1f);
         
         if(typed.length() > 0) {
-            if(validate()) text.drawCommand(font, typed.toString(), commandPos);
-            else           text.drawString(font, typed.toString(), commandPos, Color.WHITE, 1f);
+            if(validate()) defaultFont.drawCommand(typed.toString(), commandPos.x, commandPos.y);
+            else           defaultFont.drawString(typed.toString(), commandPos.x, commandPos.y, Color.WHITE, 1f);
         }
-        
-        text.resetStringIndex();
         
         ErrorUtils.checkGLError();
     }
@@ -363,7 +360,7 @@ final class Terminal implements PropertyChangeListener {
                         cmdOutput[i] = cmdOutput[i - 1];
                     }
                 } else {
-                    cmdOutput[i] = new TerminalOutput(Text.wrap(output.text, Window.getWidth(), font), output.color);
+                    cmdOutput[i] = new TerminalOutput(defaultFont.wrap(output.text, Window.getWidth()), output.color);
                 }
             }
         }

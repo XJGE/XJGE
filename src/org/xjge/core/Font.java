@@ -44,7 +44,7 @@ public final class Font {
     
     private final float scale = 1.5f;
     
-    private static final int DEFAULT_SIZE = 32;
+    static final int DEFAULT_SIZE = 32;
     
     private final int vaoHandle;
     private final int vboHandle;
@@ -60,7 +60,7 @@ public final class Font {
     final int bitmapWidth;
     final int bitmapHeight;
     
-    private static final Font placeholder = new Font("/org/xjge/assets/", "font_source_code_pro.ttf", DEFAULT_SIZE);
+    static final Font defaultFont = new Font("/org/xjge/assets/", "font_source_code_pro.ttf", DEFAULT_SIZE);
     
     private final String charset = " !\"#$%&\'()*+,-./" +
                                    "0123456789:;<=>?"   +
@@ -165,23 +165,23 @@ public final class Font {
             return info;
             
         } catch(Exception exception) {
-            Logger.logWarning("Failed to load font \"" + filename + "\" a placeholder will be used instead", exception);
+            Logger.logWarning("Failed to load font \"" + filename + "\" a defaultFont will be used instead", exception);
             
-            glyphMetrics.putAll(placeholder.glyphMetrics);
+            glyphMetrics.putAll(defaultFont.glyphMetrics);
             
             return new int[] {
                 0,
                 DEFAULT_SIZE,
-                placeholder.textureHandle,
-                placeholder.largestGlyphWidth,
-                placeholder.bitmapWidth,
-                placeholder.bitmapHeight,
-                placeholder.vaoHandle,
-                placeholder.vboHandle,
-                placeholder.iboHandle,
-                placeholder.posOffsetHandle,
-                placeholder.texOffsetHandle,
-                placeholder.colOffsetHandle
+                defaultFont.textureHandle,
+                defaultFont.largestGlyphWidth,
+                defaultFont.bitmapWidth,
+                defaultFont.bitmapHeight,
+                defaultFont.vaoHandle,
+                defaultFont.vboHandle,
+                defaultFont.iboHandle,
+                defaultFont.posOffsetHandle,
+                defaultFont.texOffsetHandle,
+                defaultFont.colOffsetHandle
             };
         }
     }
@@ -359,26 +359,6 @@ public final class Font {
         }
     }
     
-    private float getGlyphTexCoordX(char character) {
-        return glyphMetrics.get((!glyphMetrics.containsKey(character) ? '?' : character)).texCoordX;
-    }
-    
-    private float getGlyphTexCoordY(char character) {
-        return glyphMetrics.get((!glyphMetrics.containsKey(character) ? '?' : character)).texCoordY;
-    }
-    
-    private int getGlyphAdvance(char character) {
-        return glyphMetrics.get((!glyphMetrics.containsKey(character) ? '?' : character)).advance;
-    }
-    
-    private int getGlyphBearingX(char character) {
-        return glyphMetrics.get((!glyphMetrics.containsKey(character) ? '?' : character)).bearingX;
-    }
-    
-    private int getGlyphBearingY(char character) {
-        return glyphMetrics.get((!glyphMetrics.containsKey(character) ? '?' : character)).bearingY;
-    }
-    
     private void offsetPosition() {
         try(MemoryStack stack = MemoryStack.stackPush()) {
             FloatBuffer positions = stack.mallocFloat(glyphPool.size() * Float.BYTES);
@@ -436,7 +416,7 @@ public final class Font {
         glVertexAttribDivisor(6, 1);
     }
     
-    public void drawString(String text, int positionX, int positionY, Color color, float opacity) {
+    private void prepareRender(String text) {
         XJGE.getDefaultGLProgram().use();
         
         glEnable(GL_BLEND);
@@ -450,6 +430,50 @@ public final class Font {
             for(int i = glyphPool.size(); i < text.length(); i++) glyphPool.add(new Glyph());
             numGlyphsAllocated = text.length();
         }
+    }
+    
+    private void executeRender(float opacity) {
+        offsetPosition();
+        offsetTexture();
+        offsetColor();
+        
+        XJGE.getDefaultGLProgram().setUniform("uType", 1);
+        XJGE.getDefaultGLProgram().setUniform("uTexture", 0);
+        XJGE.getDefaultGLProgram().setUniform("uOpacity", XJGE.clampValue(0, 1, opacity));
+        XJGE.getDefaultGLProgram().setUniform("uIsBitmapFont", (isBitmapFont) ? 1 : 0);
+        
+        glDrawElementsInstanced(GL_TRIANGLES, indexBuffer.capacity(), GL_UNSIGNED_INT, 0, glyphPool.size());
+        glDisable(GL_BLEND);
+        
+        ErrorUtils.checkGLError();
+    }
+    
+    void drawCommand(String text, int positionX, int positionY) {
+        int advance = 0;
+        int start   = 0;
+        
+        //Update glyph values to match current requirements of text
+        for(int i = 0; i < text.length(); i++) {
+            Glyph glyph = glyphPool.get(i);
+            
+            glyph.reset();
+            glyph.character = text.charAt(i);
+            glyph.positionX = positionX + advance + getGlyphBearingX(glyph.character);
+            glyph.positionY = positionY + getGlyphBearingY(glyph.character);
+            
+            if(glyph.character == ' ') start = i;
+            
+            glyph.color = switch(glyph.character) {
+                default -> (start != 0 && i > start) ? Color.YELLOW : Color.CYAN;
+                case '(', ')', ',', '<', '>' -> Color.WHITE;
+            };
+            
+            advance += getGlyphAdvance(glyph.character);
+        }
+    }
+    
+    public void drawString(String text, int positionX, int positionY, Color color, float opacity) {
+        prepareRender(text);
         
         int advance = 0;
         
@@ -466,28 +490,91 @@ public final class Font {
             advance += getGlyphAdvance(glyph.character);
         }
         
-        offsetPosition();
-        offsetTexture();
-        offsetColor();
-        
-        XJGE.getDefaultGLProgram().setUniform("uType", 1);
-        XJGE.getDefaultGLProgram().setUniform("uTexture", 0);
-        XJGE.getDefaultGLProgram().setUniform("uOpacity", XJGE.clampValue(0, 1, opacity));
-        XJGE.getDefaultGLProgram().setUniform("uIsBitmapFont", (isBitmapFont) ? 1 : 0);
-        
-        glDrawElementsInstanced(GL_TRIANGLES, indexBuffer.capacity(), GL_UNSIGNED_INT, 0, glyphPool.size());
-        glDisable(GL_BLEND);
-        
-        ErrorUtils.checkGLError();
+        executeRender(opacity);
     }
     
     public void delete() {
-        if(textureHandle != placeholder.textureHandle) {
+        if(textureHandle != defaultFont.textureHandle) {
             glDeleteTextures(textureHandle);
             glDeleteVertexArrays(vaoHandle);
             glDeleteBuffers(vboHandle);
             glDeleteBuffers(iboHandle);
         }
+    }
+    
+    public float getGlyphTexCoordX(char character) {
+        return glyphMetrics.get((!glyphMetrics.containsKey(character) ? '?' : character)).texCoordX;
+    }
+    
+    public float getGlyphTexCoordY(char character) {
+        return glyphMetrics.get((!glyphMetrics.containsKey(character) ? '?' : character)).texCoordY;
+    }
+    
+    public int getGlyphAdvance(char character) {
+        return glyphMetrics.get((!glyphMetrics.containsKey(character) ? '?' : character)).advance;
+    }
+    
+    public int getGlyphBearingX(char character) {
+        return glyphMetrics.get((!glyphMetrics.containsKey(character) ? '?' : character)).bearingX;
+    }
+    
+    public int getGlyphBearingY(char character) {
+        return glyphMetrics.get((!glyphMetrics.containsKey(character) ? '?' : character)).bearingY;
+    }
+    
+    public int lengthInPixels(String text) {
+        int length = 0;
+        for(char character : text.toCharArray()) length += getGlyphAdvance(character);
+        return length;
+    }
+    
+    public int numCharOccurences(String text, char character, int index) {
+        if(index >= text.length()) return 0;
+        int count = (text.charAt(index) == character) ? 1 : 0;
+        return count + numCharOccurences(text, character, index + 1);
+    }
+    
+    public String wrap(String text, int advanceLimit) {
+        var words        = new ArrayList<String>();
+        StringBuilder sb = new StringBuilder();
+        
+        for(int i = 0; i < text.length(); i++) {
+            char c = text.charAt(i);
+
+            if(i != text.length() - 1) {
+                if(c != ' ') {
+                    sb.append(c);
+                } else {
+                    words.add(sb.toString());
+                    sb.delete(0, sb.length());
+                }
+            } else {
+                sb.append(c);
+                words.add(sb.toString());
+                sb.delete(0, sb.length());
+            }
+        }
+        
+        int wordLength = 0;
+        text = "";
+
+        for(int i = 0; i < words.size(); i++) {
+            String word = words.get(i);
+            wordLength += lengthInPixels(word + " ");
+            
+            if(i != words.size() - 1 && wordLength + lengthInPixels(words.get(i + 1)) > advanceLimit) {
+                text += words.get(words.indexOf(word)).concat("\n");
+                wordLength = 0;
+            } else {
+                if(words.indexOf(word) != words.size() - 1) {
+                    text += words.get(words.indexOf(word)).concat(" ");
+                } else {
+                    text += words.get(words.indexOf(word));
+                }
+            }
+        }
+        
+        return text;
     }
     
 }

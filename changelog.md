@@ -26,6 +26,7 @@ All notable changes to this project will be documented in this file. The format 
 - Update/Render methods from the Entity class.
 - Getter methods from the Texture class.
 - setDomain() method from Logger class.
+- drawString() method from the Widget superclass. This is provided directly through the Font class now.
 
 ## [3.1.0] - 2025-01-03
 
