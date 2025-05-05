@@ -1,8 +1,6 @@
 package org.xjge.core;
 
-import static java.awt.SystemColor.text;
 import org.xjge.graphics.Rectangle;
-import static org.xjge.core.Font.DEFAULT_SIZE;
 import org.xjge.graphics.Color;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
@@ -12,7 +10,7 @@ import java.util.List;
 import java.util.TreeMap;
 import org.joml.Vector2i;
 import static org.lwjgl.glfw.GLFW.*;
-import org.w3c.dom.Text;
+import static org.xjge.core.Font.DEFAULT_FONT_SIZE;
 import static org.xjge.core.Font.defaultFont;
 
 /**
@@ -46,9 +44,9 @@ final class Terminal implements PropertyChangeListener {
     private boolean suggest;
     private boolean executed = true;
     
-    private final Vector2i caretPos   = new Vector2i(0, DEFAULT_SIZE / 4);
-    private final Vector2i cursorPos  = new Vector2i(0, DEFAULT_SIZE / 4);
-    private final Vector2i commandPos = new Vector2i(0, DEFAULT_SIZE / 4);
+    private final Vector2i caretPos   = new Vector2i(0, DEFAULT_FONT_SIZE / 4);
+    private final Vector2i cursorPos  = new Vector2i(0, DEFAULT_FONT_SIZE / 4);
+    private final Vector2i commandPos = new Vector2i(0, DEFAULT_FONT_SIZE / 4);
     
     private String suggestion = "";
     private String prevTyped  = "";

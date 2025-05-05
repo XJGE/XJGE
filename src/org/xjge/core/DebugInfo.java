@@ -59,11 +59,11 @@ final class DebugInfo {
         //Group 1: Runtime Info
         {
             rectangles[0].width  = 320 + (PADDING * 2);
-            rectangles[0].height = (Font.DEFAULT_SIZE * 4) + PADDING;
+            rectangles[0].height = (Font.DEFAULT_FONT_SIZE * 4) + PADDING;
             rectangles[0].yPos   = Window.getHeight() - rectangles[0].height;
             
             for(int i = 0; i < 4; i++) {
-                textPos[i].set(PADDING, Window.getHeight() - (Font.DEFAULT_SIZE * (i + 1)));
+                textPos[i].set(PADDING, Window.getHeight() - (Font.DEFAULT_FONT_SIZE * (i + 1)));
             }
         }
         
@@ -81,12 +81,12 @@ final class DebugInfo {
             }
             
             rectangles[1].width  = defaultFont.lengthInPixels(longestString) + (PADDING * 2);
-            rectangles[1].height = (Font.DEFAULT_SIZE * 3) + PADDING;
+            rectangles[1].height = (Font.DEFAULT_FONT_SIZE * 3) + PADDING;
             rectangles[1].xPos   = Window.getWidth() - rectangles[1].width;
             rectangles[1].yPos   = Window.getHeight() - rectangles[1].height;
             
             for(int i = 4; i < 7; i++) {
-                textPos[i].set(rectangles[1].xPos + PADDING, Window.getHeight() - (Font.DEFAULT_SIZE * (i - 3)));
+                textPos[i].set(rectangles[1].xPos + PADDING, Window.getHeight() - (Font.DEFAULT_FONT_SIZE * (i - 3)));
             }
         }
         
@@ -105,13 +105,13 @@ final class DebugInfo {
             }
             
             rectangles[2].width  = defaultFont.lengthInPixels(longestString) + (PADDING * 2);
-            rectangles[2].height = (Font.DEFAULT_SIZE * 4) + PADDING;
+            rectangles[2].height = (Font.DEFAULT_FONT_SIZE * 4) + PADDING;
             rectangles[2].xPos   = Window.getWidth() - rectangles[2].width;
             rectangles[2].yPos   = rectangles[1].yPos - (rectangles[2].height + PADDING);
             
             for(int i = 7; i < 11; i++) {
                 textPos[i].set(rectangles[2].xPos + PADDING, 
-                              (rectangles[1].yPos - PADDING) - (Font.DEFAULT_SIZE * (i - 6)));
+                              (rectangles[1].yPos - PADDING) - (Font.DEFAULT_FONT_SIZE * (i - 6)));
             }
         }
         
@@ -130,13 +130,13 @@ final class DebugInfo {
             }
             
             rectangles[3].width  = defaultFont.lengthInPixels(longestString) + (PADDING * 2);
-            rectangles[3].height = (Font.DEFAULT_SIZE * 4) + PADDING;
+            rectangles[3].height = (Font.DEFAULT_FONT_SIZE * 4) + PADDING;
             rectangles[3].xPos   = Window.getWidth() - rectangles[3].width;
             rectangles[3].yPos   = rectangles[2].yPos - (rectangles[3].height + PADDING);
             
             for(int i = 11; i < 15; i++) {
                 textPos[i].set(rectangles[3].xPos + PADDING, 
-                              (rectangles[2].yPos - PADDING) - (Font.DEFAULT_SIZE * (i - 10)));
+                              (rectangles[2].yPos - PADDING) - (Font.DEFAULT_FONT_SIZE * (i - 10)));
             }
         }
         

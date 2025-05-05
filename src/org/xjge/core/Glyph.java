@@ -10,7 +10,7 @@ import org.xjge.graphics.Color;
  */
 final class Glyph {
     
-    char character;
+    char character = 32;
     
     int positionX;
     int positionY;
@@ -18,7 +18,7 @@ final class Glyph {
     Color color = Color.WHITE;
     
     void reset() {
-        character = 0;
+        character = 32;
         positionX = 0;
         positionY = 0;
         color     = Color.WHITE;

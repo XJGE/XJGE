@@ -42,9 +42,9 @@ public final class Font {
 
     private final boolean isBitmapFont;
     
-    private final float scale = 1.5f;
+    private static final float SCALE = 1.5f;
     
-    static final int DEFAULT_SIZE = 32;
+    static final int DEFAULT_FONT_SIZE = 32;
     
     private final int vaoHandle;
     private final int vboHandle;
@@ -60,7 +60,7 @@ public final class Font {
     final int bitmapWidth;
     final int bitmapHeight;
     
-    static final Font defaultFont = new Font("/org/xjge/assets/", "font_source_code_pro.ttf", DEFAULT_SIZE);
+    static final Font defaultFont = new Font("/org/xjge/assets/", "font_source_code_pro.ttf", DEFAULT_FONT_SIZE);
     
     private final String charset = " !\"#$%&\'()*+,-./" +
                                    "0123456789:;<=>?"   +
@@ -171,7 +171,7 @@ public final class Font {
             
             return new int[] {
                 0,
-                DEFAULT_SIZE,
+                DEFAULT_FONT_SIZE,
                 defaultFont.textureHandle,
                 defaultFont.largestGlyphWidth,
                 defaultFont.bitmapWidth,
@@ -303,7 +303,7 @@ public final class Font {
             for(int i = 0; i < charset.length(); i++) {
                 stbtt_GetCodepointHMetrics(fontInfo, charset.charAt(i), advanceWidth, leftBearing);
                 float scaledAdvance = advanceWidth[0] * pixelScale;
-                if(scaledAdvance > info[3]) info[3] = Math.round(scaledAdvance * scale);
+                if(scaledAdvance > info[3]) info[3] = Math.round(scaledAdvance * SCALE);
             }
 
             boolean containsAllGlyphs = false;
@@ -317,12 +317,12 @@ public final class Font {
             dimensions of the largest one. This mitigates texture bleeding.
             */
             while(!containsAllGlyphs) {
-                info[4]     = Math.round(bitmapSizeInPixels * scale);
-                info[5]     = Math.round(bitmapSizeInPixels * scale);
+                info[4]     = Math.round(bitmapSizeInPixels * SCALE);
+                info[5]     = Math.round(bitmapSizeInPixels * SCALE);
                 imageBuffer = MemoryUtil.memAlloc(info[4] * info[5]);
 
                 try(STBTTPackContext context = STBTTPackContext.malloc()) {
-                    stbtt_PackBegin(context, imageBuffer, info[4], info[5], 0, (int) (info[3] * scale), NULL);
+                    stbtt_PackBegin(context, imageBuffer, info[4], info[5], 0, (int) (info[3] * SCALE), NULL);
                     stbtt_PackSetOversampling(context, 1, 1);
                     containsAllGlyphs = stbtt_PackFontRange(context, fontBuffer, 0, info[1], 32, packedCharBuffer);
                     stbtt_PackEnd(context);
@@ -425,8 +425,8 @@ public final class Font {
         glBindTexture(GL_TEXTURE_2D, textureHandle);
         glBindVertexArray(vaoHandle);
         
-        //Update object pool size to accommodate text requirements 
-        if(text.length() > numGlyphsAllocated) { //TODO: impose maximum size
+        //Update object pool size to accommodate text requirements
+        if(text.length() > numGlyphsAllocated) {
             for(int i = glyphPool.size(); i < text.length(); i++) glyphPool.add(new Glyph());
             numGlyphsAllocated = text.length();
         }
@@ -477,17 +477,19 @@ public final class Font {
         
         int advance = 0;
         
-        //Update glyph values to match current requirements of text
-        for(int i = 0; i < text.length(); i++) {
+        //Update glyph values to match current requirements of the text
+        for(int i = 0; i < glyphPool.size(); i++) {
             Glyph glyph = glyphPool.get(i);
-            
             glyph.reset();
-            glyph.character = text.charAt(i);
-            glyph.positionX = positionX + advance + getGlyphBearingX(glyph.character);
-            glyph.positionY = positionY + getGlyphBearingY(glyph.character);
-            glyph.color     = color;
             
-            advance += getGlyphAdvance(glyph.character);
+            if(i < text.length()) {
+                glyph.character = text.charAt(i);
+                glyph.positionX = positionX + advance + getGlyphBearingX(glyph.character);
+                glyph.positionY = positionY + getGlyphBearingY(glyph.character);
+                glyph.color     = color;
+
+                advance += getGlyphAdvance(glyph.character);
+            }
         }
         
         executeRender(opacity);
