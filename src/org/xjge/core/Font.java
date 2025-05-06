@@ -27,7 +27,6 @@ import org.lwjgl.system.MemoryStack;
 import org.lwjgl.system.MemoryUtil;
 import static org.lwjgl.system.MemoryUtil.NULL;
 import org.xjge.graphics.Color;
-import org.xjge.graphics.Rectangle;
 
 /**
  * Created: Jun 3, 2021
@@ -434,7 +433,19 @@ public final class Font {
     }
     
     private void executeRender(float opacity) {
+        offsetPosition();
+        offsetTexture();
+        offsetColor();
         
+        XJGE.getDefaultGLProgram().setUniform("uType", 1);
+        XJGE.getDefaultGLProgram().setUniform("uTexture", 0);
+        XJGE.getDefaultGLProgram().setUniform("uOpacity", XJGE.clampValue(0, 1, opacity));
+        XJGE.getDefaultGLProgram().setUniform("uIsBitmapFont", (isBitmapFont) ? 1 : 0);
+        
+        glDrawElementsInstanced(GL_TRIANGLES, indexBuffer.capacity(), GL_UNSIGNED_INT, 0, glyphPool.size());
+        glDisable(GL_BLEND);
+        
+        ErrorUtils.checkGLError();
     }
     
     void drawCommand(String text, int positionX, int positionY) {
@@ -494,15 +505,17 @@ public final class Font {
 
             if(i < text.length()) {
                 glyph.character = text.charAt(i);
-                glyph.positionX = positionX + advance + getGlyphBearingX(glyph.character);
-                glyph.positionY = positionY + getGlyphBearingY(glyph.character);
+                glyph.positionX = (positionX + advance + getGlyphBearingX(glyph.character)) + glyph.positionOffsetX;
+                glyph.positionY = (positionY + getGlyphBearingY(glyph.character)) + glyph.positionOffsetY;
                 glyph.color     = color;
                 
-                if(effect != null) effect.apply(glyph, advance);
+                if(effect != null) effect.apply(glyph, i);
 
                 advance += getGlyphAdvance(glyph.character);
             }
         }
+        
+        if(effect != null) effect.reset();
         
         offsetPosition();
         offsetTexture();

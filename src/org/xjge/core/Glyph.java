@@ -1,5 +1,6 @@
 package org.xjge.core;
 
+import org.joml.Vector2i;
 import org.xjge.graphics.Color;
 
 /**
@@ -15,6 +16,9 @@ public final class Glyph {
     int positionX;
     int positionY;
     
+    public int positionOffsetX;
+    public int positionOffsetY;
+    
     Color color = Color.WHITE;
     
     void reset() {
@@ -24,20 +28,20 @@ public final class Glyph {
         color     = Color.WHITE;
     }
     
-    public void overrideCharacter() {
-        
+    public char getCharacter() {
+        return character;
     }
     
-    public void overridePositionX() {
-        
+    public Color getColor() {
+        return color;
     }
     
-    public void overridePositionY() {
-        
+    public void setCharacter(char newCharacter) {
+        character = (newCharacter < 32 || newCharacter > 127) ? '?' : newCharacter;
     }
     
-    public void overrideColor() {
-        
+    public void setColor(Color newColor) {
+        color = (color == null) ? Color.WHITE : newColor;
     }
     
 }

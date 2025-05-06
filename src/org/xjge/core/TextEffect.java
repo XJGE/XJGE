@@ -8,6 +8,8 @@ package org.xjge.core;
  */
 public abstract class TextEffect {
 
-    public abstract void apply(Glyph glyph, int advance);
+    public abstract void apply(Glyph glyph, int index);
+    
+    public abstract void reset();
     
 }
