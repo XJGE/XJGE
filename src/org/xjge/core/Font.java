@@ -27,6 +27,7 @@ import org.lwjgl.system.MemoryStack;
 import org.lwjgl.system.MemoryUtil;
 import static org.lwjgl.system.MemoryUtil.NULL;
 import org.xjge.graphics.Color;
+import org.xjge.graphics.Rectangle;
 
 /**
  * Created: Jun 3, 2021
@@ -433,19 +434,7 @@ public final class Font {
     }
     
     private void executeRender(float opacity) {
-        offsetPosition();
-        offsetTexture();
-        offsetColor();
         
-        XJGE.getDefaultGLProgram().setUniform("uType", 1);
-        XJGE.getDefaultGLProgram().setUniform("uTexture", 0);
-        XJGE.getDefaultGLProgram().setUniform("uOpacity", XJGE.clampValue(0, 1, opacity));
-        XJGE.getDefaultGLProgram().setUniform("uIsBitmapFont", (isBitmapFont) ? 1 : 0);
-        
-        glDrawElementsInstanced(GL_TRIANGLES, indexBuffer.capacity(), GL_UNSIGNED_INT, 0, glyphPool.size());
-        glDisable(GL_BLEND);
-        
-        ErrorUtils.checkGLError();
     }
     
     void drawCommand(String text, int positionX, int positionY) {
@@ -478,26 +467,56 @@ public final class Font {
     }
     
     public void drawString(String text, int positionX, int positionY, Color color, float opacity) {
-        prepareRender(text);
+        drawString(text, positionX, positionY, color, opacity, null);
+    }
+    
+    public void drawString(String text, int positionX, int positionY, Color color, float opacity, TextEffect effect) {
+        XJGE.getDefaultGLProgram().use();
+        
+        glEnable(GL_BLEND);
+        glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+        glActiveTexture(GL_TEXTURE0);
+        glBindTexture(GL_TEXTURE_2D, textureHandle);
+        glBindVertexArray(vaoHandle);
+        
+        //Update object pool size to accommodate text requirements
+        if(text.length() > numGlyphsAllocated) {
+            for(int i = glyphPool.size(); i < text.length(); i++) glyphPool.add(new Glyph());
+            numGlyphsAllocated = text.length();
+        }
         
         int advance = 0;
-        
+            
         //Update glyph values to match the current requirements of the text
         for(int i = 0; i < glyphPool.size(); i++) {
             Glyph glyph = glyphPool.get(i);
             glyph.reset();
-            
+
             if(i < text.length()) {
                 glyph.character = text.charAt(i);
                 glyph.positionX = positionX + advance + getGlyphBearingX(glyph.character);
                 glyph.positionY = positionY + getGlyphBearingY(glyph.character);
                 glyph.color     = color;
+                
+                if(effect != null) effect.apply(glyph, advance);
 
                 advance += getGlyphAdvance(glyph.character);
             }
         }
         
-        executeRender(opacity);
+        offsetPosition();
+        offsetTexture();
+        offsetColor();
+        
+        XJGE.getDefaultGLProgram().setUniform("uType", 1);
+        XJGE.getDefaultGLProgram().setUniform("uTexture", 0);
+        XJGE.getDefaultGLProgram().setUniform("uOpacity", XJGE.clampValue(0, 1, opacity));
+        XJGE.getDefaultGLProgram().setUniform("uIsBitmapFont", (isBitmapFont) ? 1 : 0);
+        
+        glDrawElementsInstanced(GL_TRIANGLES, indexBuffer.capacity(), GL_UNSIGNED_INT, 0, glyphPool.size());
+        glDisable(GL_BLEND);
+        
+        ErrorUtils.checkGLError();
     }
     
     public void delete() {

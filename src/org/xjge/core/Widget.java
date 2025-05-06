@@ -1,9 +1,7 @@
 package org.xjge.core;
 
-import org.xjge.graphics.Color;
 import org.xjge.graphics.GLProgram;
 import java.util.Map;
-import org.joml.Vector2i;
 import org.joml.Vector3i;
 
 /**

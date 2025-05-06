@@ -8,7 +8,7 @@ import org.xjge.graphics.Color;
  * @author J Hoffman
  * @since  2.0.0
  */
-final class Glyph {
+public final class Glyph {
     
     char character = 32; //ASCII space
     
@@ -22,6 +22,22 @@ final class Glyph {
         positionX = 0;
         positionY = 0;
         color     = Color.WHITE;
+    }
+    
+    public void overrideCharacter() {
+        
+    }
+    
+    public void overridePositionX() {
+        
+    }
+    
+    public void overridePositionY() {
+        
+    }
+    
+    public void overrideColor() {
+        
     }
     
 }
