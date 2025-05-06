@@ -14,12 +14,16 @@ public class TextEffectTest extends TextEffect {
 
     @Override
     public void apply(Glyph glyph, int index) {
-        Color c = switch(glyph.getCharacter()) {
-            default -> Color.WHITE;
-            case 'p' -> Color.RED;
+        glyph.positionOffsetY = switch(glyph.getCharacter()) {
+            default -> 0;
+            case 'p' -> 23;
         };
         
-        glyph.setColor(c);
+        switch(index) {
+            case 4, 5, 6, 7, 8 -> {
+                
+            }
+        }
     }
 
     @Override

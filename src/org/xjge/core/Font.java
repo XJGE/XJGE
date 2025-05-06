@@ -442,7 +442,13 @@ public final class Font {
                 glyph.character = text.charAt(i);
                 glyph.positionX = (positionX + advance + getGlyphBearingX(glyph.character)) + glyph.positionOffsetX;
                 glyph.positionY = (positionY + getGlyphBearingY(glyph.character)) + glyph.positionOffsetY;
-                glyph.color     = color;
+                
+                if(effect == null) {
+                    glyph.opacity = opacity;
+                    glyph.color   = color;
+                } else {
+                    effect.apply(glyph, i);
+                }
                 
                 if(effect != null) effect.apply(glyph, i);
 

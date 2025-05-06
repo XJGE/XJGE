@@ -1,6 +1,5 @@
 package org.xjge.core;
 
-import org.joml.Vector2i;
 import org.xjge.graphics.Color;
 
 /**
@@ -10,6 +9,8 @@ import org.xjge.graphics.Color;
  * @since  2.0.0
  */
 public final class Glyph {
+    
+    float opacity = 1f;
     
     char character = 32; //ASCII space
     
@@ -25,7 +26,10 @@ public final class Glyph {
         character = 32;
         positionX = 0;
         positionY = 0;
-        color     = Color.WHITE;
+    }
+    
+    public float getOpacity() {
+        return opacity;
     }
     
     public char getCharacter() {
@@ -34,6 +38,10 @@ public final class Glyph {
     
     public Color getColor() {
         return color;
+    }
+    
+    public void setOpacity(float newOpacity) {
+        opacity = XJGE.clampValue(0f, 1f, newOpacity);
     }
     
     public void setCharacter(char newCharacter) {

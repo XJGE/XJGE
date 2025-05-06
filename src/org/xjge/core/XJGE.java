@@ -100,7 +100,6 @@ public final class XJGE {
     private static String assetsFilepath = "/org/xjge/assets/";
     private static String scenesFilepath;
     
-    private static Font engineFont;
     private static Texture engineIcons;
     private static Sound beep;
     private static Noclip freeCam;
@@ -252,6 +251,24 @@ public final class XJGE {
             createRenderbuffer();
             
             ErrorUtils.checkFBStatus(GL_FRAMEBUFFER);
+            
+            //Initialize shader used to render UI elements
+            {
+                var shaderSourceFiles = new LinkedList<Shader>() {{
+                    add(new Shader("shader_ui_vertex.glsl", GL_VERTEX_SHADER));
+                    add(new Shader("shader_ui_fragment.glsl", GL_FRAGMENT_SHADER));
+                }};
+                
+                GLProgram uiProgram = new GLProgram(shaderSourceFiles, "xjge_ui");
+                
+                uiProgram.use();
+                uiProgram.addUniform(BufferType.INT,  "uType");
+                uiProgram.addUniform(BufferType.INT,  "uTexture");
+                uiProgram.addUniform(BufferType.INT,  "uIsBitmapFont");
+                uiProgram.addUniform(BufferType.MAT4, "uProjection");
+                
+                glPrograms.put("xjge_ui", uiProgram);
+            }
             
             //Initialize the default shader program that will be provided to the implementation
             {

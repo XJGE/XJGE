@@ -20,6 +20,7 @@ public class TestWidget extends Widget {
 
     Font font = new Font("font_source_code_pro.ttf", 32);
     StopWatch timer = new StopWatch();
+    TextEffectTest testEffect = new TextEffectTest();
     
     int index;
     boolean reverse;
@@ -36,11 +37,11 @@ public class TestWidget extends Widget {
     public void render(Map<String, GLProgram> glPrograms) {
         /*
         TODO:
-        - Test variable string lengths
-        - Profile efficency/garbage creation
         - Impose maximum char count
-        - Add .bmf parsing
+        - Make opacity a glyph attribute
         */
+        
+        /*
         
         if(timer.tick(1)) {
             if(!reverse) {
@@ -58,7 +59,10 @@ public class TestWidget extends Widget {
             }
         }
         
-        font.drawString("The quick brown fox jumps over the lazy dog.".substring(0, index), 50, 100, Color.WHITE, 1f);
+        font.drawString("The quick brown fox jumps over the lazy dog.".substring(0, index), 50, 100, testEffect);
+        */
+        
+        font.drawString("The quick brown fox jumps over the lazy dog.", 50, 100, testEffect);
         
         /*
         font2.drawString(" !\"#$%&\'()*+,-./", 10, 120, Color.WHITE, 1f);
