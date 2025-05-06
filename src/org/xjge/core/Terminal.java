@@ -54,6 +54,8 @@ final class Terminal implements PropertyChangeListener {
     private final StringBuilder typed = new StringBuilder();
     private final Timer timer         = new Timer(1, 20, this);
     
+    private final TextEffectTerminal syntaxHighlight = new TextEffectTerminal();
+    
     private static final Rectangle[] opaqueRectangles = new Rectangle[5];
     private static final Rectangle commandLine        = new Rectangle();
     private static final Rectangle commandOutput      = new Rectangle();
@@ -130,7 +132,7 @@ final class Terminal implements PropertyChangeListener {
         if(cursorBlink) defaultFont.drawString("_", cursorPos.x, cursorPos.y, Color.WHITE, 1f);
         
         if(typed.length() > 0) {
-            if(validate()) defaultFont.drawCommand(typed.toString(), commandPos.x, commandPos.y);
+            if(validate()) defaultFont.drawString(typed.toString(), commandPos.x, commandPos.y, syntaxHighlight);
             else           defaultFont.drawString(typed.toString(), commandPos.x, commandPos.y, Color.WHITE, 1f);
         }
         

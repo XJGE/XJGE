@@ -416,72 +416,7 @@ public final class Font {
         glVertexAttribDivisor(6, 1);
     }
     
-    private void prepareRender(String text) {
-        XJGE.getDefaultGLProgram().use();
-        
-        glEnable(GL_BLEND);
-        glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-        glActiveTexture(GL_TEXTURE0);
-        glBindTexture(GL_TEXTURE_2D, textureHandle);
-        glBindVertexArray(vaoHandle);
-        
-        //Update object pool size to accommodate text requirements
-        if(text.length() > numGlyphsAllocated) {
-            for(int i = glyphPool.size(); i < text.length(); i++) glyphPool.add(new Glyph());
-            numGlyphsAllocated = text.length();
-        }
-    }
-    
-    private void executeRender(float opacity) {
-        offsetPosition();
-        offsetTexture();
-        offsetColor();
-        
-        XJGE.getDefaultGLProgram().setUniform("uType", 1);
-        XJGE.getDefaultGLProgram().setUniform("uTexture", 0);
-        XJGE.getDefaultGLProgram().setUniform("uOpacity", XJGE.clampValue(0, 1, opacity));
-        XJGE.getDefaultGLProgram().setUniform("uIsBitmapFont", (isBitmapFont) ? 1 : 0);
-        
-        glDrawElementsInstanced(GL_TRIANGLES, indexBuffer.capacity(), GL_UNSIGNED_INT, 0, glyphPool.size());
-        glDisable(GL_BLEND);
-        
-        ErrorUtils.checkGLError();
-    }
-    
-    void drawCommand(String text, int positionX, int positionY) {
-        prepareRender(text);
-        
-        int advance = 0;
-        int start   = 0;
-        
-        for(int i = 0; i < glyphPool.size(); i++) {
-            Glyph glyph = glyphPool.get(i);
-            glyph.reset();
-            
-            if(i < text.length()) {
-                glyph.character = text.charAt(i);
-                glyph.positionX = positionX + advance + getGlyphBearingX(glyph.character);
-                glyph.positionY = positionY + getGlyphBearingY(glyph.character);
-                
-                if(glyph.character == ' ') start = i;
-                
-                glyph.color = switch(glyph.character) {
-                    default -> (start != 0 && i > start) ? Color.YELLOW : Color.CYAN;
-                    case '(', ')', ',', '<', '>' -> Color.WHITE;
-                };
-                
-                advance += getGlyphAdvance(glyph.character);
-            }
-        }
-        
-        executeRender(1f);
-    }
-    
-    public void drawString(String text, int positionX, int positionY, Color color, float opacity) {
-        drawString(text, positionX, positionY, color, opacity, null);
-    }
-    
-    public void drawString(String text, int positionX, int positionY, Color color, float opacity, TextEffect effect) {
+    private void drawString(String text, int positionX, int positionY, Color color, float opacity, TextEffect effect) {
         XJGE.getDefaultGLProgram().use();
         
         glEnable(GL_BLEND);
@@ -530,6 +465,14 @@ public final class Font {
         glDisable(GL_BLEND);
         
         ErrorUtils.checkGLError();
+    }
+    
+    public void drawString(String text, int positionX, int positionY, Color color, float opacity) {
+        drawString(text, positionX, positionY, color, opacity, null);
+    }
+    
+    public void drawString(String text, int positionX, int positionY, TextEffect effect) {
+        drawString(text, positionX, positionY, Color.WHITE, 1f, effect);
     }
     
     public void delete() {
