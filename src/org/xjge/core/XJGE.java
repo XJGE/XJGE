@@ -901,6 +901,10 @@ public final class XJGE {
         return glPrograms.get("default");
     }
     
+    public static GLProgram getUIProgram() {
+        return glPrograms.get("xjge_ui");
+    }
+    
     /**
      * Sets the current split value the engine will use to divide the screen 
      * during split screen mode.

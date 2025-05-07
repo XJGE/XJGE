@@ -200,10 +200,10 @@ public final class Game {
             }
             
             if(XJGE.getTerminalEnabled() || debugInfo.show) {
-                glPrograms.get("default").use();
+                glPrograms.get("xjge_ui").use();
                 glViewport(0, 0, Window.getWidth(), Window.getHeight());
                 projMatrix.setOrtho(0,  Window.getWidth(), 0, Window.getHeight(), 0, Integer.MAX_VALUE);
-                glPrograms.get("default").setUniform("uProjection", false, projMatrix);
+                glPrograms.get("xjge_ui").setUniform("uProjection", false, projMatrix);
                 
                 if(XJGE.getTerminalEnabled()) terminal.render();
                 if(debugInfo.show) debugInfo.render();

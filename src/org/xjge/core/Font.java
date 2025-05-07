@@ -14,6 +14,7 @@ import java.util.Map;
 import javax.xml.stream.XMLInputFactory;
 import javax.xml.stream.XMLStreamConstants;
 import javax.xml.stream.XMLStreamException;
+import org.joml.Matrix4f;
 import static org.lwjgl.opengl.GL33C.*;
 import static org.lwjgl.stb.STBImage.STBI_rgb_alpha;
 import static org.lwjgl.stb.STBImage.stbi_failure_reason;
@@ -132,10 +133,10 @@ public final class Font {
         glBufferData(GL_ELEMENT_ARRAY_BUFFER, indexBuffer, GL_STATIC_DRAW);
         
         glVertexAttribPointer(0, 3, GL_FLOAT, false, (5 * Float.BYTES), 0);
-        glVertexAttribPointer(2, 2, GL_FLOAT, false, (5 * Float.BYTES), (3 * Float.BYTES));
+        glVertexAttribPointer(1, 2, GL_FLOAT, false, (5 * Float.BYTES), (3 * Float.BYTES));
         
         glEnableVertexAttribArray(0);
-        glEnableVertexAttribArray(2);
+        glEnableVertexAttribArray(1);
     }
     
     private int[] loadFont(String filepath, String filename, int size) {
@@ -373,9 +374,9 @@ public final class Font {
             glBufferData(GL_ARRAY_BUFFER, positions, GL_STATIC_DRAW);
         }
         
-        glVertexAttribPointer(4, 3, GL_FLOAT, false, (3 * Float.BYTES), 0);
-        glEnableVertexAttribArray(4);
-        glVertexAttribDivisor(4, 1);
+        glVertexAttribPointer(2, 3, GL_FLOAT, false, (3 * Float.BYTES), 0);
+        glEnableVertexAttribArray(2);
+        glVertexAttribDivisor(2, 1);
     }
     
     private void offsetTexture() {
@@ -392,9 +393,9 @@ public final class Font {
             glBufferData(GL_ARRAY_BUFFER, cells, GL_STATIC_DRAW);
         }
         
-        glVertexAttribPointer(5, 2, GL_FLOAT, false, (2 * Float.BYTES), 0);
-        glEnableVertexAttribArray(5);
-        glVertexAttribDivisor(5, 1);
+        glVertexAttribPointer(3, 2, GL_FLOAT, false, (2 * Float.BYTES), 0);
+        glEnableVertexAttribArray(3);
+        glVertexAttribDivisor(3, 1);
     }
     
     private void offsetColor() {
@@ -402,7 +403,7 @@ public final class Font {
             FloatBuffer colors = stack.mallocFloat(glyphPool.size() * Float.BYTES);
             
             glyphPool.forEach(glyph -> {
-                colors.put(glyph.color.r).put(glyph.color.g).put(glyph.color.b);
+                colors.put(glyph.color.r).put(glyph.color.g).put(glyph.color.b).put(glyph.opacity);
             });
             
             colors.flip();
@@ -411,13 +412,13 @@ public final class Font {
             glBufferData(GL_ARRAY_BUFFER, colors, GL_STATIC_DRAW);
         }
         
-        glVertexAttribPointer(6, 3, GL_FLOAT, false, (3 * Float.BYTES), 0);
-        glEnableVertexAttribArray(6);
-        glVertexAttribDivisor(6, 1);
+        glVertexAttribPointer(4, 4, GL_FLOAT, false, (4 * Float.BYTES), 0);
+        glEnableVertexAttribArray(4);
+        glVertexAttribDivisor(4, 1);
     }
     
     private void drawString(String text, int positionX, int positionY, Color color, float opacity, TextEffect effect) {
-        XJGE.getDefaultGLProgram().use();
+        XJGE.getUIProgram().use();
         
         glEnable(GL_BLEND);
         glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
@@ -462,10 +463,10 @@ public final class Font {
         offsetTexture();
         offsetColor();
         
-        XJGE.getDefaultGLProgram().setUniform("uType", 1);
-        XJGE.getDefaultGLProgram().setUniform("uTexture", 0);
-        XJGE.getDefaultGLProgram().setUniform("uOpacity", XJGE.clampValue(0, 1, opacity));
-        XJGE.getDefaultGLProgram().setUniform("uIsBitmapFont", (isBitmapFont) ? 1 : 0);
+        XJGE.getUIProgram().setUniform("uType", 0);
+        XJGE.getUIProgram().setUniform("uTexture", 0);
+        XJGE.getUIProgram().setUniform("uIsBitmapFont", (isBitmapFont) ? 1 : 0);
+        //XJGE.getUIProgram().setUniform("uProjection", false, projMatrix);
         
         glDrawElementsInstanced(GL_TRIANGLES, indexBuffer.capacity(), GL_UNSIGNED_INT, 0, glyphPool.size());
         glDisable(GL_BLEND);
