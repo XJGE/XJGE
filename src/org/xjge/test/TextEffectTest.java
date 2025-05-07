@@ -21,7 +21,7 @@ public class TextEffectTest extends TextEffect {
         
         switch(index) {
             case 4, 5, 6, 7, 8 -> {
-                
+                glyph.setOpacity(0.5f);
             }
         }
     }

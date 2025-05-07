@@ -466,7 +466,6 @@ public final class Font {
         XJGE.getUIProgram().setUniform("uType", 0);
         XJGE.getUIProgram().setUniform("uTexture", 0);
         XJGE.getUIProgram().setUniform("uIsBitmapFont", (isBitmapFont) ? 1 : 0);
-        //XJGE.getUIProgram().setUniform("uProjection", false, projMatrix);
         
         glDrawElementsInstanced(GL_TRIANGLES, indexBuffer.capacity(), GL_UNSIGNED_INT, 0, glyphPool.size());
         glDisable(GL_BLEND);

@@ -15,7 +15,7 @@ void main() {
             vec3 textColorOutput = (uIsBitmapFont == 1) 
                                  ? ioColor.xyz * texture(uTexture, ioTexCoords).xyz 
                                  : ioColor.xyz;
-            ioFragColor = vec4(textColorOutput, texture(uTexture, ioTexCoords).a * 1f);
+            ioFragColor = vec4(textColorOutput, texture(uTexture, ioTexCoords).a * ioColor.w);
             break;
     }
 }
