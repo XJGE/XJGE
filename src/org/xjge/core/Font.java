@@ -45,7 +45,7 @@ public final class Font {
     
     private static final float SCALE = 1.5f;
     
-    static final int DEFAULT_FONT_SIZE = 32;
+    public static final int DEFAULT_FONT_SIZE = 32;
     
     private final int vaoHandle;
     private final int vboHandle;
@@ -61,7 +61,7 @@ public final class Font {
     final int bitmapWidth;
     final int bitmapHeight;
     
-    static final Font defaultFont = new Font("/org/xjge/assets/", "font_source_code_pro.ttf", DEFAULT_FONT_SIZE);
+    public static final Font placeholder = new Font("/org/xjge/assets/", "font_source_code_pro.ttf", DEFAULT_FONT_SIZE);
     
     private final String charset = " !\"#$%&\'()*+,-./" +
                                    "0123456789:;<=>?"   +
@@ -166,23 +166,23 @@ public final class Font {
             return info;
             
         } catch(Exception exception) {
-            Logger.logWarning("Failed to load font \"" + filename + "\" a defaultFont will be used instead", exception);
+            Logger.logWarning("Failed to load font \"" + filename + "\" a placeholder will be used instead", exception);
             
-            glyphMetrics.putAll(defaultFont.glyphMetrics);
+            glyphMetrics.putAll(placeholder.glyphMetrics);
             
             return new int[] {
                 0,
                 DEFAULT_FONT_SIZE,
-                defaultFont.textureHandle,
-                defaultFont.largestGlyphWidth,
-                defaultFont.bitmapWidth,
-                defaultFont.bitmapHeight,
-                defaultFont.vaoHandle,
-                defaultFont.vboHandle,
-                defaultFont.iboHandle,
-                defaultFont.posOffsetHandle,
-                defaultFont.texOffsetHandle,
-                defaultFont.colOffsetHandle
+                placeholder.textureHandle,
+                placeholder.largestGlyphWidth,
+                placeholder.bitmapWidth,
+                placeholder.bitmapHeight,
+                placeholder.vaoHandle,
+                placeholder.vboHandle,
+                placeholder.iboHandle,
+                placeholder.posOffsetHandle,
+                placeholder.texOffsetHandle,
+                placeholder.colOffsetHandle
             };
         }
     }
@@ -482,7 +482,7 @@ public final class Font {
     }
     
     public void delete() {
-        if(textureHandle != defaultFont.textureHandle) {
+        if(textureHandle != placeholder.textureHandle) {
             glDeleteTextures(textureHandle);
             glDeleteVertexArrays(vaoHandle);
             glDeleteBuffers(vboHandle);

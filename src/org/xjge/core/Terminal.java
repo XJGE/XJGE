@@ -11,7 +11,7 @@ import java.util.TreeMap;
 import org.joml.Vector2i;
 import static org.lwjgl.glfw.GLFW.*;
 import static org.xjge.core.Font.DEFAULT_FONT_SIZE;
-import static org.xjge.core.Font.defaultFont;
+import static org.xjge.core.Font.placeholder;
 
 /**
  * Created: May 23, 2021
@@ -78,7 +78,7 @@ final class Terminal implements PropertyChangeListener {
     Terminal(TreeMap<String, TerminalCommand> commands) {
         this.commands = commands;
         
-        glyphAdvance = (int) defaultFont.getGlyphAdvance('>');
+        glyphAdvance = (int) placeholder.getGlyphAdvance('>');
         cursorPos.x  = glyphAdvance;
         commandPos.x = glyphAdvance;
     }
@@ -109,17 +109,18 @@ final class Terminal implements PropertyChangeListener {
      */
     void render() {
         commandLine.width  = Window.getWidth();
-        commandLine.height = defaultFont.size + 4;
+        commandLine.height = placeholder.size + 4;
         commandLine.render(1, Color.BLACK);
         
         commandOutput.width  = Window.getWidth();
         commandOutput.height = outputTop;
         commandOutput.render(0.5f, Color.BLACK);
         
-        defaultFont.drawString(">", caretPos.x, caretPos.y, Color.WHITE, 1f);
+        placeholder.drawString(">", caretPos.x, caretPos.y, Color.WHITE, 1f);
         
         for(int i = 0; i <= shiftElements; i++) {
-            //defaultFont.drawOutput(cmdOutput, cmdOutput[i], i, executed, opaqueRectangles[i]);
+            //TODO: reimplement this
+            //placeholder.drawOutput(cmdOutput, cmdOutput[i], i, executed, opaqueRectangles[i]);
         }
         
         for(Rectangle rectangle : opaqueRectangles) {
@@ -128,12 +129,12 @@ final class Terminal implements PropertyChangeListener {
         
         executed = false;
         
-        if(suggest) defaultFont.drawString(suggestion, commandPos.x, commandPos.y, Color.GRAY, 1f);
-        if(cursorBlink) defaultFont.drawString("_", cursorPos.x, cursorPos.y, Color.WHITE, 1f);
+        if(suggest) placeholder.drawString(suggestion, commandPos.x, commandPos.y, Color.GRAY, 1f);
+        if(cursorBlink) placeholder.drawString("_", cursorPos.x, cursorPos.y, Color.WHITE, 1f);
         
         if(typed.length() > 0) {
-            if(validate()) defaultFont.drawString(typed.toString(), commandPos.x, commandPos.y, syntaxHighlight);
-            else           defaultFont.drawString(typed.toString(), commandPos.x, commandPos.y, Color.WHITE, 1f);
+            if(validate()) placeholder.drawString(typed.toString(), commandPos.x, commandPos.y, syntaxHighlight);
+            else           placeholder.drawString(typed.toString(), commandPos.x, commandPos.y, Color.WHITE, 1f);
         }
         
         ErrorUtils.checkGLError();
@@ -360,7 +361,7 @@ final class Terminal implements PropertyChangeListener {
                         cmdOutput[i] = cmdOutput[i - 1];
                     }
                 } else {
-                    cmdOutput[i] = new TerminalOutput(defaultFont.wrap(output.text, Window.getWidth()), output.color);
+                    cmdOutput[i] = new TerminalOutput(placeholder.wrap(output.text, Window.getWidth()), output.color);
                 }
             }
         }

@@ -33,7 +33,7 @@ public final class Texture {
     public final int height;
     public final int channels;
     
-    private static final Texture defaultTexture = new Texture("/org/xjge/assets/", "xjge_texture_missing.png", GL_TEXTURE_2D);
+    public static final Texture placeholder = new Texture("/org/xjge/assets/", "xjge_texture_missing.png", GL_TEXTURE_2D);
     
     /**
      * Creates a new texture object from the image file specified. If the image 
@@ -136,10 +136,10 @@ public final class Texture {
             Logger.logWarning("Failed to load texture \"" + filename + "\" a placeholder will be used instead", exception);
             
             return new int[] {
-                defaultTexture.handle,
-                defaultTexture.width,
-                defaultTexture.height,
-                defaultTexture.channels
+                placeholder.handle,
+                placeholder.width,
+                placeholder.height,
+                placeholder.channels
             };
         }
     }
@@ -171,7 +171,7 @@ public final class Texture {
      * @see org.lwjgl.opengl.GL11#glDeleteTextures(int)
      */
     public void delete() {
-        if(handle != defaultTexture.handle) glDeleteTextures(handle);
+        if(handle != placeholder.handle) glDeleteTextures(handle);
     }
     
 }

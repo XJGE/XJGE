@@ -31,7 +31,6 @@ import static org.lwjgl.glfw.GLFW.*;
 import org.lwjgl.opengl.GL;
 import static org.lwjgl.opengl.GL32.*;
 import static org.lwjgl.opengl.GLUtil.setupDebugMessageCallback;
-import static org.xjge.core.Font.defaultFont;
 import static org.xjge.core.Input.KEY_MOUSE_COMBO;
 import org.xjge.graphics.PostProcessShader;
 
@@ -545,7 +544,7 @@ public final class XJGE {
         
         Game.loop(fbo, viewports, terminal, debugInfo, depthProgram, blurProgram, debugModeEnabled);
         
-        defaultFont.delete();
+        Font.placeholder.delete();
         engineIcons.delete();
         beep.freeSound();
         terminal.freeBuffers();
