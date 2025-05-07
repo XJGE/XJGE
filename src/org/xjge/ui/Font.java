@@ -1,4 +1,4 @@
-package org.xjge.core;
+package org.xjge.ui;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -14,7 +14,6 @@ import java.util.Map;
 import javax.xml.stream.XMLInputFactory;
 import javax.xml.stream.XMLStreamConstants;
 import javax.xml.stream.XMLStreamException;
-import org.joml.Matrix4f;
 import static org.lwjgl.opengl.GL33C.*;
 import static org.lwjgl.stb.STBImage.STBI_rgb_alpha;
 import static org.lwjgl.stb.STBImage.stbi_failure_reason;
@@ -26,6 +25,9 @@ import org.lwjgl.stb.STBTTPackedchar;
 import static org.lwjgl.stb.STBTruetype.*;
 import org.lwjgl.system.MemoryStack;
 import org.lwjgl.system.MemoryUtil;
+import org.xjge.core.ErrorUtils;
+import org.xjge.core.Logger;
+import org.xjge.core.XJGE;
 import static org.lwjgl.system.MemoryUtil.NULL;
 import org.xjge.graphics.Color;
 
@@ -47,6 +49,11 @@ public final class Font {
     
     public static final int DEFAULT_FONT_SIZE = 32;
     
+    public final int size;
+    private final int textureHandle;
+    private final int largestGlyphWidth;
+    private final int bitmapWidth;
+    private final int bitmapHeight;
     private final int vaoHandle;
     private final int vboHandle;
     private final int iboHandle;
@@ -54,12 +61,6 @@ public final class Font {
     private final int texOffsetHandle;
     private final int colOffsetHandle;
     private int numGlyphsAllocated;
-    
-    final int size;
-    final int textureHandle;
-    final int largestGlyphWidth;
-    final int bitmapWidth;
-    final int bitmapHeight;
     
     public static final Font placeholder = new Font("/org/xjge/assets/", "font_source_code_pro.ttf", DEFAULT_FONT_SIZE);
     

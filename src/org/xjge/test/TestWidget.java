@@ -2,7 +2,7 @@ package org.xjge.test;
 
 import java.util.Map;
 import org.joml.Vector3i;
-import org.xjge.core.Font;
+import org.xjge.ui.Font;
 import org.xjge.core.Split;
 import org.xjge.core.StopWatch;
 import org.xjge.core.Widget;

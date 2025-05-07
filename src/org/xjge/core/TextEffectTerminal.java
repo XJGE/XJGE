@@ -1,5 +1,7 @@
 package org.xjge.core;
 
+import org.xjge.ui.TextEffect;
+import org.xjge.ui.Glyph;
 import org.xjge.graphics.Color;
 
 /**
@@ -14,12 +16,14 @@ final class TextEffectTerminal extends TextEffect {
     
     @Override
     public void apply(Glyph glyph, int index) {
-        if(glyph.character == ' ') start = index;
+        if(glyph.getCharacter() == ' ') start = index;
                 
-        glyph.color = switch(glyph.character) {
+        Color color = switch(glyph.getCharacter()) {
             default -> (start != 0 && index > start) ? Color.YELLOW : Color.CYAN;
             case '(', ')', ',', '<', '>' -> Color.WHITE;
         };
+        
+        glyph.setColor(color);
     }
 
     @Override

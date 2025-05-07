@@ -1,5 +1,6 @@
 package org.xjge.core;
 
+import org.xjge.ui.Font;
 import org.xjge.graphics.Texture;
 import java.beans.PropertyChangeListener;
 import java.io.File;

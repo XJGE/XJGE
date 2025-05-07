@@ -1,5 +1,6 @@
 package org.xjge.core;
 
+import org.xjge.ui.Font;
 import org.xjge.graphics.Rectangle;
 import org.xjge.graphics.Icon;
 import org.xjge.graphics.RectangleBatch;
@@ -13,7 +14,7 @@ import static org.lwjgl.openal.AL10.alGetString;
 import static org.lwjgl.opengl.GL11.GL_RENDERER;
 import static org.lwjgl.opengl.GL11.GL_VERSION;
 import static org.lwjgl.opengl.GL11.glGetString;
-import static org.xjge.core.Font.placeholder;
+import static org.xjge.ui.Font.placeholder;
 import org.xjge.graphics.Texture;
 
 /**

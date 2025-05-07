@@ -1,5 +1,6 @@
-package org.xjge.core;
+package org.xjge.ui;
 
+import org.xjge.core.XJGE;
 import org.xjge.graphics.Color;
 
 /**

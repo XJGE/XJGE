@@ -1,4 +1,4 @@
-package org.xjge.core;
+package org.xjge.ui;
 
 /**
  * Created: May 6, 2025

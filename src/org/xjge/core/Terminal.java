@@ -10,8 +10,8 @@ import java.util.List;
 import java.util.TreeMap;
 import org.joml.Vector2i;
 import static org.lwjgl.glfw.GLFW.*;
-import static org.xjge.core.Font.DEFAULT_FONT_SIZE;
-import static org.xjge.core.Font.placeholder;
+import static org.xjge.ui.Font.DEFAULT_FONT_SIZE;
+import static org.xjge.ui.Font.placeholder;
 
 /**
  * Created: May 23, 2021

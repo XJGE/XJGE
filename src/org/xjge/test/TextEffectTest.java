@@ -1,7 +1,7 @@
 package org.xjge.test;
 
-import org.xjge.core.Glyph;
-import org.xjge.core.TextEffect;
+import org.xjge.ui.Glyph;
+import org.xjge.ui.TextEffect;
 import org.xjge.graphics.Color;
 
 /**
