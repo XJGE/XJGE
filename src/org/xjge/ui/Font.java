@@ -45,7 +45,7 @@ public final class Font {
 
     private final boolean isBitmapFont;
     
-    private static final float SCALE = 1.5f;
+    private final float scale = 1.5f;
     
     public static final int DEFAULT_FONT_SIZE = 32;
     
@@ -305,7 +305,7 @@ public final class Font {
             for(int i = 0; i < charset.length(); i++) {
                 stbtt_GetCodepointHMetrics(fontInfo, charset.charAt(i), advanceWidth, leftBearing);
                 float scaledAdvance = advanceWidth[0] * pixelScale;
-                if(scaledAdvance > info[3]) info[3] = Math.round(scaledAdvance * SCALE);
+                if(scaledAdvance > info[3]) info[3] = Math.round(scaledAdvance * scale);
             }
 
             boolean containsAllGlyphs = false;
@@ -319,12 +319,12 @@ public final class Font {
             dimensions of the largest one. This mitigates texture bleeding.
             */
             while(!containsAllGlyphs) {
-                info[4]     = Math.round(bitmapSizeInPixels * SCALE);
-                info[5]     = Math.round(bitmapSizeInPixels * SCALE);
+                info[4]     = Math.round(bitmapSizeInPixels * scale);
+                info[5]     = Math.round(bitmapSizeInPixels * scale);
                 imageBuffer = MemoryUtil.memAlloc(info[4] * info[5]);
 
                 try(STBTTPackContext context = STBTTPackContext.malloc()) {
-                    stbtt_PackBegin(context, imageBuffer, info[4], info[5], 0, (int) (info[3] * SCALE), NULL);
+                    stbtt_PackBegin(context, imageBuffer, info[4], info[5], 0, (int) (info[3] * scale), NULL);
                     stbtt_PackSetOversampling(context, 1, 1);
                     containsAllGlyphs = stbtt_PackFontRange(context, fontBuffer, 0, info[1], 32, packedCharBuffer);
                     stbtt_PackEnd(context);
@@ -524,23 +524,23 @@ public final class Font {
     }
     
     public String wrap(String text, int advanceLimit) {
-        var words        = new ArrayList<String>();
-        StringBuilder sb = new StringBuilder();
+        var words  = new ArrayList<String>();
+        var string = new StringBuilder();
         
         for(int i = 0; i < text.length(); i++) {
-            char c = text.charAt(i);
+            char character = text.charAt(i);
 
             if(i != text.length() - 1) {
-                if(c != ' ') {
-                    sb.append(c);
+                if(character != ' ') {
+                    string.append(character);
                 } else {
-                    words.add(sb.toString());
-                    sb.delete(0, sb.length());
+                    words.add(string.toString());
+                    string.delete(0, string.length());
                 }
             } else {
-                sb.append(c);
-                words.add(sb.toString());
-                sb.delete(0, sb.length());
+                string.append(character);
+                words.add(string.toString());
+                string.delete(0, string.length());
             }
         }
         

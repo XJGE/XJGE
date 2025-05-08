@@ -17,5 +17,9 @@ void main() {
                                  : ioColor.xyz;
             ioFragColor = vec4(textColorOutput, texture(uTexture, ioTexCoords).a * ioColor.w);
             break;
+
+        case 1: //Used for rendering rectangles
+            ioFragColor = vec4(ioColor);
+            break;
     }
 }

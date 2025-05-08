@@ -19,5 +19,10 @@ void main() {
             ioColor     = aColOffset;
             gl_Position = uProjection * vec4(aPosition + aPosOffset, 1);
             break;
+
+        case 1: //Used for rendering rectangles
+            ioColor     = aColOffset;
+            gl_Position = uProjection * vec4(aPosition, 1);
+            break;
     }
 }

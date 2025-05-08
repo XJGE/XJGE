@@ -63,7 +63,7 @@ public class Rectangle {
         glBindVertexArray(vao);
         
         glBindBuffer(GL_ARRAY_BUFFER, vbo);
-        glBufferData(GL_ARRAY_BUFFER, 24 * Float.BYTES, GL_DYNAMIC_DRAW);
+        glBufferData(GL_ARRAY_BUFFER, 28 * Float.BYTES, GL_DYNAMIC_DRAW);
         
         try(MemoryStack stack = MemoryStack.stackPush()) {
             indices = stack.mallocInt(6);
@@ -77,11 +77,11 @@ public class Rectangle {
         glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ibo);
         glBufferData(GL_ELEMENT_ARRAY_BUFFER, indices, GL_STATIC_DRAW);
         
-        glVertexAttribPointer(0, 3, GL_FLOAT, false, (6 * Float.BYTES), 0);
-        glVertexAttribPointer(1, 3, GL_FLOAT, false, (6 * Float.BYTES), (3 * Float.BYTES));
+        glVertexAttribPointer(0, 3, GL_FLOAT, false, (7 * Float.BYTES), 0);
+        glVertexAttribPointer(4, 4, GL_FLOAT, false, (7 * Float.BYTES), (3 * Float.BYTES));
         
         glEnableVertexAttribArray(0);
-        glEnableVertexAttribArray(1);
+        glEnableVertexAttribArray(4);
     }
     
     /**
@@ -120,22 +120,21 @@ public class Rectangle {
     public void render(float opacity, Color color) {
         if(vao == -1) genBuffers();
         
-        XJGE.getDefaultGLProgram().use();
+        XJGE.getUIProgram().use();
         
         glEnable(GL_BLEND);
         glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
         glBindVertexArray(vao);
         
-        XJGE.getDefaultGLProgram().setUniform("uType", 3);
-        XJGE.getDefaultGLProgram().setUniform("uOpacity", opacity);
+        XJGE.getUIProgram().setUniform("uType", 1);
         
         try(MemoryStack stack = MemoryStack.stackPush()) {
-            FloatBuffer vertices = stack.mallocFloat(24);
+            FloatBuffer vertices = stack.mallocFloat(28);
             
-            vertices.put(xPos)        .put(yPos + height).put(0).put(color.r).put(color.g).put(color.b);
-            vertices.put(xPos + width).put(yPos + height).put(0).put(color.r).put(color.g).put(color.b);
-            vertices.put(xPos + width).put(yPos)         .put(0).put(color.r).put(color.g).put(color.b);
-            vertices.put(xPos)        .put(yPos)         .put(0).put(color.r).put(color.g).put(color.b);
+            vertices.put(xPos)        .put(yPos + height).put(0).put(color.r).put(color.g).put(color.b).put(opacity);
+            vertices.put(xPos + width).put(yPos + height).put(0).put(color.r).put(color.g).put(color.b).put(opacity);
+            vertices.put(xPos + width).put(yPos)         .put(0).put(color.r).put(color.g).put(color.b).put(opacity);
+            vertices.put(xPos)        .put(yPos)         .put(0).put(color.r).put(color.g).put(color.b).put(opacity);
             
             vertices.flip();
             

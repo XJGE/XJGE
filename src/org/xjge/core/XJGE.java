@@ -259,7 +259,7 @@ public final class XJGE {
                     add(new Shader("shader_ui_fragment.glsl", GL_FRAGMENT_SHADER));
                 }};
                 
-                GLProgram uiProgram = new GLProgram(shaderSourceFiles, "xjge_ui");
+                GLProgram uiProgram = new GLProgram(shaderSourceFiles, "default");
                 
                 uiProgram.use();
                 uiProgram.addUniform(BufferType.INT,  "uType");
