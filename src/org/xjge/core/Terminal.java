@@ -1,6 +1,6 @@
 package org.xjge.core;
 
-import org.xjge.graphics.Rectangle;
+import org.xjge.ui.Rectangle;
 import org.xjge.graphics.Color;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;

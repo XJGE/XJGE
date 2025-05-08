@@ -1,9 +1,9 @@
 package org.xjge.core;
 
 import org.xjge.ui.Font;
-import org.xjge.graphics.Rectangle;
+import org.xjge.ui.Rectangle;
 import org.xjge.graphics.Icon;
-import org.xjge.graphics.RectangleBatch;
+import org.xjge.ui.RectangleBatch;
 import static org.xjge.core.Input.KEY_MOUSE_COMBO;
 import org.xjge.graphics.Color;
 import org.joml.Vector2i;
@@ -191,8 +191,8 @@ final class DebugInfo {
      * Renders the interface to the window.
      */
     void render() {
-        rectBatch.batchStart(0.5f);
-            for(Rectangle rectangle : rectangles) rectBatch.drawRectangle(rectangle, Color.BLACK);
+        rectBatch.batchStart();
+            for(Rectangle rectangle : rectangles) rectBatch.drawRectangle(rectangle, Color.BLACK, 0.5f);
         rectBatch.batchEnd();
         
         for(int i = 0; i < icons.length; i++) {

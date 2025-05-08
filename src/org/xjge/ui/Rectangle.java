@@ -1,4 +1,4 @@
-package org.xjge.graphics;
+package org.xjge.ui;
 
 import java.nio.FloatBuffer;
 import java.nio.IntBuffer;
@@ -7,6 +7,7 @@ import static org.lwjgl.opengl.GL30.*;
 import org.lwjgl.system.MemoryStack;
 import org.xjge.core.ErrorUtils;
 import org.xjge.core.XJGE;
+import org.xjge.graphics.Color;
 
 /**
  * Created: May 25, 2021
