@@ -1,4 +1,4 @@
-package org.xjge.graphics;
+package org.xjge.ui;
 
 import org.joml.Matrix4f;
 import org.xjge.core.ErrorUtils;
@@ -8,6 +8,10 @@ import org.joml.Vector2f;
 import org.joml.Vector2i;
 import static org.lwjgl.opengl.GL30.*;
 import org.lwjgl.system.MemoryStack;
+import org.xjge.graphics.Atlas;
+import org.xjge.graphics.Color;
+import org.xjge.graphics.Graphics;
+import org.xjge.graphics.Texture;
 
 /**
  * Created: Jun 8, 2021
@@ -85,10 +89,10 @@ public final class Icon {
         g.bindBuffers();
         
         glVertexAttribPointer(0, 3, GL_FLOAT, false, (5 * Float.BYTES), 0);
-        glVertexAttribPointer(2, 2, GL_FLOAT, false, (5 * Float.BYTES), (3 * Float.BYTES));
+        glVertexAttribPointer(1, 2, GL_FLOAT, false, (5 * Float.BYTES), (3 * Float.BYTES));
         
         glEnableVertexAttribArray(0);
-        glEnableVertexAttribArray(2);
+        glEnableVertexAttribArray(1);
     }
     
     /**
@@ -194,7 +198,7 @@ public final class Icon {
      * Renders the icon image.
      */
     public void render() {
-        XJGE.getDefaultGLProgram().use();
+        XJGE.getUIProgram().use();
         
         glEnable(GL_BLEND);
         glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
@@ -202,12 +206,12 @@ public final class Icon {
         texture.bind(GL_TEXTURE_2D);
         glBindVertexArray(g.vao);
         
-        XJGE.getDefaultGLProgram().setUniform("uType", 4);
-        XJGE.getDefaultGLProgram().setUniform("uOpacity", opacity);
-        XJGE.getDefaultGLProgram().setUniform("uColor", color.asVec3());
-        XJGE.getDefaultGLProgram().setUniform("uModel", false, g.modelMatrix);
-        XJGE.getDefaultGLProgram().setUniform("uTexCoords", currCell);
-        XJGE.getDefaultGLProgram().setUniform("uTexture", 0);
+        XJGE.getUIProgram().setUniform("uType", 3);
+        XJGE.getUIProgram().setUniform("uOpacity", opacity);
+        XJGE.getUIProgram().setUniform("uColor", color.asVec3());
+        XJGE.getUIProgram().setUniform("uModel", false, g.modelMatrix);
+        XJGE.getUIProgram().setUniform("uTexCoords", currCell);
+        XJGE.getUIProgram().setUniform("uTexture", 0);
         
         glDrawElements(GL_TRIANGLES, g.indices.limit(), GL_UNSIGNED_INT, 0);
         glDisable(GL_BLEND);

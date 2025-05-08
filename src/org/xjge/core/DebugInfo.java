@@ -2,7 +2,7 @@ package org.xjge.core;
 
 import org.xjge.ui.Font;
 import org.xjge.ui.Rectangle;
-import org.xjge.graphics.Icon;
+import org.xjge.ui.Icon;
 import org.xjge.ui.RectangleBatch;
 import static org.xjge.core.Input.KEY_MOUSE_COMBO;
 import org.xjge.graphics.Color;

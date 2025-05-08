@@ -1,7 +1,7 @@
 #version 330 core
 
 in vec2 ioTexCoords;
-in vec4 ioColor;
+in vec4 ioColorRGBA;
 
 uniform int uType;
 uniform int uIsBitmapFont;
@@ -13,13 +13,17 @@ void main() {
     switch(uType) {
         case 0: //Used for rendering fonts
             vec3 textColorOutput = (uIsBitmapFont == 1) 
-                                 ? ioColor.xyz * texture(uTexture, ioTexCoords).xyz 
-                                 : ioColor.xyz;
-            ioFragColor = vec4(textColorOutput, texture(uTexture, ioTexCoords).a * ioColor.w);
+                                 ? ioColorRGBA.xyz * texture(uTexture, ioTexCoords).xyz 
+                                 : ioColorRGBA.xyz;
+            ioFragColor = vec4(textColorOutput, texture(uTexture, ioTexCoords).a * ioColorRGBA.w);
             break;
 
         case 1: //Used for rendering rectangles
-            ioFragColor = vec4(ioColor);
+            ioFragColor = ioColorRGBA;
+            break;
+
+        case 3: //Used for rendering icons
+            ioFragColor = texture(uTexture, ioTexCoords) * ioColorRGBA;
             break;
     }
 }

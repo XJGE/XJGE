@@ -262,10 +262,14 @@ public final class XJGE {
                 GLProgram uiProgram = new GLProgram(shaderSourceFiles, "default");
                 
                 uiProgram.use();
-                uiProgram.addUniform(GLDataType.INT,  "uType");
-                uiProgram.addUniform(GLDataType.INT,  "uTexture");
-                uiProgram.addUniform(GLDataType.INT,  "uIsBitmapFont");
-                uiProgram.addUniform(GLDataType.MAT4, "uProjection");
+                uiProgram.addUniform(GLDataType.INT,   "uType");
+                uiProgram.addUniform(GLDataType.INT,   "uTexture");
+                uiProgram.addUniform(GLDataType.INT,   "uIsBitmapFont");
+                uiProgram.addUniform(GLDataType.FLOAT, "uOpacity");
+                uiProgram.addUniform(GLDataType.VEC2,  "uTexCoords");
+                uiProgram.addUniform(GLDataType.VEC3,  "uColor");
+                uiProgram.addUniform(GLDataType.MAT4,  "uModel");
+                uiProgram.addUniform(GLDataType.MAT4,  "uProjection");
                 
                 glPrograms.put("xjge_ui", uiProgram);
             }
