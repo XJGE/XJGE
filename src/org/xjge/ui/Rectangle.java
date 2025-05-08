@@ -6,7 +6,6 @@ import org.joml.Vector2i;
 import static org.lwjgl.opengl.GL30.*;
 import org.lwjgl.system.MemoryStack;
 import org.xjge.core.ErrorUtils;
-import org.xjge.core.XJGE;
 import org.xjge.graphics.Color;
 
 /**
@@ -121,13 +120,13 @@ public class Rectangle {
     public void render(float opacity, Color color) {
         if(vao == -1) genBuffers();
         
-        XJGE.getUIProgram().use();
+        UI.getInstance().shader.use();
         
         glEnable(GL_BLEND);
         glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
         glBindVertexArray(vao);
         
-        XJGE.getUIProgram().setUniform("uType", 1);
+        UI.getInstance().shader.setUniform("uType", 1);
         
         try(MemoryStack stack = MemoryStack.stackPush()) {
             FloatBuffer vertices = stack.mallocFloat(28);

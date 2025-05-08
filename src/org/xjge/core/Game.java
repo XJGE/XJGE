@@ -10,6 +10,7 @@ import static org.lwjgl.glfw.GLFW.*;
 import static org.lwjgl.opengl.GL30.*;
 import static org.xjge.core.XJGE.glPrograms;
 import org.xjge.graphics.GLProgram;
+import org.xjge.ui.UI;
 
 /**
  * Created: May 11, 2021
@@ -200,10 +201,8 @@ public final class Game {
             }
             
             if(XJGE.getTerminalEnabled() || debugInfo.show) {
-                glPrograms.get("xjge_ui").use();
                 glViewport(0, 0, Window.getWidth(), Window.getHeight());
-                projMatrix.setOrtho(0,  Window.getWidth(), 0, Window.getHeight(), 0, Integer.MAX_VALUE);
-                glPrograms.get("xjge_ui").setUniform("uProjection", false, projMatrix);
+                UI.getInstance().setProjectionMatrix(Window.getWidth(), Window.getHeight(), 0, Integer.MAX_VALUE, projMatrix);
                 
                 if(XJGE.getTerminalEnabled()) terminal.render();
                 if(debugInfo.show) debugInfo.render();

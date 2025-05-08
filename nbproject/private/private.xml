@@ -3,11 +3,11 @@
     <editor-bookmarks xmlns="http://www.netbeans.org/ns/editor-bookmarks/2" lastBookmarkId="8"/>
     <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
         <group>
-            <file>file:/C:/Users/jhoff/Projects/XJGE/src/org/xjge/ui/Font.java</file>
+            <file>file:/C:/Users/jhoff/Projects/XJGE/src/org/xjge/core/Viewport.java</file>
+            <file>file:/C:/Users/jhoff/Projects/XJGE/src/org/xjge/ui/UI.java</file>
             <file>file:/C:/Users/jhoff/Projects/XJGE/src/org/xjge/core/XJGE.java</file>
-            <file>file:/C:/Users/jhoff/Projects/XJGE/src/org/xjge/ui/Glyph.java</file>
-            <file>file:/C:/Users/jhoff/Projects/XJGE/src/org/xjge/core/Terminal.java</file>
-            <file>file:/C:/Users/jhoff/Projects/XJGE/src/org/xjge/ui/TextEffect.java</file>
+            <file>file:/C:/Users/jhoff/Projects/XJGE/src/org/xjge/ui/Icon.java</file>
+            <file>file:/C:/Users/jhoff/Projects/XJGE/src/org/xjge/core/Game.java</file>
         </group>
     </open-files>
 </project-private>

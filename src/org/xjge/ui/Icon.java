@@ -198,7 +198,7 @@ public final class Icon {
      * Renders the icon image.
      */
     public void render() {
-        XJGE.getUIProgram().use();
+        UI.getInstance().shader.use();
         
         glEnable(GL_BLEND);
         glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
@@ -206,12 +206,12 @@ public final class Icon {
         texture.bind(GL_TEXTURE_2D);
         glBindVertexArray(g.vao);
         
-        XJGE.getUIProgram().setUniform("uType", 3);
-        XJGE.getUIProgram().setUniform("uOpacity", opacity);
-        XJGE.getUIProgram().setUniform("uColor", color.asVec3());
-        XJGE.getUIProgram().setUniform("uModel", false, g.modelMatrix);
-        XJGE.getUIProgram().setUniform("uTexCoords", currCell);
-        XJGE.getUIProgram().setUniform("uTexture", 0);
+        UI.getInstance().shader.setUniform("uType", 3);
+        UI.getInstance().shader.setUniform("uOpacity", opacity);
+        UI.getInstance().shader.setUniform("uColor", color.asVec3());
+        UI.getInstance().shader.setUniform("uModel", false, g.modelMatrix);
+        UI.getInstance().shader.setUniform("uTexCoords", currCell);
+        UI.getInstance().shader.setUniform("uTexture", 0);
         
         glDrawElements(GL_TRIANGLES, g.indices.limit(), GL_UNSIGNED_INT, 0);
         glDisable(GL_BLEND);

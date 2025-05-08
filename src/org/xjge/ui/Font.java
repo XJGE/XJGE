@@ -419,7 +419,7 @@ public final class Font {
     }
     
     private void drawString(String text, int positionX, int positionY, Color color, float opacity, TextEffect effect) {
-        XJGE.getUIProgram().use();
+        UI.getInstance().shader.use();
         
         glEnable(GL_BLEND);
         glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
@@ -464,9 +464,9 @@ public final class Font {
         offsetTexture();
         offsetColor();
         
-        XJGE.getUIProgram().setUniform("uType", 0);
-        XJGE.getUIProgram().setUniform("uTexture", 0);
-        XJGE.getUIProgram().setUniform("uIsBitmapFont", (isBitmapFont) ? 1 : 0);
+        UI.getInstance().shader.setUniform("uType", 0);
+        UI.getInstance().shader.setUniform("uTexture", 0);
+        UI.getInstance().shader.setUniform("uIsBitmapFont", (isBitmapFont) ? 1 : 0);
         
         glDrawElementsInstanced(GL_TRIANGLES, indexBuffer.capacity(), GL_UNSIGNED_INT, 0, glyphPool.size());
         glDisable(GL_BLEND);

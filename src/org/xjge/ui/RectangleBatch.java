@@ -1,7 +1,6 @@
 package org.xjge.ui;
 
 import org.xjge.core.ErrorUtils;
-import org.xjge.core.XJGE;
 import org.joml.Vector2i;
 import static org.lwjgl.opengl.GL30.*;
 import org.lwjgl.system.MemoryUtil;
@@ -59,7 +58,7 @@ public final class RectangleBatch {
      * Renders every rectangle provided to the batch.
      */
     private void render() {
-        XJGE.getUIProgram().use();
+        UI.getInstance().shader.use();
         
         glEnable(GL_BLEND);
         glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
@@ -71,7 +70,7 @@ public final class RectangleBatch {
         glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, g.ibo);
         glBufferSubData(GL_ELEMENT_ARRAY_BUFFER, 0, g.indices);
         
-        XJGE.getUIProgram().setUniform("uType", 1);
+        UI.getInstance().shader.setUniform("uType", 1);
         
         glDrawElements(GL_TRIANGLES, g.indices.capacity(), GL_UNSIGNED_INT, 0);
         glDisable(GL_BLEND);
