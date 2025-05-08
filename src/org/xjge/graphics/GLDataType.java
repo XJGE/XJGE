@@ -3,13 +3,14 @@ package org.xjge.graphics;
 /**
  * Created: May 2, 2021
  * <br><br>
- * Represents a GLSL data type that will be used to allocate a data buffer of 
- * corresponding size.
+ * Represents a GLSL data type. These are used to determine how much data a 
+ * single buffer should contain.
  * 
  * @author J Hoffman
  * @since  2.0.0
  */
-public enum BufferType {
+public enum GLDataType {
+    
     /**
      * A signed, two's complement, 32-bit integer.
      */

@@ -12,12 +12,12 @@ import static org.lwjgl.opengl.GL20.*;
  * <br><br>
  * Encapsulates an OpenGL shader object. These objects contain the compiled 
  * results of a .glsl source file and provide it as a single stage of a much 
- * larger {@link GLProgram}.
+ * larger {@linkplain GLProgram shader program}.
  * 
  * @author J Hoffman
  * @since  2.0.0
  */
-public final class Shader {
+public final class GLShader {
     
     final int handle;
     
@@ -38,9 +38,9 @@ public final class Shader {
      * <td>{@link org.lwjgl.opengl.GL43#GL_COMPUTE_SHADER GL_COMPUTE_SHADER}</td>
      * </tr></table>
      */
-    public Shader(String filename, int stage) {
+    public GLShader(String filename, int stage) {
         StringBuilder output = new StringBuilder();
-        InputStream file     = Shader.class.getResourceAsStream(XJGE.getAssetsFilepath() + filename);
+        InputStream file     = GLShader.class.getResourceAsStream(XJGE.getAssetsFilepath() + filename);
         
         try(BufferedReader reader = new BufferedReader(new InputStreamReader(file, "UTF-8"))) {
             String line;

@@ -12,9 +12,9 @@ import java.io.InputStream;
 import java.io.PrintStream;
 import java.io.PrintWriter;
 import org.xjge.core.Terminal.TCCLS;
-import org.xjge.graphics.BufferType;
+import org.xjge.graphics.GLDataType;
 import org.xjge.graphics.GLProgram;
-import org.xjge.graphics.Shader;
+import org.xjge.graphics.GLShader;
 import java.nio.file.Path;
 import java.text.SimpleDateFormat;
 import java.util.Collections;
@@ -254,65 +254,65 @@ public final class XJGE {
             
             //Initialize shader used to render UI elements
             {
-                var shaderSourceFiles = new LinkedList<Shader>() {{
-                    add(new Shader("shader_ui_vertex.glsl", GL_VERTEX_SHADER));
-                    add(new Shader("shader_ui_fragment.glsl", GL_FRAGMENT_SHADER));
+                var shaderSourceFiles = new LinkedList<GLShader>() {{
+                    add(new GLShader("shader_ui_vertex.glsl", GL_VERTEX_SHADER));
+                    add(new GLShader("shader_ui_fragment.glsl", GL_FRAGMENT_SHADER));
                 }};
                 
                 GLProgram uiProgram = new GLProgram(shaderSourceFiles, "default");
                 
                 uiProgram.use();
-                uiProgram.addUniform(BufferType.INT,  "uType");
-                uiProgram.addUniform(BufferType.INT,  "uTexture");
-                uiProgram.addUniform(BufferType.INT,  "uIsBitmapFont");
-                uiProgram.addUniform(BufferType.MAT4, "uProjection");
+                uiProgram.addUniform(GLDataType.INT,  "uType");
+                uiProgram.addUniform(GLDataType.INT,  "uTexture");
+                uiProgram.addUniform(GLDataType.INT,  "uIsBitmapFont");
+                uiProgram.addUniform(GLDataType.MAT4, "uProjection");
                 
                 glPrograms.put("xjge_ui", uiProgram);
             }
             
             //Initialize the default shader program that will be provided to the implementation
             {
-                var shaderSourceFiles = new LinkedList<Shader>() {{
-                    add(new Shader("shader_default_vertex.glsl", GL_VERTEX_SHADER));
-                    add(new Shader("shader_default_fragment.glsl", GL_FRAGMENT_SHADER));
+                var shaderSourceFiles = new LinkedList<GLShader>() {{
+                    add(new GLShader("shader_default_vertex.glsl", GL_VERTEX_SHADER));
+                    add(new GLShader("shader_default_fragment.glsl", GL_FRAGMENT_SHADER));
                 }};
                 
                 GLProgram defaultProgram = new GLProgram(shaderSourceFiles, "default");
                 
                 defaultProgram.use();
-                defaultProgram.addUniform(BufferType.INT,   "uType");
-                defaultProgram.addUniform(BufferType.INT,   "uPCFValue");
-                defaultProgram.addUniform(BufferType.INT,   "uShine");
-                defaultProgram.addUniform(BufferType.INT,   "uNumLights");
-                defaultProgram.addUniform(BufferType.INT,   "uTexture");
-                defaultProgram.addUniform(BufferType.INT,   "uDepthTexture");
-                defaultProgram.addUniform(BufferType.INT,   "uSkyTexture");
-                defaultProgram.addUniform(BufferType.INT,   "uBloomTexture");
-                defaultProgram.addUniform(BufferType.INT,   "uShadowMapActive");
-                defaultProgram.addUniform(BufferType.INT,   "uBloomOverride");
-                defaultProgram.addUniform(BufferType.INT,   "uIsBitmapFont");
-                defaultProgram.addUniform(BufferType.FLOAT, "uOpacity");
-                defaultProgram.addUniform(BufferType.FLOAT, "uMinShadowBias");
-                defaultProgram.addUniform(BufferType.FLOAT, "uMaxShadowBias");
-                defaultProgram.addUniform(BufferType.FLOAT, "uBloomThreshold");
-                defaultProgram.addUniform(BufferType.VEC2,  "uTexCoords");
-                defaultProgram.addUniform(BufferType.VEC3,  "uColor");
-                defaultProgram.addUniform(BufferType.VEC3,  "uCamPos");
-                defaultProgram.addUniform(BufferType.MAT3,  "uNormal");
-                defaultProgram.addUniform(BufferType.MAT4,  "uModel");
-                defaultProgram.addUniform(BufferType.MAT4,  "uView");
-                defaultProgram.addUniform(BufferType.MAT4,  "uProjection");
-                defaultProgram.addUniform(BufferType.MAT4,  "uBoneTransforms");
-                defaultProgram.addUniform(BufferType.MAT4,  "uLightSpace");
+                defaultProgram.addUniform(GLDataType.INT,   "uType");
+                defaultProgram.addUniform(GLDataType.INT,   "uPCFValue");
+                defaultProgram.addUniform(GLDataType.INT,   "uShine");
+                defaultProgram.addUniform(GLDataType.INT,   "uNumLights");
+                defaultProgram.addUniform(GLDataType.INT,   "uTexture");
+                defaultProgram.addUniform(GLDataType.INT,   "uDepthTexture");
+                defaultProgram.addUniform(GLDataType.INT,   "uSkyTexture");
+                defaultProgram.addUniform(GLDataType.INT,   "uBloomTexture");
+                defaultProgram.addUniform(GLDataType.INT,   "uShadowMapActive");
+                defaultProgram.addUniform(GLDataType.INT,   "uBloomOverride");
+                defaultProgram.addUniform(GLDataType.INT,   "uIsBitmapFont");
+                defaultProgram.addUniform(GLDataType.FLOAT, "uOpacity");
+                defaultProgram.addUniform(GLDataType.FLOAT, "uMinShadowBias");
+                defaultProgram.addUniform(GLDataType.FLOAT, "uMaxShadowBias");
+                defaultProgram.addUniform(GLDataType.FLOAT, "uBloomThreshold");
+                defaultProgram.addUniform(GLDataType.VEC2,  "uTexCoords");
+                defaultProgram.addUniform(GLDataType.VEC3,  "uColor");
+                defaultProgram.addUniform(GLDataType.VEC3,  "uCamPos");
+                defaultProgram.addUniform(GLDataType.MAT3,  "uNormal");
+                defaultProgram.addUniform(GLDataType.MAT4,  "uModel");
+                defaultProgram.addUniform(GLDataType.MAT4,  "uView");
+                defaultProgram.addUniform(GLDataType.MAT4,  "uProjection");
+                defaultProgram.addUniform(GLDataType.MAT4,  "uBoneTransforms");
+                defaultProgram.addUniform(GLDataType.MAT4,  "uLightSpace");
                 
                 for(int i = 0; i < Scene.MAX_LIGHTS; i++) {
-                    defaultProgram.addUniform(BufferType.FLOAT, "uLights[" + i + "].brightness");
-                    defaultProgram.addUniform(BufferType.FLOAT, "uLights[" + i + "].contrast");
-                    defaultProgram.addUniform(BufferType.FLOAT, "uLights[" + i + "].distance");
-                    defaultProgram.addUniform(BufferType.VEC3,  "uLights[" + i + "].position");
-                    defaultProgram.addUniform(BufferType.VEC3,  "uLights[" + i + "].ambient");
-                    defaultProgram.addUniform(BufferType.VEC3,  "uLights[" + i + "].diffuse");
-                    defaultProgram.addUniform(BufferType.VEC3,  "uLights[" + i + "].specular");
+                    defaultProgram.addUniform(GLDataType.FLOAT, "uLights[" + i + "].brightness");
+                    defaultProgram.addUniform(GLDataType.FLOAT, "uLights[" + i + "].contrast");
+                    defaultProgram.addUniform(GLDataType.FLOAT, "uLights[" + i + "].distance");
+                    defaultProgram.addUniform(GLDataType.VEC3,  "uLights[" + i + "].position");
+                    defaultProgram.addUniform(GLDataType.VEC3,  "uLights[" + i + "].ambient");
+                    defaultProgram.addUniform(GLDataType.VEC3,  "uLights[" + i + "].diffuse");
+                    defaultProgram.addUniform(GLDataType.VEC3,  "uLights[" + i + "].specular");
                 }
                 
                 glPrograms.put("default", defaultProgram);
@@ -320,33 +320,33 @@ public final class XJGE {
             
             //Create shader program that will generate shadow map output
             {
-                var shaderSourceFiles = new LinkedList<Shader>() {{
-                    add(new Shader("shader_depth_vertex.glsl", GL_VERTEX_SHADER));
-                    add(new Shader("shader_depth_fragment.glsl", GL_FRAGMENT_SHADER));
+                var shaderSourceFiles = new LinkedList<GLShader>() {{
+                    add(new GLShader("shader_depth_vertex.glsl", GL_VERTEX_SHADER));
+                    add(new GLShader("shader_depth_fragment.glsl", GL_FRAGMENT_SHADER));
                 }};
                 
                 depthProgram = new GLProgram(shaderSourceFiles, "default");
                 
                 depthProgram.use();
-                depthProgram.addUniform(BufferType.INT,  "uTexture");
-                depthProgram.addUniform(BufferType.MAT4, "uModel");
-                depthProgram.addUniform(BufferType.MAT4, "uLightSpace");
+                depthProgram.addUniform(GLDataType.INT,  "uTexture");
+                depthProgram.addUniform(GLDataType.MAT4, "uModel");
+                depthProgram.addUniform(GLDataType.MAT4, "uLightSpace");
             }
             
             //Create shader program for applying gaussian blur
             {
-                var shaderSourceFiles = new LinkedList<Shader>() {{
-                    add(new Shader("shader_blur_vertex.glsl", GL_VERTEX_SHADER));
-                    add(new Shader("shader_blur_fragment.glsl", GL_FRAGMENT_SHADER));
+                var shaderSourceFiles = new LinkedList<GLShader>() {{
+                    add(new GLShader("shader_blur_vertex.glsl", GL_VERTEX_SHADER));
+                    add(new GLShader("shader_blur_fragment.glsl", GL_FRAGMENT_SHADER));
                 }};
                 
                 blurProgram = new GLProgram(shaderSourceFiles, "default");
                 
                 blurProgram.use();
-                blurProgram.addUniform(BufferType.INT,   "uBloomTexture");
-                blurProgram.addUniform(BufferType.INT,   "uHorizontal");
-                blurProgram.addUniform(BufferType.FLOAT, "uWeight");
-                blurProgram.addUniform(BufferType.MAT4,  "uProjection");
+                blurProgram.addUniform(GLDataType.INT,   "uBloomTexture");
+                blurProgram.addUniform(GLDataType.INT,   "uHorizontal");
+                blurProgram.addUniform(GLDataType.FLOAT, "uWeight");
+                blurProgram.addUniform(GLDataType.MAT4,  "uProjection");
             }
             
             engineIcons = new Texture("xjge_engineicons.png");

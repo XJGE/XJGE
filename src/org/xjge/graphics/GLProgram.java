@@ -1,7 +1,7 @@
 package org.xjge.graphics;
 
 import org.xjge.core.Logger;
-import static org.xjge.graphics.BufferType.*;
+import static org.xjge.graphics.GLDataType.*;
 import java.nio.Buffer;
 import java.nio.FloatBuffer;
 import java.util.HashMap;
@@ -19,7 +19,7 @@ import org.lwjgl.system.MemoryStack;
 /**
  * Created: May 2, 2021
  * <br><br>
- * Represents a completed shader program comprised of multiple {@link Shader} 
+ * Represents a completed shader program comprised of multiple {@link GLShader} 
  * objects that specify how data sent to the GPU will be processed at different 
  * rendering stages while the program is active.
  * 
@@ -32,19 +32,7 @@ public class GLProgram {
     
     public final String name;
     
-    private final HashMap<String, Uniform> uniforms = new HashMap<>();
-    private static final HashMap<BufferType, Integer> bufferSizes;
-    
-    static {
-        bufferSizes = new HashMap<>() {{
-            put(VEC2, 2);
-            put(VEC3, 3);
-            put(VEC4, 4);
-            put(MAT2, 8);
-            put(MAT3, 12);
-            put(MAT4, 16);
-        }};
-    }
+    private final HashMap<String, GLUniform> uniforms = new HashMap<>();
     
     /**
      * Creates a new shader program with the code supplied from the compiled 
@@ -53,7 +41,7 @@ public class GLProgram {
      * @param shaders the objects representing various stages of the rendering pipeline
      * @param name the name used to identify the program should it fail to link properly
      */
-    public GLProgram(LinkedList<Shader> shaders, String name) {
+    public GLProgram(LinkedList<GLShader> shaders, String name) {
         this.name = name;
         
         handle = glCreateProgram();
@@ -70,7 +58,7 @@ public class GLProgram {
     }
     
     /**
-     * Generates a new {@link Uniform} object.
+     * Generates a new {@link GLUniform} object.
      * 
      * @param name the unique name used to identify the uniform variable as it 
      *             appears in the .glsl source file
@@ -79,13 +67,13 @@ public class GLProgram {
      * 
      * @return a new uniform object
      */
-    private Uniform createUniform(String name, Buffer buffer) {
-        return new Uniform(glGetUniformLocation(handle, name), buffer);
+    private GLUniform createUniform(String name, Buffer buffer) {
+        return new GLUniform(glGetUniformLocation(handle, name), buffer);
     }
     
     /**
      * Creates an association between a CPU-stored data buffer holding the 
-     * value of a {@linkplain Uniform uniform variable} and its corresponding 
+     * value of a {@link GLUniform uniform variable} and its corresponding 
      * memory location on the GPU.
      * <p>
      * More specifically, this method allocates a new data buffer on the CPU 
@@ -98,19 +86,23 @@ public class GLProgram {
      * @param name the unique name used to identify the uniform variable as it 
      *             appears in the .glsl source file
      */
-    public void addUniform(BufferType type, String name) {
+    public void addUniform(GLDataType type, String name) {
         if(glGetUniformLocation(handle, name) == -1) {
             Logger.logError("Failed to find uniform variable \"" + name + "\". Check " + 
-                             "variable name or GLSL source file where it is declared", 
-                             null);
+                            "variable name or GLSL source file where it is declared", 
+                            null);
         }
         
         try(MemoryStack stack = MemoryStack.stackPush()) {
             switch(type) {
-                case INT              -> uniforms.put(name, createUniform(name, stack.mallocInt(1)));
-                case FLOAT            -> uniforms.put(name, createUniform(name, stack.mallocFloat(1)));
-                case VEC2, VEC3, VEC4 -> uniforms.put(name, createUniform(name, stack.mallocFloat(bufferSizes.get(type))));
-                case MAT2, MAT3, MAT4 -> uniforms.put(name, createUniform(name, stack.mallocFloat(bufferSizes.get(type))));
+                case INT   -> uniforms.put(name, createUniform(name, stack.mallocInt(1)));
+                case FLOAT -> uniforms.put(name, createUniform(name, stack.mallocFloat(1)));
+                case VEC2  -> uniforms.put(name, createUniform(name, stack.mallocFloat(2)));
+                case VEC3  -> uniforms.put(name, createUniform(name, stack.mallocFloat(3)));
+                case VEC4  -> uniforms.put(name, createUniform(name, stack.mallocFloat(4)));
+                case MAT2  -> uniforms.put(name, createUniform(name, stack.mallocFloat(8)));
+                case MAT3  -> uniforms.put(name, createUniform(name, stack.mallocFloat(12)));
+                case MAT4  -> uniforms.put(name, createUniform(name, stack.mallocFloat(16)));
             }
         }
     }
@@ -153,9 +145,7 @@ public class GLProgram {
      * @param value the new value of the uniform variable
      */
     public void setUniform(String name, Vector2f value) {
-        glUniform2fv(
-                uniforms.get(name).location,
-                value.get(uniforms.get(name).asFloatBuffer()));
+        glUniform2fv(uniforms.get(name).location, value.get(uniforms.get(name).asFloatBuffer()));
     }
     
     /**
@@ -166,9 +156,7 @@ public class GLProgram {
      * @param value the new value of the uniform variable
      */
     public void setUniform(String name, Vector3f value) {
-        glUniform3fv(
-                uniforms.get(name).location,
-                value.get(uniforms.get(name).asFloatBuffer()));
+        glUniform3fv(uniforms.get(name).location, value.get(uniforms.get(name).asFloatBuffer()));
     }
     
     /**
@@ -179,9 +167,7 @@ public class GLProgram {
      * @param value the new value of the uniform variable
      */
     public void setUniform(String name, Vector4f value) {
-        glUniform4fv(
-                uniforms.get(name).location,
-                value.get(uniforms.get(name).asFloatBuffer()));
+        glUniform4fv(uniforms.get(name).location, value.get(uniforms.get(name).asFloatBuffer()));
     }
     
     /**
@@ -194,10 +180,7 @@ public class GLProgram {
      * @param value the new value of the uniform variable
      */
     public void setUniform(String name, boolean transpose, Matrix2f value) {
-        glUniformMatrix2fv(
-                uniforms.get(name).location,
-                transpose,
-                value.get(uniforms.get(name).asFloatBuffer()));
+        glUniformMatrix2fv(uniforms.get(name).location, transpose, value.get(uniforms.get(name).asFloatBuffer()));
     }
     
     /**
@@ -210,10 +193,7 @@ public class GLProgram {
      * @param value the new value of the uniform variable
      */
     public void setUniform(String name, boolean transpose, Matrix3f value) {
-        glUniformMatrix3fv(
-                uniforms.get(name).location,
-                transpose,
-                value.get(uniforms.get(name).asFloatBuffer()));
+        glUniformMatrix3fv(uniforms.get(name).location, transpose, value.get(uniforms.get(name).asFloatBuffer()));
     }
     
     /**
@@ -226,10 +206,7 @@ public class GLProgram {
      * @param value the new value of the uniform variable
      */
     public void setUniform(String name, boolean transpose, Matrix4f value) {
-        glUniformMatrix4fv(
-                uniforms.get(name).location,
-                transpose,
-                value.get(uniforms.get(name).asFloatBuffer()));
+        glUniformMatrix4fv(uniforms.get(name).location, transpose, value.get(uniforms.get(name).asFloatBuffer()));
     }
     
     /**
