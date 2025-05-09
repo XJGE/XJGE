@@ -16,7 +16,6 @@ import static org.lwjgl.glfw.GLFW.GLFW_JOYSTICK_4;
 import static org.lwjgl.opengl.GL30.*;
 import org.lwjgl.system.MemoryStack;
 import org.xjge.graphics.PostProcessShader;
-import org.xjge.ui.UI;
 
 /**
  * Created: May 11, 2021
@@ -164,7 +163,6 @@ final class Viewport {
             
             case "ui" -> {
                 currCamera.setOrtho(glPrograms.get("default"), width, height); //TODO: remove once ui has been moved to independent shader
-                //UI.getInstance().setProjectionMatrix(width, height, Short.MIN_VALUE, Short.MAX_VALUE, projMatrix);
                 UIContext.updateProjectionMatrix(width, height, Short.MIN_VALUE, Short.MAX_VALUE);
                 ui.values().forEach(widget -> widget.render(glPrograms));
                 resetCamera(glPrograms);
