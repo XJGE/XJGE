@@ -202,7 +202,8 @@ public final class Game {
             
             if(XJGE.getTerminalEnabled() || debugInfo.show) {
                 glViewport(0, 0, Window.getWidth(), Window.getHeight());
-                UI.getInstance().setProjectionMatrix(Window.getWidth(), Window.getHeight(), 0, Integer.MAX_VALUE, projMatrix);
+                UIContext.updateProjectionMatrix(Window.getWidth(), Window.getHeight(), 0, Integer.MAX_VALUE);
+                //UI.getInstance().setProjectionMatrix(Window.getWidth(), Window.getHeight(), 0, Integer.MAX_VALUE, projMatrix);
                 
                 if(XJGE.getTerminalEnabled()) terminal.render();
                 if(debugInfo.show) debugInfo.render();

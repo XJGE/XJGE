@@ -8,6 +8,7 @@ import org.joml.Vector2f;
 import org.joml.Vector2i;
 import static org.lwjgl.opengl.GL30.*;
 import org.lwjgl.system.MemoryStack;
+import org.xjge.core.UIContext;
 import org.xjge.graphics.Atlas;
 import org.xjge.graphics.Color;
 import org.xjge.graphics.Graphics;
@@ -198,7 +199,7 @@ public final class Icon {
      * Renders the icon image.
      */
     public void render() {
-        UI.getInstance().shader.use();
+        UIShader.getInstance().use();
         
         glEnable(GL_BLEND);
         glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
@@ -206,12 +207,13 @@ public final class Icon {
         texture.bind(GL_TEXTURE_2D);
         glBindVertexArray(graphics.vao);
         
-        UI.getInstance().shader.setUniform("uType", 3);
-        UI.getInstance().shader.setUniform("uOpacity", opacity);
-        UI.getInstance().shader.setUniform("uColor", color.asVec3());
-        UI.getInstance().shader.setUniform("uModel", false, graphics.modelMatrix);
-        UI.getInstance().shader.setUniform("uTexCoords", currCell);
-        UI.getInstance().shader.setUniform("uTexture", 0);
+        UIShader.getInstance().setUniform("uType", 3);
+        UIShader.getInstance().setUniform("uOpacity", opacity);
+        UIShader.getInstance().setUniform("uColor", color.asVec3());
+        UIShader.getInstance().setUniform("uModel", graphics.modelMatrix);
+        UIShader.getInstance().setUniform("uProjection", UIContext.getProjectionMatrix());
+        UIShader.getInstance().setUniform("uTexCoords", currCell);
+        UIShader.getInstance().setUniform("uTexture", 0);
         
         glDrawElements(GL_TRIANGLES, graphics.indices.limit(), GL_UNSIGNED_INT, 0);
         glDisable(GL_BLEND);

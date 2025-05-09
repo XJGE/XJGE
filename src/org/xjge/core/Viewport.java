@@ -164,7 +164,8 @@ final class Viewport {
             
             case "ui" -> {
                 currCamera.setOrtho(glPrograms.get("default"), width, height); //TODO: remove once ui has been moved to independent shader
-                UI.getInstance().setProjectionMatrix(width, height, Short.MIN_VALUE, Short.MAX_VALUE, projMatrix);
+                //UI.getInstance().setProjectionMatrix(width, height, Short.MIN_VALUE, Short.MAX_VALUE, projMatrix);
+                UIContext.updateProjectionMatrix(width, height, Short.MIN_VALUE, Short.MAX_VALUE);
                 ui.values().forEach(widget -> widget.render(glPrograms));
                 resetCamera(glPrograms);
             }

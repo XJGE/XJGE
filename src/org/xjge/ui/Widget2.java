@@ -23,6 +23,17 @@ public abstract class Widget2 {
         viewport.near
         viewport.far
     }
+    
+    
+    - Viewport currently owns and maintains the projection matrix
+    
+    - We could have the UI classes (font, rectangle, etc) keep their own copy and
+      update it using the width/height values of the current viewport by passing
+      the viewport object like above
+    
+    - Alternatively we could make the widget maintain the projection matrix and 
+      alter it any time the viewports size is changed, it would always be ortho 
+      this way
     */
     
 }

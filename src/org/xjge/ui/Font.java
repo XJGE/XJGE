@@ -1,5 +1,6 @@
 package org.xjge.ui;
 
+import org.xjge.core.UIContext;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
@@ -419,7 +420,7 @@ public final class Font {
     }
     
     private void drawString(String text, int positionX, int positionY, Color color, float opacity, TextEffect effect) {
-        UI.getInstance().shader.use();
+        UIShader.getInstance().use();
         
         glEnable(GL_BLEND);
         glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
@@ -464,9 +465,10 @@ public final class Font {
         offsetTexture();
         offsetColor();
         
-        UI.getInstance().shader.setUniform("uType", 0);
-        UI.getInstance().shader.setUniform("uTexture", 0);
-        UI.getInstance().shader.setUniform("uIsBitmapFont", (isBitmapFont) ? 1 : 0);
+        UIShader.getInstance().setUniform("uType", 0);
+        UIShader.getInstance().setUniform("uTexture", 0);
+        UIShader.getInstance().setUniform("uIsBitmapFont", (isBitmapFont) ? 1 : 0);
+        UIShader.getInstance().setUniform("uProjection", UIContext.getProjectionMatrix());
         
         glDrawElementsInstanced(GL_TRIANGLES, indexBuffer.capacity(), GL_UNSIGNED_INT, 0, glyphPool.size());
         glDisable(GL_BLEND);

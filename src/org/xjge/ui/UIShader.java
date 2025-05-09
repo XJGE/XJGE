@@ -2,6 +2,7 @@ package org.xjge.ui;
 
 import java.util.LinkedList;
 import org.joml.Matrix4f;
+import org.joml.Vector2f;
 import org.joml.Vector3f;
 import static org.lwjgl.opengl.GL20.GL_FRAGMENT_SHADER;
 import static org.lwjgl.opengl.GL20.GL_VERTEX_SHADER;
@@ -39,7 +40,7 @@ class UIShader {
         shader.addUniform(GLDataType.MAT4,  "uProjection");
     }
     
-    UIShader getInstance() {
+    static UIShader getInstance() {
         if(instance == null) instance = new UIShader();
         return instance;
     }
@@ -53,6 +54,10 @@ class UIShader {
     }
     
     void setUniform(String name, int value) {
+        shader.setUniform(name, value);
+    }
+    
+    void setUniform(String name, Vector2f value) {
         shader.setUniform(name, value);
     }
     

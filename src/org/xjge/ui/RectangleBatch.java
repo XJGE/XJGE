@@ -4,6 +4,7 @@ import org.joml.Vector2i;
 import static org.lwjgl.opengl.GL30.*;
 import org.lwjgl.system.MemoryUtil;
 import org.xjge.core.ErrorUtils;
+import org.xjge.core.UIContext;
 import org.xjge.graphics.Color;
 import org.xjge.graphics.Graphics;
 
@@ -58,7 +59,7 @@ public final class RectangleBatch {
      * Renders every rectangle provided to the batch.
      */
     private void render() {
-        UI.getInstance().shader.use();
+        UIShader.getInstance().use();
         
         glEnable(GL_BLEND);
         glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
@@ -70,7 +71,8 @@ public final class RectangleBatch {
         glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, graphics.ibo);
         glBufferSubData(GL_ELEMENT_ARRAY_BUFFER, 0, graphics.indices);
         
-        UI.getInstance().shader.setUniform("uType", 1);
+        UIShader.getInstance().setUniform("uType", 1);
+        UIShader.getInstance().setUniform("uProjection", UIContext.getProjectionMatrix());
         
         glDrawElements(GL_TRIANGLES, graphics.indices.capacity(), GL_UNSIGNED_INT, 0);
         glDisable(GL_BLEND);
