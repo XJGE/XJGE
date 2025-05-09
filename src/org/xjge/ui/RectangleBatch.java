@@ -1,9 +1,9 @@
 package org.xjge.ui;
 
-import org.xjge.core.ErrorUtils;
 import org.joml.Vector2i;
 import static org.lwjgl.opengl.GL30.*;
 import org.lwjgl.system.MemoryUtil;
+import org.xjge.core.ErrorUtils;
 import org.xjge.graphics.Color;
 import org.xjge.graphics.Graphics;
 
@@ -28,7 +28,7 @@ public final class RectangleBatch {
     
     private int numVertices;
     
-    private final Graphics g = new Graphics();
+    private final Graphics graphics = new Graphics();
     
     /**
      * Establishes a system through which vertex data may be streamed to draw rectangles. 
@@ -36,16 +36,16 @@ public final class RectangleBatch {
      * @param numRectangles the maximum number of rectangles this batch is allowed to draw
      */
     public RectangleBatch(int numRectangles) {
-        g.vertices = MemoryUtil.memAllocFloat(28 * numRectangles);
-        g.indices  = MemoryUtil.memAllocInt(6 * numRectangles);
+        graphics.vertices = MemoryUtil.memAllocFloat(28 * numRectangles);
+        graphics.indices  = MemoryUtil.memAllocInt(6 * numRectangles);
         
-        glBindVertexArray(g.vao);
+        glBindVertexArray(graphics.vao);
         
-        glBindBuffer(GL_ARRAY_BUFFER, g.vbo);
-        glBufferData(GL_ARRAY_BUFFER, g.vertices.capacity() * Float.BYTES, GL_DYNAMIC_DRAW);
+        glBindBuffer(GL_ARRAY_BUFFER, graphics.vbo);
+        glBufferData(GL_ARRAY_BUFFER, graphics.vertices.capacity() * Float.BYTES, GL_DYNAMIC_DRAW);
         
-        glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, g.ibo);
-        glBufferData(GL_ELEMENT_ARRAY_BUFFER, g.indices.capacity() * Float.BYTES, GL_DYNAMIC_DRAW);
+        glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, graphics.ibo);
+        glBufferData(GL_ELEMENT_ARRAY_BUFFER, graphics.indices.capacity() * Float.BYTES, GL_DYNAMIC_DRAW);
         
         glVertexAttribPointer(0, 3, GL_FLOAT, false, (7 * Float.BYTES), 0);
         glVertexAttribPointer(4, 4, GL_FLOAT, false, (7 * Float.BYTES), (3 * Float.BYTES));
@@ -62,17 +62,17 @@ public final class RectangleBatch {
         
         glEnable(GL_BLEND);
         glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-        glBindVertexArray(g.vao);
+        glBindVertexArray(graphics.vao);
         
-        glBindBuffer(GL_ARRAY_BUFFER, g.vbo);
-        glBufferSubData(GL_ARRAY_BUFFER, 0, g.vertices);
+        glBindBuffer(GL_ARRAY_BUFFER, graphics.vbo);
+        glBufferSubData(GL_ARRAY_BUFFER, 0, graphics.vertices);
         
-        glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, g.ibo);
-        glBufferSubData(GL_ELEMENT_ARRAY_BUFFER, 0, g.indices);
+        glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, graphics.ibo);
+        glBufferSubData(GL_ELEMENT_ARRAY_BUFFER, 0, graphics.indices);
         
         UI.getInstance().shader.setUniform("uType", 1);
         
-        glDrawElements(GL_TRIANGLES, g.indices.capacity(), GL_UNSIGNED_INT, 0);
+        glDrawElements(GL_TRIANGLES, graphics.indices.capacity(), GL_UNSIGNED_INT, 0);
         glDisable(GL_BLEND);
         
         ErrorUtils.checkGLError();
@@ -89,13 +89,13 @@ public final class RectangleBatch {
      */
     public void batchEnd() {
         if(numVertices > 0) {
-            g.vertices.flip();
-            g.indices.flip();
+            graphics.vertices.flip();
+            graphics.indices.flip();
             
             render();
             
-            g.vertices.clear();
-            g.indices.clear();
+            graphics.vertices.clear();
+            graphics.indices.clear();
             
             numVertices = 0;
         }
@@ -114,13 +114,13 @@ public final class RectangleBatch {
     public void drawRectangle(int x, int y, int width, int height, Color color, float opacity) {
         int startIndex = (numVertices / 24) * Float.BYTES;
         
-        g.vertices.put(x)        .put(y + height).put(0).put(color.r).put(color.g).put(color.b).put(opacity);
-        g.vertices.put(x + width).put(y + height).put(0).put(color.r).put(color.g).put(color.b).put(opacity);
-        g.vertices.put(x + width).put(y)         .put(0).put(color.r).put(color.g).put(color.b).put(opacity);
-        g.vertices.put(x)        .put(y)         .put(0).put(color.r).put(color.g).put(color.b).put(opacity);
+        graphics.vertices.put(x)        .put(y + height).put(0).put(color.r).put(color.g).put(color.b).put(opacity);
+        graphics.vertices.put(x + width).put(y + height).put(0).put(color.r).put(color.g).put(color.b).put(opacity);
+        graphics.vertices.put(x + width).put(y)         .put(0).put(color.r).put(color.g).put(color.b).put(opacity);
+        graphics.vertices.put(x)        .put(y)         .put(0).put(color.r).put(color.g).put(color.b).put(opacity);
         
-        g.indices.put(startIndex)    .put(startIndex + 1).put(startIndex + 2);
-        g.indices.put(startIndex + 3).put(startIndex + 2).put(startIndex);
+        graphics.indices.put(startIndex)    .put(startIndex + 1).put(startIndex + 2);
+        graphics.indices.put(startIndex + 3).put(startIndex + 2).put(startIndex);
         
         numVertices += 28;
     }
@@ -146,8 +146,8 @@ public final class RectangleBatch {
      */
     public void drawRectangle(Rectangle rectangle, Color color, float opacity) {
         drawRectangle(
-                rectangle.xPos,
-                rectangle.yPos,
+                rectangle.positionX,
+                rectangle.positionY,
                 rectangle.width,
                 rectangle.height,
                 color,
@@ -158,9 +158,9 @@ public final class RectangleBatch {
      * Convenience method which frees the data buffers allocated by this class.
      */
     public void freeBuffers() {
-        MemoryUtil.memFree(g.vertices);
-        MemoryUtil.memFree(g.indices);
-        g.freeBuffers();
+        MemoryUtil.memFree(graphics.vertices);
+        MemoryUtil.memFree(graphics.indices);
+        graphics.freeBuffers();
     }
     
 }

@@ -33,7 +33,7 @@ public final class Icon {
     private float angle;
     
     private Vector2f currCell = new Vector2f();
-    private final Graphics g  = new Graphics();
+    private final Graphics graphics = new Graphics();
     private final Texture texture;
     private final Atlas atlas;
     
@@ -62,31 +62,31 @@ public final class Icon {
         atlas = new Atlas(texture, cellWidth, cellHeight);
         
         try(MemoryStack stack = MemoryStack.stackPush()) {
-            g.vertices = stack.mallocFloat(20);
-            g.indices  = stack.mallocInt(6);
+            graphics.vertices = stack.mallocFloat(20);
+            graphics.indices  = stack.mallocInt(6);
             
             if(fromCenter) {
                 //(vec3 position), (vec2 tex coords)
-                g.vertices.put(-atlas.cellWidth / 2).put( atlas.cellHeight / 2).put(0)  .put(0)                  .put(0);
-                g.vertices.put( atlas.cellWidth / 2).put( atlas.cellHeight / 2).put(0)  .put(atlas.subImageWidth).put(0);
-                g.vertices.put( atlas.cellWidth / 2).put(-atlas.cellHeight / 2).put(0)  .put(atlas.subImageWidth).put(atlas.subImageHeight);
-                g.vertices.put(-atlas.cellWidth / 2).put(-atlas.cellHeight / 2).put(0)  .put(0)                  .put(atlas.subImageHeight);
+                graphics.vertices.put(-atlas.cellWidth / 2).put( atlas.cellHeight / 2).put(0)  .put(0)                  .put(0);
+                graphics.vertices.put( atlas.cellWidth / 2).put( atlas.cellHeight / 2).put(0)  .put(atlas.subImageWidth).put(0);
+                graphics.vertices.put( atlas.cellWidth / 2).put(-atlas.cellHeight / 2).put(0)  .put(atlas.subImageWidth).put(atlas.subImageHeight);
+                graphics.vertices.put(-atlas.cellWidth / 2).put(-atlas.cellHeight / 2).put(0)  .put(0)                  .put(atlas.subImageHeight);
             } else {
                 //(vec3 position), (vec2 tex coords)
-                g.vertices.put(0)              .put(atlas.cellHeight).put(0)    .put(0)                  .put(0);
-                g.vertices.put(atlas.cellWidth).put(atlas.cellHeight).put(0)    .put(atlas.subImageWidth).put(0);
-                g.vertices.put(atlas.cellWidth).put(0)               .put(0)    .put(atlas.subImageWidth).put(atlas.subImageHeight);
-                g.vertices.put(0)              .put(0)               .put(0)    .put(0)                  .put(atlas.subImageHeight);
+                graphics.vertices.put(0)              .put(atlas.cellHeight).put(0)    .put(0)                  .put(0);
+                graphics.vertices.put(atlas.cellWidth).put(atlas.cellHeight).put(0)    .put(atlas.subImageWidth).put(0);
+                graphics.vertices.put(atlas.cellWidth).put(0)               .put(0)    .put(atlas.subImageWidth).put(atlas.subImageHeight);
+                graphics.vertices.put(0)              .put(0)               .put(0)    .put(0)                  .put(atlas.subImageHeight);
             }
             
-            g.indices.put(0).put(1).put(2);
-            g.indices.put(2).put(3).put(0);
+            graphics.indices.put(0).put(1).put(2);
+            graphics.indices.put(2).put(3).put(0);
             
-            g.vertices.flip();
-            g.indices.flip();
+            graphics.vertices.flip();
+            graphics.indices.flip();
         }
         
-        g.bindBuffers();
+        graphics.bindBuffers();
         
         glVertexAttribPointer(0, 3, GL_FLOAT, false, (5 * Float.BYTES), 0);
         glVertexAttribPointer(1, 2, GL_FLOAT, false, (5 * Float.BYTES), (3 * Float.BYTES));
@@ -118,7 +118,7 @@ public final class Icon {
      * @return the model matrix the icon uses during rendering
      */
     public Matrix4f getModelMatrix() {
-        return g.modelMatrix;
+        return graphics.modelMatrix;
     }
     
     /**
@@ -127,7 +127,7 @@ public final class Icon {
      * @param position the position to set this icon to in the viewport
      */
     public void setPosition(Vector2i position) {
-        g.modelMatrix.translation(position.x, position.y, 0);
+        graphics.modelMatrix.translation(position.x, position.y, 0);
     }
     
     /**
@@ -137,7 +137,7 @@ public final class Icon {
      * @param y the y-coordinate to place the icon at in the viewport
      */
     public void setPosition(int x, int y) {
-        g.modelMatrix.translation(x, y, 0);
+        graphics.modelMatrix.translation(x, y, 0);
     }
     
     /**
@@ -176,7 +176,7 @@ public final class Icon {
      */
     public void setScale(float scale) {
         this.scale = Math.abs(scale);
-        g.modelMatrix.scale(this.scale);
+        graphics.modelMatrix.scale(this.scale);
     }
     
     /**
@@ -191,7 +191,7 @@ public final class Icon {
      */
     public void setRotation(float angle) {
         this.angle = (float) Math.toRadians(angle * -1f);
-        g.modelMatrix.rotateZ(this.angle);
+        graphics.modelMatrix.rotateZ(this.angle);
     }
     
     /**
@@ -204,16 +204,16 @@ public final class Icon {
         glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
         glActiveTexture(GL_TEXTURE0);
         texture.bind(GL_TEXTURE_2D);
-        glBindVertexArray(g.vao);
+        glBindVertexArray(graphics.vao);
         
         UI.getInstance().shader.setUniform("uType", 3);
         UI.getInstance().shader.setUniform("uOpacity", opacity);
         UI.getInstance().shader.setUniform("uColor", color.asVec3());
-        UI.getInstance().shader.setUniform("uModel", false, g.modelMatrix);
+        UI.getInstance().shader.setUniform("uModel", false, graphics.modelMatrix);
         UI.getInstance().shader.setUniform("uTexCoords", currCell);
         UI.getInstance().shader.setUniform("uTexture", 0);
         
-        glDrawElements(GL_TRIANGLES, g.indices.limit(), GL_UNSIGNED_INT, 0);
+        glDrawElements(GL_TRIANGLES, graphics.indices.limit(), GL_UNSIGNED_INT, 0);
         glDisable(GL_BLEND);
         ErrorUtils.checkGLError();
     }
@@ -222,7 +222,7 @@ public final class Icon {
      * Convenience method which frees the data buffers allocated by this class.
      */
     public void freeBuffers() {
-        g.freeBuffers();
+        graphics.freeBuffers();
     }
     
 }

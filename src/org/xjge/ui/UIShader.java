@@ -1,31 +1,26 @@
 package org.xjge.ui;
 
-import java.util.HashMap;
 import java.util.LinkedList;
-import java.util.Map;
 import org.joml.Matrix4f;
+import org.joml.Vector3f;
 import static org.lwjgl.opengl.GL20.GL_FRAGMENT_SHADER;
 import static org.lwjgl.opengl.GL20.GL_VERTEX_SHADER;
-import org.xjge.core.Widget;
 import org.xjge.graphics.GLDataType;
 import org.xjge.graphics.GLProgram;
 import org.xjge.graphics.GLShader;
 
 /**
- * Created: May 8, 2025
+ * Created: May 9, 2025
  * 
  * @author J Hoffman
  * @since  4.0.0
  */
-public class UI {
+class UIShader {
 
-    private static UI instance;
+    private static UIShader instance;
+    private final GLProgram shader;
     
-    final GLProgram shader;
-    
-    private final Map<Integer, HashMap<String, Widget>> viewportWidgets = new HashMap<>();
-    
-    private UI() {
+    private UIShader() {
         var shaderSourceFiles = new LinkedList<GLShader>() {{
             add(new GLShader("shader_ui_vertex.glsl", GL_VERTEX_SHADER));
             add(new GLShader("shader_ui_fragment.glsl", GL_FRAGMENT_SHADER));
@@ -44,31 +39,29 @@ public class UI {
         shader.addUniform(GLDataType.MAT4,  "uProjection");
     }
     
-    public static UI getInstance() {
-        if(instance == null) instance = new UI();
+    UIShader getInstance() {
+        if(instance == null) instance = new UIShader();
         return instance;
     }
     
-    public void addWidget(int viewportID, Widget widget) {
-        //TODO: move widget logic out of XJGE and into this class
-    }
-    
-    public void removeWidget(int viewportID, String widgetName) {
-        
-    }
-    
-    public void clearWidgets(int viewportID) {
-        
-    }
-    
-    public void setProjectionMatrix(int width, int height, int near, int far, Matrix4f projectionMatrix) {
+    void use() {
         shader.use();
-        projectionMatrix.setOrtho(0, width, 0, height, near, far);
-        shader.setUniform("uProjection", false, projectionMatrix);
     }
     
-    public boolean containsWidget(int viewportID, String widgetName) {
-        return viewportWidgets.get(viewportID).containsKey(widgetName);
+    void setUniform(String name, float value) {
+        shader.setUniform(name, value);
+    }
+    
+    void setUniform(String name, int value) {
+        shader.setUniform(name, value);
+    }
+    
+    void setUniform(String name, Vector3f value) {
+        shader.setUniform(name, value);
+    }
+    
+    void setUniform(String name, Matrix4f value) {
+        shader.setUniform(name, false, value);
     }
     
 }

@@ -59,9 +59,9 @@ final class DebugInfo {
     void updatePosition() {
         //Group 1: Runtime Info
         {
-            rectangles[0].width  = 320 + (PADDING * 2);
-            rectangles[0].height = (Font.DEFAULT_FONT_SIZE * 4) + PADDING;
-            rectangles[0].yPos   = Window.getHeight() - rectangles[0].height;
+            rectangles[0].width     = 320 + (PADDING * 2);
+            rectangles[0].height    = (Font.DEFAULT_FONT_SIZE * 4) + PADDING;
+            rectangles[0].positionY = Window.getHeight() - rectangles[0].height;
             
             for(int i = 0; i < 4; i++) {
                 textPos[i].set(PADDING, Window.getHeight() - (Font.DEFAULT_FONT_SIZE * (i + 1)));
@@ -81,13 +81,13 @@ final class DebugInfo {
                 if(string.length() > longestString.length()) longestString = string;
             }
             
-            rectangles[1].width  = placeholder.lengthInPixels(longestString) + (PADDING * 2);
-            rectangles[1].height = (Font.DEFAULT_FONT_SIZE * 3) + PADDING;
-            rectangles[1].xPos   = Window.getWidth() - rectangles[1].width;
-            rectangles[1].yPos   = Window.getHeight() - rectangles[1].height;
+            rectangles[1].width     = placeholder.lengthInPixels(longestString) + (PADDING * 2);
+            rectangles[1].height    = (Font.DEFAULT_FONT_SIZE * 3) + PADDING;
+            rectangles[1].positionX = Window.getWidth() - rectangles[1].width;
+            rectangles[1].positionY = Window.getHeight() - rectangles[1].height;
             
             for(int i = 4; i < 7; i++) {
-                textPos[i].set(rectangles[1].xPos + PADDING, Window.getHeight() - (Font.DEFAULT_FONT_SIZE * (i - 3)));
+                textPos[i].set(rectangles[1].positionX + PADDING, Window.getHeight() - (Font.DEFAULT_FONT_SIZE * (i - 3)));
             }
         }
         
@@ -105,14 +105,14 @@ final class DebugInfo {
                 if(string.length() > longestString.length()) longestString = string;
             }
             
-            rectangles[2].width  = placeholder.lengthInPixels(longestString) + (PADDING * 2);
-            rectangles[2].height = (Font.DEFAULT_FONT_SIZE * 4) + PADDING;
-            rectangles[2].xPos   = Window.getWidth() - rectangles[2].width;
-            rectangles[2].yPos   = rectangles[1].yPos - (rectangles[2].height + PADDING);
+            rectangles[2].width     = placeholder.lengthInPixels(longestString) + (PADDING * 2);
+            rectangles[2].height    = (Font.DEFAULT_FONT_SIZE * 4) + PADDING;
+            rectangles[2].positionX = Window.getWidth() - rectangles[2].width;
+            rectangles[2].positionY = rectangles[1].positionY - (rectangles[2].height + PADDING);
             
             for(int i = 7; i < 11; i++) {
-                textPos[i].set(rectangles[2].xPos + PADDING, 
-                              (rectangles[1].yPos - PADDING) - (Font.DEFAULT_FONT_SIZE * (i - 6)));
+                textPos[i].set(rectangles[2].positionX + PADDING, 
+                              (rectangles[1].positionY - PADDING) - (Font.DEFAULT_FONT_SIZE * (i - 6)));
             }
         }
         
@@ -130,14 +130,14 @@ final class DebugInfo {
                 if(string.length() > longestString.length()) longestString = string;
             }
             
-            rectangles[3].width  = placeholder.lengthInPixels(longestString) + (PADDING * 2);
-            rectangles[3].height = (Font.DEFAULT_FONT_SIZE * 4) + PADDING;
-            rectangles[3].xPos   = Window.getWidth() - rectangles[3].width;
-            rectangles[3].yPos   = rectangles[2].yPos - (rectangles[3].height + PADDING);
+            rectangles[3].width     = placeholder.lengthInPixels(longestString) + (PADDING * 2);
+            rectangles[3].height    = (Font.DEFAULT_FONT_SIZE * 4) + PADDING;
+            rectangles[3].positionX = Window.getWidth() - rectangles[3].width;
+            rectangles[3].positionY = rectangles[2].positionY - (rectangles[3].height + PADDING);
             
             for(int i = 11; i < 15; i++) {
-                textPos[i].set(rectangles[3].xPos + PADDING, 
-                              (rectangles[2].yPos - PADDING) - (Font.DEFAULT_FONT_SIZE * (i - 10)));
+                textPos[i].set(rectangles[3].positionX + PADDING, 
+                              (rectangles[2].positionY - PADDING) - (Font.DEFAULT_FONT_SIZE * (i - 10)));
             }
         }
         
@@ -155,20 +155,20 @@ final class DebugInfo {
             
             int length = placeholder.lengthInPixels(longestString) + (64 + (PADDING * 2));
             
-            rectangles[4].width  = (length > rectangles[0].width) ? length : rectangles[0].width;
-            rectangles[4].height = 252;
-            rectangles[4].yPos   = rectangles[0].yPos - (rectangles[4].height + PADDING);
+            rectangles[4].width     = (length > rectangles[0].width) ? length : rectangles[0].width;
+            rectangles[4].height    = 252;
+            rectangles[4].positionY = rectangles[0].positionY - (rectangles[4].height + PADDING);
             
             for(int i = 0; i < icons.length - 1; i++) {
-                float yPos = (rectangles[4].yPos + rectangles[4].height) - ((48 * (i + 1)) + 52);
+                float yPos = (rectangles[4].positionY + rectangles[4].height) - ((48 * (i + 1)) + 52);
                 icons[i].setPosition(PADDING, (int) yPos);
             }
             
-            icons[4].setPosition(PADDING, rectangles[4].yPos + rectangles[4].height - 48);
-            textPos[15].set(80, rectangles[4].yPos + rectangles[4].height - 36);
+            icons[4].setPosition(PADDING, rectangles[4].positionY + rectangles[4].height - 48);
+            textPos[15].set(80, rectangles[4].positionY + rectangles[4].height - 36);
             
             for(int i = 16; i < textPos.length - 1; i += 2) {
-                float yPos = (rectangles[4].yPos + rectangles[4].height) - (96 + PADDING);
+                float yPos = (rectangles[4].positionY + rectangles[4].height) - (96 + PADDING);
                 int index  = (i % 16) / 2;
                 
                 textPos[i].set(60, (int) (yPos - (48 * index)));
@@ -178,12 +178,12 @@ final class DebugInfo {
         
         //Group 6: Engine Info
         {
-            rectangles[5].width  = placeholder.lengthInPixels("XJGE v" + XJGE.VERSION) + (PADDING * 2);
-            rectangles[5].height = 24 + PADDING;
-            rectangles[5].xPos   = Window.getWidth() - rectangles[5].width;
-            rectangles[5].yPos   = rectangles[3].yPos - (rectangles[5].height + PADDING);
+            rectangles[5].width     = placeholder.lengthInPixels("XJGE v" + XJGE.VERSION) + (PADDING * 2);
+            rectangles[5].height    = 24 + PADDING;
+            rectangles[5].positionX = Window.getWidth() - rectangles[5].width;
+            rectangles[5].positionY = rectangles[3].positionY - (rectangles[5].height + PADDING);
             
-            textPos[24].set(rectangles[5].xPos + PADDING, rectangles[5].yPos + PADDING);
+            textPos[24].set(rectangles[5].positionX + PADDING, rectangles[5].positionY + PADDING);
         }
     }
     

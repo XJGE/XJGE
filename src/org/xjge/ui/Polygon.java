@@ -22,7 +22,7 @@ public class Polygon {
     private final int numSides;
     public boolean fill;
     public Color color;
-    private final Graphics g = new Graphics();
+    private final Graphics graphics = new Graphics();
     
     /**
      * Creates a new n-sided polygon object which can be used to represent 
@@ -51,12 +51,12 @@ public class Polygon {
         }
         
         try(MemoryStack stack = MemoryStack.stackPush()) {
-            g.vertices = stack.mallocFloat(this.numSides * 3);
-            for(int v = 0; v < this.numSides; v++) g.vertices.put(vertX[v]).put(vertY[v]).put(-100);
-            g.vertices.flip();
+            graphics.vertices = stack.mallocFloat(this.numSides * 3);
+            for(int v = 0; v < this.numSides; v++) graphics.vertices.put(vertX[v]).put(vertY[v]).put(-100);
+            graphics.vertices.flip();
         }
         
-        g.bindBuffers();
+        graphics.bindBuffers();
         
         glVertexAttribPointer(0, 3, GL_FLOAT, false, (3 * Float.BYTES), 0);
         glEnableVertexAttribArray(0);
@@ -87,7 +87,7 @@ public class Polygon {
      * @param position the position where the shape will be placed
      */
     public final void translate(Vector2i position) {
-        g.modelMatrix.translation(position.x, position.y, 0);
+        graphics.modelMatrix.translation(position.x, position.y, 0);
     }
     
     /**
@@ -97,7 +97,7 @@ public class Polygon {
      * @param y the y coordinate to place this shape in the window
      */
     public final void translate(int x, int y) {
-        g.modelMatrix.translation(x, y, 0);
+        graphics.modelMatrix.translation(x, y, 0);
     }
     
     /**
@@ -106,7 +106,7 @@ public class Polygon {
      * @param angle the value indicating the rotation of the shape
      */
     public final void rotate(float angle) {
-        g.modelMatrix.rotateZ((float) Math.toRadians(angle * -1f));
+        graphics.modelMatrix.rotateZ((float) Math.toRadians(angle * -1f));
     }
     
     /**
@@ -117,10 +117,10 @@ public class Polygon {
         
         glEnable(GL_BLEND);
         glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-        glBindVertexArray(g.vao);
+        glBindVertexArray(graphics.vao);
         
         UI.getInstance().shader.setUniform("uType", 2);
-        UI.getInstance().shader.setUniform("uModel", false, g.modelMatrix);
+        UI.getInstance().shader.setUniform("uModel", false, graphics.modelMatrix);
         UI.getInstance().shader.setUniform("uColor", color.asVec3());
         UI.getInstance().shader.setUniform("uOpacity", opacity);
         
@@ -134,7 +134,7 @@ public class Polygon {
      * Convenience method which frees the data buffers allocated by this class.
      */
     public void freeBuffers() {
-        g.freeBuffers();
+        graphics.freeBuffers();
     }
     
 }

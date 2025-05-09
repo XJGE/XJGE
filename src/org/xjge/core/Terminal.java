@@ -124,7 +124,7 @@ final class Terminal implements PropertyChangeListener {
         }
         
         for(Rectangle rectangle : opaqueRectangles) {
-            if(rectangle.height > 0) outputTop = rectangle.yPos + rectangle.height;
+            if(rectangle.height > 0) outputTop = rectangle.positionY + rectangle.height;
         }
         
         executed = false;
@@ -373,8 +373,8 @@ final class Terminal implements PropertyChangeListener {
      * Convenience method which frees the data buffers allocated by this class.
      */
     void freeBuffers() {
-        commandLine.freeBuffers();
-        commandOutput.freeBuffers();
+        commandLine.delete();
+        commandOutput.delete();
     }
     
     @Override
@@ -405,16 +405,16 @@ final class Terminal implements PropertyChangeListener {
             outputTop     = 0;
             
             for(int i = 0; i < 5; i++) {
-                opaqueRectangles[i].xPos   = 0;
-                opaqueRectangles[i].yPos   = 0;
-                opaqueRectangles[i].width  = 0;
-                opaqueRectangles[i].height = 0;
+                opaqueRectangles[i].positionX = 0;
+                opaqueRectangles[i].positionY = 0;
+                opaqueRectangles[i].width     = 0;
+                opaqueRectangles[i].height    = 0;
             }
             
-            commandOutput.xPos   = 0;
-            commandOutput.yPos   = 0;
-            commandOutput.width  = 0;
-            commandOutput.height = 0;
+            commandOutput.positionX = 0;
+            commandOutput.positionY = 0;
+            commandOutput.width     = 0;
+            commandOutput.height    = 0;
         }
     }
     
