@@ -9,6 +9,7 @@ import org.xjge.core.Widget;
 import org.xjge.core.Window;
 import org.xjge.graphics.Color;
 import org.xjge.graphics.GLProgram;
+import org.xjge.ui.Polygon;
 
 /**
  * Created: Apr 25, 2025
@@ -21,6 +22,7 @@ public class TestWidget extends Widget {
     Font font = new Font("font_source_code_pro.ttf", 32);
     StopWatch timer = new StopWatch();
     TextEffectTest testEffect = new TextEffectTest();
+    Polygon polygon = new Polygon(6, true, 40, Color.ORANGE, 200, 200);
     
     int index;
     boolean reverse;
@@ -35,45 +37,8 @@ public class TestWidget extends Widget {
 
     @Override
     public void render(Map<String, GLProgram> glPrograms) {
-        /*
-        TODO:
-        - Impose maximum char count
-        - Make opacity a glyph attribute
-        */
-        
-        /*
-        
-        if(timer.tick(1)) {
-            if(!reverse) {
-                index++;
-            } else {
-                index--;
-            }
-            
-            if(index > 44) {
-                index = 44;
-                reverse = !reverse;
-            } else if(index < 0) {
-                index = 0;
-                reverse = !reverse;
-            }
-        }
-        
-        font.drawString("The quick brown fox jumps over the lazy dog.".substring(0, index), 50, 100, testEffect);
-        */
-        
+        polygon.render(0.5f);
         font.drawString("The quick brown fox jumps over the lazy dog.", 50, 100, testEffect);
-        
-        /*
-        font2.drawString(" !\"#$%&\'()*+,-./", 10, 120, Color.WHITE, 1f);
-        font2.drawString("0123456789:;<=>?", 10, 100, Color.WHITE, 1f);
-        font2.drawString("@ABCDEFGHIJKLMNO", 10, 80, Color.WHITE, 1f);
-        font2.drawString("PQRSTUVWXYZ[\\]^_", 10, 60, Color.WHITE, 1f);
-        font2.drawString("`abcdefghijklmno", 10, 40, Color.WHITE, 1f);
-        font2.drawString("pqrstuvwxyz{|}~", 10, 20, Color.WHITE, 1f);
-        */
-        
-        //font3.drawString("The quick brown fox jumps over the lazy dog. 1234567890 !@#$%^&*()", 10, 60, Color.WHITE, 1f);
     }
 
     @Override

@@ -4,6 +4,7 @@ import java.util.LinkedList;
 import org.joml.Matrix4f;
 import static org.lwjgl.opengl.GL20.GL_FRAGMENT_SHADER;
 import static org.lwjgl.opengl.GL20.GL_VERTEX_SHADER;
+import org.xjge.core.Widget;
 import org.xjge.graphics.GLDataType;
 import org.xjge.graphics.GLProgram;
 import org.xjge.graphics.GLShader;
@@ -44,10 +45,14 @@ public class UI {
         return instance;
     }
     
-    public void setProjectionMatrix(int width, int height, int near, int far, Matrix4f projMatrix) {
+    public void addWidget(int viewportID, Widget widget) {
+        //TODO: move widget logic out of XJGE and into this class
+    }
+    
+    public void setProjectionMatrix(int width, int height, int near, int far, Matrix4f projectionMatrix) {
         shader.use();
-        projMatrix.setOrtho(0, width, 0, height, near, far);
-        shader.setUniform("uProjection", false, projMatrix);
+        projectionMatrix.setOrtho(0, width, 0, height, near, far);
+        shader.setUniform("uProjection", false, projectionMatrix);
     }
     
 }

@@ -18,7 +18,7 @@ void main() {
             ioFragColor = vec4(textColorOutput, texture(uTexture, ioTexCoords).a * ioColorRGBA.w);
             break;
 
-        case 1: //Used for rendering rectangles
+        case 1: case 2: //Used for rendering rectangles and polygons
             ioFragColor = ioColorRGBA;
             break;
 

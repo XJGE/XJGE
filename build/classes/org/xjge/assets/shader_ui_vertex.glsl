@@ -29,6 +29,11 @@ void main() {
             gl_Position = uProjection * vec4(aPosition, 1);
             break;
 
+        case 2: //Used to render polygons
+            ioColorRGBA = vec4(uColor, uOpacity);
+            gl_Position = uProjection * uModel * vec4(aPosition, 1);
+            break;
+
         case 3: //Used for rendering icons
             ioTexCoords = aTexCoords + uTexCoords;
             ioColorRGBA = vec4(uColor, uOpacity);

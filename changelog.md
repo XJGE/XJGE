@@ -10,6 +10,7 @@ All notable changes to this project will be documented in this file. The format 
 - Randomly assigned UUIDs to identify entities at runtime.
 - New bind() method to the Texture class which is used instead of directly referencing its handle.
 - New TextEffect class that can be used to create custom effects for Font.drawString() by altering the data of the Glyph objects it generates.
+- New UI package containing a singleton by the same name to add/remove widgets and manage the shader used internally by the engine.
 
 ### Changed
 - Fixed bug that wouldn't update the value of virtual gamepads when Input.setVirtualGamepadInput() was called.
@@ -22,6 +23,7 @@ All notable changes to this project will be documented in this file. The format 
 - The Logger class to include the class from which the log message was generated instead of manually setting the domain.
 - Logger.logSevere() method name to logError() for consistency.
 - Font class now includes better fallback behavior and imposes minimum and maximum sizes.
+- Moved classes like Font, Icon, and Rectangle into the new UI package.
 
 ### Removed
 - Update/Render methods from the Entity class.

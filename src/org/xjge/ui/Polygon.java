@@ -1,10 +1,11 @@
-package org.xjge.graphics;
+package org.xjge.ui;
 
 import org.xjge.core.ErrorUtils;
-import org.xjge.core.XJGE;
 import org.joml.Vector2i;
 import static org.lwjgl.opengl.GL30.*;
 import org.lwjgl.system.MemoryStack;
+import org.xjge.graphics.Color;
+import org.xjge.graphics.Graphics;
 
 /**
  * Created: Jun 15, 2021
@@ -111,16 +112,20 @@ public class Polygon {
     /**
      * Draws the polygon using the data specified by the constructor.
      */
-    public void render() {
-        XJGE.getDefaultGLProgram().use();
+    public void render(float opacity) {
+        UI.getInstance().shader.use();
         
+        glEnable(GL_BLEND);
+        glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
         glBindVertexArray(g.vao);
         
-        XJGE.getDefaultGLProgram().setUniform("uType", 2);
-        XJGE.getDefaultGLProgram().setUniform("uModel", false, g.modelMatrix);
-        XJGE.getDefaultGLProgram().setUniform("uColor", color.asVec3());
+        UI.getInstance().shader.setUniform("uType", 2);
+        UI.getInstance().shader.setUniform("uModel", false, g.modelMatrix);
+        UI.getInstance().shader.setUniform("uColor", color.asVec3());
+        UI.getInstance().shader.setUniform("uOpacity", opacity);
         
         glDrawArrays((fill) ? GL_TRIANGLE_FAN : GL_LINE_LOOP, 0, numSides);
+        glDisable(GL_BLEND);
         
         ErrorUtils.checkGLError();
     }
