@@ -222,7 +222,8 @@ public class GLProgram {
      *                  will be transposed before it is read
      * @param values    a collection of values of the uniform variable array
      */
-    public void setUniform(String name, boolean transpose, List<Matrix4f> values) {
+    public void setUniform(String name, boolean transpose, List<Matrix4f> values) { 
+        //TODO: this will need to change when we overhaul 3D animation
         try(MemoryStack stack = MemoryStack.stackPush()) {
             FloatBuffer matBuf = stack.mallocFloat(16 * values.size() - 1);
             

@@ -587,6 +587,10 @@ public final class XJGE {
         }
     }
     
+    static boolean debugEnabled() {
+        return debugModeEnabled;
+    }
+    
     /**
      * Restricts an input value from a user to one between the minimum and 
      * maximum ranges specified.
