@@ -1,7 +1,7 @@
 package org.xjge.ui;
 
 import java.util.LinkedList;
-import org.joml.Matrix4f;
+import org.joml.Matrix4fc;
 import org.joml.Vector2f;
 import org.joml.Vector3f;
 import static org.lwjgl.opengl.GL20.GL_FRAGMENT_SHADER;
@@ -65,7 +65,7 @@ class UIShader {
         shader.setUniform(name, value);
     }
     
-    void setUniform(String name, Matrix4f value) {
+    void setUniform(String name, Matrix4fc value) {
         shader.setUniform(name, false, value);
     }
     

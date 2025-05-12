@@ -7,12 +7,13 @@ import java.nio.FloatBuffer;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
-import org.joml.Matrix2f;
-import org.joml.Matrix3f;
+import org.joml.Matrix2fc;
+import org.joml.Matrix3fc;
 import org.joml.Matrix4f;
-import org.joml.Vector2f;
-import org.joml.Vector3f;
-import org.joml.Vector4f;
+import org.joml.Matrix4fc;
+import org.joml.Vector2fc;
+import org.joml.Vector3fc;
+import org.joml.Vector4fc;
 import static org.lwjgl.opengl.GL20.*;
 import org.lwjgl.system.MemoryStack;
 
@@ -144,7 +145,7 @@ public class GLProgram {
      *             appears in the .glsl source file
      * @param value the new value of the uniform variable
      */
-    public void setUniform(String name, Vector2f value) {
+    public void setUniform(String name, Vector2fc value) {
         glUniform2fv(uniforms.get(name).location, value.get(uniforms.get(name).asFloatBuffer()));
     }
     
@@ -155,7 +156,7 @@ public class GLProgram {
      *             appears in the .glsl source file
      * @param value the new value of the uniform variable
      */
-    public void setUniform(String name, Vector3f value) {
+    public void setUniform(String name, Vector3fc value) {
         glUniform3fv(uniforms.get(name).location, value.get(uniforms.get(name).asFloatBuffer()));
     }
     
@@ -166,7 +167,7 @@ public class GLProgram {
      *             appears in the .glsl source file
      * @param value the new value of the uniform variable
      */
-    public void setUniform(String name, Vector4f value) {
+    public void setUniform(String name, Vector4fc value) {
         glUniform4fv(uniforms.get(name).location, value.get(uniforms.get(name).asFloatBuffer()));
     }
     
@@ -179,7 +180,7 @@ public class GLProgram {
      *                  will be transposed before it is read
      * @param value the new value of the uniform variable
      */
-    public void setUniform(String name, boolean transpose, Matrix2f value) {
+    public void setUniform(String name, boolean transpose, Matrix2fc value) {
         glUniformMatrix2fv(uniforms.get(name).location, transpose, value.get(uniforms.get(name).asFloatBuffer()));
     }
     
@@ -192,7 +193,7 @@ public class GLProgram {
      *                  will be transposed before it is read
      * @param value the new value of the uniform variable
      */
-    public void setUniform(String name, boolean transpose, Matrix3f value) {
+    public void setUniform(String name, boolean transpose, Matrix3fc value) {
         glUniformMatrix3fv(uniforms.get(name).location, transpose, value.get(uniforms.get(name).asFloatBuffer()));
     }
     
@@ -204,8 +205,8 @@ public class GLProgram {
      * @param transpose if true, the matrix data provided in the value parameter 
      *                  will be transposed before it is read
      * @param value the new value of the uniform variable
-     */
-    public void setUniform(String name, boolean transpose, Matrix4f value) {
+     */    
+    public void setUniform(String name, boolean transpose, Matrix4fc value) {
         glUniformMatrix4fv(uniforms.get(name).location, transpose, value.get(uniforms.get(name).asFloatBuffer()));
     }
     

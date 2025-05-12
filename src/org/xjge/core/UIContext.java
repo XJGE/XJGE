@@ -1,6 +1,7 @@
 package org.xjge.core;
 
 import org.joml.Matrix4f;
+import org.joml.Matrix4fc;
 
 /**
  * Created: May 9, 2025
@@ -16,7 +17,7 @@ public class UIContext {
         projectionMatrix.setOrtho(0, width, 0, height, near, far);
     }
     
-    public static Matrix4f getProjectionMatrix() {
+    public static Matrix4fc getProjectionMatrix() {
         return projectionMatrix;
     }
     
