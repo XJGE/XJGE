@@ -116,8 +116,9 @@ public final class Logger {
     /**
      * Writes a medium-severity message to the applications console and log 
      * file. Warning messages are used in cases where the application has 
-     * entered an unexpected or invalid state but has not yet crashed. The 
-     * application might produce undefined behavior following a warning.
+     * entered an unexpected state or to indicate that the public API is being 
+     * misused. The application will likely still run for the time being but may 
+     * exhibit undefined behavior following a warning.
      * 
      * @param message the text to appear as output in the console and log file
      * @param exception an optional argument that will output the provided stack 

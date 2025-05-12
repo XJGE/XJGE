@@ -27,8 +27,8 @@ public class UIContext {
     }
     
     private static String validateInput(int viewportID, String name) {
-        if(viewportID < 0 || viewportID > 3)     return "Invalid ID used (found: " + viewportID + " expected: 0-3)";
-        else if(name == null || !name.isEmpty()) return "Name cannot be an empty string or null";
+        if(viewportID < 0 || viewportID > 3)    return "Invalid ID used (found: " + viewportID + " expected: 0-3)";
+        else if(name == null || name.isEmpty()) return "Name cannot be an empty string or null";
         else return null;
     }
     
@@ -79,7 +79,7 @@ public class UIContext {
             widgetAddQueue.add(new WidgetAddRequest(viewportID, name, widget));
             if(XJGE.debugEnabled()) Logger.logInfo("Added widget \"" + name + "\" to viewport " + viewportID);
         } else {
-            Logger.logInfo("Failed to add widget to viewport. " + failureReason);
+            Logger.logWarning("Failed to add widget to viewport. " + failureReason, null);
         }
     }
     
@@ -93,7 +93,7 @@ public class UIContext {
         if(failureReason == null) {
             widgetRemoveQueue.add(new WidgetRemoveRequest(viewportID, name));
         } else {
-            Logger.logInfo("Failed to remove widget from viewport. " + failureReason);
+            Logger.logWarning("Failed to remove widget from viewport. " + failureReason, null);
         }
     }
     
@@ -101,7 +101,7 @@ public class UIContext {
         if(viewportID > -1 && viewportID < 4) {
             widgets.get(viewportID).clear();
         } else {
-            Logger.logInfo("Invalid ID used (found: " + viewportID + " expected: 0-3)");
+            Logger.logWarning("Invalid ID used (found: " + viewportID + " expected: 0-3)", null);
         }
     }
     
@@ -115,7 +115,7 @@ public class UIContext {
         if(failureReason == null) {
             return widgets.get(viewportID).containsKey(name);
         } else {            
-            Logger.logInfo(failureReason);
+            Logger.logWarning(failureReason, null);
             return false;
         }
     }
