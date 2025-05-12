@@ -1,8 +1,0 @@
-May 12, 02:57:57pm, [ERROR], [Speaker.java]: Failed to initialize an OpenAL context on speaker "OpenAL Soft on Headphones (Jared’s AirPods)"
-java.lang.IllegalStateException: There is no OpenAL context current in the current thread or process.
-	org.lwjgl.openal.AL.createCapabilities(AL.java:161)
-	org.lwjgl.openal.AL.createCapabilities(AL.java:123)
-	org.xjge.core.Speaker.setContextCurrent(Speaker.java:54)
-	org.xjge.core.XJGE.init(XJGE.java:208)
-	org.xjge.core.XJGE.init(XJGE.java:490)
-	org.xjge.test.Main.main(Main.java:17)
