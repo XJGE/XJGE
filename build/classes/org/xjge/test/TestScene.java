@@ -25,7 +25,7 @@ public class TestScene extends Scene {
         
         XJGE.addUIWidget(GLFW_JOYSTICK_1, "font_test", new TestWidget());
         
-        UIContext.removeWidget(0, "test");
+        //UIContext.removeWidget(0, "test");
     }
 
     @Override
