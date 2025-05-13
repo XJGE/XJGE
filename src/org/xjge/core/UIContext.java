@@ -39,15 +39,17 @@ public class UIContext {
     }
     
     static void updateWidgets(int viewportID, double targetDelta, double trueDelta) {
-        widgets.get(viewportID).values().forEach(widget -> widget.update(targetDelta, trueDelta));
+        for(Widget2 widget : widgets.get(viewportID).values()) widget.update(targetDelta, trueDelta);
     }
     
     static void renderWidgets(int viewportID, Map<String, GLProgram> glPrograms) {
-        widgets.get(viewportID).values().forEach(widget -> widget.render(glPrograms));
+        for(Widget2 widget : widgets.get(viewportID).values()) widget.render(glPrograms);
     }
     
     static void relocateWidgets(int viewportID, int viewportWidth, int viewportHeight) {
-        widgets.get(viewportID).values().forEach(widget -> widget.relocate(XJGE.getScreenSplit(), viewportWidth, viewportHeight));
+        for(Widget2 widget : widgets.get(viewportID).values()) {
+            widget.relocate(XJGE.getScreenSplit(), viewportWidth, viewportHeight);
+        }
     }
     
     static void processKeyboardInput(int key, int action, int mods) {
@@ -60,16 +62,18 @@ public class UIContext {
     }
     
     static void processAddRequests() {
-        if(!widgetAddQueue.isEmpty()) {
+        while(!widgetAddQueue.isEmpty()) {
             WidgetAddRequest request = widgetAddQueue.poll();
             widgets.get(request.viewportID()).put(request.name(), request.widget());
         }
     }
     
     static void processRemoveRequests() {
-        if(!widgetRemoveQueue.isEmpty()) {
+        while(!widgetRemoveQueue.isEmpty()) {
             WidgetRemoveRequest request = widgetRemoveQueue.poll();
-            widgets.get(request.viewportID()).remove(request.name());
+            var viewportWidgets = widgets.get(request.viewportID());
+            viewportWidgets.get(request.name()).delete();
+            viewportWidgets.remove(request.name());
         }
     }
     

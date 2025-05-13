@@ -23,4 +23,6 @@ public abstract class Widget2 {
     
     public abstract void processMouseInput(Mouse mouse);
     
+    public abstract void delete();
+    
 }

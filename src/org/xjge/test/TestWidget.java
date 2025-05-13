@@ -53,4 +53,8 @@ public class TestWidget extends Widget2 {
     public void processMouseInput(Mouse mouse) {
     }
 
+    @Override
+    public void delete() {
+    }
+
 }
