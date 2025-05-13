@@ -2,7 +2,6 @@ package org.xjge.core;
 
 import org.xjge.graphics.Color;
 import java.util.Comparator;
-import java.util.LinkedList;
 import java.util.PriorityQueue;
 import java.util.Queue;
 import org.joml.Matrix4f;
@@ -51,8 +50,7 @@ public final class Game {
     private static Color clearColor = Color.create(119, 136, 255);
     private static Scene scene;
     
-    static final Queue<WidgetAddEvent> widgetQueue = new LinkedList<>();
-    private static final Queue<Event> events       = new PriorityQueue<>(Comparator.comparing(Event::getPriority));
+    private static final Queue<Event> events = new PriorityQueue<>(Comparator.comparing(Event::getPriority));
     
     /**
      * Central game loop that decouples game time progression from processor 

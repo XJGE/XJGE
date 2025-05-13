@@ -157,7 +157,7 @@ final class Viewport {
             case "ui" -> {
                 UIContext.updateProjectionMatrix(width, height, Short.MIN_VALUE, Short.MAX_VALUE);
                 UIContext.renderWidgets(id, glPrograms);
-                resetCamera(glPrograms);
+                resetCamera(glPrograms); //TODO: is this even necessary now since the projection matrix is handled by UIContext?
             }
             
             case "texture" -> {

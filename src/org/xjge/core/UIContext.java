@@ -7,7 +7,7 @@ import java.util.Queue;
 import org.joml.Matrix4f;
 import org.joml.Matrix4fc;
 import org.xjge.graphics.GLProgram;
-import org.xjge.ui.Widget2;
+import org.xjge.ui.Widget;
 
 /**
  * Created: May 9, 2025
@@ -22,7 +22,7 @@ public class UIContext {
     private static final Queue<WidgetAddRequest> widgetAddQueue       = new LinkedList<>();
     private static final Queue<WidgetRemoveRequest> widgetRemoveQueue = new LinkedList<>();
     
-    private static final Map<Integer, Map<String, Widget2>> widgets = new HashMap<>();
+    private static final Map<Integer, Map<String, Widget>> widgets = new HashMap<>();
     
     static {
         for(int i = 0; i < 4; i++) widgets.put(i, new HashMap<>());
@@ -39,15 +39,15 @@ public class UIContext {
     }
     
     static void updateWidgets(int viewportID, double targetDelta, double trueDelta) {
-        for(Widget2 widget : widgets.get(viewportID).values()) widget.update(targetDelta, trueDelta);
+        for(Widget widget : widgets.get(viewportID).values()) widget.update(targetDelta, trueDelta);
     }
     
     static void renderWidgets(int viewportID, Map<String, GLProgram> glPrograms) {
-        for(Widget2 widget : widgets.get(viewportID).values()) widget.render(glPrograms);
+        for(Widget widget : widgets.get(viewportID).values()) widget.render(glPrograms);
     }
     
     static void relocateWidgets(int viewportID, int viewportWidth, int viewportHeight) {
-        for(Widget2 widget : widgets.get(viewportID).values()) {
+        for(Widget widget : widgets.get(viewportID).values()) {
             widget.relocate(XJGE.getScreenSplit(), viewportWidth, viewportHeight);
         }
     }
@@ -77,7 +77,7 @@ public class UIContext {
         }
     }
     
-    public static final void addWidget(int viewportID, String name, Widget2 widget) {
+    public static final void addWidget(int viewportID, String name, Widget widget) {
         String failureReason = validateInput(viewportID, name);
         
         if(failureReason == null && widget == null) failureReason = "Widget object was not initialized";

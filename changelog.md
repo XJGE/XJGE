@@ -10,6 +10,7 @@ All notable changes to this project will be documented in this file. The format 
 - Randomly assigned UUIDs to identify entities at runtime.
 - New bind() method to the Texture class which is used instead of directly referencing its handle.
 - New TextEffect class that can be used to create custom effects for Font.drawString() by altering the data of the Glyph objects it generates.
+- New UIContext class that now encapsulates much of the Widget management features previously provided through the XJGE class.
 
 ### Changed
 - Fixed bug that wouldn't update the value of virtual gamepads when Input.setVirtualGamepadInput() was called.
@@ -30,6 +31,7 @@ All notable changes to this project will be documented in this file. The format 
 - Getter methods from the Texture class.
 - setDomain() method from Logger class.
 - drawString() method from the Widget superclass. This is provided directly through the Font class now.
+- Methods like addUIWidget(), removeUIWidget(), and containsWidget() from XJGE class.
 
 ## [3.1.0] - 2025-01-03
 

@@ -1,17 +1,14 @@
 package org.xjge.test;
 
 import java.util.Map;
-import org.joml.Vector3i;
 import org.xjge.core.Mouse;
 import org.xjge.ui.Font;
 import org.xjge.core.ScreenSplitType;
 import org.xjge.core.StopWatch;
-import org.xjge.core.Widget;
-import org.xjge.core.Window;
 import org.xjge.graphics.Color;
 import org.xjge.graphics.GLProgram;
 import org.xjge.ui.Polygon;
-import org.xjge.ui.Widget2;
+import org.xjge.ui.Widget;
 
 /**
  * Created: Apr 25, 2025
@@ -19,7 +16,7 @@ import org.xjge.ui.Widget2;
  * @author J Hoffman
  * @since  
  */
-public class TestWidget extends Widget2 {
+public class TestWidget extends Widget {
 
     Font font = new Font("font_source_code_pro.ttf", 32);
     StopWatch timer = new StopWatch();

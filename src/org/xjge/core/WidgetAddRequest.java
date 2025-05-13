@@ -1,6 +1,6 @@
 package org.xjge.core;
 
-import org.xjge.ui.Widget2;
+import org.xjge.ui.Widget;
 
 /**
  * Created: May 12, 2025
@@ -11,5 +11,5 @@ import org.xjge.ui.Widget2;
 record WidgetAddRequest (
     int viewportID,
     String name,
-    Widget2 widget
+    Widget widget
 ) {}

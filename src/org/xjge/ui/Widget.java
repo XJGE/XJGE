@@ -11,7 +11,7 @@ import org.xjge.graphics.GLProgram;
  * @author J Hoffman
  * @since  2.0.0
  */
-public abstract class Widget2 {
+public abstract class Widget {
     
     public abstract void update(double targetDelta, double trueDelta);
     
