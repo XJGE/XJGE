@@ -64,7 +64,7 @@ public abstract class Widget {
      * @param viewportHeight the height (in internal resolution pixels) of the
      *                       viewport rendering this widget
      */
-    public abstract void relocate(Split split, int viewportWidth, int viewportHeight);
+    public abstract void relocate(ScreenSplitType split, int viewportWidth, int viewportHeight);
     
     /**
      * Processes input from the keyboard captured by the game window.

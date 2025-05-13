@@ -113,36 +113,19 @@ public final class Game {
                 }
                 
                 //Add new widget to a viewport asynchronously
-                if(!widgetQueue.isEmpty()) {
-                    WidgetAddEvent widgetEvent = widgetQueue.peek();
-                    Viewport viewport          = viewports[widgetEvent.viewportID];
-                    
-                    viewport.addUIWidget(debugEnabled, widgetEvent.name, widgetEvent.widget);
-                    widgetEvent.resolved = true;
-                }
-                widgetQueue.removeIf(widgetEvent -> widgetEvent.resolved);
+                UIContext.processAddRequests();
                 
                 //Update viewport cameras and UI widgets
                 for(Viewport viewport : viewports) {
                     if(viewport.active && viewport.currCamera != null) {
                         viewport.currCamera.update();
-                        
-                        viewport.ui.forEach((name, widget) -> {
-                            if(!widget.remove) {
-                                widget.update();
-                            } else {
-                                widget.destroy();
-                                
-                                if(debugEnabled) {
-                                    Logger.logInfo("Removed widget \"" + name + "\" from viewport " + viewport.id);
-                                }
-                            }
-                        });
-                        viewport.ui.values().removeIf(widget -> widget.remove);
-
+                        UIContext.updateWidgets(viewport.id, TARGET_DELTA, delta);
                         Audio.setViewportCamData(viewport.id, viewport.currCamera.position, viewport.currCamera.direction);
                     }
                 }
+                
+                //Process requests for widget removal
+                UIContext.processRemoveRequests();
                 
                 Audio.updateSoundSourcePositions();
                 Audio.queueMusicBodySection();

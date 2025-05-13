@@ -6,7 +6,6 @@ import org.xjge.core.Camera;
 import org.xjge.core.Entity;
 import org.xjge.core.Scene;
 import org.xjge.core.UIContext;
-import org.xjge.core.XJGE;
 import org.xjge.graphics.GLProgram;
 
 /**
@@ -23,7 +22,7 @@ public class TestScene extends Scene {
         Entity entity = new Entity();
         addEntity(entity);
         
-        XJGE.addUIWidget(GLFW_JOYSTICK_1, "font_test", new TestWidget());
+        UIContext.addWidget(GLFW_JOYSTICK_1, "font_test", new TestWidget());
     }
 
     @Override

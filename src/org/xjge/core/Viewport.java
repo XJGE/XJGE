@@ -2,10 +2,6 @@ package org.xjge.core;
 
 import org.xjge.graphics.Graphics;
 import org.xjge.graphics.GLProgram;
-import java.util.Collections;
-import java.util.LinkedHashMap;
-import java.util.LinkedList;
-import java.util.List;
 import java.util.Map;
 import org.joml.Matrix4f;
 import org.joml.Vector2i;
@@ -45,11 +41,8 @@ final class Viewport {
     Vector2i topRight = new Vector2i();
     Camera prevCamera = new Noclip();
     Camera currCamera = new Noclip();
-    Mouse mouse       = new Mouse();
     
     PostProcessShader postProcessShader;
-    
-    LinkedHashMap<String, Widget> ui = new LinkedHashMap<>();
     
     /**
      * Creates a new viewport object.
@@ -162,9 +155,8 @@ final class Viewport {
             }
             
             case "ui" -> {
-                currCamera.setOrtho(glPrograms.get("default"), width, height); //TODO: remove once ui has been moved to independent shader
                 UIContext.updateProjectionMatrix(width, height, Short.MIN_VALUE, Short.MAX_VALUE);
-                ui.values().forEach(widget -> widget.render(glPrograms));
+                UIContext.renderWidgets(id, glPrograms);
                 resetCamera(glPrograms);
             }
             
@@ -208,34 +200,6 @@ final class Viewport {
     }
     
     /**
-     * Processes input from the keyboard captured by the game window.
-     * 
-     * @param key the value supplied by GLFW of a single key on the keyboard
-     * @param action an action supplied by GLFW that describes the nature of 
-     *               the key press
-     * @param mods a value supplied by GLFW denoting whether any mod keys where 
-     *             held (such as shift or control)
-     */
-    void processKeyInput(int key, int action, int mods) {        
-        ui.values().forEach(widget -> {
-            if(!widget.remove) widget.processKeyInput(key, action, mods);
-        });
-    }
-    
-    /**
-     * Processes input from the mouse captured by the game window.
-     */
-    void processMouseInput() {
-        ui.values().forEach(widget -> {
-            if(!widget.remove) {
-                widget.processMouseInput(mouse.cursorPosX, mouse.cursorPosY, 
-                                         mouse.button, mouse.action, mouse.mods, 
-                                         mouse.scrollX, mouse.scrollY);
-            }
-        });
-    }
-    
-    /**
      * Sets the resolution and position of the viewport inside the game window.
      * 
      * @param width the width of the viewport in pixels
@@ -254,38 +218,7 @@ final class Viewport {
         createTextureAttachment();
         bloom.createTextureAttachments(width, height);
         
-        ui.values().forEach(widget -> {
-            widget.relocate(XJGE.getScreenSplit(), width, height);
-        });
-    }
-    
-    /**
-     * Adds a new {@link Widget} to this viewport. Widgets will be rendered in 
-     * the order of their z-positions with lower numbers denoting a higher 
-     * priority. For example, a component with a z-position of 0 will be 
-     * rendered in front of a component with a z-position of 1.
-     * 
-     * @param name the name that will be used to identify/remove the widget
-     * @param widget the widget to add
-     */
-    void addUIWidget(boolean debugEnabled, String name, Widget widget) {
-        if(debugEnabled) {
-            Logger.logInfo("Added widget \"" + name + "\" to viewport " + id);
-        }
-        
-        ui.put(name, widget);
-        
-        List<Map.Entry<String, Widget>> widgetList = new LinkedList<>(ui.entrySet());
-        
-        Collections.sort(widgetList, (var o1, var o2) -> {
-            return (o2.getValue()).compareTo(o1.getValue());
-        });
-        
-        var temp = new LinkedHashMap<String, Widget>();
-        widgetList.forEach(comp2 -> temp.put(comp2.getKey(), comp2.getValue()));
-        
-        ui.clear();
-        ui.putAll(temp);
+        UIContext.relocateWidgets(id, width, height);
     }
     
     /**

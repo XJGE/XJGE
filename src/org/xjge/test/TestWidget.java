@@ -2,14 +2,16 @@ package org.xjge.test;
 
 import java.util.Map;
 import org.joml.Vector3i;
+import org.xjge.core.Mouse;
 import org.xjge.ui.Font;
-import org.xjge.core.Split;
+import org.xjge.core.ScreenSplitType;
 import org.xjge.core.StopWatch;
 import org.xjge.core.Widget;
 import org.xjge.core.Window;
 import org.xjge.graphics.Color;
 import org.xjge.graphics.GLProgram;
 import org.xjge.ui.Polygon;
+import org.xjge.ui.Widget2;
 
 /**
  * Created: Apr 25, 2025
@@ -17,7 +19,7 @@ import org.xjge.ui.Polygon;
  * @author J Hoffman
  * @since  
  */
-public class TestWidget extends Widget {
+public class TestWidget extends Widget2 {
 
     Font font = new Font("font_source_code_pro.ttf", 32);
     StopWatch timer = new StopWatch();
@@ -27,12 +29,10 @@ public class TestWidget extends Widget {
     int index;
     boolean reverse;
     
-    public TestWidget() {
-        super(new Vector3i(), Window.getWidth(), Window.getHeight());
-    }
+    public TestWidget() {}
 
     @Override
-    public void update() {
+    public void update(double targetDelta, double trueDelta) {
     }
 
     @Override
@@ -42,19 +42,15 @@ public class TestWidget extends Widget {
     }
 
     @Override
-    public void relocate(Split split, int viewportWidth, int viewportHeight) {
+    public void relocate(ScreenSplitType splitType, int viewportWidth, int viewportHeight) {
     }
 
     @Override
-    public void processKeyInput(int key, int action, int mods) {
+    public void processKeyboardInput(int key, int action, int mods) {
     }
 
     @Override
-    public void processMouseInput(double cursorPosX, double cursorPosY, int button, int action, int mods, double scrollX, double scrollY) {
-    }
-
-    @Override
-    public void destroy() {
+    public void processMouseInput(Mouse mouse) {
     }
 
 }

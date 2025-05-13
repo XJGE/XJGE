@@ -6,6 +6,8 @@ import java.util.Map;
 import java.util.Queue;
 import org.joml.Matrix4f;
 import org.joml.Matrix4fc;
+import org.xjge.graphics.GLProgram;
+import org.xjge.ui.Widget2;
 
 /**
  * Created: May 9, 2025
@@ -20,7 +22,7 @@ public class UIContext {
     private static final Queue<WidgetAddRequest> widgetAddQueue       = new LinkedList<>();
     private static final Queue<WidgetRemoveRequest> widgetRemoveQueue = new LinkedList<>();
     
-    private static final Map<Integer, Map<String, Widget>> widgets = new HashMap<>();
+    private static final Map<Integer, Map<String, Widget2>> widgets = new HashMap<>();
     
     static {
         for(int i = 0; i < 4; i++) widgets.put(i, new HashMap<>());
@@ -36,24 +38,25 @@ public class UIContext {
         projectionMatrix.setOrtho(0, width, 0, height, near, far);
     }
     
-    static void updateWidgets() {
-        
+    static void updateWidgets(int viewportID, double targetDelta, double trueDelta) {
+        widgets.get(viewportID).values().forEach(widget -> widget.update(targetDelta, trueDelta));
     }
     
-    static void renderWidgets() {
-        
+    static void renderWidgets(int viewportID, Map<String, GLProgram> glPrograms) {
+        widgets.get(viewportID).values().forEach(widget -> widget.render(glPrograms));
     }
     
-    static void relocateWidgets() {
-        
+    static void relocateWidgets(int viewportID, int viewportWidth, int viewportHeight) {
+        widgets.get(viewportID).values().forEach(widget -> widget.relocate(XJGE.getScreenSplit(), viewportWidth, viewportHeight));
     }
     
-    static void processKeyboardInput() {
-        
+    static void processKeyboardInput(int key, int action, int mods) {
+        //TODO: only listens on viewport 0 for now, extend this to all that are currently active.
+        widgets.get(0).values().forEach(widget -> widget.processKeyboardInput(key, action, mods));
     }
     
-    static void processMouseInput() {
-        
+    static void processMouseInput(Mouse mouse) {
+        widgets.get(0).values().forEach(widget -> widget.processMouseInput(mouse));
     }
     
     static void processAddRequests() {
@@ -70,7 +73,7 @@ public class UIContext {
         }
     }
     
-    public static final void addWidget(int viewportID, String name, Widget widget) {
+    public static final void addWidget(int viewportID, String name, Widget2 widget) {
         String failureReason = validateInput(viewportID, name);
         
         if(failureReason == null && widget == null) failureReason = "Widget object was not initialized";

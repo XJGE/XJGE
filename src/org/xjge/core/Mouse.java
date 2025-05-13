@@ -10,7 +10,7 @@ package org.xjge.core;
  * @author J Hoffman
  * @since  2.4.6
  */
-class Mouse {
+public final class Mouse {
 
     int button;
     int action;

@@ -95,7 +95,7 @@ public final class XJGE {
     public static final Path PRESENT_WORKING_DIRECTORY = Path.of("").toAbsolutePath();
     public static final String VERSION = "4.0.0";
     
-    private static Split split = Split.NONE;
+    private static ScreenSplitType split = ScreenSplitType.NONE;
     
     private static String assetsFilepath = "/org/xjge/assets/";
     private static String scenesFilepath;
@@ -428,7 +428,8 @@ public final class XJGE {
                 }
 
                 if(XJGE.terminalEnabled) terminal.processKeyInput(key, action, mods);
-                else                     viewports[0].processKeyInput(key, action, mods);
+                //TODO: re-enable input focus
+                //else                     viewports[0].processKeyInput(key, action, mods);
             });
 
             glfwSetCursorPosCallback(Window.HANDLE, (window, x, y) -> {
@@ -450,11 +451,16 @@ public final class XJGE {
                     firstMouse = true;
                 }
                 
+                /*
                 viewports[0].mouse.cursorPosX = x;
                 viewports[0].mouse.cursorPosY = (Window.getHeight() - y);
                 viewports[0].processMouseInput();
+                */
             });
             
+            //TODO: reimplement mouse/keyboard input for UI widgets using GLFW callbacks
+            
+            /*
             glfwSetMouseButtonCallback(Window.HANDLE, (window, button, action, mods) -> {
                 viewports[0].mouse.button = button;
                 viewports[0].mouse.action = action;
@@ -467,6 +473,7 @@ public final class XJGE {
                 viewports[0].mouse.scrollY = scrollY;
                 viewports[0].processMouseInput();
             });
+            */
         } else {
             Logger.logWarning("XJGE has already been initialized", null);
         }
@@ -686,66 +693,6 @@ public final class XJGE {
     }
     
     /**
-     * Adds a new {@link Widget} to the specified viewport. Widgets will be 
-     * rendered in the order of their z-positions with lower numbers denoting a 
-     * higher priority. For example, a component with a z-position of 0 will be 
-     * rendered in front of a component with a z-position of 1.
-     * 
-     * @param viewportID the ID number of the viewport to add the widget to
-     * @param name the name that will be used to identify/remove the widget
-     * @param widget the widget object to add
-     * 
-     * @see Viewport
-     */
-    public static final void addUIWidget(int viewportID, String name, Widget widget) {
-        Game.widgetQueue.add(new WidgetAddEvent(viewportID, name, widget));
-    }
-    
-    /**
-     * Removes a widget from the specified viewports user interface.
-     * 
-     * @param viewportID the ID number of the viewport to remove the widget from
-     * @param name the name of the widget to remove
-     * 
-     * @see Viewport
-     * @see Widget
-     */
-    public static final void removeUIWidget(int viewportID, String name) {
-        Viewport viewport = viewports[viewportID];
-        
-        if(viewport.ui.containsKey(name)) {
-            viewport.ui.get(name).remove = true;
-        } else {
-            Logger.logWarning("Failed to remove UI widget \"" + name + "\". No " + 
-                              "such widget exists for viewport " + viewport.id, 
-                              null);
-        }
-    }
-    
-    /**
-     * Removes every widget currently attached to the specified viewport.
-     * 
-     * @param viewportID the ID number of the viewport that will clear its UI 
-     *                   of all widgets
-     */
-    public static final void clearWidgets(int viewportID) {
-        viewports[viewportID].ui.forEach((name, widget) -> widget.remove = true);
-    }
-    
-    /**
-     * Used to determine if the viewport currently contains a widget using the 
-     * name we gave it when it was added.
-     * 
-     * @param viewportID the ID number of the viewport to remove the widget from
-     * @param name the name of the widget to remove
-     * 
-     * @return true if the viewport contains a widget by the specified name
-     */
-    public static boolean containsWidget(int viewportID, String name) {
-        return viewports[viewportID].ui.containsKey(name);
-    }
-    
-    /**
      * Applies post-processing effects to the desired viewport by changing 
      * which shader program its framebuffer object will use during rendering.
      * 
@@ -853,7 +800,7 @@ public final class XJGE {
      * 
      * @return a value indicating how the screen is being divided
      */
-    public static Split getScreenSplit() {
+    public static ScreenSplitType getScreenSplit() {
         return split;
     }
     
@@ -893,12 +840,12 @@ public final class XJGE {
      * 
      * @param split a value that determines how the screen will be divided. One of: 
      * <table><caption></caption><tr>
-     * <td>{@link Split#NONE NONE}</td><td>{@link Split#HORIZONTAL HORIZONTAL}</td>
-     * <td>{@link Split#VERTICAL VERTICAL}</td></tr><tr>
-     * <td>{@link Split#TRISECT TRISECT}</td><td>{@link Split#QUARTER QUARTER}</td>
+     * <td>{@link ScreenSplitType#NONE NONE}</td><td>{@link ScreenSplitType#HORIZONTAL HORIZONTAL}</td>
+     * <td>{@link ScreenSplitType#VERTICAL VERTICAL}</td></tr><tr>
+     * <td>{@link ScreenSplitType#TRISECT TRISECT}</td><td>{@link ScreenSplitType#QUARTER QUARTER}</td>
      * </table>
      */
-    public static final void setScreenSplit(Split split) {
+    public static final void setScreenSplit(ScreenSplitType split) {
         XJGE.split = split;
         
         for(Viewport viewport : viewports) {

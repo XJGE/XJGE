@@ -22,7 +22,8 @@ All notable changes to this project will be documented in this file. The format 
 - The Logger class to include the class from which the log message was generated instead of manually setting the domain.
 - Logger.logSevere() method name to logError() for consistency.
 - Font class now includes better fallback behavior and imposes minimum and maximum sizes.
-- Moved classes like Font, Icon, and Rectangle into the new UI package. Initialized new UI specific shader for internal use only. 
+- Moved classes like Font, Icon, and Rectangle into the new UI package. Initialized new UI specific shader for internal use only.
+- Name of Split enum to ScreenSplitType for clarity. 
 
 ### Removed
 - Update/Render methods from the Entity class.
