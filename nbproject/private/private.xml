@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project-private xmlns="http://www.netbeans.org/ns/project-private/1">
-    <editor-bookmarks xmlns="http://www.netbeans.org/ns/editor-bookmarks/2" lastBookmarkId="9">
+    <editor-bookmarks xmlns="http://www.netbeans.org/ns/editor-bookmarks/2" lastBookmarkId="12">
         <file>
             <url>src/org/xjge/ui/UI.java</url>
             <bookmark id="9">
@@ -9,16 +9,35 @@
                 <key/>
             </bookmark>
         </file>
+        <file>
+            <url>src/org/xjge/core/Viewport.java</url>
+            <bookmark id="12">
+                <name/>
+                <line>159</line>
+                <key/>
+            </bookmark>
+        </file>
+        <file>
+            <url>src/org/xjge/core/XJGE.java</url>
+            <bookmark id="11">
+                <name/>
+                <line>430</line>
+                <key/>
+            </bookmark>
+            <bookmark id="10">
+                <name/>
+                <line>460</line>
+                <key/>
+            </bookmark>
+        </file>
     </editor-bookmarks>
     <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
         <group>
-            <file>file:/C:/Users/jhoff/Projects/XJGE/src/org/xjge/core/Viewport.java</file>
-            <file>file:/C:/Users/jhoff/Projects/XJGE/src/org/xjge/core/Widget.java</file>
-            <file>file:/C:/Users/jhoff/Projects/XJGE/src/org/xjge/test/TestScene.java</file>
-            <file>file:/C:/Users/jhoff/Projects/XJGE/src/org/xjge/core/UIContext.java</file>
+            <file>file:/C:/Users/jhoff/Projects/XJGE/src/org/xjge/graphics/Color.java</file>
+            <file>file:/C:/Users/jhoff/Projects/XJGE/src/org/xjge/core/TerminalOutput.java</file>
             <file>file:/C:/Users/jhoff/Projects/XJGE/src/org/xjge/core/XJGE.java</file>
-            <file>file:/C:/Users/jhoff/Projects/XJGE/src/org/xjge/core/Game.java</file>
-            <file>file:/C:/Users/jhoff/Projects/XJGE/src/org/xjge/ui/Widget2.java</file>
+            <file>file:/C:/Users/jhoff/Projects/XJGE/src/org/xjge/core/Terminal.java</file>
+            <file>file:/C:/Users/jhoff/Projects/XJGE/src/org/xjge/core/DebugInfo.java</file>
         </group>
     </open-files>
 </project-private>

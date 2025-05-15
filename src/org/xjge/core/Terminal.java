@@ -119,7 +119,9 @@ final class Terminal implements PropertyChangeListener {
         placeholder.drawString(">", caretPos.x, caretPos.y, Color.WHITE, 1f);
         
         for(int i = 0; i <= shiftElements; i++) {
-            //TODO: reimplement this
+            if(executed) {
+                
+            }
             //placeholder.drawOutput(cmdOutput, cmdOutput[i], i, executed, opaqueRectangles[i]);
         }
         

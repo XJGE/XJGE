@@ -35,7 +35,7 @@ public class TestWidget extends Widget {
     @Override
     public void render(Map<String, GLProgram> glPrograms) {
         polygon.render(0.5f);
-        font.drawString("The quick brown fox jumps over the lazy dog.", 50, 100, testEffect);
+        font.drawString("The quick brown fox jumps\nover the lazy dog.", 50, 100, testEffect);
     }
 
     @Override

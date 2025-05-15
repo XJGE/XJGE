@@ -48,7 +48,7 @@ public final class Font {
     
     private final float scale = 1.5f;
     
-    public static final int DEFAULT_FONT_SIZE = 32;
+    public static final int DEFAULT_FONT_SIZE = 26;
     
     public final int size;
     private final int textureHandle;
@@ -435,6 +435,7 @@ public final class Font {
         }
         
         int advance = 0;
+        int descent = 0;
             
         //Update glyph values to match the current requirements of the text
         for(int i = 0; i < glyphPool.size(); i++) {
@@ -442,20 +443,25 @@ public final class Font {
             glyph.reset();
 
             if(i < text.length()) {
-                glyph.character = text.charAt(i);
-                glyph.positionX = (positionX + advance + getGlyphBearingX(glyph.character)) + glyph.positionOffsetX;
-                glyph.positionY = (positionY + getGlyphBearingY(glyph.character)) + glyph.positionOffsetY;
-                
-                if(effect == null) {
-                    glyph.opacity = opacity;
-                    glyph.color   = color;
-                } else {
-                    effect.apply(glyph, i);
-                }
-                
-                if(effect != null) effect.apply(glyph, i);
+                if(text.charAt(i) != '\n') {
+                    glyph.character = text.charAt(i);
+                    glyph.positionX = (positionX + advance + getGlyphBearingX(glyph.character)) + glyph.positionOffsetX;
+                    glyph.positionY = (positionY + descent + getGlyphBearingY(glyph.character)) + glyph.positionOffsetY;
 
-                advance += getGlyphAdvance(glyph.character);
+                    if(effect == null) {
+                        glyph.opacity = opacity;
+                        glyph.color   = color;
+                    } else {
+                        effect.apply(glyph, i);
+                    }
+
+                    if(effect != null) effect.apply(glyph, i);
+
+                    advance += getGlyphAdvance(glyph.character);
+                } else {
+                    advance = 0;
+                    descent -= size;
+                }
             }
         }
         
