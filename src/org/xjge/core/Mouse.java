@@ -12,13 +12,19 @@ package org.xjge.core;
  */
 public final class Mouse {
 
+    
+    
+    double cursorX;
+    double cursorY;
+    double scrollX;
+    double scrollY;
+    
     int button;
     int action;
     int mods;
     
-    double cursorPosX;
-    double cursorPosY;
-    double scrollX;
-    double scrollY;
+    public boolean hovered() {
+        return false;
+    }
     
 }

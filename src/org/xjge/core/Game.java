@@ -67,7 +67,7 @@ public final class Game {
      * @param debugEnabled if true the engine will provide additional debug 
      *                     information through the logger
      */
-    static void loop(int fbo, Viewport[] viewports, Terminal terminal, DebugInfo debugInfo, GLProgram depthProgram, 
+    static void loop(int fbo, Viewport[] viewports, Terminal terminal, DebugInfo2 debugInfo, GLProgram depthProgram, 
                      GLProgram blurProgram, boolean debugEnabled) {
         XJGE.observable.properties.put("SCENE_CHANGED", scene);
         
@@ -100,7 +100,6 @@ public final class Game {
                 //Process any unresolved events otherwise update the scene normally
                 if(!events.isEmpty()) {
                     Event event = events.peek();
-                    
                     if(!event.resolved) event.resolve();
                     else                events.poll();
                 } else {

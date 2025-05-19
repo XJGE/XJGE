@@ -109,7 +109,7 @@ final class Terminal implements PropertyChangeListener {
      */
     void render() {
         commandLine.width  = Window.getWidth();
-        commandLine.height = placeholder.size + 4;
+        commandLine.height = placeholder.size + 2;
         commandLine.render(1, Color.BLACK);
         
         commandOutput.width  = Window.getWidth();

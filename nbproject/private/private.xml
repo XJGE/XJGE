@@ -21,12 +21,12 @@
             <url>src/org/xjge/core/XJGE.java</url>
             <bookmark id="11">
                 <name/>
-                <line>430</line>
+                <line>431</line>
                 <key/>
             </bookmark>
             <bookmark id="10">
                 <name/>
-                <line>460</line>
+                <line>461</line>
                 <key/>
             </bookmark>
         </file>
@@ -34,9 +34,12 @@
     <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
         <group>
             <file>file:/C:/Users/jhoff/Projects/XJGE/src/org/xjge/graphics/Color.java</file>
+            <file>file:/C:/Users/jhoff/Projects/XJGE/src/org/xjge/ui/Font.java</file>
             <file>file:/C:/Users/jhoff/Projects/XJGE/src/org/xjge/core/TerminalOutput.java</file>
+            <file>file:/C:/Users/jhoff/Projects/XJGE/src/org/xjge/core/DebugInfo2.java</file>
+            <file>file:/C:/Users/jhoff/Projects/XJGE/src/org/xjge/test/TestWidget.java</file>
             <file>file:/C:/Users/jhoff/Projects/XJGE/src/org/xjge/core/XJGE.java</file>
-            <file>file:/C:/Users/jhoff/Projects/XJGE/src/org/xjge/core/Terminal.java</file>
+            <file>file:/C:/Users/jhoff/Projects/XJGE/src/org/xjge/core/Game.java</file>
             <file>file:/C:/Users/jhoff/Projects/XJGE/src/org/xjge/core/DebugInfo.java</file>
         </group>
     </open-files>

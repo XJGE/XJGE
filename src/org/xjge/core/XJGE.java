@@ -104,7 +104,8 @@ public final class XJGE {
     private static Sound beep;
     private static Noclip freeCam;
     private static Terminal terminal;
-    private static DebugInfo debugInfo;
+    //private static DebugInfo debugInfo;
+    private static DebugInfo2 debugInfo;
     
     private static TreeMap<String, TerminalCommand> engineCommands     = new TreeMap<>();
     private static final TreeMap<String, TerminalCommand> userCommands = new TreeMap<>();
@@ -386,7 +387,7 @@ public final class XJGE {
                         debugInfo.show = !debugInfo.show;
                     }
                     
-                    if(debugInfo.show) debugInfo.updatePosition();
+                    //if(debugInfo.show) debugInfo.updatePosition();
                 }
                 
                 if(debugEnabled && key == GLFW_KEY_F2 && action == GLFW_PRESS) {
@@ -517,7 +518,7 @@ public final class XJGE {
         glPrograms = Collections.unmodifiableMap(glPrograms);
         freeCam    = new Noclip();
         terminal   = new Terminal(engineCommands);
-        debugInfo  = new DebugInfo(engineIcons);
+        debugInfo  = new DebugInfo2(engineIcons);
         
         Window.show();
         updateRenderbufferDimensions();
@@ -529,7 +530,7 @@ public final class XJGE {
             updateRenderbufferDimensions();
 
             setScreenSplit(getScreenSplit());
-            debugInfo.updatePosition();
+            //debugInfo.updatePosition();
         });
         
         Game.loop(fbo, viewports, terminal, debugInfo, depthProgram, blurProgram, debugModeEnabled);
@@ -538,7 +539,7 @@ public final class XJGE {
         engineIcons.delete();
         beep.freeSound();
         terminal.freeBuffers();
-        debugInfo.freeBuffers();
+        //debugInfo.freeBuffers();
         
         //Export engine configuration
         try {
