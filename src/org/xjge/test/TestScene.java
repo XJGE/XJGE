@@ -15,7 +15,7 @@ import org.xjge.graphics.GLProgram;
  * @since  
  */
 public class TestScene extends Scene {
-
+    
     public TestScene() {
         super("test");
         
@@ -31,6 +31,7 @@ public class TestScene extends Scene {
 
     @Override
     public void render(Map<String, GLProgram> glPrograms, int viewportID, Camera camera, int depthTexHandle) {
+        //TODO: add test entity
     }
 
     @Override

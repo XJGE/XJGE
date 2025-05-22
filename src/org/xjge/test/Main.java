@@ -1,6 +1,5 @@
 package org.xjge.test;
 
-import org.joml.Vector2i;
 import org.xjge.core.Game;
 import org.xjge.core.XJGE;
 

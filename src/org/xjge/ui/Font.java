@@ -36,8 +36,8 @@ import org.xjge.graphics.Color;
  * Created: Jun 3, 2021
  * <br><br>
  * Parses data from a font file and provides it as an object that can be used to
- * render text. TrueType (.ttf) and Bitmap (.bmf) are the preferred formats for 
- * this engine.
+ * render text to the UI. TrueType (.ttf) and Bitmap (.bmf) are the preferred 
+ * formats of this engine.
  * 
  * @author J Hoffman
  * @since  2.0.0
@@ -78,6 +78,9 @@ public final class Font {
     private final List<Glyph> glyphPool = new ArrayList<>();
     private final Map<Character, GlyphMetrics> glyphMetrics = new HashMap<>();
     
+    /**
+     * Contains the immutable metrics of a single glyph in the font.
+     */
     private record GlyphMetrics (
         float texCoordX,
         float texCoordY,
@@ -86,10 +89,23 @@ public final class Font {
         int bearingY
     ) {}
     
+    /**
+     * Creates a new font object using data from the provided file.
+     * 
+     * @param filename the name of the file to load (with extension)
+     * @param size the size of the font in non-pixel units
+     */
     public Font(String filename, int size) {
         this(XJGE.getAssetsFilepath(), filename, size);
     }
     
+    /**
+     * Delegating constructor for internal use only.
+     * 
+     * @param filepath the file location relative to this apps executable jar
+     * @param filename the name of the file to load (with extension)
+     * @param size the size of the font in non-pixel units
+     */
     private Font(String filepath, String filename, int size) {
         int[] info = loadFont(filepath, filename, size);
         
@@ -141,6 +157,15 @@ public final class Font {
         glEnableVertexAttribArray(1);
     }
     
+    /**
+     * Attempts to load a font using the file provided. The engine will provide 
+     * a placeholder if an error is encountered at any point during parsing.
+     * 
+     * @param filepath the file location relative to this apps executable jar
+     * @param filename the name of the file to load (with extension)
+     * @param size the size of the font in non-pixel units
+     * @return a new integer array containing the data parsed from the font file
+     */
     private int[] loadFont(String filepath, String filename, int size) {
         try(InputStream file = Font.class.getResourceAsStream(filepath + filename)) {
             if(size <= 0 || size > 128) {
@@ -189,6 +214,15 @@ public final class Font {
         }
     }
     
+    /**
+     * Loads a font from a bitmap file.
+     * 
+     * @param filepath the file location relative to this apps executable jar
+     * @param file an object representation of the raw file data
+     * @param info the array containing data parsed from the font file
+     * @throws XMLStreamException 
+     * @throws IOException 
+     */
     private void loadBitmapFont(String filepath, InputStream file, int[] info) throws XMLStreamException, IOException {
         var xmlReader = XMLInputFactory.newInstance().createXMLStreamReader(file);
         
@@ -287,6 +321,13 @@ public final class Font {
         }
     }
     
+    /**
+     * Loads a font from a TrueType file.
+     * 
+     * @param file an object representation of the raw file data
+     * @param info the array containing data parsed from the font file
+     * @throws IOException 
+     */
     private void loadVectorFont(InputStream file, int[] info) throws IOException {
         try(MemoryStack stack = MemoryStack.stackPush()) {
             byte[] data = file.readAllBytes();
@@ -362,7 +403,10 @@ public final class Font {
         }
     }
     
-    private void offsetPosition() {
+    /**
+     * Uploads the current positions of each glyph in the string to the GPU.
+     */
+    private void uploadPositions() {
         try(MemoryStack stack = MemoryStack.stackPush()) {
             FloatBuffer positions = stack.mallocFloat(glyphPool.size() * Float.BYTES);
             
@@ -381,7 +425,11 @@ public final class Font {
         glVertexAttribDivisor(2, 1);
     }
     
-    private void offsetTexture() {
+    /**
+     * Uploads the current texture coordinates of each glyph used in the string 
+     * to the GPU.
+     */
+    private void uploadTexCoords() {
         try(MemoryStack stack = MemoryStack.stackPush()) {
             FloatBuffer cells = stack.mallocFloat(glyphPool.size() * Float.BYTES);
             
@@ -400,7 +448,11 @@ public final class Font {
         glVertexAttribDivisor(3, 1);
     }
     
-    private void offsetColor() {
+    /**
+     * Uploads the current RGBA color information of each glyph in the string to 
+     * the GPU.
+     */
+    private void uploadColors() {
         try(MemoryStack stack = MemoryStack.stackPush()) {
             FloatBuffer colors = stack.mallocFloat(glyphPool.size() * Float.BYTES);
             
@@ -419,6 +471,18 @@ public final class Font {
         glVertexAttribDivisor(4, 1);
     }
     
+    /**
+     * Internal implementation of font draw call.
+     * 
+     * @param text the string of text that will be drawn to the screen
+     * @param positionX the horizontal position the string will begin at
+     * @param positionY the vertical (baseline) position of the string
+     * @param color the color that the glyphs will be rendered in
+     * @param opacity a number between 0 and 1 indicating the opacity (or 
+     *                transparency) of the text
+     * @param effect a user-defined text effect object that's used to manipulate 
+     *               glyph data with a greater degree of control
+     */
     private void drawString(String text, int positionX, int positionY, Color color, float opacity, TextEffect effect) {
         UIShader.getInstance().use();
         
@@ -467,9 +531,9 @@ public final class Font {
         
         if(effect != null) effect.reset();
         
-        offsetPosition();
-        offsetTexture();
-        offsetColor();
+        uploadPositions();
+        uploadTexCoords();
+        uploadColors();
         
         UIShader.getInstance().setUniform("uType", 0);
         UIShader.getInstance().setUniform("uTexture", 0);
@@ -482,14 +546,38 @@ public final class Font {
         ErrorUtils.checkGLError();
     }
     
+    /**
+     * Draws a string of text to the screen.
+     * 
+     * @param text the string of text that will be drawn to the screen
+     * @param positionX the horizontal position the string will begin at
+     * @param positionY the vertical (baseline) position of the string
+     * @param color the color that the glyphs will be rendered in
+     * @param opacity a number between 0 and 1 indicating the opacity (or 
+     *                transparency) of the text
+     */
     public void drawString(String text, int positionX, int positionY, Color color, float opacity) {
         drawString(text, positionX, positionY, color, opacity, null);
     }
     
+    /**
+     * Draws a string of text to the screen using rules defined by the text 
+     * effect provided.
+     * 
+     * @param text the string of text that will be drawn to the screen
+     * @param positionX the horizontal position the string will begin at
+     * @param positionY the vertical (baseline) position of the string
+     * @param effect a user-defined text effect object that's used to manipulate 
+     *               glyph data with a greater degree of control
+     */
     public void drawString(String text, int positionX, int positionY, TextEffect effect) {
         drawString(text, positionX, positionY, Color.WHITE, 1f, effect);
     }
     
+    /**
+     * Frees any memory allocated by this object including any OpenGL buffers 
+     * and textures that were generated during initialization.
+     */
     public void delete() {
         if(textureHandle != placeholder.textureHandle) {
             glDeleteTextures(textureHandle);
@@ -499,38 +587,99 @@ public final class Font {
         }
     }
     
+    /**
+     * Obtains the horizontal texture coordinate for the left edge of the glyph
+     * representing the character provided.
+     * 
+     * @param character the character whose glyph is being queried
+     * @return the normalized X coordinate (between 0 and 1) in the font texture atlas
+     */
     public float getGlyphTexCoordX(char character) {
         return glyphMetrics.get((!glyphMetrics.containsKey(character) ? '?' : character)).texCoordX;
     }
     
+    /**
+     * Obtains the vertical texture coordinate for the bottom edge of the glyph 
+     * representing the character provided.
+     * 
+     * @param character the character whose glyph is being queried
+     * @return the normalized Y coordinate (between 0 and 1) in the font texture atlas
+     */
     public float getGlyphTexCoordY(char character) {
         return glyphMetrics.get((!glyphMetrics.containsKey(character) ? '?' : character)).texCoordY;
     }
     
+    /**
+     * Obtains the horizontal advance width for the character provided. This 
+     * determines how far the next glyph in sequence will be rendered following 
+     * this one.
+     * 
+     * @param character the character whose glyph is being queried
+     * @return the advance width of the glyph (in pixels)
+     */
     public int getGlyphAdvance(char character) {
         return glyphMetrics.get((!glyphMetrics.containsKey(character) ? '?' : character)).advance;
     }
     
+    /**
+     * Obtains the horizontal bearing of the glyph, which defines the offset 
+     * between the glyphs origin and where its bitmap starts on the X axis.
+     * 
+     * @param character the character whose glyph is being queried
+     * @return the horizontal bearing in pixels, used for glyph placement
+     */
     public int getGlyphBearingX(char character) {
         return glyphMetrics.get((!glyphMetrics.containsKey(character) ? '?' : character)).bearingX;
     }
     
+    /**
+     * Obtains the vertical bearing of the glyph, which defines the offset 
+     * between the glyphs origin and where its bitmap starts on the Y axis.
+     * 
+     * @param character the character whose glyph is being queried
+     * @return the vertical bearing in pixels, used for baseline alignment
+     */
     public int getGlyphBearingY(char character) {
         return glyphMetrics.get((!glyphMetrics.containsKey(character) ? '?' : character)).bearingY;
     }
     
+    /**
+     * Finds the total length of the provided text string using this fonts glyph 
+     * data.
+     * 
+     * @param text the string of text to evaluate
+     * @return the length of the text (in pixels)
+     */
     public int lengthInPixels(String text) {
         int length = 0;
         for(char character : text.toCharArray()) length += getGlyphAdvance(character);
         return length;
     }
     
+    /**
+     * Finds the total number of times the provided character appears in a 
+     * string of text.
+     * 
+     * @param text the string of text to evaluate
+     * @param character the character to search for
+     * @param index a number denoting which index the search will start from
+     * @return the number of times the character appears in the string
+     */
     public int numCharOccurences(String text, char character, int index) {
         if(index >= text.length()) return 0;
         int count = (text.charAt(index) == character) ? 1 : 0;
         return count + numCharOccurences(text, character, index + 1);
     }
     
+    /**
+     * Wraps the provided string into multiple lines that won't exceed the 
+     * specified advance limit.
+     * 
+     * @param text the string of text to format
+     * @param advanceLimit the maximum advance length (in pixels) imposed
+     * @return a new string with line breaks inserted to enforce the width 
+     *         constraint
+     */
     public String wrap(String text, int advanceLimit) {
         var words  = new ArrayList<String>();
         var string = new StringBuilder();

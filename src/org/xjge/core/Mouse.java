@@ -11,8 +11,6 @@ package org.xjge.core;
  * @since  2.4.6
  */
 public final class Mouse {
-
-    
     
     double cursorX;
     double cursorY;
