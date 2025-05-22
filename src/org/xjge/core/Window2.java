@@ -18,16 +18,43 @@ public final class Window2 {
     private static int width;
     private static int height;
     
-    private static final long handle;
+    private static long handle = NULL;
     
     private static String title;
     
-    static {
+    private static final Viewport[] viewports = new Viewport[4];
+    
+    private Window2() {}
+    
+    private static void init() {
+        if(handle != NULL) return;
+        
+        if(!glfwInit()) Logger.logError("Failed to initialize GLFW", null);
+        
         handle = glfwCreateWindow(640, 480, "XJGE v" + XJGE.VERSION, NULL, NULL);
     }
     
-    static void show() {
+    public static void show() {
+        init();
         
+        /**
+         * XJGE.setAssetsFilepath("");
+         * XJGE.setScenesFilepath("");
+         * XJGE.setDebugModeEnabled(true);
+         * 
+         * Window.setResolution(640, 480);
+         * Window.restrict4K(true);
+         * Window.retainFullscreen(false);
+         * Window.resizeable(false);
+         * 
+         * Window.show();
+         * 
+         * XJGE methods like setAssetsFilepath(), setScenesFilepath(), and 
+         * setDebugModeEnabled() can no longer be called following Window.show()
+         * 
+         * Game -> XJGE (maintains loop, scene, and config settings)
+         * XJGE -> Window (maintains window, viewport, and glfw callbacks)
+         */
     }
     
 }

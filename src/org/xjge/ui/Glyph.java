@@ -5,6 +5,8 @@ import org.xjge.graphics.Color;
 
 /**
  * Created: May 13, 2021
+ * <br><br>
+ * Represents a 
  * 
  * @author J Hoffman
  * @since  2.0.0
