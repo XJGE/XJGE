@@ -38,16 +38,51 @@ public final class Window2 {
         init();
         
         /**
+         * Maybe add these?
+         * XJGE.setUserSavedControls(viewportID, Collection);
+         * XJGE.setMusicMasterVolume(1.0f);
+         * XJGE.setSoundMasterVolume(1.0f);
+         * XJGE.setVsyncEnabled(true);
+         * XJGE.setGamma() //future feature?
+         * XJGE.findMonitors(); //returns list of monitor objects
+         * XJGE.findSpeakers(); //returns list of speaker objects
+         * XJGE.findGamepads(); //returns list of gamepads
+         * 
+         * Definitely add these:
          * XJGE.setAssetsFilepath("");
          * XJGE.setScenesFilepath("");
          * XJGE.setDebugModeEnabled(true);
-         * 
-         * Window.setResolution(640, 480);
-         * Window.restrict4K(true);
-         * Window.retainFullscreen(false);
-         * Window.resizeable(false);
+         * XJGE.setScene(Scene);
+         * XJGE.addEvent(Event);
+         * XJGE.restrict4K(true);
+         * XJGE.retainFullscreen(false);
          * 
          * Window.show();
+         * 
+         * Window.setSize(0, 0);
+         * Window.setPosition(0, 0);
+         * Window.setTitle("");
+         * Window.setIcon("");
+         * Window.setFullscreen(false);
+         * Window.setScreenSplitType(ScreenSplitType);
+         * Window.setResolution(640, 480);
+         * Window.setResizable(false);
+         * Window.setMontior(Monitor);
+         * Window.setInputMode(CURSOR_NORMAL);
+         * Window.center();
+         * 
+         * Window.getWidth();
+         * Window.getHeight();
+         * Window.getPositionX();
+         * Window.getPositionY();
+         * Window.getTitle();
+         * Window.getFullscreen();
+         * Window.getScreenSplitType();
+         * Window.getResolutionWidth();
+         * Window.getResolutionHeight();
+         * Window.getResizeable();
+         * Window.getMonitor();
+         * Window.getInputMode();
          * 
          * XJGE methods like setAssetsFilepath(), setScenesFilepath(), and 
          * setDebugModeEnabled() can no longer be called following Window.show()
