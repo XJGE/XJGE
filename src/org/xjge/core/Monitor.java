@@ -21,7 +21,7 @@ public final class Monitor {
     
     final int id;
     
-    public final long handle;
+    final long handle;
     
     public final String name;
     

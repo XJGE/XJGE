@@ -22,12 +22,14 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.Map;
+import java.util.NavigableMap;
 import java.util.TreeMap;
 import javax.xml.stream.XMLInputFactory;
 import javax.xml.stream.XMLStreamConstants;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 import org.joml.Vector2i;
+import org.lwjgl.PointerBuffer;
 import static org.lwjgl.glfw.GLFW.*;
 import org.lwjgl.opengl.GL;
 import static org.lwjgl.opengl.GL32.*;
@@ -116,6 +118,42 @@ public final class XJGE {
     private static final Viewport[] viewports = new Viewport[4];
     
     static final Observable observable = new Observable(XJGE.class);
+    
+    private static final TreeMap<Integer, Monitor> monitors = new TreeMap<>();
+    
+    static {
+        String javaVersion = System.getProperty("java.version");
+        if(javaVersion.compareTo("22.0.2") < 0) {
+            Logger.logError("Unsupported Java version used (found: " + javaVersion + " required: 22.0.2)", null);
+        }
+        
+        if(!glfwInit()) Logger.logError("Failed to initialize GLFW", null);
+    }
+    
+    public static final NavigableMap<Integer, Monitor> findMonitors() {
+        PointerBuffer monitorBuf = glfwGetMonitors();
+        
+        if(monitorBuf != null) {
+            for(int i = 0; i < monitorBuf.limit(); i++) {
+                if(!monitors.containsKey(i + 1)) {
+                    monitors.put(i + 1, new Monitor(i + 1, monitorBuf.get(i)));
+                }
+            }
+        } else {
+            Logger.logWarning("Failed to find any available monitors", null);
+        }
+        
+        return Collections.unmodifiableNavigableMap(monitors);
+    }
+    
+    
+    
+    
+    //==== LEGACY API BELOW ====================================================
+    
+    
+    
+    
     
     /**
      * Default constructor provided here to keep it out of the implementations 

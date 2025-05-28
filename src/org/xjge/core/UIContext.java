@@ -29,7 +29,7 @@ public class UIContext {
     }
     
     private static String validateInput(int viewportID, String name) {
-        if(viewportID < 0 || viewportID > 3)    return "Invalid ID used (found: " + viewportID + " expected: 0-3)";
+        if(viewportID < 0 || viewportID > 3)    return "Invalid ID used (found: " + viewportID + " required: 0-3)";
         else if(name == null || name.isEmpty()) return "Name cannot be an empty string or null";
         else return null;
     }
@@ -108,7 +108,7 @@ public class UIContext {
         if(viewportID > -1 && viewportID < 4) {
             widgets.get(viewportID).clear();
         } else {
-            Logger.logWarning("Invalid ID used (found: " + viewportID + " expected: 0-3)", null);
+            Logger.logWarning("Invalid ID used (found: " + viewportID + " required: 0-3)", null);
         }
     }
     
