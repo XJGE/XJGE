@@ -130,6 +130,10 @@ public final class XJGE {
         if(!glfwInit()) Logger.logError("Failed to initialize GLFW", null);
     }
     
+    static final void loop() {
+        //TODO: pull this over from the Game class
+    }
+    
     public static final NavigableMap<Integer, Monitor> findMonitors() {
         PointerBuffer monitorBuf = glfwGetMonitors();
         
@@ -273,7 +277,7 @@ public final class XJGE {
                 resolutionY = resolution.y;
             }
             
-            for(int i = 0; i < viewports.length; i++) viewports[i] = new Viewport(i);
+            //for(int i = 0; i < viewports.length; i++) viewports[i] = new Viewport(i);
             
             fbo = glGenFramebuffers();
             glBindFramebuffer(GL_FRAMEBUFFER, fbo);
@@ -573,7 +577,6 @@ public final class XJGE {
         
         Game.loop(fbo, viewports, terminal, debugInfo, depthProgram, blurProgram, debugModeEnabled);
         
-        Font.placeholder.delete();
         engineIcons.delete();
         beep.freeSound();
         terminal.freeBuffers();

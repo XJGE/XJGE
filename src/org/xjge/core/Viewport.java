@@ -51,11 +51,11 @@ final class Viewport {
      *           of the engine. Corresponds directly with 
      *           {@link org.lwjgl.glfw.GLFW#GLFW_JOYSTICK_1 GLFW_JOYSTICK} values.
      */
-    Viewport(int id) {
+    Viewport(int id, Resolution resolution) {
         this.id = id;
         
-        width  = XJGE.getResolutionX();
-        height = XJGE.getResolutionY();
+        width  = resolution.width;
+        height = resolution.height;
         bloom  = new Bloom(width, height);
         
         viewTexHandle  = glGenTextures();

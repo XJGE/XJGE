@@ -6,6 +6,7 @@ import java.nio.IntBuffer;
 import static org.lwjgl.glfw.GLFW.*;
 import org.lwjgl.glfw.GLFWImage;
 import org.lwjgl.opengl.GL;
+import static org.lwjgl.opengl.GL30.*;
 import static org.lwjgl.stb.STBImage.STBI_rgb_alpha;
 import static org.lwjgl.stb.STBImage.stbi_image_free;
 import static org.lwjgl.stb.STBImage.stbi_load_from_memory;
@@ -26,16 +27,32 @@ public final class Window2 {
     private static int height;
     private static int positionX;
     private static int positionY;
-    private static int resolutionWidth;
-    private static int resolutionHeight;
+    private static int fboHandle;
     
     private static long handle = NULL;
     
     private static String title;
+    private static Resolution resolution;
     
     private static final Viewport[] viewports = new Viewport[4];
     
     private Window2() {}
+    
+    /**
+     * Generates a new renderbuffer object and attaches it to the engines 
+     * framebuffer. 
+     */
+    private static void createRenderbuffer() {
+        glBindFramebuffer(GL_FRAMEBUFFER, fboHandle);
+        int rboHandle = glGenRenderbuffers();
+        glBindRenderbuffer(GL_RENDERBUFFER, rboHandle);
+        
+        glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH_COMPONENT, resolution.width, resolution.height);
+        glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_RENDERBUFFER, rboHandle);
+        
+        ErrorUtils.checkGLError();
+        glBindFramebuffer(GL_FRAMEBUFFER, 0);
+    }
     
     public static void show(WindowConfig config) {
         if(handle != NULL) {
@@ -49,16 +66,32 @@ public final class Window2 {
         
         width  = config.width();
         height = config.height();
-        title  = config.title();
+        title  = (config.title() == null) ? "XJGE v" + XJGE.VERSION : config.title();
         handle = glfwCreateWindow(width, height, title, NULL, NULL);
         
         setIcon("/org/xjge/assets/", "xjge_texture_missing.png");
         
         glfwMakeContextCurrent(handle);
         GL.createCapabilities();
-        reconfigure(config.monitor());
+        reconfigure(config.monitor()); //TODO: check if null
         
-        //Create framebuffers with resolution, etc.
+        resolution = (config.resolution() == null) ? new Resolution(width, height) : config.resolution();
+        for(int i = 0; i < viewports.length; i++) viewports[i] = new Viewport(i, resolution);
+        
+        fboHandle = glGenFramebuffers();
+        glBindFramebuffer(GL_FRAMEBUFFER, fboHandle);
+            glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, viewports[0].viewTexHandle, 0);
+            glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT1, GL_TEXTURE_2D, viewports[1].viewTexHandle, 0);
+            glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT2, GL_TEXTURE_2D, viewports[2].viewTexHandle, 0);
+            glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT3, GL_TEXTURE_2D, viewports[3].viewTexHandle, 0);
+            glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT4, GL_TEXTURE_2D, viewports[0].bloomTexHandle, 0);
+            glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT5, GL_TEXTURE_2D, viewports[1].bloomTexHandle, 0);
+            glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT6, GL_TEXTURE_2D, viewports[2].bloomTexHandle, 0);
+            glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT7, GL_TEXTURE_2D, viewports[3].bloomTexHandle, 0);
+        glBindFramebuffer(GL_FRAMEBUFFER, 0);
+        
+        createRenderbuffer();
+        ErrorUtils.checkFBStatus(GL_FRAMEBUFFER);
         
         glfwShowWindow(handle);
         
@@ -67,6 +100,9 @@ public final class Window2 {
         while(!glfwWindowShouldClose(handle)) {
             //TODO: reimplement game loop
         }
+        
+        GL.destroy();
+        glfwTerminate();
         
         /**
          * Maybe add these?
@@ -118,7 +154,7 @@ public final class Window2 {
          * setDebugModeEnabled() can no longer be called following Window.show()
          * 
          * Game -> XJGE (maintains loop, scene, and config settings)
-         * XJGE -> Window (maintains window, viewport, and glfw callbacks)
+         * XJGE -> Window (maintains window, viewports, and glfw callbacks)
          */
         
         /**
