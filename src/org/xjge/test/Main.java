@@ -16,9 +16,8 @@ public class Main {
     public static void main(String args[]) {
         
         Monitor primary = XJGE.findMonitors().get(1);
-        WindowConfig config = new WindowConfig(false, 640, 480, "Test", primary, null);
         
-        Window2.show(config);
+        Window2.show(new WindowConfig(false, false, 640, 480, "Test", primary, null));
         
         /*
         XJGE.init("/org/xjge/assets/", "org.xjge.test.", null);

@@ -134,6 +134,19 @@ public final class XJGE {
         //TODO: pull this over from the Game class
     }
     
+    /**
+     * Provides the amount of currently connected display devices.
+     * 
+     * @return the number of available display devices
+     */
+    public static int getNumMonitors() {
+        return monitors.size();
+    }
+    
+    public static Monitor getPrimaryMonitor() {
+        return null;
+    }
+    
     public static final NavigableMap<Integer, Monitor> findMonitors() {
         PointerBuffer monitorBuf = glfwGetMonitors();
         
@@ -378,7 +391,7 @@ public final class XJGE {
             beep        = new Sound("xjge_beep.ogg");
             
             Light.setIconTexture(engineIcons);
-            Logger.logSystemInfo();
+            //Logger.logSystemInfo();
             
             XJGE.assetsFilepath = assetsFilepath;
             XJGE.scenesFilepath = scenesFilepath;

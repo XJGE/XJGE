@@ -32,50 +32,38 @@ public final class Window2 {
     private static long handle = NULL;
     
     private static String title;
+    private static Monitor monitor;
     private static Resolution resolution;
     
     private static final Viewport[] viewports = new Viewport[4];
     
     private Window2() {}
     
-    /**
-     * Generates a new renderbuffer object and attaches it to the engines 
-     * framebuffer. 
-     */
-    private static void createRenderbuffer() {
-        glBindFramebuffer(GL_FRAMEBUFFER, fboHandle);
-        int rboHandle = glGenRenderbuffers();
-        glBindRenderbuffer(GL_RENDERBUFFER, rboHandle);
-        
-        glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH_COMPONENT, resolution.width, resolution.height);
-        glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_RENDERBUFFER, rboHandle);
-        
-        ErrorUtils.checkGLError();
-        glBindFramebuffer(GL_FRAMEBUFFER, 0);
-    }
-    
     public static void show(WindowConfig config) {
         if(handle != NULL) {
-            Logger.logInfo("The application window is already visible.");
+            Logger.logInfo("The application window is already visible");
             return;
         }
         
         glfwWindowHint(GLFW_VISIBLE, GLFW_FALSE);
         glfwWindowHint(GLFW_FOCUS_ON_SHOW, GLFW_TRUE);
-        glfwWindowHint(GLFW_RESIZABLE, config.resizable() ? GLFW_TRUE : GLFW_FALSE);
+        glfwWindowHint(GLFW_RESIZABLE, config.resizable ? GLFW_TRUE : GLFW_FALSE);
         
-        width  = config.width();
-        height = config.height();
-        title  = (config.title() == null) ? "XJGE v" + XJGE.VERSION : config.title();
+        fullscreen = config.fullscreen;
+        width      = config.width;
+        height     = config.height;
+        title      = config.title;
+        monitor    = config.monitor;
+        resolution = config.resolution;
+        
         handle = glfwCreateWindow(width, height, title, NULL, NULL);
         
         setIcon("/org/xjge/assets/", "xjge_texture_missing.png");
         
         glfwMakeContextCurrent(handle);
         GL.createCapabilities();
-        reconfigure(config.monitor()); //TODO: check if null
+        reconfigure();
         
-        resolution = (config.resolution() == null) ? new Resolution(width, height) : config.resolution();
         for(int i = 0; i < viewports.length; i++) viewports[i] = new Viewport(i, resolution);
         
         fboHandle = glGenFramebuffers();
@@ -99,6 +87,7 @@ public final class Window2 {
         
         while(!glfwWindowShouldClose(handle)) {
             //TODO: reimplement game loop
+            glfwPollEvents(); //Temp, this will be inside XJGE.loop()
         }
         
         GL.destroy();
@@ -168,7 +157,23 @@ public final class Window2 {
          */
     }
     
-    static void reconfigure(Monitor monitor) {
+    /**
+     * Generates a new renderbuffer object and attaches it to the engines 
+     * framebuffer. 
+     */
+    private static void createRenderbuffer() {
+        glBindFramebuffer(GL_FRAMEBUFFER, fboHandle);
+        int rboHandle = glGenRenderbuffers();
+        glBindRenderbuffer(GL_RENDERBUFFER, rboHandle);
+        
+        glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH_COMPONENT, resolution.width, resolution.height);
+        glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_RENDERBUFFER, rboHandle);
+        
+        ErrorUtils.checkGLError();
+        glBindFramebuffer(GL_FRAMEBUFFER, 0);
+    }
+    
+    static void reconfigure() {
         if(fullscreen) {
             width  = monitor.getWidth();
             height = monitor.getHeight();
@@ -176,8 +181,8 @@ public final class Window2 {
             glfwSetWindowMonitor(handle, monitor.handle, positionX, positionY, 
                                  monitor.getWidth(), monitor.getHeight(), monitor.getRefreshRate());
         } else {
-            width  = (int) Math.round(monitor.getWidth() * 0.6f);
-            height = (int) Math.round(monitor.getHeight() * 0.6f);
+            //width  = (int) Math.round(monitor.getWidth() * 0.6f);
+            //height = (int) Math.round(monitor.getHeight() * 0.6f);
             
             glfwSetWindowMonitor(handle, NULL, positionX, positionY, width, height, monitor.getRefreshRate());
         }
