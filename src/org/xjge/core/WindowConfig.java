@@ -1,7 +1,5 @@
 package org.xjge.core;
 
-import static org.lwjgl.glfw.GLFW.glfwInit;
-
 /**
  * Created: May 28, 2025
  * <br><br>
@@ -18,6 +16,7 @@ public final class WindowConfig {
     private int width  = 1280;
     private int height = 720;
     
+    private String iconFilename;
     private String title          = "XJGE v" + XJGE.VERSION;
     private Monitor monitor       = Hardware2.getPrimaryMonitor();
     private Resolution resolution = new Resolution(1280, 720);
@@ -36,6 +35,10 @@ public final class WindowConfig {
     
     int getHeight() {
         return height;
+    }
+    
+    final String getIconFilename() {
+        return iconFilename;
     }
     
     final String getTitle() {
@@ -61,6 +64,11 @@ public final class WindowConfig {
     public void setSize(int width, int height) {
         this.width  = (width <= 0) ? 1280 : width;
         this.height = (height <= 0) ? 720 : height;
+    }
+    
+    public void setIcon(String filename) {
+        if(filename == null) return;
+        this.iconFilename = filename;
     }
     
     public void setTitle(String title) {

@@ -65,7 +65,11 @@ public final class Window2 {
         
         handle = glfwCreateWindow(width, height, title, NULL, NULL);
         
-        setIcon("/org/xjge/assets/", "xjge_texture_missing.png");
+        if(config.getIconFilename() == null) {
+            setIcon("/org/xjge/assets/", "xjge_texture_missing.png");
+        } else {
+            setIcon(config.getIconFilename());
+        }
         
         glfwMakeContextCurrent(handle);
         GL.createCapabilities();
