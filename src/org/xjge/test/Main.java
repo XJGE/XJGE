@@ -15,9 +15,22 @@ public class Main {
 
     public static void main(String args[]) {
         
-        Monitor primary = XJGE.findMonitors().get(1);
+        /*
+        windowConfig.setFullscreen(false);
+        windowConfig.setResizable(false);
+        windowConfig.setSize(1280, 780);
+        windowConfig.setMonitor(XJGE.getPrimaryMonitor());
+        windowConfig.setResolution(384, 216);
         
-        Window2.show(new WindowConfig(false, false, 640, 480, "Test", primary, null));
+        Window2.show(windowConfig);
+        */
+        
+        
+        XJGE.init();
+        
+        WindowConfig windowConfig = new WindowConfig();
+        
+        Window2.show(windowConfig);
         
         /*
         XJGE.init("/org/xjge/assets/", "org.xjge.test.", null);

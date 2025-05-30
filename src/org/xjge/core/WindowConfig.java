@@ -12,44 +12,70 @@ import static org.lwjgl.glfw.GLFW.glfwInit;
  */
 public final class WindowConfig {
     
-    final boolean resizable;
-    final boolean fullscreen;
+    private boolean fullscreen;
+    private boolean resizable;
     
-    final int width;
-    final int height;
+    private int width  = 1280;
+    private int height = 720;
     
-    final String title;
-    final Monitor monitor;
-    final Resolution resolution;
+    private String title          = "XJGE v" + XJGE.VERSION;
+    private Monitor monitor       = Hardware2.getPrimaryMonitor();
+    private Resolution resolution = new Resolution(1280, 720);
     
-    static {
-        String javaVersion = System.getProperty("java.version");
-        
-        if(javaVersion.compareTo("22.0.2") < 0) {
-            Logger.logError("Unsupported Java version used (found: " + javaVersion + " required: 22.0.2)", null);
-        }
-        
-        if(!glfwInit()) Logger.logError("Failed to initialize GLFW", null);
+    boolean getFullscreen() {
+        return fullscreen;
     }
     
-    /**
-     * 
-     * @param resizable
-     * @param fullscreen
-     * @param width
-     * @param height
-     * @param title
-     * @param monitor
-     * @param resolution 
-     */
-    public WindowConfig(boolean resizable, boolean fullscreen, int width, int height, String title, Monitor monitor, Resolution resolution) {
-        this.resizable  = resizable;
+    boolean getResizable() {
+        return resizable;
+    }
+    
+    int getWidth() {
+        return width;
+    }
+    
+    int getHeight() {
+        return height;
+    }
+    
+    final String getTitle() {
+        return title;
+    }
+    
+    final Monitor getMonitor() {
+        return monitor;
+    }
+    
+    final Resolution getResolution() {
+        return resolution;
+    }
+    
+    public void setFullscreen(boolean fullscreen) {
         this.fullscreen = fullscreen;
-        this.width      = (width <= 0) ? 640 : width;
-        this.height     = (height <= 0) ? 480 : height;
-        this.title      = (title == null) ? "XJGE v" + XJGE.VERSION : title;
-        this.monitor    = monitor;
-        this.resolution = (resolution == null) ? new Resolution(this.width, this.height) : resolution;
+    }
+    
+    public void setResizable(boolean resizable) {
+        this.resizable = resizable;
+    }
+    
+    public void setSize(int width, int height) {
+        this.width  = (width <= 0) ? 1280 : width;
+        this.height = (height <= 0) ? 720 : height;
+    }
+    
+    public void setTitle(String title) {
+        if(title == null) return;
+        this.title = title;
+    }
+    
+    public void setMonitor(Monitor monitor) {
+        if(monitor == null) return;
+        this.monitor = monitor;
+    }
+    
+    public void setResolution(int width, int height) {
+        if(width <= 0 || height <= 0) return;
+        this.resolution = new Resolution(width, height);
     }
     
 }

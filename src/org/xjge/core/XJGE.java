@@ -1,6 +1,5 @@
 package org.xjge.core;
 
-import org.xjge.ui.Font;
 import org.xjge.graphics.Texture;
 import java.beans.PropertyChangeListener;
 import java.io.File;
@@ -34,6 +33,7 @@ import static org.lwjgl.glfw.GLFW.*;
 import org.lwjgl.opengl.GL;
 import static org.lwjgl.opengl.GL32.*;
 import static org.lwjgl.opengl.GLUtil.setupDebugMessageCallback;
+import static org.lwjgl.system.MemoryUtil.NULL;
 import static org.xjge.core.Input.KEY_MOUSE_COMBO;
 import org.xjge.graphics.PostProcessShader;
 
@@ -85,7 +85,7 @@ public final class XJGE {
     private static double cursorX;
     private static double cursorY;
     
-    private static boolean initCalled;
+    private static boolean initialized;
     private static boolean debugModeEnabled;
     private static boolean restrict4KResolutions;
     private static boolean matchWindowResolution;
@@ -119,15 +119,26 @@ public final class XJGE {
     
     static final Observable observable = new Observable(XJGE.class);
     
-    private static final TreeMap<Integer, Monitor> monitors = new TreeMap<>();
+    private static final NavigableMap<Integer, Monitor> monitors = new TreeMap<>();
     
-    static {
+    public static void init() {
         String javaVersion = System.getProperty("java.version");
+        
         if(javaVersion.compareTo("22.0.2") < 0) {
             Logger.logError("Unsupported Java version used (found: " + javaVersion + " required: 22.0.2)", null);
         }
         
         if(!glfwInit()) Logger.logError("Failed to initialize GLFW", null);
+        
+        /**
+         * TODO:
+         * use this as an idempotent initializer, the user can call it explicitly, 
+         * otherwise any operation which requires its function will call it automatically
+         * 
+         * - Find monitors
+         * - Find gamepads
+         * - Window creation
+         */
     }
     
     static final void loop() {
@@ -144,20 +155,21 @@ public final class XJGE {
     }
     
     public static Monitor getPrimaryMonitor() {
-        return null;
+        return findMonitors().get(1);
     }
     
     public static final NavigableMap<Integer, Monitor> findMonitors() {
-        PointerBuffer monitorBuf = glfwGetMonitors();
+        PointerBuffer monitorBuffer = glfwGetMonitors();
         
-        if(monitorBuf != null) {
-            for(int i = 0; i < monitorBuf.limit(); i++) {
+        if(monitorBuffer == null || monitorBuffer.limit() == 0) {
+            Logger.logWarning("Failed to find any available monitors", null);
+            monitors.clear();
+        } else {
+            for(int i = 0; i < monitorBuffer.limit(); i++) {
                 if(!monitors.containsKey(i + 1)) {
-                    monitors.put(i + 1, new Monitor(i + 1, monitorBuf.get(i)));
+                    monitors.put(i + 1, new Monitor(i + 1, monitorBuffer.get(i)));
                 }
             }
-        } else {
-            Logger.logWarning("Failed to find any available monitors", null);
         }
         
         return Collections.unmodifiableNavigableMap(monitors);
@@ -211,7 +223,7 @@ public final class XJGE {
      */
     public static void init(String assetsFilepath, String scenesFilepath, Vector2i resolution, boolean createOpenGLLog, 
                             boolean debugEnabled, boolean restrict4K, boolean retainFullscreen, boolean windowResizable) {
-        if(!initCalled) {
+        if(!initialized) {
             if(System.getProperty("java.version").compareTo("22.0.2") < 0) {
                 Logger.logError("Unsupported Java version. Required 22.0.2, " + 
                                  "found: " + System.getProperty("java.version"), 
@@ -534,7 +546,7 @@ public final class XJGE {
             Logger.logWarning("XJGE has already been initialized", null);
         }
         
-        initCalled = true;
+        initialized = true;
     }
     
     /**

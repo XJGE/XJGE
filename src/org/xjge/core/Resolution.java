@@ -9,7 +9,7 @@ package org.xjge.core;
  * @author J Hoffman
  * @since  4.0.0
  */
-public final class Resolution {
+final class Resolution {
     
     int width;
     int height;

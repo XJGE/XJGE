@@ -47,14 +47,21 @@ public final class Window2 {
         
         glfwWindowHint(GLFW_VISIBLE, GLFW_FALSE);
         glfwWindowHint(GLFW_FOCUS_ON_SHOW, GLFW_TRUE);
-        glfwWindowHint(GLFW_RESIZABLE, config.resizable ? GLFW_TRUE : GLFW_FALSE);
+        glfwWindowHint(GLFW_RESIZABLE, config.getResizable() ? GLFW_TRUE : GLFW_FALSE);
         
-        fullscreen = config.fullscreen;
-        width      = config.width;
-        height     = config.height;
-        title      = config.title;
-        monitor    = config.monitor;
-        resolution = config.resolution;
+        /**
+         * TODO:
+         * - Make call to XJGE.init() before this is used
+         * - Add XJGE.init() call to any methods in the hardware class that use GLFW
+         * - Search for other cases where implicit initialization might be used
+         * - XJGE.init() should be public and static, encourage the API to call it before Window.show()
+         */
+        fullscreen = config.getFullscreen();
+        width      = config.getWidth();
+        height     = config.getHeight();
+        title      = config.getTitle();
+        monitor    = config.getMonitor();
+        resolution = config.getResolution();
         
         handle = glfwCreateWindow(width, height, title, NULL, NULL);
         
@@ -94,26 +101,15 @@ public final class Window2 {
         glfwTerminate();
         
         /**
-         * Maybe add these?
-         * XJGE.setUserSavedControls(viewportID, Collection);
-         * XJGE.setMusicMasterVolume(1.0f);
-         * XJGE.setSoundMasterVolume(1.0f);
-         * XJGE.setVsyncEnabled(true);
-         * XJGE.setGamma() //future feature?
-         * XJGE.findMonitors(); //returns list of monitor objects
-         * XJGE.findSpeakers(); //returns list of speaker objects
-         * XJGE.findGamepads(); //returns list of gamepads
+         * Hardware.findMonitors(); //returns list of monitor objects
+         * Hardware.findSpeakers(); //returns list of speaker objects
+         * Hardware.findGamepads(); //returns list of gamepad objects
          * 
-         * Definitely add these:
-         * XJGE.setAssetsFilepath("");
-         * XJGE.setScenesFilepath("");
-         * XJGE.setDebugModeEnabled(true);
+         * XJGE.init("/assets/", "scenes.", debugEnabled);
          * XJGE.setScene(Scene);
          * XJGE.addEvent(Event);
-         * XJGE.restrict4K(true);
-         * XJGE.retainFullscreen(false);
          * 
-         * Window.show();
+         * Window.show(WindowConfig);
          * 
          * Window.setSize(0, 0);
          * Window.setPosition(0, 0);
@@ -144,16 +140,6 @@ public final class Window2 {
          * 
          * Game -> XJGE (maintains loop, scene, and config settings)
          * XJGE -> Window (maintains window, viewports, and glfw callbacks)
-         */
-        
-        /**
-         * XJGE.loadConfig(); //returns collection of settings
-         * 
-         * assetsFilepath
-         * scenesFilepath
-         * debugEnabled
-         * restrict4K
-         * retainFullscreen
          */
     }
     
