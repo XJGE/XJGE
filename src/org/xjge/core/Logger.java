@@ -89,7 +89,7 @@ public final class Logger {
                 case 4  -> "GLFW VER:\t" + glfwGetVersionString();
                 case 5  -> "OPENGL VER:\t" + glGetString(GL_VERSION);
                 case 6  -> "GFX CARD:\t" + glGetString(GL_RENDERER);
-                case 7  -> "MONITORS:\t" + "Found: " + XJGE.getNumMonitors() + ", Primary: \"" + monitor.name + "\" (" + monitor.getInfo() + ")";
+                case 7  -> "MONITORS:\t" + "Found: " + Hardware.getNumMonitors() + ", Primary: \"" + monitor.name + "\" (" + monitor.getInfo() + ")";
                 case 8  -> "SPEAKERS:\t" + "Found: " + Hardware.getNumSpeakers() + ", Primary: \"" + Audio.speaker.name;
                 case 9  -> "GAMEPADS:\t" + "Found: " + Input.getNumDevices();
             };

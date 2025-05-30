@@ -49,13 +49,6 @@ public final class Window2 {
         glfwWindowHint(GLFW_FOCUS_ON_SHOW, GLFW_TRUE);
         glfwWindowHint(GLFW_RESIZABLE, config.getResizable() ? GLFW_TRUE : GLFW_FALSE);
         
-        /**
-         * TODO:
-         * - Make call to XJGE.init() before this is used
-         * - Add XJGE.init() call to any methods in the hardware class that use GLFW
-         * - Search for other cases where implicit initialization might be used
-         * - XJGE.init() should be public and static, encourage the API to call it before Window.show()
-         */
         fullscreen = config.getFullscreen();
         width      = config.getWidth();
         height     = config.getHeight();

@@ -14,29 +14,17 @@ import org.xjge.core.XJGE;
 public class Main {
 
     public static void main(String args[]) {
+                
+        XJGE.init(true, "/org/xjge/assets/", "org.xjge.test.");
         
         /*
-        windowConfig.setFullscreen(false);
-        windowConfig.setResizable(false);
-        windowConfig.setSize(1280, 780);
-        windowConfig.setMonitor(XJGE.getPrimaryMonitor());
-        windowConfig.setResolution(384, 216);
-        
-        Window2.show(windowConfig);
-        */
-        
-        
-        XJGE.init();
-        
         WindowConfig windowConfig = new WindowConfig();
-        
-        Window2.show(windowConfig);
-        
-        /*
-        XJGE.init("/org/xjge/assets/", "org.xjge.test.", null);
-        Game.setScene(new TestScene());
-        XJGE.start();
+        windowConfig.setSize(640, 480);
+        windowConfig.setResizable(true);
+        windowConfig.setTitle("test");
         */
+        
+        Window2.show(new WindowConfig());
         
     }
     

@@ -21,19 +21,16 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.Map;
-import java.util.NavigableMap;
 import java.util.TreeMap;
 import javax.xml.stream.XMLInputFactory;
 import javax.xml.stream.XMLStreamConstants;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 import org.joml.Vector2i;
-import org.lwjgl.PointerBuffer;
 import static org.lwjgl.glfw.GLFW.*;
 import org.lwjgl.opengl.GL;
 import static org.lwjgl.opengl.GL32.*;
 import static org.lwjgl.opengl.GLUtil.setupDebugMessageCallback;
-import static org.lwjgl.system.MemoryUtil.NULL;
 import static org.xjge.core.Input.KEY_MOUSE_COMBO;
 import org.xjge.graphics.PostProcessShader;
 
@@ -119,9 +116,16 @@ public final class XJGE {
     
     static final Observable observable = new Observable(XJGE.class);
     
-    private static final NavigableMap<Integer, Monitor> monitors = new TreeMap<>();
-    
-    public static void init() {
+    public static void init(boolean debugModeEnabled, String assetsFilepath, String scenesFilepath) {
+        if(initialized) {
+            Logger.logInfo("XJGE has already been initialized");
+            return;
+        }
+        
+        XJGE.debugModeEnabled = debugModeEnabled;
+        XJGE.assetsFilepath   = assetsFilepath;
+        XJGE.scenesFilepath   = scenesFilepath;
+        
         String javaVersion = System.getProperty("java.version");
         
         if(javaVersion.compareTo("22.0.2") < 0) {
@@ -130,49 +134,11 @@ public final class XJGE {
         
         if(!glfwInit()) Logger.logError("Failed to initialize GLFW", null);
         
-        /**
-         * TODO:
-         * use this as an idempotent initializer, the user can call it explicitly, 
-         * otherwise any operation which requires its function will call it automatically
-         * 
-         * - Find monitors
-         * - Find gamepads
-         * - Window creation
-         */
+        initialized = true;
     }
     
     static final void loop() {
         //TODO: pull this over from the Game class
-    }
-    
-    /**
-     * Provides the amount of currently connected display devices.
-     * 
-     * @return the number of available display devices
-     */
-    public static int getNumMonitors() {
-        return monitors.size();
-    }
-    
-    public static Monitor getPrimaryMonitor() {
-        return findMonitors().get(1);
-    }
-    
-    public static final NavigableMap<Integer, Monitor> findMonitors() {
-        PointerBuffer monitorBuffer = glfwGetMonitors();
-        
-        if(monitorBuffer == null || monitorBuffer.limit() == 0) {
-            Logger.logWarning("Failed to find any available monitors", null);
-            monitors.clear();
-        } else {
-            for(int i = 0; i < monitorBuffer.limit(); i++) {
-                if(!monitors.containsKey(i + 1)) {
-                    monitors.put(i + 1, new Monitor(i + 1, monitorBuffer.get(i)));
-                }
-            }
-        }
-        
-        return Collections.unmodifiableNavigableMap(monitors);
     }
     
     
