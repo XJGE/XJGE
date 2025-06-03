@@ -12,6 +12,7 @@ import static org.lwjgl.stb.STBImage.stbi_image_free;
 import static org.lwjgl.stb.STBImage.stbi_load_from_memory;
 import org.lwjgl.system.MemoryStack;
 import static org.lwjgl.system.MemoryUtil.NULL;
+import static org.xjge.core.SplitScreenType.*;
 
 /**
  * Created: Apr 29, 2021
@@ -216,6 +217,13 @@ public final class Window2 {
         }
     }
     
+    /**
+     * Closes the applications window and gracefully ceases execution.
+     */
+    public static void close() {
+        glfwSetWindowShouldClose(handle, true);
+    }
+    
     public static void setFullscreen(boolean fullscreen) {
         Window2.fullscreen = fullscreen;
         reconfigure();
@@ -254,7 +262,7 @@ public final class Window2 {
     
     public static void setTitle(String title) {
         if(title == null) {
-            Logger.logInfo("Window title may not be null");
+            Logger.logInfo("Window title cannot be null");
             return;
         }
         
@@ -296,8 +304,100 @@ public final class Window2 {
         setIcon(XJGE.getAssetsFilepath(), filename);
     }
     
-    public static void setScreenSplitType(SplitScreenType splitType) {
+    public static void setSplitScreenType(SplitScreenType splitType) {
         Window2.splitType = splitType;
+        
+        for(Viewport viewport : viewports) {
+            switch(splitType) {
+                case NONE -> {
+                    viewport.active = (viewport.id == 0);
+                    viewport.setBounds(resolution.width, resolution.height, 
+                                       0, 0, 
+                                       Window.getWidth(), Window.getHeight());
+                }
+                
+                case HORIZONTAL -> {
+                    viewport.active = (viewport.id == 0 || viewport.id == 1);
+                    switch(viewport.id) {
+                        case 0 -> viewport.setBounds(
+                                    resolution.width, resolution.height / 2,
+                                    0, Window.getHeight() / 2, 
+                                    Window.getWidth(), Window.getHeight() / 2);
+                            
+                        case 1 -> viewport.setBounds(
+                                    resolution.width, resolution.height / 2,
+                                    0, 0, 
+                                    Window.getWidth(), Window.getHeight() / 2);
+                        
+                        default -> viewport.setBounds(resolution.width, resolution.height, 0, 0, 0, 0);
+                    }
+                }
+                
+                case VERTICAL -> {
+                    viewport.active = (viewport.id == 0 || viewport.id == 1);
+                    switch(viewport.id) {
+                        case 0 -> viewport.setBounds(
+                                    resolution.width / 2, resolution.height,
+                                    0, 0, 
+                                    Window.getWidth() / 2, Window.getHeight());
+                            
+                        case 1 -> viewport.setBounds(
+                                    resolution.width / 2, resolution.height,
+                                    Window.getWidth() / 2, 0, 
+                                    Window.getWidth() / 2, Window.getHeight());
+                        
+                        default -> viewport.setBounds(resolution.width, resolution.height, 0, 0, 0, 0);
+                    }
+                }
+                
+                case TRISECT -> {
+                    viewport.active = (viewport.id != 3);
+                    switch(viewport.id) {
+                        case 0 -> viewport.setBounds(
+                                    resolution.width / 2, resolution.height / 2,
+                                    0, Window.getHeight() / 2, 
+                                    Window.getWidth() / 2, Window.getHeight() / 2);
+                            
+                        case 1 -> viewport.setBounds(
+                                    resolution.width / 2, resolution.height / 2,
+                                    Window.getWidth() / 2, Window.getHeight() / 2, 
+                                    Window.getWidth() / 2, Window.getHeight() / 2);
+                            
+                        case 2 -> viewport.setBounds(
+                                    resolution.width / 2, resolution.height / 2,
+                                    Window.getWidth() / 4, 0, 
+                                    Window.getWidth() / 2, Window.getHeight() / 2);
+                        
+                        default -> viewport.setBounds(resolution.width, resolution.height, 0, 0, 0, 0);
+                    }
+                }
+                
+                case QUARTER -> {
+                    viewport.active = true;
+                    switch(viewport.id) {
+                        case 0 -> viewport.setBounds(
+                                    resolution.width / 2, resolution.height / 2,
+                                    0, Window.getHeight() / 2, 
+                                    Window.getWidth() / 2, Window.getHeight() / 2);
+                            
+                        case 1 -> viewport.setBounds(
+                                    resolution.width / 2, resolution.height / 2,
+                                    Window.getWidth() / 2, Window.getHeight() / 2, 
+                                    Window.getWidth() / 2, Window.getHeight() / 2);
+                            
+                        case 2 -> viewport.setBounds(
+                                    resolution.width / 2, resolution.height / 2,
+                                    0, 0, 
+                                    Window.getWidth() / 2, Window.getHeight() / 2);
+                            
+                        case 3 -> viewport.setBounds(
+                                    resolution.width / 2, resolution.height / 2,
+                                    Window.getWidth() / 2, 0, 
+                                    Window.getWidth() / 2, Window.getHeight() / 2);
+                    }
+                }
+            }
+        }
     }
     
     public static void setMonitor(Monitor monitor) {
@@ -305,8 +405,9 @@ public final class Window2 {
         reconfigure();
     }
     
-    public static void setInputMode() {
-        
+    public static void setInputMode(int mode, int value) {
+        //TODO: add validation?
+        glfwSetInputMode(handle, mode, value);
     }
     
 }
