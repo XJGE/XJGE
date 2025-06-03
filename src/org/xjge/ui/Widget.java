@@ -2,7 +2,7 @@ package org.xjge.ui;
 
 import java.util.Map;
 import org.xjge.core.Mouse;
-import org.xjge.core.ScreenSplitType;
+import org.xjge.core.SplitScreenType;
 import org.xjge.graphics.GLProgram;
 
 /**
@@ -17,7 +17,7 @@ public abstract class Widget {
     
     public abstract void render(Map<String, GLProgram> glPrograms);
     
-    public abstract void relocate(ScreenSplitType splitType, int viewportWidth, int viewportHeight);
+    public abstract void relocate(SplitScreenType splitType, int viewportWidth, int viewportHeight);
     
     public abstract void processKeyboardInput(int key, int action, int mods);
     

@@ -82,7 +82,7 @@ public final class Window {
                 case GLFW_CONNECTED -> {
                     Hardware.findMonitors();
                     Monitor conMon = Hardware.getMonitor(monHandle);
-                    Logger.logInfo("Monitor " + conMon.id + " \"" + conMon.name + "\" has been connected");
+                    Logger.logInfo("Monitor " + conMon.index + " \"" + conMon.name + "\" has been connected");
                 }
                 
                 /*
@@ -92,7 +92,7 @@ public final class Window {
                 */
                 case GLFW_DISCONNECTED -> {
                     if(monitor.handle == monHandle) {
-                        Logger.logWarning("The current monitor (ID: " + monitor.id + ", \"" + 
+                        Logger.logWarning("The current monitor (ID: " + monitor.index + ", \"" + 
                                           monitor.name + "\") has been disconnected. Attempting " + 
                                           "to move the window to the next available monitor...", 
                                           null);
@@ -101,11 +101,11 @@ public final class Window {
                         monitor = Hardware.getAnyMonitor();
                         setFullscreen(false);
                         
-                        Logger.logInfo("Moved the window to monitor " + monitor.id + " \"" + monitor.name + "\"");
+                        Logger.logInfo("Moved the window to monitor " + monitor.index + " \"" + monitor.name + "\"");
                     } else {
                         Monitor disconMon = Hardware.getMonitor(monHandle);
                         
-                        Logger.logInfo("Monitor " + disconMon.id + " \"" + disconMon.name + "\" has been disconnected");
+                        Logger.logInfo("Monitor " + disconMon.index + " \"" + disconMon.name + "\" has been disconnected");
                         Hardware.removeMonitor(monHandle);
                     }
                 }
@@ -330,14 +330,14 @@ public final class Window {
         if(!monitors.isEmpty()) {
             switch(operation) {
                 case "next" -> {
-                    newMonitor = (!monitors.ceilingKey(monitors.lastKey()).equals(monitor.id))
-                               ? monitors.higherEntry(monitor.id).getValue()
+                    newMonitor = (!monitors.ceilingKey(monitors.lastKey()).equals(monitor.index))
+                               ? monitors.higherEntry(monitor.index).getValue()
                                : monitors.firstEntry().getValue();
                 }
                 
                 case "prev" -> {
-                    newMonitor = (!monitors.floorKey(monitors.firstKey()).equals(monitor.id))
-                               ? monitors.lowerEntry(monitor.id).getValue()
+                    newMonitor = (!monitors.floorKey(monitors.firstKey()).equals(monitor.index))
+                               ? monitors.lowerEntry(monitor.index).getValue()
                                : monitors.lastEntry().getValue();
                 }
                 

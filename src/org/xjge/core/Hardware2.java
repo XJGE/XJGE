@@ -16,25 +16,32 @@ public final class Hardware2 {
     
     private static final NavigableMap<Integer, Monitor> monitors = new TreeMap<>();
     
+    static Monitor getMonitor(long handle) {
+        if(monitors.isEmpty()) {
+            Logger.logWarning("Unable to find a monitor with the handle " + handle, null);
+            return null;
+        } else {
+            return monitors.values().stream().filter(monitor -> monitor.handle == handle).findFirst().get();
+        }
+    }
+    
+    static final Monitor getPrimaryMonitor() {
+        return findMonitors().get(0);
+    }
+    
     public static final NavigableMap<Integer, Monitor> findMonitors() {
+        monitors.clear();
         PointerBuffer monitorBuffer = glfwGetMonitors();
         
         if(monitorBuffer == null || monitorBuffer.limit() == 0) {
             Logger.logWarning("Failed to find any available monitors", null);
-            monitors.clear();
         } else {
             for(int i = 0; i < monitorBuffer.limit(); i++) {
-                if(!monitors.containsKey(i + 1)) {
-                    monitors.put(i + 1, new Monitor(i + 1, monitorBuffer.get(i)));
-                }
+                monitors.put(i, new Monitor(i, monitorBuffer.get(i)));
             }
         }
         
         return Collections.unmodifiableNavigableMap(monitors);
-    }
-    
-    public static final Monitor getPrimaryMonitor() {
-        return findMonitors().get(1);
     }
     
 }

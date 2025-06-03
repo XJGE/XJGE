@@ -3,7 +3,7 @@ package org.xjge.test;
 import java.util.Map;
 import org.xjge.core.Mouse;
 import org.xjge.ui.Font;
-import org.xjge.core.ScreenSplitType;
+import org.xjge.core.SplitScreenType;
 import org.xjge.core.StopWatch;
 import org.xjge.graphics.Color;
 import org.xjge.graphics.GLProgram;
@@ -39,7 +39,7 @@ public class TestWidget extends Widget {
     }
 
     @Override
-    public void relocate(ScreenSplitType splitType, int viewportWidth, int viewportHeight) {
+    public void relocate(SplitScreenType splitType, int viewportWidth, int viewportHeight) {
     }
 
     @Override

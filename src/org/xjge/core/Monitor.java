@@ -19,7 +19,7 @@ import org.lwjgl.glfw.GLFWVidMode;
  */
 public final class Monitor {
     
-    final int id;
+    final int index;
     
     final long handle;
     
@@ -32,12 +32,12 @@ public final class Monitor {
      * Provides the information parsed from a visual display device as an 
      * object.
      * 
-     * @param id the unique number used to identify the device in other parts of 
-     *           the engine
+     * @param index the unique number used to identify the device in other parts 
+     *              of the engine
      * @param handle a unique value provided by GLFW used to identify the  device
      */
-    Monitor(int id, long handle) {
-        this.id     = id;
+    Monitor(int index, long handle) {
+        this.index  = index;
         this.handle = handle;
         name        = glfwGetMonitorName(handle);
         videoMode   = glfwGetVideoMode(handle);
@@ -69,7 +69,7 @@ public final class Monitor {
             }
         } else {
             Logger.logWarning("Unable to find any additional video " +
-                              "modes for monitor " + id + " \"" + name + "\"", 
+                              "modes for monitor " + index + " \"" + name + "\"", 
                               null);
         }
     }
@@ -197,7 +197,7 @@ public final class Monitor {
             
             default -> {
                 try {
-                    int index = Integer.parseInt(operation);
+                    int modeIndex = Integer.parseInt(operation);
                     
                     var tempKeys   = new ArrayList<String>();
                     var tempValues = new ArrayList<GLFWVidMode>(); 
@@ -207,17 +207,17 @@ public final class Monitor {
                         tempValues.add(mode);
                     });
                     
-                    if(tempKeys.get(index) != null && tempValues.get(index) != null) {
-                        videoMode = tempValues.get(index);
+                    if(tempKeys.get(modeIndex) != null && tempValues.get(modeIndex) != null) {
+                        videoMode = tempValues.get(modeIndex);
                     } else {
                         Logger.logWarning("Failed to change the current video mode of monitor " + 
-                                          id + " \"" + name + "\". Could not find a video mode " + 
+                                          index + " \"" + name + "\". Could not find a video mode " + 
                                           "object at index " + index, 
                                           null);
                     }
                 } catch(NumberFormatException | IndexOutOfBoundsException e) {
                     Logger.logWarning("Failed to change the current video mode for monitor " + 
-                                      id + " \"" + name + "\". Invalid index used", 
+                                      index + " \"" + name + "\". Invalid index used", 
                                       e);
                 }
             }

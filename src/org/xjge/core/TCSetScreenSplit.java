@@ -35,11 +35,11 @@ final class TCSetScreenSplit extends TerminalCommand {
                 setOutput(errorTooManyArgs(args.size(), 1), Color.RED);
             } else {
                 switch(args.get(0)) {
-                    case "none"       -> XJGE.setScreenSplit(ScreenSplitType.NONE);
-                    case "horizontal" -> XJGE.setScreenSplit(ScreenSplitType.HORIZONTAL);
-                    case "vertical"   -> XJGE.setScreenSplit(ScreenSplitType.VERTICAL);
-                    case "trisect"    -> XJGE.setScreenSplit(ScreenSplitType.TRISECT);
-                    case "quarter"    -> XJGE.setScreenSplit(ScreenSplitType.QUARTER);
+                    case "none"       -> XJGE.setScreenSplit(SplitScreenType.NONE);
+                    case "horizontal" -> XJGE.setScreenSplit(SplitScreenType.HORIZONTAL);
+                    case "vertical"   -> XJGE.setScreenSplit(SplitScreenType.VERTICAL);
+                    case "trisect"    -> XJGE.setScreenSplit(SplitScreenType.TRISECT);
+                    case "quarter"    -> XJGE.setScreenSplit(SplitScreenType.QUARTER);
 
                     default -> setOutput(errorInvalidArg(args.get(0), "(none), (horizontal), (vertical), (trisect), or (quarter)"), Color.RED);
                 }

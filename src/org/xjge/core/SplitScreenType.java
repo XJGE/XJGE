@@ -9,7 +9,7 @@ package org.xjge.core;
  * @author J Hoffman
  * @since  2.0.0
  */
-public enum ScreenSplitType {
+public enum SplitScreenType {
 
     /**
      * The screen will not be divided. Only the first viewport will be visible.

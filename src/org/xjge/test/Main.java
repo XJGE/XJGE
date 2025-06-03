@@ -1,6 +1,5 @@
 package org.xjge.test;
 
-import org.xjge.core.Monitor;
 import org.xjge.core.Window2;
 import org.xjge.core.WindowConfig;
 import org.xjge.core.XJGE;

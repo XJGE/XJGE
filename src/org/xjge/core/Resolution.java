@@ -14,7 +14,7 @@ final class Resolution {
     int width;
     int height;
     
-    public Resolution(int width, int height) {
+    Resolution(int width, int height) {
         this.width  = width;
         this.height = height;
     }

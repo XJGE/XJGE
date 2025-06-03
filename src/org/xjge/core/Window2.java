@@ -23,6 +23,9 @@ public final class Window2 {
     
     private static boolean fullscreen;
     
+    static final int DEFAULT_WIDTH  = 1280;
+    static final int DEFAULT_HEIGHT = 720;
+    
     private static int width;
     private static int height;
     private static int positionX;
@@ -35,13 +38,15 @@ public final class Window2 {
     private static Monitor monitor;
     private static Resolution resolution;
     
+    private static SplitScreenType splitType = SplitScreenType.NONE;
+    
     private static final Viewport[] viewports = new Viewport[4];
     
     private Window2() {}
     
     public static void show(WindowConfig config) {
         if(handle != NULL) {
-            Logger.logInfo("The application window is already visible");
+            Logger.logInfo("The applications window is already visible");
             return;
         }
         
@@ -87,7 +92,33 @@ public final class Window2 {
         
         glfwShowWindow(handle);
         
-        //TODO: register GLFW callbacks
+        glfwSetMonitorCallback((monitorHandle, event) -> {
+            var monitors = Hardware2.findMonitors();
+            
+            if(monitors.isEmpty()) {
+                //TODO: handle scenario where no monitor is available
+            } else {
+                Monitor eventMonitor = Hardware2.getMonitor(monitorHandle);
+                
+                if(event == GLFW_CONNECTED) {
+                    Logger.logInfo("New monitor \"" + eventMonitor.name + "\" connected at index " + eventMonitor.index);
+                } else if(event == GLFW_DISCONNECTED) {
+                    if(monitor.handle == monitorHandle) {
+                        Logger.logWarning("The current monitor used by the applications window has been disconnected. " + 
+                                          "(name: \" " + eventMonitor.name + "\" index: " + eventMonitor.index + ") " + 
+                                          "Attempting to move the window to the next available monitor...", 
+                                          null);
+                    } else {
+                        Logger.logInfo("The monitor \"" + eventMonitor.name + "\" at index " + 
+                                       eventMonitor.index + " has been disconnected");
+                    }
+                }
+                
+                setSize(DEFAULT_WIDTH, DEFAULT_HEIGHT);
+                setFullscreen(false);
+                setMonitor(monitors.get(0));
+            }
+        });
         
         while(!glfwWindowShouldClose(handle)) {
             //TODO: reimplement game loop
@@ -107,28 +138,28 @@ public final class Window2 {
          * XJGE.addEvent(Event);
          * 
          * Window.show(WindowConfig);
-         * 
-         * Window.setSize(0, 0);
-         * Window.setPosition(0, 0);
-         * Window.setTitle("");
-         * Window.setFullscreen(false);
-         * Window.setScreenSplitType(ScreenSplitType);
-         * Window.setResolution(640, 480);
-         * Window.setResizable(false);
-         * Window.setMontior(Monitor);
-         * Window.setInputMode(CURSOR_NORMAL);
+         * Window.reconfigure();
          * Window.center();
          * 
+         * Window.setFullscreen(false);
+         * Window.setSize(0, 0);
+         * Window.setPosition(0, 0);
+         * Window.setResolution(640, 480);
+         * Window.setTitle("");
+         * Window.setIcon("");
+         * Window.setScreenSplitType(ScreenSplitType);
+         * Window.setMontior(Monitor);
+         * Window.setInputMode(CURSOR_NORMAL);
+         * 
+         * Window.getFullscreen();
          * Window.getWidth();
          * Window.getHeight();
          * Window.getPositionX();
-         * Window.getPositionY();
-         * Window.getTitle();
-         * Window.getFullscreen();
-         * Window.getScreenSplitType();
+         * Window.getPositionY();'
          * Window.getResolutionWidth();
          * Window.getResolutionHeight();
-         * Window.getResizeable();
+         * Window.getTitle();
+         * Window.getScreenSplitType();
          * Window.getMonitor();
          * Window.getInputMode();
          * 
@@ -164,9 +195,6 @@ public final class Window2 {
             glfwSetWindowMonitor(handle, monitor.handle, positionX, positionY, 
                                  monitor.getWidth(), monitor.getHeight(), monitor.getRefreshRate());
         } else {
-            //width  = (int) Math.round(monitor.getWidth() * 0.6f);
-            //height = (int) Math.round(monitor.getHeight() * 0.6f);
-            
             glfwSetWindowMonitor(handle, NULL, positionX, positionY, width, height, monitor.getRefreshRate());
         }
         
@@ -186,6 +214,53 @@ public final class Window2 {
             
             glfwSetWindowPos(handle, positionX, positionY);
         }
+    }
+    
+    public static void setFullscreen(boolean fullscreen) {
+        Window2.fullscreen = fullscreen;
+        reconfigure();
+    }
+    
+    public static void setSize(int width, int height) {
+        if(width <= 0 || height <= 0) {
+            Logger.logInfo("Invalid window size used (" + width + ", " + height + 
+                           ") values passed must be greater than zero");
+            return;
+        }
+        
+        Window2.width  = width;
+        Window2.height = height;
+        
+        glfwSetWindowSize(handle, Window2.width, Window2.height);
+    }
+    
+    public static void setPosition(int positionX, int positionY) {
+        Window2.positionX = positionX;
+        Window2.positionY = positionY;
+        
+        glfwSetWindowPos(handle, positionX, positionY);
+    }
+    
+    public static void setResolution(int width, int height) {
+        if(width <= 0 || height <= 0) {
+            Logger.logInfo("Invalid window resolution used (" + width + ", " + 
+                           height + ") values passed must be greater than zero");
+            return;
+        }
+        
+        resolution.width = width;
+        resolution.width = height;
+    }
+    
+    public static void setTitle(String title) {
+        if(title == null) {
+            Logger.logInfo("Window title may not be null");
+            return;
+        }
+        
+        Window2.title = title;
+        
+        glfwSetWindowTitle(handle, title);
     }
     
     private static void setIcon(String filepath, String filename) {
@@ -221,9 +296,17 @@ public final class Window2 {
         setIcon(XJGE.getAssetsFilepath(), filename);
     }
     
-    public static void setTitle(String title) {
-        Window2.title = title;
-        glfwSetWindowTitle(handle, title);
+    public static void setScreenSplitType(SplitScreenType splitType) {
+        Window2.splitType = splitType;
+    }
+    
+    public static void setMonitor(Monitor monitor) {
+        Window.monitor = monitor;
+        reconfigure();
+    }
+    
+    public static void setInputMode() {
+        
     }
     
 }

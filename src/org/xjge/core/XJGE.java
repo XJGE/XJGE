@@ -94,7 +94,7 @@ public final class XJGE {
     public static final Path PRESENT_WORKING_DIRECTORY = Path.of("").toAbsolutePath();
     public static final String VERSION = "4.0.0";
     
-    private static ScreenSplitType split = ScreenSplitType.NONE;
+    private static SplitScreenType split = SplitScreenType.NONE;
     
     private static String assetsFilepath = "/org/xjge/assets/";
     private static String scenesFilepath;
@@ -140,7 +140,6 @@ public final class XJGE {
     static final void loop() {
         //TODO: pull this over from the Game class
     }
-    
     
     
     
@@ -833,7 +832,7 @@ public final class XJGE {
      * 
      * @return a value indicating how the screen is being divided
      */
-    public static ScreenSplitType getScreenSplit() {
+    public static SplitScreenType getScreenSplit() {
         return split;
     }
     
@@ -873,12 +872,12 @@ public final class XJGE {
      * 
      * @param split a value that determines how the screen will be divided. One of: 
      * <table><caption></caption><tr>
-     * <td>{@link ScreenSplitType#NONE NONE}</td><td>{@link ScreenSplitType#HORIZONTAL HORIZONTAL}</td>
-     * <td>{@link ScreenSplitType#VERTICAL VERTICAL}</td></tr><tr>
-     * <td>{@link ScreenSplitType#TRISECT TRISECT}</td><td>{@link ScreenSplitType#QUARTER QUARTER}</td>
+     * <td>{@link SplitScreenType#NONE NONE}</td><td>{@link SplitScreenType#HORIZONTAL HORIZONTAL}</td>
+     * <td>{@link SplitScreenType#VERTICAL VERTICAL}</td></tr><tr>
+     * <td>{@link SplitScreenType#TRISECT TRISECT}</td><td>{@link SplitScreenType#QUARTER QUARTER}</td>
      * </table>
      */
-    public static final void setScreenSplit(ScreenSplitType split) {
+    public static final void setScreenSplit(SplitScreenType split) {
         XJGE.split = split;
         
         for(Viewport viewport : viewports) {

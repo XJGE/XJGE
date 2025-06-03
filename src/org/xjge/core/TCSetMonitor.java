@@ -35,7 +35,7 @@ final class TCSetMonitor extends TerminalCommand {
 
                 if(value > 0 && value < Hardware.getNumMonitors() + 1) {
                     Window.setMonitor(args.get(0));
-                    setOutput("Moved the window to monitor " + Window.monitor.id + 
+                    setOutput("Moved the window to monitor " + Window.monitor.index + 
                               " \"" + Window.monitor.name + "\"", 
                               Color.WHITE);
                 } else {
@@ -44,7 +44,7 @@ final class TCSetMonitor extends TerminalCommand {
             } catch(NumberFormatException e) {
                 if(args.get(0).equals("next") || args.get(0).equals("prev")) {
                     Window.setMonitor(args.get(0));
-                    setOutput("Moved the window to monitor " + Window.monitor.id + 
+                    setOutput("Moved the window to monitor " + Window.monitor.index + 
                               " \"" + Window.monitor.name + "\"", 
                               Color.WHITE);
                 } else {

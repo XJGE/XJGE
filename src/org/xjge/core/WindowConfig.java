@@ -13,13 +13,13 @@ public final class WindowConfig {
     private boolean fullscreen;
     private boolean resizable;
     
-    private int width  = 1280;
-    private int height = 720;
+    private int width  = Window2.DEFAULT_WIDTH;
+    private int height = Window2.DEFAULT_HEIGHT;
     
     private String iconFilename;
     private String title          = "XJGE v" + XJGE.VERSION;
     private Monitor monitor       = Hardware2.getPrimaryMonitor();
-    private Resolution resolution = new Resolution(1280, 720);
+    private Resolution resolution = new Resolution(Window2.DEFAULT_WIDTH, Window2.DEFAULT_HEIGHT);
     
     boolean getFullscreen() {
         return fullscreen;
