@@ -4,6 +4,7 @@ import java.io.InputStream;
 import java.nio.ByteBuffer;
 import java.nio.IntBuffer;
 import static org.lwjgl.glfw.GLFW.*;
+import org.lwjgl.glfw.GLFWErrorCallback;
 import org.lwjgl.glfw.GLFWImage;
 import org.lwjgl.opengl.GL;
 import static org.lwjgl.opengl.GL30.*;
@@ -93,6 +94,10 @@ public final class Window2 {
         
         glfwShowWindow(handle);
         
+        glfwSetErrorCallback((error, description) -> {
+            Logger.logWarning("GLFW Error: (" + error + ") " + GLFWErrorCallback.getDescription(description), null);
+        });
+        
         glfwSetMonitorCallback((monitorHandle, event) -> {
             var monitors = Hardware2.findMonitors();
             
@@ -137,32 +142,6 @@ public final class Window2 {
          * XJGE.init("/assets/", "scenes.", debugEnabled);
          * XJGE.setScene(Scene);
          * XJGE.addEvent(Event);
-         * 
-         * Window.show(WindowConfig);
-         * Window.reconfigure();
-         * Window.center();
-         * 
-         * Window.setFullscreen(false);
-         * Window.setSize(0, 0);
-         * Window.setPosition(0, 0);
-         * Window.setResolution(640, 480);
-         * Window.setTitle("");
-         * Window.setIcon("");
-         * Window.setScreenSplitType(ScreenSplitType);
-         * Window.setMontior(Monitor);
-         * Window.setInputMode(CURSOR_NORMAL);
-         * 
-         * Window.getFullscreen();
-         * Window.getWidth();
-         * Window.getHeight();
-         * Window.getPositionX();
-         * Window.getPositionY();'
-         * Window.getResolutionWidth();
-         * Window.getResolutionHeight();
-         * Window.getTitle();
-         * Window.getScreenSplitType();
-         * Window.getMonitor();
-         * Window.getInputMode();
          * 
          * XJGE methods like setAssetsFilepath(), setScenesFilepath(), and 
          * setDebugModeEnabled() can no longer be called following Window.show()
@@ -260,6 +239,10 @@ public final class Window2 {
         resolution.width = height;
     }
     
+    public static void setInputMode(int mode, int value) {
+        glfwSetInputMode(handle, mode, value);
+    }
+    
     public static void setTitle(String title) {
         if(title == null) {
             Logger.logInfo("Window title cannot be null");
@@ -302,6 +285,16 @@ public final class Window2 {
     
     public static void setIcon(String filename) {
         setIcon(XJGE.getAssetsFilepath(), filename);
+    }
+    
+    public static void setMonitor(Monitor monitor) {
+        if(monitor == null) {
+            Logger.logInfo("Window monitor cannot be null");
+            return;
+        }
+        
+        Window.monitor = monitor;
+        reconfigure();
     }
     
     public static void setSplitScreenType(SplitScreenType splitType) {
@@ -400,14 +393,48 @@ public final class Window2 {
         }
     }
     
-    public static void setMonitor(Monitor monitor) {
-        Window.monitor = monitor;
-        reconfigure();
+    public static boolean getFullscreen() {
+        return fullscreen;
     }
     
-    public static void setInputMode(int mode, int value) {
-        //TODO: add validation?
-        glfwSetInputMode(handle, mode, value);
+    public static int getWidth() {
+        return width;
+    }
+    
+    public static int getHeight() {
+        return height;
+    }
+    
+    public static int getPositionX() {
+        return positionX;
+    }
+    
+    public static int getPositionY() {
+        return positionY;
+    }
+    
+    public static int getResolutionWidth() {
+        return resolution.width;
+    }
+    
+    public static int getResolutionHeight() {
+        return resolution.height;
+    }
+    
+    public static int getInputMode(int mode) {
+        return glfwGetInputMode(handle, mode);
+    }
+    
+    public static final String getTitle() {
+        return title;
+    }
+    
+    public static final Monitor getMonitor() {
+        return monitor;
+    }
+    
+    public static SplitScreenType getSplitScreenType() {
+        return splitType;
     }
     
 }

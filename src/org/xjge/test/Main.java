@@ -25,6 +25,8 @@ public class Main {
         
         Window2.show(new WindowConfig());
         
+        //Window2.setInputMode(-1, -1);
+        
     }
     
 }
