@@ -306,7 +306,7 @@ public final class Window2 {
                     viewport.active = (viewport.id == 0);
                     viewport.setBounds(data.resolution.width, data.resolution.height, 
                                        0, 0, 
-                                       Window.getWidth(), Window.getHeight());
+                                       data.width, data.height);
                 }
                 
                 case HORIZONTAL -> {
@@ -314,13 +314,13 @@ public final class Window2 {
                     switch(viewport.id) {
                         case 0 -> viewport.setBounds(
                                     data.resolution.width, data.resolution.height / 2,
-                                    0, Window.getHeight() / 2, 
-                                    Window.getWidth(), Window.getHeight() / 2);
+                                    0, data.height / 2, 
+                                    data.width, data.height / 2);
                             
                         case 1 -> viewport.setBounds(
                                     data.resolution.width, data.resolution.height / 2,
                                     0, 0, 
-                                    Window.getWidth(), Window.getHeight() / 2);
+                                    data.width, data.height / 2);
                         
                         default -> viewport.setBounds(data.resolution.width, data.resolution.height, 0, 0, 0, 0);
                     }
@@ -332,12 +332,12 @@ public final class Window2 {
                         case 0 -> viewport.setBounds(
                                     data.resolution.width / 2, data.resolution.height,
                                     0, 0, 
-                                    Window.getWidth() / 2, Window.getHeight());
+                                    data.width / 2, data.height);
                             
                         case 1 -> viewport.setBounds(
                                     data.resolution.width / 2, data.resolution.height,
-                                    Window.getWidth() / 2, 0, 
-                                    Window.getWidth() / 2, Window.getHeight());
+                                    data.width / 2, 0, 
+                                    data.width / 2, data.height);
                         
                         default -> viewport.setBounds(data.resolution.width, data.resolution.height, 0, 0, 0, 0);
                     }
@@ -348,18 +348,18 @@ public final class Window2 {
                     switch(viewport.id) {
                         case 0 -> viewport.setBounds(
                                     data.resolution.width / 2, data.resolution.height / 2,
-                                    0, Window.getHeight() / 2, 
-                                    Window.getWidth() / 2, Window.getHeight() / 2);
+                                    0, data.height / 2, 
+                                    data.width / 2, data.height / 2);
                             
                         case 1 -> viewport.setBounds(
                                     data.resolution.width / 2, data.resolution.height / 2,
-                                    Window.getWidth() / 2, Window.getHeight() / 2, 
-                                    Window.getWidth() / 2, Window.getHeight() / 2);
+                                    data.width / 2, data.height / 2, 
+                                    data.width / 2, data.height / 2);
                             
                         case 2 -> viewport.setBounds(
                                     data.resolution.width / 2, data.resolution.height / 2,
-                                    Window.getWidth() / 4, 0, 
-                                    Window.getWidth() / 2, Window.getHeight() / 2);
+                                    data.width / 4, 0, 
+                                    data.width / 2, data.height / 2);
                         
                         default -> viewport.setBounds(data.resolution.width, data.resolution.height, 0, 0, 0, 0);
                     }
@@ -370,23 +370,23 @@ public final class Window2 {
                     switch(viewport.id) {
                         case 0 -> viewport.setBounds(
                                     data.resolution.width / 2, data.resolution.height / 2,
-                                    0, Window.getHeight() / 2, 
-                                    Window.getWidth() / 2, Window.getHeight() / 2);
+                                    0, data.height / 2, 
+                                    data.width / 2, data.height / 2);
                             
                         case 1 -> viewport.setBounds(
                                     data.resolution.width / 2, data.resolution.height / 2,
-                                    Window.getWidth() / 2, Window.getHeight() / 2, 
-                                    Window.getWidth() / 2, Window.getHeight() / 2);
+                                    data.width / 2, data.height / 2, 
+                                    data.width / 2, data.height / 2);
                             
                         case 2 -> viewport.setBounds(
                                     data.resolution.width / 2, data.resolution.height / 2,
                                     0, 0, 
-                                    Window.getWidth() / 2, Window.getHeight() / 2);
+                                    data.width / 2, data.height / 2);
                             
                         case 3 -> viewport.setBounds(
                                     data.resolution.width / 2, data.resolution.height / 2,
-                                    Window.getWidth() / 2, 0, 
-                                    Window.getWidth() / 2, Window.getHeight() / 2);
+                                    data.width / 2, 0, 
+                                    data.width / 2, data.height / 2);
                     }
                 }
             }
