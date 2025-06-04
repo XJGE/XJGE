@@ -23,17 +23,4 @@ final class WindowData {
     
     SplitScreenType splitType = SplitScreenType.NONE;
     
-    WindowData() {
-        observable.properties.put("fullscreen",       fullscreen);
-        observable.properties.put("width",            width);
-        observable.properties.put("height",           height);
-        observable.properties.put("positionX",        positionX);
-        observable.properties.put("positionY",        positionY);
-        observable.properties.put("resolutionWidth",  resolution.width);
-        observable.properties.put("resolutionHeight", resolution.height);
-        observable.properties.put("title",            title);
-        observable.properties.put("monitor",          monitor);
-        observable.properties.put("splitType",        splitType);
-    }
-    
 }

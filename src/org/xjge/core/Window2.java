@@ -47,12 +47,25 @@ public final class Window2 {
         glfwWindowHint(GLFW_FOCUS_ON_SHOW, GLFW_TRUE);
         glfwWindowHint(GLFW_RESIZABLE, config.getResizable() ? GLFW_TRUE : GLFW_FALSE);
         
+        //Initialize window data
         data.fullscreen = config.getFullscreen();
         data.width      = config.getWidth();
         data.height     = config.getHeight();
         data.title      = config.getTitle();
         data.monitor    = config.getMonitor();
         data.resolution = config.getResolution();
+        
+        //Register observable properties
+        data.observable.properties.put("fullscreen",       data.fullscreen);
+        data.observable.properties.put("width",            data.width);
+        data.observable.properties.put("height",           data.height);
+        data.observable.properties.put("positionX",        data.positionX);
+        data.observable.properties.put("positionY",        data.positionY);
+        data.observable.properties.put("resolutionWidth",  data.resolution.width);
+        data.observable.properties.put("resolutionHeight", data.resolution.height);
+        data.observable.properties.put("title",            data.title);
+        data.observable.properties.put("monitor",          data.monitor);
+        data.observable.properties.put("splitType",        data.splitType);
         
         handle = glfwCreateWindow(data.width, data.height, data.title, NULL, NULL);
         
