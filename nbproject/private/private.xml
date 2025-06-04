@@ -29,12 +29,12 @@
             <url>src/org/xjge/core/XJGE.java</url>
             <bookmark id="11">
                 <name/>
-                <line>464</line>
+                <line>463</line>
                 <key/>
             </bookmark>
             <bookmark id="10">
                 <name/>
-                <line>494</line>
+                <line>493</line>
                 <key/>
             </bookmark>
         </file>
@@ -46,7 +46,7 @@
             <file>file:/C:/Users/jhoff/Projects/XJGE/src/org/xjge/core/Monitor.java</file>
             <file>file:/C:/Users/jhoff/Projects/XJGE/src/org/xjge/core/XJGE.java</file>
             <file>file:/C:/Users/jhoff/Projects/XJGE/src/org/xjge/core/Hardware.java</file>
-            <file>file:/C:/Users/jhoff/Projects/XJGE/src/org/xjge/test/Main.java</file>
+            <file>file:/C:/Users/jhoff/Projects/XJGE/src/org/xjge/core/WindowConfig.java</file>
             <file>file:/C:/Users/jhoff/Projects/XJGE/src/org/xjge/core/Window.java</file>
         </group>
     </open-files>

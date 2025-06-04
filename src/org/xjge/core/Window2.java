@@ -1,5 +1,6 @@
 package org.xjge.core;
 
+import java.beans.PropertyChangeListener;
 import java.io.InputStream;
 import java.nio.ByteBuffer;
 import java.nio.IntBuffer;
@@ -23,24 +24,14 @@ import static org.xjge.core.SplitScreenType.*;
  */
 public final class Window2 {
     
-    private static boolean fullscreen;
-    
     static final int DEFAULT_WIDTH  = 1280;
     static final int DEFAULT_HEIGHT = 720;
     
-    private static int width;
-    private static int height;
-    private static int positionX;
-    private static int positionY;
     private static int fboHandle;
     
     private static long handle = NULL;
     
-    private static String title;
-    private static Monitor monitor;
-    private static Resolution resolution;
-    
-    private static SplitScreenType splitType = SplitScreenType.NONE;
+    private static final WindowData data = new WindowData();
     
     private static final Viewport[] viewports = new Viewport[4];
     
@@ -56,14 +47,14 @@ public final class Window2 {
         glfwWindowHint(GLFW_FOCUS_ON_SHOW, GLFW_TRUE);
         glfwWindowHint(GLFW_RESIZABLE, config.getResizable() ? GLFW_TRUE : GLFW_FALSE);
         
-        fullscreen = config.getFullscreen();
-        width      = config.getWidth();
-        height     = config.getHeight();
-        title      = config.getTitle();
-        monitor    = config.getMonitor();
-        resolution = config.getResolution();
+        data.fullscreen = config.getFullscreen();
+        data.width      = config.getWidth();
+        data.height     = config.getHeight();
+        data.title      = config.getTitle();
+        data.monitor    = config.getMonitor();
+        data.resolution = config.getResolution();
         
-        handle = glfwCreateWindow(width, height, title, NULL, NULL);
+        handle = glfwCreateWindow(data.width, data.height, data.title, NULL, NULL);
         
         if(config.getIconFilename() == null) {
             setIcon("/org/xjge/assets/", "xjge_texture_missing.png");
@@ -75,7 +66,7 @@ public final class Window2 {
         GL.createCapabilities();
         reconfigure();
         
-        for(int i = 0; i < viewports.length; i++) viewports[i] = new Viewport(i, resolution);
+        for(int i = 0; i < viewports.length; i++) viewports[i] = new Viewport(i, data.resolution);
         
         fboHandle = glGenFramebuffers();
         glBindFramebuffer(GL_FRAMEBUFFER, fboHandle);
@@ -109,7 +100,7 @@ public final class Window2 {
                 if(event == GLFW_CONNECTED) {
                     Logger.logInfo("New monitor \"" + eventMonitor.name + "\" connected at index " + eventMonitor.index);
                 } else if(event == GLFW_DISCONNECTED) {
-                    if(monitor.handle == monitorHandle) {
+                    if(data.monitor.handle == monitorHandle) {
                         Logger.logWarning("The current monitor used by the applications window has been disconnected. " + 
                                           "(name: \" " + eventMonitor.name + "\" index: " + eventMonitor.index + ") " + 
                                           "Attempting to move the window to the next available monitor...", 
@@ -160,7 +151,7 @@ public final class Window2 {
         int rboHandle = glGenRenderbuffers();
         glBindRenderbuffer(GL_RENDERBUFFER, rboHandle);
         
-        glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH_COMPONENT, resolution.width, resolution.height);
+        glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH_COMPONENT, data.resolution.width, data.resolution.height);
         glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_RENDERBUFFER, rboHandle);
         
         ErrorUtils.checkGLError();
@@ -168,17 +159,18 @@ public final class Window2 {
     }
     
     static void reconfigure() {
-        if(fullscreen) {
-            width  = monitor.getWidth();
-            height = monitor.getHeight();
+        if(data.fullscreen) {
+            data.width  = data.monitor.getWidth();
+            data.height = data.monitor.getHeight();
             
-            glfwSetWindowMonitor(handle, monitor.handle, positionX, positionY, 
-                                 monitor.getWidth(), monitor.getHeight(), monitor.getRefreshRate());
+            glfwSetWindowMonitor(handle, data.monitor.handle, data.positionX, data.positionY, 
+                                 data.monitor.getWidth(), data.monitor.getHeight(), data.monitor.getRefreshRate());
         } else {
-            glfwSetWindowMonitor(handle, NULL, positionX, positionY, width, height, monitor.getRefreshRate());
+            glfwSetWindowMonitor(handle, NULL, data.positionX, data.positionY, 
+                                 data.width, data.height, data.monitor.getRefreshRate());
         }
         
-        center(monitor);
+        center(data.monitor);
         glfwSwapInterval(true ? 1 : 0);
     }
     
@@ -189,10 +181,10 @@ public final class Window2 {
             
             glfwGetMonitorPos(monitor.handle, xPosBuf, yPosBuf);
             
-            positionX = Math.round((monitor.getWidth() - width) / 2) + xPosBuf.get();
-            positionY = Math.round((monitor.getHeight() - height) / 2) + yPosBuf.get();
+            data.positionX = Math.round((monitor.getWidth() - data.width) / 2) + xPosBuf.get();
+            data.positionY = Math.round((monitor.getHeight() - data.height) / 2) + yPosBuf.get();
             
-            glfwSetWindowPos(handle, positionX, positionY);
+            glfwSetWindowPos(handle, data.positionX, data.positionY);
         }
     }
     
@@ -203,8 +195,16 @@ public final class Window2 {
         glfwSetWindowShouldClose(handle, true);
     }
     
+    public static void addObserver(PropertyChangeListener observer) {
+        data.observable.addObserver(observer);
+    }
+    
+    public static void removeObserver(PropertyChangeListener observer) {
+        data.observable.removeObserver(observer);
+    }
+    
     public static void setFullscreen(boolean fullscreen) {
-        Window2.fullscreen = fullscreen;
+        data.fullscreen = fullscreen;
         reconfigure();
     }
     
@@ -215,15 +215,15 @@ public final class Window2 {
             return;
         }
         
-        Window2.width  = width;
-        Window2.height = height;
+        data.width  = width;
+        data.height = height;
         
-        glfwSetWindowSize(handle, Window2.width, Window2.height);
+        glfwSetWindowSize(handle, data.width, data.height);
     }
     
     public static void setPosition(int positionX, int positionY) {
-        Window2.positionX = positionX;
-        Window2.positionY = positionY;
+        data.positionX = positionX;
+        data.positionY = positionY;
         
         glfwSetWindowPos(handle, positionX, positionY);
     }
@@ -235,8 +235,8 @@ public final class Window2 {
             return;
         }
         
-        resolution.width = width;
-        resolution.width = height;
+        data.width = width;
+        data.width = height;
     }
     
     public static void setInputMode(int mode, int value) {
@@ -249,7 +249,7 @@ public final class Window2 {
             return;
         }
         
-        Window2.title = title;
+        data.title = title;
         
         glfwSetWindowTitle(handle, title);
     }
@@ -257,14 +257,14 @@ public final class Window2 {
     private static void setIcon(String filepath, String filename) {
         try(MemoryStack stack = MemoryStack.stackPush()) {
             InputStream file = Window.class.getResourceAsStream(filepath + filename);
-            byte[] data      = file.readAllBytes();
+            byte[] iconData  = file.readAllBytes();
             
             IntBuffer widthBuf   = stack.mallocInt(1);
             IntBuffer heightBuf  = stack.mallocInt(1);
             IntBuffer channelBuf = stack.mallocInt(1);
             
             ByteBuffer icon = stbi_load_from_memory(
-                    stack.malloc(data.length).put(data).flip(),
+                    stack.malloc(iconData.length).put(iconData).flip(),
                     widthBuf,
                     heightBuf,
                     channelBuf,
@@ -298,13 +298,13 @@ public final class Window2 {
     }
     
     public static void setSplitScreenType(SplitScreenType splitType) {
-        Window2.splitType = splitType;
+        data.splitType = splitType;
         
         for(Viewport viewport : viewports) {
             switch(splitType) {
                 case NONE -> {
                     viewport.active = (viewport.id == 0);
-                    viewport.setBounds(resolution.width, resolution.height, 
+                    viewport.setBounds(data.resolution.width, data.resolution.height, 
                                        0, 0, 
                                        Window.getWidth(), Window.getHeight());
                 }
@@ -313,16 +313,16 @@ public final class Window2 {
                     viewport.active = (viewport.id == 0 || viewport.id == 1);
                     switch(viewport.id) {
                         case 0 -> viewport.setBounds(
-                                    resolution.width, resolution.height / 2,
+                                    data.resolution.width, data.resolution.height / 2,
                                     0, Window.getHeight() / 2, 
                                     Window.getWidth(), Window.getHeight() / 2);
                             
                         case 1 -> viewport.setBounds(
-                                    resolution.width, resolution.height / 2,
+                                    data.resolution.width, data.resolution.height / 2,
                                     0, 0, 
                                     Window.getWidth(), Window.getHeight() / 2);
                         
-                        default -> viewport.setBounds(resolution.width, resolution.height, 0, 0, 0, 0);
+                        default -> viewport.setBounds(data.resolution.width, data.resolution.height, 0, 0, 0, 0);
                     }
                 }
                 
@@ -330,16 +330,16 @@ public final class Window2 {
                     viewport.active = (viewport.id == 0 || viewport.id == 1);
                     switch(viewport.id) {
                         case 0 -> viewport.setBounds(
-                                    resolution.width / 2, resolution.height,
+                                    data.resolution.width / 2, data.resolution.height,
                                     0, 0, 
                                     Window.getWidth() / 2, Window.getHeight());
                             
                         case 1 -> viewport.setBounds(
-                                    resolution.width / 2, resolution.height,
+                                    data.resolution.width / 2, data.resolution.height,
                                     Window.getWidth() / 2, 0, 
                                     Window.getWidth() / 2, Window.getHeight());
                         
-                        default -> viewport.setBounds(resolution.width, resolution.height, 0, 0, 0, 0);
+                        default -> viewport.setBounds(data.resolution.width, data.resolution.height, 0, 0, 0, 0);
                     }
                 }
                 
@@ -347,21 +347,21 @@ public final class Window2 {
                     viewport.active = (viewport.id != 3);
                     switch(viewport.id) {
                         case 0 -> viewport.setBounds(
-                                    resolution.width / 2, resolution.height / 2,
+                                    data.resolution.width / 2, data.resolution.height / 2,
                                     0, Window.getHeight() / 2, 
                                     Window.getWidth() / 2, Window.getHeight() / 2);
                             
                         case 1 -> viewport.setBounds(
-                                    resolution.width / 2, resolution.height / 2,
+                                    data.resolution.width / 2, data.resolution.height / 2,
                                     Window.getWidth() / 2, Window.getHeight() / 2, 
                                     Window.getWidth() / 2, Window.getHeight() / 2);
                             
                         case 2 -> viewport.setBounds(
-                                    resolution.width / 2, resolution.height / 2,
+                                    data.resolution.width / 2, data.resolution.height / 2,
                                     Window.getWidth() / 4, 0, 
                                     Window.getWidth() / 2, Window.getHeight() / 2);
                         
-                        default -> viewport.setBounds(resolution.width, resolution.height, 0, 0, 0, 0);
+                        default -> viewport.setBounds(data.resolution.width, data.resolution.height, 0, 0, 0, 0);
                     }
                 }
                 
@@ -369,22 +369,22 @@ public final class Window2 {
                     viewport.active = true;
                     switch(viewport.id) {
                         case 0 -> viewport.setBounds(
-                                    resolution.width / 2, resolution.height / 2,
+                                    data.resolution.width / 2, data.resolution.height / 2,
                                     0, Window.getHeight() / 2, 
                                     Window.getWidth() / 2, Window.getHeight() / 2);
                             
                         case 1 -> viewport.setBounds(
-                                    resolution.width / 2, resolution.height / 2,
+                                    data.resolution.width / 2, data.resolution.height / 2,
                                     Window.getWidth() / 2, Window.getHeight() / 2, 
                                     Window.getWidth() / 2, Window.getHeight() / 2);
                             
                         case 2 -> viewport.setBounds(
-                                    resolution.width / 2, resolution.height / 2,
+                                    data.resolution.width / 2, data.resolution.height / 2,
                                     0, 0, 
                                     Window.getWidth() / 2, Window.getHeight() / 2);
                             
                         case 3 -> viewport.setBounds(
-                                    resolution.width / 2, resolution.height / 2,
+                                    data.resolution.width / 2, data.resolution.height / 2,
                                     Window.getWidth() / 2, 0, 
                                     Window.getWidth() / 2, Window.getHeight() / 2);
                     }
@@ -394,31 +394,31 @@ public final class Window2 {
     }
     
     public static boolean getFullscreen() {
-        return fullscreen;
+        return data.fullscreen;
     }
     
     public static int getWidth() {
-        return width;
+        return data.width;
     }
     
     public static int getHeight() {
-        return height;
+        return data.height;
     }
     
     public static int getPositionX() {
-        return positionX;
+        return data.positionX;
     }
     
     public static int getPositionY() {
-        return positionY;
+        return data.positionY;
     }
     
     public static int getResolutionWidth() {
-        return resolution.width;
+        return data.resolution.width;
     }
     
     public static int getResolutionHeight() {
-        return resolution.height;
+        return data.resolution.height;
     }
     
     public static int getInputMode(int mode) {
@@ -426,15 +426,15 @@ public final class Window2 {
     }
     
     public static final String getTitle() {
-        return title;
+        return data.title;
     }
     
     public static final Monitor getMonitor() {
-        return monitor;
+        return data.monitor;
     }
     
     public static SplitScreenType getSplitScreenType() {
-        return splitType;
+        return data.splitType;
     }
     
 }
