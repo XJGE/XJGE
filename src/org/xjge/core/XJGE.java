@@ -111,8 +111,7 @@ public final class XJGE {
     
     static GLProgram depthProgram;
     static GLProgram blurProgram;
-    static Map<String, GLProgram> glPrograms  = new HashMap<>();
-    private static final Viewport[] viewports = new Viewport[4];
+    static Map<String, GLProgram> glPrograms = new HashMap<>();
     
     static final Observable observable = new Observable(XJGE.class);
     
@@ -137,8 +136,135 @@ public final class XJGE {
         initialized = true;
     }
     
-    static final void loop() {
-        //TODO: pull this over from the Game class
+    static final void loop(long windowHandle, int fboHandle, Viewport[] viewports) {
+        int cycles = 0;
+        final double TARGET_DELTA = 1 / 60.0;
+        double prevTime = glfwGetTime();
+        double currTime;
+        double delta = 0;
+        Matrix4f projMatrix = new Matrix4f();
+        
+        while(!glfwWindowShouldClose(Window.HANDLE)) {
+            glfwPollEvents();
+            
+            currTime = glfwGetTime();
+            delta    += currTime - prevTime;
+            if(delta < TARGET_DELTA && Hardware.getVSyncEnabled()) delta = TARGET_DELTA;
+            prevTime = currTime;
+            ticked   = false;
+            
+            while(delta >= TARGET_DELTA) {
+                Input.update(TARGET_DELTA, deltaMetric);
+                if(XJGE.getTerminalEnabled()) terminal.update();
+                
+                deltaMetric = delta;
+                
+                delta     -= TARGET_DELTA;
+                ticked    = true;
+                tickCount = (tickCount == TICKS_PER_HOUR) ? 0 : tickCount + 1;
+                
+                //Process any unresolved events otherwise update the scene normally
+                if(!events.isEmpty()) {
+                    Event event = events.peek();
+                    if(!event.resolved) event.resolve();
+                    else                events.poll();
+                } else {
+                    scene.processAddRequests();
+                    scene.update(TARGET_DELTA, deltaMetric);
+                    scene.updateLightSources();
+                    scene.processRemoveRequests();
+                }
+                
+                //Add new widget to a viewport asynchronously
+                UIContext.processAddRequests();
+                
+                //Update viewport cameras and UI widgets
+                for(Viewport viewport : viewports) {
+                    if(viewport.active && viewport.currCamera != null) {
+                        viewport.currCamera.update();
+                        UIContext.updateWidgets(viewport.id, TARGET_DELTA, delta);
+                        Audio.setViewportCamData(viewport.id, viewport.currCamera.position, viewport.currCamera.direction);
+                    }
+                }
+                
+                //Process requests for widget removal
+                UIContext.processRemoveRequests();
+                
+                Audio.updateSoundSourcePositions();
+                Audio.queueMusicBodySection();
+                
+                if(tick(60)) {
+                    fps    = cycles;
+                    cycles = 0;
+                }
+            }
+            
+            XJGE.getDefaultGLProgram().use();
+            XJGE.getDefaultGLProgram().setUniform("uBloomThreshold", bloomThreshold);
+            scene.setShadowUniforms();
+            scene.setLightingUniforms();
+            
+            //Render scene from the perspective of each active viewport
+            for(Viewport viewport : viewports) {
+                if(viewport.active) {
+                    scene.renderShadowMap(viewport.currCamera.up, depthProgram);
+                    
+                    if(viewport.id == 0) {
+                        glClearColor(0, 0, 0, 0);
+                        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+                    }
+                    
+                    glBindFramebuffer(GL_FRAMEBUFFER, fbo);
+                        glViewport(0, 0, viewport.width, viewport.height);
+                        glClearColor(clearColor.r, clearColor.g, clearColor.b, 0);
+                        viewport.bindDrawBuffers(Game.enableBloom);
+                        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+                        
+                        viewport.resetCamera(glPrograms);
+                        
+                        viewport.render(glPrograms, "camera", projMatrix);
+                        scene.renderSkybox(viewport.currCamera.viewMatrix);
+                        scene.render(glPrograms, viewport.id, viewport.currCamera);
+                        scene.renderLightSources(viewport.currCamera);
+                    glBindFramebuffer(GL_FRAMEBUFFER, 0);
+                    
+                    projMatrix.setOrtho(viewport.width, 0, 0, viewport.height, 0, 1);
+                    
+                    if(enableBloom) {
+                        blurProgram.use();
+                        blurProgram.setUniform("uProjection", false, projMatrix);
+                        viewport.applyBloom(blurProgram);
+                    }
+                    
+                    glViewport(viewport.botLeft.x, viewport.botLeft.y, viewport.topRight.x, viewport.topRight.y);
+                    
+                    viewport.resetCamera(glPrograms);
+                    
+                    viewport.render(glPrograms, "texture", projMatrix);
+                    viewport.render(glPrograms, "ui", projMatrix);
+                }
+            }
+            
+            if(XJGE.getTerminalEnabled() || debugInfo.show) {
+                glViewport(0, 0, Window.getWidth(), Window.getHeight());
+                UIContext.updateProjectionMatrix(Window.getWidth(), Window.getHeight(), 0, Integer.MAX_VALUE);
+                
+                if(XJGE.getTerminalEnabled()) terminal.render();
+                if(debugInfo.show) debugInfo.render();
+            }
+            
+            glfwSwapBuffers(Window.HANDLE);
+            
+            if(!ticked) {
+                try {
+                    Thread.sleep(1);
+                } catch(InterruptedException e) {
+                    Logger.logError(e.getMessage(), e);
+                }
+            } else {
+                cycles++;
+            }
+        }
     }
     
     
@@ -269,6 +395,7 @@ public final class XJGE {
             
             //for(int i = 0; i < viewports.length; i++) viewports[i] = new Viewport(i);
             
+            /*
             fbo = glGenFramebuffers();
             glBindFramebuffer(GL_FRAMEBUFFER, fbo);
                 glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, viewports[0].viewTexHandle, 0);
@@ -280,6 +407,7 @@ public final class XJGE {
                 glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT6, GL_TEXTURE_2D, viewports[2].bloomTexHandle, 0);
                 glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT7, GL_TEXTURE_2D, viewports[3].bloomTexHandle, 0);
             glBindFramebuffer(GL_FRAMEBUFFER, 0);
+            */
             
             createRenderbuffer();
             
@@ -429,12 +557,12 @@ public final class XJGE {
                         if(noclipEnabled) {
                             Input.setDeviceEnabled(KEY_MOUSE_COMBO, false);
                             glfwSetInputMode(Window.HANDLE, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
-                            viewports[0].prevCamera = viewports[0].currCamera;
-                            viewports[0].currCamera = freeCam;
+                            //viewports[0].prevCamera = viewports[0].currCamera;
+                            //viewports[0].currCamera = freeCam;
                         } else {
                             Input.revertKeyboardEnabledState();
                             glfwSetInputMode(Window.HANDLE, GLFW_CURSOR, Window.cursorMode);
-                            viewports[0].currCamera = viewports[0].prevCamera;
+                            //viewports[0].currCamera = viewports[0].prevCamera;
                         }
                     } else {
                         Logger.logInfo("Freecam access denied, command terminal " + 
@@ -565,7 +693,7 @@ public final class XJGE {
             //debugInfo.updatePosition();
         });
         
-        Game.loop(fbo, viewports, terminal, debugInfo, depthProgram, blurProgram, debugModeEnabled);
+        //Game.loop(fbo, viewports, terminal, debugInfo, depthProgram, blurProgram, debugModeEnabled);
         
         engineIcons.delete();
         beep.freeSound();
@@ -733,7 +861,7 @@ public final class XJGE {
      *                          to use or null to use the engines default shaders
      */
     public static final void usePostProcessShader(int viewportID, PostProcessShader postProcessShader) {
-        viewports[viewportID].postProcessShader = postProcessShader;
+        //viewports[viewportID].postProcessShader = postProcessShader;
     }
     
     /**
@@ -744,10 +872,12 @@ public final class XJGE {
      * @param useLinearFilter if true, the textures will be filtered without hard edges
      */
     public static final void changeFramebufferFilter(int viewportID, boolean useLinearFilter) {
+        /*
         glBindTexture(GL_TEXTURE_2D, viewports[viewportID].viewTexHandle);
             glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, (useLinearFilter) ? GL_LINEAR : GL_NEAREST);
             glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, (useLinearFilter) ? GL_LINEAR : GL_NEAREST);
         glBindTexture(GL_TEXTURE_2D, 0);
+        */
     }
     
     /**
@@ -879,7 +1009,7 @@ public final class XJGE {
      */
     public static final void setScreenSplit(SplitScreenType split) {
         XJGE.split = split;
-        
+        /*
         for(Viewport viewport : viewports) {
             switch(split) {
                 case NONE -> {
@@ -971,6 +1101,7 @@ public final class XJGE {
                 }
             }
         }
+        */
     }
     
     /**
@@ -987,12 +1118,14 @@ public final class XJGE {
             Logger.logInfo("Failed to set viewport camera. No viewport "+ 
                            "by the ID of " + viewportID + " exists");
         } else {
+            /*
             if(viewports[viewportID].currCamera == freeCam) {
                 //Added in case noclip is enabled when this was called.
                 viewports[viewportID].prevCamera = camera;
             } else {
                 viewports[viewportID].currCamera = camera;
             }
+            */
         }
     }
     
