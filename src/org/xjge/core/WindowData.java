@@ -2,6 +2,8 @@ package org.xjge.core;
 
 /**
  * Created: Jun 4, 2025
+ * <br><br>
+ * Contains mutable data that pertains to the applications window.
  * 
  * @author J Hoffman
  * @since  4.0.0

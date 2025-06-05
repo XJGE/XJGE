@@ -43,11 +43,14 @@
         <group>
             <file>file:/C:/Users/jhoff/Projects/XJGE/src/org/xjge/core/Hardware2.java</file>
             <file>file:/C:/Users/jhoff/Projects/XJGE/src/org/xjge/core/Window2.java</file>
+            <file>file:/C:/Users/jhoff/Projects/XJGE/src/org/xjge/core/WindowData.java</file>
             <file>file:/C:/Users/jhoff/Projects/XJGE/src/org/xjge/core/Monitor.java</file>
+            <file>file:/C:/Users/jhoff/Projects/XJGE/src/org/xjge/core/Observable.java</file>
             <file>file:/C:/Users/jhoff/Projects/XJGE/src/org/xjge/core/XJGE.java</file>
             <file>file:/C:/Users/jhoff/Projects/XJGE/src/org/xjge/core/Hardware.java</file>
             <file>file:/C:/Users/jhoff/Projects/XJGE/src/org/xjge/core/WindowConfig.java</file>
             <file>file:/C:/Users/jhoff/Projects/XJGE/src/org/xjge/core/Window.java</file>
+            <file>file:/C:/Users/jhoff/Projects/XJGE/src/org/xjge/test/Main.java</file>
         </group>
     </open-files>
 </project-private>

@@ -4,6 +4,7 @@ import java.beans.PropertyChangeListener;
 import java.io.InputStream;
 import java.nio.ByteBuffer;
 import java.nio.IntBuffer;
+import java.util.NoSuchElementException;
 import static org.lwjgl.glfw.GLFW.*;
 import org.lwjgl.glfw.GLFWErrorCallback;
 import org.lwjgl.glfw.GLFWImage;
@@ -47,7 +48,7 @@ public final class Window2 {
         glfwWindowHint(GLFW_FOCUS_ON_SHOW, GLFW_TRUE);
         glfwWindowHint(GLFW_RESIZABLE, config.getResizable() ? GLFW_TRUE : GLFW_FALSE);
         
-        //Initialize window data
+        //Initialize window data fields using configuration settings
         data.fullscreen = config.getFullscreen();
         data.width      = config.getWidth();
         data.height     = config.getHeight();
@@ -55,17 +56,17 @@ public final class Window2 {
         data.monitor    = config.getMonitor();
         data.resolution = config.getResolution();
         
-        //Register observable properties
-        data.observable.properties.put("fullscreen",       data.fullscreen);
-        data.observable.properties.put("width",            data.width);
-        data.observable.properties.put("height",           data.height);
-        data.observable.properties.put("positionX",        data.positionX);
-        data.observable.properties.put("positionY",        data.positionY);
-        data.observable.properties.put("resolutionWidth",  data.resolution.width);
-        data.observable.properties.put("resolutionHeight", data.resolution.height);
-        data.observable.properties.put("title",            data.title);
-        data.observable.properties.put("monitor",          data.monitor);
-        data.observable.properties.put("splitType",        data.splitType);
+        //Register observable properties for public API use
+        data.observable.properties.put("WINDOW_FULLSCREEN_CHANGED",        data.fullscreen);
+        data.observable.properties.put("WINDOW_WIDTH_CHANGED",             data.width);
+        data.observable.properties.put("WINDOW_HEIGHT_CHANGED",            data.height);
+        data.observable.properties.put("WINDOW_POSITION_X_CHANGED",        data.positionX);
+        data.observable.properties.put("WINDOW_POSITION_Y_CHANGED",        data.positionY);
+        data.observable.properties.put("WINDOW_RESOLUTION_WIDTH_CHANGED",  data.resolution.width);
+        data.observable.properties.put("WINDOW_RESOLUTION_HEIGHT_CHANGED", data.resolution.height);
+        data.observable.properties.put("WINDOW_TITLE_CHANGED",             data.title);
+        data.observable.properties.put("WINDOW_MONITOR_CHANGED",           data.monitor);
+        data.observable.properties.put("WINDOW_SPLITSCREEN_TYPE_CHANGED",  data.splitType);
         
         handle = glfwCreateWindow(data.width, data.height, data.title, NULL, NULL);
         
@@ -103,11 +104,7 @@ public final class Window2 {
         });
         
         glfwSetMonitorCallback((monitorHandle, event) -> {
-            var monitors = Hardware2.findMonitors();
-            
-            if(monitors.isEmpty()) {
-                //TODO: handle scenario where no monitor is available
-            } else {
+            try {
                 Monitor eventMonitor = Hardware2.getMonitor(monitorHandle);
                 
                 if(event == GLFW_CONNECTED) {
@@ -124,10 +121,22 @@ public final class Window2 {
                     }
                 }
                 
+                var monitors = Hardware2.findMonitors();
+                
                 setSize(DEFAULT_WIDTH, DEFAULT_HEIGHT);
                 setFullscreen(false);
                 setMonitor(monitors.get(0));
+                
+            } catch(Exception exception) {
+                Logger.logWarning("Error encountered during monitor assignment", exception);
             }
+        });
+        
+        glfwSetWindowPosCallback(handle, (window, positionX, positionY) -> {
+            data.positionX = positionX;
+            data.positionY = positionY;
+            data.observable.notifyObservers("WINDOW_POSITION_X_CHANGED", data.positionX);
+            data.observable.notifyObservers("WINDOW_POSITION_Y_CHANGED", data.positionY);
         });
         
         while(!glfwWindowShouldClose(handle)) {
