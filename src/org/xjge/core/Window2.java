@@ -4,7 +4,6 @@ import java.beans.PropertyChangeListener;
 import java.io.InputStream;
 import java.nio.ByteBuffer;
 import java.nio.IntBuffer;
-import java.util.NoSuchElementException;
 import static org.lwjgl.glfw.GLFW.*;
 import org.lwjgl.glfw.GLFWErrorCallback;
 import org.lwjgl.glfw.GLFWImage;
@@ -104,6 +103,7 @@ public final class Window2 {
         });
         
         glfwSetMonitorCallback((monitorHandle, event) -> {
+            //TODO: revisit this after the game loop/command line is working again
             try {
                 Monitor eventMonitor = Hardware2.getMonitor(monitorHandle);
                 
@@ -130,6 +130,13 @@ public final class Window2 {
             } catch(Exception exception) {
                 Logger.logWarning("Error encountered during monitor assignment", exception);
             }
+        });
+        
+        glfwSetWindowSizeCallback(handle, (window, width, height) -> {
+            data.width  = width;
+            data.height = height;
+            data.observable.notifyObservers("WINDOW_WIDTH_CHANGED",  data.width);
+            data.observable.notifyObservers("WINDOW_HEIGHT_CHANGED", data.height);
         });
         
         glfwSetWindowPosCallback(handle, (window, positionX, positionY) -> {
@@ -185,6 +192,9 @@ public final class Window2 {
             data.width  = data.monitor.getWidth();
             data.height = data.monitor.getHeight();
             
+            data.observable.notifyObservers("WINDOW_WIDTH_CHANGED",  data.width);
+            data.observable.notifyObservers("WINDOW_HEIGHT_CHANGED", data.height);
+            
             glfwSetWindowMonitor(handle, data.monitor.handle, data.positionX, data.positionY, 
                                  data.monitor.getWidth(), data.monitor.getHeight(), data.monitor.getRefreshRate());
         } else {
@@ -207,6 +217,9 @@ public final class Window2 {
             data.positionY = Math.round((monitor.getHeight() - data.height) / 2) + yPosBuf.get();
             
             glfwSetWindowPos(handle, data.positionX, data.positionY);
+            
+            data.observable.notifyObservers("WINDOW_POSITION_X_CHANGED", data.positionX);
+            data.observable.notifyObservers("WINDOW_POSITION_Y_CHANGED", data.positionY);
         }
     }
     
@@ -228,6 +241,7 @@ public final class Window2 {
     public static void setFullscreen(boolean fullscreen) {
         data.fullscreen = fullscreen;
         reconfigure();
+        data.observable.notifyObservers("WINDOW_FULLSCREEN_CHANGED", data.fullscreen);
     }
     
     public static void setSize(int width, int height) {
@@ -248,9 +262,17 @@ public final class Window2 {
         data.positionY = positionY;
         
         glfwSetWindowPos(handle, positionX, positionY);
+        
+        data.observable.notifyObservers("WINDOW_POSITION_X_CHANGED", data.positionX);
+        data.observable.notifyObservers("WINDOW_POSITION_Y_CHANGED", data.positionY);
     }
     
     public static void setResolution(int width, int height) {
+        /*
+        TODO: add comment in javadoc that users might want to call this whenever
+        the window changes size to avoid stretching or pixelation of the framebuffer
+        */
+        
         if(width <= 0 || height <= 0) {
             Logger.logInfo("Invalid window resolution used (" + width + ", " + 
                            height + ") values passed must be greater than zero");
@@ -259,6 +281,12 @@ public final class Window2 {
         
         data.width = width;
         data.width = height;
+        
+        createRenderbuffer();
+        setSplitScreenType(data.splitType);
+        
+        data.observable.notifyObservers("WINDOW_RESOLUTION_WIDTH_CHANGED",  data.resolution.width);
+        data.observable.notifyObservers("WINDOW_RESOLUTION_HEIGHT_CHANGED", data.resolution.height);
     }
     
     public static void setInputMode(int mode, int value) {
@@ -272,8 +300,8 @@ public final class Window2 {
         }
         
         data.title = title;
-        
         glfwSetWindowTitle(handle, title);
+        data.observable.notifyObservers("WINDOW_TITLE_CHANGED", data.title);
     }
     
     private static void setIcon(String filepath, String filename) {
@@ -315,8 +343,9 @@ public final class Window2 {
             return;
         }
         
-        Window.monitor = monitor;
+        data.monitor = monitor;
         reconfigure();
+        data.observable.notifyObservers("WINDOW_MONITOR_CHANGED", data.monitor);
     }
     
     public static void setSplitScreenType(SplitScreenType splitType) {
@@ -413,6 +442,8 @@ public final class Window2 {
                 }
             }
         }
+        
+        data.observable.notifyObservers("WINDOW_SPLITSCREEN_TYPE_CHANGED", data.splitType);
     }
     
     public static boolean getFullscreen() {
