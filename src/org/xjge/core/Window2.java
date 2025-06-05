@@ -146,6 +146,8 @@ public final class Window2 {
             data.observable.notifyObservers("WINDOW_POSITION_Y_CHANGED", data.positionY);
         });
         
+        //TODO: add input callback events or maybe the XJGE class should take care of that?
+        
         while(!glfwWindowShouldClose(handle)) {
             //TODO: reimplement game loop
             glfwPollEvents(); //Temp, this will be inside XJGE.loop()
