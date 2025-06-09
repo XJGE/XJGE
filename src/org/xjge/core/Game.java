@@ -70,7 +70,7 @@ public final class Game {
     static void loop(int fbo, Viewport[] viewports, Terminal terminal, DebugInfo2 debugInfo, GLProgram depthProgram, 
                      GLProgram blurProgram, boolean debugEnabled) {
         XJGE.observable.properties.put("SCENE_CHANGED", scene);
-        
+        /*
         int cycles = 0;
         final double TARGET_DELTA = 1 / 60.0;
         double prevTime = glfwGetTime();
@@ -199,6 +199,7 @@ public final class Game {
                 cycles++;
             }
         }
+        */
     }
     
     /**

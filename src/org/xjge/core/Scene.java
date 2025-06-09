@@ -327,7 +327,7 @@ public abstract class Scene {
      * Safely adds entity objects to the scenes {@link entities} collection. 
      * This method is called automatically by the engine.
      */
-    void processAddRequests() {
+    void processEntityAddRequests() {
         while(!entityAddQueue.isEmpty()) {
             Entity entity = entityAddQueue.poll();
             entity.resetRemovalRequest();
@@ -339,7 +339,7 @@ public abstract class Scene {
      * Safely removes entity objects from the scenes {@link entities} 
      * collection. This method is called automatically by the engine.
      */
-    void processRemoveRequests() {
+    void processEntityRemoveRequests() {
         entities.entrySet().removeIf(entry -> entry.getValue().removalRequested());
     }
     

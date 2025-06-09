@@ -15,7 +15,7 @@ import org.xjge.ui.Widget;
  * @author J Hoffman
  * @since  4.0.0
  */
-public class UIContext {
+public class UI {
 
     private static final Matrix4f projectionMatrix = new Matrix4f();
     
@@ -61,14 +61,14 @@ public class UIContext {
         widgets.get(0).values().forEach(widget -> widget.processMouseInput(mouse));
     }
     
-    static void processAddRequests() {
+    static void processWidgetAddRequests() {
         while(!widgetAddQueue.isEmpty()) {
             WidgetAddRequest request = widgetAddQueue.poll();
             widgets.get(request.viewportID()).put(request.name(), request.widget());
         }
     }
     
-    static void processRemoveRequests() {
+    static void processWidgetRemoveRequests() {
         while(!widgetRemoveQueue.isEmpty()) {
             WidgetRemoveRequest request = widgetRemoveQueue.poll();
             var viewportWidgets = widgets.get(request.viewportID());

@@ -23,6 +23,8 @@ public class Main {
         windowConfig.setTitle("test");
         */
         
+        XJGE.setScene(new TestScene());
+        
         Window2.show(new WindowConfig());
         
         //Window2.setInputMode(-1, -1);

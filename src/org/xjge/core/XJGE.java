@@ -17,21 +17,27 @@ import org.xjge.graphics.GLShader;
 import java.nio.file.Path;
 import java.text.SimpleDateFormat;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.Map;
+import java.util.PriorityQueue;
+import java.util.Queue;
 import java.util.TreeMap;
 import javax.xml.stream.XMLInputFactory;
 import javax.xml.stream.XMLStreamConstants;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
+import org.joml.Matrix4f;
 import org.joml.Vector2i;
 import static org.lwjgl.glfw.GLFW.*;
 import org.lwjgl.opengl.GL;
 import static org.lwjgl.opengl.GL32.*;
 import static org.lwjgl.opengl.GLUtil.setupDebugMessageCallback;
+import static org.xjge.core.Game.tick;
 import static org.xjge.core.Input.KEY_MOUSE_COMBO;
+import org.xjge.graphics.Color;
 import org.xjge.graphics.PostProcessShader;
 
 /**
@@ -113,7 +119,28 @@ public final class XJGE {
     static GLProgram blurProgram;
     static Map<String, GLProgram> glPrograms = new HashMap<>();
     
-    static final Observable observable = new Observable(XJGE.class);
+    
+    //==== LEGACY FIELDS ABOVE =================================================
+    
+    
+    private static int fps;
+    private static int tickCount    = 0;
+    final static int TICKS_PER_HOUR = 225000;
+    
+    private static float bloomThreshold = 1.0f;
+    
+    private static double deltaMetric = 0;
+    
+    private static boolean ticked;
+    public static boolean enableBloom;
+    
+    private static Color clearColor = Color.create(119, 136, 255);
+    private static Scene scene;
+    
+    private static final Queue<Scene> sceneChangeRequests = new LinkedList<>();
+    private static final Queue<Event> events = new PriorityQueue<>(Comparator.comparing(Event::getPriority));
+    
+    static final Observable observable = new Observable(XJGE.class); //TODO: make this private and provide add/remove methods
     
     public static void init(boolean debugModeEnabled, String assetsFilepath, String scenesFilepath) {
         if(initialized) {
@@ -144,7 +171,7 @@ public final class XJGE {
         double delta = 0;
         Matrix4f projMatrix = new Matrix4f();
         
-        while(!glfwWindowShouldClose(Window.HANDLE)) {
+        while(!glfwWindowShouldClose(windowHandle)) {
             glfwPollEvents();
             
             currTime = glfwGetTime();
@@ -163,32 +190,35 @@ public final class XJGE {
                 ticked    = true;
                 tickCount = (tickCount == TICKS_PER_HOUR) ? 0 : tickCount + 1;
                 
+                //Resolve scene change requests
+                if(!sceneChangeRequests.isEmpty()) scene = sceneChangeRequests.poll();
+                
                 //Process any unresolved events otherwise update the scene normally
                 if(!events.isEmpty()) {
                     Event event = events.peek();
                     if(!event.resolved) event.resolve();
                     else                events.poll();
                 } else {
-                    scene.processAddRequests();
+                    scene.processEntityAddRequests();
                     scene.update(TARGET_DELTA, deltaMetric);
                     scene.updateLightSources();
-                    scene.processRemoveRequests();
+                    scene.processEntityRemoveRequests();
                 }
                 
                 //Add new widget to a viewport asynchronously
-                UIContext.processAddRequests();
+                UI.processWidgetAddRequests();
                 
                 //Update viewport cameras and UI widgets
                 for(Viewport viewport : viewports) {
                     if(viewport.active && viewport.currCamera != null) {
                         viewport.currCamera.update();
-                        UIContext.updateWidgets(viewport.id, TARGET_DELTA, delta);
+                        UI.updateWidgets(viewport.id, TARGET_DELTA, delta);
                         Audio.setViewportCamData(viewport.id, viewport.currCamera.position, viewport.currCamera.direction);
                     }
                 }
                 
                 //Process requests for widget removal
-                UIContext.processRemoveRequests();
+                UI.processWidgetRemoveRequests();
                 
                 Audio.updateSoundSourcePositions();
                 Audio.queueMusicBodySection();
@@ -214,7 +244,7 @@ public final class XJGE {
                         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
                     }
                     
-                    glBindFramebuffer(GL_FRAMEBUFFER, fbo);
+                    glBindFramebuffer(GL_FRAMEBUFFER, fboHandle);
                         glViewport(0, 0, viewport.width, viewport.height);
                         glClearColor(clearColor.r, clearColor.g, clearColor.b, 0);
                         viewport.bindDrawBuffers(Game.enableBloom);
@@ -246,14 +276,14 @@ public final class XJGE {
             }
             
             if(XJGE.getTerminalEnabled() || debugInfo.show) {
-                glViewport(0, 0, Window.getWidth(), Window.getHeight());
-                UIContext.updateProjectionMatrix(Window.getWidth(), Window.getHeight(), 0, Integer.MAX_VALUE);
+                glViewport(0, 0, Window2.getWidth(), Window2.getHeight());
+                UI.updateProjectionMatrix(Window2.getWidth(), Window2.getHeight(), 0, Integer.MAX_VALUE);
                 
                 if(XJGE.getTerminalEnabled()) terminal.render();
                 if(debugInfo.show) debugInfo.render();
             }
             
-            glfwSwapBuffers(Window.HANDLE);
+            glfwSwapBuffers(windowHandle);
             
             if(!ticked) {
                 try {
@@ -265,6 +295,114 @@ public final class XJGE {
                 cycles++;
             }
         }
+    }
+    
+    public static void setScene(Scene scene) {
+        if(scene == null) {
+            Logger.logInfo("Scene may not be null");
+            return;
+        }
+        
+        sceneChangeRequests.add(scene);
+    }
+    
+    static void initShaders() {
+        //TODO: temp method, this will be removed/changed significantly later
+        
+        Audio.speaker = Hardware.findSpeakers().get(1);
+        Audio.speaker.setContextCurrent();
+        
+        //Initialize the default shader program that will be provided to the implementation
+        {
+            var shaderSourceFiles = new LinkedList<GLShader>() {{
+                add(new GLShader("shader_default_vertex.glsl", GL_VERTEX_SHADER));
+                add(new GLShader("shader_default_fragment.glsl", GL_FRAGMENT_SHADER));
+            }};
+
+            GLProgram defaultProgram = new GLProgram(shaderSourceFiles, "default");
+
+            defaultProgram.use();
+            defaultProgram.addUniform(GLDataType.INT,   "uType");
+            defaultProgram.addUniform(GLDataType.INT,   "uPCFValue");
+            defaultProgram.addUniform(GLDataType.INT,   "uShine");
+            defaultProgram.addUniform(GLDataType.INT,   "uNumLights");
+            defaultProgram.addUniform(GLDataType.INT,   "uTexture");
+            defaultProgram.addUniform(GLDataType.INT,   "uDepthTexture");
+            defaultProgram.addUniform(GLDataType.INT,   "uSkyTexture");
+            defaultProgram.addUniform(GLDataType.INT,   "uBloomTexture");
+            defaultProgram.addUniform(GLDataType.INT,   "uShadowMapActive");
+            defaultProgram.addUniform(GLDataType.INT,   "uBloomOverride");
+            defaultProgram.addUniform(GLDataType.INT,   "uIsBitmapFont");
+            defaultProgram.addUniform(GLDataType.FLOAT, "uOpacity");
+            defaultProgram.addUniform(GLDataType.FLOAT, "uMinShadowBias");
+            defaultProgram.addUniform(GLDataType.FLOAT, "uMaxShadowBias");
+            defaultProgram.addUniform(GLDataType.FLOAT, "uBloomThreshold");
+            defaultProgram.addUniform(GLDataType.VEC2,  "uTexCoords");
+            defaultProgram.addUniform(GLDataType.VEC3,  "uColor");
+            defaultProgram.addUniform(GLDataType.VEC3,  "uCamPos");
+            defaultProgram.addUniform(GLDataType.MAT3,  "uNormal");
+            defaultProgram.addUniform(GLDataType.MAT4,  "uModel");
+            defaultProgram.addUniform(GLDataType.MAT4,  "uView");
+            defaultProgram.addUniform(GLDataType.MAT4,  "uProjection");
+            defaultProgram.addUniform(GLDataType.MAT4,  "uBoneTransforms");
+            defaultProgram.addUniform(GLDataType.MAT4,  "uLightSpace");
+
+            for(int i = 0; i < Scene.MAX_LIGHTS; i++) {
+                defaultProgram.addUniform(GLDataType.FLOAT, "uLights[" + i + "].brightness");
+                defaultProgram.addUniform(GLDataType.FLOAT, "uLights[" + i + "].contrast");
+                defaultProgram.addUniform(GLDataType.FLOAT, "uLights[" + i + "].distance");
+                defaultProgram.addUniform(GLDataType.VEC3,  "uLights[" + i + "].position");
+                defaultProgram.addUniform(GLDataType.VEC3,  "uLights[" + i + "].ambient");
+                defaultProgram.addUniform(GLDataType.VEC3,  "uLights[" + i + "].diffuse");
+                defaultProgram.addUniform(GLDataType.VEC3,  "uLights[" + i + "].specular");
+            }
+
+            glPrograms.put("default", defaultProgram);
+        }
+
+        //Create shader program that will generate shadow map output
+        {
+            var shaderSourceFiles = new LinkedList<GLShader>() {{
+                add(new GLShader("shader_depth_vertex.glsl", GL_VERTEX_SHADER));
+                add(new GLShader("shader_depth_fragment.glsl", GL_FRAGMENT_SHADER));
+            }};
+
+            depthProgram = new GLProgram(shaderSourceFiles, "default");
+
+            depthProgram.use();
+            depthProgram.addUniform(GLDataType.INT,  "uTexture");
+            depthProgram.addUniform(GLDataType.MAT4, "uModel");
+            depthProgram.addUniform(GLDataType.MAT4, "uLightSpace");
+        }
+
+        //Create shader program for applying gaussian blur
+        {
+            var shaderSourceFiles = new LinkedList<GLShader>() {{
+                add(new GLShader("shader_blur_vertex.glsl", GL_VERTEX_SHADER));
+                add(new GLShader("shader_blur_fragment.glsl", GL_FRAGMENT_SHADER));
+            }};
+
+            blurProgram = new GLProgram(shaderSourceFiles, "default");
+
+            blurProgram.use();
+            blurProgram.addUniform(GLDataType.INT,   "uBloomTexture");
+            blurProgram.addUniform(GLDataType.INT,   "uHorizontal");
+            blurProgram.addUniform(GLDataType.FLOAT, "uWeight");
+            blurProgram.addUniform(GLDataType.MAT4,  "uProjection");
+        }
+
+        engineIcons = new Texture("xjge_engineicons.png");
+        beep        = new Sound("xjge_beep.ogg");
+
+        Light.setIconTexture(engineIcons);
+        
+        engineCommands.putAll(userCommands);
+        engineCommands.values().forEach(command -> command.setCommands(engineCommands));
+        
+        glPrograms = Collections.unmodifiableMap(glPrograms);
+        freeCam    = new Noclip();
+        terminal   = new Terminal(engineCommands);
+        debugInfo  = new DebugInfo2(engineIcons);
     }
     
     

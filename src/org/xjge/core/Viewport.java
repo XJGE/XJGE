@@ -155,9 +155,9 @@ final class Viewport {
             }
             
             case "ui" -> {
-                UIContext.updateProjectionMatrix(width, height, Short.MIN_VALUE, Short.MAX_VALUE);
-                UIContext.renderWidgets(id, glPrograms);
-                resetCamera(glPrograms); //TODO: is this even necessary now since the projection matrix is handled by UIContext?
+                UI.updateProjectionMatrix(width, height, Short.MIN_VALUE, Short.MAX_VALUE);
+                UI.renderWidgets(id, glPrograms);
+                resetCamera(glPrograms); //TODO: is this even necessary now since the projection matrix is handled by UI?
             }
             
             case "texture" -> {
@@ -218,7 +218,7 @@ final class Viewport {
         createTextureAttachment();
         bloom.createTextureAttachments(width, height);
         
-        UIContext.relocateWidgets(id, width, height);
+        UI.relocateWidgets(id, width, height);
     }
     
     /**

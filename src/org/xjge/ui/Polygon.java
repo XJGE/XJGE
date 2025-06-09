@@ -4,7 +4,7 @@ import org.xjge.core.ErrorUtils;
 import org.joml.Vector2i;
 import static org.lwjgl.opengl.GL30.*;
 import org.lwjgl.system.MemoryStack;
-import org.xjge.core.UIContext;
+import org.xjge.core.UI;
 import org.xjge.graphics.Color;
 import org.xjge.graphics.Graphics;
 
@@ -122,7 +122,7 @@ public class Polygon {
         
         UIShader.getInstance().setUniform("uType", 2);
         UIShader.getInstance().setUniform("uModel", graphics.modelMatrix);
-        UIShader.getInstance().setUniform("uProjection", UIContext.getProjectionMatrix());
+        UIShader.getInstance().setUniform("uProjection", UI.getProjectionMatrix());
         UIShader.getInstance().setUniform("uColor", color.asVec3());
         UIShader.getInstance().setUniform("uOpacity", opacity);
         

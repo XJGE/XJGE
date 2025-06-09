@@ -6,7 +6,7 @@ import org.joml.Vector2i;
 import static org.lwjgl.opengl.GL30.*;
 import org.lwjgl.system.MemoryStack;
 import org.xjge.core.ErrorUtils;
-import org.xjge.core.UIContext;
+import org.xjge.core.UI;
 import org.xjge.graphics.Color;
 
 /**
@@ -130,7 +130,7 @@ public class Rectangle {
         glBindVertexArray(vaoHandle);
         
         UIShader.getInstance().setUniform("uType", 1);
-        UIShader.getInstance().setUniform("uProjection", UIContext.getProjectionMatrix());
+        UIShader.getInstance().setUniform("uProjection", UI.getProjectionMatrix());
         
         try(MemoryStack stack = MemoryStack.stackPush()) {
             FloatBuffer vertices = stack.mallocFloat(28);

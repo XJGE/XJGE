@@ -68,7 +68,7 @@ public final class Window2 {
         resolution = config.getResolution();
         
         //Register observable properties for public API use
-        observable.properties.put("WINDOW_FULLSCREEN_CHANGED", fullscreen);
+        observable.properties.put("WINDOW_FULLSCREEN_CHANGED",        fullscreen);
         observable.properties.put("WINDOW_WIDTH_CHANGED",             width);
         observable.properties.put("WINDOW_HEIGHT_CHANGED",            height);
         observable.properties.put("WINDOW_POSITION_X_CHANGED",        positionX);
@@ -108,7 +108,8 @@ public final class Window2 {
         createRenderbuffer();
         ErrorUtils.checkFBStatus(GL_FRAMEBUFFER);
         
-        glfwShowWindow(handle);
+        XJGE.initShaders();
+        setSplitScreenType(splitType);
         
         glfwSetErrorCallback((error, description) -> {
             Logger.logWarning("GLFW Error: (" + error + ") " + GLFWErrorCallback.getDescription(description), null);
@@ -160,6 +161,8 @@ public final class Window2 {
         
         //TODO: add input callback events or maybe the XJGE class should take care of that?
         
+        glfwShowWindow(handle);
+        
         XJGE.loop(handle, fboHandle, viewports);
         
         GL.destroy();
@@ -173,9 +176,6 @@ public final class Window2 {
          * XJGE.init("/assets/", "scenes.", debugEnabled);
          * XJGE.setScene(Scene);
          * XJGE.addEvent(Event);
-         * 
-         * XJGE methods like setAssetsFilepath(), setScenesFilepath(), and 
-         * setDebugModeEnabled() can no longer be called following Window.show()
          * 
          * Game -> XJGE (maintains loop, scene, and config settings)
          * XJGE -> Window (maintains window, viewports, and glfw callbacks)
@@ -320,7 +320,7 @@ public final class Window2 {
     
     private static void setIcon(String filepath, String filename) {
         try(MemoryStack stack = MemoryStack.stackPush()) {
-            InputStream file = Window.class.getResourceAsStream(filepath + filename);
+            InputStream file = Window2.class.getResourceAsStream(filepath + filename);
             byte[] iconData  = file.readAllBytes();
             
             IntBuffer widthBuf   = stack.mallocInt(1);
