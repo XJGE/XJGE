@@ -2,7 +2,6 @@ package org.xjge.core;
 
 import java.util.Collections;
 import java.util.NavigableMap;
-import java.util.NoSuchElementException;
 import java.util.TreeMap;
 import org.lwjgl.PointerBuffer;
 import static org.lwjgl.glfw.GLFW.glfwGetMonitors;

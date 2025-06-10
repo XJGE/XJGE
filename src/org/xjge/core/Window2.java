@@ -25,22 +25,24 @@ import static org.xjge.core.SplitScreenType.*;
 public final class Window2 {
     
     private static boolean fullscreen;
+    private static boolean resizable;
     
     static final int DEFAULT_WIDTH  = 1280;
     static final int DEFAULT_HEIGHT = 720;
     
-    private static int width;
-    private static int height;
+    private static int minWidth;
+    private static int minHeight;
+    private static int width  = DEFAULT_WIDTH;
+    private static int height = DEFAULT_HEIGHT;
     private static int positionX;
     private static int positionY;
     private static int fboHandle;
     
     private static long handle = NULL;
 
-    private static String title;
-    private static Monitor monitor;
-    private static Resolution resolution;
-    
+    private static String title    = "XJGE v" + XJGE.VERSION;;
+    private static Monitor monitor = Hardware2.getPrimaryMonitor();
+    private static final Resolution resolution = new Resolution(DEFAULT_WIDTH, DEFAULT_HEIGHT);
     private static final Observable observable = new Observable(Window2.class);
     
     private static final Viewport[] viewports = new Viewport[4];
@@ -49,26 +51,15 @@ public final class Window2 {
     
     private Window2() {}
     
-    public static void show(WindowConfig config) {
-        if(handle != NULL) {
-            Logger.logInfo("The applications window is already visible");
-            return;
-        }
-        
+    static void create() {
         glfwWindowHint(GLFW_VISIBLE, GLFW_FALSE);
         glfwWindowHint(GLFW_FOCUS_ON_SHOW, GLFW_TRUE);
-        glfwWindowHint(GLFW_RESIZABLE, config.getResizable() ? GLFW_TRUE : GLFW_FALSE);
-        
-        //Initialize window data fields using configuration settings
-        fullscreen = config.getFullscreen();
-        width      = config.getWidth();
-        height     = config.getHeight();
-        title      = config.getTitle();
-        monitor    = config.getMonitor();
-        resolution = config.getResolution();
         
         //Register observable properties for public API use
         observable.properties.put("WINDOW_FULLSCREEN_CHANGED",        fullscreen);
+        observable.properties.put("WINDOW_RESIZABLE_CHANGED",         resizable);
+        observable.properties.put("WINDOW_MINIMUM_WIDTH_CHANGED",     minWidth);
+        observable.properties.put("WINDOW_MINIMUM_HEIGHT_CHANGED",    minHeight);
         observable.properties.put("WINDOW_WIDTH_CHANGED",             width);
         observable.properties.put("WINDOW_HEIGHT_CHANGED",            height);
         observable.properties.put("WINDOW_POSITION_X_CHANGED",        positionX);
@@ -80,12 +71,6 @@ public final class Window2 {
         observable.properties.put("WINDOW_SPLITSCREEN_TYPE_CHANGED",  splitType);
         
         handle = glfwCreateWindow(width, height, title, NULL, NULL);
-        
-        if(config.getIconFilename() == null) {
-            setIcon("/org/xjge/assets/", "xjge_texture_missing.png");
-        } else {
-            setIcon(config.getIconFilename());
-        }
         
         glfwMakeContextCurrent(handle);
         GL.createCapabilities();
@@ -107,8 +92,6 @@ public final class Window2 {
         
         createRenderbuffer();
         ErrorUtils.checkFBStatus(GL_FRAMEBUFFER);
-        
-        XJGE.initShaders();
         setSplitScreenType(splitType);
         
         glfwSetErrorCallback((error, description) -> {
@@ -158,44 +141,6 @@ public final class Window2 {
             observable.notifyObservers("WINDOW_POSITION_X_CHANGED", positionX);
             observable.notifyObservers("WINDOW_POSITION_Y_CHANGED", positionY);
         });
-        
-        //TODO: add input callback events or maybe the XJGE class should take care of that?
-        
-        glfwShowWindow(handle);
-        
-        XJGE.loop(handle, fboHandle, viewports);
-        
-        GL.destroy();
-        glfwTerminate();
-        
-        /**
-         * Hardware.findMonitors(); //returns list of monitor objects
-         * Hardware.findSpeakers(); //returns list of speaker objects
-         * Hardware.findGamepads(); //returns list of gamepad objects
-         * 
-         * XJGE.init("/assets/", "scenes.", debugEnabled);
-         * XJGE.setScene(Scene);
-         * XJGE.addEvent(Event);
-         * 
-         * Game -> XJGE (maintains loop, scene, and config settings)
-         * XJGE -> Window (maintains window, viewports, and glfw callbacks)
-         */
-    }
-    
-    /**
-     * Generates a new renderbuffer object and attaches it to the engines 
-     * framebuffer. 
-     */
-    private static void createRenderbuffer() {
-        glBindFramebuffer(GL_FRAMEBUFFER, fboHandle);
-        int rboHandle = glGenRenderbuffers();
-        glBindRenderbuffer(GL_RENDERBUFFER, rboHandle);
-        
-        glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH_COMPONENT, resolution.width, resolution.height);
-        glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_RENDERBUFFER, rboHandle);
-        
-        ErrorUtils.checkGLError();
-        glBindFramebuffer(GL_FRAMEBUFFER, 0);
     }
     
     static void reconfigure() {
@@ -215,6 +160,51 @@ public final class Window2 {
         
         center(monitor);
         glfwSwapInterval(true ? 1 : 0);
+    }
+    
+    static void show() {
+        glfwShowWindow(handle);
+        
+        /**
+         * Hardware.findMonitors(); //returns list of monitor objects
+         * Hardware.findSpeakers(); //returns list of speaker objects
+         * Hardware.findGamepads(); //returns list of gamepad objects
+         * 
+         * XJGE.init("/assets/", "scenes.", debugEnabled);
+         * XJGE.setScene(Scene);
+         * XJGE.addEvent(Event);
+         * 
+         * Game -> XJGE (maintains loop, scene, and config settings)
+         * XJGE -> Window (maintains window, viewports, and glfw callbacks)
+         */
+    }
+    
+    static void swapBuffers() {
+        glfwSwapBuffers(handle);
+    }
+    
+    static boolean closeRequested() {
+        return glfwWindowShouldClose(handle);
+    }
+    
+    static int getFBOHandle() {
+        return fboHandle;
+    }
+    
+    static Viewport[] getViewports() {
+        return viewports;
+    }
+    
+    private static void createRenderbuffer() {
+        glBindFramebuffer(GL_FRAMEBUFFER, fboHandle);
+        int rboHandle = glGenRenderbuffers();
+        glBindRenderbuffer(GL_RENDERBUFFER, rboHandle);
+        
+        glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH_COMPONENT, resolution.width, resolution.height);
+        glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_RENDERBUFFER, rboHandle);
+        
+        ErrorUtils.checkGLError();
+        glBindFramebuffer(GL_FRAMEBUFFER, 0);
     }
     
     public static void center(Monitor monitor) {
@@ -252,7 +242,29 @@ public final class Window2 {
     public static void setFullscreen(boolean fullscreen) {
         Window2.fullscreen = fullscreen;
         reconfigure();
-        observable.notifyObservers("WINDOW_FULLSCREEN_CHANGED", fullscreen);
+        observable.notifyObservers("WINDOW_FULLSCREEN_CHANGED", Window2.fullscreen);
+    }
+    
+    public static void setResizable(boolean resizable) {
+        Window2.resizable = resizable;
+        glfwSetWindowAttrib(handle, GLFW_RESIZABLE, Window2.resizable ? GLFW_TRUE : GLFW_FALSE);
+        observable.notifyObservers("WINDOW_RESIZABLE_CHANGED", Window2.resizable);
+    }
+    
+    public static void setMinimumSize(int minWidth, int minHeight) {
+        if(minWidth <= 0 || minHeight <= 0) {
+            Logger.logInfo("Invalid minimum window size used (" + minWidth + ", " +
+                           minHeight + ") values passed must be greater than zero");
+            return;
+        }
+        
+        Window2.minWidth  = minWidth;
+        Window2.minHeight = minHeight;
+        
+        glfwSetWindowSizeLimits(handle, Window2.minWidth, Window2.minHeight, GLFW_DONT_CARE, GLFW_DONT_CARE);
+        
+        observable.notifyObservers("WINDOW_MINIMUM_WIDTH_CHANGED",  Window2.minWidth);
+        observable.notifyObservers("WINDOW_MINIMUM_HEIGHT_CHANGED", Window2.minHeight);
     }
     
     public static void setSize(int width, int height) {
@@ -318,9 +330,9 @@ public final class Window2 {
         observable.notifyObservers("WINDOW_TITLE_CHANGED", Window2.title);
     }
     
-    private static void setIcon(String filepath, String filename) {
+    public static void setIcon(String filename) {
         try(MemoryStack stack = MemoryStack.stackPush()) {
-            InputStream file = Window2.class.getResourceAsStream(filepath + filename);
+            InputStream file = Window2.class.getResourceAsStream(XJGE.getAssetsFilepath() + filename);
             byte[] iconData  = file.readAllBytes();
             
             IntBuffer widthBuf   = stack.mallocInt(1);
@@ -345,10 +357,6 @@ public final class Window2 {
             Logger.logWarning("Failed to change the window icon using \"" + filename +
                               "\" check the filename, path, or extension", exception);
         }
-    }
-    
-    public static void setIcon(String filename) {
-        setIcon(XJGE.getAssetsFilepath(), filename);
     }
     
     public static void setMonitor(Monitor monitor) {

@@ -1,14 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project-private xmlns="http://www.netbeans.org/ns/project-private/1">
-    <editor-bookmarks xmlns="http://www.netbeans.org/ns/editor-bookmarks/2" lastBookmarkId="16">
-        <file>
-            <url>src/org/xjge/ui/UI.java</url>
-            <bookmark id="9">
-                <name/>
-                <line>52</line>
-                <key/>
-            </bookmark>
-        </file>
+    <editor-bookmarks xmlns="http://www.netbeans.org/ns/editor-bookmarks/2" lastBookmarkId="17">
         <file>
             <url>src/org/xjge/core/Viewport.java</url>
             <bookmark id="12">
@@ -18,10 +10,26 @@
             </bookmark>
         </file>
         <file>
+            <url>src/org/xjge/core/Window2.java</url>
+            <bookmark id="17">
+                <name/>
+                <line>68</line>
+                <key/>
+            </bookmark>
+        </file>
+        <file>
             <url>src/org/xjge/test/TestScene.java</url>
             <bookmark id="13">
                 <name/>
-                <line>37</line>
+                <line>39</line>
+                <key/>
+            </bookmark>
+        </file>
+        <file>
+            <url>src/org/xjge/ui/UI.java</url>
+            <bookmark id="9">
+                <name/>
+                <line>52</line>
                 <key/>
             </bookmark>
         </file>
@@ -29,12 +37,12 @@
             <url>src/org/xjge/core/XJGE.java</url>
             <bookmark id="11">
                 <name/>
-                <line>632</line>
+                <line>747</line>
                 <key/>
             </bookmark>
             <bookmark id="10">
                 <name/>
-                <line>662</line>
+                <line>777</line>
                 <key/>
             </bookmark>
         </file>
@@ -43,10 +51,9 @@
         <group>
             <file>file:/C:/Users/jhoff/Projects/XJGE/src/org/xjge/core/Hardware2.java</file>
             <file>file:/C:/Users/jhoff/Projects/XJGE/src/org/xjge/core/Window2.java</file>
-            <file>file:/C:/Users/jhoff/Projects/XJGE/src/org/xjge/core/Viewport.java</file>
-            <file>file:/C:/Users/jhoff/Projects/XJGE/src/org/xjge/test/TestScene.java</file>
             <file>file:/C:/Users/jhoff/Projects/XJGE/src/org/xjge/core/XJGE.java</file>
             <file>file:/C:/Users/jhoff/Projects/XJGE/src/org/xjge/core/Hardware.java</file>
+            <file>file:/C:/Users/jhoff/Projects/XJGE/src/org/xjge/core/WindowConfig.java</file>
             <file>file:/C:/Users/jhoff/Projects/XJGE/src/org/xjge/core/Window.java</file>
             <file>file:/C:/Users/jhoff/Projects/XJGE/src/org/xjge/test/Main.java</file>
             <file>file:/C:/Users/jhoff/Projects/XJGE/src/org/xjge/core/Game.java</file>

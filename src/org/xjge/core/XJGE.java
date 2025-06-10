@@ -88,7 +88,6 @@ public final class XJGE {
     private static double cursorX;
     private static double cursorY;
     
-    private static boolean initialized;
     private static boolean debugModeEnabled;
     private static boolean restrict4KResolutions;
     private static boolean matchWindowResolution;
@@ -122,6 +121,8 @@ public final class XJGE {
     
     //==== LEGACY FIELDS ABOVE =================================================
     
+    private static boolean initialized;
+    private static boolean started;
     
     private static int fps;
     private static int tickCount    = 0;
@@ -160,154 +161,7 @@ public final class XJGE {
         
         if(!glfwInit()) Logger.logError("Failed to initialize GLFW", null);
         
-        initialized = true;
-    }
-    
-    static final void loop(long windowHandle, int fboHandle, Viewport[] viewports) {
-        int cycles = 0;
-        final double TARGET_DELTA = 1 / 60.0;
-        double prevTime = glfwGetTime();
-        double currTime;
-        double delta = 0;
-        Matrix4f projMatrix = new Matrix4f();
-        
-        while(!glfwWindowShouldClose(windowHandle)) {
-            glfwPollEvents();
-            
-            currTime = glfwGetTime();
-            delta    += currTime - prevTime;
-            if(delta < TARGET_DELTA && Hardware.getVSyncEnabled()) delta = TARGET_DELTA;
-            prevTime = currTime;
-            ticked   = false;
-            
-            while(delta >= TARGET_DELTA) {
-                Input.update(TARGET_DELTA, deltaMetric);
-                if(XJGE.getTerminalEnabled()) terminal.update();
-                
-                deltaMetric = delta;
-                
-                delta     -= TARGET_DELTA;
-                ticked    = true;
-                tickCount = (tickCount == TICKS_PER_HOUR) ? 0 : tickCount + 1;
-                
-                //Resolve scene change requests
-                if(!sceneChangeRequests.isEmpty()) scene = sceneChangeRequests.poll();
-                
-                //Process any unresolved events otherwise update the scene normally
-                if(!events.isEmpty()) {
-                    Event event = events.peek();
-                    if(!event.resolved) event.resolve();
-                    else                events.poll();
-                } else {
-                    scene.processEntityAddRequests();
-                    scene.update(TARGET_DELTA, deltaMetric);
-                    scene.updateLightSources();
-                    scene.processEntityRemoveRequests();
-                }
-                
-                //Add new widget to a viewport asynchronously
-                UI.processWidgetAddRequests();
-                
-                //Update viewport cameras and UI widgets
-                for(Viewport viewport : viewports) {
-                    if(viewport.active && viewport.currCamera != null) {
-                        viewport.currCamera.update();
-                        UI.updateWidgets(viewport.id, TARGET_DELTA, delta);
-                        Audio.setViewportCamData(viewport.id, viewport.currCamera.position, viewport.currCamera.direction);
-                    }
-                }
-                
-                //Process requests for widget removal
-                UI.processWidgetRemoveRequests();
-                
-                Audio.updateSoundSourcePositions();
-                Audio.queueMusicBodySection();
-                
-                if(tick(60)) {
-                    fps    = cycles;
-                    cycles = 0;
-                }
-            }
-            
-            XJGE.getDefaultGLProgram().use();
-            XJGE.getDefaultGLProgram().setUniform("uBloomThreshold", bloomThreshold);
-            scene.setShadowUniforms();
-            scene.setLightingUniforms();
-            
-            //Render scene from the perspective of each active viewport
-            for(Viewport viewport : viewports) {
-                if(viewport.active) {
-                    scene.renderShadowMap(viewport.currCamera.up, depthProgram);
-                    
-                    if(viewport.id == 0) {
-                        glClearColor(0, 0, 0, 0);
-                        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-                    }
-                    
-                    glBindFramebuffer(GL_FRAMEBUFFER, fboHandle);
-                        glViewport(0, 0, viewport.width, viewport.height);
-                        glClearColor(clearColor.r, clearColor.g, clearColor.b, 0);
-                        viewport.bindDrawBuffers(Game.enableBloom);
-                        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-                        
-                        viewport.resetCamera(glPrograms);
-                        
-                        viewport.render(glPrograms, "camera", projMatrix);
-                        scene.renderSkybox(viewport.currCamera.viewMatrix);
-                        scene.render(glPrograms, viewport.id, viewport.currCamera);
-                        scene.renderLightSources(viewport.currCamera);
-                    glBindFramebuffer(GL_FRAMEBUFFER, 0);
-                    
-                    projMatrix.setOrtho(viewport.width, 0, 0, viewport.height, 0, 1);
-                    
-                    if(enableBloom) {
-                        blurProgram.use();
-                        blurProgram.setUniform("uProjection", false, projMatrix);
-                        viewport.applyBloom(blurProgram);
-                    }
-                    
-                    glViewport(viewport.botLeft.x, viewport.botLeft.y, viewport.topRight.x, viewport.topRight.y);
-                    
-                    viewport.resetCamera(glPrograms);
-                    
-                    viewport.render(glPrograms, "texture", projMatrix);
-                    viewport.render(glPrograms, "ui", projMatrix);
-                }
-            }
-            
-            if(XJGE.getTerminalEnabled() || debugInfo.show) {
-                glViewport(0, 0, Window2.getWidth(), Window2.getHeight());
-                UI.updateProjectionMatrix(Window2.getWidth(), Window2.getHeight(), 0, Integer.MAX_VALUE);
-                
-                if(XJGE.getTerminalEnabled()) terminal.render();
-                if(debugInfo.show) debugInfo.render();
-            }
-            
-            glfwSwapBuffers(windowHandle);
-            
-            if(!ticked) {
-                try {
-                    Thread.sleep(1);
-                } catch(InterruptedException e) {
-                    Logger.logError(e.getMessage(), e);
-                }
-            } else {
-                cycles++;
-            }
-        }
-    }
-    
-    public static void setScene(Scene scene) {
-        if(scene == null) {
-            Logger.logInfo("Scene may not be null");
-            return;
-        }
-        
-        sceneChangeRequests.add(scene);
-    }
-    
-    static void initShaders() {
-        //TODO: temp method, this will be removed/changed significantly later
+        Window2.create();
         
         Audio.speaker = Hardware.findSpeakers().get(1);
         Audio.speaker.setContextCurrent();
@@ -396,13 +250,185 @@ public final class XJGE {
 
         Light.setIconTexture(engineIcons);
         
+        engineCommands = new TreeMap<>() {{
+            put("cls",                  new TCCLS());
+            put("help",                 new TCHelp());
+            put("setFullscreen",        new TCSetFullscreen());
+            put("setMonitor",           new TCSetMonitor());
+            put("setMusicMasterVolume", new TCSetMusicMasterVolume());
+            put("setScene",             new TCSetScene());
+            put("setScreenSplit",       new TCSetScreenSplit());
+            put("setSoundMasterVolume", new TCSetSoundMasterVolume());
+            put("setSpeaker",           new TCSetSpeaker());
+            put("setVSync",             new TCSetVSync());
+            put("setVideoMode",         new TCSetVideoMode());
+            put("showCommands",         new TCShowCommands());
+            put("terminate",            new TCTerminate());
+        }};
+        
+        initialized = true;
+    }
+    
+    public static void start() {
+        if(started) {
+            Logger.logInfo("The game loop has already been started");
+            return;
+        }
+        
         engineCommands.putAll(userCommands);
         engineCommands.values().forEach(command -> command.setCommands(engineCommands));
         
+        started    = true;
         glPrograms = Collections.unmodifiableMap(glPrograms);
         freeCam    = new Noclip();
         terminal   = new Terminal(engineCommands);
         debugInfo  = new DebugInfo2(engineIcons);
+        
+        Window2.show();
+        
+        int cycles = 0;
+        final double TARGET_DELTA = 1 / 60.0;
+        double prevTime = glfwGetTime();
+        double currTime;
+        double delta = 0;
+        Matrix4f projMatrix = new Matrix4f();
+        
+        while(!Window2.closeRequested()) {
+            glfwPollEvents();
+            
+            currTime = glfwGetTime();
+            delta    += currTime - prevTime;
+            if(delta < TARGET_DELTA && Hardware.getVSyncEnabled()) delta = TARGET_DELTA;
+            prevTime = currTime;
+            ticked   = false;
+            
+            while(delta >= TARGET_DELTA) {
+                Input.update(TARGET_DELTA, deltaMetric);
+                if(XJGE.getTerminalEnabled()) terminal.update();
+                
+                deltaMetric = delta;
+                
+                delta     -= TARGET_DELTA;
+                ticked    = true;
+                tickCount = (tickCount == TICKS_PER_HOUR) ? 0 : tickCount + 1;
+                
+                //Resolve scene change requests
+                if(!sceneChangeRequests.isEmpty()) scene = sceneChangeRequests.poll();
+                
+                //Process any unresolved events otherwise update the scene normally
+                if(!events.isEmpty()) {
+                    Event event = events.peek();
+                    if(!event.resolved) event.resolve();
+                    else                events.poll();
+                } else {
+                    scene.processEntityAddRequests();
+                    scene.update(TARGET_DELTA, deltaMetric);
+                    scene.updateLightSources();
+                    scene.processEntityRemoveRequests();
+                }
+                
+                //Add new widget to a viewport asynchronously
+                UI.processWidgetAddRequests();
+                
+                //Update viewport cameras and UI widgets
+                for(Viewport viewport : Window2.getViewports()) {
+                    if(viewport.active && viewport.currCamera != null) {
+                        viewport.currCamera.update();
+                        UI.updateWidgets(viewport.id, TARGET_DELTA, delta);
+                        Audio.setViewportCamData(viewport.id, viewport.currCamera.position, viewport.currCamera.direction);
+                    }
+                }
+                
+                //Process requests for widget removal
+                UI.processWidgetRemoveRequests();
+                
+                Audio.updateSoundSourcePositions();
+                Audio.queueMusicBodySection();
+                
+                if(tick(60)) {
+                    fps    = cycles;
+                    cycles = 0;
+                }
+            }
+            
+            XJGE.getDefaultGLProgram().use();
+            XJGE.getDefaultGLProgram().setUniform("uBloomThreshold", bloomThreshold);
+            scene.setShadowUniforms();
+            scene.setLightingUniforms();
+            
+            //Render scene from the perspective of each active viewport
+            for(Viewport viewport : Window2.getViewports()) {
+                if(viewport.active) {
+                    scene.renderShadowMap(viewport.currCamera.up, depthProgram);
+                    
+                    if(viewport.id == 0) {
+                        glClearColor(0, 0, 0, 0);
+                        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+                    }
+                    
+                    glBindFramebuffer(GL_FRAMEBUFFER, Window2.getFBOHandle());
+                        glViewport(0, 0, viewport.width, viewport.height);
+                        glClearColor(clearColor.r, clearColor.g, clearColor.b, 0);
+                        viewport.bindDrawBuffers(Game.enableBloom);
+                        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+                        
+                        viewport.resetCamera(glPrograms);
+                        
+                        viewport.render(glPrograms, "camera", projMatrix);
+                        scene.renderSkybox(viewport.currCamera.viewMatrix);
+                        scene.render(glPrograms, viewport.id, viewport.currCamera);
+                        scene.renderLightSources(viewport.currCamera);
+                    glBindFramebuffer(GL_FRAMEBUFFER, 0);
+                    
+                    projMatrix.setOrtho(viewport.width, 0, 0, viewport.height, 0, 1);
+                    
+                    if(enableBloom) {
+                        blurProgram.use();
+                        blurProgram.setUniform("uProjection", false, projMatrix);
+                        viewport.applyBloom(blurProgram);
+                    }
+                    
+                    glViewport(viewport.botLeft.x, viewport.botLeft.y, viewport.topRight.x, viewport.topRight.y);
+                    
+                    viewport.resetCamera(glPrograms);
+                    
+                    viewport.render(glPrograms, "texture", projMatrix);
+                    viewport.render(glPrograms, "ui", projMatrix);
+                }
+            }
+            
+            if(XJGE.getTerminalEnabled() || debugInfo.show) {
+                glViewport(0, 0, Window2.getWidth(), Window2.getHeight());
+                UI.updateProjectionMatrix(Window2.getWidth(), Window2.getHeight(), 0, Integer.MAX_VALUE);
+                
+                if(XJGE.getTerminalEnabled()) terminal.render();
+                if(debugInfo.show) debugInfo.render();
+            }
+            
+            Window2.swapBuffers();
+            
+            if(!ticked) {
+                try {
+                    Thread.sleep(1);
+                } catch(InterruptedException e) {
+                    Logger.logError(e.getMessage(), e);
+                }
+            } else {
+                cycles++;
+            }
+        }
+        
+        GL.destroy();
+        glfwTerminate();
+    }
+    
+    public static void setScene(Scene scene) {
+        if(scene == null) {
+            Logger.logInfo("Scene may not be null");
+            return;
+        }
+        
+        sceneChangeRequests.add(scene);
     }
     
     
@@ -781,22 +807,6 @@ public final class XJGE {
     }
     
     /**
-     * Simplified variant of the main {@link init} method that will initialize 
-     * the engine using its default configuration. This method must be called 
-     * before the engine can be used.
-     * 
-     * @param assetsFilepath the relative filepath to the folder that contains 
-     *                       all of the games assets
-     * @param scenesFilepath the relative filepath to the package that contains 
-     *                       all of the games scene subclasses
-     * @param resolution the internal resolution the engine will display the game
-     *                   at or <b>null</b> to copy the resolution of the window
-     */
-    public static void init(String assetsFilepath, String scenesFilepath, Vector2i resolution) {
-        init(assetsFilepath, scenesFilepath, resolution, false, true, true, false, false);
-    }
-    
-    /**
      * Exposes the window to the user and starts running the applications main 
      * loop. 
      * <p>
@@ -809,7 +819,7 @@ public final class XJGE {
      * @see Game
      * @see Window
      */
-    public static void start() {
+    public static void start(int x) {
         engineCommands.putAll(userCommands);
         engineCommands.values().forEach(command -> command.setCommands(engineCommands));
         

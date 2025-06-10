@@ -1,7 +1,6 @@
 package org.xjge.test;
 
 import org.xjge.core.Window2;
-import org.xjge.core.WindowConfig;
 import org.xjge.core.XJGE;
 
 /**
@@ -13,21 +12,18 @@ import org.xjge.core.XJGE;
 public class Main {
 
     public static void main(String args[]) {
-                
-        XJGE.init(true, "/org/xjge/assets/", "org.xjge.test.");
         
-        /*
-        WindowConfig windowConfig = new WindowConfig();
-        windowConfig.setSize(640, 480);
-        windowConfig.setResizable(true);
-        windowConfig.setTitle("test");
-        */
+        XJGE.init(true, "/org/xjge/assets/", "org.xjge.test."); //create window with default settings
+        
+        //Window2.setMinimumSize(640, 480);
+        //Window2.setSize(640, 480);
+        //Window2.setResizable(false);
+        //Window2.setTitle("Test");
+        //Window2.setIcon("icon.png");
         
         XJGE.setScene(new TestScene());
         
-        Window2.show(new WindowConfig());
-        
-        //Window2.setInputMode(-1, -1);
+        XJGE.start(); //show window
         
     }
     
