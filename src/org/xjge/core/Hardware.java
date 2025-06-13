@@ -158,7 +158,7 @@ public final class Hardware {
      * @return the current monitor object of the window
      */
     public static Monitor getCurrentMonitor() {
-        return Window.monitor;
+        return Window.getMonitor();
     }
     
     /**

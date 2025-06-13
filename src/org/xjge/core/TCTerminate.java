@@ -29,7 +29,7 @@ final class TCTerminate extends TerminalCommand {
     @Override
     public void execute(List<String> args) {
         setOutput("cya!", Color.WHITE);
-        glfwSetWindowShouldClose(Window.HANDLE, true);
+        Window.close();
     }
 
 }

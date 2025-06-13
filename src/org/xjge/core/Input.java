@@ -218,7 +218,7 @@ public final class Input {
                 case GLFW_DISCONNECTED -> {
                     findInputDevices();
                     
-                    if(jid < GLFW_JOYSTICK_5 && Window.visible) {
+                    if(jid < GLFW_JOYSTICK_5) {
                         connected[jid] = false;
                         XJGE.observable.notifyObservers("GAMEPAD_" + jid + "_CONNECTED", connected[jid]);
                     }

@@ -74,6 +74,9 @@ final class KeyMouseCombo extends InputDevice {
     
     @Override
     protected void poll(double targetDelta, double trueDelta, Puppet puppet, Control control, Command command) {
+        //TODO: reimplement this or use callback
+        
+        /*
         switch(control) {
             case LEFT_STICK_X, LEFT_STICK_Y -> {
                 int key1 = (controls.get(control) & ((control == LEFT_STICK_X) ? axisValues[0] : axisValues[2]));
@@ -129,6 +132,7 @@ final class KeyMouseCombo extends InputDevice {
                                 targetDelta, trueDelta);
             }
         }
+        */
     }
 
 }

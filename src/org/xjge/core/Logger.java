@@ -90,7 +90,7 @@ public final class Logger {
                 case 5  -> "OPENGL VER:\t" + glGetString(GL_VERSION);
                 case 6  -> "GFX CARD:\t" + glGetString(GL_RENDERER);
                 case 7  -> "MONITORS:\t" + "Found: " + Hardware2.getNumMonitors() + ", Primary: \"" + 
-                           Window2.getMonitor().name + "\" (" + Window2.getMonitor().getInfo() + ")";
+                           Window.getMonitor().name + "\" (" + Window.getMonitor().getInfo() + ")";
                 case 8  -> "SPEAKERS:\t" + "Found: " + Hardware.getNumSpeakers() + ", Primary: \"" + Audio.speaker.name;
                 case 9  -> "GAMEPADS:\t" + "Found: " + Input.getNumDevices();
             };

@@ -166,7 +166,7 @@ public final class XJGE {
         
         if(!glfwInit()) Logger.logError("Failed to initialize GLFW", null);
         
-        Window2.create();
+        Window.create();
         
         Audio.speaker = Hardware.findSpeakers().get(1);
         Audio.speaker.setContextCurrent();
@@ -291,7 +291,7 @@ public final class XJGE {
         terminal   = new Terminal(engineCommands);
         debugInfo  = new DebugInfo2(engineIcons);
         
-        Window2.show();
+        Window.show();
         
         int cycles = 0;
         final double TARGET_DELTA = 1 / 60.0;
@@ -300,7 +300,7 @@ public final class XJGE {
         double delta = 0;
         Matrix4f projMatrix = new Matrix4f();
         
-        while(!Window2.closeRequested()) {
+        while(!Window.closeRequested()) {
             glfwPollEvents();
             
             currTime = glfwGetTime();
@@ -338,7 +338,7 @@ public final class XJGE {
                 UI.processWidgetAddRequests();
                 
                 //Update viewport cameras and UI widgets
-                for(Viewport viewport : Window2.getViewports()) {
+                for(Viewport viewport : Window.getViewports()) {
                     if(viewport.active && viewport.currCamera != null) {
                         viewport.currCamera.update();
                         UI.updateWidgets(viewport.id, TARGET_DELTA, delta);
@@ -364,7 +364,7 @@ public final class XJGE {
             scene.setLightingUniforms();
             
             //Render scene from the perspective of each active viewport
-            for(Viewport viewport : Window2.getViewports()) {
+            for(Viewport viewport : Window.getViewports()) {
                 if(viewport.active) {
                     scene.renderShadowMap(viewport.currCamera.up, depthProgram);
                     
@@ -373,7 +373,7 @@ public final class XJGE {
                         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
                     }
                     
-                    glBindFramebuffer(GL_FRAMEBUFFER, Window2.getFBOHandle());
+                    glBindFramebuffer(GL_FRAMEBUFFER, Window.getFBOHandle());
                         glViewport(0, 0, viewport.width, viewport.height);
                         glClearColor(clearColor.r, clearColor.g, clearColor.b, 0);
                         viewport.bindDrawBuffers(Game.enableBloom);
@@ -405,14 +405,14 @@ public final class XJGE {
             }
             
             if(XJGE.getTerminalEnabled() || debugInfo.show) {
-                glViewport(0, 0, Window2.getWidth(), Window2.getHeight());
-                UI.updateProjectionMatrix(Window2.getWidth(), Window2.getHeight(), 0, Integer.MAX_VALUE);
+                glViewport(0, 0, Window.getWidth(), Window.getHeight());
+                UI.updateProjectionMatrix(Window.getWidth(), Window.getHeight(), 0, Integer.MAX_VALUE);
                 
                 if(XJGE.getTerminalEnabled()) terminal.render();
                 if(debugInfo.show) debugInfo.render();
             }
             
-            Window2.swapBuffers();
+            Window.swapBuffers();
             
             if(!ticked) {
                 try {
@@ -425,7 +425,7 @@ public final class XJGE {
             }
         }
         
-        Window2.freeCallbacks();
+        Window.freeCallbacks();
         GL.destroy();
         glfwTerminate();
     }

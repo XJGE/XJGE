@@ -123,7 +123,7 @@ final class DebugInfo {
             
             strings[0] = "OPENGL VER: " + glGetString(GL_VERSION);
             strings[1] = "GFX CARD: " + glGetString(GL_RENDERER);
-            strings[2] = "DISPLAY: \"" + Window.monitor.name + "\" (" + Window.monitor.getInfo() + ")";
+            strings[2] = "DISPLAY: \"" + Window.getMonitor().name + "\" (" + Window.getMonitor().getInfo() + ")";
             strings[3] = "VSYNC: " + Hardware.getVSyncEnabled();
             
             for(String string : strings) {
@@ -224,7 +224,7 @@ final class DebugInfo {
         
         placeholder.drawString("OPENGL VER: " + glGetString(GL_VERSION), textPos[11].x, textPos[11].y, Color.WHITE, 1f);
         placeholder.drawString("GFX CARD: " + glGetString(GL_RENDERER), textPos[12].x, textPos[11].y, Color.YELLOW, 1f);
-        placeholder.drawString("DISPLAY: \"" + Window.monitor.name + "\" (" + Window.monitor.getInfo() + ")", 
+        placeholder.drawString("DISPLAY: \"" + Window.getMonitor().name + "\" (" + Window.getMonitor().getInfo() + ")", 
                                textPos[13].x, textPos[13].y, Color.YELLOW, 1f);
         placeholder.drawString("VSYNC: " + Hardware.getVSyncEnabled(), textPos[14].x, textPos[14].y, Color.CYAN, 1f);
         

@@ -1,6 +1,6 @@
 package org.xjge.test;
 
-import org.xjge.core.Window2;
+import org.xjge.core.Window;
 import org.xjge.core.XJGE;
 
 /**
