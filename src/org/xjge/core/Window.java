@@ -8,7 +8,10 @@ import static org.lwjgl.glfw.GLFW.*;
 import org.lwjgl.glfw.GLFWCursorPosCallback;
 import org.lwjgl.glfw.GLFWErrorCallback;
 import org.lwjgl.glfw.GLFWImage;
+import org.lwjgl.glfw.GLFWKeyCallback;
 import org.lwjgl.glfw.GLFWMonitorCallback;
+import org.lwjgl.glfw.GLFWMouseButtonCallback;
+import org.lwjgl.glfw.GLFWScrollCallback;
 import org.lwjgl.glfw.GLFWWindowPosCallback;
 import org.lwjgl.glfw.GLFWWindowSizeCallback;
 import org.lwjgl.opengl.GL;
@@ -53,10 +56,14 @@ public final class Window {
     private static final Observable observable = new Observable(Window.class);
     
     //These fields have been added to prevent possible issues with GC invalidating callbacks
-    private static GLFWErrorCallback      glfwErrorReference;
-    private static GLFWMonitorCallback    glfwMonitorReference;
-    private static GLFWWindowSizeCallback glfwSizeReference;
-    private static GLFWWindowPosCallback  glfwPositionReference;
+    private static GLFWErrorCallback       glfwErrorReference;
+    private static GLFWMonitorCallback     glfwMonitorReference;
+    private static GLFWWindowSizeCallback  glfwWindowSizeReference;
+    private static GLFWWindowPosCallback   glfwWindowPositionReference;
+    private static GLFWCursorPosCallback   glfwCursorPositionReference;
+    private static GLFWMouseButtonCallback glfwMouseButtonReference;
+    private static GLFWScrollCallback      glfwScrollReference;
+    private static GLFWKeyCallback         glfwKeyReference;
     
     private static final Viewport[] viewports = new Viewport[4];
     
@@ -149,24 +156,121 @@ public final class Window {
             }
         });
         
-        glfwSizeReference = GLFWWindowSizeCallback.create((window, newWidth, newHeight) -> {
+        glfwWindowSizeReference = GLFWWindowSizeCallback.create((window, newWidth, newHeight) -> {
             width  = newWidth;
             height = newHeight;
             observable.notifyObservers("WINDOW_WIDTH_CHANGED",  width);
             observable.notifyObservers("WINDOW_HEIGHT_CHANGED", height);
         });
         
-        glfwPositionReference = GLFWWindowPosCallback.create((window, newPositionX, newPositionY) -> {
+        glfwWindowPositionReference = GLFWWindowPosCallback.create((window, newPositionX, newPositionY) -> {
             positionX = newPositionX;
             positionY = newPositionY;
             observable.notifyObservers("WINDOW_POSITION_X_CHANGED", positionX);
             observable.notifyObservers("WINDOW_POSITION_Y_CHANGED", positionY);
         });
         
+        glfwCursorPositionReference = GLFWCursorPosCallback.create((window, cursorX, cursorY) -> {
+            /*
+            float scaleX = (float) resolutionX / Window.getWidth();
+            float scaleY = (float) resolutionY / Window.getHeight();
+
+            cursorX = (double) (x * scaleX);
+            cursorY = (double) Math.abs((y * scaleY) - resolutionY);
+
+            if(noclipEnabled && !terminalEnabled) {
+                if(firstMouse) {
+                    freeCam.prevX = x;
+                    freeCam.prevY = y;
+                    firstMouse    = false;
+                }
+
+                freeCam.setDirection(x, y);
+            } else {
+                firstMouse = true;
+            }
+            
+            viewports[0].mouse.cursorPosX = x;
+            viewports[0].mouse.cursorPosY = (Window.getHeight() - y);
+            viewports[0].processMouseInput();
+            */
+        });
+        
+        glfwMouseButtonReference = GLFWMouseButtonCallback.create((window, button, action, mods) -> {
+            
+        });
+        
+        glfwScrollReference = GLFWScrollCallback.create((window, scrollX, scrollY) -> {
+            
+        });
+        
+        glfwKeyReference = GLFWKeyCallback.create((window, key, scancode, action, mods) -> {
+            /*
+            if(key == GLFW_KEY_F1 && action == GLFW_PRESS) {
+                if(debugEnabled && mods == GLFW_MOD_SHIFT) {
+                    XJGE.terminalEnabled = !terminalEnabled;
+
+                    if(terminalEnabled) Input.setDeviceEnabled(KEY_MOUSE_COMBO, false);
+                    else                Input.revertKeyboardEnabledState();
+                } else {
+                    debugInfo.show = !debugInfo.show;
+                }
+
+                //if(debugInfo.show) debugInfo.updatePosition();
+            }
+
+            if(debugEnabled && key == GLFW_KEY_F2 && action == GLFW_PRESS) {
+                if(!terminalEnabled) {
+                    XJGE.noclipEnabled = !noclipEnabled;
+
+                    if(noclipEnabled) {
+                        Input.setDeviceEnabled(KEY_MOUSE_COMBO, false);
+                        glfwSetInputMode(Window.HANDLE, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
+                        //viewports[0].prevCamera = viewports[0].currCamera;
+                        //viewports[0].currCamera = freeCam;
+                    } else {
+                        Input.revertKeyboardEnabledState();
+                        glfwSetInputMode(Window.HANDLE, GLFW_CURSOR, Window.cursorMode);
+                        //viewports[0].currCamera = viewports[0].prevCamera;
+                    }
+                } else {
+                    Logger.logInfo("Freecam access denied, command terminal " + 
+                                   "is currently in use. Close the command " + 
+                                   "terminal and try again");
+                }
+            }
+
+            if(debugEnabled && key == GLFW_KEY_F3 && action == GLFW_PRESS) {
+                showLightSources = !showLightSources;
+            }
+
+            if(debugEnabled && key == GLFW_KEY_F4 && action == GLFW_PRESS) {
+                Audio.playSound(beep, null, false);
+            }
+
+            if(noclipEnabled && !terminalEnabled) {
+                if(key == GLFW_KEY_W) freeCam.pressed[0] = (action != GLFW_RELEASE);
+                if(key == GLFW_KEY_A) freeCam.pressed[1] = (action != GLFW_RELEASE);
+                if(key == GLFW_KEY_S) freeCam.pressed[2] = (action != GLFW_RELEASE);
+                if(key == GLFW_KEY_D) freeCam.pressed[3] = (action != GLFW_RELEASE);
+
+                freeCam.setSpeedBoostEnabled(mods == GLFW_MOD_SHIFT);
+            }
+
+            if(XJGE.terminalEnabled) terminal.processKeyInput(key, action, mods);
+            //TODO: re-enable input focus
+            //else                     viewports[0].processKeyInput(key, action, mods);
+            */
+        });
+        
         glfwSetErrorCallback(glfwErrorReference);
         glfwSetMonitorCallback(glfwMonitorReference);
-        glfwSetWindowSizeCallback(handle, glfwSizeReference);
-        glfwSetWindowPosCallback(handle, glfwPositionReference);
+        glfwSetWindowSizeCallback(handle, glfwWindowSizeReference);
+        glfwSetWindowPosCallback(handle, glfwWindowPositionReference);
+        glfwSetCursorPosCallback(handle, glfwCursorPositionReference);
+        glfwSetMouseButtonCallback(handle, glfwMouseButtonReference);
+        glfwSetScrollCallback(handle, glfwScrollReference);
+        glfwSetKeyCallback(handle, glfwKeyReference);
     }
     
     /**
@@ -254,8 +358,12 @@ public final class Window {
     static void freeCallbacks() {
         glfwErrorReference.free();
         glfwMonitorReference.free();
-        glfwSizeReference.free();
-        glfwPositionReference.free();
+        glfwWindowSizeReference.free();
+        glfwWindowPositionReference.free();
+        glfwCursorPositionReference.free();
+        glfwMouseButtonReference.free();
+        glfwScrollReference.free();
+        glfwKeyReference.free();
     }
     
     /**

@@ -2,41 +2,25 @@ package org.xjge.core;
 
 import org.xjge.graphics.Texture;
 import java.beans.PropertyChangeListener;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.FileWriter;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.PrintStream;
-import java.io.PrintWriter;
 import org.xjge.core.Terminal.TCCLS;
 import org.xjge.graphics.GLDataType;
 import org.xjge.graphics.GLProgram;
 import org.xjge.graphics.GLShader;
 import java.nio.file.Path;
-import java.text.SimpleDateFormat;
 import java.util.Collections;
 import java.util.Comparator;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.Map;
 import java.util.PriorityQueue;
 import java.util.Queue;
 import java.util.TreeMap;
-import javax.xml.stream.XMLInputFactory;
-import javax.xml.stream.XMLStreamConstants;
-import javax.xml.stream.XMLStreamException;
-import javax.xml.stream.XMLStreamReader;
 import org.joml.Matrix4f;
 import org.joml.Vector2i;
 import static org.lwjgl.glfw.GLFW.*;
 import org.lwjgl.opengl.GL;
 import static org.lwjgl.opengl.GL32.*;
-import static org.lwjgl.opengl.GLUtil.setupDebugMessageCallback;
 import static org.xjge.core.Game.tick;
-import static org.xjge.core.Input.KEY_MOUSE_COMBO;
 import org.xjge.graphics.Color;
 import org.xjge.graphics.PostProcessShader;
 
@@ -276,6 +260,18 @@ public final class XJGE {
         initialized = true;
     }
     
+    /**
+     * Exposes the window to the user and starts running the applications main 
+     * loop. 
+     * <p>
+     * NOTE: This should be called <i>after</i> setting the initial scene with 
+     * {@link Game#setScene(Scene)} and supplying whatever additional 
+     * {@link org.xjge.graphics.GLProgram shader programs} 
+     * and {@linkplain addCommand terminal commands} the implementation 
+     * requires.
+     * 
+     * @see Window
+     */
     public static void start() {
         if(started) {
             Logger.logInfo("The game loop has already been started");
@@ -479,399 +475,6 @@ public final class XJGE {
      */
     public static void init(String assetsFilepath, String scenesFilepath, Vector2i resolution, boolean createOpenGLLog, 
                             boolean debugEnabled, boolean restrict4K, boolean retainFullscreen, boolean windowResizable) {
-        if(!initialized) {
-            if(System.getProperty("java.version").compareTo("22.0.2") < 0) {
-                Logger.logError("Unsupported Java version. Required 22.0.2, " + 
-                                 "found: " + System.getProperty("java.version"), 
-                                 null);
-            }
-            
-            if(!glfwInit()) Logger.logError("Failed to initialize GLFW", null);
-            
-            boolean fullscreen    = false;
-            debugModeEnabled      = debugEnabled;
-            restrict4KResolutions = restrict4K;
-            
-            //Load settings from engine configuration file
-            try {
-                InputStream stream = new FileInputStream(PRESENT_WORKING_DIRECTORY.toString() + "/engine.cfg");
-                XMLStreamReader xmlReader = XMLInputFactory.newInstance().createXMLStreamReader(stream);
-                
-                while(xmlReader.hasNext()) {
-                    switch(xmlReader.next()) {
-                        case XMLStreamConstants.START_ELEMENT -> {
-                            if(xmlReader.getName().getLocalPart().equals("config")) {
-                                final float soundMaster = Float.parseFloat(xmlReader.getAttributeValue(null, "soundMaster"));
-                                final float musicMaster = Float.parseFloat(xmlReader.getAttributeValue(null, "musicMaster"));
-                                final boolean vSync     = Boolean.parseBoolean(xmlReader.getAttributeValue(null, "vSync"));
-                                
-                                Audio.setMasterVolumePreferences(soundMaster, musicMaster);
-                                Hardware.setVSyncPreference(vSync);
-                                
-                                if(retainFullscreen) {
-                                    fullscreen = Boolean.parseBoolean(xmlReader.getAttributeValue(null, "fullscreen"));
-                                }
-                            }
-                        }
-                        
-                        case XMLStreamConstants.END_ELEMENT -> {
-                            if(xmlReader.getName().getLocalPart().equals("config")) {
-                                xmlReader.close();
-                            }
-                        }
-                    }
-                }
-            } catch(FileNotFoundException | NumberFormatException | XMLStreamException e) {
-                Logger.logWarning("Failed to parse engine configuration " + 
-                                  "file, using default configuration", 
-                                  e);
-            }
-            
-            { //Initialize 3D audio utilities
-                Audio.speaker = Hardware.findSpeakers().get(1);
-                Audio.speaker.setContextCurrent();
-            }
-            
-            { //Initialize the game window
-                glfwWindowHint(GLFW_RESIZABLE, (windowResizable && resolution == null) ? GLFW_TRUE : GLFW_FALSE);
-                glfwWindowHint(GLFW_VISIBLE, GLFW_FALSE);
-                
-                Window.monitor = Hardware.findMonitors().get(1);
-                Window.setFullscreenPreference(fullscreen);
-                Window.setIcon("xjge_texture_missing.png");
-            }
-            
-            glfwMakeContextCurrent(Window.HANDLE);
-            GL.createCapabilities();
-            Window.reconfigure();
-            
-            Input.importControls();
-            Input.findInputDevices();
-            
-            if(resolution == null) {
-                matchWindowResolution = true;
-                
-                resolutionX = Window.getWidth();
-                resolutionY = Window.getHeight();
-            } else {
-                resolutionX = resolution.x;
-                resolutionY = resolution.y;
-            }
-            
-            //for(int i = 0; i < viewports.length; i++) viewports[i] = new Viewport(i);
-            
-            /*
-            fbo = glGenFramebuffers();
-            glBindFramebuffer(GL_FRAMEBUFFER, fbo);
-                glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, viewports[0].viewTexHandle, 0);
-                glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT1, GL_TEXTURE_2D, viewports[1].viewTexHandle, 0);
-                glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT2, GL_TEXTURE_2D, viewports[2].viewTexHandle, 0);
-                glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT3, GL_TEXTURE_2D, viewports[3].viewTexHandle, 0);
-                glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT4, GL_TEXTURE_2D, viewports[0].bloomTexHandle, 0);
-                glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT5, GL_TEXTURE_2D, viewports[1].bloomTexHandle, 0);
-                glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT6, GL_TEXTURE_2D, viewports[2].bloomTexHandle, 0);
-                glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT7, GL_TEXTURE_2D, viewports[3].bloomTexHandle, 0);
-            glBindFramebuffer(GL_FRAMEBUFFER, 0);
-            */
-            
-            createRenderbuffer();
-            
-            ErrorUtils.checkFBStatus(GL_FRAMEBUFFER);
-            
-            //Initialize the default shader program that will be provided to the implementation
-            {
-                var shaderSourceFiles = new LinkedList<GLShader>() {{
-                    add(new GLShader("shader_default_vertex.glsl", GL_VERTEX_SHADER));
-                    add(new GLShader("shader_default_fragment.glsl", GL_FRAGMENT_SHADER));
-                }};
-                
-                GLProgram defaultProgram = new GLProgram(shaderSourceFiles, "default");
-                
-                defaultProgram.use();
-                defaultProgram.addUniform(GLDataType.INT,   "uType");
-                defaultProgram.addUniform(GLDataType.INT,   "uPCFValue");
-                defaultProgram.addUniform(GLDataType.INT,   "uShine");
-                defaultProgram.addUniform(GLDataType.INT,   "uNumLights");
-                defaultProgram.addUniform(GLDataType.INT,   "uTexture");
-                defaultProgram.addUniform(GLDataType.INT,   "uDepthTexture");
-                defaultProgram.addUniform(GLDataType.INT,   "uSkyTexture");
-                defaultProgram.addUniform(GLDataType.INT,   "uBloomTexture");
-                defaultProgram.addUniform(GLDataType.INT,   "uShadowMapActive");
-                defaultProgram.addUniform(GLDataType.INT,   "uBloomOverride");
-                defaultProgram.addUniform(GLDataType.INT,   "uIsBitmapFont");
-                defaultProgram.addUniform(GLDataType.FLOAT, "uOpacity");
-                defaultProgram.addUniform(GLDataType.FLOAT, "uMinShadowBias");
-                defaultProgram.addUniform(GLDataType.FLOAT, "uMaxShadowBias");
-                defaultProgram.addUniform(GLDataType.FLOAT, "uBloomThreshold");
-                defaultProgram.addUniform(GLDataType.VEC2,  "uTexCoords");
-                defaultProgram.addUniform(GLDataType.VEC3,  "uColor");
-                defaultProgram.addUniform(GLDataType.VEC3,  "uCamPos");
-                defaultProgram.addUniform(GLDataType.MAT3,  "uNormal");
-                defaultProgram.addUniform(GLDataType.MAT4,  "uModel");
-                defaultProgram.addUniform(GLDataType.MAT4,  "uView");
-                defaultProgram.addUniform(GLDataType.MAT4,  "uProjection");
-                defaultProgram.addUniform(GLDataType.MAT4,  "uBoneTransforms");
-                defaultProgram.addUniform(GLDataType.MAT4,  "uLightSpace");
-                
-                for(int i = 0; i < Scene.MAX_LIGHTS; i++) {
-                    defaultProgram.addUniform(GLDataType.FLOAT, "uLights[" + i + "].brightness");
-                    defaultProgram.addUniform(GLDataType.FLOAT, "uLights[" + i + "].contrast");
-                    defaultProgram.addUniform(GLDataType.FLOAT, "uLights[" + i + "].distance");
-                    defaultProgram.addUniform(GLDataType.VEC3,  "uLights[" + i + "].position");
-                    defaultProgram.addUniform(GLDataType.VEC3,  "uLights[" + i + "].ambient");
-                    defaultProgram.addUniform(GLDataType.VEC3,  "uLights[" + i + "].diffuse");
-                    defaultProgram.addUniform(GLDataType.VEC3,  "uLights[" + i + "].specular");
-                }
-                
-                glPrograms.put("default", defaultProgram);
-            }
-            
-            //Create shader program that will generate shadow map output
-            {
-                var shaderSourceFiles = new LinkedList<GLShader>() {{
-                    add(new GLShader("shader_depth_vertex.glsl", GL_VERTEX_SHADER));
-                    add(new GLShader("shader_depth_fragment.glsl", GL_FRAGMENT_SHADER));
-                }};
-                
-                depthProgram = new GLProgram(shaderSourceFiles, "default");
-                
-                depthProgram.use();
-                depthProgram.addUniform(GLDataType.INT,  "uTexture");
-                depthProgram.addUniform(GLDataType.MAT4, "uModel");
-                depthProgram.addUniform(GLDataType.MAT4, "uLightSpace");
-            }
-            
-            //Create shader program for applying gaussian blur
-            {
-                var shaderSourceFiles = new LinkedList<GLShader>() {{
-                    add(new GLShader("shader_blur_vertex.glsl", GL_VERTEX_SHADER));
-                    add(new GLShader("shader_blur_fragment.glsl", GL_FRAGMENT_SHADER));
-                }};
-                
-                blurProgram = new GLProgram(shaderSourceFiles, "default");
-                
-                blurProgram.use();
-                blurProgram.addUniform(GLDataType.INT,   "uBloomTexture");
-                blurProgram.addUniform(GLDataType.INT,   "uHorizontal");
-                blurProgram.addUniform(GLDataType.FLOAT, "uWeight");
-                blurProgram.addUniform(GLDataType.MAT4,  "uProjection");
-            }
-            
-            engineIcons = new Texture("xjge_engineicons.png");
-            beep        = new Sound("xjge_beep.ogg");
-            
-            Light.setIconTexture(engineIcons);
-            //Logger.logSystemInfo();
-            
-            XJGE.assetsFilepath = assetsFilepath;
-            XJGE.scenesFilepath = scenesFilepath;
-            
-            engineCommands = new TreeMap<>() {{
-                put("cls",                  new TCCLS());
-                put("help",                 new TCHelp());
-                put("setFullscreen",        new TCSetFullscreen());
-                put("setMonitor",           new TCSetMonitor());
-                put("setMusicMasterVolume", new TCSetMusicMasterVolume());
-                put("setScene",             new TCSetScene());
-                put("setScreenSplit",       new TCSetScreenSplit());
-                put("setSoundMasterVolume", new TCSetSoundMasterVolume());
-                put("setSpeaker",           new TCSetSpeaker());
-                put("setVSync",             new TCSetVSync());
-                put("setVideoMode",         new TCSetVideoMode());
-                put("showCommands",         new TCShowCommands());
-                put("terminate",            new TCTerminate());
-            }};
-            
-            if(createOpenGLLog) {
-                try {
-                    String date = new SimpleDateFormat("MM-dd-yyyy").format(new Date());
-                    
-                    File file = new File("opengl log " + date + ".txt");
-                    int duplicate = 0;
-
-                    while(file.exists()) {
-                        duplicate++;
-                        file = new File("opengl log " + date + " (" + duplicate + ").txt");
-                    }
-                    
-                    PrintStream stream = new PrintStream(file);
-                    setupDebugMessageCallback(stream);
-                } catch(FileNotFoundException e) {
-                    Logger.logWarning("Failed to create OpenGL log file", e);
-                }
-            }
-            
-            glfwSetKeyCallback(Window.HANDLE, (window, key, scancode, action, mods) -> {
-                if(key == GLFW_KEY_F1 && action == GLFW_PRESS) {
-                    if(debugEnabled && mods == GLFW_MOD_SHIFT) {
-                        XJGE.terminalEnabled = !terminalEnabled;
-                        
-                        if(terminalEnabled) Input.setDeviceEnabled(KEY_MOUSE_COMBO, false);
-                        else                Input.revertKeyboardEnabledState();
-                    } else {
-                        debugInfo.show = !debugInfo.show;
-                    }
-                    
-                    //if(debugInfo.show) debugInfo.updatePosition();
-                }
-                
-                if(debugEnabled && key == GLFW_KEY_F2 && action == GLFW_PRESS) {
-                    if(!terminalEnabled) {
-                        XJGE.noclipEnabled = !noclipEnabled;
-                        
-                        if(noclipEnabled) {
-                            Input.setDeviceEnabled(KEY_MOUSE_COMBO, false);
-                            glfwSetInputMode(Window.HANDLE, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
-                            //viewports[0].prevCamera = viewports[0].currCamera;
-                            //viewports[0].currCamera = freeCam;
-                        } else {
-                            Input.revertKeyboardEnabledState();
-                            glfwSetInputMode(Window.HANDLE, GLFW_CURSOR, Window.cursorMode);
-                            //viewports[0].currCamera = viewports[0].prevCamera;
-                        }
-                    } else {
-                        Logger.logInfo("Freecam access denied, command terminal " + 
-                                       "is currently in use. Close the command " + 
-                                       "terminal and try again");
-                    }
-                }
-                
-                if(debugEnabled && key == GLFW_KEY_F3 && action == GLFW_PRESS) {
-                    showLightSources = !showLightSources;
-                }
-                
-                if(debugEnabled && key == GLFW_KEY_F4 && action == GLFW_PRESS) {
-                    Audio.playSound(beep, null, false);
-                }
-
-                if(noclipEnabled && !terminalEnabled) {
-                    if(key == GLFW_KEY_W) freeCam.pressed[0] = (action != GLFW_RELEASE);
-                    if(key == GLFW_KEY_A) freeCam.pressed[1] = (action != GLFW_RELEASE);
-                    if(key == GLFW_KEY_S) freeCam.pressed[2] = (action != GLFW_RELEASE);
-                    if(key == GLFW_KEY_D) freeCam.pressed[3] = (action != GLFW_RELEASE);
-
-                    freeCam.setSpeedBoostEnabled(mods == GLFW_MOD_SHIFT);
-                }
-
-                if(XJGE.terminalEnabled) terminal.processKeyInput(key, action, mods);
-                //TODO: re-enable input focus
-                //else                     viewports[0].processKeyInput(key, action, mods);
-            });
-
-            glfwSetCursorPosCallback(Window.HANDLE, (window, x, y) -> {
-                float scaleX = (float) resolutionX / Window.getWidth();
-                float scaleY = (float) resolutionY / Window.getHeight();
-                
-                cursorX = (double) (x * scaleX);
-                cursorY = (double) Math.abs((y * scaleY) - resolutionY);
-                
-                if(noclipEnabled && !terminalEnabled) {
-                    if(firstMouse) {
-                        freeCam.prevX = x;
-                        freeCam.prevY = y;
-                        firstMouse    = false;
-                    }
-                    
-                    freeCam.setDirection(x, y);
-                } else {
-                    firstMouse = true;
-                }
-                
-                /*
-                viewports[0].mouse.cursorPosX = x;
-                viewports[0].mouse.cursorPosY = (Window.getHeight() - y);
-                viewports[0].processMouseInput();
-                */
-            });
-            
-            //TODO: reimplement mouse/keyboard input for UI widgets using GLFW callbacks
-            
-            /*
-            glfwSetMouseButtonCallback(Window.HANDLE, (window, button, action, mods) -> {
-                viewports[0].mouse.button = button;
-                viewports[0].mouse.action = action;
-                viewports[0].mouse.mods   = mods;
-                viewports[0].processMouseInput();
-            });
-            
-            glfwSetScrollCallback(Window.HANDLE, (window, scrollX, scrollY) -> {
-                viewports[0].mouse.scrollX = scrollX;
-                viewports[0].mouse.scrollY = scrollY;
-                viewports[0].processMouseInput();
-            });
-            */
-        } else {
-            Logger.logWarning("XJGE has already been initialized", null);
-        }
-        
-        initialized = true;
-    }
-    
-    /**
-     * Exposes the window to the user and starts running the applications main 
-     * loop. 
-     * <p>
-     * NOTE: This should be called <i>after</i> setting the initial scene with 
-     * {@link Game#setScene(Scene)} and supplying whatever additional 
-     * {@link org.xjge.graphics.GLProgram shader programs} 
-     * and {@linkplain addCommand terminal commands} the implementation 
-     * requires.
-     * 
-     * @see Game
-     * @see Window
-     */
-    public static void start(int x) {
-        engineCommands.putAll(userCommands);
-        engineCommands.values().forEach(command -> command.setCommands(engineCommands));
-        
-        glPrograms = Collections.unmodifiableMap(glPrograms);
-        freeCam    = new Noclip();
-        terminal   = new Terminal(engineCommands);
-        debugInfo  = new DebugInfo2(engineIcons);
-        
-        Window.show();
-        updateRenderbufferDimensions();
-        setScreenSplit(getScreenSplit());
-        
-        glfwSetWindowSizeCallback(Window.HANDLE, (window, w, h) -> {
-            Window.updateDimensions(w, h);
-
-            updateRenderbufferDimensions();
-
-            setScreenSplit(getScreenSplit());
-            //debugInfo.updatePosition();
-        });
-        
-        //Game.loop(fbo, viewports, terminal, debugInfo, depthProgram, blurProgram, debugModeEnabled);
-        
-        engineIcons.delete();
-        beep.freeSound();
-        terminal.freeBuffers();
-        //debugInfo.freeBuffers();
-        
-        //Export engine configuration
-        try {
-            FileWriter file = new FileWriter("engine.cfg");
-            
-            try(PrintWriter output = new PrintWriter(file)) {
-                output.append("<config soundMaster=\"")
-                      .append(Audio.getSoundMasterVolume() + "\" ")
-                      .append("musicMaster=\"")
-                      .append(Audio.getMusicMasterVolume() + "\" ")
-                      .append("vSync=\"")
-                      .append(Hardware.getVSyncEnabled() + "\" ")
-                      .append("fullscreen=\"")
-                      .append(Window.getFullscreen() + "\">")
-                      .append("</config>");
-            }
-        } catch(IOException e) {
-            Logger.logWarning("Failed to export engine configuration", e);
-        }
-        
-        Hardware.freeSpeakers();
-        Input.exportControls();
-        GL.destroy();
-        glfwTerminate();
     }
     
     /**
