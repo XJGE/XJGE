@@ -16,7 +16,11 @@ public final class Hardware2 {
     
     private static final NavigableMap<Integer, Monitor> monitors = new TreeMap<>();
     
-    static Monitor getMonitor(long handle) {
+    static int getNumMonitors() {
+        return monitors.size();
+    }
+    
+    static final Monitor getMonitor(long handle) {
         try {
             return monitors.values().stream().filter(monitor -> monitor.handle == handle).findFirst().get();
         } catch(Exception exception) {

@@ -143,6 +143,11 @@ public final class XJGE {
     
     static final Observable observable = new Observable(XJGE.class); //TODO: make this private and provide add/remove methods
     
+    /**
+     * Default constructor defined here to keep it out of the public APIs reach.
+     */
+    private XJGE() {}
+    
     public static void init(boolean debugModeEnabled, String assetsFilepath, String scenesFilepath) {
         if(initialized) {
             Logger.logInfo("XJGE has already been initialized");
@@ -165,6 +170,8 @@ public final class XJGE {
         
         Audio.speaker = Hardware.findSpeakers().get(1);
         Audio.speaker.setContextCurrent();
+        
+        Logger.logSystemInfo();
         
         //Initialize the default shader program that will be provided to the implementation
         {
@@ -418,6 +425,7 @@ public final class XJGE {
             }
         }
         
+        Window2.freeCallbacks();
         GL.destroy();
         glfwTerminate();
     }
@@ -437,13 +445,6 @@ public final class XJGE {
     
     
     
-    
-    
-    /**
-     * Default constructor provided here to keep it out of the implementations 
-     * reach.
-     */
-    private XJGE() {}
     
     /**
      * Initializes the engines assets, compiles the default shader programs, 
