@@ -646,46 +646,111 @@ public final class Window2 {
         observable.notifyObservers("WINDOW_SPLITSCREEN_TYPE_CHANGED", Window2.splitType);
     }
     
+    /**
+     * Obtains the value used to indicate if the window is in fullscreen mode.
+     * 
+     * @return if true, the window will fill the entire screen
+     */
     public static boolean getFullscreen() {
         return fullscreen;
     }
     
+    /**
+     * Obtains the current width of the windows content area.
+     * 
+     * @return the width of the window (in pixels)
+     */
     public static int getWidth() {
         return width;
     }
     
+    /**
+     * Obtains the current height of the windows content area.
+     * 
+     * @return the height of the window (in pixels)
+     */
     public static int getHeight() {
         return height;
     }
     
+    /**
+     * Obtains the position of the window, in screen coordinates, of the 
+     * upper-left corner of the content area of the window.
+     * 
+     * @return the position of the windows content area along the x-axis
+     */
     public static int getPositionX() {
         return positionX;
     }
     
+    /**
+     * Obtains the position of the window, in screen coordinates, of the 
+     * upper-left corner of the content area of the window.
+     * 
+     * @return the position of the windows content area along the y-axis
+     */
     public static int getPositionY() {
         return positionY;
     }
     
+    /**
+     * Obtains the width of the resolution used by the window.
+     * 
+     * @return the width (in pixels) of the engines internal framebuffer texture
+     */
     public static int getResolutionWidth() {
         return resolution.width;
     }
     
+    /**
+     * Obtains the height of the resolution used by the window.
+     * 
+     * @return the height (in pixels) of the engines internal framebuffer texture
+     */
     public static int getResolutionHeight() {
         return resolution.height;
     }
     
+    /**
+     * Obtains the current value of the specified input option used by the game 
+     * window.
+     * 
+     * @param mode the input option to manipulate. One of 
+     *             {@link org.lwjgl.glfw.GLFW#GLFW_CURSOR GLFW_CURSOR}, 
+     *             {@link org.lwjgl.glfw.GLFW#GLFW_STICKY_KEYS GLFW_STICKY_KEYS}, 
+     *             {@link org.lwjgl.glfw.GLFW#GLFW_STICKY_MOUSE_BUTTONS GLFW_STICKY_MOUSE_BUTTONS}, 
+     *             {@link org.lwjgl.glfw.GLFW#GLFW_LOCK_KEY_MODS GLFW_LOCK_KEY_MODS}, or
+     *             {@link org.lwjgl.glfw.GLFW#GLFW_RAW_MOUSE_MOTION GLFW_RAW_MOUSE_MOTION}.
+     * @return the current state of the queried mode
+     */
     public static int getInputMode(int mode) {
         return glfwGetInputMode(handle, mode);
     }
     
+    /**
+     * Obtains the title used to identify the window. This will be displayed to 
+     * the user from the windows title bar among other places.
+     * 
+     * @return a string used to identify the window
+     */
     public static final String getTitle() {
         return title;
     }
     
+    /**
+     * Obtains the current {@linkplain Monitor} the window is using.
+     * 
+     * @return an object representing a single display device
+     */
     public static final Monitor getMonitor() {
         return monitor;
     }
     
+    /**
+     * Obtains the current split type used to divide the windows content area.
+     * 
+     * @return a value indicating how the screen is being divided
+     */
     public static SplitScreenType getSplitScreenType() {
         return splitType;
     }
