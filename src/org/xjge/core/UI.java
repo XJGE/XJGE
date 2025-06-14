@@ -48,7 +48,7 @@ public final class UI {
     
     static void relocateWidgets(int viewportID, int viewportWidth, int viewportHeight) {
         for(Widget widget : widgets.get(viewportID).values()) {
-            widget.relocate(XJGE.getScreenSplit(), viewportWidth, viewportHeight);
+            widget.relocate(Window.getSplitScreenType(), viewportWidth, viewportHeight);
         }
     }
     

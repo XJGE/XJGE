@@ -63,27 +63,16 @@ import org.xjge.graphics.PostProcessShader;
  */
 public final class XJGE {
     
-    private static int fbo;
-    private static int resolutionX;
-    private static int resolutionY;
-    
     static float noclipSpeedFactor = 1.0f;
     
-    private static double cursorX;
-    private static double cursorY;
-    
-    private static boolean restrict4KResolutions;
-    private static boolean matchWindowResolution;
     private static boolean noclipEnabled;
     private static boolean terminalEnabled;
     private static boolean showLightSources;
     private static boolean firstMouse = true;
     
     public static final Path PRESENT_WORKING_DIRECTORY = Path.of("").toAbsolutePath();
-    public static final String VERSION = "4.0.0";
     
-    private static SplitScreenType split = SplitScreenType.NONE;
-    
+    public static final String VERSION   = "4.0.0";
     private static String assetsFilepath = "/org/xjge/assets/";
     private static String scenesFilepath;
     
@@ -91,7 +80,6 @@ public final class XJGE {
     private static Sound beep;
     private static Noclip freeCam;
     private static Terminal terminal;
-    //private static DebugInfo debugInfo;
     private static DebugInfo2 debugInfo;
     
     private static TreeMap<String, TerminalCommand> engineCommands     = new TreeMap<>();
@@ -500,35 +488,6 @@ public final class XJGE {
     }
     
     /**
-     * Generates a new renderbuffer object and attaches it to the engines 
-     * framebuffer. 
-     */
-    private static void createRenderbuffer() {
-        glBindFramebuffer(GL_FRAMEBUFFER, fbo);
-        int rbo = glGenRenderbuffers();
-        glBindRenderbuffer(GL_RENDERBUFFER, rbo);
-        
-        glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH_COMPONENT, resolutionX, resolutionY);
-        glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_RENDERBUFFER, rbo);
-        
-        ErrorUtils.checkGLError();
-        glBindFramebuffer(GL_FRAMEBUFFER, 0);
-    }
-    
-    /**
-     * Sets the width/height dimensions of the renderbuffer in accordance to 
-     * the engines internal resolution (in pixels).
-     */
-    private static void updateRenderbufferDimensions() {
-        if(matchWindowResolution && Window.getWidth() != 0 && Window.getHeight() != 0) {
-            resolutionX = Window.getWidth();
-            resolutionY = Window.getHeight();
-
-            createRenderbuffer();
-        }
-    }
-    
-    /**
      * Restricts an input value from a user to one between the minimum and 
      * maximum ranges specified.
      * 
@@ -651,62 +610,6 @@ public final class XJGE {
     }
     
     /**
-     * Obtains the width of the engines internal resolution (if one exists).
-     * 
-     * @return the width of the framebuffer texture being rendered
-     */
-    public static int getResolutionX() {
-        return resolutionX;
-    }
-    
-    /**
-     * Obtains the height of the engines internal resolution (if one exists).
-     * 
-     * @return the height of the framebuffer texture being rendered
-     */
-    public static int getResolutionY() {
-        return resolutionY;
-    }
-    
-    /**
-     * Obtains the current position of the mouse cursor within the game windows 
-     * content area.
-     * <p>
-     * NOTE: If the engine was supplied with a resolution during 
-     * {@linkplain #init initialization} the value returned by this method will
-     * be converted to correspond to the coordinate system of the resolution.
-     * 
-     * @return the current x-coordinate of the mouse cursor
-     */
-    public static final double getCursorPosX() {
-        return cursorX;
-    }
-    
-    /**
-     * Obtains the current position of the mouse cursor within the game windows 
-     * content area.
-     * <p>
-     * NOTE: If the engine was supplied with a resolution during 
-     * {@linkplain #init initialization} the value returned by this method will
-     * be converted to correspond to the coordinate system of the resolution.
-     * 
-     * @return the current y-coordinate of the mouse cursor
-     */
-    public static final double getCursorPosY() {
-        return cursorY;
-    }
-    
-    /**
-     * Obtains the value that will be used to further cull a monitors supported 
-     * video modes.
-     * 
-     * @return true if 4K resolutions are not permitted for use by the engine
-     */
-    static boolean get4KRestricted() {
-        return restrict4KResolutions;
-    }
-    
-    /**
      * Obtains the value that indicates whether or not the command terminal is 
      * currently open.
      * 
@@ -725,15 +628,6 @@ public final class XJGE {
      */
     static boolean getLightSourcesVisible() {
         return showLightSources;
-    }
-    
-    /**
-     * Obtains the current split value used to divide the screen.
-     * 
-     * @return a value indicating how the screen is being divided
-     */
-    public static SplitScreenType getScreenSplit() {
-        return split;
     }
     
     /**
@@ -764,114 +658,6 @@ public final class XJGE {
      */
     public static GLProgram getDefaultGLProgram() {
         return glPrograms.get("default");
-    }
-    
-    /**
-     * Sets the current split value the engine will use to divide the screen 
-     * during split screen mode.
-     * 
-     * @param split a value that determines how the screen will be divided. One of: 
-     * <table><caption></caption><tr>
-     * <td>{@link SplitScreenType#NONE NONE}</td><td>{@link SplitScreenType#HORIZONTAL HORIZONTAL}</td>
-     * <td>{@link SplitScreenType#VERTICAL VERTICAL}</td></tr><tr>
-     * <td>{@link SplitScreenType#TRISECT TRISECT}</td><td>{@link SplitScreenType#QUARTER QUARTER}</td>
-     * </table>
-     */
-    public static final void setScreenSplit(SplitScreenType split) {
-        XJGE.split = split;
-        /*
-        for(Viewport viewport : viewports) {
-            switch(split) {
-                case NONE -> {
-                    viewport.active = (viewport.id == 0);
-                    viewport.setBounds(resolutionX, resolutionY, 
-                                       0, 0, 
-                                       Window.getWidth(), Window.getHeight());
-                }
-                
-                case HORIZONTAL -> {
-                    viewport.active = (viewport.id == 0 || viewport.id == 1);
-                    switch(viewport.id) {
-                        case 0 -> viewport.setBounds(
-                                    resolutionX, resolutionY / 2,
-                                    0, Window.getHeight() / 2, 
-                                    Window.getWidth(), Window.getHeight() / 2);
-                            
-                        case 1 -> viewport.setBounds(
-                                    resolutionX, resolutionY / 2,
-                                    0, 0, 
-                                    Window.getWidth(), Window.getHeight() / 2);
-                        
-                        default -> viewport.setBounds(resolutionX, resolutionY, 0, 0, 0, 0);
-                    }
-                }
-                
-                case VERTICAL -> {
-                    viewport.active = (viewport.id == 0 || viewport.id == 1);
-                    switch(viewport.id) {
-                        case 0 -> viewport.setBounds(
-                                    resolutionX / 2, resolutionY,
-                                    0, 0, 
-                                    Window.getWidth() / 2, Window.getHeight());
-                            
-                        case 1 -> viewport.setBounds(
-                                    resolutionX / 2, resolutionY,
-                                    Window.getWidth() / 2, 0, 
-                                    Window.getWidth() / 2, Window.getHeight());
-                        
-                        default -> viewport.setBounds(resolutionX, resolutionY, 0, 0, 0, 0);
-                    }
-                }
-                
-                case TRISECT -> {
-                    viewport.active = (viewport.id != 3);
-                    switch(viewport.id) {
-                        case 0 -> viewport.setBounds(
-                                    resolutionX / 2, resolutionY / 2,
-                                    0, Window.getHeight() / 2, 
-                                    Window.getWidth() / 2, Window.getHeight() / 2);
-                            
-                        case 1 -> viewport.setBounds(
-                                    resolutionX / 2, resolutionY / 2,
-                                    Window.getWidth() / 2, Window.getHeight() / 2, 
-                                    Window.getWidth() / 2, Window.getHeight() / 2);
-                            
-                        case 2 -> viewport.setBounds(
-                                    resolutionX / 2, resolutionY / 2,
-                                    Window.getWidth() / 4, 0, 
-                                    Window.getWidth() / 2, Window.getHeight() / 2);
-                        
-                        default -> viewport.setBounds(resolutionX, resolutionY, 0, 0, 0, 0);
-                    }
-                }
-                
-                case QUARTER -> {
-                    viewport.active = true;
-                    switch(viewport.id) {
-                        case 0 -> viewport.setBounds(
-                                    resolutionX / 2, resolutionY / 2,
-                                    0, Window.getHeight() / 2, 
-                                    Window.getWidth() / 2, Window.getHeight() / 2);
-                            
-                        case 1 -> viewport.setBounds(
-                                    resolutionX / 2, resolutionY / 2,
-                                    Window.getWidth() / 2, Window.getHeight() / 2, 
-                                    Window.getWidth() / 2, Window.getHeight() / 2);
-                            
-                        case 2 -> viewport.setBounds(
-                                    resolutionX / 2, resolutionY / 2,
-                                    0, 0, 
-                                    Window.getWidth() / 2, Window.getHeight() / 2);
-                            
-                        case 3 -> viewport.setBounds(
-                                    resolutionX / 2, resolutionY / 2,
-                                    Window.getWidth() / 2, 0, 
-                                    Window.getWidth() / 2, Window.getHeight() / 2);
-                    }
-                }
-            }
-        }
-        */
     }
     
     /**
@@ -912,27 +698,6 @@ public final class XJGE {
      */
     public static void setNoclipSpeedFactor(float factor) {
         noclipSpeedFactor = clampValue(0, Float.MAX_VALUE, factor);
-    }
-    
-    /**
-     * Changes the internal resolution the engine will display the game at. 
-     * Often this is used to fix "stretching" caused by a change in the 
-     * monitors aspect ratio at runtime.
-     * <p>
-     * NOTE: This method will fail if it's called before {@link start}, 
-     * you should instead specify the starting resolution through the {@link init} 
-     * method.
-     * 
-     * @param width the desired horizontal resolution of the game window (in pixels)
-     * @param height the desired vertical resolution of the game window (in pixels)
-     */
-    public static void setResolution(int width, int height) {
-        if(resolutionX != width || resolutionY != height) {
-            resolutionX = width;
-            resolutionY = height;
-            createRenderbuffer();
-            setScreenSplit(getScreenSplit());
-        }
     }
     
 }

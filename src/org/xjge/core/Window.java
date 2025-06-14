@@ -36,6 +36,7 @@ public final class Window {
     
     private static boolean fullscreen;
     private static boolean resizable;
+    private static boolean restrict4K = true;
     
     static final int DEFAULT_WIDTH  = 1280;
     static final int DEFAULT_HEIGHT = 720;
@@ -173,12 +174,12 @@ public final class Window {
             observable.notifyObservers("WINDOW_POSITION_Y_CHANGED", positionY);
         });
         
-        glfwCursorPositionReference = GLFWCursorPosCallback.create((window, cursorX, cursorY) -> {
+        glfwCursorPositionReference = GLFWCursorPosCallback.create((window, cursorPositionX, cursorPositionY) -> {
             float scaleX = (float) resolution.width / width;
             float scaleY = (float) resolution.height / height;
             
-            mouse.cursorX = cursorX * scaleX;
-            mouse.cursorY = resolution.height - Math.abs((cursorY * scaleY));
+            mouse.cursorPositionX = cursorPositionX * scaleX;
+            mouse.cursorPositionY = resolution.height - Math.abs((cursorPositionY * scaleY));
             
             UI.processMouseInput(mouse);
             
@@ -212,7 +213,8 @@ public final class Window {
         });
         
         glfwMouseButtonReference = GLFWMouseButtonCallback.create((window, button, action, mods) -> {
-            
+            mouse.currentClickValue = action == GLFW_PRESS;
+            mouse.button            = button;
         });
         
         glfwScrollReference = GLFWScrollCallback.create((window, scrollX, scrollY) -> {
@@ -489,6 +491,19 @@ public final class Window {
         Window.resizable = resizable;
         glfwSetWindowAttrib(handle, GLFW_RESIZABLE, Window.resizable ? GLFW_TRUE : GLFW_FALSE);
         observable.notifyObservers("WINDOW_RESIZABLE_CHANGED", Window.resizable);
+    }
+    
+    /**
+     * Sets whether or not 4K resolutions will be restricted by the window. 
+     * <br><br>
+     * Using 4K resolutions can generate large framebuffer textures which can 
+     * slow the applications framerate on systems without dedicated graphics 
+     * hardware.
+     * 
+     * @param restrict4K if true, the window will restrict the use of 4K resolutions
+     */
+    public static void set4KRestricted(boolean restrict4K) {
+        Window.restrict4K = restrict4K;
     }
     
     /**
@@ -783,6 +798,14 @@ public final class Window {
      */
     public static boolean getFullscreen() {
         return fullscreen;
+    }
+    
+    public static boolean getResizable() {
+        return resizable;
+    }
+    
+    public static boolean get4KRestricted() {
+        return restrict4K;
     }
     
     /**
