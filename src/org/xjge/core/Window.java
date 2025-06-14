@@ -560,8 +560,8 @@ public final class Window {
             return;
         }
         
-        Window.width  = width;
-        Window.height = height;
+        Window.resolution.width  = width;
+        Window.resolution.height = height;
         
         createRenderbuffer();
         setSplitScreenType(splitType);
