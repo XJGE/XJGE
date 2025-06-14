@@ -13,11 +13,13 @@ public class WindowObserver implements PropertyChangeListener {
     
     @Override
     public void propertyChange(PropertyChangeEvent evt) {
+        /*
         switch(evt.getPropertyName()) {
             case "WINDOW_RESOLUTION_WIDTH_CHANGED", "WINDOW_RESOLUTION_HEIGHT_CHANGED" -> {
-                System.out.println("asdf");
+                
             }
         }
+        */
     }
     
 }

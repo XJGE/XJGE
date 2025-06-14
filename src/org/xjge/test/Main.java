@@ -15,13 +15,14 @@ public class Main {
         
         XJGE.init(true, "/org/xjge/assets/", "org.xjge.test."); //create window with default settings
         
+        Window.addObserver(new WindowObserver());
+        
         //Window.setMinimumSize(640, 480);
         //Window.setSize(640, 480);
         //Window.setResizable(false);
         //Window.setTitle("Test");
         //Window.setIcon("icon.png");
-        Window.addObserver(new WindowObserver());
-        Window.setResolution(384, 216);
+        //Window.setResolution(384, 216);
         
         XJGE.setScene(new TestScene());
         

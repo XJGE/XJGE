@@ -180,6 +180,12 @@ public final class Window {
             mouse.cursorX = cursorX * scaleX;
             mouse.cursorY = resolution.height - Math.abs((cursorY * scaleY));
             
+            UI.processMouseInput(mouse);
+            
+            if(debugModeEnabled) {
+                //TODO: add new controls for noclip camera
+            }
+            
             /*
             float scaleX = (float) resolutionX / Window.getWidth();
             float scaleY = (float) resolutionY / Window.getHeight();
@@ -214,6 +220,12 @@ public final class Window {
         });
         
         glfwKeyReference = GLFWKeyCallback.create((window, key, scancode, action, mods) -> {
+            if(key == GLFW_KEY_F1 && action == GLFW_PRESS) {
+                
+            }
+            
+            UI.processKeyboardInput(key, action, mods);
+            
             /*
             if(key == GLFW_KEY_F1 && action == GLFW_PRESS) {
                 if(debugEnabled && mods == GLFW_MOD_SHIFT) {

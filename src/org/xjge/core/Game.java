@@ -4,11 +4,6 @@ import org.xjge.graphics.Color;
 import java.util.Comparator;
 import java.util.PriorityQueue;
 import java.util.Queue;
-import org.joml.Matrix4f;
-import static org.lwjgl.glfw.GLFW.*;
-import static org.lwjgl.opengl.GL30.*;
-import static org.xjge.core.XJGE.glPrograms;
-import org.xjge.graphics.GLProgram;
 
 /**
  * Created: May 11, 2021
@@ -51,156 +46,6 @@ public final class Game {
     private static Scene scene;
     
     private static final Queue<Event> events = new PriorityQueue<>(Comparator.comparing(Event::getPriority));
-    
-    /**
-     * Central game loop that decouples game time progression from processor 
-     * speed and framerate.
-     * 
-     * @param fbo the handle of the framebuffer object used to render viewports
-     * @param viewports an array of the viewports to render during split screen
-     * @param terminal a command terminal that can be used to interact with the engine
-     * @param debugInfo an interface detailing the current state of the engine
-     * @param depthProgram the shader program provided by the engine that will 
-     *                     be used to generate the shadow map texture
-     * @param blurProgram the shader program used to apply a Gaussian blur to
-     *                    the bloom framebuffer texture
-     * @param debugEnabled if true the engine will provide additional debug 
-     *                     information through the logger
-     */
-    static void loop(int fbo, Viewport[] viewports, Terminal terminal, DebugInfo2 debugInfo, GLProgram depthProgram, 
-                     GLProgram blurProgram, boolean debugEnabled) {
-        XJGE.observable.properties.put("SCENE_CHANGED", scene);
-        /*
-        int cycles = 0;
-        final double TARGET_DELTA = 1 / 60.0;
-        double prevTime = glfwGetTime();
-        double currTime;
-        double delta = 0;
-        Matrix4f projMatrix = new Matrix4f();
-        
-        while(!glfwWindowShouldClose(Window.HANDLE)) {
-            glfwPollEvents();
-            
-            currTime = glfwGetTime();
-            delta    += currTime - prevTime;
-            if(delta < TARGET_DELTA && Hardware.getVSyncEnabled()) delta = TARGET_DELTA;
-            prevTime = currTime;
-            ticked   = false;
-            
-            while(delta >= TARGET_DELTA) {
-                Input.update(TARGET_DELTA, deltaMetric);
-                if(XJGE.getTerminalEnabled()) terminal.update();
-                
-                deltaMetric = delta;
-                
-                delta     -= TARGET_DELTA;
-                ticked    = true;
-                tickCount = (tickCount == TICKS_PER_HOUR) ? 0 : tickCount + 1;
-                
-                //Process any unresolved events otherwise update the scene normally
-                if(!events.isEmpty()) {
-                    Event event = events.peek();
-                    if(!event.resolved) event.resolve();
-                    else                events.poll();
-                } else {
-                    scene.processAddRequests();
-                    scene.update(TARGET_DELTA, deltaMetric);
-                    scene.updateLightSources();
-                    scene.processRemoveRequests();
-                }
-                
-                //Add new widget to a viewport asynchronously
-                UIContext.processAddRequests();
-                
-                //Update viewport cameras and UI widgets
-                for(Viewport viewport : viewports) {
-                    if(viewport.active && viewport.currCamera != null) {
-                        viewport.currCamera.update();
-                        UIContext.updateWidgets(viewport.id, TARGET_DELTA, delta);
-                        Audio.setViewportCamData(viewport.id, viewport.currCamera.position, viewport.currCamera.direction);
-                    }
-                }
-                
-                //Process requests for widget removal
-                UIContext.processRemoveRequests();
-                
-                Audio.updateSoundSourcePositions();
-                Audio.queueMusicBodySection();
-                
-                if(tick(60)) {
-                    fps    = cycles;
-                    cycles = 0;
-                }
-            }
-            
-            XJGE.getDefaultGLProgram().use();
-            XJGE.getDefaultGLProgram().setUniform("uBloomThreshold", bloomThreshold);
-            scene.setShadowUniforms();
-            scene.setLightingUniforms();
-            
-            //Render scene from the perspective of each active viewport
-            for(Viewport viewport : viewports) {
-                if(viewport.active) {
-                    scene.renderShadowMap(viewport.currCamera.up, depthProgram);
-                    
-                    if(viewport.id == 0) {
-                        glClearColor(0, 0, 0, 0);
-                        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-                    }
-                    
-                    glBindFramebuffer(GL_FRAMEBUFFER, fbo);
-                        glViewport(0, 0, viewport.width, viewport.height);
-                        glClearColor(clearColor.r, clearColor.g, clearColor.b, 0);
-                        viewport.bindDrawBuffers(Game.enableBloom);
-                        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-                        
-                        viewport.resetCamera(glPrograms);
-                        
-                        viewport.render(glPrograms, "camera", projMatrix);
-                        scene.renderSkybox(viewport.currCamera.viewMatrix);
-                        scene.render(glPrograms, viewport.id, viewport.currCamera);
-                        scene.renderLightSources(viewport.currCamera);
-                    glBindFramebuffer(GL_FRAMEBUFFER, 0);
-                    
-                    projMatrix.setOrtho(viewport.width, 0, 0, viewport.height, 0, 1);
-                    
-                    if(enableBloom) {
-                        blurProgram.use();
-                        blurProgram.setUniform("uProjection", false, projMatrix);
-                        viewport.applyBloom(blurProgram);
-                    }
-                    
-                    glViewport(viewport.botLeft.x, viewport.botLeft.y, viewport.topRight.x, viewport.topRight.y);
-                    
-                    viewport.resetCamera(glPrograms);
-                    
-                    viewport.render(glPrograms, "texture", projMatrix);
-                    viewport.render(glPrograms, "ui", projMatrix);
-                }
-            }
-            
-            if(XJGE.getTerminalEnabled() || debugInfo.show) {
-                glViewport(0, 0, Window.getWidth(), Window.getHeight());
-                UIContext.updateProjectionMatrix(Window.getWidth(), Window.getHeight(), 0, Integer.MAX_VALUE);
-                
-                if(XJGE.getTerminalEnabled()) terminal.render();
-                if(debugInfo.show) debugInfo.render();
-            }
-            
-            glfwSwapBuffers(Window.HANDLE);
-            
-            if(!ticked) {
-                try {
-                    Thread.sleep(1);
-                } catch(InterruptedException e) {
-                    Logger.logError(e.getMessage(), e);
-                }
-            } else {
-                cycles++;
-            }
-        }
-        */
-    }
     
     /**
      * Obtains engine runtime information.
@@ -267,30 +112,6 @@ public final class Game {
      */
     public static String getSceneName() {
         return scene.name;
-    }
-    
-    /**
-     * Changes the color OpenGL will use to clear color buffers. Often used to 
-     * set background or sky colors.
-     * 
-     * @param color the color empty space will be filled with
-     */
-    public static void setClearColor(Color color) {
-        clearColor = color;
-    }
-    
-    /**
-     * Exits the current scene and enters the one specified.
-     * 
-     * @param scene the new scene to enter
-     */
-    public static void setScene(Scene scene) {
-        Logger.logInfo("Current scene changed to \"" + scene.name + "\"");
-        
-        if(Game.scene != null) scene.exit();
-        
-        Game.scene = scene;
-        XJGE.observable.notifyObservers("SCENE_CHANGED", Game.scene);
     }
     
     /**

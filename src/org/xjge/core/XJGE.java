@@ -260,7 +260,7 @@ public final class XJGE {
     
     /**
      * Exposes the window to the user and starts running the applications main 
-     * loop. 
+     * loop.
      * <p>
      * NOTE: This should be called <i>after</i> setting the initial scene with 
      * {@link Game#setScene(Scene)} and supplying whatever additional 
@@ -314,7 +314,13 @@ public final class XJGE {
                 tickCount = (tickCount == TICKS_PER_HOUR) ? 0 : tickCount + 1;
                 
                 //Resolve scene change requests
-                if(!sceneChangeRequests.isEmpty()) scene = sceneChangeRequests.poll();
+                if(!sceneChangeRequests.isEmpty()) {
+                    if(scene != null) scene.exit();
+                    scene = sceneChangeRequests.poll();
+                    Logger.logInfo("Current scene changed to \"" + scene.name + "\"");
+                    //TODO: reimplement observable properties for this class
+                    //observable.notifyObservers("XJGE_SCENE_CHANGED", scene);
+                }
                 
                 //Process any unresolved events otherwise update the scene normally
                 if(!events.isEmpty()) {
@@ -424,9 +430,29 @@ public final class XJGE {
         glfwTerminate();
     }
     
+    /**
+     * Changes the color OpenGL will use to clear color buffers. Often used to 
+     * set background or sky colors.
+     * 
+     * @param color the color empty space will be filled with
+     */
+    public static void setClearColor(Color color) {
+        if(color == null) {
+            Logger.logInfo("The value of the color object may not be null");
+            return;
+        }
+        
+        clearColor = color;
+    }
+    
+    /**
+     * Places a request to change the currently rendered scene.
+     * 
+     * @param scene the new scene to enter
+     */
     public static void setScene(Scene scene) {
         if(scene == null) {
-            Logger.logInfo("Scene may not be null");
+            Logger.logInfo("the value of the scene object may not be null");
             return;
         }
         
