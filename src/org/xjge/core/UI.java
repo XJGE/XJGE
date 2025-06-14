@@ -15,7 +15,7 @@ import org.xjge.ui.Widget;
  * @author J Hoffman
  * @since  4.0.0
  */
-public class UI {
+public final class UI {
 
     private static final Matrix4f projectionMatrix = new Matrix4f();
     
@@ -65,6 +65,8 @@ public class UI {
         while(!widgetAddQueue.isEmpty()) {
             WidgetAddRequest request = widgetAddQueue.poll();
             widgets.get(request.viewportID()).put(request.name(), request.widget());
+            
+            Logger.logInfo("Added widget \"" + request.name() + "\" to viewport " + request.viewportID());
         }
     }
     
@@ -74,6 +76,8 @@ public class UI {
             var viewportWidgets = widgets.get(request.viewportID());
             viewportWidgets.get(request.name()).delete();
             viewportWidgets.remove(request.name());
+            
+            Logger.logInfo("Removed widget \"" + request.name() + "\" from viewport " + request.viewportID());
         }
     }
     
@@ -84,7 +88,6 @@ public class UI {
         
         if(failureReason == null) {
             widgetAddQueue.add(new WidgetAddRequest(viewportID, name, widget));
-            if(XJGE.debugEnabled()) Logger.logInfo("Added widget \"" + name + "\" to viewport " + viewportID);
         } else {
             Logger.logWarning("Failed to add widget to viewport. " + failureReason, null);
         }

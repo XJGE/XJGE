@@ -50,8 +50,9 @@ public final class Window {
     
     private static long handle = NULL;
 
-    private static String title    = "XJGE v" + XJGE.VERSION;
-    private static Monitor monitor = Hardware2.getPrimaryMonitor();
+    private static String title      = "XJGE v" + XJGE.VERSION;
+    private static Monitor monitor   = Hardware2.getPrimaryMonitor();
+    private static final Mouse mouse = new Mouse();
     private static final Resolution resolution = new Resolution(DEFAULT_WIDTH, DEFAULT_HEIGHT);
     private static final Observable observable = new Observable(Window.class);
     
@@ -77,8 +78,10 @@ public final class Window {
     /**
      * Initializes the applications window, framebuffer, viewports, and 
      * associated callbacks.
+     * 
+     * @param debugModeEnabled if true, debug features will be available for use
      */
-    static void create() {
+    static void create(boolean debugModeEnabled) {
         glfwWindowHint(GLFW_VISIBLE, GLFW_FALSE);
         glfwWindowHint(GLFW_FOCUS_ON_SHOW, GLFW_TRUE);
         
@@ -171,6 +174,12 @@ public final class Window {
         });
         
         glfwCursorPositionReference = GLFWCursorPosCallback.create((window, cursorX, cursorY) -> {
+            float scaleX = (float) resolution.width / width;
+            float scaleY = (float) resolution.height / height;
+            
+            mouse.cursorX = cursorX * scaleX;
+            mouse.cursorY = resolution.height - Math.abs((cursorY * scaleY));
+            
             /*
             float scaleX = (float) resolutionX / Window.getWidth();
             float scaleY = (float) resolutionY / Window.getHeight();
@@ -551,8 +560,8 @@ public final class Window {
             return;
         }
         
-        Window.width = width;
-        Window.width = height;
+        Window.width  = width;
+        Window.height = height;
         
         createRenderbuffer();
         setSplitScreenType(splitType);

@@ -72,7 +72,6 @@ public final class XJGE {
     private static double cursorX;
     private static double cursorY;
     
-    private static boolean debugModeEnabled;
     private static boolean restrict4KResolutions;
     private static boolean matchWindowResolution;
     private static boolean noclipEnabled;
@@ -138,9 +137,8 @@ public final class XJGE {
             return;
         }
         
-        XJGE.debugModeEnabled = debugModeEnabled;
-        XJGE.assetsFilepath   = assetsFilepath;
-        XJGE.scenesFilepath   = scenesFilepath;
+        XJGE.assetsFilepath = assetsFilepath;
+        XJGE.scenesFilepath = scenesFilepath;
         
         String javaVersion = System.getProperty("java.version");
         
@@ -150,7 +148,7 @@ public final class XJGE {
         
         if(!glfwInit()) Logger.logError("Failed to initialize GLFW", null);
         
-        Window.create();
+        Window.create(debugModeEnabled);
         
         Audio.speaker = Hardware.findSpeakers().get(1);
         Audio.speaker.setContextCurrent();
@@ -435,8 +433,6 @@ public final class XJGE {
         sceneChangeRequests.add(scene);
     }
     
-    
-    
     //==== LEGACY API BELOW ====================================================
     
     
@@ -504,10 +500,6 @@ public final class XJGE {
 
             createRenderbuffer();
         }
-    }
-    
-    static boolean debugEnabled() {
-        return debugModeEnabled;
     }
     
     /**

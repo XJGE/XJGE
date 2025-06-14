@@ -2,6 +2,14 @@
 <project-private xmlns="http://www.netbeans.org/ns/project-private/1">
     <editor-bookmarks xmlns="http://www.netbeans.org/ns/editor-bookmarks/2" lastBookmarkId="17">
         <file>
+            <url>src/org/xjge/ui/UI.java</url>
+            <bookmark id="9">
+                <name/>
+                <line>52</line>
+                <key/>
+            </bookmark>
+        </file>
+        <file>
             <url>src/org/xjge/core/Viewport.java</url>
             <bookmark id="12">
                 <name/>
@@ -13,38 +21,17 @@
             <url>src/org/xjge/test/TestScene.java</url>
             <bookmark id="13">
                 <name/>
-                <line>39</line>
-                <key/>
-            </bookmark>
-        </file>
-        <file>
-            <url>src/org/xjge/ui/UI.java</url>
-            <bookmark id="9">
-                <name/>
-                <line>52</line>
-                <key/>
-            </bookmark>
-        </file>
-        <file>
-            <url>src/org/xjge/core/XJGE.java</url>
-            <bookmark id="11">
-                <name/>
-                <line>756</line>
-                <key/>
-            </bookmark>
-            <bookmark id="10">
-                <name/>
-                <line>786</line>
+                <line>35</line>
                 <key/>
             </bookmark>
         </file>
     </editor-bookmarks>
     <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
         <group>
-            <file>file:/C:/Users/jhoff/Projects/XJGE/src/org/xjge/core/TCTerminate.java</file>
-            <file>file:/C:/Users/jhoff/Projects/XJGE/src/org/xjge/core/TCSetVideoMode.java</file>
+            <file>file:/C:/Users/jhoff/Projects/XJGE/src/org/xjge/core/Mouse.java</file>
             <file>file:/C:/Users/jhoff/Projects/XJGE/src/org/xjge/core/XJGE.java</file>
-            <file>file:/C:/Users/jhoff/Projects/XJGE/src/org/xjge/core/TCSetMonitor.java</file>
+            <file>file:/C:/Users/jhoff/Projects/XJGE/src/org/xjge/core/Window.java</file>
+            <file>file:/C:/Users/jhoff/Projects/XJGE/src/org/xjge/core/UI.java</file>
         </group>
     </open-files>
 </project-private>

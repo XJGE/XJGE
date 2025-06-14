@@ -20,18 +20,14 @@ public class TestScene extends Scene {
     
     public TestScene() {
         super("test");
+        
+        Entity entity = new Entity();
+        addEntity(entity);
+        UI.addWidget(GLFW_JOYSTICK_1, "font_test", new TestWidget());
     }
 
     @Override
     public void update(double targetDelta, double trueDelta) {
-        if(!initialized) {
-            Entity entity = new Entity();
-            addEntity(entity);
-            UI.addWidget(GLFW_JOYSTICK_1, "font_test", new TestWidget());
-            
-            initialized = true;
-        }
-        
         //System.out.println("update");
     }
 
