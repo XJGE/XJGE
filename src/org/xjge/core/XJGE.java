@@ -334,6 +334,8 @@ public final class XJGE {
                     }
                 }
                 
+                Window.updateMouseClickValue();
+                
                 //Process requests for widget removal
                 UI.processWidgetRemoveRequests();
                 
@@ -658,31 +660,6 @@ public final class XJGE {
      */
     public static GLProgram getDefaultGLProgram() {
         return glPrograms.get("default");
-    }
-    
-    /**
-     * Sets the current camera object a viewport will use.
-     * 
-     * @param viewportID the ID number of the viewport whos camera we want to set
-     * @param camera the camera object being assigned to the viewport
-     */
-    public static final void setViewportCamera(int viewportID, Camera camera) {
-        if(camera == null) {
-            Logger.logInfo("Failed to set viewport camera. Null is not " + 
-                           "accepted as a value of this function");
-        } else if(viewportID < GLFW_JOYSTICK_1 || viewportID > GLFW_JOYSTICK_4) {
-            Logger.logInfo("Failed to set viewport camera. No viewport "+ 
-                           "by the ID of " + viewportID + " exists");
-        } else {
-            /*
-            if(viewports[viewportID].currCamera == freeCam) {
-                //Added in case noclip is enabled when this was called.
-                viewports[viewportID].prevCamera = camera;
-            } else {
-                viewports[viewportID].currCamera = camera;
-            }
-            */
-        }
     }
     
     /**

@@ -215,10 +215,24 @@ public final class Window {
         glfwMouseButtonReference = GLFWMouseButtonCallback.create((window, button, action, mods) -> {
             mouse.currentClickValue = action == GLFW_PRESS;
             mouse.button            = button;
+            
+            switch(button) {
+                case GLFW_MOUSE_BUTTON_LEFT   -> mouse.leftHeld   = (action == GLFW_PRESS);
+                case GLFW_MOUSE_BUTTON_MIDDLE -> mouse.middleHeld = (action == GLFW_PRESS);
+                case GLFW_MOUSE_BUTTON_RIGHT  -> mouse.rightHeld  = (action == GLFW_PRESS);
+            }
+            
+            UI.processMouseInput(mouse);
         });
         
-        glfwScrollReference = GLFWScrollCallback.create((window, scrollX, scrollY) -> {
+        glfwScrollReference = GLFWScrollCallback.create((window, scrollSpeedX, scrollSpeedY) -> {
+            mouse.scrollSpeedX = scrollSpeedX;
+            mouse.scrollSpeedY = scrollSpeedY;
             
+            UI.processMouseInput(mouse);
+            
+            mouse.scrollSpeedX = 0;
+            mouse.scrollSpeedY = 0;
         });
         
         glfwKeyReference = GLFWKeyCallback.create((window, key, scancode, action, mods) -> {
@@ -227,6 +241,8 @@ public final class Window {
             }
             
             UI.processKeyboardInput(key, action, mods);
+            
+            mouse.mods = mods;
             
             /*
             if(key == GLFW_KEY_F1 && action == GLFW_PRESS) {
@@ -347,6 +363,29 @@ public final class Window {
     }
     
     /**
+     * Releases the references to callbacks maintained by GLFW. This is called 
+     * automatically by the engine after the window has closed.
+     */
+    static void freeCallbacks() {
+        glfwErrorReference.free();
+        glfwMonitorReference.free();
+        glfwWindowSizeReference.free();
+        glfwWindowPositionReference.free();
+        glfwCursorPositionReference.free();
+        glfwMouseButtonReference.free();
+        glfwScrollReference.free();
+        glfwKeyReference.free();
+    }
+    
+    /**
+     * Called internally from the main loop to automatically update the 
+     * previous click value of the mouse.
+     */
+    static void updateMouseClickValue() {
+        mouse.previousClickValue = mouse.currentClickValue;
+    }
+    
+    /**
      * Used to determine if the window has requested to be closed. The 
      * application will cease execution if this returns true.
      * 
@@ -372,21 +411,6 @@ public final class Window {
      */
     static Viewport[] getViewports() {
         return viewports;
-    }
-    
-    /**
-     * Releases the references to callbacks maintained by GLFW. This is called 
-     * automatically by the engine after the window has closed.
-     */
-    static void freeCallbacks() {
-        glfwErrorReference.free();
-        glfwMonitorReference.free();
-        glfwWindowSizeReference.free();
-        glfwWindowPositionReference.free();
-        glfwCursorPositionReference.free();
-        glfwMouseButtonReference.free();
-        glfwScrollReference.free();
-        glfwKeyReference.free();
     }
     
     /**
@@ -789,6 +813,32 @@ public final class Window {
         }
         
         observable.notifyObservers("WINDOW_SPLITSCREEN_TYPE_CHANGED", Window.splitType);
+    }
+    
+    /**
+     * Sets the current camera object a viewport will use.
+     * 
+     * @param viewportID the ID number of the viewport whos camera we want to set
+     * @param camera the camera object being assigned to the viewport
+     */
+    public static final void setViewportCamera(int viewportID, Camera camera) {
+        if(camera == null) {
+            Logger.logInfo("Failed to set viewport camera. Null is not " + 
+                           "accepted as a value of this function");
+        } else if(viewportID < GLFW_JOYSTICK_1 || viewportID > GLFW_JOYSTICK_4) {
+            Logger.logInfo("Failed to set viewport camera. No viewport "+ 
+                           "by the ID of " + viewportID + " exists");
+        } else {
+            /*
+            //TODO: reimplement this
+            if(viewports[viewportID].currCamera == freeCam) {
+                //Added in case noclip is enabled when this was called.
+                viewports[viewportID].prevCamera = camera;
+            } else {
+                viewports[viewportID].currCamera = camera;
+            }
+            */
+        }
     }
     
     /**

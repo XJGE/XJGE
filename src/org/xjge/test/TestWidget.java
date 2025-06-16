@@ -48,6 +48,10 @@ public class TestWidget extends Widget {
 
     @Override
     public void processMouseInput(Mouse mouse) {
+        //TODO: test other mouse input values
+        if(mouse.clickedOnce()) {
+            System.out.println("clicked");
+        }
     }
 
     @Override

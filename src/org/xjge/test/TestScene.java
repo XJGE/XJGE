@@ -6,8 +6,6 @@ import org.xjge.core.Camera;
 import org.xjge.core.Entity;
 import org.xjge.core.Scene;
 import org.xjge.core.UI;
-import org.xjge.core.XJGE;
-import org.xjge.graphics.Color;
 import org.xjge.graphics.GLProgram;
 
 /**
@@ -18,8 +16,6 @@ import org.xjge.graphics.GLProgram;
  */
 public class TestScene extends Scene {
     
-    private boolean initialized;
-    
     public TestScene() {
         super("test");
         
@@ -27,7 +23,7 @@ public class TestScene extends Scene {
         addEntity(entity);
         UI.addWidget(GLFW_JOYSTICK_1, "font_test", new TestWidget());
         
-        XJGE.setClearColor(Color.BLACK);
+        //XJGE.setClearColor(Color.BLACK);
     }
 
     @Override

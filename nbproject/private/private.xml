@@ -29,12 +29,11 @@
     <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
         <group>
             <file>file:/C:/Users/jhoff/Projects/XJGE/src/org/xjge/core/Mouse.java</file>
-            <file>file:/C:/Users/jhoff/Projects/XJGE/src/org/xjge/test/WindowObserver.java</file>
-            <file>file:/C:/Users/jhoff/Projects/XJGE/src/org/xjge/core/Viewport.java</file>
+            <file>file:/C:/Users/jhoff/Projects/XJGE/src/org/xjge/core/Monitor.java</file>
+            <file>file:/C:/Users/jhoff/Projects/XJGE/src/org/xjge/test/TestScene.java</file>
             <file>file:/C:/Users/jhoff/Projects/XJGE/src/org/xjge/core/XJGE.java</file>
             <file>file:/C:/Users/jhoff/Projects/XJGE/src/org/xjge/core/Window.java</file>
-            <file>file:/C:/Users/jhoff/Projects/XJGE/src/org/xjge/test/Main.java</file>
-            <file>file:/C:/Users/jhoff/Projects/XJGE/src/org/xjge/core/UI.java</file>
+            <file>file:/C:/Users/jhoff/Projects/XJGE/src/org/xjge/core/Game.java</file>
         </group>
     </open-files>
 </project-private>
