@@ -8,6 +8,7 @@ import org.xjge.core.StopWatch;
 import org.xjge.graphics.Color;
 import org.xjge.graphics.GLProgram;
 import org.xjge.ui.Polygon;
+import org.xjge.ui.Rectangle;
 import org.xjge.ui.Widget;
 
 /**
@@ -22,6 +23,8 @@ public class TestWidget extends Widget {
     StopWatch timer = new StopWatch();
     TextEffectTest testEffect = new TextEffectTest();
     Polygon polygon = new Polygon(6, true, 40, Color.ORANGE, 200, 200);
+    Rectangle rectangle = new Rectangle(600, 150, 40, 40);
+    Color rectColor = Color.BLACK;
     
     int index;
     boolean reverse;
@@ -36,6 +39,7 @@ public class TestWidget extends Widget {
     public void render(Map<String, GLProgram> glPrograms) {
         polygon.render(0.5f);
         font.drawString("The quick brown fox jumps\nover the lazy dog.", 50, 100, testEffect);
+        rectangle.render(0.5f, rectColor);
     }
 
     @Override
@@ -49,6 +53,9 @@ public class TestWidget extends Widget {
     @Override
     public void processMouseInput(Mouse mouse) {
         //TODO: test other mouse input values
+        
+        rectColor = (mouse.hovered(rectangle)) ? Color.RED : Color.BLACK;
+        
         if(mouse.clickedOnce()) {
             System.out.println("clicked");
         }

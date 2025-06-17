@@ -1,7 +1,11 @@
 package org.xjge.core;
 
+import org.xjge.ui.Rectangle;
+
 /**
  * Created: Apr 9, 2024
+ * <br><br>
+ * Represents the peripheral device of the same name.
  * 
  * @author J Hoffman
  * @since  2.4.6
@@ -21,6 +25,32 @@ public final class Mouse {
     
     int button;
     int mods;
+    
+    /**
+     * Determines whether or not the mouse cursor is currently hovering over the
+     * provided UI element.
+     * 
+     * @param positionX the horizontal position of the boundary areas lower-left corner
+     * @param positionY the vertical position of the boundary areas lower-left corner
+     * @param width the width of the boundary area (in pixels)
+     * @param height the height of the boundary area (in pixels)
+     * @return true if the cursor falls within the provided objects boundaries
+     */
+    public boolean hovered(float positionX, float positionY, float width, float height) {
+        return (cursorPositionX > positionX && cursorPositionX < positionX + width) && 
+               (cursorPositionY > positionY && cursorPositionY < positionY + height);
+    }
+    
+    /**
+     * Variant of {@linkplain hovered(float, float float float)} that instead 
+     * takes a rectangle object.
+     * 
+     * @param bounds the boundaries of some interactive component on the UI
+     * @return true if the cursor falls within the provided objects boundaries
+     */
+    public boolean hovered(Rectangle bounds) {
+        return hovered(bounds.positionX, bounds.positionY, bounds.width, bounds.height);
+    }
     
     /**
      * Used to determine whether or not a button on the mouse is currently 
