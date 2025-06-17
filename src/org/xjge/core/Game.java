@@ -1,9 +1,6 @@
 package org.xjge.core;
 
 import org.xjge.graphics.Color;
-import java.util.Comparator;
-import java.util.PriorityQueue;
-import java.util.Queue;
 
 /**
  * Created: May 11, 2021
@@ -30,32 +27,13 @@ import java.util.Queue;
  * @since  2.0.0
  */
 public final class Game {
-
-    private static int fps;
-    private static int tickCount    = 0;
-    final static int TICKS_PER_HOUR = 225000;
-    
-    private static float bloomThreshold = 1.0f;
     
     private static double deltaMetric = 0;
     
     private static boolean ticked;
     public static boolean enableBloom;
     
-    private static Color clearColor = Color.create(119, 136, 255);
     private static Scene scene;
-    
-    private static final Queue<Event> events = new PriorityQueue<>(Comparator.comparing(Event::getPriority));
-    
-    /**
-     * Obtains engine runtime information.
-     * 
-     * @return the number of consecutive frames that have been rendered since 
-     *         the last game tick
-     */
-    static int getFPS() {
-        return fps;
-    }
     
     /**
      * Obtains engine runtime information.
@@ -81,62 +59,12 @@ public final class Game {
     }
     
     /**
-     * Obtains the total number of cycles that the engines update loop has 
-     * completed since the start of the application.
-     * <p>
-     * NOTE: The tick count will roll over to zero every hour, with one hour 
-     * being equivalent to approximately 3,600,000 ticks. Gameplay systems that
-     * require durations longer than this should consider instead utilizing the 
-     * {@link Timer} class.
-     * 
-     * @return the number of cycles (or ticks) that have elapsed
-     */
-    public static int getTickCount() {
-        return tickCount;
-    }
-    
-    /**
-     * Obtains the current number of events in the event queue. Used primarily
-     * for debugging purposes.
-     * 
-     * @return the current number of unresolved events in the event queue
-     */
-    public static int getNumEvents() {
-        return events.size();
-    }
-    
-    /**
      * Obtains the display name of the current Scene being rendered.
      * 
      * @return the name of the current scene
      */
     public static String getSceneName() {
         return scene.name;
-    }
-    
-    /**
-     * Specifies the value which will be used to indicate how bright the surface 
-     * of objects must be before the bloom effect is applied to it. The lower 
-     * the brightness threshold, the more abundant bloom will be.
-     * 
-     * @param value a number between 0 and 10 that the brightness of a surface
-     *              will need to exceed
-     */
-    public static void setBloomThreshold(float value) {
-        bloomThreshold = XJGE.clampValue(0f, 10f, value);
-    }
-    
-    /**
-     * Returns true anytime the specified number of update iterations (or cycles) 
-     * have been reached. Intended to be used in for game systems that don't 
-     * require the precision of the {@link Timer} or {@link StopWatch} classes.
-     * 
-     * @param speed the number of cycles to wait until the next tick will occur
-     * 
-     * @return true every time the specified number of cycles has been reached
-     */
-    public static boolean tick(int speed) {
-        return tickCount % speed == 0;
     }
     
     /**
@@ -150,17 +78,6 @@ public final class Game {
      */
     public static final void addEntity(Entity entity) {
         scene.entities.put(entity.uuid, entity);
-    }
-    
-    /**
-     * Adds an event to the game event queue. Events are processed in the order 
-     * of their priority. As such, events are not guaranteed to be executed in 
-     * the order from which calls to this method are made.
-     * 
-     * @param event the event to queue
-     */
-    public static final void addEvent(Event event) {
-        events.add(event);
     }
     
     /**

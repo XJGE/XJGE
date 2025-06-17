@@ -74,15 +74,15 @@ public class StopWatch {
         }
         
         if(!startTickSet) {
-            startTick    = Game.getTickCount();
+            startTick    = XJGE.getTickCount();
             startTickSet = true;
             currTime     = (!increment) ? time - 1 : 0;
             return true;
         }
         
-        int diff = (startTick > Game.getTickCount()) 
-                 ? (Game.getTickCount() + Game.TICKS_PER_HOUR) - startTick
-                 : Game.getTickCount() - startTick;
+        int diff = (startTick > XJGE.getTickCount()) 
+                 ? (XJGE.getTickCount() + XJGE.TICKS_PER_HOUR) - startTick
+                 : XJGE.getTickCount() - startTick;
         
         if(diff % speed == 0) {
             currTime = (increment) ? currTime + 1 : currTime - 1;

@@ -20,7 +20,6 @@ import org.joml.Vector2i;
 import static org.lwjgl.glfw.GLFW.*;
 import org.lwjgl.opengl.GL;
 import static org.lwjgl.opengl.GL32.*;
-import static org.xjge.core.Game.tick;
 import org.xjge.graphics.Color;
 import org.xjge.graphics.PostProcessShader;
 
@@ -460,6 +459,17 @@ public final class XJGE {
         }
     }
     
+    /**
+     * Adds an event to the game event queue. Events are processed in the order 
+     * of their priority. As such, events are not guaranteed to be executed in 
+     * the order from which calls to this method are made.
+     * 
+     * @param event the event to queue
+     */
+    public static final void addEvent(Event event) {
+        events.add(event);
+    }
+    
     public static void addObserver(PropertyChangeListener observer) {
         observable.addObserver(observer);
     }
@@ -497,10 +507,48 @@ public final class XJGE {
         sceneChangeRequests.add(scene);
     }
     
+    /**
+     * Returns true anytime the specified number of update iterations (or cycles) 
+     * have been reached. Intended to be used in for game systems that don't 
+     * require the precision of the {@link Timer} or {@link StopWatch} classes.
+     * 
+     * @param speed the number of cycles to wait until the next tick will occur
+     * 
+     * @return true every time the specified number of cycles has been reached
+     */
+    public static boolean tick(int speed) {
+        return tickCount % speed == 0;
+    }
+    
+    /**
+     * Obtains the total number of cycles that the engines update loop has 
+     * completed since the start of the application.
+     * <p>
+     * NOTE: The tick count will roll over to zero every hour, with one hour 
+     * being equivalent to approximately 3,600,000 ticks. Gameplay systems that
+     * require durations longer than this should consider instead utilizing the 
+     * {@link Timer} class.
+     * 
+     * @return the number of cycles (or ticks) that have elapsed
+     */
+    public static int getTickCount() {
+        return tickCount;
+    }
+    
     //==== LEGACY API BELOW ====================================================
     
     
-    
+    /**
+     * Specifies the value which will be used to indicate how bright the surface 
+     * of objects must be before the bloom effect is applied to it. The lower 
+     * the brightness threshold, the more abundant bloom will be.
+     * 
+     * @param value a number between 0 and 10 that the brightness of a surface
+     *              will need to exceed
+     */
+    public static void setBloomThreshold(float value) {
+        bloomThreshold = XJGE.clampValue(0f, 10f, value);
+    }
     
     /**
      * Initializes the engines assets, compiles the default shader programs, 

@@ -3,8 +3,8 @@ package org.xjge.graphics;
 import java.util.ArrayList;
 import org.joml.Vector2f;
 import org.joml.Vector2i;
-import org.xjge.core.Game;
 import org.xjge.core.StopWatch;
+import org.xjge.core.XJGE;
 
 /**
  * Created: Jun 13, 2021
@@ -61,7 +61,7 @@ public class SpriteAnimation {
         if(speed == 0) return;
         
         if(sync) {
-            if(Game.tick(speed)) {
+            if(XJGE.tick(speed)) {
                 currFrame++;
                 if(currFrame >= frames.size()) currFrame = 0;
             }
@@ -92,7 +92,7 @@ public class SpriteAnimation {
         if(speed == 0) return;
         
         if(sync) {
-            if(Game.tick(speed)) {
+            if(XJGE.tick(speed)) {
                 currFrame++;
                 if(currFrame >= frames.size()) currFrame = 0;
             }

@@ -88,7 +88,7 @@ final class Terminal implements PropertyChangeListener {
      */
     void update() {
         timer.update();
-        if(Game.tick(20) && cursorIdle) cursorBlink = !cursorBlink; 
+        if(XJGE.tick(20) && cursorIdle) cursorBlink = !cursorBlink; 
         
         if(!prevTyped.equals(typed.toString())) {
             suggest = commands.keySet().stream().anyMatch(name -> name.regionMatches(0, typed.toString(), 0, typed.length())) && typed.length() > 0;
