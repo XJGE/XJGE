@@ -236,10 +236,7 @@ public final class Window {
         });
         
         glfwKeyReference = GLFWKeyCallback.create((window, key, scancode, action, mods) -> {
-            if(key == GLFW_KEY_F1 && action == GLFW_PRESS) {
-                
-            }
-            
+            XJGE.processTerminalInput(key, action, mods);
             UI.processKeyboardInput(key, action, mods);
             
             mouse.mods = mods;

@@ -63,6 +63,19 @@ public final class Mouse {
     }
     
     /**
+     * Used to determine whether or not a button on the mouse is currently 
+     * being pressed over some UI element.
+     * 
+     * @param bounds the boundaries of some interactive component on the UI
+     * @param buttonID a number provided by GLFW used to identify which button 
+     *                 on the mouse was pressed
+     * @return if true, the specified button on the mouse is being held
+     */
+    public boolean clicked(Rectangle bounds, int buttonID) {
+        return hovered(bounds) && button == buttonID && currentClickValue;
+    }
+    
+    /**
      * Used to determine if a button on the mouse has been pressed. This method
      * will only return true upon the initial press.
      * 
@@ -70,6 +83,19 @@ public final class Mouse {
      */
     public boolean clickedOnce() {
         return currentClickValue == true && previousClickValue != currentClickValue;
+    }
+    
+    /**
+     * Overloaded variant of {@linkplain clickedOnce()} that factors in the 
+     * boundaries of a UI component and the ID of the mouse button used.
+     * 
+     * @param bounds the boundaries of some interactive component on the UI
+     * @param buttonID a number provided by GLFW used to identify which button 
+     *                 on the mouse was pressed
+     * @return if true, the specified button on the mouse has been pressed
+     */
+    public boolean clickedOnce(Rectangle bounds, int buttonID) {
+        return hovered(bounds) && button == buttonID && clickedOnce();
     }
     
     /**

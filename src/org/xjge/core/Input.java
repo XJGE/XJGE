@@ -135,7 +135,8 @@ public final class Input {
                     settingConfigs.put(i, settings);
                     
                     if(i != KEY_MOUSE_COMBO) {
-                        XJGE.observable.properties.put("GAMEPAD_" + i + "_CONNECTED", connected[i]);
+                        //TODO: reimplement this
+                        //XJGE.observable.properties.put("GAMEPAD_" + i + "_CONNECTED", connected[i]);
                     }
                 }
             }
@@ -208,7 +209,8 @@ public final class Input {
                     
                     if(jid < GLFW_JOYSTICK_5) {
                         connected[jid] = true;
-                        XJGE.observable.notifyObservers("GAMEPAD_" + jid + "_CONNECTED", connected[jid]);
+                        //TODO: 
+                        //XJGE.observable.notifyObservers("GAMEPAD_" + jid + "_CONNECTED", connected[jid]);
                     }
                     
                     Logger.logInfo("Input device \"" + getDeviceName(jid) + "\" " +
@@ -220,7 +222,8 @@ public final class Input {
                     
                     if(jid < GLFW_JOYSTICK_5) {
                         connected[jid] = false;
-                        XJGE.observable.notifyObservers("GAMEPAD_" + jid + "_CONNECTED", connected[jid]);
+                        //TODO: 
+                        //XJGE.observable.notifyObservers("GAMEPAD_" + jid + "_CONNECTED", connected[jid]);
                     }
                     
                     Logger.logInfo("Input device \"" + getDeviceName(jid) + "\" " +

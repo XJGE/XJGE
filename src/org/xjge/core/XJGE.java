@@ -66,15 +66,8 @@ public final class XJGE {
     static float noclipSpeedFactor = 1.0f;
     
     private static boolean noclipEnabled;
-    private static boolean terminalEnabled;
+    private static boolean showTerminal;
     private static boolean showLightSources;
-    private static boolean firstMouse = true;
-    
-    public static final Path PRESENT_WORKING_DIRECTORY = Path.of("").toAbsolutePath();
-    
-    public static final String VERSION   = "4.0.0";
-    private static String assetsFilepath = "/org/xjge/assets/";
-    private static String scenesFilepath;
     
     private static Texture engineIcons;
     private static Sound beep;
@@ -106,13 +99,19 @@ public final class XJGE {
     private static boolean ticked;
     public static boolean enableBloom;
     
+    public static final Path PRESENT_WORKING_DIRECTORY = Path.of("").toAbsolutePath();
+    
+    public static final String VERSION   = "4.0.0";
+    private static String assetsFilepath = "/org/xjge/assets/";
+    private static String scenesFilepath;
+    
     private static Color clearColor = Color.create(119, 136, 255);
     private static Scene scene;
     
     private static final Queue<Scene> sceneChangeRequests = new LinkedList<>();
     private static final Queue<Event> events = new PriorityQueue<>(Comparator.comparing(Event::getPriority));
     
-    static final Observable observable = new Observable(XJGE.class); //TODO: make this private and provide add/remove methods
+    private static final Observable observable = new Observable(XJGE.class);
     
     /**
      * Default constructor defined here to keep it out of the public APIs reach.
@@ -293,7 +292,7 @@ public final class XJGE {
             
             while(delta >= TARGET_DELTA) {
                 Input.update(TARGET_DELTA, deltaMetric);
-                if(XJGE.getTerminalEnabled()) terminal.update();
+                if(showTerminal) terminal.update();
                 
                 deltaMetric = delta;
                 
@@ -394,11 +393,11 @@ public final class XJGE {
                 }
             }
             
-            if(XJGE.getTerminalEnabled() || debugInfo.show) {
+            if(showTerminal || debugInfo.show) {
                 glViewport(0, 0, Window.getWidth(), Window.getHeight());
                 UI.updateProjectionMatrix(Window.getWidth(), Window.getHeight(), 0, Integer.MAX_VALUE);
                 
-                if(XJGE.getTerminalEnabled()) terminal.render();
+                if(showTerminal) terminal.render();
                 if(debugInfo.show) debugInfo.render();
             }
             
@@ -418,6 +417,55 @@ public final class XJGE {
         Window.freeCallbacks();
         GL.destroy();
         glfwTerminate();
+    }
+    
+    static void processTerminalInput(int key, int action, int mods) {
+        if(key == GLFW_KEY_F1 && action == GLFW_PRESS) showTerminal = !showTerminal;
+        if(showTerminal) terminal.processKeyInput(key, action, mods);
+    }
+    
+    /**
+     * Adds a custom {@link GLProgram} to an immutable collection which can be 
+     * accessed through a scenes {@linkplain Scene#render render()} method to 
+     * draw the various objects and entities within it.
+     * 
+     * @param name the name that will be used to refer to the program
+     * @param glProgram the object representing the compiled shader program
+     */
+    public static void addGLProgram(String name, GLProgram glProgram) {
+        if(!name.equals("default")) {
+            glPrograms.put(name, glProgram);
+        } else {
+            Logger.logWarning("Failed to add program \"" + name + "\". This " + 
+                              " name is reserved for engine use, please choose another", 
+                              null);
+        }
+    }
+    
+    /**
+     * Adds a new user-defined command that can be accessed through the engines 
+     * {@link Terminal} and used to debug the application at runtime.
+     * 
+     * @param name the name the terminal will use to refer to the command
+     * @param command an object used to organize the commands internal logic
+     */
+    public static void addCommand(String name, TerminalCommand command) {
+        if(engineCommands.containsKey(name)) {
+            Logger.logWarning("Failed to add command \"" + name + "\". A command " + 
+                              "by this name already exists as a part of the engines " +
+                              "core features", 
+                              null);
+        } else {
+            userCommands.put(name, command);
+        }
+    }
+    
+    public static void addObserver(PropertyChangeListener observer) {
+        observable.addObserver(observer);
+    }
+    
+    public static void removeObserver(PropertyChangeListener observer) {
+        observable.removeObserver(observer);
     }
     
     /**
@@ -534,56 +582,6 @@ public final class XJGE {
     }
     
     /**
-     * Notifies the game implementation of engine state changes. These state 
-     * changes include the following:
-     * <ol><li>SCENE_CHANGED - Fires anytime the game scene is changed and 
-     * passes the current one as its value</li>
-     * <li>GAMEPAD_#_CONNECTED - (where # is the ID of the device) Fires 
-     * whenever a gamepad is connected or disconnected from the system.</li></ol>
-     * 
-     * @param observer the class to be notified of engine state changes
-     */
-    public static final void addObserver(PropertyChangeListener observer) {
-        observable.addObserver(observer);
-    }
-    
-    /**
-     * Adds a custom {@link GLProgram} to an immutable collection which can be 
-     * accessed through a scenes {@linkplain Scene#render render()} method to 
-     * draw the various objects and entities within it.
-     * 
-     * @param name the name that will be used to refer to the program
-     * @param glProgram the object representing the compiled shader program
-     */
-    public static void addGLProgram(String name, GLProgram glProgram) {
-        if(!name.equals("default")) {
-            glPrograms.put(name, glProgram);
-        } else {
-            Logger.logWarning("Failed to add program \"" + name + "\". This " + 
-                              " name is reserved for engine use, please choose another", 
-                              null);
-        }
-    }
-    
-    /**
-     * Adds a new user-defined command that can be accessed through the engines 
-     * {@link Terminal} and used to debug the application at runtime.
-     * 
-     * @param name the name the terminal will use to refer to the command
-     * @param command an object used to organize the commands internal logic
-     */
-    public static void addCommand(String name, TerminalCommand command) {
-        if(engineCommands.containsKey(name)) {
-            Logger.logWarning("Failed to add command \"" + name + "\". A command " + 
-                              "by this name already exists as a part of the engines " +
-                              "core features", 
-                              null);
-        } else {
-            userCommands.put(name, command);
-        }
-    }
-    
-    /**
      * Applies post-processing effects to the desired viewport by changing 
      * which shader program its framebuffer object will use during rendering.
      * 
@@ -609,16 +607,6 @@ public final class XJGE {
             glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, (useLinearFilter) ? GL_LINEAR : GL_NEAREST);
         glBindTexture(GL_TEXTURE_2D, 0);
         */
-    }
-    
-    /**
-     * Obtains the value that indicates whether or not the command terminal is 
-     * currently open.
-     * 
-     * @return true if the debug mode is enabled and the terminal is open
-     */
-    static boolean getTerminalEnabled() {
-        return terminalEnabled;
     }
     
     /**
