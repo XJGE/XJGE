@@ -47,7 +47,7 @@ final class TCSetScene extends TerminalCommand {
                         //Assumes the scenes constructor has no parameters.
                         //TODO: allow constructors with parameters?
                         XJGE.setScene((Scene) c.getConstructor().newInstance());
-                        setOutput("Current scene changed to \"" + Game.getSceneName() + "\"", Color.WHITE);
+                        setOutput("Current scene changed to \"" + XJGE.getSceneName() + "\"", Color.WHITE);
                     } else {
                         setOutput("ERROR: Invalid argument. Must be a subclass of Scene.", Color.RED);
                     }

@@ -208,9 +208,10 @@ final class DebugInfo {
             icons[i].render();
         }
         
-        placeholder.drawString("FPS: " + 0, textPos[0].x, textPos[0].y, Color.WHITE, 1f); //This class is legacy, FPS set to 0 to avoid errors
-        placeholder.drawString("DELTA: " + Game.getDelta(), textPos[1].x, textPos[1].y, Color.WHITE, 1f);
-        placeholder.drawString("TICKED: " + Game.getTicked(), textPos[2].x, textPos[2].y, Color.WHITE, 1f);
+        //This class is legacy, set FPS, Delta, and Ticked values to 0 to avoid errors
+        placeholder.drawString("FPS: " + 0, textPos[0].x, textPos[0].y, Color.WHITE, 1f);
+        placeholder.drawString("DELTA: " + 0, textPos[1].x, textPos[1].y, Color.WHITE, 1f);
+        placeholder.drawString("TICKED: " + 0, textPos[2].x, textPos[2].y, Color.WHITE, 1f);
         placeholder.drawString("MEM FREE: " + Runtime.getRuntime().freeMemory(), textPos[3].x, textPos[3].y, Color.CYAN, 1f);
         
         placeholder.drawString("OS NAME: " + System.getProperty("os.name"), textPos[4].x, textPos[4].y,  Color.GREEN, 1f);

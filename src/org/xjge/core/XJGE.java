@@ -364,7 +364,7 @@ public final class XJGE {
                     glBindFramebuffer(GL_FRAMEBUFFER, Window.getFBOHandle());
                         glViewport(0, 0, viewport.width, viewport.height);
                         glClearColor(clearColor.r, clearColor.g, clearColor.b, 0);
-                        viewport.bindDrawBuffers(Game.enableBloom);
+                        viewport.bindDrawBuffers(enableBloom);
                         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
                         
                         viewport.resetCamera(glPrograms);
@@ -418,8 +418,16 @@ public final class XJGE {
         glfwTerminate();
     }
     
+    static void processKeyboardInput(int key, int action, int mods) {
+        
+    }
+    
+    static void processMouseInput(Mouse mouse) {
+        
+    }
+    
     static void processTerminalInput(int key, int action, int mods) {
-        if(key == GLFW_KEY_F1 && action == GLFW_PRESS) showTerminal = !showTerminal;
+        if(key == GLFW_KEY_F1 && action == GLFW_PRESS && mods == GLFW_MOD_SHIFT) showTerminal = !showTerminal;
         if(showTerminal) terminal.processKeyInput(key, action, mods);
     }
     
@@ -537,6 +545,48 @@ public final class XJGE {
     
     //==== LEGACY API BELOW ====================================================
     
+    
+    
+    
+    /**
+     * Obtains the display name of the current Scene being rendered.
+     * 
+     * @return the name of the current scene
+     */
+    public static String getSceneName() {
+        return scene.name;
+    }
+    
+    /**
+     * Adds an entity to the current scene. Generally speaking you'll only want 
+     * to use this for debugging purposes. Otherwise entity objects should be 
+     * managed directly from within the scene subclass itself, or through a 
+     * call to a method like 
+     * {@linkplain Scene#addEntity(org.xjge.core.Entity) Scene.addEntity()}.
+     * 
+     * @param entity the new entity object that will be added to this scene
+     */
+    public static final void addEntity(Entity entity) {
+        scene.entities.put(entity.uuid, entity);
+    }
+    
+    /**
+     * Inserts a light object into the current scenes 
+     * {@linkplain Scene#lights lights array} at the specified index. This 
+     * method is particularly useful in instances where lighting effects need 
+     * to exhibit some level of dynamic behavior- such as an explosion in a 
+     * dark tunnel emitting light for a brief period of time, etc.
+     * 
+     * @param index the index in the array to place the light object at
+     * @param light the light object to add
+     */
+    public static void addLight(int index, Light light) {
+        try {
+            scene.lights[index] = light;
+        } catch(IndexOutOfBoundsException e) {
+            Logger.logWarning("Failed to add light at index " + index, e);
+        }
+    }
     
     /**
      * Specifies the value which will be used to indicate how bright the surface 

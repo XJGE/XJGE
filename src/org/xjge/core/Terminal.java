@@ -15,10 +15,10 @@ import static org.xjge.ui.Font.placeholder;
 
 /**
  * Created: May 23, 2021
- * <p>
- * Provides a command line through which the engine may be interacted with at
- * runtime.
- * <p>
+ * <br><br>
+ * Provides a command line interface that can be used to make state changes to 
+ * the application during runtime.
+ * <br><br>
  * With debug mode enabled, press {@code SHIFT} + {@code F1} to open or close 
  * the terminal. While the terminal is open, input from the keyboard will be 
  * overridden and {@link Noclip} cannot be used.
