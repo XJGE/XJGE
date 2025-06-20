@@ -33,14 +33,14 @@ import static org.lwjgl.system.MemoryUtil.NULL;
 import org.xjge.graphics.Color;
 
 /**
- * Created: Jun 3, 2021
- * <br><br>
- * Parses data from a font file and provides it as an object that can be used to
- * render text to the UI. TrueType (.ttf) and Bitmap (.bmf) are the preferred 
+ * Parses a font file and provides it as an object that can be used to render 
+ * text to the UI. TrueType (.ttf) and Bitmap (.bmf) are the preferred 
  * formats of this engine.
  * 
  * @author J Hoffman
- * @since  2.0.0
+ * @since 2.0.0
+ * 
+ * @see Widget
  */
 public final class Font {
 
@@ -79,7 +79,7 @@ public final class Font {
     private final Map<Character, GlyphMetrics> glyphMetrics = new HashMap<>();
     
     /**
-     * Contains the immutable metrics of a single glyph in the font.
+     * Contains the immutable metrics of a glyph as specified by the font data.
      */
     private record GlyphMetrics (
         float texCoordX,
@@ -102,7 +102,7 @@ public final class Font {
     /**
      * Delegating constructor for internal use only.
      * 
-     * @param filepath the file location relative to this apps executable jar
+     * @param filepath the file location relative to this applications executable jar
      * @param filename the name of the file to load (with extension)
      * @param size the size of the font in non-pixel units
      */
@@ -161,10 +161,10 @@ public final class Font {
      * Attempts to load a font using the file provided. The engine will provide 
      * a placeholder if an error is encountered at any point during parsing.
      * 
-     * @param filepath the file location relative to this apps executable jar
+     * @param filepath the file location relative to this applications executable jar
      * @param filename the name of the file to load (with extension)
      * @param size the size of the font in non-pixel units
-     * @return a new integer array containing the data parsed from the font file
+     * @return an integer array containing the parsed font file data
      */
     private int[] loadFont(String filepath, String filename, int size) {
         try(InputStream file = Font.class.getResourceAsStream(filepath + filename)) {
@@ -215,7 +215,7 @@ public final class Font {
     }
     
     /**
-     * Loads a font from a bitmap file.
+     * Loads a font from a bitmap (.bmf) file.
      * 
      * @param filepath the file location relative to this apps executable jar
      * @param file an object representation of the raw file data
@@ -322,9 +322,9 @@ public final class Font {
     }
     
     /**
-     * Loads a font from a TrueType file.
+     * Loads a font from a TrueType (.ttf) file.
      * 
-     * @param file an object representation of the raw file data
+     * @param file the raw file data as an object
      * @param info the array containing data parsed from the font file
      * @throws IOException 
      */

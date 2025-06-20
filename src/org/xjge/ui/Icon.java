@@ -1,11 +1,11 @@
 package org.xjge.ui;
 
-import org.joml.Matrix4f;
 import org.xjge.core.ErrorUtils;
 import org.xjge.core.Logger;
 import org.xjge.core.XJGE;
 import org.joml.Vector2f;
 import org.joml.Vector2i;
+import org.joml.Vector3f;
 import static org.lwjgl.opengl.GL30.*;
 import org.lwjgl.system.MemoryStack;
 import org.xjge.core.UI;
@@ -15,40 +15,58 @@ import org.xjge.graphics.Graphics;
 import org.xjge.graphics.Texture;
 
 /**
- * Created: Jun 8, 2021
- * <br><br>
- * Represents a quickly comprehensible symbol included to help users better 
- * understand an interface. Icons make use of a {@link Atlas} and as such, 
- * provide utilities for quickly switching between individual sub-images as 
- * needed.
+ * Used to represent a symbol or pictogram on the user interface.
  * 
  * @author J Hoffman
- * @since  2.0.0
+ * @since 2.0.0
  * 
- * @see org.xjge.core.Widget
+ * @see Widget
  */
 public final class Icon {
 
     private float opacity = 1.0f;
-    private float scale   = 1.0f;
-    private float angle;
     
-    private Vector2f currCell = new Vector2f();
-    private final Graphics graphics = new Graphics();
-    private final Texture texture;
-    private final Atlas atlas;
-    
-    public Color color = Color.WHITE;
+    private int cellX;
+    private int cellY;
     
     /**
-     * Creates a new icon object which can be used to comprise part of a larger 
-     * user interface.
+     * Stores the position of the icon.
+     */
+    public final Vector2f position = new Vector2f();
+    
+    /**
+     * Stores the rotation angle of the icon along the XYZ axes.
+     * <br><br>
+     * Icons will rotate in a clockwise fashion. That is, if you supply this 
+     * method with an value of 90 degrees the icon will rotate right, a value
+     * of -90 will rotate it left, and so on. The maximum accepted rotation 
+     * value in any direction is 360.
+     */
+    public final Vector3f rotation = new Vector3f();
+    
+    /**
+     * Stores the size of the icon along the X and Y axes. By default the icon 
+     * will have a scale of 1 for both dimensions. 
+     */
+    public final Vector2f scale = new Vector2f(1);
+    
+    private final Vector2i atlasKey = new Vector2i();
+    private Vector2f texCoords      = new Vector2f();
+    
+    private Color color = Color.WHITE;
+    
+    private final Texture texture;
+    private final Atlas atlas;
+    private final Graphics graphics;
+    
+    /**
+     * Creates a new icon object using the data provided.
      * 
-     * @param texture the texture image to use
-     * @param cellWidth the width of each sub-image cell in pixels
-     * @param cellHeight the height of each sub-image cell in pixels
+     * @param texture the texture image (or atlas) to use
+     * @param cellWidth the width (in pixels) of each sub-image cell
+     * @param cellHeight the height (in pixels) of each sub-image cell
      * @param fromCenter if true the icon will be positioned from its center 
-     *                   instead of its bottom left corner
+     *                   instead of its bottom-left corner
      */
     public Icon(Texture texture, int cellWidth, int cellHeight, boolean fromCenter) {
         this.texture = texture;
@@ -60,7 +78,8 @@ public final class Icon {
             glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
         glBindTexture(GL_TEXTURE_2D, 0);
         
-        atlas = new Atlas(texture, cellWidth, cellHeight);
+        atlas    = new Atlas(texture, cellWidth, cellHeight);
+        graphics = new Graphics();
         
         try(MemoryStack stack = MemoryStack.stackPush()) {
             graphics.vertices = stack.mallocFloat(20);
@@ -97,108 +116,93 @@ public final class Icon {
     }
     
     /**
-     * Creates a new icon object which can be used to comprise part of a larger 
-     * user interface.
-     * <p>
-     * NOTE: A new version of this method exists as of version 2.1.17, which 
-     * adds another parameter that can be used to position the icon by it's 
-     * center.
+     * Changes the opacity (or transparency) of the icon.
      * 
-     * @param texture the texture image to use
-     * @param cellWidth the width of each sub-image cell in pixels
-     * @param cellHeight the height of each sub-image cell in pixels
-     */
-    public Icon(Texture texture, int cellWidth, int cellHeight) {
-        this(texture, cellWidth, cellHeight, false);
-    }
-    
-    /**
-     * Obtains the model matrix of the icon so it may be used to perform 
-     * translation/rotate/scaling operations with greater fidelity.
-     * 
-     * @return the model matrix the icon uses during rendering
-     */
-    public Matrix4f getModelMatrix() {
-        return graphics.modelMatrix;
-    }
-    
-    /**
-     * Sets the current position of the icon.
-     * 
-     * @param position the position to set this icon to in the viewport
-     */
-    public void setPosition(Vector2i position) {
-        graphics.modelMatrix.translation(position.x, position.y, 0);
-    }
-    
-    /**
-     * Variant of {@link setPosition(Vector2i)}.
-     * 
-     * @param x the x-coordinate to place the icon at in the viewport
-     * @param y the y-coordinate to place the icon at in the viewport
-     */
-    public void setPosition(int x, int y) {
-        graphics.modelMatrix.translation(x, y, 0);
-    }
-    
-    /**
-     * Sets the sub-image this icon will use
-     * 
-     * @param cellX the location of the cell along the x-axis as it appears in 
-     *              the texture atlas
-     * @param cellY the location of the cell along the y-axis as it appears in 
-     *              the texture atlas
-     */
-    public void setSubImage(int cellX, int cellY) {
-        Vector2i key = new Vector2i(cellX, cellY);
-        
-        if(atlas.subImageOffsets.containsKey(key)) {
-            currCell = atlas.subImageOffsets.get(key);
-        } else {
-            Logger.logWarning("Failed to set icon sprite. The cell: (" + cellX +
-                              ", " + cellY + ") is out of bounds",
-                              null);
-        }
-    }
-    
-    /**
-     * Changes the transparency of the icon.
-     * 
-     * @param opacity a number between 0 and 1 used to indicate how transparent the icon will be
+     * @param opacity a number (between 0 and 1) indicating how transparent the icon is
      */
     public void setOpacity(float opacity) {
         this.opacity = XJGE.clampValue(0, 1, opacity);
     }
     
     /**
-     * Changes the size of the icon.
+     * Sets the sub-image this icon will use.
      * 
-     * @param scale a non-negative number that will be used to scale the icon
+     * @param x the horizontal cell location as it appears in the texture atlas
+     * @param y the vertical cell location as it appears in the texture atlas
      */
-    public void setScale(float scale) {
-        this.scale = Math.abs(scale);
-        graphics.modelMatrix.scale(this.scale);
+    public void setSubImage(int x, int y) {
+        atlasKey.set(x, y);
+        
+        if(atlas.subImageOffsets.containsKey(atlasKey)) {
+            cellX     = x;
+            cellY     = y;
+            texCoords = atlas.subImageOffsets.get(atlasKey);
+        } else {
+            Logger.logWarning("Failed to set icon sprite. The cell: (" + x +
+                              ", " + y + ") is out of bounds",
+                              null);
+        }
     }
     
     /**
-     * Changes the rotation angle of the icon.
-     * <p>
-     * Icons will rotate in a clockwise fashion. That is, if you supply this 
-     * method with an value of 90 degrees the icon will rotate right, a value
-     * of -90 will rotate it left, and so on. The maximum accepted rotation 
-     * value in either direction is 360.
+     * Changes the color of this icon.
      * 
-     * @param angle the new angle to rotate the icon by
+     * @param color the color that the icon will be rendered in
      */
-    public void setRotation(float angle) {
-        this.angle = (float) Math.toRadians(angle * -1f);
-        graphics.modelMatrix.rotateZ(this.angle);
+    public void setColor(Color color) {
+        this.color = color;
+    }
+    
+    /**
+     * Obtains the current opacity (or transparency) value of this icon.
+     * 
+     * @return a number (between 0 and 1) indicating how transparent the icon is
+     */
+    public float getOpacity() {
+        return opacity;
+    }
+    
+    /**
+     * Obtains the horizontal index of the sub-image cell.
+     * 
+     * @return a number indicating the cell index along the x-axis (zero indexed)
+     */
+    public int getSubImageX() {
+        return cellX;
+    }
+    
+    /**
+     * Obtains the vertical index of the sub-image cell.
+     * 
+     * @return a number indicating the cell index along the y-axis (zero indexed)
+     */
+    public int getSubImageY() {
+        return cellY;
+    }
+    
+    /**
+     * Obtains the current color of the icon.
+     * 
+     * @return an object representing a 3-component RGB color
+     */
+    public final Color getColor() {
+        return color;
     }
     
     /**
      * Renders the icon image.
      */
     public void render() {
+        graphics.modelMatrix.translation(position.x, position.y, 0);
+        
+        //TODO: check to make sure this doesnt promote object churn or gimbal lock
+        float rotationX = (float) Math.toRadians(rotation.x * -1f);
+        float rotationY = (float) Math.toRadians(rotation.y * -1f);
+        float rotationZ = (float) Math.toRadians(rotation.z * -1f);
+        
+        graphics.modelMatrix.rotateXYZ(rotationX, rotationY, rotationZ);
+        graphics.modelMatrix.scaleXY(scale.x, scale.y);
+        
         UIShader.getInstance().use();
         
         glEnable(GL_BLEND);
@@ -212,7 +216,7 @@ public final class Icon {
         UIShader.getInstance().setUniform("uColor", color.asVec3());
         UIShader.getInstance().setUniform("uModel", graphics.modelMatrix);
         UIShader.getInstance().setUniform("uProjection", UI.getProjectionMatrix());
-        UIShader.getInstance().setUniform("uTexCoords", currCell);
+        UIShader.getInstance().setUniform("uTexCoords", texCoords);
         UIShader.getInstance().setUniform("uTexture", 0);
         
         glDrawElements(GL_TRIANGLES, graphics.indices.limit(), GL_UNSIGNED_INT, 0);

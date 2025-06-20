@@ -10,7 +10,8 @@ All notable changes to this project will be documented in this file. The format 
 - Randomly assigned UUIDs to identify entities at runtime.
 - New bind() method to the Texture class which is used instead of directly referencing its handle.
 - New TextEffect class that can be used to create custom effects for Font.drawString() by altering the data of the Glyph objects it generates.
-- New UIContext class that now encapsulates much of the Widget management features previously provided through the XJGE class.
+- New UI static class that now encapsulates much of the Widget management features previously provided through the XJGE class.
+- New addObserver() and removeObserver() methods to Window class that allows users to listen for state changes made to the applications window.
 
 ### Changed
 - Fixed bug that wouldn't update the value of virtual gamepads when Input.setVirtualGamepadInput() was called.
@@ -24,7 +25,9 @@ All notable changes to this project will be documented in this file. The format 
 - Logger.logSevere() method name to logError() for consistency.
 - Font class now includes better fallback behavior and imposes minimum and maximum sizes.
 - Moved classes like Widget, Font, Icon, and Rectangle into the new UI package. Initialized new UI specific shader for internal use only.
-- Name of Split enum to ScreenSplitType for clarity. 
+- Name of Split enum to SplitScreenType for clarity.
+- Window class, massive refactor including moving some features like viewport manipulation from XJGE into Window class.
+- Icon class to expose position, rotation, and scale fields for use by the public API.
 
 ### Removed
 - Update/Render methods from the Entity class.
@@ -33,6 +36,9 @@ All notable changes to this project will be documented in this file. The format 
 - drawString() method from the Widget superclass. This is provided directly through the Font class now.
 - Methods like addUIWidget(), removeUIWidget(), and containsWidget() from XJGE class.
 - position, width, and height fields from the Widget class.
+- Game class, existing features like scene/state changes moved to XJGE class.
+- Alternate constructor variants for Icon and Polygon classes.
+- Public access to model matrix in Icon class.
 
 ## [3.1.0] - 2025-01-03
 

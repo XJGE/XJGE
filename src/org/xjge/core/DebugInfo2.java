@@ -1,5 +1,6 @@
 package org.xjge.core;
 
+import static org.lwjgl.glfw.GLFW.GLFW_MOUSE_BUTTON_LEFT;
 import org.xjge.graphics.Color;
 import org.xjge.graphics.Texture;
 import static org.xjge.ui.Font.placeholder;
@@ -27,11 +28,32 @@ final class DebugInfo2 {
         boolean expanded;
         
         int contentAreaHeight;
+        int longestString;
         
         final String title;
         final Rectangle expandButton = new Rectangle(0, 0, 0, 28);
         
         Group(String title) { this.title = title; }
+        
+        void renderContent(int index) {
+            switch(index) {
+                case 0 -> {
+                    
+                }
+                case 1 -> {
+                    
+                }
+                case 2 -> {
+                    
+                }
+                case 3 -> {
+                    
+                }
+                case 4 -> {
+                    
+                }
+            }
+        }
         
     }
     
@@ -55,7 +77,7 @@ final class DebugInfo2 {
         for(int i = 0; i < groups.length; i++) {
             if(groups[i].expanded) {
                 groups[i].contentAreaHeight = switch(i) {
-                    default -> 50;
+                    default -> 154;
                 };
             } else {
                 groups[i].contentAreaHeight = 0;
@@ -82,6 +104,8 @@ final class DebugInfo2 {
             contentArea.positionY = titleBar.positionY - groups[i].contentAreaHeight;
             contentArea.render(0.5f, Color.BLACK);
             
+            groups[i].renderContent(i);
+            
             groups[i].expandButton.width     = !groups[i].expanded ? 98 : 126;
             groups[i].expandButton.positionX = titleBar.positionX + titleBar.width - groups[i].expandButton.width;
             groups[i].expandButton.positionY = titleBar.positionY;
@@ -95,7 +119,11 @@ final class DebugInfo2 {
     }
     
     void processMouseInput(Mouse mouse) {
-        
+        for(Group group : groups) {
+            if(mouse.clickedOnce(group.expandButton, GLFW_MOUSE_BUTTON_LEFT)) {
+                group.expanded = !group.expanded;
+            }
+        }
     }
     
 }

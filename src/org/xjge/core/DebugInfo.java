@@ -47,7 +47,7 @@ final class DebugInfo {
     DebugInfo(Texture iconTexture) {
         for(int r = 0; r < rectangles.length; r++) rectangles[r] = new Rectangle();
         for(int p = 0; p < textPos.length; p++)    textPos[p] = new Vector2i();
-        for(int i = 0; i < icons.length; i++)      icons[i] = new Icon(iconTexture, 64, 64);
+        //for(int i = 0; i < icons.length; i++)      icons[i] = new Icon(iconTexture, 64, 64);
         
         icons[4].setSubImage(0, 1);
     }
@@ -161,10 +161,10 @@ final class DebugInfo {
             
             for(int i = 0; i < icons.length - 1; i++) {
                 float yPos = (rectangles[4].positionY + rectangles[4].height) - ((48 * (i + 1)) + 52);
-                icons[i].setPosition(PADDING, (int) yPos);
+                //icons[i].setPosition(PADDING, (int) yPos);
             }
             
-            icons[4].setPosition(PADDING, rectangles[4].positionY + rectangles[4].height - 48);
+            //icons[4].setPosition(PADDING, rectangles[4].positionY + rectangles[4].height - 48);
             textPos[15].set(80, rectangles[4].positionY + rectangles[4].height - 36);
             
             for(int i = 16; i < textPos.length - 1; i += 2) {

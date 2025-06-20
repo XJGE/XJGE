@@ -181,6 +181,7 @@ public final class Window {
             mouse.cursorPositionX = cursorPositionX * scaleX;
             mouse.cursorPositionY = resolution.height - Math.abs((cursorPositionY * scaleY));
             
+            XJGE.processMouseInput(mouse);
             UI.processMouseInput(mouse);
             
             if(debugModeEnabled) {
@@ -222,6 +223,7 @@ public final class Window {
                 case GLFW_MOUSE_BUTTON_RIGHT  -> mouse.rightHeld  = (action == GLFW_PRESS);
             }
             
+            XJGE.processMouseInput(mouse);
             UI.processMouseInput(mouse);
         });
         
@@ -229,6 +231,7 @@ public final class Window {
             mouse.scrollSpeedX = scrollSpeedX;
             mouse.scrollSpeedY = scrollSpeedY;
             
+            XJGE.processMouseInput(mouse);
             UI.processMouseInput(mouse);
             
             mouse.scrollSpeedX = 0;
@@ -236,7 +239,7 @@ public final class Window {
         });
         
         glfwKeyReference = GLFWKeyCallback.create((window, key, scancode, action, mods) -> {
-            XJGE.processTerminalInput(key, action, mods);
+            XJGE.processKeyboardInput(key, action, mods);
             UI.processKeyboardInput(key, action, mods);
             
             mouse.mods = mods;

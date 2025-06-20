@@ -419,16 +419,20 @@ public final class XJGE {
     }
     
     static void processKeyboardInput(int key, int action, int mods) {
+        if(key == GLFW_KEY_F1 && action == GLFW_PRESS) {
+            if(mods == GLFW_MOD_SHIFT) {
+                
+            } else {
+                debugInfo.show = !debugInfo.show;
+            }
+        }
         
+        if(key == GLFW_KEY_F1 && action == GLFW_PRESS && mods == GLFW_MOD_SHIFT) showTerminal = !showTerminal;
+        if(showTerminal) terminal.processKeyInput(key, action, mods);
     }
     
     static void processMouseInput(Mouse mouse) {
-        
-    }
-    
-    static void processTerminalInput(int key, int action, int mods) {
-        if(key == GLFW_KEY_F1 && action == GLFW_PRESS && mods == GLFW_MOD_SHIFT) showTerminal = !showTerminal;
-        if(showTerminal) terminal.processKeyInput(key, action, mods);
+        if(debugInfo.show) debugInfo.processMouseInput(mouse);
     }
     
     /**

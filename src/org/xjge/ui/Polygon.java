@@ -9,51 +9,52 @@ import org.xjge.graphics.Color;
 import org.xjge.graphics.Graphics;
 
 /**
- * Created: Jun 15, 2021
- * <br><br>
- * Objects of this class can be used as part of a larger {@link org.xjge.core.Widget UI widget} 
- * to represent a regular 2D shape such as a pentagon, hexagon, or circle by
- * utilizing the number of sides specified through its constructor.
+ * Represents a convex 2D shape with any number of sides such as a pentagon, 
+ * hexagon, heptagon and so on.
  * 
  * @author J Hoffman
- * @since  2.0.0
+ * @since 2.0.0
+ * 
+ * @see Widget
  */
 public class Polygon {
 
-    private final int numSides;
     public boolean fill;
+    
+    private final int numberSides;
+    
     public Color color;
+    
     private final Graphics graphics = new Graphics();
     
     /**
      * Creates a new n-sided polygon object which can be used to represent 
      * regular shapes and circles. 
      * 
-     * @param numSides the number of sides this shape will exhibit, (5 for a 
-     *                 pentagon, 6 for a hexagon, etc.)
+     * @param numberSides the number of sides this polygon will have
+     * @param radius the radius (in pixels) used to determine the polygons size
+     * @param positionX the initial horizontal position of the polygon
+     * @param positionY the initial vertical position of the polygon
+     * @param color the color this polygon will be rendered in
      * @param fill if true, the shape will be filled with the specified color
-     * @param radius the radius used to determine the size of the polygon
-     * @param color the color to render this shape in
-     * @param xPos the x-coordinate of the shapes initial position in the viewport
-     * @param yPos the y-coordinate of the shapes initial position in the viewport
      */
-    public Polygon(int numSides, boolean fill, float radius, Color color, int xPos, int yPos) {
-        this.numSides = numSides;
-        this.fill     = fill;
-        this.color    = color;
+    public Polygon(int numberSides, float radius, int positionX, int positionY, Color color, boolean fill) {
+        this.numberSides = numberSides;
+        this.fill        = fill;
+        this.color       = color;
         
-        float doublePI = (float) (Math.PI * 2f);
-        float[] vertX  = new float[this.numSides];
-        float[] vertY  = new float[this.numSides];
+        float doublePI     = (float) (Math.PI * 2f);
+        float[] vertexPosX = new float[this.numberSides];
+        float[] vertexPosY = new float[this.numberSides];
         
-        for(int v = 0; v < this.numSides; v++) {
-            vertX[v] = (float) (radius * Math.cos(v * doublePI / this.numSides));
-            vertY[v] = (float) (radius * Math.sin(v * doublePI / this.numSides));
+        for(int v = 0; v < this.numberSides; v++) {
+            vertexPosX[v] = (float) (radius * Math.cos(v * doublePI / this.numberSides));
+            vertexPosY[v] = (float) (radius * Math.sin(v * doublePI / this.numberSides));
         }
         
         try(MemoryStack stack = MemoryStack.stackPush()) {
-            graphics.vertices = stack.mallocFloat(this.numSides * 3);
-            for(int v = 0; v < this.numSides; v++) graphics.vertices.put(vertX[v]).put(vertY[v]).put(-100);
+            graphics.vertices = stack.mallocFloat(this.numberSides * 3);
+            for(int v = 0; v < this.numberSides; v++) graphics.vertices.put(vertexPosX[v]).put(vertexPosY[v]).put(0);
             graphics.vertices.flip();
         }
         
@@ -62,33 +63,7 @@ public class Polygon {
         glVertexAttribPointer(0, 3, GL_FLOAT, false, (3 * Float.BYTES), 0);
         glEnableVertexAttribArray(0);
         
-        translate(xPos, yPos);
-    }
-    
-    /**
-     * Alternate version of the {@link Polygon(int, boolean, float, Color, int, int) Polygon()} 
-     * constructor.
-     * 
-     * @param numSides the number of sides this shape will exhibit, (5 for a 
-     *                 pentagon, 6 for a hexagon, etc.)
-     * @param fill if true, the shape will be filled with the specified color
-     * @param radius the radius used to determine the size of the polygon
-     * @param color the color to render this shape in
-     * @param position the position at which the shape will be placed initially
-     */
-    public Polygon(int numSides, boolean fill, float radius, Color color, Vector2i position) {
-        this(numSides, fill, radius, color, position.x, position.y);
-    }
-    
-    /**
-     * Translates the polygon to the position specified. 
-     * <p>
-     * NOTE: Polygons are positioned around their centerpoints.
-     * 
-     * @param position the position where the shape will be placed
-     */
-    public final void translate(Vector2i position) {
-        graphics.modelMatrix.translation(position.x, position.y, 0);
+        translate(positionX, positionY);
     }
     
     /**
@@ -126,7 +101,7 @@ public class Polygon {
         UIShader.getInstance().setUniform("uColor", color.asVec3());
         UIShader.getInstance().setUniform("uOpacity", opacity);
         
-        glDrawArrays((fill) ? GL_TRIANGLE_FAN : GL_LINE_LOOP, 0, numSides);
+        glDrawArrays((fill) ? GL_TRIANGLE_FAN : GL_LINE_LOOP, 0, numberSides);
         glDisable(GL_BLEND);
         
         ErrorUtils.checkGLError();
