@@ -24,7 +24,7 @@ public class TestWidget extends Widget {
     Font font = new Font("font_source_code_pro.ttf", 32);
     StopWatch timer = new StopWatch();
     TextEffectTest testEffect = new TextEffectTest();
-    Polygon polygon = new Polygon(6, 40, 200, 200, Color.ORANGE, true);
+    Polygon polygon = new Polygon(6, 40);
     Rectangle rectangle = new Rectangle(600, 150, 40, 40);
     Icon icon;
     Color rectColor = Color.BLACK;
@@ -40,19 +40,22 @@ public class TestWidget extends Widget {
 
     @Override
     public void update(double targetDelta, double trueDelta) {
+        angle = (angle >= 360) ? 0 : angle + 1;
+        
         icon.position.x = 400;
         icon.position.y = 40;
-        
-        angle = (angle >= 360) ? 0 : angle + 1; 
-        
         icon.rotation.x = angle;
-        
         icon.scale.x = 2;
+        
+        polygon.fill = false;
+        polygon.position.set(200);
+        polygon.rotation.z = angle;
+        polygon.setColor(Color.ORANGE);
     }
 
     @Override
     public void render(Map<String, GLProgram> glPrograms) {
-        polygon.render(0.5f);
+        polygon.render();
         font.drawString("The quick brown fox jumps\nover the lazy dog.", 50, 100, testEffect);
         rectangle.render(0.5f, rectColor);
         icon.render();

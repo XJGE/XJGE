@@ -15,7 +15,7 @@ import org.xjge.graphics.Graphics;
 import org.xjge.graphics.Texture;
 
 /**
- * Used to represent a symbol or pictogram on the user interface.
+ * Used to represent a symbol on the user interface.
  * 
  * @author J Hoffman
  * @since 2.0.0
@@ -24,7 +24,7 @@ import org.xjge.graphics.Texture;
  */
 public final class Icon {
 
-    private float opacity = 1.0f;
+    private float opacity = 1f;
     
     private int cellX;
     private int cellY;
@@ -35,6 +35,12 @@ public final class Icon {
     public final Vector2f position = new Vector2f();
     
     /**
+     * Stores the size of the icon along the X and Y axes. By default the icon 
+     * will have a scale of 1 for both dimensions. 
+     */
+    public final Vector2f scale = new Vector2f(1);
+    
+    /**
      * Stores the rotation angle of the icon along the XYZ axes.
      * <br><br>
      * Icons will rotate in a clockwise fashion. That is, if you supply this 
@@ -43,12 +49,6 @@ public final class Icon {
      * value in any direction is 360.
      */
     public final Vector3f rotation = new Vector3f();
-    
-    /**
-     * Stores the size of the icon along the X and Y axes. By default the icon 
-     * will have a scale of 1 for both dimensions. 
-     */
-    public final Vector2f scale = new Vector2f(1);
     
     private final Vector2i atlasKey = new Vector2i();
     private Vector2f texCoords      = new Vector2f();

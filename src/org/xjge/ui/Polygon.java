@@ -1,10 +1,12 @@
 package org.xjge.ui;
 
+import org.joml.Vector2f;
 import org.xjge.core.ErrorUtils;
-import org.joml.Vector2i;
+import org.joml.Vector3f;
 import static org.lwjgl.opengl.GL30.*;
 import org.lwjgl.system.MemoryStack;
 import org.xjge.core.UI;
+import org.xjge.core.XJGE;
 import org.xjge.graphics.Color;
 import org.xjge.graphics.Graphics;
 
@@ -19,11 +21,39 @@ import org.xjge.graphics.Graphics;
  */
 public class Polygon {
 
-    public boolean fill;
+    /**
+     * Determines if the shape should be filled with the rendering color or if 
+     * only the outline should be visible.
+     */
+    public boolean fill = true;
     
-    private final int numberSides;
+    private float opacity = 1f;
     
-    public Color color;
+    private final int sides;
+    
+    /**
+     * Stores the position of the polygon. The origin point of these objects is
+     * always set from the center.
+     */
+    public final Vector2f position = new Vector2f();
+    
+    /**
+     * Stores the size of the polygon along the X and Y axes. By default the 
+     * shape will have a scale of 1 for both dimensions. 
+     */
+    public final Vector2f scale = new Vector2f(1);
+    
+    /**
+     * Stores the rotation angle of the polygon along the XYZ axes.
+     * <br><br>
+     * Polygons will rotate in a clockwise fashion. That is, if you supply this 
+     * method with an value of 90 degrees the shape will rotate right, a value
+     * of -90 will rotate it left, and so on. The maximum accepted rotation 
+     * value in any direction is 360.
+     */
+    public final Vector3f rotation = new Vector3f();
+    
+    private Color color = Color.WHITE;
     
     private final Graphics graphics = new Graphics();
     
@@ -31,30 +61,24 @@ public class Polygon {
      * Creates a new n-sided polygon object which can be used to represent 
      * regular shapes and circles. 
      * 
-     * @param numberSides the number of sides this polygon will have
+     * @param sides the number of sides this polygon will have
      * @param radius the radius (in pixels) used to determine the polygons size
-     * @param positionX the initial horizontal position of the polygon
-     * @param positionY the initial vertical position of the polygon
-     * @param color the color this polygon will be rendered in
-     * @param fill if true, the shape will be filled with the specified color
      */
-    public Polygon(int numberSides, float radius, int positionX, int positionY, Color color, boolean fill) {
-        this.numberSides = numberSides;
-        this.fill        = fill;
-        this.color       = color;
+    public Polygon(int sides, float radius) {
+        this.sides = sides;
         
         float doublePI     = (float) (Math.PI * 2f);
-        float[] vertexPosX = new float[this.numberSides];
-        float[] vertexPosY = new float[this.numberSides];
+        float[] vertexPosX = new float[this.sides];
+        float[] vertexPosY = new float[this.sides];
         
-        for(int v = 0; v < this.numberSides; v++) {
-            vertexPosX[v] = (float) (radius * Math.cos(v * doublePI / this.numberSides));
-            vertexPosY[v] = (float) (radius * Math.sin(v * doublePI / this.numberSides));
+        for(int v = 0; v < this.sides; v++) {
+            vertexPosX[v] = (float) (radius * Math.cos(v * doublePI / this.sides));
+            vertexPosY[v] = (float) (radius * Math.sin(v * doublePI / this.sides));
         }
         
         try(MemoryStack stack = MemoryStack.stackPush()) {
-            graphics.vertices = stack.mallocFloat(this.numberSides * 3);
-            for(int v = 0; v < this.numberSides; v++) graphics.vertices.put(vertexPosX[v]).put(vertexPosY[v]).put(0);
+            graphics.vertices = stack.mallocFloat(this.sides * 3);
+            for(int v = 0; v < this.sides; v++) graphics.vertices.put(vertexPosX[v]).put(vertexPosY[v]).put(0);
             graphics.vertices.flip();
         }
         
@@ -62,33 +86,58 @@ public class Polygon {
         
         glVertexAttribPointer(0, 3, GL_FLOAT, false, (3 * Float.BYTES), 0);
         glEnableVertexAttribArray(0);
-        
-        translate(positionX, positionY);
     }
     
     /**
-     * Alternate version of {@link #translate(Vector2i)}.
+     * Changes the opacity (or transparency) of the polygon.
      * 
-     * @param x the x coordinate to place this shape in the window
-     * @param y the y coordinate to place this shape in the window
+     * @param opacity a number (between 0 and 1) indicating how transparent the shape is
      */
-    public final void translate(int x, int y) {
-        graphics.modelMatrix.translation(x, y, 0);
+    public void setOpacity(float opacity) {
+        this.opacity = XJGE.clampValue(0, 1, opacity);
     }
     
     /**
-     * Rotates the polygon according to the angle specified.
+     * Changes the color of this polygon.
      * 
-     * @param angle the value indicating the rotation of the shape
+     * @param color the color that the shape will be rendered in
      */
-    public final void rotate(float angle) {
-        graphics.modelMatrix.rotateZ((float) Math.toRadians(angle * -1f));
+    public void setColor(Color color) {
+        this.color = color;
+    }
+    
+    /**
+     * Obtains the current opacity (or transparency) value of this polygon.
+     * 
+     * @return a number (between 0 and 1) indicating how transparent the shape is
+     */
+    public float getOpacity() {
+        return opacity;
+    }
+    
+    /**
+     * Obtains the current color of the polygon.
+     * 
+     * @return an object representing a 3-component RGB color
+     */
+    public final Color getColor() {
+        return color;
     }
     
     /**
      * Draws the polygon using the data specified by the constructor.
      */
-    public void render(float opacity) {
+    public void render() {
+        graphics.modelMatrix.translation(position.x, position.y, 0);
+        
+        //TODO: check to make sure this doesnt promote object churn or gimbal lock
+        float rotationX = (float) Math.toRadians(rotation.x * -1f);
+        float rotationY = (float) Math.toRadians(rotation.y * -1f);
+        float rotationZ = (float) Math.toRadians(rotation.z * -1f);
+        
+        graphics.modelMatrix.rotateXYZ(rotationX, rotationY, rotationZ);
+        graphics.modelMatrix.scaleXY(scale.x, scale.y);
+        
         UIShader.getInstance().use();
         
         glEnable(GL_BLEND);
@@ -101,7 +150,7 @@ public class Polygon {
         UIShader.getInstance().setUniform("uColor", color.asVec3());
         UIShader.getInstance().setUniform("uOpacity", opacity);
         
-        glDrawArrays((fill) ? GL_TRIANGLE_FAN : GL_LINE_LOOP, 0, numberSides);
+        glDrawArrays((fill) ? GL_TRIANGLE_FAN : GL_LINE_LOOP, 0, sides);
         glDisable(GL_BLEND);
         
         ErrorUtils.checkGLError();
