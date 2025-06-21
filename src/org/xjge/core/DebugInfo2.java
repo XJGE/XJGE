@@ -109,7 +109,7 @@ final class DebugInfo2 {
             groups[i].expandButton.width     = !groups[i].expanded ? 98 : 126;
             groups[i].expandButton.positionX = titleBar.positionX + titleBar.width - groups[i].expandButton.width;
             groups[i].expandButton.positionY = titleBar.positionY;
-            groups[i].expandButton.render(1f, Color.BLACK);
+            groups[i].expandButton.render(1f, Color.RED);
             
             placeholder.drawString(!groups[i].expanded ? "[expand]" : "[collapse]", 
                                    groups[i].expandButton.positionX, 

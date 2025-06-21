@@ -2,6 +2,7 @@ package org.xjge.test;
 
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
+import org.xjge.core.Window;
 
 /**
  * Created: Jun 14, 2025
@@ -15,7 +16,7 @@ public class WindowObserver implements PropertyChangeListener {
     public void propertyChange(PropertyChangeEvent evt) {
         switch(evt.getPropertyName()) {
             case "WINDOW_FULLSCREEN_CHANGED" -> {
-                
+                Window.setResolution(Window.getWidth(), Window.getHeight());
             }
             
             case "WINDOW_RESOLUTION_WIDTH_CHANGED", "WINDOW_RESOLUTION_HEIGHT_CHANGED" -> {
