@@ -16,6 +16,11 @@ public class WindowObserver implements PropertyChangeListener {
     public void propertyChange(PropertyChangeEvent evt) {
         switch(evt.getPropertyName()) {
             case "WINDOW_FULLSCREEN_CHANGED" -> {
+                if(!((Boolean) evt.getNewValue())) {
+                    Window.setSize(Window.DEFAULT_WIDTH, Window.DEFAULT_HEIGHT);
+                    Window.center(Window.getMonitor());
+                }
+                
                 Window.setResolution(Window.getWidth(), Window.getHeight());
             }
             

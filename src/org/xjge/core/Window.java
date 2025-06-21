@@ -4,7 +4,6 @@ import java.beans.PropertyChangeListener;
 import java.io.InputStream;
 import java.nio.ByteBuffer;
 import java.nio.IntBuffer;
-import java.util.TreeMap;
 import static org.lwjgl.glfw.GLFW.*;
 import org.lwjgl.glfw.GLFWCursorPosCallback;
 import org.lwjgl.glfw.GLFWErrorCallback;
@@ -40,8 +39,8 @@ public final class Window {
     private static boolean resizable;
     private static boolean restrict4K = true;
     
-    static final int DEFAULT_WIDTH  = 1280;
-    static final int DEFAULT_HEIGHT = 720;
+    public static final int DEFAULT_WIDTH  = 1280;
+    public static final int DEFAULT_HEIGHT = 720;
     
     private static int minWidth  = 640;
     private static int minHeight = 480;
@@ -131,9 +130,11 @@ public final class Window {
     }
     
     /**
+     * Registers the windows callback functions. These fire anytime an event is
+     * captured from the OS.
      * 
-     * @param terminal
-     * @param debugInfo 
+     * @param terminal the command-line terminal used to make state changes during runtime
+     * @param debugInfo a series of collapsible menus containing debug information
      */
     static void registerCallbacks(Terminal terminal, DebugInfo2 debugInfo) {
         glfwErrorReference = GLFWErrorCallback.create((error, description) -> {
