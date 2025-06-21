@@ -6,6 +6,7 @@ import org.joml.Vector2i;
 import static org.lwjgl.opengl.GL30.*;
 import org.lwjgl.system.MemoryStack;
 import org.xjge.core.ErrorUtils;
+import org.xjge.core.Mouse;
 import org.xjge.core.UI;
 import org.xjge.graphics.Color;
 

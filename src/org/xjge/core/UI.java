@@ -13,7 +13,7 @@ import org.xjge.ui.Widget;
  * Created: May 9, 2025
  * 
  * @author J Hoffman
- * @since  4.0.0
+ * @since 4.0.0
  */
 public final class UI {
 

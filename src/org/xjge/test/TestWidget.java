@@ -47,7 +47,7 @@ public class TestWidget extends Widget {
         icon.rotation.x = angle;
         icon.scale.x = 2;
         
-        polygon.fill = false;
+        polygon.fill = true;
         polygon.position.set(200);
         polygon.rotation.z = angle;
         polygon.setColor(Color.ORANGE);

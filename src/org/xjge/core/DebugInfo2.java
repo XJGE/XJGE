@@ -20,49 +20,17 @@ final class DebugInfo2 {
     private final Rectangle contentArea = new Rectangle();
     private final StringBuilder output  = new StringBuilder();
     
-    private final Group[] groups;
+    private final DebugGroup[] groups;
     
-    private class Group {
+    DebugInfo2(Texture engineIcons) {
         
-        boolean expanded;
         
-        int contentAreaHeight;
-        int longestString;
-        
-        final String title;
-        final Rectangle expandButton = new Rectangle(0, 0, 0, 28);
-        
-        Group(String title) { this.title = title; }
-        
-        void renderContent(int index) {
-            switch(index) {
-                case 0 -> {
-                    
-                }
-                case 1 -> {
-                    
-                }
-                case 2 -> {
-                    
-                }
-                case 3 -> {
-                    
-                }
-                case 4 -> {
-                    
-                }
-            }
-        }
-        
-    }
-    
-    DebugInfo2() {
-        groups = new Group[] {
-            new Group("System Info"),
-            new Group("Performance"),
-            new Group("Settings"),
-            new Group("Hardware"),
-            new Group("Noclip")
+        groups = new DebugGroup[] {
+            new DGSystemInfo("System Info"),
+            new DGPerformance("Performance")
+            //new DebugGroup("Settings"),
+            //new DebugGroup("Hardware"),
+            //new DebugGroup("Noclip")
         };
         
         groups[0].expanded = true;
@@ -101,23 +69,25 @@ final class DebugInfo2 {
             contentArea.positionY = titleBar.positionY - groups[i].contentAreaHeight;
             contentArea.render(0.5f, Color.BLACK);
             
-            groups[i].renderContent(i);
+            groups[i].render();
             
-            groups[i].expandButton.width     = !groups[i].expanded ? 98 : 126;
-            groups[i].expandButton.positionX = titleBar.positionX + titleBar.width - groups[i].expandButton.width;
-            groups[i].expandButton.positionY = titleBar.positionY;
-            groups[i].expandButton.render(1f, Color.BLACK);
+            groups[i].button.width     = !groups[i].expanded ? 98 : 126;
+            groups[i].button.positionX = titleBar.positionX + titleBar.width - groups[i].button.width;
+            groups[i].button.positionY = titleBar.positionY;
+            groups[i].button.render(1f, Color.BLACK);
             
             placeholder.drawString(!groups[i].expanded ? "[expand]" : "[collapse]", 
-                                   groups[i].expandButton.positionX, 
-                                   groups[i].expandButton.positionY + 8, 
-                                   Color.CYAN, 1f);
+                                   groups[i].button.positionX, 
+                                   groups[i].button.positionY + 8, 
+                                   groups[i].buttonTextColor, 1f);
         }
     }
     
     void processMouseInput(Mouse mouse) {
-        for(Group group : groups) {
-            if(mouse.clickedOnce(group.expandButton, GLFW_MOUSE_BUTTON_LEFT)) {
+        for(DebugGroup group : groups) {
+            group.buttonTextColor = (mouse.hovered(group.button)) ? Color.WHITE : Color.CYAN;
+            
+            if(mouse.clickedOnce(group.button, GLFW_MOUSE_BUTTON_LEFT)) {
                 group.expanded = !group.expanded;
             }
         }

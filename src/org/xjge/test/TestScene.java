@@ -25,7 +25,7 @@ public class TestScene extends Scene {
         addEntity(entity);
         UI.addWidget(GLFW_JOYSTICK_1, "font_test", new TestWidget());
         
-        XJGE.setClearColor(Color.BLACK);
+        //XJGE.setClearColor(Color.BLACK);
     }
 
     @Override

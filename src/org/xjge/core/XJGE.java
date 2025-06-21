@@ -67,13 +67,6 @@ public final class XJGE {
     private static boolean noclipEnabled;
     private static boolean showLightSources;
     
-    private static Texture engineIcons;
-    private static Sound beep;
-    private static Noclip freeCam;
-    
-    private static TreeMap<String, TerminalCommand> engineCommands     = new TreeMap<>();
-    private static final TreeMap<String, TerminalCommand> userCommands = new TreeMap<>();
-    
     static GLProgram depthProgram;
     static GLProgram blurProgram;
     static Map<String, GLProgram> glPrograms = new HashMap<>();
@@ -83,17 +76,16 @@ public final class XJGE {
     
     private static boolean initialized;
     private static boolean started;
-    
-    private static int fps;
-    private static int tickCount    = 0;
-    final static int TICKS_PER_HOUR = 225000;
+    private static boolean ticked;
+    public static boolean enableBloom;
     
     private static float bloomThreshold = 1.0f;
     
     private static double deltaMetric = 0;
     
-    private static boolean ticked;
-    public static boolean enableBloom;
+    private static int fps;
+    private static int tickCount    = 0;
+    final static int TICKS_PER_HOUR = 225000;
     
     public static final Path PRESENT_WORKING_DIRECTORY = Path.of("").toAbsolutePath();
     
@@ -101,16 +93,22 @@ public final class XJGE {
     private static String assetsFilepath = "/org/xjge/assets/";
     private static String scenesFilepath;
     
+    private static Texture engineIcons;
+    private static Sound beep;
     private static Terminal terminal;
     private static DebugInfo2 debugInfo;
+    private static Noclip freeCam;
+    
+    private static TreeMap<String, TerminalCommand> engineCommands     = new TreeMap<>();
+    private static final TreeMap<String, TerminalCommand> userCommands = new TreeMap<>();
     
     private static Color clearColor = Color.create(119, 136, 255);
     private static Scene scene;
     
+    private static final Observable observable = new Observable(XJGE.class);
+    
     private static final Queue<Scene> sceneChangeRequests = new LinkedList<>();
     private static final Queue<Event> events = new PriorityQueue<>(Comparator.comparing(Event::getPriority));
-    
-    private static final Observable observable = new Observable(XJGE.class);
     
     /**
      * Default constructor defined here to keep it out of the public APIs reach.
@@ -269,7 +267,7 @@ public final class XJGE {
         glPrograms = Collections.unmodifiableMap(glPrograms);
         freeCam    = new Noclip();
         terminal   = new Terminal(engineCommands);
-        debugInfo  = new DebugInfo2();
+        debugInfo  = new DebugInfo2(engineIcons);
         
         Window.registerCallbacks(terminal, debugInfo);
         Window.show();
