@@ -3,8 +3,6 @@ package org.xjge.core;
 import org.xjge.ui.Rectangle;
 
 /**
- * Created: Apr 9, 2024
- * <br><br>
  * Represents the peripheral device of the same name.
  * 
  * @author J Hoffman

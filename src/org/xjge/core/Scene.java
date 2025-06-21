@@ -9,8 +9,6 @@ import java.util.UUID;
 import org.joml.Matrix4f;
 import org.joml.Vector3f;
 
-//Created: May 7, 2021
-
 /**
  * A 3D representation of the game world that contains entities, light sources, 
  * and camera objects.

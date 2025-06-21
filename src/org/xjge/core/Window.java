@@ -78,6 +78,45 @@ public final class Window {
     private Window() {}
     
     /**
+     * Internally creates a renderbuffer for offscreen or multisample rendering.
+     * Called automatically during window creation and resolution changes.
+     */
+    private static void createRenderbuffer() {
+        glBindFramebuffer(GL_FRAMEBUFFER, fboHandle);
+        int rboHandle = glGenRenderbuffers();
+        glBindRenderbuffer(GL_RENDERBUFFER, rboHandle);
+        
+        glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH_COMPONENT, resolution.width, resolution.height);
+        glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_RENDERBUFFER, rboHandle);
+        
+        ErrorUtils.checkGLError();
+        glBindFramebuffer(GL_FRAMEBUFFER, 0);
+    }
+    
+    /**
+     * Adapts the window to the current monitors video mode. Called automatically
+     * after applying major state changes.
+     */
+    static void reconfigure() {
+        if(fullscreen) {
+            width  = monitor.getWidth();
+            height = monitor.getHeight();
+            
+            observable.notifyObservers("WINDOW_WIDTH_CHANGED",  width);
+            observable.notifyObservers("WINDOW_HEIGHT_CHANGED", height);
+            
+            glfwSetWindowMonitor(handle, monitor.handle, positionX, positionY, 
+                                 monitor.getWidth(), monitor.getHeight(), monitor.getRefreshRate());
+        } else {
+            glfwSetWindowMonitor(handle, NULL, positionX, positionY, 
+                                 width, height, monitor.getRefreshRate());
+        }
+        
+        center(monitor);
+        glfwSwapInterval(true ? 1 : 0);
+    }
+    
+    /**
      * Initializes the applications window, framebuffer, and viewports.
      * 
      * @param debugModeEnabled if true, debug features will be available for use
@@ -331,29 +370,6 @@ public final class Window {
     }
     
     /**
-     * Adapts the window to the current monitors video mode. Called automatically
-     * after applying major state changes.
-     */
-    static void reconfigure() {
-        if(fullscreen) {
-            width  = monitor.getWidth();
-            height = monitor.getHeight();
-            
-            observable.notifyObservers("WINDOW_WIDTH_CHANGED",  width);
-            observable.notifyObservers("WINDOW_HEIGHT_CHANGED", height);
-            
-            glfwSetWindowMonitor(handle, monitor.handle, positionX, positionY, 
-                                 monitor.getWidth(), monitor.getHeight(), monitor.getRefreshRate());
-        } else {
-            glfwSetWindowMonitor(handle, NULL, positionX, positionY, 
-                                 width, height, monitor.getRefreshRate());
-        }
-        
-        center(monitor);
-        glfwSwapInterval(true ? 1 : 0);
-    }
-    
-    /**
      * Makes the window visible to the user.
      */
     static void show() {
@@ -371,6 +387,14 @@ public final class Window {
          * Game -> XJGE (maintains loop, scene, and config settings)
          * XJGE -> Window (maintains window, viewports, and glfw callbacks)
          */
+    }
+    
+    /**
+     * Called internally from the main loop to automatically update the 
+     * previous click value of the mouse.
+     */
+    static void updateMouseClickValue() {
+        mouse.previousClickValue = mouse.currentClickValue;
     }
     
     /**
@@ -393,14 +417,6 @@ public final class Window {
         glfwMouseButtonReference.free();
         glfwScrollReference.free();
         glfwKeyReference.free();
-    }
-    
-    /**
-     * Called internally from the main loop to automatically update the 
-     * previous click value of the mouse.
-     */
-    static void updateMouseClickValue() {
-        mouse.previousClickValue = mouse.currentClickValue;
     }
     
     /**
@@ -429,22 +445,6 @@ public final class Window {
      */
     static Viewport[] getViewports() {
         return viewports;
-    }
-    
-    /**
-     * Internally creates a renderbuffer for offscreen or multisample rendering.
-     * Called automatically during window creation and resolution changes.
-     */
-    private static void createRenderbuffer() {
-        glBindFramebuffer(GL_FRAMEBUFFER, fboHandle);
-        int rboHandle = glGenRenderbuffers();
-        glBindRenderbuffer(GL_RENDERBUFFER, rboHandle);
-        
-        glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH_COMPONENT, resolution.width, resolution.height);
-        glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_RENDERBUFFER, rboHandle);
-        
-        ErrorUtils.checkGLError();
-        glBindFramebuffer(GL_FRAMEBUFFER, 0);
     }
     
     /**
