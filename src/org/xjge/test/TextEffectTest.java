@@ -2,7 +2,6 @@ package org.xjge.test;
 
 import org.xjge.ui.Glyph;
 import org.xjge.ui.TextEffect;
-import org.xjge.graphics.Color;
 
 /**
  * Created: May 6, 2025

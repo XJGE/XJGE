@@ -205,7 +205,7 @@ public class GLProgram {
      * @param transpose if true, the matrix data provided in the value parameter 
      *                  will be transposed before it is read
      * @param value the new value of the uniform variable
-     */    
+     */
     public void setUniform(String name, boolean transpose, Matrix4fc value) {
         glUniformMatrix4fv(uniforms.get(name).location, transpose, value.get(uniforms.get(name).asFloatBuffer()));
     }

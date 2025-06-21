@@ -10,13 +10,11 @@ import org.xjge.core.UI;
 import org.xjge.graphics.Color;
 
 /**
- * Created: May 25, 2021
- * <br><br>
  * Data structure used by {@link RectangleBatch} objects to draw single color 
  * rectangles.
  * 
  * @author J Hoffman
- * @since  2.0.0
+ * @since 2.0.0
  */
 public class Rectangle {
 

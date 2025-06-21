@@ -6,7 +6,7 @@ import org.xjge.core.SplitScreenType;
 import org.xjge.graphics.GLProgram;
 
 /**
- * Created: May 12, 2021
+ * 
  * 
  * @author J Hoffman
  * @since  2.0.0

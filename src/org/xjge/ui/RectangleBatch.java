@@ -9,8 +9,6 @@ import org.xjge.graphics.Color;
 import org.xjge.graphics.Graphics;
 
 /**
- * Created: May 26, 2021
- * <br><br>
  * Used to batch render rectangles. A batch should be done inside of a widgets 
  * render method like so:
  * <blockquote><pre>
@@ -23,7 +21,7 @@ import org.xjge.graphics.Graphics;
  * </pre></blockquote>
  * 
  * @author J Hoffman
- * @since  2.0.0
+ * @since 2.0.0
  */
 public final class RectangleBatch {
     
