@@ -33,6 +33,8 @@ import static org.xjge.ui.Font.placeholder;
  */
 final class Terminal implements PropertyChangeListener {
 
+    boolean show;
+    
     private int xIndex;
     private int yIndex;
     private static int shiftElements = -1;

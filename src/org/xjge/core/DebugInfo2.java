@@ -16,7 +16,6 @@ final class DebugInfo2 {
 
     boolean show;
     
-    private final Texture engineIcons;
     private final Rectangle titleBar    = new Rectangle(5, 0, 0, 28);
     private final Rectangle contentArea = new Rectangle();
     private final StringBuilder output  = new StringBuilder();
@@ -57,9 +56,7 @@ final class DebugInfo2 {
         
     }
     
-    DebugInfo2(Texture engineIcons) {
-        this.engineIcons = engineIcons;
-        
+    DebugInfo2() {
         groups = new Group[] {
             new Group("System Info"),
             new Group("Performance"),
@@ -109,7 +106,7 @@ final class DebugInfo2 {
             groups[i].expandButton.width     = !groups[i].expanded ? 98 : 126;
             groups[i].expandButton.positionX = titleBar.positionX + titleBar.width - groups[i].expandButton.width;
             groups[i].expandButton.positionY = titleBar.positionY;
-            groups[i].expandButton.render(1f, Color.RED);
+            groups[i].expandButton.render(1f, Color.BLACK);
             
             placeholder.drawString(!groups[i].expanded ? "[expand]" : "[collapse]", 
                                    groups[i].expandButton.positionX, 

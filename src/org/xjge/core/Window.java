@@ -4,6 +4,7 @@ import java.beans.PropertyChangeListener;
 import java.io.InputStream;
 import java.nio.ByteBuffer;
 import java.nio.IntBuffer;
+import java.util.TreeMap;
 import static org.lwjgl.glfw.GLFW.*;
 import org.lwjgl.glfw.GLFWCursorPosCallback;
 import org.lwjgl.glfw.GLFWErrorCallback;
@@ -34,6 +35,7 @@ import static org.xjge.core.SplitScreenType.*;
  */
 public final class Window {
     
+    private static boolean debugModeEnabled;
     private static boolean fullscreen;
     private static boolean resizable;
     private static boolean restrict4K = true;
@@ -77,12 +79,13 @@ public final class Window {
     private Window() {}
     
     /**
-     * Initializes the applications window, framebuffer, viewports, and 
-     * associated callbacks.
+     * Initializes the applications window, framebuffer, and viewports.
      * 
      * @param debugModeEnabled if true, debug features will be available for use
      */
     static void create(boolean debugModeEnabled) {
+        Window.debugModeEnabled = debugModeEnabled;
+        
         glfwWindowHint(GLFW_VISIBLE, GLFW_FALSE);
         glfwWindowHint(GLFW_FOCUS_ON_SHOW, GLFW_TRUE);
         
@@ -125,7 +128,14 @@ public final class Window {
         createRenderbuffer();
         ErrorUtils.checkFBStatus(GL_FRAMEBUFFER);
         setSplitScreenType(splitType);
-        
+    }
+    
+    /**
+     * 
+     * @param terminal
+     * @param debugInfo 
+     */
+    static void registerCallbacks(Terminal terminal, DebugInfo2 debugInfo) {
         glfwErrorReference = GLFWErrorCallback.create((error, description) -> {
             Logger.logWarning("GLFW Error: (" + error + ") " + GLFWErrorCallback.getDescription(description), null);
         });
@@ -175,17 +185,19 @@ public final class Window {
         });
         
         glfwCursorPositionReference = GLFWCursorPosCallback.create((window, cursorPositionX, cursorPositionY) -> {
-            float scaleX = (float) resolution.width / width;
-            float scaleY = (float) resolution.height / height;
-            
-            mouse.cursorPositionX = cursorPositionX * scaleX;
-            mouse.cursorPositionY = resolution.height - Math.abs((cursorPositionY * scaleY));
-            
-            XJGE.processMouseInput(mouse);
-            UI.processMouseInput(mouse);
-            
-            if(debugModeEnabled) {
-                //TODO: add new controls for noclip camera
+            if(debugInfo.show) {
+                mouse.cursorPositionX = cursorPositionX;
+                mouse.cursorPositionY = height - cursorPositionY;
+                
+                debugInfo.processMouseInput(mouse);
+            } else {
+                float scaleX = (float) resolution.width / width;
+                float scaleY = (float) resolution.height / height;
+
+                mouse.cursorPositionX = cursorPositionX * scaleX;
+                mouse.cursorPositionY = resolution.height - Math.abs((cursorPositionY * scaleY));
+
+                UI.processMouseInput(mouse);
             }
             
             /*
@@ -223,24 +235,29 @@ public final class Window {
                 case GLFW_MOUSE_BUTTON_RIGHT  -> mouse.rightHeld  = (action == GLFW_PRESS);
             }
             
-            XJGE.processMouseInput(mouse);
-            UI.processMouseInput(mouse);
+            if(debugInfo.show) debugInfo.processMouseInput(mouse);
+            else               UI.processMouseInput(mouse);
         });
         
         glfwScrollReference = GLFWScrollCallback.create((window, scrollSpeedX, scrollSpeedY) -> {
             mouse.scrollSpeedX = scrollSpeedX;
             mouse.scrollSpeedY = scrollSpeedY;
             
-            XJGE.processMouseInput(mouse);
-            UI.processMouseInput(mouse);
+            if(debugInfo.show) debugInfo.processMouseInput(mouse);
+            else               UI.processMouseInput(mouse);
             
             mouse.scrollSpeedX = 0;
             mouse.scrollSpeedY = 0;
         });
         
         glfwKeyReference = GLFWKeyCallback.create((window, key, scancode, action, mods) -> {
-            XJGE.processKeyboardInput(key, action, mods);
-            UI.processKeyboardInput(key, action, mods);
+            if(debugModeEnabled && key == GLFW_KEY_F1 && action == GLFW_PRESS) {
+                if(mods == GLFW_MOD_SHIFT) terminal.show = !terminal.show;
+                else debugInfo.show = !debugInfo.show;
+            }
+            
+            if(terminal.show) terminal.processKeyInput(key, action, mods);
+            else UI.processKeyboardInput(key, action, mods);
             
             mouse.mods = mods;
             

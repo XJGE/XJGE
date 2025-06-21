@@ -1,11 +1,27 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project-private xmlns="http://www.netbeans.org/ns/project-private/1">
-    <editor-bookmarks xmlns="http://www.netbeans.org/ns/editor-bookmarks/2" lastBookmarkId="17">
+    <editor-bookmarks xmlns="http://www.netbeans.org/ns/editor-bookmarks/2" lastBookmarkId="20">
+        <file>
+            <url>src/org/xjge/core/Window.java</url>
+            <bookmark id="20">
+                <name/>
+                <line>254</line>
+                <key/>
+            </bookmark>
+        </file>
         <file>
             <url>src/org/xjge/ui/UI.java</url>
             <bookmark id="9">
                 <name/>
                 <line>52</line>
+                <key/>
+            </bookmark>
+        </file>
+        <file>
+            <url>src/org/xjge/core/XJGE.java</url>
+            <bookmark id="19">
+                <name/>
+                <line>392</line>
                 <key/>
             </bookmark>
         </file>
@@ -21,7 +37,7 @@
             <url>src/org/xjge/test/TestScene.java</url>
             <bookmark id="13">
                 <name/>
-                <line>35</line>
+                <line>37</line>
                 <key/>
             </bookmark>
         </file>
@@ -29,9 +45,13 @@
     <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
         <group>
             <file>file:/C:/Users/jhoff/Projects/XJGE/src/org/xjge/ui/Font.java</file>
-            <file>file:/C:/Users/jhoff/Projects/XJGE/src/org/xjge/ui/Polygon.java</file>
-            <file>file:/C:/Users/jhoff/Projects/XJGE/src/org/xjge/ui/Glyph.java</file>
-            <file>file:/C:/Users/jhoff/Projects/XJGE/src/org/xjge/ui/Icon.java</file>
+            <file>file:/C:/Users/jhoff/Projects/XJGE/src/org/xjge/core/Mouse.java</file>
+            <file>file:/C:/Users/jhoff/Projects/XJGE/src/org/xjge/ui/Widget.java</file>
+            <file>file:/C:/Users/jhoff/Projects/XJGE/src/org/xjge/ui/package-info.java</file>
+            <file>file:/C:/Users/jhoff/Projects/XJGE/src/org/xjge/core/DebugInfo2.java</file>
+            <file>file:/C:/Users/jhoff/Projects/XJGE/src/org/xjge/test/TestWidget.java</file>
+            <file>file:/C:/Users/jhoff/Projects/XJGE/src/org/xjge/core/XJGE.java</file>
+            <file>file:/C:/Users/jhoff/Projects/XJGE/src/org/xjge/core/Window.java</file>
         </group>
     </open-files>
 </project-private>

@@ -65,14 +65,11 @@ public final class XJGE {
     static float noclipSpeedFactor = 1.0f;
     
     private static boolean noclipEnabled;
-    private static boolean showTerminal;
     private static boolean showLightSources;
     
     private static Texture engineIcons;
     private static Sound beep;
     private static Noclip freeCam;
-    private static Terminal terminal;
-    private static DebugInfo2 debugInfo;
     
     private static TreeMap<String, TerminalCommand> engineCommands     = new TreeMap<>();
     private static final TreeMap<String, TerminalCommand> userCommands = new TreeMap<>();
@@ -103,6 +100,9 @@ public final class XJGE {
     public static final String VERSION   = "4.0.0";
     private static String assetsFilepath = "/org/xjge/assets/";
     private static String scenesFilepath;
+    
+    private static Terminal terminal;
+    private static DebugInfo2 debugInfo;
     
     private static Color clearColor = Color.create(119, 136, 255);
     private static Scene scene;
@@ -269,8 +269,9 @@ public final class XJGE {
         glPrograms = Collections.unmodifiableMap(glPrograms);
         freeCam    = new Noclip();
         terminal   = new Terminal(engineCommands);
-        debugInfo  = new DebugInfo2(engineIcons);
+        debugInfo  = new DebugInfo2();
         
+        Window.registerCallbacks(terminal, debugInfo);
         Window.show();
         
         int cycles = 0;
@@ -291,7 +292,7 @@ public final class XJGE {
             
             while(delta >= TARGET_DELTA) {
                 Input.update(TARGET_DELTA, deltaMetric);
-                if(showTerminal) terminal.update();
+                if(terminal.show) terminal.update();
                 
                 deltaMetric = delta;
                 
@@ -392,11 +393,11 @@ public final class XJGE {
                 }
             }
             
-            if(showTerminal || debugInfo.show) {
+            if(terminal.show || debugInfo.show) {
                 glViewport(0, 0, Window.getWidth(), Window.getHeight());
                 UI.updateProjectionMatrix(Window.getWidth(), Window.getHeight(), 0, Integer.MAX_VALUE);
-                
-                if(showTerminal) terminal.render();
+
+                if(terminal.show) terminal.render();
                 if(debugInfo.show) debugInfo.render();
             }
             
@@ -416,23 +417,6 @@ public final class XJGE {
         Window.freeCallbacks();
         GL.destroy();
         glfwTerminate();
-    }
-    
-    static void processKeyboardInput(int key, int action, int mods) {
-        if(key == GLFW_KEY_F1 && action == GLFW_PRESS) {
-            if(mods == GLFW_MOD_SHIFT) {
-                
-            } else {
-                debugInfo.show = !debugInfo.show;
-            }
-        }
-        
-        if(key == GLFW_KEY_F1 && action == GLFW_PRESS && mods == GLFW_MOD_SHIFT) showTerminal = !showTerminal;
-        if(showTerminal) terminal.processKeyInput(key, action, mods);
-    }
-    
-    static void processMouseInput(Mouse mouse) {
-        if(debugInfo.show) debugInfo.processMouseInput(mouse);
     }
     
     /**
