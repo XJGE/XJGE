@@ -36,9 +36,11 @@ public final class Glyph {
      * Reverts the position and character fields to their initial values.
      */
     void reset() {
+        opacity   = 1f;
         character = 32;
         positionX = 0;
         positionY = 0;
+        color     = Color.WHITE;
     }
     
     /**

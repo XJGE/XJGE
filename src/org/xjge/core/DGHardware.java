@@ -5,11 +5,11 @@ import org.xjge.ui.Rectangle;
 /**
  * 
  * @author J Hoffman
- * @since 4.0.0
+ * @since 
  */
-class DGPerformance extends DebugGroup {
+class DGHardware extends DebugGroup {
 
-    DGPerformance(String title) {
+    public DGHardware(String title) {
         super(title);
     }
 

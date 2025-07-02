@@ -483,7 +483,7 @@ public final class Font {
      * @param effect a user-defined text effect object that's used to manipulate 
      *               glyph data with a greater degree of control
      */
-    private void drawString(String text, int positionX, int positionY, Color color, float opacity, TextEffect effect) {
+    private void drawString(CharSequence text, int positionX, int positionY, Color color, float opacity, TextEffect effect) {
         UIShader.getInstance().use();
         
         glEnable(GL_BLEND);
@@ -518,8 +518,6 @@ public final class Font {
                     } else {
                         effect.apply(glyph, i);
                     }
-
-                    if(effect != null) effect.apply(glyph, i);
 
                     advance += getGlyphAdvance(glyph.character);
                 } else {
@@ -556,7 +554,7 @@ public final class Font {
      * @param opacity a number between 0 and 1 indicating the opacity (or 
      *                transparency) of the text
      */
-    public void drawString(String text, int positionX, int positionY, Color color, float opacity) {
+    public void drawString(CharSequence text, int positionX, int positionY, Color color, float opacity) {
         drawString(text, positionX, positionY, color, opacity, null);
     }
     
@@ -570,7 +568,7 @@ public final class Font {
      * @param effect a user-defined text effect object that's used to manipulate 
      *               glyph data with a greater degree of control
      */
-    public void drawString(String text, int positionX, int positionY, TextEffect effect) {
+    public void drawString(CharSequence text, int positionX, int positionY, TextEffect effect) {
         drawString(text, positionX, positionY, Color.WHITE, 1f, effect);
     }
     

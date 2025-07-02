@@ -12,6 +12,7 @@ abstract class DebugGroup {
     
     boolean expanded;
     
+    int contentAreaWidth;
     int contentAreaHeight;
     
     final String title;
@@ -23,6 +24,6 @@ abstract class DebugGroup {
         this.title = title;
     }
     
-    abstract void render();
+    abstract void render(StringBuilder output, Rectangle contentArea);
 
 }
