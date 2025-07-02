@@ -186,6 +186,9 @@ public final class Font {
                 loadVectorFont(file, info);
             }
             
+            //Add exception for \n newline character
+            glyphMetrics.put('\n', glyphMetrics.get(' '));
+            
             //Initialize various OpenGL objects
             info[6] = glGenVertexArrays();
             for(int i = 7; i < 12; i++) info[i] = glGenBuffers();
@@ -507,22 +510,23 @@ public final class Font {
             glyph.reset();
 
             if(i < text.length()) {
+                glyph.character = text.charAt(i);
+                
                 if(text.charAt(i) != '\n') {
-                    glyph.character = text.charAt(i);
                     glyph.positionX = (positionX + advance + getGlyphBearingX(glyph.character)) + glyph.positionOffsetX;
                     glyph.positionY = (positionY + descent + getGlyphBearingY(glyph.character)) + glyph.positionOffsetY;
-
-                    if(effect == null) {
-                        glyph.opacity = opacity;
-                        glyph.color   = color;
-                    } else {
-                        effect.apply(glyph, i);
-                    }
 
                     advance += getGlyphAdvance(glyph.character);
                 } else {
                     advance = 0;
                     descent -= size;
+                }
+                
+                if(effect == null) {
+                    glyph.opacity = opacity;
+                    glyph.color   = color;
+                } else {
+                    effect.apply(glyph, i);
                 }
             }
         }
@@ -648,9 +652,9 @@ public final class Font {
      * @param text the string of text to evaluate
      * @return the length of the text (in pixels)
      */
-    public int lengthInPixels(String text) {
+    public int lengthInPixels(CharSequence text) {
         int length = 0;
-        for(char character : text.toCharArray()) length += getGlyphAdvance(character);
+        for(int i = 0; i < text.length(); i++) length += getGlyphAdvance(text.charAt(i));
         return length;
     }
     

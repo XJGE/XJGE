@@ -58,7 +58,7 @@ final class DebugInfo2 {
             contentArea.positionY = titleBar.positionY - contentAreaHeight;
             contentArea.render(0.5f, Color.BLACK);
             
-            groups[i].render(output, contentArea);
+            if(groups[i].expanded) groups[i].render(output, contentArea);
             
             groups[i].button.width     = !groups[i].expanded ? 98 : 126;
             groups[i].button.positionX = titleBar.positionX + titleBar.width - groups[i].button.width;
