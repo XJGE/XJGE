@@ -1,10 +1,7 @@
 package org.xjge.core;
 
 import static org.lwjgl.glfw.GLFW.GLFW_MOUSE_BUTTON_LEFT;
-import org.xjge.graphics.Color;
 import org.xjge.graphics.Texture;
-import static org.xjge.ui.Font.placeholder;
-import org.xjge.ui.Rectangle;
 
 /**
  * Created: Jun 10, 2021
@@ -21,10 +18,6 @@ final class DebugInfo2 {
     private int cursorPositionX;
     private int cursorPositionY;
     
-    private final Rectangle titleBar    = new Rectangle(5, 0, 0, 28);
-    private final Rectangle contentArea = new Rectangle();
-    private final StringBuilder output  = new StringBuilder();
-    
     private final DebugGroup[] groups;
     
     DebugInfo2(Texture engineIcons) {
@@ -35,11 +28,20 @@ final class DebugInfo2 {
             //new DGHardware("Hardware")
             //new DebugGroup("Noclip")
         };
-        
-        groups[0].expanded = true;
     }
     
-    void render() {        
+    void update() {
+        contentOffset = 0;
+        
+        for(int i = 0; i < groups.length; i++) {
+            contentOffset += groups[i].update(i, contentOffset);
+        }
+    }
+    
+    void render() {
+        for(DebugGroup group : groups) group.render();
+        
+        /*
         contentOffset = 0;
         
         for(int i = 0; i < groups.length; i++) {
@@ -58,8 +60,6 @@ final class DebugInfo2 {
             contentArea.positionY = titleBar.positionY - contentAreaHeight;
             contentArea.render(0.5f, Color.BLACK);
             
-            if(groups[i].expanded) groups[i].render(output, contentArea);
-            
             groups[i].button.width     = !groups[i].expanded ? 98 : 126;
             groups[i].button.positionX = titleBar.positionX + titleBar.width - groups[i].button.width;
             groups[i].button.positionY = titleBar.positionY;
@@ -73,7 +73,10 @@ final class DebugInfo2 {
                                    groups[i].button.positionX, 
                                    groups[i].button.positionY + 8, 
                                    groups[i].buttonTextColor, 1f);
+            
+            if(groups[i].expanded) groups[i].render(output, contentArea);
         }
+        */
     }
     
     void processMouseInput(Mouse mouse) {
@@ -81,7 +84,7 @@ final class DebugInfo2 {
         cursorPositionY = (int) mouse.cursorPositionY;
         
         for(DebugGroup group : groups) {
-            if(mouse.clickedOnce(group.button, GLFW_MOUSE_BUTTON_LEFT)) group.expanded = !group.expanded;
+            if(mouse.clickedOnce(group.button, GLFW_MOUSE_BUTTON_LEFT)) group.toggleExpanded();
         }
     }
     

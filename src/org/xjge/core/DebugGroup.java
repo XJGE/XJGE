@@ -10,13 +10,13 @@ import org.xjge.ui.Rectangle;
  */
 abstract class DebugGroup {
     
-    boolean expanded;
-    
-    int contentAreaWidth;
-    int contentAreaHeight;
+    private boolean expanded;
     
     final String title;
     final Rectangle button = new Rectangle(0, 0, 0, 28);
+    protected final Rectangle titleBar    = new Rectangle(5, 0, 0, 28);
+    protected final Rectangle contentArea = new Rectangle();
+    protected final StringBuilder output  = new StringBuilder();
     
     Color buttonTextColor = Color.CYAN;
     
@@ -24,6 +24,16 @@ abstract class DebugGroup {
         this.title = title;
     }
     
-    abstract void render(StringBuilder output, Rectangle contentArea);
+    abstract void update();
+    
+    abstract void render();
 
+    void toggleExpanded() {
+        expanded = !expanded;
+    }
+    
+    int getContentOffset(int index) {
+        
+    }
+    
 }

@@ -1,7 +1,5 @@
 package org.xjge.core;
 
-import org.xjge.ui.Rectangle;
-
 /**
  * 
  * @author J Hoffman
@@ -12,9 +10,14 @@ class DGPerformance extends DebugGroup {
     DGPerformance(String title) {
         super(title);
     }
+    
+    @Override
+    int update(int index, int contentOffset) {
+        return 0;
+    }
 
     @Override
-    void render(StringBuilder output, Rectangle contentArea) {
+    void render() {
     }
 
 }

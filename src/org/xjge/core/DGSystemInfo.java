@@ -1,14 +1,8 @@
 package org.xjge.core;
 
-import static org.lwjgl.glfw.GLFW.glfwGetVersionString;
-import static org.lwjgl.openal.AL10.AL_VERSION;
-import static org.lwjgl.openal.AL10.alGetString;
-import static org.lwjgl.opengl.GL11.GL_VERSION;
-import static org.lwjgl.opengl.GL11.glGetString;
 import org.xjge.graphics.Color;
 import static org.xjge.ui.Font.placeholder;
 import org.xjge.ui.Glyph;
-import org.xjge.ui.Rectangle;
 import org.xjge.ui.TextEffect;
 
 /**
@@ -41,13 +35,16 @@ class DGSystemInfo extends DebugGroup {
     
     DGSystemInfo(String title) {
         super(title);
-        
-        contentAreaWidth = 400;
-        contentAreaHeight = 168;
+    }
+    
+    @Override
+    int update(int index, int contentOffset) {
+        return 0;
     }
 
     @Override
-    void render(StringBuilder output, Rectangle contentArea) {
+    void render() {
+        /*
         output.setLength(0);
         previousLength = 0;
         output.append("OS NAME: ").append(System.getProperty("os.name")).append("\n");
@@ -67,12 +64,13 @@ class DGSystemInfo extends DebugGroup {
                                contentArea.positionX + 10, 
                                contentArea.positionY + contentArea.height - placeholder.size, 
                                highlight);
+        */
     }
     
     private void updateLength(StringBuilder output) {
         if(output.length() - previousLength > longestString) {
             longestString = output.length() - previousLength;
-            contentAreaWidth = placeholder.lengthInPixels(output.subSequence(previousLength, output.length())) + 10;
+            //contentAreaWidth = placeholder.lengthInPixels(output.subSequence(previousLength, output.length())) + 10;
         }
         
         previousLength = output.length();
