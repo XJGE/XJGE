@@ -1,5 +1,7 @@
 package org.xjge.core;
 
+import java.text.DecimalFormat;
+
 /**
  * 
  * @author J Hoffman
@@ -7,17 +9,36 @@ package org.xjge.core;
  */
 class DGPerformance extends DebugGroup {
 
+    private boolean ticked;
+    
+    private long memoryFree;
+    private long memoryUsed;
+    
+    private final DecimalFormat deltaFormat = new DecimalFormat("0");
+    
     DGPerformance(String title) {
         super(title);
+        for(int i = 0; i < 4; i++) output.add(new StringBuilder());
     }
     
     @Override
-    int update(int index, int contentOffset) {
-        return 0;
+    protected void update(double deltaMetric, int fps, int entityCount) {
+        memoryFree = Runtime.getRuntime().freeMemory() / (1024 * 1024);
+        memoryUsed = (Runtime.getRuntime().totalMemory() - Runtime.getRuntime().freeMemory()) / (1024 * 1024);
+        
+        for(int i = 0; i < output.size(); i++) {
+            output.get(i).setLength(0);
+            
+            switch(i) {
+                case 0 -> output.get(i).append("FPS:          ").append(fps);
+                case 1 -> output.get(i).append("DELTA TIME:   ").append(deltaFormat.format(deltaMetric * 1000)).append(" ms");
+                case 2 -> output.get(i).append("MEMORY:       ").append(memoryUsed).append(" MB (used) / ").append(memoryFree).append(" MB (free)");
+                case 3 -> output.get(i).append("ENTITY COUNT: ").append(entityCount);
+            }
+        }
     }
 
     @Override
-    void render() {
-    }
+    protected void render() {}
 
 }

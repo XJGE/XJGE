@@ -12,12 +12,11 @@ class DGHardware extends DebugGroup {
     }
     
     @Override
-    int update(int index, int contentOffset) {
-        return 0;
+    protected void update(double deltaMetric, int fps, int entityCount) {
     }
 
     @Override
-    void render() {
+    protected void render() {
     }
 
 }

@@ -84,6 +84,7 @@ public final class XJGE {
     private static double deltaMetric = 0;
     
     private static int fps;
+    private static int entityCount;
     private static int tickCount    = 0;
     final static int TICKS_PER_HOUR = 225000;
     
@@ -291,9 +292,12 @@ public final class XJGE {
             while(delta >= TARGET_DELTA) {
                 Input.update(TARGET_DELTA, deltaMetric);
                 if(terminal.show) terminal.update();
-                if(debugInfo.show) debugInfo.update();
+                if(debugInfo.show) debugInfo.update(deltaMetric, fps, entityCount);
                 
-                deltaMetric = delta;
+                if(tick(20)) {
+                    deltaMetric = delta;
+                    if(scene != null) entityCount = scene.entities.size();
+                }
                 
                 delta     -= TARGET_DELTA;
                 ticked    = true;

@@ -4,7 +4,6 @@ import static org.lwjgl.glfw.GLFW.GLFW_MOUSE_BUTTON_LEFT;
 import org.xjge.graphics.Texture;
 
 /**
- * Created: Jun 10, 2021
  * 
  * @author J Hoffman
  * @since  2.0.0
@@ -14,7 +13,6 @@ final class DebugInfo2 {
     boolean show;
     
     private int contentOffset;
-    private int contentAreaHeight;
     private int cursorPositionX;
     private int cursorPositionY;
     
@@ -24,59 +22,24 @@ final class DebugInfo2 {
         groups = new DebugGroup[] {
             new DGSystemInfo("System Info"),
             new DGPerformance("Performance"),
-            //new DebugGroup("Settings"),
-            //new DGHardware("Hardware")
+            new DGHardware("Hardware")
             //new DebugGroup("Noclip")
         };
+        
+        groups[0].expanded = true;
+        groups[1].expanded = true;
     }
     
-    void update() {
+    void update(double deltaMetric, int fps, int entityCount) {
         contentOffset = 0;
         
         for(int i = 0; i < groups.length; i++) {
-            contentOffset += groups[i].update(i, contentOffset);
+            contentOffset += groups[i].update(deltaMetric, i, contentOffset, fps, entityCount);
         }
     }
     
     void render() {
-        for(DebugGroup group : groups) group.render();
-        
-        /*
-        contentOffset = 0;
-        
-        for(int i = 0; i < groups.length; i++) {
-            contentAreaHeight  = (groups[i].expanded) ? groups[i].contentAreaHeight : 0;
-            titleBar.width     = (groups[i].expanded) ? groups[i].contentAreaWidth : 286;
-            titleBar.positionY = Window.getHeight() - ((33 * (i + 1)) + contentOffset);
-            
-            contentOffset += contentAreaHeight;
-            
-            titleBar.render(1f, Color.BLACK);
-            placeholder.drawString(groups[i].title, titleBar.positionX + 5, titleBar.positionY + 7, Color.SILVER, 1f);
-            
-            contentArea.width     = titleBar.width;
-            contentArea.height    = contentAreaHeight;
-            contentArea.positionX = titleBar.positionX;
-            contentArea.positionY = titleBar.positionY - contentAreaHeight;
-            contentArea.render(0.5f, Color.BLACK);
-            
-            groups[i].button.width     = !groups[i].expanded ? 98 : 126;
-            groups[i].button.positionX = titleBar.positionX + titleBar.width - groups[i].button.width;
-            groups[i].button.positionY = titleBar.positionY;
-            groups[i].button.render(1f, Color.BLACK);
-            
-            groups[i].buttonTextColor = (groups[i].button.contains(cursorPositionX, cursorPositionY))
-                                      ? Color.WHITE
-                                      : Color.CYAN;
-            
-            placeholder.drawString(!groups[i].expanded ? "[expand]" : "[collapse]", 
-                                   groups[i].button.positionX, 
-                                   groups[i].button.positionY + 8, 
-                                   groups[i].buttonTextColor, 1f);
-            
-            if(groups[i].expanded) groups[i].render(output, contentArea);
-        }
-        */
+        for(DebugGroup group : groups) group.render(cursorPositionX, cursorPositionY);
     }
     
     void processMouseInput(Mouse mouse) {
