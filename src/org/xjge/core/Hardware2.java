@@ -17,43 +17,45 @@ import static org.lwjgl.glfw.GLFW.glfwGetMonitors;
  */
 public final class Hardware2 {
     
-    private static CharSequence cpuInfo;
+    private static String cpuModel;
     
     private static final NavigableMap<Integer, Monitor> monitors = new TreeMap<>();
     
     static {
+        ProcessBuilder builder = new ProcessBuilder(
+            "powershell.exe",
+            "-NoProfile",
+            "-Command",
+            "(Get-CimInstance Win32_Processor).Name"
+        );
+        
+        builder.redirectErrorStream(true);
+        
         try {
-            String[] command = {
-                "powershell.exe",
-                "-NoProfile",
-                "-Command",
-                "Get-CimInstance Win32_Processor | Select-Object -ExpandProperty Name"
-            };
-
-            Process process = Runtime.getRuntime().exec(command);
-            BufferedReader reader = new BufferedReader(new InputStreamReader(process.getInputStream()));
-
-            CharSequence line;
-            while((line = reader.readLine()) != null) {
-                if(!line.isEmpty()) {
-                    cpuInfo = line;
-                }
-            }
-
-            process.waitFor();
+            Process process = builder.start();
             
-        } catch(IOException | InterruptedException exception) {
-            Logger.logWarning("Failed to parse CPU Model", exception);
-            cpuInfo = "Unknown Model";
+            try(BufferedReader reader = new BufferedReader(new InputStreamReader(process.getInputStream()))) {
+                String line;
+                
+                while((line = reader.readLine()) != null) {
+                    line = line.trim();
+                    if(!line.isEmpty()) cpuModel = line.trim();
+                }
+            } finally {
+                process.destroy();
+            }
+        } catch(IOException exception) {
+            Logger.logWarning("Failed to parse CPU model", exception);
+            cpuModel = "Unknown";
         }
+    }
+    
+    static String getCPUModel() {
+        return cpuModel;
     }
     
     static int getNumMonitors() {
         return monitors.size();
-    }
-    
-    static CharSequence getCPUInfo() {
-        return cpuInfo;
     }
     
     static final Monitor getMonitor(long handle) {

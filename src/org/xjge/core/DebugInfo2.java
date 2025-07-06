@@ -22,7 +22,7 @@ final class DebugInfo2 {
         groups = new DebugGroup[] {
             new DGPerformance("Performance"),
             new DGSystemInfo("System Info"),
-            new DGHardware("Hardware"),
+            new DGHardware("Hardware", engineIcons),
             new DGNoclip("Noclip")
         };
         
