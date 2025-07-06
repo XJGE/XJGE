@@ -20,14 +20,13 @@ final class DebugInfo2 {
     
     DebugInfo2(Texture engineIcons) {
         groups = new DebugGroup[] {
-            new DGSystemInfo("System Info"),
             new DGPerformance("Performance"),
-            new DGHardware("Hardware")
-            //new DebugGroup("Noclip")
+            new DGSystemInfo("System Info"),
+            new DGHardware("Hardware"),
+            new DGNoclip("Noclip")
         };
         
         groups[0].expanded = true;
-        groups[1].expanded = true;
     }
     
     void update(double deltaMetric, int fps, int entityCount) {

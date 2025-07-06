@@ -30,11 +30,9 @@
         <group>
             <file>file:/C:/Users/jhoff/Projects/XJGE/src/org/xjge/core/DebugGroup.java</file>
             <file>file:/C:/Users/jhoff/Projects/XJGE/src/org/xjge/core/DGHardware.java</file>
-            <file>file:/C:/Users/jhoff/Projects/XJGE/src/org/xjge/core/DGPerformance.java</file>
+            <file>file:/C:/Users/jhoff/Projects/XJGE/src/org/xjge/core/DGNoclip.java</file>
             <file>file:/C:/Users/jhoff/Projects/XJGE/src/org/xjge/core/DebugInfo2.java</file>
-            <file>file:/C:/Users/jhoff/Projects/XJGE/src/org/xjge/core/DGSystemInfo.java</file>
             <file>file:/C:/Users/jhoff/Projects/XJGE/src/org/xjge/core/XJGE.java</file>
-            <file>file:/C:/Users/jhoff/Projects/XJGE/src/org/xjge/core/DebugInfo.java</file>
         </group>
     </open-files>
 </project-private>

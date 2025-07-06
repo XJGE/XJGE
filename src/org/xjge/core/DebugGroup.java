@@ -17,7 +17,6 @@ abstract class DebugGroup {
     
     boolean expanded;
     
-    private int previousStringLength;
     private int longestStringLength;
     private int contentAreaWidth;
     private int contentAreaHeight;
@@ -58,16 +57,13 @@ abstract class DebugGroup {
     protected abstract void render();
     
     int update(double deltaMetric, int index, int contentOffset, int fps, int entityCount) {
-        previousStringLength = 0;
         longestStringLength  = 0;
         
         for(CharSequence line : output) {
-            if(line.length() - previousStringLength > longestStringLength) {
-                longestStringLength = line.length() - previousStringLength;
+            if(line.length() > longestStringLength) {
+                longestStringLength = line.length();
                 contentAreaWidth    = placeholder.lengthInPixels(line) + 20;
             }
-            
-            previousStringLength = line.length();
         }
         
         if(expanded && contentAreaWidth < 328) contentAreaWidth = 328;

@@ -1,5 +1,8 @@
 package org.xjge.core;
 
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
 import java.util.Collections;
 import java.util.NavigableMap;
 import java.util.TreeMap;
@@ -14,10 +17,43 @@ import static org.lwjgl.glfw.GLFW.glfwGetMonitors;
  */
 public final class Hardware2 {
     
+    private static CharSequence cpuInfo;
+    
     private static final NavigableMap<Integer, Monitor> monitors = new TreeMap<>();
+    
+    static {
+        try {
+            String[] command = {
+                "powershell.exe",
+                "-NoProfile",
+                "-Command",
+                "Get-CimInstance Win32_Processor | Select-Object -ExpandProperty Name"
+            };
+
+            Process process = Runtime.getRuntime().exec(command);
+            BufferedReader reader = new BufferedReader(new InputStreamReader(process.getInputStream()));
+
+            CharSequence line;
+            while((line = reader.readLine()) != null) {
+                if(!line.isEmpty()) {
+                    cpuInfo = line;
+                }
+            }
+
+            process.waitFor();
+            
+        } catch(IOException | InterruptedException exception) {
+            Logger.logWarning("Failed to parse CPU Model", exception);
+            cpuInfo = "Unknown Model";
+        }
+    }
     
     static int getNumMonitors() {
         return monitors.size();
+    }
+    
+    static CharSequence getCPUInfo() {
+        return cpuInfo;
     }
     
     static final Monitor getMonitor(long handle) {
