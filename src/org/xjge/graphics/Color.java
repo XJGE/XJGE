@@ -1,132 +1,119 @@
 package org.xjge.graphics;
 
+import java.util.Random;
 import org.joml.Vector3f;
 import org.xjge.core.XJGE;
 
 /**
- * Created: May 8, 2021
- * <br><br>
- * An immutable object used to represent color.
+ * An object used to represent color.
  * 
  * @author J Hoffman
  * @since  2.0.0
  */
 public final class Color {
     
-    public static final Color WHITE   = new Color(1f);
-    public static final Color SILVER  = new Color(192);
-    public static final Color GRAY    = new Color(128);
-    public static final Color BLACK   = new Color(0f);
-    public static final Color RED     = new Color(255,  64,  64);
-    public static final Color BROWN   = new Color(144,  80,   0);
-    public static final Color YELLOW  = new Color(255, 255,  80);
-    public static final Color ORANGE  = new Color(255, 176,   0);
-    public static final Color GREEN   = new Color( 64, 255,  64);
-    public static final Color EMERALD = new Color(  0, 176,   0);
-    public static final Color CYAN    = new Color(128, 255, 255);
-    public static final Color TEAL    = new Color(  0, 144, 144);
-    public static final Color BLUE    = new Color( 64,  64, 255);
-    public static final Color NAVY    = new Color(  0,   0, 176);
-    public static final Color MAGENTA = new Color(255,  80, 255);
-    public static final Color PURPLE  = new Color(144,  48, 176);
+    public static final Color WHITE   = new Color(true, 255, 255, 255);
+    public static final Color SILVER  = new Color(true, 192, 192, 192);
+    public static final Color GRAY    = new Color(true, 128, 128, 128);
+    public static final Color BLACK   = new Color(true,   0,   0,   0);
+    public static final Color RED     = new Color(true, 255,  64,  64);
+    public static final Color BROWN   = new Color(true, 144,  80,   0);
+    public static final Color YELLOW  = new Color(true, 255, 255,  80);
+    public static final Color ORANGE  = new Color(true, 255, 176,   0);
+    public static final Color GREEN   = new Color(true,  64, 255,  64);
+    public static final Color EMERALD = new Color(true,   0, 176,   0);
+    public static final Color CYAN    = new Color(true, 128, 255, 255);
+    public static final Color TEAL    = new Color(true,   0, 144, 144);
+    public static final Color BLUE    = new Color(true,  64,  64, 255);
+    public static final Color NAVY    = new Color(true,   0,   0, 176);
+    public static final Color MAGENTA = new Color(true, 255,  80, 255);
+    public static final Color PURPLE  = new Color(true, 144,  48, 176);
     
-    public final float r;
-    public final float g;
-    public final float b;
+    private final boolean immutable;
     
-    private final Vector3f conversion;
+    private final Vector3f components;
     
-    /**
-     * Creates a new achromatic shade (gray) using the specified scalar value. 
-     * 
-     * @param scalar the value all RGB components will be set to (between 0 and 1)
-     */
-    private Color(float scalar) {
-        r = g = b = XJGE.clampValue(0f, 1f, scalar);
-        conversion = new Vector3f(scalar);
+    private static final Random random = new Random();
+    
+    private Color(boolean immutable, float red, float green, float blue) {
+        this.immutable = immutable;
+        components = new Vector3f(XJGE.clampValue(0f, 1f, red), XJGE.clampValue(0f, 1f, green), XJGE.clampValue(0f, 1f, blue));
     }
     
-    /**
-     * Creates a new achromatic shade (gray) using the provided value.
-     * 
-     * @param value the value all RGB components will be set to (between 0 and 255)
-     */
-    private Color(int value) {
-        r = g = b = (XJGE.clampValue(0, 255, value) / 255f);
-        conversion = new Vector3f(r);
+    private Color(boolean immutable, int red, int green, int blue) {
+        this(immutable, XJGE.clampValue(0, 255, red) / 255f, 
+                        XJGE.clampValue(0, 255, green) / 255f, 
+                        XJGE.clampValue(0, 255, blue) / 255f);
     }
     
-    /**
-     * Creates a new color object using the values of the three RGB components 
-     * supplied. Component values are expected to be within the range of 0 to 255.
-     * 
-     * @param r the red color component
-     * @param g the green color component
-     * @param b the blue color component
-     */
-    private Color(int r, int g, int b) {
-        this.r = (XJGE.clampValue(0, 255, r) / 255f);
-        this.g = (XJGE.clampValue(0, 255, g) / 255f);
-        this.b = (XJGE.clampValue(0, 255, b) / 255f);
-        
-        conversion = new Vector3f(this.r, this.g, this.b);
+    public Color(float red, float green, float blue) {
+        this(false, red, green, blue);
     }
     
-    /**
-     * Creates a new color object using the values of the three RGB components 
-     * supplied. Component values are expected to be within the range of 0 to 255.
-     * 
-     * @param r the red color component
-     * @param g the green color component
-     * @param b the blue color component
-     * 
-     * @return a new immutable color object generated with the specified RGB 
-     *         components
-     */
-    public static Color create(int r, int g, int b) {
-        return new Color(r, g, b);
+    public Color(int red, int green, int blue) {
+        this(false, XJGE.clampValue(0, 255, red) / 255f, XJGE.clampValue(0, 255, green) / 255f, XJGE.clampValue(0, 255, blue) / 255f);
     }
     
-    /**
-     * Creates a random color.
-     * 
-     * @return a new immutable color object that exhibits randomized color 
-     *         component values
-     */
-    public static Color random() {
-        return new Color(
-                (int) (Math.random() * 255),
-                (int) (Math.random() * 255),
-                (int) (Math.random() * 255));
+    public void randomize() {
+        if(immutable) return;
+        components.set(random.nextInt(256) / 255f, random.nextInt(256) / 255f, random.nextInt(256) / 255f);
     }
     
-    /**
-     * Returns the RGB component values of this object as a three-component 
-     * floating point vector that can be passed to a {@linkplain GLProgram 
-     * shader program} through a uniform variable.
-     * 
-     * @return the value of this color RGB components as a three-component 
-     *         floating point vector struct
-     */
-    public Vector3f asVec3() {
-        return conversion;
+    public void setRed(float value) {
+        if(immutable) return;
+        components.x = XJGE.clampValue(0f, 1f, value);
     }
     
-    /**
-     * Compares the RGB component values of this color to another.
-     * 
-     * @param other the color to test this one against
-     * 
-     * @return true if the colors are the same
-     */
+    public void setGreen(float value) {
+        if(immutable) return;
+        components.y = XJGE.clampValue(0f, 1f, value);
+    }
+    
+    public void setBlue(float value) {
+        if(immutable) return;
+        components.z = XJGE.clampValue(0f, 1f, value);
+    }
+    
+    public void set(float red, float green, float blue) {
+        setRed(red);
+        setGreen(green);
+        setBlue(blue);
+    }
+    
+    public void setRed(int value) {
+        setRed(XJGE.clampValue(0, 255, value) / 255f);
+    }
+    
+    public void setGreen(int value) {
+        setGreen(XJGE.clampValue(0, 255, value) / 255f);
+    }
+    
+    public void setBlue(int value) {
+        setBlue(XJGE.clampValue(0, 255, value) / 255f);
+    }
+    
+    public void set(int red, int green, int blue) {
+        set(XJGE.clampValue(0, 255, red) / 255f, XJGE.clampValue(0, 255, green) / 255f, XJGE.clampValue(0, 255, blue) / 255f);
+    }
+    
     public boolean compareTo(Color other) {
-        if(this == other) {
-            return true;
-        } else {
-            return this.r == other.r && 
-                   this.g == other.g && 
-                   this.b == other.b;
-        }
+        return this == other || (this.getRed() == other.getRed() && this.getGreen() == other.getGreen() && this.getBlue() == other.getBlue());
+    }
+    
+    public float getRed() {
+        return components.x;
+    }
+    
+    public float getGreen() {
+        return components.y;
+    }
+    
+    public float getBlue() {
+        return components.z;
+    }
+    
+    public final Vector3f asVector3f() {
+        return components;
     }
     
 }

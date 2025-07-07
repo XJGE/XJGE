@@ -114,10 +114,10 @@ public final class RectangleBatch {
     public void drawRectangle(int x, int y, int width, int height, Color color, float opacity) {
         int startIndex = (numVertices / 24) * Float.BYTES;
         
-        graphics.vertices.put(x)        .put(y + height).put(0).put(color.r).put(color.g).put(color.b).put(opacity);
-        graphics.vertices.put(x + width).put(y + height).put(0).put(color.r).put(color.g).put(color.b).put(opacity);
-        graphics.vertices.put(x + width).put(y)         .put(0).put(color.r).put(color.g).put(color.b).put(opacity);
-        graphics.vertices.put(x)        .put(y)         .put(0).put(color.r).put(color.g).put(color.b).put(opacity);
+        graphics.vertices.put(x)        .put(y + height).put(0).put(color.getRed()).put(color.getGreen()).put(color.getBlue()).put(opacity);
+        graphics.vertices.put(x + width).put(y + height).put(0).put(color.getRed()).put(color.getGreen()).put(color.getBlue()).put(opacity);
+        graphics.vertices.put(x + width).put(y)         .put(0).put(color.getRed()).put(color.getGreen()).put(color.getBlue()).put(opacity);
+        graphics.vertices.put(x)        .put(y)         .put(0).put(color.getRed()).put(color.getGreen()).put(color.getBlue()).put(opacity);
         
         graphics.indices.put(startIndex)    .put(startIndex + 1).put(startIndex + 2);
         graphics.indices.put(startIndex + 3).put(startIndex + 2).put(startIndex);

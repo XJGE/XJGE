@@ -460,7 +460,7 @@ public final class Font {
             FloatBuffer colors = stack.mallocFloat(glyphPool.size() * Float.BYTES);
             
             glyphPool.forEach(glyph -> {
-                colors.put(glyph.color.r).put(glyph.color.g).put(glyph.color.b).put(glyph.opacity);
+                colors.put(glyph.color.getRed()).put(glyph.color.getGreen()).put(glyph.color.getBlue()).put(glyph.opacity);
             });
             
             colors.flip();

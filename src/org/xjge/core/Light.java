@@ -173,7 +173,7 @@ public final class Light {
         
         XJGE.getDefaultGLProgram().setUniform("uType", 6);
         XJGE.getDefaultGLProgram().setUniform("uModel", false, g.modelMatrix);
-        XJGE.getDefaultGLProgram().setUniform("uColor", diffuseColor.asVec3());
+        XJGE.getDefaultGLProgram().setUniform("uColor", diffuseColor.asVector3f());
         XJGE.getDefaultGLProgram().setUniform("uTexCoords", texCoords);
         
         glDrawElements(GL_TRIANGLES, g.indices.capacity(), GL_UNSIGNED_INT, 0);
@@ -199,7 +199,8 @@ public final class Light {
      * @return a new engine-defined light object
      */
     public static final Light sunset() {
-        return new Light(0.87f, 0.5f, 1, new Vector3f(-8, 7.5f, -30), Color.create(173, 141, 162), Color.create(255, 204, 86), Color.create(255, 234, 184));
+        return new Light(0.87f, 0.5f, 1, new Vector3f(-8, 7.5f, -30), 
+                         new Color(173, 141, 162), new Color(255, 204, 86), new Color(255, 234, 184));
     }
     
     /**
@@ -209,7 +210,8 @@ public final class Light {
      * @return a new engine-defined light object
      */
     public static final Light midnight() {
-        return new Light(0.82f, 0.55f, 1, new Vector3f(6.5f, 16.7f, 30), Color.create(38, 48, 76), Color.create(48, 62, 80), Color.create(188, 209, 231));
+        return new Light(0.82f, 0.55f, 1, new Vector3f(6.5f, 16.7f, 30), 
+                         new Color(38, 48, 76), new Color(48, 62, 80), new Color(188, 209, 231));
     }
     
     /**
@@ -240,7 +242,8 @@ public final class Light {
      * @return a new engine-defined light object
      */
     public static final Light cryotube() {
-        return new Light(3.97f, 0.84f, 1.5f, new Vector3f(), Color.create(192, 8, 238), Color.create(10, 90, 153), Color.create(10, 46, 8));
+        return new Light(3.97f, 0.84f, 1.5f, new Vector3f(), 
+                         new Color(192, 8, 238), new Color(10, 90, 153), new Color(10, 46, 8));
     }
     
     /**
@@ -250,7 +253,8 @@ public final class Light {
      * @return a new engine-defined light object
      */
     public static final Light campfire() {
-        return new Light(6.2f, 0.45f, 0.62f, new Vector3f(), Color.create(11, 71, 231), Color.create(209, 85, 3), Color.create(145, 140, 149));
+        return new Light(6.2f, 0.45f, 0.62f, new Vector3f(), 
+                         new Color(11, 71, 231), new Color(209, 85, 3), new Color(145, 140, 149));
     }
     
     /**
@@ -259,9 +263,16 @@ public final class Light {
      * @return a new engine-generated light object
      */
     public static final Light random() {
+        //TODO: reimplement this?
+        /*
+        Color[] colors = new Color[3];
+        for(int i = 0; i < colors.length; i++) color[i] = new Color()
+        
         return new Light((float) Math.log(randomValue(0.5f, 10)), randomValue(0, 1), randomValue(0, 5), 
                           new Vector3f(), 
-                          Color.random(), Color.random(), Color.random());
+                          new Color.randomize(), Color.random(), Color.random());
+        */
+        return null;
     }
     
 }

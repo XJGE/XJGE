@@ -103,7 +103,7 @@ public final class XJGE {
     private static TreeMap<String, TerminalCommand> engineCommands     = new TreeMap<>();
     private static final TreeMap<String, TerminalCommand> userCommands = new TreeMap<>();
     
-    private static Color clearColor = Color.create(119, 136, 255);
+    private static Color clearColor = new Color(119, 136, 255);
     private static Scene scene;
     
     private static final Observable observable = new Observable(XJGE.class);
@@ -367,7 +367,7 @@ public final class XJGE {
                     
                     glBindFramebuffer(GL_FRAMEBUFFER, Window.getFBOHandle());
                         glViewport(0, 0, viewport.width, viewport.height);
-                        glClearColor(clearColor.r, clearColor.g, clearColor.b, 0);
+                        glClearColor(clearColor.getRed(), clearColor.getGreen(), clearColor.getBlue(), 0);
                         viewport.bindDrawBuffers(enableBloom);
                         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
                         

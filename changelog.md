@@ -28,6 +28,7 @@ All notable changes to this project will be documented in this file. The format 
 - Name of Split enum to SplitScreenType for clarity.
 - Window class, massive refactor including moving some features like viewport manipulation from XJGE into Window class.
 - Icon class to expose position, rotation, and scale fields for use by the public API.
+- Color class to be mutable, the colors defined by the default palette will remain immutable however
 
 ### Removed
 - Update/Render methods from the Entity class.

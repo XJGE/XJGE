@@ -747,7 +747,7 @@ public class Model {
             glProgram.setUniform("uModel", false, mesh.modelMatrix);
             glProgram.setUniform("uNormal", true, normal);
             glProgram.setUniform("uNumLights", lights.length);
-            glProgram.setUniform("uColor", color.asVec3());
+            glProgram.setUniform("uColor", color.asVector3f());
             glProgram.setUniform("uShine", shineValue); //TODO: extract value from mesh material.
             glProgram.setUniform("uOpacity", opacity);
             glProgram.setUniform("uTexture", 0);

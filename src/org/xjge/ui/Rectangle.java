@@ -6,7 +6,6 @@ import org.joml.Vector2i;
 import static org.lwjgl.opengl.GL30.*;
 import org.lwjgl.system.MemoryStack;
 import org.xjge.core.ErrorUtils;
-import org.xjge.core.Mouse;
 import org.xjge.core.UI;
 import org.xjge.graphics.Color;
 
@@ -134,10 +133,10 @@ public class Rectangle {
         try(MemoryStack stack = MemoryStack.stackPush()) {
             FloatBuffer vertices = stack.mallocFloat(28);
             
-            vertices.put(positionX)        .put(positionY + height).put(0).put(color.r).put(color.g).put(color.b).put(opacity);
-            vertices.put(positionX + width).put(positionY + height).put(0).put(color.r).put(color.g).put(color.b).put(opacity);
-            vertices.put(positionX + width).put(positionY)         .put(0).put(color.r).put(color.g).put(color.b).put(opacity);
-            vertices.put(positionX)        .put(positionY)         .put(0).put(color.r).put(color.g).put(color.b).put(opacity);
+            vertices.put(positionX)        .put(positionY + height).put(0).put(color.getRed()).put(color.getGreen()).put(color.getBlue()).put(opacity);
+            vertices.put(positionX + width).put(positionY + height).put(0).put(color.getRed()).put(color.getGreen()).put(color.getBlue()).put(opacity);
+            vertices.put(positionX + width).put(positionY)         .put(0).put(color.getRed()).put(color.getGreen()).put(color.getBlue()).put(opacity);
+            vertices.put(positionX)        .put(positionY)         .put(0).put(color.getRed()).put(color.getGreen()).put(color.getBlue()).put(opacity);
             
             vertices.flip();
             

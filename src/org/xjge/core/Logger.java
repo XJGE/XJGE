@@ -82,20 +82,21 @@ public final class Logger {
      * currently running.
      */
     static void logSystemInfo() {
-        for(int i = 0; i < 12; i++) {
+        for(int i = 0; i < 14; i++) {
             String info = switch(i) {
                 default -> "****************************************************************************************************";        
-                case 1  -> "OS NAME:\t" + System.getProperty("os.name");
-                case 2  -> "JAVA VER:\t" + System.getProperty("java.version");
-                case 3  -> "XJGE VER:\t" + XJGE.VERSION;
-                case 4  -> "GLFW VER:\t" + glfwGetVersionString();
-                case 5  -> "OPENAL VER:\t" + alGetString(AL_VERSION);
-                case 6  -> "OPENGL VER:\t" + glGetString(GL_VERSION);
-                case 7  -> "GFX CARD:\t" + glGetString(GL_RENDERER);
-                case 8  -> "MONITORS:\t" + "Found: " + Hardware2.getNumMonitors() + ", Primary: \"" + 
+                case 1  -> " OS NAME:\t" + System.getProperty("os.name");
+                case 2  -> " JAVA VER:\t" + System.getProperty("java.version");
+                case 3  -> " XJGE VER:\t" + XJGE.VERSION;
+                case 4  -> " GLFW VER:\t" + glfwGetVersionString();
+                case 5  -> " OPENAL VER:\t" + alGetString(AL_VERSION);
+                case 6  -> " OPENGL VER:\t" + glGetString(GL_VERSION);
+                case 8  -> " CPU MODEL:\t" + Hardware2.getCPUModel();
+                case 9  -> " GPU MODEL:\t" + glGetString(GL_RENDERER);
+                case 10 -> " MONITORS:\t" + "Found: " + Hardware2.getNumMonitors() + ", Primary: \"" + 
                            Window.getMonitor().name + "\" (" + Window.getMonitor().getInfo() + ")";
-                case 9  -> "SPEAKERS:\t" + "Found: " + Hardware.getNumSpeakers() + ", Primary: \"" + Audio.speaker.name;
-                case 10 -> "GAMEPADS:\t" + "Found: " + Input.getNumDevices();
+                case 11 -> " SPEAKERS:\t" + "Found: " + Hardware.getNumSpeakers() + ", Primary: \"" + Audio.speaker.name;
+                case 12 -> " GAMEPADS:\t" + "Found: " + Input.getNumDevices();
             };
             
             System.out.println(info);

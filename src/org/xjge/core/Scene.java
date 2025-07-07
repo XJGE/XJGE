@@ -160,9 +160,9 @@ public abstract class Scene {
                         setLightUniform(glProgram, "uLights[" + i + "].contrast",   lights[i].contrast);
                         setLightUniform(glProgram, "uLights[" + i + "].distance",   lights[i].distance);
                         setLightUniform(glProgram, "uLights[" + i + "].position",   lights[i].position);
-                        setLightUniform(glProgram, "uLights[" + i + "].ambient",    lights[i].ambientColor.asVec3());
-                        setLightUniform(glProgram, "uLights[" + i + "].diffuse",    lights[i].diffuseColor.asVec3());
-                        setLightUniform(glProgram, "uLights[" + i + "].specular",   lights[i].specularColor.asVec3());
+                        setLightUniform(glProgram, "uLights[" + i + "].ambient",    lights[i].ambientColor.asVector3f());
+                        setLightUniform(glProgram, "uLights[" + i + "].diffuse",    lights[i].diffuseColor.asVector3f());
+                        setLightUniform(glProgram, "uLights[" + i + "].specular",   lights[i].specularColor.asVector3f());
                     } else {
                         setLightUniform(glProgram, "uLights[" + i + "].brightness", 0);
                         setLightUniform(glProgram, "uLights[" + i + "].contrast",   0);

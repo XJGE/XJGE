@@ -147,7 +147,7 @@ public class Polygon {
         UIShader.getInstance().setUniform("uType", 2);
         UIShader.getInstance().setUniform("uModel", graphics.modelMatrix);
         UIShader.getInstance().setUniform("uProjection", UI.getProjectionMatrix());
-        UIShader.getInstance().setUniform("uColor", color.asVec3());
+        UIShader.getInstance().setUniform("uColor", color.asVector3f());
         UIShader.getInstance().setUniform("uOpacity", opacity);
         
         glDrawArrays((fill) ? GL_TRIANGLE_FAN : GL_LINE_LOOP, 0, sides);
