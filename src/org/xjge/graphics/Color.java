@@ -81,6 +81,11 @@ public final class Color {
         return result;
     }
     
+    public void copy(Color other) {
+        if(immutable) return;
+        components.set(other.asVector3f());
+    }
+    
     public void randomize() {
         if(immutable) return;
         components.set(random.nextInt(256) / 255f, random.nextInt(256) / 255f, random.nextInt(256) / 255f);

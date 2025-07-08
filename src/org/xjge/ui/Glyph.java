@@ -1,6 +1,6 @@
 package org.xjge.ui;
 
-import org.xjge.core.XJGE;
+import org.joml.Vector2i;
 import org.xjge.graphics.Color;
 
 /**
@@ -15,88 +15,31 @@ import org.xjge.graphics.Color;
  */
 public final class Glyph {
     
-    float opacity = 1f;
+    /**
+     * The current visual opacity of the glyph, from 0 (transparent) to 1 (opaque).
+     * Reverts to 1f if the glyph is unused.
+     */
+    public float opacity = 1f;
     
-    char character = 32; //ASCII space
+    /**
+     * The character this glyph represents, defaulting to ASCII space (32).
+     */
+    public char character = 32;
     
-    int positionX;
-    int positionY;
+    /**
+     * The screen-space position of this glyph, set by the layout engine based on font metrics.
+     */
+    public final Vector2i position = new Vector2i();
     
-    public int positionOffsetX;
-    public int positionOffsetY;
-    
-    Color color = Color.WHITE;
+    /**
+     * The color the glyph will be rendered in. This is set to white by default
+     * or anytime the object is recycled.
+     */
+    public final Color color = new Color(1f, 1f, 1f);
     
     /**
      * Default constructor defined here to keep it out of the public APIs reach.
      */
     Glyph() {}
-    
-    /**
-     * Reverts the position and character fields to their initial values.
-     */
-    void reset() {
-        opacity   = 1f;
-        character = 32;
-        positionX = 0;
-        positionY = 0;
-        color     = Color.WHITE;
-    }
-    
-    /**
-     * Obtains the current opacity (or transparency) value of this glyph.
-     * 
-     * @return a number (between 0 and 1) indicating how transparent the glyph is
-     */
-    public float getOpacity() {
-        return opacity;
-    }
-    
-    /**
-     * Obtains the current character (or letter) that the glyph is representing.
-     * 
-     * @return a char denoting which ASCII character the glyph is representing
-     */
-    public char getCharacter() {
-        return character;
-    }
-    
-    /**
-     * Obtains the current color of the glyph.
-     * 
-     * @return an object representing a 3-component RGB color
-     */
-    public Color getColor() {
-        return color;
-    }
-    
-    /**
-     * Changes the opacity (or transparency) value of this glyph. If a value of 
-     * less than 1 is used, the glyph will exhibit blending effects with 
-     * whatever is positioned behind it.
-     * 
-     * @param opacity the value (between 0 and 1) indicating the glyphs opacity
-     */
-    public void setOpacity(float opacity) {
-        this.opacity = XJGE.clampValue(0f, 1f, opacity);
-    }
-    
-    /**
-     * Changes the current character (or letter) this glyph will represent.
-     * 
-     * @param character the new character this glyph will display
-     */
-    public void setCharacter(char character) {
-        this.character = (character < 32 || character > 127) ? '?' : character;
-    }
-    
-    /**
-     * Changes the color of this glyph.
-     * 
-     * @param newColor the color to render the glyph in
-     */
-    public void setColor(Color newColor) {
-        color = (newColor == null) ? Color.WHITE : newColor;
-    }
     
 }

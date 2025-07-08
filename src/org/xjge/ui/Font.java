@@ -414,7 +414,7 @@ public final class Font {
             FloatBuffer positions = stack.mallocFloat(glyphPool.size() * Float.BYTES);
             
             glyphPool.forEach(glyph -> {
-                positions.put(glyph.positionX).put(glyph.positionY).put(0);
+                positions.put(glyph.position.x).put(glyph.position.y).put(0);
             });
             
             positions.flip();
@@ -507,14 +507,18 @@ public final class Font {
         //Update glyph values to match the current requirements of the text
         for(int i = 0; i < glyphPool.size(); i++) {
             Glyph glyph = glyphPool.get(i);
-            glyph.reset();
-
-            if(i < text.length()) {
-                glyph.character = text.charAt(i);
+            
+            if(i >= text.length()) {
+                glyph.opacity   = 1f;
+                glyph.character = 32; //ASCII space
+                glyph.position.set(0);
+                glyph.color.set(1f, 1f, 1f);
+            } else {
+                glyph.character = (glyphMetrics.containsKey(text.charAt(i))) ? text.charAt(i) : '?';
                 
-                if(text.charAt(i) != '\n') {
-                    glyph.positionX = (positionX + advance + getGlyphBearingX(glyph.character)) + glyph.positionOffsetX;
-                    glyph.positionY = (positionY + descent + getGlyphBearingY(glyph.character)) + glyph.positionOffsetY;
+                if(glyph.character != '\n') {
+                    glyph.position.x = positionX + advance + getGlyphBearingX(glyph.character);
+                    glyph.position.y = positionY + descent + getGlyphBearingY(glyph.character);
 
                     advance += getGlyphAdvance(glyph.character);
                 } else {
@@ -523,9 +527,10 @@ public final class Font {
                 }
                 
                 if(effect == null) {
-                    glyph.opacity = opacity;
-                    glyph.color   = color;
+                    glyph.opacity = XJGE.clampValue(0f, 1f, opacity);
+                    glyph.color.copy(color);
                 } else {
+                    glyph.opacity = XJGE.clampValue(0f, 1f, glyph.opacity);
                     effect.apply(glyph, i);
                 }
             }

@@ -39,8 +39,8 @@ abstract class DebugGroup {
         @Override
         public void apply(Glyph glyph, int index) {
             if(index == 0) colonFound = false;
-            glyph.setColor((colonFound) ? Color.YELLOW : Color.WHITE);
-            if(glyph.getCharacter() == ':') colonFound = true;
+            glyph.color.copy((colonFound) ? Color.YELLOW : Color.WHITE);
+            if(glyph.character == ':') colonFound = true;
         }
 
         @Override

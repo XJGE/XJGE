@@ -16,14 +16,12 @@ final class TextEffectTerminal extends TextEffect {
     
     @Override
     public void apply(Glyph glyph, int index) {
-        if(glyph.getCharacter() == ' ') start = index;
-                
-        Color color = switch(glyph.getCharacter()) {
-            default -> (start != 0 && index > start) ? Color.YELLOW : Color.CYAN;
-            case '(', ')', ',', '<', '>' -> Color.WHITE;
-        };
+        if(glyph.character == ' ') start = index;
         
-        glyph.setColor(color);
+        switch(glyph.character) {
+            default -> glyph.color.copy((start != 0 && index > start) ? Color.YELLOW : Color.CYAN);
+            case '(', ')', ',', '<', '>' -> glyph.color.copy(Color.WHITE);
+        };
     }
 
     @Override

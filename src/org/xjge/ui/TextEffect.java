@@ -19,6 +19,8 @@ public abstract class TextEffect {
      */
     public abstract void apply(Glyph glyph, int index);
     
+    //public abstract void apply(int index, Glyph glyph, Map<Character, GlyphMetrics> metrics)
+    
     /**
      * Called after each glyph is iterated through to reset any values if necessary.
      */

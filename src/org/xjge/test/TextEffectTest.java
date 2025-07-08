@@ -14,39 +14,41 @@ public class TextEffectTest extends TextEffect {
 
     boolean ascending;
     
-    private final Color color = new Color(0, 0, 0);
+    float redValue;
     
     @Override
     public void apply(Glyph glyph, int index) {
-        glyph.positionOffsetY = switch(glyph.getCharacter()) {
+        glyph.position.y += switch(glyph.character) {
             default -> 0;
             case 'p' -> 23;
         };
         
         switch(index) {
             case 4, 5, 6, 7, 8 -> {
-                glyph.setOpacity(0.5f);
+                glyph.opacity = 0.5f;
+            }
+        }
+        
+        if(index == 0) {
+            if(ascending) {
+                redValue += 0.01f;
+                
+                if(redValue >= 1) {
+                    redValue = 1f;
+                    ascending = false;
+                }
+            } else {
+                redValue -= 0.01f;
+                
+                if(redValue <= 0) {
+                    redValue = 0f;
+                    ascending = true;
+                }
             }
         }
         
         if(index >= 16 && index <= 18) {
-            if(index == 16) {
-                if(ascending) {
-                    color.setRed(color.getRed() + 0.01f);
-                    if(color.getRed() >= 1) {
-                        color.setRed(1f);
-                        ascending = false;
-                    }
-                } else {
-                    color.setRed(color.getRed() - 0.01f);
-                    if(color.getRed() <= 0) {
-                        color.setRed(0f);
-                        ascending = true;
-                    }
-                }
-            }
-            
-            glyph.setColor(color);
+            glyph.color.set(redValue, 0f, 0f);
         }
     }
 

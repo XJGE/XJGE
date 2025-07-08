@@ -5,6 +5,7 @@ import org.xjge.core.Mouse;
 import org.xjge.ui.Font;
 import org.xjge.core.SplitScreenType;
 import org.xjge.core.StopWatch;
+import org.xjge.core.XJGE;
 import org.xjge.graphics.Color;
 import org.xjge.graphics.GLProgram;
 import org.xjge.graphics.Texture;
@@ -20,7 +21,7 @@ import org.xjge.ui.Widget;
  * @since  
  */
 public class TestWidget extends Widget {
-
+    
     Font font = new Font("font_source_code_pro.ttf", 32);
     StopWatch timer = new StopWatch();
     TextEffectTest testEffect = new TextEffectTest();
@@ -28,6 +29,7 @@ public class TestWidget extends Widget {
     Rectangle rectangle = new Rectangle(600, 150, 40, 40);
     Icon icon;
     Color rectColor = Color.BLACK;
+    String foo = "This is a call to all my past resignations";
     
     float angle;
     
@@ -51,12 +53,23 @@ public class TestWidget extends Widget {
         polygon.position.set(200);
         polygon.rotation.z = angle;
         polygon.setColor(Color.ORANGE);
+        
+        if(XJGE.tick(4)) {
+            if(reverse) {
+                index--;
+                if(index <= 0) reverse = false;
+            } else {
+                index++;
+                if(index >= foo.length()) reverse = true;
+            }
+        }
     }
 
     @Override
     public void render(Map<String, GLProgram> glPrograms) {
         polygon.render();
         font.drawString("The quick brown fox jumps\nover the lazy dog.", 50, 100, testEffect);
+        font.drawString(foo.subSequence(0, index), 300, 200, null);
         rectangle.render(0.5f, rectColor);
         icon.render();
     }
