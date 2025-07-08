@@ -96,7 +96,7 @@ public final class Glyph {
      * @param newColor the color to render the glyph in
      */
     public void setColor(Color newColor) {
-        color = (color == null) ? Color.WHITE : newColor;
+        color = (newColor == null) ? Color.WHITE : newColor;
     }
     
 }

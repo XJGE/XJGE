@@ -50,8 +50,35 @@ public final class Color {
         this(false, red, green, blue);
     }
     
+    /**
+     * Creates a new color object using the values of the three RGB components 
+     * supplied. Component values are expected to be within the range of 0 to 255.
+     * 
+     * @param red the red color component
+     * @param green the green color component
+     * @param blue the blue color component
+     */
     public Color(int red, int green, int blue) {
         this(false, XJGE.clampValue(0, 255, red) / 255f, XJGE.clampValue(0, 255, green) / 255f, XJGE.clampValue(0, 255, blue) / 255f);
+    }
+    
+    @Override
+    public boolean equals(Object obj) {
+        if(this == obj) return true;
+        if(obj == null || getClass() != obj.getClass()) return false;
+
+        Color other = (Color) obj;
+        return Float.compare(getRed(), other.getRed()) == 0 &&
+               Float.compare(getGreen(), other.getGreen()) == 0 &&
+               Float.compare(getBlue(), other.getBlue()) == 0;
+    }
+
+    @Override
+    public int hashCode() {
+        int result = Float.hashCode(getRed());
+        result = 31 * result + Float.hashCode(getGreen());
+        result = 31 * result + Float.hashCode(getBlue());
+        return result;
     }
     
     public void randomize() {
@@ -96,10 +123,6 @@ public final class Color {
         set(XJGE.clampValue(0, 255, red) / 255f, XJGE.clampValue(0, 255, green) / 255f, XJGE.clampValue(0, 255, blue) / 255f);
     }
     
-    public boolean compareTo(Color other) {
-        return this == other || (this.getRed() == other.getRed() && this.getGreen() == other.getGreen() && this.getBlue() == other.getBlue());
-    }
-    
     public float getRed() {
         return components.x;
     }
@@ -112,6 +135,14 @@ public final class Color {
         return components.z;
     }
     
+    /**
+     * Returns the RGB component values of this object as a three-component 
+     * floating point vector that can be passed to a {@linkplain GLProgram 
+     * shader program} through a uniform variable.
+     * 
+     * @return the value of this color RGB components as a three-component 
+     *         floating point vector struct
+     */
     public final Vector3f asVector3f() {
         return components;
     }
