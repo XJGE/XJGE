@@ -15,7 +15,7 @@ final class TextEffectTerminal extends TextEffect {
     private int start;
     
     @Override
-    public void apply(Glyph glyph, int index) {
+    public void apply(int index, Glyph glyph) {
         if(glyph.character == ' ') start = index;
         
         switch(glyph.character) {

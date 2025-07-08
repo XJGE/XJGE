@@ -531,7 +531,7 @@ public final class Font {
                     glyph.color.copy(color);
                 } else {
                     glyph.opacity = XJGE.clampValue(0f, 1f, glyph.opacity);
-                    effect.apply(glyph, i);
+                    effect.apply(i, glyph);
                 }
             }
         }

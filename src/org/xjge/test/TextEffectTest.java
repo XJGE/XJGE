@@ -17,7 +17,7 @@ public class TextEffectTest extends TextEffect {
     float redValue;
     
     @Override
-    public void apply(Glyph glyph, int index) {
+    public void apply(int index, Glyph glyph) {
         glyph.position.y += switch(glyph.character) {
             default -> 0;
             case 'p' -> 23;

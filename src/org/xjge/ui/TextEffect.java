@@ -14,12 +14,10 @@ public abstract class TextEffect {
      * call. Glyph data can be directly manipulated here to achieve any desired
      * effects.
      * 
-     * @param glyph an object representing a single character or letter in the string
      * @param index the index of the glyph in the string
+     * @param glyph an object representing a single character or letter in the string
      */
-    public abstract void apply(Glyph glyph, int index);
-    
-    //public abstract void apply(int index, Glyph glyph, Map<Character, GlyphMetrics> metrics)
+    public abstract void apply(int index, Glyph glyph);
     
     /**
      * Called after each glyph is iterated through to reset any values if necessary.
