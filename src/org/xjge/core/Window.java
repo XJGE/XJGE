@@ -175,7 +175,7 @@ public final class Window {
      * @param terminal the command-line terminal used to make state changes during runtime
      * @param debugInfo a series of collapsible menus containing debug information
      */
-    static void registerCallbacks(Terminal terminal, DebugInfo2 debugInfo) {
+    static void registerCallbacks(Terminal terminal, DebugInfo debugInfo) {
         glfwErrorReference = GLFWErrorCallback.create((error, description) -> {
             Logger.logWarning("GLFW Error: (" + error + ") " + GLFWErrorCallback.getDescription(description), null);
         });

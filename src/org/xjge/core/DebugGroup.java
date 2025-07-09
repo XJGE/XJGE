@@ -28,11 +28,11 @@ abstract class DebugGroup {
     final Rectangle button      = new Rectangle(0, 0, 0, 28);
     final Rectangle titleBar    = new Rectangle(5, 0, 0, 28);
     final Rectangle contentArea = new Rectangle();
-    final TextEffect highlight  = new Highlight();
+    final TextEffect highlight  = new HighlightInfo();
     
     final List<StringBuilder> output = new ArrayList<>();
     
-    private class Highlight extends TextEffect {
+    private final class HighlightInfo extends TextEffect {
 
         private boolean colonFound;
         

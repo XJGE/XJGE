@@ -2,6 +2,14 @@
 <project-private xmlns="http://www.netbeans.org/ns/project-private/1">
     <editor-bookmarks xmlns="http://www.netbeans.org/ns/editor-bookmarks/2" lastBookmarkId="20">
         <file>
+            <url>src/org/xjge/ui/UI.java</url>
+            <bookmark id="9">
+                <name/>
+                <line>52</line>
+                <key/>
+            </bookmark>
+        </file>
+        <file>
             <url>src/org/xjge/core/Viewport.java</url>
             <bookmark id="12">
                 <name/>
@@ -14,14 +22,6 @@
             <bookmark id="13">
                 <name/>
                 <line>37</line>
-                <key/>
-            </bookmark>
-        </file>
-        <file>
-            <url>src/org/xjge/ui/UI.java</url>
-            <bookmark id="9">
-                <name/>
-                <line>52</line>
                 <key/>
             </bookmark>
         </file>

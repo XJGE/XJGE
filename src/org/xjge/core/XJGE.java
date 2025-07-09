@@ -90,14 +90,14 @@ public final class XJGE {
     
     public static final Path PRESENT_WORKING_DIRECTORY = Path.of("").toAbsolutePath();
     
-    public static final String VERSION   = "4.0.0";
+    public static final String VERSION   = "4.0.0-beta1";
     private static String assetsFilepath = "/org/xjge/assets/";
     private static String scenesFilepath;
     
     private static Texture engineIcons;
     private static Sound beep;
     private static Terminal terminal;
-    private static DebugInfo2 debugInfo;
+    private static DebugInfo debugInfo;
     private static Noclip freeCam;
     
     private static TreeMap<String, TerminalCommand> engineCommands     = new TreeMap<>();
@@ -268,7 +268,7 @@ public final class XJGE {
         glPrograms = Collections.unmodifiableMap(glPrograms);
         freeCam    = new Noclip();
         terminal   = new Terminal(engineCommands);
-        debugInfo  = new DebugInfo2(engineIcons);
+        debugInfo  = new DebugInfo(engineIcons);
         
         Window.registerCallbacks(terminal, debugInfo);
         Window.show();
