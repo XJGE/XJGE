@@ -42,6 +42,7 @@ public final class Window {
     public static final int DEFAULT_WIDTH  = 1280;
     public static final int DEFAULT_HEIGHT = 720;
     
+    private static int cursorInputMode = GLFW_CURSOR_NORMAL;
     private static int minWidth  = 640;
     private static int minHeight = 480;
     private static int width     = DEFAULT_WIDTH;
@@ -51,7 +52,7 @@ public final class Window {
     private static int fboHandle;
     
     private static long handle = NULL;
-
+    
     private static String title      = "XJGE v" + XJGE.VERSION;
     private static Monitor monitor   = Hardware2.getPrimaryMonitor();
     private static final Mouse mouse = new Mouse();
@@ -175,7 +176,7 @@ public final class Window {
      * @param terminal the command-line terminal used to make state changes during runtime
      * @param debugInfo a series of collapsible menus containing debug information
      */
-    static void registerCallbacks(Terminal terminal, DebugInfo debugInfo) {
+    static void registerCallbacks(Terminal terminal, DebugInfo debugInfo, Noclip noclip) {
         glfwErrorReference = GLFWErrorCallback.create((error, description) -> {
             Logger.logWarning("GLFW Error: (" + error + ") " + GLFWErrorCallback.getDescription(description), null);
         });
@@ -240,29 +241,12 @@ public final class Window {
                 UI.processMouseInput(mouse);
             }
             
-            /*
-            float scaleX = (float) resolutionX / Window.getWidth();
-            float scaleY = (float) resolutionY / Window.getHeight();
-
-            cursorX = (double) (x * scaleX);
-            cursorY = (double) Math.abs((y * scaleY) - resolutionY);
-
-            if(noclipEnabled && !terminalEnabled) {
-                if(firstMouse) {
-                    freeCam.prevX = x;
-                    freeCam.prevY = y;
-                    firstMouse    = false;
-                }
-
-                freeCam.setDirection(x, y);
+            if(mouse.rightHeld) {
+                if(noclip.enabled && !terminal.show) noclip.setDirection(cursorPositionX, cursorPositionY);
             } else {
-                firstMouse = true;
+                noclip.prevX = cursorPositionX;
+                noclip.prevY = cursorPositionY;
             }
-            
-            viewports[0].mouse.cursorPosX = x;
-            viewports[0].mouse.cursorPosY = (Window.getHeight() - y);
-            viewports[0].processMouseInput();
-            */
         });
         
         glfwMouseButtonReference = GLFWMouseButtonCallback.create((window, button, action, mods) -> {
@@ -270,9 +254,15 @@ public final class Window {
             mouse.button            = button;
             
             switch(button) {
-                case GLFW_MOUSE_BUTTON_LEFT   -> mouse.leftHeld   = (action == GLFW_PRESS);
+                case GLFW_MOUSE_BUTTON_LEFT   -> mouse.leftHeld = (action == GLFW_PRESS);
                 case GLFW_MOUSE_BUTTON_MIDDLE -> mouse.middleHeld = (action == GLFW_PRESS);
-                case GLFW_MOUSE_BUTTON_RIGHT  -> mouse.rightHeld  = (action == GLFW_PRESS);
+                case GLFW_MOUSE_BUTTON_RIGHT  -> {
+                    mouse.rightHeld = (action == GLFW_PRESS);
+                    
+                    if(noclip.enabled && !terminal.show) {
+                        glfwSetInputMode(handle, GLFW_CURSOR, (mouse.rightHeld) ? GLFW_CURSOR_DISABLED : GLFW_CURSOR_NORMAL);
+                    }
+                }
             }
             
             if(debugInfo.show) debugInfo.processMouseInput(mouse);
@@ -291,13 +281,34 @@ public final class Window {
         });
         
         glfwKeyReference = GLFWKeyCallback.create((window, key, scancode, action, mods) -> {
-            if(debugModeEnabled && key == GLFW_KEY_F1 && action == GLFW_PRESS) {
-                if(mods == GLFW_MOD_SHIFT) terminal.show = !terminal.show;
-                else debugInfo.show = !debugInfo.show;
+            if(debugModeEnabled && action == GLFW_PRESS && mods == GLFW_MOD_SHIFT) {
+                switch(key) {
+                    case GLFW_KEY_F1 -> terminal.show = !terminal.show;
+                    case GLFW_KEY_F2 -> debugInfo.show = !debugInfo.show;
+                    case GLFW_KEY_F3 -> {
+                        noclip.enabled = !noclip.enabled;
+                        
+                        if(noclip.enabled) {
+                            viewports[0].prevCamera = viewports[0].currCamera;
+                            viewports[0].currCamera = noclip;
+                        } else {
+                            viewports[0].currCamera = viewports[0].prevCamera;
+                            glfwSetInputMode(handle, GLFW_CURSOR, cursorInputMode);
+                        }
+                    }
+                }
             }
             
-            if(terminal.show) terminal.processKeyInput(key, action, mods);
-            else UI.processKeyboardInput(key, action, mods);
+            if(terminal.show) {
+                terminal.processKeyInput(key, action, mods);
+            } else if(noclip.enabled) {
+                if(key == GLFW_KEY_W) noclip.pressed[0] = (action != GLFW_RELEASE);
+                if(key == GLFW_KEY_A) noclip.pressed[1] = (action != GLFW_RELEASE);
+                if(key == GLFW_KEY_S) noclip.pressed[2] = (action != GLFW_RELEASE);
+                if(key == GLFW_KEY_D) noclip.pressed[3] = (action != GLFW_RELEASE);
+            } else {
+                UI.processKeyboardInput(key, action, mods);
+            }
             
             mouse.mods = mods;
             
@@ -652,6 +663,7 @@ public final class Window {
      * @param value the new value to set the specified input option to 
      */
     public static void setInputMode(int mode, int value) {
+        if(mode == GLFW_CURSOR) cursorInputMode = value;
         glfwSetInputMode(handle, mode, value);
     }
     

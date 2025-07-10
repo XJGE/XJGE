@@ -98,7 +98,7 @@ public final class XJGE {
     private static Sound beep;
     private static Terminal terminal;
     private static DebugInfo debugInfo;
-    private static Noclip freeCam;
+    private static Noclip noclip;
     
     private static TreeMap<String, TerminalCommand> engineCommands     = new TreeMap<>();
     private static final TreeMap<String, TerminalCommand> userCommands = new TreeMap<>();
@@ -266,11 +266,11 @@ public final class XJGE {
         
         started    = true;
         glPrograms = Collections.unmodifiableMap(glPrograms);
-        freeCam    = new Noclip();
+        noclip     = new Noclip();
         terminal   = new Terminal(engineCommands);
         debugInfo  = new DebugInfo(engineIcons);
         
-        Window.registerCallbacks(terminal, debugInfo);
+        Window.registerCallbacks(terminal, debugInfo, noclip);
         Window.show();
         
         int cycles = 0;

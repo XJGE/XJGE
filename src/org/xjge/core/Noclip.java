@@ -15,6 +15,10 @@ import org.joml.Vector3f;
  */
 final class Noclip extends Camera {
 
+    boolean enabled;
+    
+    boolean[] pressed = new boolean[4];
+    
     private float speed = 0.25f * XJGE.noclipSpeedFactor;
     private float pitch;
     private float yaw               = -90f;
@@ -22,8 +26,6 @@ final class Noclip extends Camera {
     
     double prevX;
     double prevY;
-    
-    boolean[] pressed = new boolean[4];
     
     private final Vector3f tempFront = new Vector3f();
     private final Vector3f tempRight = new Vector3f();
