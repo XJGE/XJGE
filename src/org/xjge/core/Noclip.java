@@ -19,7 +19,7 @@ final class Noclip extends Camera {
     
     boolean[] pressed = new boolean[4];
     
-    private float speed = 0.25f * XJGE.noclipSpeedFactor;
+    float speed = 0.25f;
     private float pitch;
     private float yaw = -90f;
     private final float sensitivity = 0.10f;
@@ -67,15 +67,6 @@ final class Noclip extends Camera {
      */
     private float getChangeIntensity(double currValue, double prevValue) {
         return (float) (currValue - prevValue) * sensitivity;
-    }
-    
-    /**
-     * Allows the camera to traverse the scene quicker.
-     * 
-     * @param enable if true, the camera will move faster
-     */
-    void setSpeedBoostEnabled(boolean enable) {
-        speed = ((enable) ? 0.75f : 0.25f) * XJGE.noclipSpeedFactor;
     }
     
     /**

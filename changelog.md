@@ -30,6 +30,7 @@ All notable changes to this project will be documented in this file. The format 
 - Icon class to expose position, rotation, and scale fields for use by the public API.
 - Color class to be mutable, the colors defined by the default palette will remain immutable however
 - Debug info to include expandable/collapsible groups
+- Noclip camera controls, the scroll wheel now controls speed and the right mouse button must be held to change direction
 
 ### Removed
 - Update/Render methods from the Entity class.

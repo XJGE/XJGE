@@ -241,13 +241,13 @@ public final class Window {
                 UI.processMouseInput(mouse);
             }
             
-            if(noclip.enabled && !terminal.show) {
-                if(!mouse.previousClickValue) {
-                    noclip.prevX = cursorPositionX;
-                    noclip.prevY = cursorPositionY;
-                }
-                
-                if(mouse.rightHeld) noclip.setDirection(cursorPositionX, cursorPositionY);
+            if(!mouse.previousClickValue) {
+                noclip.prevX = cursorPositionX;
+                noclip.prevY = cursorPositionY;
+            }
+            
+            if(noclip.enabled && !terminal.show && mouse.rightHeld) {
+                noclip.setDirection(cursorPositionX, cursorPositionY);
             }
         });
         
@@ -275,8 +275,12 @@ public final class Window {
             mouse.scrollSpeedX = scrollSpeedX;
             mouse.scrollSpeedY = scrollSpeedY;
             
-            if(debugInfo.show) debugInfo.processMouseInput(mouse);
-            else               UI.processMouseInput(mouse);
+            if(!debugInfo.show && !noclip.enabled) {
+                UI.processMouseInput(mouse);
+            } else {
+                if(debugInfo.show) debugInfo.processMouseInput(mouse);
+                if(noclip.enabled) noclip.speed = XJGE.clampValue(0.01f, 1f, noclip.speed + ((float) mouse.scrollSpeedY * 0.01f));
+            }
             
             mouse.scrollSpeedX = 0;
             mouse.scrollSpeedY = 0;
@@ -313,63 +317,6 @@ public final class Window {
             }
             
             mouse.mods = mods;
-            
-            /*
-            if(key == GLFW_KEY_F1 && action == GLFW_PRESS) {
-                if(debugEnabled && mods == GLFW_MOD_SHIFT) {
-                    XJGE.terminalEnabled = !terminalEnabled;
-
-                    if(terminalEnabled) Input.setDeviceEnabled(KEY_MOUSE_COMBO, false);
-                    else                Input.revertKeyboardEnabledState();
-                } else {
-                    debugInfo.show = !debugInfo.show;
-                }
-
-                //if(debugInfo.show) debugInfo.updatePosition();
-            }
-
-            if(debugEnabled && key == GLFW_KEY_F2 && action == GLFW_PRESS) {
-                if(!terminalEnabled) {
-                    XJGE.noclipEnabled = !noclipEnabled;
-
-                    if(noclipEnabled) {
-                        Input.setDeviceEnabled(KEY_MOUSE_COMBO, false);
-                        glfwSetInputMode(Window.HANDLE, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
-                        //viewports[0].prevCamera = viewports[0].currCamera;
-                        //viewports[0].currCamera = freeCam;
-                    } else {
-                        Input.revertKeyboardEnabledState();
-                        glfwSetInputMode(Window.HANDLE, GLFW_CURSOR, Window.cursorMode);
-                        //viewports[0].currCamera = viewports[0].prevCamera;
-                    }
-                } else {
-                    Logger.logInfo("Freecam access denied, command terminal " + 
-                                   "is currently in use. Close the command " + 
-                                   "terminal and try again");
-                }
-            }
-
-            if(debugEnabled && key == GLFW_KEY_F3 && action == GLFW_PRESS) {
-                showLightSources = !showLightSources;
-            }
-
-            if(debugEnabled && key == GLFW_KEY_F4 && action == GLFW_PRESS) {
-                Audio.playSound(beep, null, false);
-            }
-
-            if(noclipEnabled && !terminalEnabled) {
-                if(key == GLFW_KEY_W) freeCam.pressed[0] = (action != GLFW_RELEASE);
-                if(key == GLFW_KEY_A) freeCam.pressed[1] = (action != GLFW_RELEASE);
-                if(key == GLFW_KEY_S) freeCam.pressed[2] = (action != GLFW_RELEASE);
-                if(key == GLFW_KEY_D) freeCam.pressed[3] = (action != GLFW_RELEASE);
-
-                freeCam.setSpeedBoostEnabled(mods == GLFW_MOD_SHIFT);
-            }
-
-            if(XJGE.terminalEnabled) terminal.processKeyInput(key, action, mods);
-            //TODO: re-enable input focus
-            //else                     viewports[0].processKeyInput(key, action, mods);
-            */
         });
         
         glfwSetErrorCallback(glfwErrorReference);
@@ -387,19 +334,6 @@ public final class Window {
      */
     static void show() {
         glfwShowWindow(handle);
-        
-        /**
-         * Hardware.findMonitors(); //returns list of monitor objects
-         * Hardware.findSpeakers(); //returns list of speaker objects
-         * Hardware.findGamepads(); //returns list of gamepad objects
-         * 
-         * XJGE.init("/assets/", "scenes.", debugEnabled);
-         * XJGE.setScene(Scene);
-         * XJGE.addEvent(Event);
-         * 
-         * Game -> XJGE (maintains loop, scene, and config settings)
-         * XJGE -> Window (maintains window, viewports, and glfw callbacks)
-         */
     }
     
     /**
