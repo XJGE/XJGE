@@ -19,7 +19,7 @@ class DGSystemInfo extends DebugGroup {
     }
     
     @Override
-    protected void update(double deltaMetric, int fps, int entityCount) {
+    protected void update(double deltaMetric, int fps, int entityCount, Noclip noclip) {
         for(int i = 0; i < output.size(); i++) {
             output.get(i).setLength(0);
             

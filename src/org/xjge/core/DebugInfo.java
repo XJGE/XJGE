@@ -29,11 +29,11 @@ final class DebugInfo {
         groups[0].expanded = true;
     }
     
-    void update(double deltaMetric, int fps, int entityCount) {
+    void update(double deltaMetric, int fps, int entityCount, Noclip noclip) {
         contentOffset = 0;
         
         for(int i = 0; i < groups.length; i++) {
-            contentOffset += groups[i].update(deltaMetric, i, contentOffset, fps, entityCount);
+            contentOffset += groups[i].update(deltaMetric, i, contentOffset, fps, entityCount, noclip);
         }
     }
     

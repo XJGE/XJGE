@@ -241,11 +241,13 @@ public final class Window {
                 UI.processMouseInput(mouse);
             }
             
-            if(mouse.rightHeld) {
-                if(noclip.enabled && !terminal.show) noclip.setDirection(cursorPositionX, cursorPositionY);
-            } else {
-                noclip.prevX = cursorPositionX;
-                noclip.prevY = cursorPositionY;
+            if(noclip.enabled && !terminal.show) {
+                if(!mouse.previousClickValue) {
+                    noclip.prevX = cursorPositionX;
+                    noclip.prevY = cursorPositionY;
+                }
+                
+                if(mouse.rightHeld) noclip.setDirection(cursorPositionX, cursorPositionY);
             }
         });
         

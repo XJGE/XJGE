@@ -21,7 +21,7 @@ final class Noclip extends Camera {
     
     private float speed = 0.25f * XJGE.noclipSpeedFactor;
     private float pitch;
-    private float yaw               = -90f;
+    private float yaw = -90f;
     private final float sensitivity = 0.10f;
     
     double prevX;

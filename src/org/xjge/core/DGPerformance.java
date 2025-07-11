@@ -8,13 +8,11 @@ import java.text.DecimalFormat;
  * @since 4.0.0
  */
 class DGPerformance extends DebugGroup {
-
-    private boolean ticked;
     
     private long memoryFree;
     private long memoryUsed;
     
-    private final DecimalFormat deltaFormat = new DecimalFormat("0");
+    private final DecimalFormat pattern = new DecimalFormat("0");
     
     DGPerformance(String title) {
         super(title);
@@ -22,7 +20,7 @@ class DGPerformance extends DebugGroup {
     }
     
     @Override
-    protected void update(double deltaMetric, int fps, int entityCount) {
+    protected void update(double deltaMetric, int fps, int entityCount, Noclip noclip) {
         memoryFree = Runtime.getRuntime().freeMemory() / (1024 * 1024);
         memoryUsed = (Runtime.getRuntime().totalMemory() - Runtime.getRuntime().freeMemory()) / (1024 * 1024);
         
@@ -31,7 +29,7 @@ class DGPerformance extends DebugGroup {
             
             switch(i) {
                 case 0 -> output.get(i).append("FPS:          ").append(fps);
-                case 1 -> output.get(i).append("DELTA TIME:   ").append(deltaFormat.format(deltaMetric * 1000)).append(" ms");
+                case 1 -> output.get(i).append("DELTA TIME:   ").append(pattern.format(deltaMetric * 1000)).append(" ms");
                 case 2 -> output.get(i).append("MEMORY:       ").append(memoryUsed).append(" MB (used) / ").append(memoryFree).append(" MB (free)");
                 case 3 -> output.get(i).append("ENTITY COUNT: ").append(entityCount);
             }

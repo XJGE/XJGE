@@ -52,11 +52,11 @@ abstract class DebugGroup {
         this.title = title;
     }
     
-    protected abstract void update(double deltaMetric, int fps, int entityCount);
+    protected abstract void update(double deltaMetric, int fps, int entityCount, Noclip noclip);
     
     protected abstract void render();
     
-    int update(double deltaMetric, int index, int contentOffset, int fps, int entityCount) {
+    int update(double deltaMetric, int index, int contentOffset, int fps, int entityCount, Noclip noclip) {
         longestStringLength  = 0;
         
         for(CharSequence line : output) {
@@ -82,7 +82,7 @@ abstract class DebugGroup {
         button.positionX = titleBar.positionX + titleBar.width - button.width;
         button.positionY = titleBar.positionY;
         
-        update(deltaMetric, fps, entityCount);
+        update(deltaMetric, fps, entityCount, noclip);
         
         return contentArea.height;
     }

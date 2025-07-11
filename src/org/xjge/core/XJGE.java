@@ -292,7 +292,7 @@ public final class XJGE {
             while(delta >= TARGET_DELTA) {
                 Input.update(TARGET_DELTA, deltaMetric);
                 if(terminal.show) terminal.update();
-                if(debugInfo.show) debugInfo.update(deltaMetric, fps, entityCount);
+                if(debugInfo.show) debugInfo.update(deltaMetric, fps, entityCount, noclip);
                 
                 if(tick(20)) {
                     deltaMetric = delta;
