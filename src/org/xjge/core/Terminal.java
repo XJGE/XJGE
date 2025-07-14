@@ -56,14 +56,14 @@ final class Terminal implements PropertyChangeListener {
     private String prevTyped  = "";
     
     private final StringBuilder typed = new StringBuilder();
-    private final Timer timer         = new Timer(1, 20, this);
+    private final StopWatch stopWatch = new StopWatch(1, 20, this);
     
     private final HighlightSyntax highlight = new HighlightSyntax();
     
     private static final Rectangle commandLine   = new Rectangle();
     private static final Rectangle commandOutput = new Rectangle();
     
-    TreeMap<String, TerminalCommand> commands;
+    private final TreeMap<String, TerminalCommand> commands;
     private final ArrayList<String> cmdHistory      = new ArrayList<>();
     private final TerminalOutput[] cmdOutput        = new TerminalOutput[5];
     private final HashMap<Integer, Integer> charPos = new HashMap<>();
@@ -107,21 +107,8 @@ final class Terminal implements PropertyChangeListener {
      * Processes input and updates the command terminals interface.
      */
     void update() {
-        timer.update();
+        stopWatch.update();
         if(XJGE.tick(20) && cursorIdle) cursorBlink = !cursorBlink; 
-        
-        if(!prevTyped.equals(typed.toString())) {
-            suggest = commands.keySet().stream().anyMatch(name -> name.regionMatches(0, typed.toString(), 0, typed.length())) && typed.length() > 0;
-            
-            if(suggest) {
-                suggestion = commands.keySet().stream()
-                        .filter(name -> name.regionMatches(0, typed.toString(), 0, typed.length()))
-                        .findFirst()
-                        .get();
-            }
-        }
-        
-        prevTyped = typed.toString();
     }
     
     /**
@@ -167,11 +154,11 @@ final class Terminal implements PropertyChangeListener {
      * @param mods a value supplied by GLFW denoting whether any mod keys where 
      *             held (such as shift or control)
      */
-    void processKeyInput(int key, int action, int mods) {
+    void processKeyboardInput(int key, int action, int mods) {
         if(action == GLFW_PRESS || action == GLFW_REPEAT) {
             cursorIdle  = false;
             cursorBlink = true;
-            timer.restart();
+            stopWatch.restart();
             
             Input.keyChars.forEach((k, c) -> {
                 if(key == k) insertChar(c.getChar((mods == GLFW_MOD_SHIFT)));
@@ -247,7 +234,7 @@ final class Terminal implements PropertyChangeListener {
                 }
             }
         } else {
-            timer.start();
+            stopWatch.start();
         }
     }
     
@@ -269,6 +256,15 @@ final class Terminal implements PropertyChangeListener {
             }
         }
         
+        suggest = commands.keySet().stream().anyMatch(name -> name.startsWith(typed.toString())) && !typed.toString().isEmpty();
+
+        if(suggest) {
+            suggestion = commands.keySet().stream()
+                    .filter(name -> name.regionMatches(0, typed.toString(), 0, typed.length()))
+                    .findFirst()
+                    .get();
+        }
+        
         scrollX();
     }
     
@@ -279,12 +275,7 @@ final class Terminal implements PropertyChangeListener {
      * @return true if the command is recognized by the terminal
      */
     private boolean validate() {
-        if((typed.toString().length() > suggestion.length())) {
-            return typed.toString().regionMatches(0, suggestion, 0, suggestion.length()) &&
-                   typed.toString().charAt(suggestion.length()) == ' ';
-        } else {
-            return typed.toString().regionMatches(0, suggestion, 0, suggestion.length());
-        }
+        return typed.toString().startsWith(suggestion);
     }
     
     /**
@@ -385,6 +376,7 @@ final class Terminal implements PropertyChangeListener {
         }
         
         executed = true;
+        suggest  = false;
     }
     
     /**

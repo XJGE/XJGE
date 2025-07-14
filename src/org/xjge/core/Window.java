@@ -306,7 +306,7 @@ public final class Window {
             }
             
             if(terminal.show) {
-                terminal.processKeyInput(key, action, mods);
+                terminal.processKeyboardInput(key, action, mods);
             } else if(noclip.enabled) {
                 if(key == GLFW_KEY_W) noclip.pressed[0] = (action != GLFW_RELEASE);
                 if(key == GLFW_KEY_A) noclip.pressed[1] = (action != GLFW_RELEASE);

@@ -1,112 +1,144 @@
 package org.xjge.core;
 
+import java.beans.PropertyChangeListener;
+import java.util.List;
+
 /**
- * Created: Feb 5, 2022
+ * Created: May 7, 2021
  * <p>
- * Provides a simple timing mechanism that exhibits greater accuracy than 
- * {@link Game#tick(int)} alone by capturing the timestamp of the initial game 
- * tick from which {@link tick(int, int, boolean)} was called and comparing it 
- * to subsequent ticks until the specified number of cycles have passed.
+ * A simple monotonic timing mechanism. Useful for game events and other 
+ * systems that require specialized timing intervals.
  * 
  * @author J Hoffman
  * @since  2.0.0
  */
 public class StopWatch {
-
-    int startTick;
-    int currTime;
     
-    boolean startTickSet;
+    private final int time;
+    private final int speed;
+    
+    private boolean finished;
+    private boolean start;
+    
+    private final Timer timer = new Timer();
+    private final Observable observable = new Observable(this);
     
     /**
-     * Simplified version of {@link tick(int, int, boolean)} that mimics the 
-     * functionality of the {@link Game#tick(int)} method but with improved 
-     * accuracy.
+     * Creates a new timer object that will step forward every time the 
+     * specified number of update cycles have passed.
      * 
-     * @param speed the number of game ticks to wait before changing the time 
-     *              value. A single tick typically takes 16 milliseconds.
+     * @param time the total number of intervals the timer must complete before 
+     *             it is finished
+     * @param speed the number of game ticks to wait before stepping forward. A 
+     *              single tick typically takes 16 milliseconds.
      * 
-     * @return true every time the specified number of cycles has been reached
+     * @see Game#tick(int)
      */
-    public boolean tick(int speed) {
-        return tick(2, speed, false);
+    public StopWatch(int time, int speed) {
+        this.time  = time;
+        this.speed = speed;
+        
+        timer.currentTime = time;
     }
     
     /**
-     * Returns true anytime the specified number of update iterations (or 
-     * cycles) have been reached following the current game tick this method 
-     * was initially called at. 
-     * <p>
-     * The number of ticks (provided through 
-     * {@link getTime()}) will reset upon reaching the value specified in the 
-     * {@code time} argument. However, if {@code false} is passed to the 
-     * {@code increment} argument, it will instead reset upon reaching zero.
-     * <p>
-     * NOTE: The value of {@code time} is zero-inclusive. As such, passing a 
-     * value of five (counting down) will actually start at four, and reset 
-     * after zero has been reached. This method will always return true on the 
-     * first call.
+     * Creates a new timer object that will step forward every time the 
+     * specified number of update cycles have passed. This constructor will 
+     * notify an observer once the timer has finished.
      * 
-     * @param time the total number of intervals the timer must complete before 
-     *             it restarts
-     * @param speed the number of game ticks to wait before changing the time 
-     *              value. A single tick typically takes 16 milliseconds.
-     * @param increment if true, the stopwatch will count upwards. Otherwise it 
-     *                  will count down.
+     * @param time the total number of steps the timer must complete before it 
+     *             is finished
+     * @param speed the number of update ticks to wait before stepping forward. 
+     *              A single tick typically takes a millisecond.
+     * @param observer the object waiting for this timer to finish
      * 
-     * @return true every time the specified number of cycles has been reached
+     * @see Observable
+     * @see Game#tick(int)
      */
-    public boolean tick(int time, int speed, boolean increment) {
-        if(startTickSet) {
-            if(increment) {
-                if(currTime == ((time < 1) ? 1 : time)) {
-                    startTickSet = false;
-                    currTime     = 0;
-                    return false;
-                }
+    public StopWatch(int time, int speed, PropertyChangeListener observer) {
+        this.time   = time;
+        this.speed  = speed;
+        
+        timer.currentTime = time;
+        observable.properties.put("finished", finished);
+        observable.addObserver(observer);
+    }
+    
+    /**
+     * Creates a new timer object that will step forward every time the 
+     * specified number of update cycles have passed. This constructor will 
+     * notify multiple observers once the timer has finished.
+     * 
+     * @param time the total number of steps the timer must complete before it 
+     *             is finished
+     * @param speed the number of update ticks to wait before stepping forward. 
+     *              A single tick typically takes a millisecond.
+     * @param observers the objects waiting for this timer to finish
+     * 
+     * @see Observable
+     * @see Game#tick(int)
+     */
+    public StopWatch(int time, int speed, List<PropertyChangeListener> observers) {
+        this.time   = time;
+        this.speed  = speed;
+        
+        timer.currentTime = time;
+        observable.properties.put("finished", finished);
+        observers.forEach(observer -> observable.addObserver(observer));
+    }
+    
+    /**
+     * Starts the timer.
+     */
+    public void start() { start = true; }
+    
+    /**
+     * Stops the timer. Doing so will pause it at its current time.
+     */
+    public void stop() { start = false; }
+    
+    /**
+     * Resets the time of the timer to its initial duration.
+     */
+    public void reset() { timer.currentTime = time; }
+    
+    /**
+     * Updates the timer. It is expected that implementing objects using a 
+     * timer component will supply some sort of {@code update()} method as part 
+     * of a larger logic loop through which this can be called.
+     */
+    public void update() {
+        if(start) {
+            if(timer.currentTime != 0 && !finished) {
+                timer.tick(time, speed, false);
             } else {
-                if(currTime == -1) {
-                    startTickSet = false;
-                    currTime     = time - 1;
-                    return false;
-                }
+                finished = true;
+                observable.notifyObservers("finished", finished);
             }
         }
+    }
+    
+    /**
+     * Sets the timer back to its initial state and starts ticking again. Not 
+     * to be confused with {@link reset()} which will only effect the timers 
+     * time value. Restarting a timer will notify its observers once it has 
+     * finished even if it had finished previously.
+     */
+    public void restart() {
+        finished = false;
+        start    = true;
         
-        if(!startTickSet) {
-            startTick    = XJGE.getTickCount();
-            startTickSet = true;
-            currTime     = (!increment) ? time - 1 : 0;
-            return true;
-        }
-        
-        int diff = (startTick > XJGE.getTickCount()) 
-                 ? (XJGE.getTickCount() + XJGE.TICKS_PER_HOUR) - startTick
-                 : XJGE.getTickCount() - startTick;
-        
-        if(diff % speed == 0) {
-            currTime = (increment) ? currTime + 1 : currTime - 1;
-            return (increment) ? currTime != time : currTime != -1;
-        }
-        
-        return false;
+        observable.notifyObservers("finished", finished);
+        reset();
     }
     
     /**
      * Obtains the current value of the time field.
      * 
-     * @return the current time the stopwatch is at
+     * @return the current time the timer is at
      */
     public int getTime() {
-        return currTime;
-    }
-    
-    /**
-     * Resets the stopwatch. The {@link getTime()} method will return its 
-     * starting value following the next call to {@link tick(int, int, boolean)}.
-     */
-    public void reset() {
-        startTickSet = false;
+        return timer.currentTime;
     }
     
 }

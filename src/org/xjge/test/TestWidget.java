@@ -4,7 +4,7 @@ import java.util.Map;
 import org.xjge.core.Mouse;
 import org.xjge.ui.Font;
 import org.xjge.core.SplitScreenType;
-import org.xjge.core.StopWatch;
+import org.xjge.core.Timer;
 import org.xjge.core.XJGE;
 import org.xjge.graphics.Color;
 import org.xjge.graphics.GLProgram;
@@ -23,7 +23,7 @@ import org.xjge.ui.Widget;
 public class TestWidget extends Widget {
     
     Font font = new Font("font_source_code_pro.ttf", 32);
-    StopWatch timer = new StopWatch();
+    Timer timer = new Timer();
     TextEffectTest testEffect = new TextEffectTest();
     Polygon polygon = new Polygon(6, 40);
     Rectangle rectangle = new Rectangle(600, 150, 40, 40);

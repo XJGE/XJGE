@@ -3,7 +3,7 @@ package org.xjge.graphics;
 import java.util.ArrayList;
 import org.joml.Vector2f;
 import org.joml.Vector2i;
-import org.xjge.core.StopWatch;
+import org.xjge.core.Timer;
 import org.xjge.core.XJGE;
 
 /**
@@ -23,7 +23,7 @@ public class SpriteAnimation {
     
     private final int initialSpeed;
     
-    private final StopWatch stopWatch = new StopWatch();
+    private final Timer stopWatch = new Timer();
     public ArrayList<Vector2i> frames = new ArrayList<>();
     
     /**
