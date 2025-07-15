@@ -2,7 +2,6 @@ package org.xjge.core;
 
 import org.xjge.graphics.Texture;
 import java.beans.PropertyChangeListener;
-import org.xjge.core.Terminal.TCCLS;
 import org.xjge.graphics.GLDataType;
 import org.xjge.graphics.GLProgram;
 import org.xjge.graphics.GLShader;

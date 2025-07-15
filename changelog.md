@@ -28,9 +28,11 @@ All notable changes to this project will be documented in this file. The format 
 - Name of Split enum to SplitScreenType for clarity.
 - Window class, massive refactor including moving some features like viewport manipulation from XJGE into Window class.
 - Icon class to expose position, rotation, and scale fields for use by the public API.
-- Color class to be mutable, the colors defined by the default palette will remain immutable however
-- Debug info to include expandable/collapsible groups
-- Noclip camera controls, the scroll wheel now controls speed and the right mouse button must be held to change direction
+- Color class to be mutable, the colors defined by the default palette will remain immutable however.
+- Debug info to include expandable/collapsible groups.
+- Noclip camera controls, the scroll wheel now controls speed and the right mouse button must be held to change direction.
+- Fixed bug that caused terminal commands to fail validation after being recalled from memory.
+- Renamed StopWatch class to Timer.
 
 ### Removed
 - Update/Render methods from the Entity class.
@@ -42,7 +44,8 @@ All notable changes to this project will be documented in this file. The format 
 - Game class, existing features like scene/state changes moved to XJGE class.
 - Alternate constructor variants for Icon and Polygon classes.
 - Public access to model matrix in Icon class.
-- CLS command from terminal
+- CLS command from terminal.
+- Legacy Timer class since the code in the new one (previously StopWatch) proved more useful during development.
 
 ## [3.1.0] - 2025-01-03
 

@@ -2,11 +2,8 @@ package org.xjge.core;
 
 import org.xjge.ui.Rectangle;
 import org.xjge.graphics.Color;
-import java.beans.PropertyChangeEvent;
-import java.beans.PropertyChangeListener;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.TreeMap;
 import org.joml.Vector2i;
 import static org.lwjgl.glfw.GLFW.*;
@@ -33,19 +30,17 @@ import org.xjge.ui.TextEffect;
  * @author J Hoffman
  * @since  2.0.0
  */
-final class Terminal implements PropertyChangeListener {
+final class Terminal {
 
     boolean show;
     
+    private int idleTime;
     private int cursorIndex;
-    private int commandIndex;
-    private static int shiftElements = -1;
+    private int historyIndex;
+    private int shiftOutput = -1;
     private final int glyphAdvance;
-    private static int outputTop;
     
-    private boolean cursorIdle;
     private boolean cursorBlink;
-    private boolean suggest;
     private boolean executed = true;
     
     private final Vector2i caretPosition   = new Vector2i(0, DEFAULT_FONT_SIZE / 4);
@@ -55,16 +50,15 @@ final class Terminal implements PropertyChangeListener {
     private String suggestion = "";
     
     private final StringBuilder typed = new StringBuilder();
-    private final StopWatch stopWatch = new StopWatch(1, 20, this);
     
     private final HighlightSyntax highlight = new HighlightSyntax();
     
-    private static final Rectangle commandLine   = new Rectangle();
-    private static final Rectangle commandOutput = new Rectangle();
+    private static final Rectangle commandLine = new Rectangle();
+    private static final Rectangle outputArea  = new Rectangle();
     
     private final TreeMap<String, TerminalCommand> commands;
-    private final ArrayList<String> cmdHistory      = new ArrayList<>();
-    private final TerminalOutput[] cmdOutput        = new TerminalOutput[5];
+    private final ArrayList<String> commandHistory  = new ArrayList<>();
+    private final TerminalOutput[] commandOutput    = new TerminalOutput[5];
     private final HashMap<Integer, Integer> charPos = new HashMap<>();
     
     private final class HighlightSyntax extends TextEffect {
@@ -97,7 +91,7 @@ final class Terminal implements PropertyChangeListener {
     Terminal(TreeMap<String, TerminalCommand> commands) {
         this.commands = commands;
         
-        glyphAdvance = (int) placeholder.getGlyphAdvance('>');
+        glyphAdvance = placeholder.getGlyphAdvance('>');
         cursorPosition.x  = glyphAdvance;
         commandPosition.x = glyphAdvance;
     }
@@ -124,8 +118,8 @@ final class Terminal implements PropertyChangeListener {
     private void execute(String command) {
         ArrayList<String> args = new ArrayList<>();
         
-        cmdHistory.add(command);
-        if(cmdHistory.size() == 33) cmdHistory.remove(0);
+        commandHistory.add(command);
+        if(commandHistory.size() == 33) commandHistory.remove(0);
         
         String name;
         
@@ -160,21 +154,20 @@ final class Terminal implements PropertyChangeListener {
         }
         
         if(output != null) {
-            shiftElements = (shiftElements == 4) ? 4 : shiftElements + 1;
+            shiftOutput = (shiftOutput == 4) ? 4 : shiftOutput + 1;
             
-            for(int i = shiftElements; i > -1; i--) {
+            for(int i = shiftOutput; i > -1; i--) {
                 if(i > 0) {
-                    if(cmdOutput[i - 1] != null) {
-                        cmdOutput[i] = cmdOutput[i - 1];
+                    if(commandOutput[i - 1] != null) {
+                        commandOutput[i] = commandOutput[i - 1];
                     }
                 } else {
-                    cmdOutput[i] = new TerminalOutput(placeholder.wrap(output.text, Window.getWidth()), output.color);
+                    commandOutput[i] = new TerminalOutput(placeholder.wrap(output.text, Window.getWidth()), output.color);
                 }
             }
         }
         
         executed = true;
-        suggest  = false;
     }
     
     /**
@@ -252,10 +245,11 @@ final class Terminal implements PropertyChangeListener {
      * Processes input and updates the command terminals interface.
      */
     void update() {
-        stopWatch.update();
-        if(XJGE.tick(20) && cursorIdle) cursorBlink = !cursorBlink;
+        if(XJGE.tick(20)) {
+            if(idleTime < 1) idleTime++;
+            else             cursorBlink = !cursorBlink;
+        }
         
-        suggest    = false;
         suggestion = "";
         
         if(typed.length() > 0) {
@@ -272,7 +266,6 @@ final class Terminal implements PropertyChangeListener {
                 }
 
                 if(match) {
-                    suggest    = true;
                     suggestion = command;
                     break;
                 }
@@ -288,30 +281,29 @@ final class Terminal implements PropertyChangeListener {
         commandLine.height = placeholder.size + 2;
         commandLine.render(1, Color.BLACK);
         
-        commandOutput.width  = Window.getWidth();
-        commandOutput.height = outputTop;
-        commandOutput.render(0.5f, Color.BLACK);
+        outputArea.positionY = commandLine.height;
+        outputArea.width     = Window.getWidth();
+        outputArea.height    = 140;
+        outputArea.render(0.5f, Color.BLACK);
         
         placeholder.drawString(">", caretPosition.x, caretPosition.y, Color.WHITE, 1f);
         
-        for(int i = 0; i <= shiftElements; i++) {
+        for(int i = 0; i <= shiftOutput; i++) {
             if(executed) {
                 
             }
-            //placeholder.drawOutput(cmdOutput, cmdOutput[i], i, executed, opaqueRectangles[i]);
+            //placeholder.drawOutput(commandOutput, commandOutput[i], i, executed, opaqueRectangles[i]);
         }
         
         executed = false;
         
-        if(suggest) placeholder.drawString(suggestion, commandPosition.x, commandPosition.y, Color.GRAY, 1f);
+        if(!suggestion.isEmpty()) placeholder.drawString(suggestion, commandPosition.x, commandPosition.y, Color.GRAY, 1f);
         if(cursorBlink) placeholder.drawString("_", cursorPosition.x, cursorPosition.y, Color.WHITE, 1f);
         
         if(typed.length() > 0) {
             if(validate()) placeholder.drawString(typed.toString(), commandPosition.x, commandPosition.y, highlight);
             else           placeholder.drawString(typed.toString(), commandPosition.x, commandPosition.y, Color.WHITE, 1f);
         }
-        
-        ErrorUtils.checkGLError();
     }
     
     /**
@@ -325,9 +317,8 @@ final class Terminal implements PropertyChangeListener {
      */
     void processKeyboardInput(int key, int action, int mods) {
         if(action == GLFW_PRESS || action == GLFW_REPEAT) {
-            cursorIdle  = false;
+            idleTime    = 0;
             cursorBlink = true;
-            stopWatch.restart();
             
             Input.keyChars.forEach((k, c) -> {
                 if(key == k) insertChar(c.getChar((mods == GLFW_MOD_SHIFT)));
@@ -373,18 +364,18 @@ final class Terminal implements PropertyChangeListener {
                 }
                 
                 case GLFW_KEY_DOWN -> {
-                    if(!cmdHistory.isEmpty()) {
-                        commandIndex = (commandIndex >= cmdHistory.size() - 1) ? cmdHistory.size() - 1 : commandIndex + 1;
+                    if(!commandHistory.isEmpty()) {
+                        historyIndex = (historyIndex >= commandHistory.size() - 1) ? commandHistory.size() - 1 : historyIndex + 1;
                         charPos.clear();
-                        if(cmdHistory.get(commandIndex) != null) autoComplete(cmdHistory.get(commandIndex));
+                        if(commandHistory.get(historyIndex) != null) autoComplete(commandHistory.get(historyIndex));
                     }
                 }
                 
                 case GLFW_KEY_UP -> {
-                    if(!cmdHistory.isEmpty()) {
-                        commandIndex = (commandIndex == 0) ? 0 : commandIndex - 1;
+                    if(!commandHistory.isEmpty()) {
+                        historyIndex = (historyIndex == 0) ? 0 : historyIndex - 1;
                         charPos.clear();
-                        if(cmdHistory.get(commandIndex) != null) autoComplete(cmdHistory.get(commandIndex));
+                        if(commandHistory.get(historyIndex) != null) autoComplete(commandHistory.get(historyIndex));
                     }
                 }
                 
@@ -392,18 +383,16 @@ final class Terminal implements PropertyChangeListener {
                     execute(typed.toString());
                     typed.delete(0, typed.length());
                     cursorIndex  = 0;
-                    commandIndex = cmdHistory.size();
+                    historyIndex = commandHistory.size();
                     caretPosition.x  = 0;
                     cursorPosition.x = glyphAdvance;
                     charPos.clear();
                 }
                 
                 case GLFW_KEY_TAB -> {
-                    if(suggest) autoComplete(suggestion);
+                    if(!suggestion.isEmpty()) autoComplete(suggestion);
                 }
             }
-        } else {
-            stopWatch.start();
         }
     }
     
@@ -412,12 +401,7 @@ final class Terminal implements PropertyChangeListener {
      */
     void freeBuffers() {
         commandLine.delete();
-        commandOutput.delete();
-    }
-    
-    @Override
-    public void propertyChange(PropertyChangeEvent evt) {
-        cursorIdle = (Boolean) evt.getNewValue();
+        outputArea.delete();
     }
     
 }
