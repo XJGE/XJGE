@@ -42,6 +42,7 @@ All notable changes to this project will be documented in this file. The format 
 - Game class, existing features like scene/state changes moved to XJGE class.
 - Alternate constructor variants for Icon and Polygon classes.
 - Public access to model matrix in Icon class.
+- CLS command from terminal
 
 ## [3.1.0] - 2025-01-03
 

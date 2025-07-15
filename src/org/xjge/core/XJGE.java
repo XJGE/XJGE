@@ -222,7 +222,6 @@ public final class XJGE {
         Light.setIconTexture(engineIcons);
         
         engineCommands = new TreeMap<>() {{
-            put("cls",                  new TCCLS());
             put("help",                 new TCHelp());
             put("setFullscreen",        new TCSetFullscreen());
             put("setMonitor",           new TCSetMonitor());

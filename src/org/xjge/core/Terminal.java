@@ -420,33 +420,4 @@ final class Terminal implements PropertyChangeListener {
         cursorIdle = (Boolean) evt.getNewValue();
     }
     
-    /**
-     * Clears the terminal output.
-     */
-    static final class TCCLS extends TerminalCommand {
-        
-        /**
-         * Creates a new instance of the cls command.
-         */
-        TCCLS() {
-            super("Clears the terminal output.",
-
-                  "Simply type cls to use. This command contains no additional " + 
-                  "arguments.",
-
-                  "cls");
-        }
-
-        @Override
-        public void execute(List<String> args) {
-            shiftElements = -1;
-            outputTop     = 0;
-            
-            commandOutput.positionX = 0;
-            commandOutput.positionY = 0;
-            commandOutput.width     = 0;
-            commandOutput.height    = 0;
-        }
-    }
-    
 }
