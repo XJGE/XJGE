@@ -53,7 +53,6 @@ final class Terminal implements PropertyChangeListener {
     private final Vector2i commandPosition = new Vector2i(0, DEFAULT_FONT_SIZE / 4);
     
     private String suggestion = "";
-    private String prevTyped  = "";
     
     private final StringBuilder typed = new StringBuilder();
     private final StopWatch stopWatch = new StopWatch(1, 20, this);
@@ -104,11 +103,181 @@ final class Terminal implements PropertyChangeListener {
     }
     
     /**
+     * Completes typing the suggestion provided by the terminal.
+     * 
+     * @param suggestion the command suggestion to complete
+     */
+    private void autoComplete(String suggestion) {
+        typed.delete(0, typed.length());
+        cursorIndex = 0;
+        
+        for(Character c : suggestion.toCharArray()) {    
+            insertChar(c);
+        }
+    }
+    
+    /**
+     * Executes a terminal command.
+     * 
+     * @param command the command parsed from the typed string
+     */
+    private void execute(String command) {
+        ArrayList<String> args = new ArrayList<>();
+        
+        cmdHistory.add(command);
+        if(cmdHistory.size() == 33) cmdHistory.remove(0);
+        
+        String name;
+        
+        if(command.contains(" ")) {
+            name = command.substring(0, command.indexOf(" "));
+            
+            String s1 = command.substring(command.indexOf(" "), command.length()).replaceAll(" ", "");
+            String s2 = "";
+            
+            for(int i = 0; i < s1.length(); i++) {
+                char c = s1.charAt(i);
+                
+                if(c != ',') s2 += c;
+                
+                if(c == ',' || i == s1.length() - 1) {
+                    args.add(s2);
+                    s2 = "";
+                }
+            }
+        } else {
+            name = command;
+        }
+        
+        TerminalOutput output;
+        
+        if(commands.containsKey(name)) {
+            commands.get(name).execute(args);
+            output = commands.get(name).getOutput();
+            commands.get(name).output = null; //Reset the state of the ouput.
+        } else {
+            output = new TerminalOutput("ERROR: Command not recognized. Check syntax or type \"help\".\n", Color.RED);
+        }
+        
+        if(output != null) {
+            shiftElements = (shiftElements == 4) ? 4 : shiftElements + 1;
+            
+            for(int i = shiftElements; i > -1; i--) {
+                if(i > 0) {
+                    if(cmdOutput[i - 1] != null) {
+                        cmdOutput[i] = cmdOutput[i - 1];
+                    }
+                } else {
+                    cmdOutput[i] = new TerminalOutput(placeholder.wrap(output.text, Window.getWidth()), output.color);
+                }
+            }
+        }
+        
+        executed = true;
+        suggest  = false;
+    }
+    
+    /**
+     * Inserts a character into the command line.
+     * 
+     * @param c the typed character to add
+     */
+    private void insertChar(char c) {
+        typed.insert(cursorIndex, c);
+        charPos.put(cursorIndex, (cursorIndex * glyphAdvance) + glyphAdvance);
+        cursorPosition.x = charPos.get(cursorIndex) + glyphAdvance;
+        
+        cursorIndex++;
+        
+        if(cursorIndex != typed.length()) {
+            for(int i = cursorIndex; i < typed.length(); i++) {
+                charPos.put(i, (i * glyphAdvance) + glyphAdvance);
+            }
+        }
+        
+        scrollX();
+    }
+    
+    /**
+     * Offsets the visible portion of the string typed in the terminal by the 
+     * position of the cursor. Used to navigate large strings that extend 
+     * beyond the windows width.
+     */
+    private void scrollX() {
+        if(typed.length() > 0) {
+            int xOffset = 0;
+            
+            if(charPos.get(charPos.size() - 1) + glyphAdvance > Window.getWidth() - (glyphAdvance * 2)) {
+                xOffset = (Window.getWidth() - glyphAdvance) - (charPos.get(charPos.size() - 1) + glyphAdvance);
+                
+                if(cursorPosition.x - 8 <= Math.abs(xOffset)) {
+                    int x = (cursorIndex < 1) ? 0 : glyphAdvance;
+                    
+                    xOffset -= ((cursorPosition.x - (glyphAdvance + x)) - Math.abs(xOffset));
+                }
+            }
+            
+            cursorPosition.x += xOffset;
+            caretPosition.x   = xOffset;
+            commandPosition.x = xOffset + glyphAdvance;
+        } else {
+            charPos.clear();
+        }
+    }
+    
+    /**
+     * Determines if the string in the command line matches a supported 
+     * command.
+     * 
+     * @return true if the command is recognized by the terminal
+     */
+    private boolean validate() {
+        if(typed.length() == 0) return false;
+        
+        int spaceIndex = -1;
+        
+        for(int i = 0; i < typed.length(); i++) {
+            if(typed.charAt(i) == ' ') {
+                spaceIndex = i;
+                break;
+            }
+        }
+        
+        String commandName = (spaceIndex == -1) ? typed.toString() : typed.substring(0, spaceIndex);
+        
+        return commands.containsKey(commandName);
+    }
+    
+    /**
      * Processes input and updates the command terminals interface.
      */
     void update() {
         stopWatch.update();
-        if(XJGE.tick(20) && cursorIdle) cursorBlink = !cursorBlink; 
+        if(XJGE.tick(20) && cursorIdle) cursorBlink = !cursorBlink;
+        
+        suggest    = false;
+        suggestion = "";
+        
+        if(typed.length() > 0) {
+            for(String command : commands.keySet()) {
+                if(command.length() < typed.length()) continue;
+
+                boolean match = true;
+                
+                for(int i = 0; i < typed.length(); i++) {
+                    if(command.charAt(i) != typed.charAt(i)) {
+                        match = false;
+                        break;
+                    }
+                }
+
+                if(match) {
+                    suggest    = true;
+                    suggestion = command;
+                    break;
+                }
+            }
+        }
     }
     
     /**
@@ -236,147 +405,6 @@ final class Terminal implements PropertyChangeListener {
         } else {
             stopWatch.start();
         }
-    }
-    
-    /**
-     * Inserts a character into the command line.
-     * 
-     * @param c the typed character to add
-     */
-    private void insertChar(char c) {
-        typed.insert(cursorIndex, c);
-        charPos.put(cursorIndex, (cursorIndex * glyphAdvance) + glyphAdvance);
-        cursorPosition.x = charPos.get(cursorIndex) + glyphAdvance;
-        
-        cursorIndex++;
-        
-        if(cursorIndex != typed.length()) {
-            for(int i = cursorIndex; i < typed.length(); i++) {
-                charPos.put(i, (i * glyphAdvance) + glyphAdvance);
-            }
-        }
-        
-        suggest = commands.keySet().stream().anyMatch(name -> name.startsWith(typed.toString())) && !typed.toString().isEmpty();
-
-        if(suggest) {
-            suggestion = commands.keySet().stream()
-                    .filter(name -> name.regionMatches(0, typed.toString(), 0, typed.length()))
-                    .findFirst()
-                    .get();
-        }
-        
-        scrollX();
-    }
-    
-    /**
-     * Determines if the string in the command line matches a supported 
-     * command.
-     * 
-     * @return true if the command is recognized by the terminal
-     */
-    private boolean validate() {
-        return typed.toString().startsWith(suggestion);
-    }
-    
-    /**
-     * Completes typing the suggestion provided by the terminal.
-     * 
-     * @param suggestion the command suggestion to complete
-     */
-    private void autoComplete(String suggestion) {
-        typed.delete(0, typed.length());
-        cursorIndex = 0;
-        
-        for(Character c : suggestion.toCharArray()) {    
-            insertChar(c);
-        }
-    }
-    
-    /**
-     * Offsets the visible portion of the string typed in the terminal by the 
-     * position of the cursor. Used to navigate large strings that extend 
-     * beyond the windows width.
-     */
-    private void scrollX() {
-        if(typed.length() > 0) {
-            int xOffset = 0;
-            
-            if(charPos.get(charPos.size() - 1) + glyphAdvance > Window.getWidth() - (glyphAdvance * 2)) {
-                xOffset = (Window.getWidth() - glyphAdvance) - (charPos.get(charPos.size() - 1) + glyphAdvance);
-                
-                if(cursorPosition.x - 8 <= Math.abs(xOffset)) {
-                    int x = (cursorIndex < 1) ? 0 : glyphAdvance;
-                    
-                    xOffset -= ((cursorPosition.x - (glyphAdvance + x)) - Math.abs(xOffset));
-                }
-            }
-            
-            cursorPosition.x += xOffset;
-            caretPosition.x   = xOffset;
-            commandPosition.x = xOffset + glyphAdvance;
-        } else {
-            charPos.clear();
-        }
-    }
-    
-    /**
-     * Executes a terminal command.
-     * 
-     * @param command the command parsed from the typed string
-     */
-    private void execute(String command) {
-        String name = "";
-        ArrayList<String> args = new ArrayList<>();
-        
-        cmdHistory.add(command);
-        if(cmdHistory.size() == 33) cmdHistory.remove(0);
-        
-        if(suggestion.length() > 0 && command.regionMatches(0, suggestion, 0, suggestion.length())) {
-            name = command.substring(0, suggestion.length());
-        }
-        
-        if(command.contains(" ")) {
-            String s1 = command.substring(command.indexOf(" "), command.length()).replaceAll(" ", "");
-            String s2 = "";
-            
-            for(int i = 0; i < s1.length(); i++) {
-                char c = s1.charAt(i);
-                
-                if(c != ',') s2 += c;
-                
-                if(c == ',' || i == s1.length() - 1) {
-                    args.add(s2);
-                    s2 = "";
-                }
-            }
-        }
-        
-        TerminalOutput output;
-        
-        if(commands.containsKey(name)) {
-            commands.get(name).execute(args);
-            output = commands.get(name).getOutput();
-            commands.get(name).output = null; //Reset the state of the ouput.
-        } else {
-            output = new TerminalOutput("ERROR: Command not recognized. Check syntax or type \"help\".\n", Color.RED);
-        }
-        
-        if(output != null) {
-            shiftElements = (shiftElements == 4) ? 4 : shiftElements + 1;
-            
-            for(int i = shiftElements; i > -1; i--) {
-                if(i > 0) {
-                    if(cmdOutput[i - 1] != null) {
-                        cmdOutput[i] = cmdOutput[i - 1];
-                    }
-                } else {
-                    cmdOutput[i] = new TerminalOutput(placeholder.wrap(output.text, Window.getWidth()), output.color);
-                }
-            }
-        }
-        
-        executed = true;
-        suggest  = false;
     }
     
     /**
