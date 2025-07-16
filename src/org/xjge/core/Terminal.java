@@ -4,6 +4,7 @@ import org.xjge.ui.Rectangle;
 import org.xjge.graphics.Color;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.TreeMap;
 import org.joml.Vector2i;
 import static org.lwjgl.glfw.GLFW.*;
@@ -48,6 +49,7 @@ final class Terminal {
     private final Vector2i commandPosition = new Vector2i(0, DEFAULT_FONT_SIZE / 4);
     
     private String suggestion = "";
+    private String parsedCommandName;
     
     private final StringBuilder typed = new StringBuilder();
     
@@ -57,9 +59,11 @@ final class Terminal {
     private static final Rectangle outputArea  = new Rectangle();
     
     private final TreeMap<String, TerminalCommand> commands;
-    private final ArrayList<String> commandHistory  = new ArrayList<>();
-    private final TerminalOutput[] commandOutput    = new TerminalOutput[5];
-    private final HashMap<Integer, Integer> charPos = new HashMap<>();
+    
+    private final List<String> parsedCommandArgs   = new ArrayList<>();
+    private final ArrayList<String> commandHistory = new ArrayList<>();
+    private final TerminalOutput[] commandOutput         = new TerminalOutput[5];
+    private final HashMap<Integer, Integer> glyphPositions = new HashMap<>();
     
     private final class HighlightSyntax extends TextEffect {
 
@@ -105,50 +109,26 @@ final class Terminal {
         typed.delete(0, typed.length());
         cursorIndex = 0;
         
-        for(Character c : suggestion.toCharArray()) {    
-            insertChar(c);
+        for(int i = 0; i < suggestion.length(); i++) {
+            insertChar(suggestion.charAt(i));
         }
     }
     
     /**
      * Executes a terminal command.
-     * 
-     * @param command the command parsed from the typed string
      */
-    private void execute(String command) {
-        ArrayList<String> args = new ArrayList<>();
+    private void execute() {
+        String command = typed.toString();
         
         commandHistory.add(command);
         if(commandHistory.size() == 33) commandHistory.remove(0);
         
-        String name;
-        
-        if(command.contains(" ")) {
-            name = command.substring(0, command.indexOf(" "));
-            
-            String s1 = command.substring(command.indexOf(" "), command.length()).replaceAll(" ", "");
-            String s2 = "";
-            
-            for(int i = 0; i < s1.length(); i++) {
-                char c = s1.charAt(i);
-                
-                if(c != ',') s2 += c;
-                
-                if(c == ',' || i == s1.length() - 1) {
-                    args.add(s2);
-                    s2 = "";
-                }
-            }
-        } else {
-            name = command;
-        }
-        
         TerminalOutput output;
         
-        if(commands.containsKey(name)) {
-            commands.get(name).execute(args);
-            output = commands.get(name).getOutput();
-            commands.get(name).output = null; //Reset the state of the ouput.
+        if(commands.containsKey(parsedCommandName)) {
+            commands.get(parsedCommandName).execute(parsedCommandArgs);
+            output = commands.get(parsedCommandName).getOutput();
+            commands.get(parsedCommandName).output = null; //Reset the state of the ouput.
         } else {
             output = new TerminalOutput("ERROR: Command not recognized. Check syntax or type \"help\".\n", Color.RED);
         }
@@ -177,18 +157,58 @@ final class Terminal {
      */
     private void insertChar(char c) {
         typed.insert(cursorIndex, c);
-        charPos.put(cursorIndex, (cursorIndex * glyphAdvance) + glyphAdvance);
-        cursorPosition.x = charPos.get(cursorIndex) + glyphAdvance;
+        glyphPositions.put(cursorIndex, (cursorIndex * glyphAdvance) + glyphAdvance);
+        cursorPosition.x = glyphPositions.get(cursorIndex) + glyphAdvance;
         
         cursorIndex++;
         
         if(cursorIndex != typed.length()) {
             for(int i = cursorIndex; i < typed.length(); i++) {
-                charPos.put(i, (i * glyphAdvance) + glyphAdvance);
+                glyphPositions.put(i, (i * glyphAdvance) + glyphAdvance);
             }
         }
         
+        parseCommand();
         scrollX();
+    }
+    
+    private void parseCommand() {
+        if(typed.length() == 0) return;
+        
+        int spaceStart = -1;
+        
+        for(int i = 0; i < typed.length(); i++) {
+            if(typed.charAt(i) == ' ') {
+                spaceStart = i;
+                break;
+            }
+        }
+        
+        if(spaceStart == -1) {
+            parsedCommandName = typed.toString();
+            parsedCommandArgs.clear();
+        } else {
+            parsedCommandName = typed.toString().substring(0, spaceStart);
+            parsedCommandArgs.clear();
+            
+            int argStart = spaceStart + 1;
+            int argIndex = argStart;
+
+            while(argIndex <= typed.length()) {
+                if(argIndex == typed.length() || typed.charAt(argIndex) == ',') {
+                    if(argStart < argIndex) {
+                        while(argStart < argIndex && typed.charAt(argStart) == ' ') argStart++;
+                        while(argIndex > argStart && typed.charAt(argIndex - 1) == ' ') argIndex--;
+
+                        if(argStart < argIndex) {
+                            parsedCommandArgs.add(typed.toString().substring(argStart, argIndex));
+                        }
+                    }
+                    argStart = argIndex + 1;
+                }
+                argIndex++;
+            }
+        }
     }
     
     /**
@@ -200,8 +220,8 @@ final class Terminal {
         if(typed.length() > 0) {
             int xOffset = 0;
             
-            if(charPos.get(charPos.size() - 1) + glyphAdvance > Window.getWidth() - (glyphAdvance * 2)) {
-                xOffset = (Window.getWidth() - glyphAdvance) - (charPos.get(charPos.size() - 1) + glyphAdvance);
+            if(glyphPositions.get(glyphPositions.size() - 1) + glyphAdvance > Window.getWidth() - (glyphAdvance * 2)) {
+                xOffset = (Window.getWidth() - glyphAdvance) - (glyphPositions.get(glyphPositions.size() - 1) + glyphAdvance);
                 
                 if(cursorPosition.x - 8 <= Math.abs(xOffset)) {
                     int x = (cursorIndex < 1) ? 0 : glyphAdvance;
@@ -214,7 +234,7 @@ final class Terminal {
             caretPosition.x   = xOffset;
             commandPosition.x = xOffset + glyphAdvance;
         } else {
-            charPos.clear();
+            glyphPositions.clear();
         }
     }
     
@@ -225,20 +245,7 @@ final class Terminal {
      * @return true if the command is recognized by the terminal
      */
     private boolean validate() {
-        if(typed.length() == 0) return false;
-        
-        int spaceIndex = -1;
-        
-        for(int i = 0; i < typed.length(); i++) {
-            if(typed.charAt(i) == ' ') {
-                spaceIndex = i;
-                break;
-            }
-        }
-        
-        String commandName = (spaceIndex == -1) ? typed.toString() : typed.substring(0, spaceIndex);
-        
-        return commands.containsKey(commandName);
+        return parsedCommandName.length() > 0 && commands.containsKey(parsedCommandName);
     }
     
     /**
@@ -301,8 +308,8 @@ final class Terminal {
         if(cursorBlink) placeholder.drawString("_", cursorPosition.x, cursorPosition.y, Color.WHITE, 1f);
         
         if(typed.length() > 0) {
-            if(validate()) placeholder.drawString(typed.toString(), commandPosition.x, commandPosition.y, highlight);
-            else           placeholder.drawString(typed.toString(), commandPosition.x, commandPosition.y, Color.WHITE, 1f);
+            if(validate()) placeholder.drawString(typed, commandPosition.x, commandPosition.y, highlight);
+            else           placeholder.drawString(typed, commandPosition.x, commandPosition.y, Color.WHITE, 1f);
         }
     }
     
@@ -329,7 +336,8 @@ final class Terminal {
                     if(cursorIndex > 0) {
                         cursorIndex--;
                         typed.deleteCharAt(cursorIndex);
-                        cursorPosition.x = charPos.get(cursorIndex);
+                        cursorPosition.x = glyphPositions.get(cursorIndex);
+                        parseCommand();
                         scrollX();
                     }
                 }
@@ -338,12 +346,12 @@ final class Terminal {
                     cursorIndex++;
                     
                     if(cursorIndex < typed.length()) {
-                        cursorPosition.x = charPos.get(cursorIndex);
+                        cursorPosition.x = glyphPositions.get(cursorIndex);
                         scrollX();
                     } else {
                         cursorIndex = typed.length();
                         if(typed.length() > 0) {
-                            cursorPosition.x = charPos.get(cursorIndex - 1) + glyphAdvance;
+                            cursorPosition.x = glyphPositions.get(cursorIndex - 1) + glyphAdvance;
                             scrollX();
                         } else {
                             cursorPosition.x = glyphAdvance;
@@ -355,7 +363,7 @@ final class Terminal {
                     cursorIndex--;
                     
                     if(cursorIndex > 0) {
-                        cursorPosition.x = charPos.get(cursorIndex);
+                        cursorPosition.x = glyphPositions.get(cursorIndex);
                         scrollX();
                     } else {
                         cursorIndex = 0;
@@ -366,7 +374,7 @@ final class Terminal {
                 case GLFW_KEY_DOWN -> {
                     if(!commandHistory.isEmpty()) {
                         historyIndex = (historyIndex >= commandHistory.size() - 1) ? commandHistory.size() - 1 : historyIndex + 1;
-                        charPos.clear();
+                        glyphPositions.clear();
                         if(commandHistory.get(historyIndex) != null) autoComplete(commandHistory.get(historyIndex));
                     }
                 }
@@ -374,19 +382,19 @@ final class Terminal {
                 case GLFW_KEY_UP -> {
                     if(!commandHistory.isEmpty()) {
                         historyIndex = (historyIndex == 0) ? 0 : historyIndex - 1;
-                        charPos.clear();
+                        glyphPositions.clear();
                         if(commandHistory.get(historyIndex) != null) autoComplete(commandHistory.get(historyIndex));
                     }
                 }
                 
                 case GLFW_KEY_ENTER -> {
-                    execute(typed.toString());
+                    execute();
                     typed.delete(0, typed.length());
                     cursorIndex  = 0;
                     historyIndex = commandHistory.size();
                     caretPosition.x  = 0;
                     cursorPosition.x = glyphAdvance;
-                    charPos.clear();
+                    glyphPositions.clear();
                 }
                 
                 case GLFW_KEY_TAB -> {
