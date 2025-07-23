@@ -130,6 +130,21 @@ public final class UI {
         }
     }
     
+    /**
+     * Utility method that finds the total number of times the provided 
+     * character appears in a string of text.
+     * 
+     * @param text the string of text to evaluate
+     * @param character the character to search for
+     * @param index a number denoting which index the search will start from
+     * @return the number of times the character appears in the string
+     */
+    public static int numCharOccurences(CharSequence text, char character, int index) {
+        if(index >= text.length()) return 0;
+        int count = (text.charAt(index) == character) ? 1 : 0;
+        return count + numCharOccurences(text, character, index + 1);
+    }
+    
     public static Matrix4fc getProjectionMatrix() {
         return projectionMatrix;
     }

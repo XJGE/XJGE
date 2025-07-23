@@ -30,7 +30,7 @@ final class TCHelp extends TerminalCommand {
     }
 
     @Override
-    public void execute(List<String> args) {
+    public TerminalOutput execute(List<String> args) {
         String wildcard;
         String command;
 
@@ -41,16 +41,16 @@ final class TCHelp extends TerminalCommand {
                               "to exit the terminal. A full list of commands can " + 
                               "be viewed by using showCommands.";
                 
-                setOutput(info, Color.GREEN);
+                return new TerminalOutput(info, Color.GREEN);
             }
 
             case 1 -> {
                 command = args.get(0);
 
                 if(commands.keySet().stream().anyMatch(name -> name.equals(command))) {
-                    setOutput(command + " - " + commands.get(command).getDescription(), Color.CYAN);
+                    return new TerminalOutput(command + " - " + commands.get(command).getDescription(), Color.CYAN);
                 } else {
-                    setOutput(commandNotFound(command), Color.RED);
+                    return new TerminalOutput(commandNotFound(command), Color.RED);
                 }
             }
 
@@ -61,26 +61,26 @@ final class TCHelp extends TerminalCommand {
                 switch(wildcard) {
                     case "-u" -> {
                         if(commands.keySet().stream().anyMatch(name -> name.equals(command))) {
-                            setOutput(commands.get(command).getUsage(), Color.WHITE);
+                            return new TerminalOutput(commands.get(command).getUsage(), Color.WHITE);
                         } else {
-                            setOutput(commandNotFound(command), Color.RED);
+                            return new TerminalOutput(commandNotFound(command), Color.RED);
                         }
                     }
                     
                     case "-s" -> {
                         if(commands.keySet().stream().anyMatch(name -> name.equals(command))) {
-                            setOutput(commands.get(command).getSyntax(), Color.YELLOW);
+                            return new TerminalOutput(commands.get(command).getSyntax(), Color.YELLOW);
                         } else {
-                            setOutput(commandNotFound(command), Color.RED);
+                            return new TerminalOutput(commandNotFound(command), Color.RED);
                         }
                     }
-
-                    default -> setOutput("ERROR: Unknown wildcard: \"" + wildcard + "\", use -u or -s.", Color.RED);
                 }
+                
+                return new TerminalOutput("ERROR: Unknown wildcard: \"" + wildcard + "\", use -u or -s.", Color.RED);
             }
-
-            default -> setOutput(errorTooManyArgs(args.size(), 2), Color.RED);
         }
+        
+        return new TerminalOutput(errorTooManyArgs(args.size(), 2), Color.RED);
     }
     
     /**

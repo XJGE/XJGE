@@ -1,5 +1,7 @@
 package org.xjge.core;
 
+import java.util.ArrayList;
+import java.util.List;
 import org.xjge.graphics.Color;
 
 /**
@@ -16,13 +18,7 @@ public class TerminalOutput {
     final String text;
     final Color color;
     
-    /**
-     * Creates an empty response.
-     */
-    TerminalOutput() {
-        text  = "";
-        color = Color.WHITE;
-    }
+    final List<CharSequence> lines = new ArrayList<>();
     
     /**
      * Creates a response to show the user with the data provided.
@@ -31,7 +27,7 @@ public class TerminalOutput {
      * @param color the color the text will be rendered in
      */
     TerminalOutput(String text, Color color) {
-        this.text  = text;
+        this.text  = "> " + text;
         this.color = color;
     }
 

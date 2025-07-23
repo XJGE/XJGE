@@ -212,6 +212,7 @@ public final class Window {
         });
         
         glfwWindowSizeReference = GLFWWindowSizeCallback.create((window, newWidth, newHeight) -> {
+            if(debugModeEnabled) terminal.relocate(newWidth, newHeight);
             width  = newWidth;
             height = newHeight;
             observable.notifyObservers("WINDOW_WIDTH_CHANGED",  width);
@@ -226,12 +227,7 @@ public final class Window {
         });
         
         glfwCursorPositionReference = GLFWCursorPosCallback.create((window, cursorPositionX, cursorPositionY) -> {
-            if(debugInfo.show) {
-                mouse.cursorPositionX = cursorPositionX;
-                mouse.cursorPositionY = height - cursorPositionY;
-                
-                debugInfo.processMouseInput(mouse);
-            } else {
+            if(!terminal.show && !debugInfo.show && !noclip.enabled) {
                 float scaleX = (float) resolution.width / width;
                 float scaleY = (float) resolution.height / height;
 
@@ -239,6 +235,12 @@ public final class Window {
                 mouse.cursorPositionY = resolution.height - Math.abs((cursorPositionY * scaleY));
 
                 UI.processMouseInput(mouse);
+            } else {
+                mouse.cursorPositionX = cursorPositionX;
+                mouse.cursorPositionY = height - cursorPositionY;
+                
+                if(terminal.show) terminal.scrollBar.processMouseInput(mouse);
+                if(debugInfo.show) debugInfo.processMouseInput(mouse);
             }
             
             if(!mouse.previousClickValue) {
@@ -261,23 +263,28 @@ public final class Window {
                 case GLFW_MOUSE_BUTTON_RIGHT  -> {
                     mouse.rightHeld = (action == GLFW_PRESS);
                     
-                    if(noclip.enabled && !terminal.show) {
+                    if(!terminal.show && noclip.enabled) {
                         glfwSetInputMode(handle, GLFW_CURSOR, (mouse.rightHeld) ? GLFW_CURSOR_DISABLED : GLFW_CURSOR_NORMAL);
                     }
                 }
             }
             
-            if(debugInfo.show) debugInfo.processMouseInput(mouse);
-            else               UI.processMouseInput(mouse);
+            if(!terminal.show && !debugInfo.show) {
+                UI.processMouseInput(mouse);
+            } else {
+                if(terminal.show) terminal.scrollBar.processMouseInput(mouse);
+                if(debugInfo.show) debugInfo.processMouseInput(mouse);
+            }
         });
         
         glfwScrollReference = GLFWScrollCallback.create((window, scrollSpeedX, scrollSpeedY) -> {
             mouse.scrollSpeedX = scrollSpeedX;
             mouse.scrollSpeedY = scrollSpeedY;
             
-            if(!debugInfo.show && !noclip.enabled) {
+            if(!terminal.show && !debugInfo.show && !noclip.enabled) {
                 UI.processMouseInput(mouse);
             } else {
+                if(terminal.show) terminal.scrollBar.processMouseInput(mouse);
                 if(debugInfo.show) debugInfo.processMouseInput(mouse);
                 if(noclip.enabled) noclip.speed = XJGE.clampValue(0.01f, 1f, noclip.speed + ((float) mouse.scrollSpeedY * 0.01f));
             }

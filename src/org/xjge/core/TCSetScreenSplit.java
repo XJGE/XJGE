@@ -25,14 +25,14 @@ final class TCSetScreenSplit extends TerminalCommand {
     }
 
     @Override
-    public void execute(List<String> args) {
+    public TerminalOutput execute(List<String> args) {
         output = null;
         
         if(args.isEmpty()) {
-            setOutput(errorNotEnoughArgs(1), Color.RED);
+            return new TerminalOutput(errorNotEnoughArgs(1), Color.RED);
         } else {
             if(args.size() > 1) {
-                setOutput(errorTooManyArgs(args.size(), 1), Color.RED);
+                return new TerminalOutput(errorTooManyArgs(args.size(), 1), Color.RED);
             } else {
                 switch(args.get(0)) {
                     case "none"       -> Window.setSplitScreenType(SplitScreenType.NONE);
@@ -40,9 +40,9 @@ final class TCSetScreenSplit extends TerminalCommand {
                     case "vertical"   -> Window.setSplitScreenType(SplitScreenType.VERTICAL);
                     case "trisect"    -> Window.setSplitScreenType(SplitScreenType.TRISECT);
                     case "quarter"    -> Window.setSplitScreenType(SplitScreenType.QUARTER);
-
-                    default -> setOutput(errorInvalidArg(args.get(0), "(none), (horizontal), (vertical), (trisect), or (quarter)"), Color.RED);
                 }
+                
+                return new TerminalOutput(errorInvalidArg(args.get(0), "(none), (horizontal), (vertical), (trisect), or (quarter)"), Color.RED);
             }
         }
     }

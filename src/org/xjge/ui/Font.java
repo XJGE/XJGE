@@ -664,70 +664,57 @@ public final class Font {
     }
     
     /**
-     * Finds the total number of times the provided character appears in a 
-     * string of text.
+     * Splits the provided text into multiple lines such that each lines pixel 
+     * width wont exceed the specified advance limit. This is especially useful
+     * for wrapping long stretches of words.
      * 
-     * @param text the string of text to evaluate
-     * @param character the character to search for
-     * @param index a number denoting which index the search will start from
-     * @return the number of times the character appears in the string
+     * @param text the text to split; may be a {@linkplain String}, 
+     *             {@linkplain StringBuilder}, or any implementation of 
+     *             {@linkplain CharSequence}
+     * @param advanceLimit the maximum horizontal advance width (in pixels) each
+     *                     line can occupy
+     * @return a list of {@linkplain CharSequence}s, each representing one line 
+     *         of wrapped text
      */
-    public int numCharOccurences(String text, char character, int index) {
-        if(index >= text.length()) return 0;
-        int count = (text.charAt(index) == character) ? 1 : 0;
-        return count + numCharOccurences(text, character, index + 1);
-    }
-    
-    /**
-     * Wraps the provided string into multiple lines that won't exceed the 
-     * specified advance limit.
-     * 
-     * @param text the string of text to format
-     * @param advanceLimit the maximum advance length (in pixels) imposed
-     * @return a new string with line breaks inserted to enforce the width 
-     *         constraint
-     */
-    public String wrap(String text, int advanceLimit) {
-        var words  = new ArrayList<String>();
-        var string = new StringBuilder();
+    public List<CharSequence> split(CharSequence text, int advanceLimit) {
+        var words = new ArrayList<CharSequence>();
+        var token = new StringBuilder();
         
         for(int i = 0; i < text.length(); i++) {
             char character = text.charAt(i);
 
-            if(i != text.length() - 1) {
-                if(character != ' ') {
-                    string.append(character);
-                } else {
-                    words.add(string.toString());
-                    string.delete(0, string.length());
-                }
+            if(character != ' ') {
+                token.append(character);
             } else {
-                string.append(character);
-                words.add(string.toString());
-                string.delete(0, string.length());
+                words.add(token.toString());
+                token.setLength(0);
             }
         }
-        
-        int wordLength = 0;
-        text = "";
+
+        if(token.length() > 0) words.add(token.toString());
+
+        int currentWidth = 0;
+        var lines        = new ArrayList<CharSequence>();
+        var currentLine  = new StringBuilder();
 
         for(int i = 0; i < words.size(); i++) {
-            String word = words.get(i);
-            wordLength += lengthInPixels(word + " ");
-            
-            if(i != words.size() - 1 && wordLength + lengthInPixels(words.get(i + 1)) > advanceLimit) {
-                text += words.get(words.indexOf(word)).concat("\n");
-                wordLength = 0;
+            var word      = words.get(i);
+            int wordWidth = lengthInPixels(word + " ");
+
+            if(currentWidth + wordWidth > advanceLimit) {
+                lines.add(currentLine.toString().trim());
+                currentLine.setLength(0);
+                currentLine.append(word).append(" ");
+                currentWidth = lengthInPixels(word + " ");
             } else {
-                if(words.indexOf(word) != words.size() - 1) {
-                    text += words.get(words.indexOf(word)).concat(" ");
-                } else {
-                    text += words.get(words.indexOf(word));
-                }
+                currentLine.append(word).append(" ");
+                currentWidth += wordWidth;
             }
         }
-        
-        return text;
+
+        if(currentLine.length() > 0) lines.add(currentLine.toString().trim());
+
+        return lines;
     }
     
 }

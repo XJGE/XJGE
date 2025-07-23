@@ -12,6 +12,7 @@ All notable changes to this project will be documented in this file. The format 
 - New TextEffect class that can be used to create custom effects for Font.drawString() by altering the data of the Glyph objects it generates.
 - New UI static class that now encapsulates much of the Widget management features previously provided through the XJGE class.
 - New addObserver() and removeObserver() methods to Window class that allows users to listen for state changes made to the applications window.
+- New split() method to Font class which works like wrap() but provides a list of strings instead of a single formatted one.
 
 ### Changed
 - Fixed bug that wouldn't update the value of virtual gamepads when Input.setVirtualGamepadInput() was called.
@@ -33,6 +34,8 @@ All notable changes to this project will be documented in this file. The format 
 - Noclip camera controls, the scroll wheel now controls speed and the right mouse button must be held to change direction.
 - Fixed bug that caused terminal commands to fail validation after being recalled from memory.
 - Renamed StopWatch class to Timer.
+- numCharOccurances() to static then moved it out of the Font class and into UI.
+- TerminalCommand.execute() now requires users to return a TerminalOutput object or null if no output is desired.
 
 ### Removed
 - Update/Render methods from the Entity class.
@@ -46,6 +49,8 @@ All notable changes to this project will be documented in this file. The format 
 - Public access to model matrix in Icon class.
 - CLS command from terminal.
 - Legacy Timer class since the code in the new one (previously StopWatch) proved more useful during development.
+- Font.wrap() since Font.split() does it better.
+- getOutput() and setOutput() from the TerminalCommand class.
 
 ## [3.1.0] - 2025-01-03
 

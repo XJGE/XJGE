@@ -27,14 +27,14 @@ final class TCShowCommands extends TerminalCommand {
     }
 
     @Override
-    public void execute(List<String> args) {
+    public TerminalOutput execute(List<String> args) {
         String commandList = "";
         commandList = commands.keySet()
                                     .stream()
                                     .map(name -> name + ", ")
                                     .reduce(commandList, String::concat);
 
-        setOutput(commandList.substring(0, commandList.length() - 2), Color.CYAN);
+        return new TerminalOutput(commandList.substring(0, commandList.length() - 2), Color.CYAN);
     }
 
 }

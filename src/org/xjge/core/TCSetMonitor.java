@@ -26,7 +26,7 @@ final class TCSetMonitor extends TerminalCommand {
     }
 
     @Override
-    public void execute(List<String> args) {
+    public TerminalOutput execute(List<String> args) {
         //TODO: reimplement this
         /*
         output = null;
@@ -57,6 +57,8 @@ final class TCSetMonitor extends TerminalCommand {
             setOutput(errorNotEnoughArgs(1), Color.RED);
         }
         */
+        
+        return null;
     }
 
 }

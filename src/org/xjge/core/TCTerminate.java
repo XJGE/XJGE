@@ -2,7 +2,6 @@ package org.xjge.core;
 
 import org.xjge.graphics.Color;
 import java.util.List;
-import static org.lwjgl.glfw.GLFW.glfwSetWindowShouldClose;
 
 /**
  * Created: May 25, 2021
@@ -27,9 +26,9 @@ final class TCTerminate extends TerminalCommand {
     }
 
     @Override
-    public void execute(List<String> args) {
-        setOutput("cya!", Color.WHITE);
+    public TerminalOutput execute(List<String> args) {
         Window.close();
+        return new TerminalOutput("cya!", Color.WHITE);
     }
 
 }

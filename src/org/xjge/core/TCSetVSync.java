@@ -25,7 +25,7 @@ final class TCSetVSync extends TerminalCommand {
     }
 
     @Override
-    public void execute(List<String> args) {
+    public TerminalOutput execute(List<String> args) {
         output = null;
 
         if(!args.isEmpty()) {
@@ -33,14 +33,14 @@ final class TCSetVSync extends TerminalCommand {
 
             if(parameter.equals("true") || parameter.equals("false")) {
                 boolean value = Boolean.parseBoolean(parameter);
-                setOutput("VSync changed: (" + value + ")", Color.WHITE);
                 Hardware.setVSyncEnabled(value);
+                return new TerminalOutput("VSync changed: (" + value + ")", Color.WHITE);
             } else {
-                setOutput(errorInvalidArg(parameter, "(true) or (false)"), Color.RED);
+                return new TerminalOutput(errorInvalidArg(parameter, "(true) or (false)"), Color.RED);
             }
         } else {
             Hardware.setVSyncEnabled(!Hardware.getVSyncEnabled());
-            setOutput("VSync changed: (" + Hardware.getVSyncEnabled() + ")", Color.WHITE);
+            return new TerminalOutput("VSync changed: (" + Hardware.getVSyncEnabled() + ")", Color.WHITE);
         }
     }
 

@@ -25,22 +25,20 @@ final class TCSetFullscreen extends TerminalCommand {
     }
 
     @Override
-    public void execute(List<String> args) {
-        output = null;
-        
+    public TerminalOutput execute(List<String> args) {
         if(!args.isEmpty()) {
             String parameter = args.get(0);
             
             if(parameter.equals("true") || parameter.equals("false")) {
                 boolean value = Boolean.parseBoolean(parameter);
-                setOutput("Fullscreen changed: (" + value + ")", Color.WHITE);
                 Window.setFullscreen(value);
+                return new TerminalOutput("Fullscreen changed: (" + value + ")", Color.WHITE);
             } else {
-                setOutput(errorInvalidArg(parameter, "(true) or (false)"), Color.RED);
+                return new TerminalOutput(errorInvalidArg(parameter, "(true) or (false)"), Color.RED);
             }
         } else {
             Window.setFullscreen(!Window.getFullscreen());
-            setOutput("Fullscreen changed: (" + Window.getFullscreen() + ")", Color.WHITE);
+            return new TerminalOutput("Fullscreen changed: (" + Window.getFullscreen() + ")", Color.WHITE);
         }
     }
 

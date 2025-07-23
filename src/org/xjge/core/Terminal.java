@@ -8,14 +8,16 @@ import java.util.List;
 import java.util.TreeMap;
 import org.joml.Vector2i;
 import static org.lwjgl.glfw.GLFW.*;
+import static org.lwjgl.opengl.GL11.GL_SCISSOR_TEST;
+import static org.lwjgl.opengl.GL11.glDisable;
+import static org.lwjgl.opengl.GL11.glEnable;
+import static org.lwjgl.opengl.GL11.glScissor;
 import static org.xjge.ui.Font.DEFAULT_FONT_SIZE;
 import static org.xjge.ui.Font.placeholder;
 import org.xjge.ui.Glyph;
 import org.xjge.ui.TextEffect;
 
 /**
- * Created: May 23, 2021
- * <br><br>
  * Provides a command line interface that can be used to make state changes to 
  * the application during runtime.
  * <br><br>
@@ -34,35 +36,31 @@ import org.xjge.ui.TextEffect;
 final class Terminal {
 
     boolean show;
+    private boolean cursorBlink;
     
     private int idleTime;
     private int cursorIndex;
     private int historyIndex;
-    private int shiftOutput = -1;
     private final int glyphAdvance;
-    
-    private boolean cursorBlink;
-    private boolean executed = true;
-    
-    private final Vector2i caretPosition   = new Vector2i(0, DEFAULT_FONT_SIZE / 4);
-    private final Vector2i cursorPosition  = new Vector2i(0, DEFAULT_FONT_SIZE / 4);
-    private final Vector2i commandPosition = new Vector2i(0, DEFAULT_FONT_SIZE / 4);
     
     private String suggestion = "";
     private String parsedCommandName;
     
-    private final StringBuilder typed = new StringBuilder();
-    
+    private final Vector2i caretPosition    = new Vector2i(0, DEFAULT_FONT_SIZE / 4);
+    private final Vector2i cursorPosition   = new Vector2i(0, DEFAULT_FONT_SIZE / 4);
+    private final Vector2i commandPosition  = new Vector2i(0, DEFAULT_FONT_SIZE / 4);
+    private final StringBuilder typed       = new StringBuilder();
     private final HighlightSyntax highlight = new HighlightSyntax();
-    
-    private static final Rectangle commandLine = new Rectangle();
-    private static final Rectangle outputArea  = new Rectangle();
+    private final Rectangle commandLine     = new Rectangle();
+    private final Rectangle outputArea      = new Rectangle();
+    final TerminalScrollBar scrollBar       = new TerminalScrollBar(outputArea);
     
     private final TreeMap<String, TerminalCommand> commands;
     
-    private final List<String> parsedCommandArgs   = new ArrayList<>();
-    private final ArrayList<String> commandHistory = new ArrayList<>();
-    private final TerminalOutput[] commandOutput         = new TerminalOutput[5];
+    private final List<String> parsedCommandArgs = new ArrayList<>();
+    private final List<String> commandHistory    = new ArrayList<>();
+    private final List<TerminalOutput> output    = new ArrayList<>();
+    
     private final HashMap<Integer, Integer> glyphPositions = new HashMap<>();
     
     private final class HighlightSyntax extends TextEffect {
@@ -76,7 +74,7 @@ final class Terminal {
             switch(glyph.character) {
                 default -> glyph.color.copy((start != 0 && index > start) ? Color.YELLOW : Color.CYAN);
                 case '(', ')', ',', '<', '>' -> glyph.color.copy(Color.WHITE);
-            };
+            }
         }
 
         @Override
@@ -98,6 +96,8 @@ final class Terminal {
         glyphAdvance = placeholder.getGlyphAdvance('>');
         cursorPosition.x  = glyphAdvance;
         commandPosition.x = glyphAdvance;
+        
+        relocate(Window.getWidth(), Window.getHeight());
     }
     
     /**
@@ -117,37 +117,39 @@ final class Terminal {
     /**
      * Executes a terminal command.
      */
-    private void execute() {
+    private void executeCommand() {
         String command = typed.toString();
         
         commandHistory.add(command);
         if(commandHistory.size() == 33) commandHistory.remove(0);
         
-        TerminalOutput output;
+        TerminalOutput commandOutput;
         
         if(commands.containsKey(parsedCommandName)) {
-            commands.get(parsedCommandName).execute(parsedCommandArgs);
-            output = commands.get(parsedCommandName).getOutput();
-            commands.get(parsedCommandName).output = null; //Reset the state of the ouput.
+            commandOutput = commands.get(parsedCommandName).execute(parsedCommandArgs);
         } else {
-            output = new TerminalOutput("ERROR: Command not recognized. Check syntax or type \"help\".\n", Color.RED);
+            commandOutput = new TerminalOutput("ERROR: Command \"" + parsedCommandName + "\" not recognized. Please check syntax.", Color.RED);
         }
         
-        if(output != null) {
-            shiftOutput = (shiftOutput == 4) ? 4 : shiftOutput + 1;
+        if(commandOutput != null) output.add(commandOutput);
+        
+        formatOutput();
+    }
+    
+    private void formatOutput() {
+        int outputLength = 0;
+        
+        for(TerminalOutput commandOutput : output) {
+            commandOutput.lines.clear();
+            var newLines = placeholder.split(commandOutput.text, outputArea.width - 40);
             
-            for(int i = shiftOutput; i > -1; i--) {
-                if(i > 0) {
-                    if(commandOutput[i - 1] != null) {
-                        commandOutput[i] = commandOutput[i - 1];
-                    }
-                } else {
-                    commandOutput[i] = new TerminalOutput(placeholder.wrap(output.text, Window.getWidth()), output.color);
-                }
+            for(int i = 0; i < newLines.size(); i++) {
+                commandOutput.lines.add((i == 0) ? newLines.get(i) : "  " + newLines.get(i));
+                outputLength += placeholder.size;
             }
         }
         
-        executed = true;
+        scrollBar.setContentAreaLength(outputLength);
     }
     
     /**
@@ -169,7 +171,7 @@ final class Terminal {
         }
         
         parseCommand();
-        scrollX();
+        scrollCommandLine();
     }
     
     private void parseCommand() {
@@ -216,7 +218,7 @@ final class Terminal {
      * position of the cursor. Used to navigate large strings that extend 
      * beyond the windows width.
      */
-    private void scrollX() {
+    private void scrollCommandLine() {
         if(typed.length() > 0) {
             int xOffset = 0;
             
@@ -244,7 +246,7 @@ final class Terminal {
      * 
      * @return true if the command is recognized by the terminal
      */
-    private boolean validate() {
+    private boolean validateCommand() {
         return parsedCommandName.length() > 0 && commands.containsKey(parsedCommandName);
     }
     
@@ -284,33 +286,49 @@ final class Terminal {
      * Renders the interface to the window.
      */
     void render() {
-        commandLine.width  = Window.getWidth();
-        commandLine.height = placeholder.size + 2;
-        commandLine.render(1, Color.BLACK);
-        
-        outputArea.positionY = commandLine.height;
-        outputArea.width     = Window.getWidth();
-        outputArea.height    = 140;
         outputArea.render(0.5f, Color.BLACK);
         
-        placeholder.drawString(">", caretPosition.x, caretPosition.y, Color.WHITE, 1f);
+        int yOffset = ((outputArea.positionY + 6) - placeholder.size) - scrollBar.getContentOffset();
         
-        for(int i = 0; i <= shiftOutput; i++) {
-            if(executed) {
-                
+        glEnable(GL_SCISSOR_TEST);
+        glScissor(outputArea.positionX, outputArea.positionY, outputArea.width, outputArea.height);
+        
+        for(int i = output.size() - 1; i >= 0; i--) {
+            var commandOutput = output.get(i);
+            
+            for(int j = commandOutput.lines.size() - 1; j >= 0; j--) {
+                yOffset += placeholder.size;
+                placeholder.drawString(commandOutput.lines.get(j), 12, yOffset, commandOutput.color, 1f);
             }
-            //placeholder.drawOutput(commandOutput, commandOutput[i], i, executed, opaqueRectangles[i]);
         }
         
-        executed = false;
+        glDisable(GL_SCISSOR_TEST);
+        
+        scrollBar.render();
+        commandLine.render(1, Color.BLACK);
+        
+        placeholder.drawString(">", caretPosition.x, caretPosition.y, Color.WHITE, 1f);
         
         if(!suggestion.isEmpty()) placeholder.drawString(suggestion, commandPosition.x, commandPosition.y, Color.GRAY, 1f);
         if(cursorBlink) placeholder.drawString("_", cursorPosition.x, cursorPosition.y, Color.WHITE, 1f);
         
         if(typed.length() > 0) {
-            if(validate()) placeholder.drawString(typed, commandPosition.x, commandPosition.y, highlight);
-            else           placeholder.drawString(typed, commandPosition.x, commandPosition.y, Color.WHITE, 1f);
+            if(validateCommand()) placeholder.drawString(typed, commandPosition.x, commandPosition.y, highlight);
+            else placeholder.drawString(typed, commandPosition.x, commandPosition.y, Color.WHITE, 1f);
         }
+    }
+    
+    void relocate(int windowWidth, int windowHeight) {
+        commandLine.width  = windowWidth;
+        commandLine.height = placeholder.size + 2;
+        
+        outputArea.positionY = commandLine.height;
+        outputArea.width     = windowWidth;
+        outputArea.height    = 140;
+        
+        scrollBar.relocate();
+        
+        formatOutput();
     }
     
     /**
@@ -338,7 +356,7 @@ final class Terminal {
                         typed.deleteCharAt(cursorIndex);
                         cursorPosition.x = glyphPositions.get(cursorIndex);
                         parseCommand();
-                        scrollX();
+                        scrollCommandLine();
                     }
                 }
                 
@@ -347,12 +365,12 @@ final class Terminal {
                     
                     if(cursorIndex < typed.length()) {
                         cursorPosition.x = glyphPositions.get(cursorIndex);
-                        scrollX();
+                        scrollCommandLine();
                     } else {
                         cursorIndex = typed.length();
                         if(typed.length() > 0) {
                             cursorPosition.x = glyphPositions.get(cursorIndex - 1) + glyphAdvance;
-                            scrollX();
+                            scrollCommandLine();
                         } else {
                             cursorPosition.x = glyphAdvance;
                         }
@@ -364,7 +382,7 @@ final class Terminal {
                     
                     if(cursorIndex > 0) {
                         cursorPosition.x = glyphPositions.get(cursorIndex);
-                        scrollX();
+                        scrollCommandLine();
                     } else {
                         cursorIndex = 0;
                         cursorPosition.x = glyphAdvance;
@@ -388,7 +406,7 @@ final class Terminal {
                 }
                 
                 case GLFW_KEY_ENTER -> {
-                    execute();
+                    executeCommand();
                     typed.delete(0, typed.length());
                     cursorIndex  = 0;
                     historyIndex = commandHistory.size();

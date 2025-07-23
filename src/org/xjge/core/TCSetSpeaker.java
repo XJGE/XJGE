@@ -25,7 +25,7 @@ final class TCSetSpeaker extends TerminalCommand {
     }
 
     @Override
-    public void execute(List<String> args) {
+    public TerminalOutput execute(List<String> args) {
         output = null;
 
         if(!args.isEmpty()) {
@@ -34,24 +34,24 @@ final class TCSetSpeaker extends TerminalCommand {
 
                 if(value > -1 && value < Hardware.getNumSpeakers()) {
                     Hardware.setSpeaker(args.get(0));
-                    setOutput("Set current audio device to " + Audio.speaker.id + 
+                    return new TerminalOutput("Set current audio device to " + Audio.speaker.id + 
                               " \"" + Audio.speaker.name.substring(15) + "\"", 
                               Color.WHITE);
                 } else {
-                    setOutput("ERROR: Could not find an audio device by the ID of " + value, Color.RED);
+                    return new TerminalOutput("ERROR: Could not find an audio device by the ID of " + value, Color.RED);
                 }
             } catch(NumberFormatException e) {
                 if(args.get(0).equals("next") || args.get(0).equals("prev")) {
                     Hardware.setSpeaker(args.get(0));
-                    setOutput("Set current audio device to " + Audio.speaker.id + 
+                    return new TerminalOutput("Set current audio device to " + Audio.speaker.id + 
                               " \"" + Audio.speaker.name.substring(15) + "\"", 
                               Color.WHITE);
                 } else {
-                    setOutput(errorInvalidArg(args.get(0), "<int>, (next), or (prev)"), Color.RED);
+                    return new TerminalOutput(errorInvalidArg(args.get(0), "<int>, (next), or (prev)"), Color.RED);
                 }
             }
         } else {
-            setOutput(errorNotEnoughArgs(1), Color.RED);
+            return new TerminalOutput(errorNotEnoughArgs(1), Color.RED);
         }
     }
 

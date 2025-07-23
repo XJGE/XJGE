@@ -40,7 +40,7 @@ public final class Mouse {
     }
     
     /**
-     * Variant of {@linkplain hovered(float, float float float)} that instead 
+     * Variant of {@linkplain hovered(float, float, float, float)} that instead 
      * takes a rectangle object.
      * 
      * @param bounds the boundaries of some interactive component on the UI

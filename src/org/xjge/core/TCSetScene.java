@@ -31,14 +31,14 @@ final class TCSetScene extends TerminalCommand {
     }
 
     @Override
-    public void execute(List<String> args) {
+    public TerminalOutput execute(List<String> args) {
         output = null;
 
         if(args.isEmpty()) {
-            setOutput(errorNotEnoughArgs(1), Color.RED);
+            return new TerminalOutput(errorNotEnoughArgs(1), Color.RED);
         } else {
             if(args.size() > 1) {
-                setOutput(errorTooManyArgs(args.size(), 1), Color.RED);
+                return new TerminalOutput(errorTooManyArgs(args.size(), 1), Color.RED);
             } else {
                 try {
                     Class<?> c = Class.forName(XJGE.getScenesFilepath() + args.get(0));
@@ -47,14 +47,14 @@ final class TCSetScene extends TerminalCommand {
                         //Assumes the scenes constructor has no parameters.
                         //TODO: allow constructors with parameters?
                         XJGE.setScene((Scene) c.getConstructor().newInstance());
-                        setOutput("Current scene changed to \"" + XJGE.getSceneName() + "\"", Color.WHITE);
+                        return new TerminalOutput("Current scene changed to \"" + XJGE.getSceneName() + "\"", Color.WHITE);
                     } else {
-                        setOutput("ERROR: Invalid argument. Must be a subclass of Scene.", Color.RED);
+                        return new TerminalOutput("ERROR: Invalid argument. Must be a subclass of Scene.", Color.RED);
                     }
                 } catch(ClassNotFoundException | IllegalAccessException | IllegalArgumentException | 
                         InstantiationException | InvocationTargetException | NoSuchMethodException | 
                         NoClassDefFoundError ex) {
-                    setOutput("ERROR: \"" + ex.getClass().getSimpleName() + "\" caught while " + 
+                    return new TerminalOutput("ERROR: \"" + ex.getClass().getSimpleName() + "\" caught while " + 
                               "attempting to change the current scene.", 
                               Color.RED);
                 }

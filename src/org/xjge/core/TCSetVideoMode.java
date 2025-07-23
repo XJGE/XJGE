@@ -27,28 +27,28 @@ final class TCSetVideoMode extends TerminalCommand {
     }
 
     @Override
-    public void execute(List<String> args) {
+    public TerminalOutput execute(List<String> args) {
         output = null;
 
         if(args.isEmpty()) {
-            setOutput(errorNotEnoughArgs(1), Color.RED);
+            return new TerminalOutput(errorNotEnoughArgs(1), Color.RED);
         } else {
             if(args.size() > 1) {
-                setOutput(errorTooManyArgs(args.size(), 1), Color.RED);
+                return new TerminalOutput(errorTooManyArgs(args.size(), 1), Color.RED);
             } else {
                 try {
                     Window.getMonitor().setVideoMode(args.get(0));
-                    setOutput("Changed the current video mode: (" + 
+                    return new TerminalOutput("Changed the current video mode: (" + 
                               Window.getMonitor().getInfo() + ")", 
                               Color.WHITE);
                 } catch(NumberFormatException e) {
                     if(args.get(0).equals("next") || args.get(0).equals("prev")) {
                         Window.getMonitor().setVideoMode(args.get(0));
-                        setOutput("Changed the current video mode: (" + 
+                        return new TerminalOutput("Changed the current video mode: (" + 
                                   Window.getMonitor().getInfo() + ")", 
                                   Color.WHITE);
                     } else {
-                        setOutput(errorInvalidArg(args.get(0), "<int>, (next), or (prev)"), Color.RED);
+                        return new TerminalOutput(errorInvalidArg(args.get(0), "<int>, (next), or (prev)"), Color.RED);
                     }
                 }
             }
