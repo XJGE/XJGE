@@ -19,8 +19,7 @@ final class TCTerminate extends TerminalCommand {
     TCTerminate() {
         super("Ceases execution and gracefully exits the application.",
 
-              "Simply type terminate to use. This command contains no " +
-              "additional parameters.", 
+              "Simply type terminate to use. This command contains no parameters.", 
 
               "terminate");
     }

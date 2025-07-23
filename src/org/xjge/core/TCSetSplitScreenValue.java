@@ -11,17 +11,17 @@ import java.util.List;
  * @author J Hoffman
  * @since  2.0.0
  */
-final class TCSetScreenSplit extends TerminalCommand {
+final class TCSetSplitScreenValue extends TerminalCommand {
 
     /**
      * Creates a new instance of the setScreenSplit command.
      */
-    TCSetScreenSplit() {
+    TCSetSplitScreenValue() {
         super("Changes how the screen will be divided during split screen mode.", 
 
               "Parameter must be one of: none, vertical, horizontal, trisect, or quarter.",
 
-              "setSplitType (none|horizontal|vertical|trisect|quarter)");
+              "setSplitScreenValue (none|horizontal|vertical|trisect|quarter)");
     }
 
     @Override

@@ -21,7 +21,7 @@ final class TCSetSpeaker extends TerminalCommand {
 
               useGenericSetter("device"),
 
-              "setAudioDevice (next|prev|<int>)");
+              "setSpeaker (next|prev|<int>)");
     }
 
     @Override

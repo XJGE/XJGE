@@ -1,6 +1,5 @@
 package org.xjge.core;
 
-import org.xjge.graphics.Color;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;

@@ -36,6 +36,7 @@ All notable changes to this project will be documented in this file. The format 
 - Renamed StopWatch class to Timer.
 - numCharOccurances() to static then moved it out of the Font class and into UI.
 - TerminalCommand.execute() now requires users to return a TerminalOutput object or null if no output is desired.
+- Renamed showCommands to listCommands, setVSync to setVSyncEnabled, and setScreenSplit to setSplitScreenValue.
 
 ### Removed
 - Update/Render methods from the Entity class.

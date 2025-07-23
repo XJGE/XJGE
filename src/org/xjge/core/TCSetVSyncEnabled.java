@@ -11,17 +11,17 @@ import java.util.List;
  * @author J Hoffman
  * @since  2.0.0
  */
-final class TCSetVSync extends TerminalCommand {
+final class TCSetVSyncEnabled extends TerminalCommand {
 
     /**
      * Creates a new instance of the setVSync command.
      */
-    TCSetVSync() {
+    TCSetVSyncEnabled() {
         super("Changes whether or not vertical sync is enabled.",
 
               useGenericShowing("vsync"),
 
-              "setVSync [true|false]");
+              "setVSyncEnabled [true|false]");
     }
 
     @Override

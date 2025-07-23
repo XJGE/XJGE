@@ -22,7 +22,7 @@ final class TCSetMonitor extends TerminalCommand {
 
               useGenericSetter("device"),
 
-              "setDisplayDevice (next|prev|<int>)");
+              "setMonitor (next|prev|<int>)");
     }
 
     @Override

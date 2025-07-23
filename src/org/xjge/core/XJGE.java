@@ -222,16 +222,16 @@ public final class XJGE {
         
         engineCommands = new TreeMap<>() {{
             put("help",                 new TCHelp());
+            put("listCommands",         new TCListCommands());
             put("setFullscreen",        new TCSetFullscreen());
             put("setMonitor",           new TCSetMonitor());
             put("setMusicMasterVolume", new TCSetMusicMasterVolume());
             put("setScene",             new TCSetScene());
-            put("setScreenSplit",       new TCSetScreenSplit());
+            put("setSplitScreenValue",  new TCSetSplitScreenValue());
             put("setSoundMasterVolume", new TCSetSoundMasterVolume());
             put("setSpeaker",           new TCSetSpeaker());
-            put("setVSync",             new TCSetVSync());
+            put("setVSyncEnabled",      new TCSetVSyncEnabled());
             put("setVideoMode",         new TCSetVideoMode());
-            put("showCommands",         new TCShowCommands());
             put("terminate",            new TCTerminate());
         }};
         

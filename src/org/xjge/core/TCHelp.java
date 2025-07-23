@@ -39,7 +39,7 @@ final class TCHelp extends TerminalCommand {
                 String info = "Start typing to view command suggestions, press " + 
                               "TAB to autocomplete, ENTER to execute, and SHIFT+F1 " + 
                               "to exit the terminal. A full list of commands can " + 
-                              "be viewed by using showCommands.";
+                              "be viewed by using listCommands.";
                 
                 return new TerminalOutput(info, Color.GREEN);
             }
