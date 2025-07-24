@@ -13,6 +13,7 @@ All notable changes to this project will be documented in this file. The format 
 - New UI static class that now encapsulates much of the Widget management features previously provided through the XJGE class.
 - New addObserver() and removeObserver() methods to Window class that allows users to listen for state changes made to the applications window.
 - New split() method to Font class which works like wrap() but provides a list of strings instead of a single formatted one.
+- New runGarbageCollection terminal command that can be used to reclaim heap memory at runtime.
 
 ### Changed
 - Fixed bug that wouldn't update the value of virtual gamepads when Input.setVirtualGamepadInput() was called.

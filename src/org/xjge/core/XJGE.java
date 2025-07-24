@@ -223,6 +223,7 @@ public final class XJGE {
         engineCommands = new TreeMap<>() {{
             put("help",                 new TCHelp());
             put("listCommands",         new TCListCommands());
+            put("runGarbageCollection", new TCRunGarbageCollection());
             put("setFullscreen",        new TCSetFullscreen());
             put("setMonitor",           new TCSetMonitor());
             put("setMusicMasterVolume", new TCSetMusicMasterVolume());
