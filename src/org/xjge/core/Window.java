@@ -182,7 +182,6 @@ public final class Window {
         });
         
         glfwMonitorReference = GLFWMonitorCallback.create((monitorHandle, event) -> {
-            //TODO: revisit this after the game loop/command line is working again
             try {
                 Monitor eventMonitor = Hardware2.getMonitor(monitorHandle);
                 
@@ -662,23 +661,6 @@ public final class Window {
     }
     
     /**
-     * Moves the window to another monitor. The window will reconfigure itself 
-     * using the target monitors settings after being moved.
-     * 
-     * @param monitor the target {@linkplain Monitor} to use
-     */
-    public static void setMonitor(Monitor monitor) {
-        if(monitor == null) {
-            Logger.logInfo("Window monitor cannot be null");
-            return;
-        }
-        
-        Window.monitor = monitor;
-        reconfigure();
-        observable.notifyObservers("WINDOW_MONITOR_CHANGED", Window.monitor);
-    }
-    
-    /**
      * Changes the current split type the engine will use to divide the screen 
      * during split screen play. More specifically this will effect the layout 
      * of the viewports within the application window during runtime.
@@ -812,6 +794,26 @@ public final class Window {
             }
             */
         }
+    }
+    
+    /**
+     * Moves the window to another monitor. The window will reconfigure itself 
+     * using the target monitors settings after being moved.
+     * 
+     * @param monitor the target {@linkplain Monitor} to use
+     * @return if true, the method call was successful in changing the windows monitor
+     */
+    public static boolean setMonitor(Monitor monitor) {
+        if(monitor == null) {
+            Logger.logInfo("Failed to change window monitor. Parameter value cannot be null");
+            return false;
+        }
+        
+        Window.monitor = monitor;
+        reconfigure();
+        observable.notifyObservers("WINDOW_MONITOR_CHANGED", Window.monitor);
+        
+        return true;
     }
     
     /**

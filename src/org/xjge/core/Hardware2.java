@@ -58,6 +58,10 @@ public final class Hardware2 {
         return monitors.size();
     }
     
+    static final Monitor getMonitor(int index) {
+        return monitors.get(index);
+    }
+    
     static final Monitor getMonitor(long handle) {
         try {
             return monitors.values().stream().filter(monitor -> monitor.handle == handle).findFirst().get();

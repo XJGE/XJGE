@@ -22,43 +22,27 @@ final class TCSetMonitor extends TerminalCommand {
 
               useGenericSetter("device"),
 
-              "setMonitor (next|prev|<int>)");
+              "setMonitor (<int>)");
     }
 
     @Override
     public TerminalOutput execute(List<String> args) {
-        //TODO: reimplement this
-        /*
-        output = null;
-
         if(!args.isEmpty()) {
             try {
-                int value = Integer.parseInt(args.get(0));
-
-                if(value > 0 && value < Hardware.getNumMonitors() + 1) {
-                    Window.setMonitor(args.get(0));
-                    setOutput("Moved the window to monitor " + Window.monitor.index + 
-                              " \"" + Window.monitor.name + "\"", 
-                              Color.WHITE);
+                int index   = Integer.parseInt(args.get(0));
+                var monitor = Hardware2.getMonitor(index);
+                
+                if(Window.setMonitor(monitor)) {
+                    return new TerminalOutput("Moved window to monitor \"" + monitor.name + "\" at index " + monitor.index, Color.WHITE);
                 } else {
-                    setOutput("ERROR: Could not find a monitor with an ID of " + value, Color.RED);
+                    return new TerminalOutput("ERROR: Failed to change window monitor. Unable to find a monitor at index " + index, Color.RED);
                 }
-            } catch(NumberFormatException e) {
-                if(args.get(0).equals("next") || args.get(0).equals("prev")) {
-                    Window.setMonitor(args.get(0));
-                    setOutput("Moved the window to monitor " + Window.monitor.index + 
-                              " \"" + Window.monitor.name + "\"", 
-                              Color.WHITE);
-                } else {
-                    setOutput(errorInvalidArg(args.get(0), "<int>, (next), or (prev)"), Color.RED);
-                }
+            } catch(NumberFormatException exception) {
+                return new TerminalOutput(errorInvalidArg(args.get(0), "<int>"), Color.RED);
             }
         } else {
-            setOutput(errorNotEnoughArgs(1), Color.RED);
+            return new TerminalOutput(errorNotEnoughArgs(1), Color.RED);
         }
-        */
-        
-        return null;
     }
 
 }
