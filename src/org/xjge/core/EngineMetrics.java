@@ -8,7 +8,7 @@ import org.xjge.graphics.Texture;
  * @author J Hoffman
  * @since  2.0.0
  */
-final class DebugInfo {
+final class EngineMetrics {
     
     boolean show;
     
@@ -16,14 +16,14 @@ final class DebugInfo {
     private int cursorPositionX;
     private int cursorPositionY;
     
-    private final DebugGroup[] groups;
+    private final EngineMetricsGroup[] groups;
     
-    DebugInfo(Texture engineIcons) {
-        groups = new DebugGroup[] {
-            new DGPerformance("Performance"),
-            new DGSystemInfo("System Info"),
-            new DGHardware("Hardware", engineIcons),
-            new DGNoclip("Noclip")
+    EngineMetrics(Texture engineIcons) {
+        groups = new EngineMetricsGroup[] {
+            new EMPerformance("Performance"),
+            new EMSystemInfo("System Info"),
+            new EMHardware("Hardware", engineIcons),
+            new EMNoclip("Noclip")
         };
         
         groups[0].expanded = true;
@@ -38,14 +38,14 @@ final class DebugInfo {
     }
     
     void render() {
-        for(DebugGroup group : groups) group.render(cursorPositionX, cursorPositionY);
+        for(EngineMetricsGroup group : groups) group.render(cursorPositionX, cursorPositionY);
     }
     
     void processMouseInput(Mouse mouse) {
         cursorPositionX = (int) mouse.cursorPositionX;
         cursorPositionY = (int) mouse.cursorPositionY;
         
-        for(DebugGroup group : groups) {
+        for(EngineMetricsGroup group : groups) {
             if(mouse.clickedOnce(group.button, GLFW_MOUSE_BUTTON_LEFT)) group.toggleExpanded();
         }
     }

@@ -10,11 +10,11 @@ import org.xjge.ui.Icon;
  * @author J Hoffman
  * @since 4.0.0
  */
-class DGHardware extends DebugGroup {
+class EMHardware extends EngineMetricsGroup {
 
     private final Icon[] icons = new Icon[4];
     
-    public DGHardware(String title, Texture engineIcons) {
+    public EMHardware(String title, Texture engineIcons) {
         super(title);
         for(int i = 0; i < 8; i++) output.add(new StringBuilder());
         

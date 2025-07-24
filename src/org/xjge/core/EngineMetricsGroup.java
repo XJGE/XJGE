@@ -13,7 +13,7 @@ import org.xjge.ui.TextEffect;
  * @author J Hoffman
  * @since 4.0.0
  */
-abstract class DebugGroup {
+abstract class EngineMetricsGroup {
     
     boolean expanded;
     
@@ -48,7 +48,7 @@ abstract class DebugGroup {
         
     }
     
-    DebugGroup(String title) {
+    EngineMetricsGroup(String title) {
         this.title = title;
     }
     

@@ -174,9 +174,9 @@ public final class Window {
      * captured from the OS.
      * 
      * @param terminal the command-line terminal used to make state changes during runtime
-     * @param debugInfo a series of collapsible menus containing debug information
+     * @param metrics a series of collapsible menus containing debug information
      */
-    static void registerCallbacks(Terminal terminal, DebugInfo debugInfo, Noclip noclip) {
+    static void registerCallbacks(Terminal terminal, EngineMetrics metrics, Noclip noclip) {
         glfwErrorReference = GLFWErrorCallback.create((error, description) -> {
             Logger.logWarning("GLFW Error: (" + error + ") " + GLFWErrorCallback.getDescription(description), null);
         });
@@ -227,7 +227,7 @@ public final class Window {
         });
         
         glfwCursorPositionReference = GLFWCursorPosCallback.create((window, cursorPositionX, cursorPositionY) -> {
-            if(!terminal.show && !debugInfo.show && !noclip.enabled) {
+            if(!terminal.show && !metrics.show && !noclip.enabled) {
                 float scaleX = (float) resolution.width / width;
                 float scaleY = (float) resolution.height / height;
 
@@ -240,7 +240,7 @@ public final class Window {
                 mouse.cursorPositionY = height - cursorPositionY;
                 
                 if(terminal.show) terminal.scrollBar.processMouseInput(mouse);
-                if(debugInfo.show) debugInfo.processMouseInput(mouse);
+                if(metrics.show) metrics.processMouseInput(mouse);
             }
             
             if(!mouse.previousClickValue) {
@@ -269,11 +269,11 @@ public final class Window {
                 }
             }
             
-            if(!terminal.show && !debugInfo.show) {
+            if(!terminal.show && !metrics.show) {
                 UI.processMouseInput(mouse);
             } else {
                 if(terminal.show) terminal.scrollBar.processMouseInput(mouse);
-                if(debugInfo.show) debugInfo.processMouseInput(mouse);
+                if(metrics.show) metrics.processMouseInput(mouse);
             }
         });
         
@@ -281,11 +281,11 @@ public final class Window {
             mouse.scrollSpeedX = scrollSpeedX;
             mouse.scrollSpeedY = scrollSpeedY;
             
-            if(!terminal.show && !debugInfo.show && !noclip.enabled) {
+            if(!terminal.show && !metrics.show && !noclip.enabled) {
                 UI.processMouseInput(mouse);
             } else {
                 if(terminal.show) terminal.scrollBar.processMouseInput(mouse);
-                if(debugInfo.show) debugInfo.processMouseInput(mouse);
+                if(metrics.show) metrics.processMouseInput(mouse);
                 if(noclip.enabled) noclip.speed = XJGE.clampValue(0.01f, 1f, noclip.speed + ((float) mouse.scrollSpeedY * 0.01f));
             }
             
@@ -297,7 +297,7 @@ public final class Window {
             if(debugModeEnabled && action == GLFW_PRESS && mods == GLFW_MOD_SHIFT) {
                 switch(key) {
                     case GLFW_KEY_F1 -> terminal.show = !terminal.show;
-                    case GLFW_KEY_F2 -> debugInfo.show = !debugInfo.show;
+                    case GLFW_KEY_F2 -> metrics.show = !metrics.show;
                     case GLFW_KEY_F3 -> {
                         noclip.enabled = !noclip.enabled;
                         

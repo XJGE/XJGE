@@ -11,9 +11,9 @@ import static org.lwjgl.opengl.GL11.glGetString;
  * @author J Hoffman
  * @since 4.0.0
  */
-class DGSystemInfo extends DebugGroup {
+class EMSystemInfo extends EngineMetricsGroup {
     
-    DGSystemInfo(String title) {
+    EMSystemInfo(String title) {
         super(title);
         for(int i = 0; i < 6; i++) output.add(new StringBuilder());
     }

@@ -93,7 +93,7 @@ public final class XJGE {
     private static Texture engineIcons;
     private static Sound beep;
     private static Terminal terminal;
-    private static DebugInfo debugInfo;
+    private static EngineMetrics metrics;
     private static Noclip noclip;
     
     private static TreeMap<String, TerminalCommand> engineCommands     = new TreeMap<>();
@@ -264,9 +264,9 @@ public final class XJGE {
         glPrograms = Collections.unmodifiableMap(glPrograms);
         noclip     = new Noclip();
         terminal   = new Terminal(engineCommands);
-        debugInfo  = new DebugInfo(engineIcons);
+        metrics  = new EngineMetrics(engineIcons);
         
-        Window.registerCallbacks(terminal, debugInfo, noclip);
+        Window.registerCallbacks(terminal, metrics, noclip);
         Window.show();
         
         int cycles = 0;
@@ -288,7 +288,7 @@ public final class XJGE {
             while(delta >= TARGET_DELTA) {
                 Input.update(TARGET_DELTA, deltaMetric);
                 if(terminal.show) terminal.update();
-                if(debugInfo.show) debugInfo.update(deltaMetric, fps, entityCount, noclip);
+                if(metrics.show) metrics.update(deltaMetric, fps, entityCount, noclip);
                 
                 if(tick(20)) {
                     deltaMetric = delta;
@@ -392,12 +392,12 @@ public final class XJGE {
                 }
             }
             
-            if(terminal.show || debugInfo.show) {
+            if(terminal.show || metrics.show) {
                 glViewport(0, 0, Window.getWidth(), Window.getHeight());
                 UI.updateProjectionMatrix(Window.getWidth(), Window.getHeight(), 0, Integer.MAX_VALUE);
 
                 if(terminal.show) terminal.render();
-                if(debugInfo.show) debugInfo.render();
+                if(metrics.show) metrics.render();
             }
             
             Window.swapBuffers();
