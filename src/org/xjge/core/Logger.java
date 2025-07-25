@@ -91,9 +91,9 @@ public final class Logger {
                 case 4  -> " GLFW VER:\t" + glfwGetVersionString();
                 case 5  -> " OPENAL VER:\t" + alGetString(AL_VERSION);
                 case 6  -> " OPENGL VER:\t" + glGetString(GL_VERSION);
-                case 8  -> " CPU MODEL:\t" + Hardware2.getCPUModel();
+                case 8  -> " CPU MODEL:\t" + XJGE.getCPUModel();
                 case 9  -> " GPU MODEL:\t" + glGetString(GL_RENDERER);
-                case 10 -> " MONITORS:\t" + "Found: " + Hardware2.getNumMonitors() + ", Primary: \"" + 
+                case 10 -> " MONITORS:\t" + "Found: " + Window.getNumMonitors() + ", Primary: \"" + 
                            Window.getMonitor().name + "\" (" + Window.getMonitor().getInfo() + ")";
                 case 11 -> " SPEAKERS:\t" + "Found: " + Hardware.getNumSpeakers() + ", Primary: \"" + Audio.speaker.name;
                 case 12 -> " GAMEPADS:\t" + "Found: " + Input.getNumDevices();

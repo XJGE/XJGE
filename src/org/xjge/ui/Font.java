@@ -514,17 +514,11 @@ public final class Font {
                 glyph.position.set(0);
                 glyph.color.set(1f, 1f, 1f);
             } else {
-                glyph.character = (glyphMetrics.containsKey(text.charAt(i))) ? text.charAt(i) : '?';
-                
-                if(glyph.character != '\n') {
-                    glyph.position.x = positionX + advance + getGlyphBearingX(glyph.character);
-                    glyph.position.y = positionY + descent + getGlyphBearingY(glyph.character);
+                glyph.character  = (glyphMetrics.containsKey(text.charAt(i))) ? text.charAt(i) : '?';
+                glyph.position.x = positionX + advance + getGlyphBearingX(glyph.character);
+                glyph.position.y = positionY + descent + getGlyphBearingY(glyph.character);
 
-                    advance += getGlyphAdvance(glyph.character);
-                } else {
-                    advance = 0;
-                    descent -= size;
-                }
+                advance += getGlyphAdvance(glyph.character);
                 
                 if(effect == null) {
                     glyph.opacity = XJGE.clampValue(0f, 1f, opacity);
@@ -683,11 +677,15 @@ public final class Font {
         for(int i = 0; i < text.length(); i++) {
             char character = text.charAt(i);
 
-            if(character != ' ') {
+            if(character != ' ' && character != '\n') {
                 token.append(character);
             } else {
-                words.add(token.toString());
-                token.setLength(0);
+                if(token.length() > 0) {
+                    words.add(token.toString());
+                    token.setLength(0);
+                }
+                
+                if(character == '\n') words.add("\n");
             }
         }
 
@@ -700,8 +698,8 @@ public final class Font {
         for(int i = 0; i < words.size(); i++) {
             var word      = words.get(i);
             int wordWidth = lengthInPixels(word + " ");
-
-            if(currentWidth + wordWidth > advanceLimit) {
+            
+            if(word.equals("\n") || currentWidth + wordWidth > advanceLimit) {
                 lines.add(currentLine.toString().trim());
                 currentLine.setLength(0);
                 currentLine.append(word).append(" ");

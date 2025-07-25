@@ -30,7 +30,7 @@ class EMHardware extends EngineMetricsGroup {
             output.get(i).setLength(0);
             
             switch(i) {
-                case 0 -> output.get(i).append("CPU MODEL: ").append(Hardware2.getCPUModel());
+                case 0 -> output.get(i).append("CPU MODEL: ").append(XJGE.getCPUModel());
                 case 1 -> output.get(i).append("GPU MODEL: ").append(glGetString(GL_RENDERER));
                 case 2 -> {
                     output.get(i).append("MONITOR:   \"").append(Window.getMonitor().name)

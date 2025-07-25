@@ -3,8 +3,6 @@ package org.xjge.core;
 import java.util.Collections;
 import java.util.NavigableMap;
 import java.util.TreeMap;
-import org.lwjgl.PointerBuffer;
-import static org.lwjgl.glfw.GLFW.glfwGetMonitors;
 import static org.lwjgl.glfw.GLFW.glfwSwapInterval;
 import static org.lwjgl.openal.ALC11.*;
 import static org.lwjgl.openal.ALUtil.getStringList;
@@ -24,48 +22,12 @@ public final class Hardware {
     private static boolean vSyncEnabled = true;
     
     private static final TreeMap<Integer, Speaker> speakers = new TreeMap<>();
-    private static final TreeMap<Integer, Monitor> monitors = new TreeMap<>();
     
     /**
      * Releases every connected audio device from the engines influence.
      */
     static void freeSpeakers() {
         speakers.forEach((id, device) -> alcCloseDevice(device.handle));
-    }
-    
-    /**
-     * Removes the specified display device from a collection of currently 
-     * connected peripheral devices.
-     * 
-     * @param handle a unique value provided by GLFW used to identify the device
-     */
-    static void removeMonitor(long handle) {
-        monitors.values().removeIf(monitor -> monitor.handle == handle);
-    }
-    
-    /**
-     * Obtains a display device from a collection of currently connected 
-     * peripheral devices.
-     * 
-     * @param handle a unique value provided by GLFW used to identify the device
-     * 
-     * @return the monitor object whose handle corresponds to the one supplied
-     */
-    static Monitor getMonitor(long handle) {
-        return monitors.values().stream()
-                .filter(monitor -> monitor.handle == handle)
-                .findFirst()
-                .get();
-    }
-    
-    /**
-     * Obtains any available monitor currently connected and subject to the 
-     * engines influence.
-     * 
-     * @return a monitor object that's available to the engine for immediate use 
-     */
-    static Monitor getAnyMonitor() {
-        return monitors.values().stream().findAny().get();
     }
     
     /**
@@ -100,37 +62,6 @@ public final class Hardware {
         }
         
         return Collections.unmodifiableNavigableMap(speakers);
-    }
-    
-    /**
-     * Finds every available display device currently connected to the system 
-     * and returns them in a collection.
-     * 
-     * @return an immutable collection of available display devices
-     */
-    public static final NavigableMap<Integer, Monitor> findMonitors() {
-        PointerBuffer monitorBuf = glfwGetMonitors();
-        
-        if(monitorBuf != null) {
-            for(int i = 0; i < monitorBuf.limit(); i++) {
-                if(!monitors.containsKey(i + 1)) {
-                    monitors.put(i + 1, new Monitor(i + 1, monitorBuf.get(i)));
-                }
-            }
-        } else {
-            Logger.logWarning("Failed to find any available monitors", null);
-        }
-        
-        return Collections.unmodifiableNavigableMap(monitors);
-    }
-    
-    /**
-     * Provides the amount of currently connected display devices.
-     * 
-     * @return the number of available display devices
-     */
-    public static int getNumMonitors() {
-        return monitors.size();
     }
     
     /**

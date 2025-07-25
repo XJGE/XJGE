@@ -121,7 +121,7 @@ final class Terminal {
         String command = typed.toString();
         
         commandHistory.add(command);
-        if(commandHistory.size() == 33) commandHistory.remove(0);
+        if(commandHistory.size() > 64) commandHistory.remove(0);
         
         TerminalOutput commandOutput;
         

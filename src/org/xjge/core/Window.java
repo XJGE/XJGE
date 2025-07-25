@@ -4,6 +4,10 @@ import java.beans.PropertyChangeListener;
 import java.io.InputStream;
 import java.nio.ByteBuffer;
 import java.nio.IntBuffer;
+import java.util.Collections;
+import java.util.NavigableMap;
+import java.util.TreeMap;
+import org.lwjgl.PointerBuffer;
 import static org.lwjgl.glfw.GLFW.*;
 import org.lwjgl.glfw.GLFWCursorPosCallback;
 import org.lwjgl.glfw.GLFWErrorCallback;
@@ -53,8 +57,8 @@ public final class Window {
     
     private static long handle = NULL;
     
+    private static Monitor monitor;
     private static String title      = "XJGE v" + XJGE.VERSION;
-    private static Monitor monitor   = Hardware2.getPrimaryMonitor();
     private static final Mouse mouse = new Mouse();
     private static final Resolution resolution = new Resolution(DEFAULT_WIDTH, DEFAULT_HEIGHT);
     private static final Observable observable = new Observable(Window.class);
@@ -72,6 +76,8 @@ public final class Window {
     private static final Viewport[] viewports = new Viewport[4];
     
     private static SplitScreenType splitType = SplitScreenType.NONE;
+    
+    private static final NavigableMap<Integer, Monitor> monitors = new TreeMap<>();
     
     /**
      * Default constructor defined here to keep it out of the public APIs reach.
@@ -143,7 +149,8 @@ public final class Window {
         observable.properties.put("WINDOW_MONITOR_CHANGED",           monitor);
         observable.properties.put("WINDOW_SPLITSCREEN_TYPE_CHANGED",  splitType);
         
-        handle = glfwCreateWindow(width, height, title, NULL, NULL);
+        monitor = getPrimaryMonitor();
+        handle  = glfwCreateWindow(width, height, title, NULL, NULL);
         
         glfwSetWindowSizeLimits(handle, minWidth, minHeight, GLFW_DONT_CARE, GLFW_DONT_CARE);
         glfwMakeContextCurrent(handle);
@@ -183,7 +190,7 @@ public final class Window {
         
         glfwMonitorReference = GLFWMonitorCallback.create((monitorHandle, event) -> {
             try {
-                Monitor eventMonitor = Hardware2.getMonitor(monitorHandle);
+                Monitor eventMonitor = getMonitor(monitorHandle);
                 
                 if(event == GLFW_CONNECTED) {
                     Logger.logInfo("New monitor \"" + eventMonitor.name + "\" connected at index " + eventMonitor.index);
@@ -199,7 +206,7 @@ public final class Window {
                     }
                 }
                 
-                var monitors = Hardware2.findMonitors();
+                findMonitors();
                 
                 setSize(DEFAULT_WIDTH, DEFAULT_HEIGHT);
                 setFullscreen(false);
@@ -389,6 +396,27 @@ public final class Window {
      */
     static int getFBOHandle() {
         return fboHandle;
+    }
+    
+    static int getNumMonitors() {
+        return monitors.size();
+    }
+    
+    static final Monitor getMonitor(int index) {
+        return monitors.get(index);
+    }
+    
+    static final Monitor getMonitor(long handle) {
+        try {
+            return monitors.values().stream().filter(monitor -> monitor.handle == handle).findFirst().get();
+        } catch(Exception exception) {
+            Logger.logWarning("Unable to find a monitor with the handle " + handle, exception);
+            return null;
+        }
+    }
+    
+    static final Monitor getPrimaryMonitor() {
+        return findMonitors().get(0);
     }
     
     /**
@@ -931,6 +959,21 @@ public final class Window {
      */
     public static SplitScreenType getSplitScreenType() {
         return splitType;
+    }
+    
+    public static final NavigableMap<Integer, Monitor> findMonitors() {
+        monitors.clear();
+        PointerBuffer monitorBuffer = glfwGetMonitors();
+        
+        if(monitorBuffer == null || monitorBuffer.limit() == 0) {
+            Logger.logWarning("Failed to find any available monitors", null);
+        } else {
+            for(int i = 0; i < monitorBuffer.limit(); i++) {
+                monitors.put(i, new Monitor(i, monitorBuffer.get(i)));
+            }
+        }
+        
+        return Collections.unmodifiableNavigableMap(monitors);
     }
     
 }

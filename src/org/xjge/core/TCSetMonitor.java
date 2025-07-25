@@ -30,7 +30,7 @@ final class TCSetMonitor extends TerminalCommand {
         if(!args.isEmpty()) {
             try {
                 int index   = Integer.parseInt(args.get(0));
-                var monitor = Hardware2.getMonitor(index);
+                var monitor = Window.getMonitor(index);
                 
                 if(Window.setMonitor(monitor)) {
                     return new TerminalOutput("Moved window to monitor \"" + monitor.name + "\" at index " + monitor.index, Color.WHITE);

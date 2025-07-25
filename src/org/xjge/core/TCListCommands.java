@@ -29,6 +29,7 @@ final class TCListCommands extends TerminalCommand {
     @Override
     public TerminalOutput execute(List<String> args) {
         String commandList = "";
+        
         commandList = commands.keySet().stream()
                                        .map(name -> name + ", ")
                                        .reduce(commandList, String::concat);

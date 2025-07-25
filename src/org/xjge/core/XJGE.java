@@ -2,6 +2,9 @@ package org.xjge.core;
 
 import org.xjge.graphics.Texture;
 import java.beans.PropertyChangeListener;
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
 import org.xjge.graphics.GLDataType;
 import org.xjge.graphics.GLProgram;
 import org.xjge.graphics.GLShader;
@@ -89,6 +92,7 @@ public final class XJGE {
     public static final String VERSION   = "4.0.0-beta1";
     private static String assetsFilepath = "/org/xjge/assets/";
     private static String scenesFilepath;
+    private static String cpuModel;
     
     private static Texture engineIcons;
     private static Sound beep;
@@ -106,6 +110,35 @@ public final class XJGE {
     
     private static final Queue<Scene> sceneChangeRequests = new LinkedList<>();
     private static final Queue<Event> events = new PriorityQueue<>(Comparator.comparing(Event::getPriority));
+    
+    static {
+        ProcessBuilder builder = new ProcessBuilder(
+            "powershell.exe",
+            "-NoProfile",
+            "-Command",
+            "(Get-CimInstance Win32_Processor).Name"
+        );
+        
+        builder.redirectErrorStream(true);
+        
+        try {
+            Process process = builder.start();
+            
+            try(BufferedReader reader = new BufferedReader(new InputStreamReader(process.getInputStream()))) {
+                String line;
+                
+                while((line = reader.readLine()) != null) {
+                    line = line.trim();
+                    if(!line.isEmpty()) cpuModel = line.trim();
+                }
+            } finally {
+                process.destroy();
+            }
+        } catch(IOException exception) {
+            Logger.logWarning("Failed to parse CPU model", exception);
+            cpuModel = "Unknown";
+        }
+    }
     
     /**
      * Default constructor defined here to keep it out of the public APIs reach.
@@ -223,6 +256,7 @@ public final class XJGE {
         engineCommands = new TreeMap<>() {{
             put("help",                 new TCHelp());
             put("listCommands",         new TCListCommands());
+            put("listMonitors",         new TCListMonitors());
             put("runGarbageCollection", new TCRunGarbageCollection());
             put("setFullscreen",        new TCSetFullscreen());
             put("setMonitor",           new TCSetMonitor());
@@ -528,6 +562,10 @@ public final class XJGE {
      */
     public static int getTickCount() {
         return tickCount;
+    }
+    
+    public static final String getCPUModel() {
+        return cpuModel;
     }
     
     //==== LEGACY API BELOW ====================================================
