@@ -163,9 +163,7 @@ public final class XJGE {
         if(!glfwInit()) Logger.logError("Failed to initialize GLFW", null);
         
         Window.create(debugModeEnabled);
-        
-        Audio.speaker = Hardware.findSpeakers().get(1);
-        Audio.speaker.setContextCurrent();
+        Audio.setSpeaker(Audio.findSpeakers().get(0)); //TODO: Audio.init()?
         
         Logger.logSystemInfo();
         
@@ -254,9 +252,11 @@ public final class XJGE {
         Light.setIconTexture(engineIcons);
         
         engineCommands = new TreeMap<>() {{
+            put("findMonitors",         new TCFindMonitors());
             put("help",                 new TCHelp());
             put("listCommands",         new TCListCommands());
             put("listMonitors",         new TCListMonitors());
+            put("listSpeakers",         new TCListSpeakers());
             put("runGarbageCollection", new TCRunGarbageCollection());
             put("setFullscreen",        new TCSetFullscreen());
             put("setMonitor",           new TCSetMonitor());
@@ -315,7 +315,7 @@ public final class XJGE {
             
             currTime = glfwGetTime();
             delta    += currTime - prevTime;
-            if(delta < TARGET_DELTA && Hardware.getVSyncEnabled()) delta = TARGET_DELTA;
+            if(delta < TARGET_DELTA && Window.getVSyncEnabled()) delta = TARGET_DELTA;
             prevTime = currTime;
             ticked   = false;
             

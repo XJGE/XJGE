@@ -17,7 +17,7 @@ import org.lwjgl.openal.ALCCapabilities;
  */
 public final class Speaker {
 
-    final int id;
+    final int index;
     
     public final long handle;
     private final long context;
@@ -32,9 +32,9 @@ public final class Speaker {
      *           the engine
      * @param name the name of the device as provided by OpenAL
      */
-    Speaker(int id, String name) {
-        this.id   = id;
-        this.name = name;
+    Speaker(int index, String name) {
+        this.index = index;
+        this.name  = name;
         
         handle       = alcOpenDevice(name);
         capabilities = ALC.createCapabilities(handle);

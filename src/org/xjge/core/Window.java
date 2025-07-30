@@ -41,7 +41,8 @@ public final class Window {
     private static boolean debugModeEnabled;
     private static boolean fullscreen;
     private static boolean resizable;
-    private static boolean restrict4K = true;
+    private static boolean restrict4K   = true;
+    private static boolean vSyncEnabled = true;
     
     public static final int DEFAULT_WIDTH  = 1280;
     public static final int DEFAULT_HEIGHT = 720;
@@ -120,7 +121,7 @@ public final class Window {
         }
         
         center(monitor);
-        glfwSwapInterval(true ? 1 : 0);
+        glfwSwapInterval(vSyncEnabled ? 1 : 0);
     }
     
     /**
@@ -149,7 +150,7 @@ public final class Window {
         observable.properties.put("WINDOW_MONITOR_CHANGED",           monitor);
         observable.properties.put("WINDOW_SPLITSCREEN_TYPE_CHANGED",  splitType);
         
-        monitor = getPrimaryMonitor();
+        monitor = findMonitors().get(0); //Obtain primary monitor
         handle  = glfwCreateWindow(width, height, title, NULL, NULL);
         
         glfwSetWindowSizeLimits(handle, minWidth, minHeight, GLFW_DONT_CARE, GLFW_DONT_CARE);
@@ -189,31 +190,23 @@ public final class Window {
         });
         
         glfwMonitorReference = GLFWMonitorCallback.create((monitorHandle, event) -> {
-            try {
-                Monitor eventMonitor = getMonitor(monitorHandle);
+            if(event == GLFW_DISCONNECTED) {
+                var eventMonitor = getMonitor(monitorHandle);
                 
-                if(event == GLFW_CONNECTED) {
-                    Logger.logInfo("New monitor \"" + eventMonitor.name + "\" connected at index " + eventMonitor.index);
-                } else if(event == GLFW_DISCONNECTED) {
-                    if(monitor.handle == monitorHandle) {
-                        Logger.logWarning("The current monitor used by the applications window has been disconnected. " + 
-                                          "(name: \" " + eventMonitor.name + "\" index: " + eventMonitor.index + ") " + 
-                                          "Attempting to move the window to the next available monitor...", 
-                                          null);
-                    } else {
-                        Logger.logInfo("The monitor \"" + eventMonitor.name + "\" at index " + 
-                                       eventMonitor.index + " has been disconnected");
-                    }
+                if(eventMonitor != null) {
+                    Logger.logInfo("The monitor \"" + eventMonitor.name + "\" at index " + 
+                                   eventMonitor.index + " has been disconnected");
                 }
+            }
+            
+            findMonitors();
+            
+            if(event == GLFW_CONNECTED) {
+                var eventMonitor = getMonitor(monitorHandle);
                 
-                findMonitors();
-                
-                setSize(DEFAULT_WIDTH, DEFAULT_HEIGHT);
-                setFullscreen(false);
-                setMonitor(monitors.get(0));
-                
-            } catch(Exception exception) {
-                Logger.logWarning("Error encountered during monitor assignment", exception);
+                if(eventMonitor != null) {
+                    Logger.logInfo("New monitor \"" + eventMonitor.name + "\" connected at index " + eventMonitor.index);
+                }
             }
         });
         
@@ -398,25 +391,12 @@ public final class Window {
         return fboHandle;
     }
     
-    static int getNumMonitors() {
-        return monitors.size();
-    }
-    
-    static final Monitor getMonitor(int index) {
-        return monitors.get(index);
-    }
-    
     static final Monitor getMonitor(long handle) {
         try {
-            return monitors.values().stream().filter(monitor -> monitor.handle == handle).findFirst().get();
+            return monitors.values().stream().filter(mon -> mon.handle == handle).findFirst().get();
         } catch(Exception exception) {
-            Logger.logWarning("Unable to find a monitor with the handle " + handle, exception);
             return null;
         }
-    }
-    
-    static final Monitor getPrimaryMonitor() {
-        return findMonitors().get(0);
     }
     
     /**
@@ -527,6 +507,17 @@ public final class Window {
      */
     public static void set4KRestricted(boolean restrict4K) {
         Window.restrict4K = restrict4K;
+    }
+    
+    /**
+     * Determines whether the application will take advantage of vertical sync 
+     * (or VSync) while rendering frames. VSync is enabled by default on startup.
+     * 
+     * @param vSyncEnabled if true, vertical sync will be enabled
+     */
+    public static void setVSyncEnabled(boolean vSyncEnabled) {
+        Window.vSyncEnabled = vSyncEnabled;
+        glfwSwapInterval(vSyncEnabled ? 1 : 0);
     }
     
     /**
@@ -862,6 +853,15 @@ public final class Window {
     }
     
     /**
+     * Obtains a value indicating whether or not vertical sync is enabled.
+     * 
+     * @return true if vertical sync is currently enabled
+     */
+    public static boolean getVSyncEnabled() {
+        return vSyncEnabled;
+    }
+    
+    /**
      * Obtains the current width of the windows content area.
      * 
      * @return the width of the window (in pixels)
@@ -933,14 +933,8 @@ public final class Window {
         return glfwGetInputMode(handle, mode);
     }
     
-    /**
-     * Obtains the title used to identify the window. This will be displayed to 
-     * the user from the windows title bar among other places.
-     * 
-     * @return a string used to identify the window
-     */
-    public static final String getTitle() {
-        return title;
+    public static int getNumMonitors() {
+        return monitors.size();
     }
     
     /**
@@ -952,13 +946,8 @@ public final class Window {
         return monitor;
     }
     
-    /**
-     * Obtains the current split type used to divide the windows content area.
-     * 
-     * @return a value indicating how the screen is being divided
-     */
-    public static SplitScreenType getSplitScreenType() {
-        return splitType;
+    public static final Monitor getMonitor(int index) {
+        return monitors.get(index);
     }
     
     public static final NavigableMap<Integer, Monitor> findMonitors() {
@@ -971,9 +960,41 @@ public final class Window {
             for(int i = 0; i < monitorBuffer.limit(); i++) {
                 monitors.put(i, new Monitor(i, monitorBuffer.get(i)));
             }
+            
+            if(monitor != null && getMonitor(monitor.handle) == null) {
+                Monitor fallback = monitors.firstEntry().getValue();
+                
+                Logger.logWarning("The previous monitor in use is now unavailable. Attempting to move the window " + 
+                                  "to monitor \"" + fallback.name + "\" at index " + fallback.index, null);
+                
+                if(fallback != monitor) {
+                    setSize(DEFAULT_WIDTH, DEFAULT_HEIGHT);
+                    setFullscreen(false);
+                    setMonitor(fallback);
+                }
+            }
         }
         
         return Collections.unmodifiableNavigableMap(monitors);
+    }
+    
+    /**
+     * Obtains the title used to identify the window. This will be displayed to 
+     * the user from the windows title bar among other places.
+     * 
+     * @return a string used to identify the window
+     */
+    public static final String getTitle() {
+        return title;
+    }
+    
+    /**
+     * Obtains the current split type used to divide the windows content area.
+     * 
+     * @return a value indicating how the screen is being divided
+     */
+    public static SplitScreenType getSplitScreenType() {
+        return splitType;
     }
     
 }

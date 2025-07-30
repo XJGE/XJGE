@@ -1,11 +1,17 @@
 package org.xjge.core;
 
+import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.NavigableMap;
 import java.util.TreeMap;
 import org.joml.Vector3f;
 import static org.lwjgl.openal.AL11.*;
+import static org.lwjgl.openal.ALC10.alcCloseDevice;
+import static org.lwjgl.openal.ALC11.ALC_ALL_DEVICES_SPECIFIER;
+import static org.lwjgl.openal.ALUtil.getStringList;
+import static org.lwjgl.system.MemoryUtil.NULL;
 
 /**
  * Created: Jun 20, 2021
@@ -33,7 +39,7 @@ public final class Audio {
     
     private static boolean introFinished;
     
-    static Speaker speaker;
+    private static Speaker speaker;
     private static String prevMusicSourceSong;
     private static SoundSource musicSource;
     private static Sound currSongBody;
@@ -50,6 +56,8 @@ public final class Audio {
     
     static final Map<String, Sound> sounds = new HashMap<>();
     static final Map<String, Song> songs   = new HashMap<>();
+    
+    private static final NavigableMap<Integer, Speaker> speakers = new TreeMap<>();
     
     /**
      * Ensures that the state of the previous OpenAL context is retained between 
@@ -427,6 +435,49 @@ public final class Audio {
         }
         
         ErrorUtils.checkALError();
+    }
+    
+    public static boolean setSpeaker(Speaker speaker) {
+        if(speaker == null) {
+            Logger.logInfo("Failed to change speaker. Parameter value cannot be null");
+            return false;
+        }
+        
+        Audio.speaker = speaker;
+        Audio.speaker.setContextCurrent();
+        
+        return true;
+    }
+    
+    public static int getNumSpeakers() {
+        return speakers.size();
+    }
+    
+    public static Speaker getSpeaker() {
+        return speaker;
+    }
+    
+    public static Speaker getSpeaker(int index) {
+        return speakers.get(index);
+    }
+    
+    public static final NavigableMap<Integer, Speaker> findSpeakers() {
+        speakers.forEach((id, device) -> alcCloseDevice(device.handle));
+        speakers.clear();
+        
+        var deviceList = getStringList(NULL, ALC_ALL_DEVICES_SPECIFIER);
+        
+        if(deviceList == null) {
+            Logger.logWarning("Failed to find any available speakers", null);
+        } else {
+            for(int i = 0; i < deviceList.size(); i++) {
+                if(!speakers.containsKey(i)) {
+                    speakers.put(i, new Speaker(i, deviceList.get(i)));
+                }
+            }
+        }
+        
+        return Collections.unmodifiableNavigableMap(speakers);
     }
     
 }

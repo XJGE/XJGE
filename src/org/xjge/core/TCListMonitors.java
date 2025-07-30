@@ -14,7 +14,7 @@ final class TCListMonitors extends TerminalCommand {
         super("Provides a list of every connected display device available for " + 
               "use by the application.", 
               
-              "Simply type listCommands to use. This command contains no parameters.", 
+              "Simply type listMonitors to use. This command contains no parameters.", 
               
               "listMonitors");
     }
