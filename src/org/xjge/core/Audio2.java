@@ -7,7 +7,12 @@ import java.util.Map;
 import java.util.NavigableMap;
 import java.util.TreeMap;
 import org.joml.Vector3f;
+import static org.lwjgl.openal.AL10.AL_GAIN;
+import static org.lwjgl.openal.AL10.AL_INITIAL;
 import static org.lwjgl.openal.AL10.AL_PLAYING;
+import static org.lwjgl.openal.AL10.AL_STOPPED;
+import static org.lwjgl.openal.AL10.alGetSourcef;
+import static org.lwjgl.openal.AL10.alSourceStop;
 import static org.lwjgl.openal.ALC10.alcMakeContextCurrent;
 import static org.lwjgl.openal.ALC11.ALC_ALL_DEVICES_SPECIFIER;
 import static org.lwjgl.openal.ALUtil.getStringList;
@@ -182,11 +187,62 @@ public final class Audio2 {
         return Collections.unmodifiableNavigableMap(speakers);
     }
     
+    /**
+     * Sources 0-63 are always guaranteed available since that's the imposed 
+     * minimum set by the engine with 0-31 being reservable and 33-256 being 
+     * transient
+     * 
+     * @param reserve
+     * @return 
+     */
     public static SoundSource2 findSoundSource(boolean reserve) {
+        int limit = speaker.getSoundSourceLimit();
         
-        //if(reserve) only pull from 0-63 since those are guaranteed, 64-256 are transient
-        
-        return sourcePool[0];
+        if(reserve) {
+            //Reserved slots: (0 -> 31)
+            for (int i = 0; i < MIN_SOURCES / 2; i++) {
+                SoundSource2 candidate = sourcePool[i];
+                int state = candidate.getState();
+
+                if (state == AL_STOPPED || state == AL_INITIAL) {
+                    candidate.reserved = true;
+                    return candidate;
+                }
+            }
+            
+            Logger.logWarning("No reservable sound sources are available as the object pool " + 
+                              "has been exhausted. The caller will need to resolve this.", 
+                              null);
+            return null;
+            
+        } else {
+            //Transient slots: (32 -> speaker limit)
+            for(int i = MIN_SOURCES / 2; i < limit; i++) {
+                SoundSource2 candidate = sourcePool[i];
+                int state = candidate.getState();
+
+                if(state == AL_STOPPED || state == AL_INITIAL) {
+                    return candidate;
+                }
+            }
+
+            //If none are free we'll steal the source furthest from the listener
+            float maxDistanceSquared = -1f;
+            SoundSource2 farthest    = sourcePool[32];
+
+            for(int i = MIN_SOURCES / 2; i < limit; i++) {
+                SoundSource2 candidate = sourcePool[i];
+                float distanceSquared  = candidate.position.distanceSquared(0f, 0f, 0f);
+
+                if(distanceSquared > maxDistanceSquared) {
+                    maxDistanceSquared = distanceSquared;
+                    farthest = candidate;
+                }
+            }
+            
+            farthest.stop();
+            return farthest;
+        }
     }
     
 }

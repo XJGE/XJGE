@@ -12,8 +12,8 @@ import static org.lwjgl.openal.AL11.*;
  */
 public final class SoundSource2 {
     
-    private boolean reserved;
     private boolean playRequested;
+    boolean reserved;
     boolean pausedInBulk;
     
     private float pitch  = 1f;
@@ -125,10 +125,6 @@ public final class SoundSource2 {
             
             if(getState() != AL_PLAYING) alSourcePlay(handle);
         }
-    }
-    
-    boolean isReserved() {
-        return reserved;
     }
     
     public void release() {

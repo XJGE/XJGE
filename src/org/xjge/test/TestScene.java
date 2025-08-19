@@ -38,9 +38,9 @@ public class TestScene extends Scene {
         
         source = Audio2.findSoundSource(true)
                        .queueSound("music_intro", false)
-                       //.queueSound("shimmer", false) //if this were true the queue will not proceed until setLooping(false) is called
-                       .queueSound("music_body", true);
-                       //.play();
+                       .queueSound("shimmer", true) //if this were true the queue will not proceed until setLooping(false) is called
+                       .queueSound("music_body", true)
+                       .play();
         
         //UI.addWidget(GLFW_JOYSTICK_1, "font_test", new TestWidget());
         //XJGE.setClearColor(Color.BLACK);
@@ -48,12 +48,13 @@ public class TestScene extends Scene {
 
     @Override
     public void update(double targetDelta, double trueDelta) {
+        /*
         if(XJGE.tick(30) && tickCount < 5) {
             tickCount++;
             if(tickCount == 5) {
                 source.play();
             }
-        }
+        }*/
         
         /*
         if(XJGE.tick(120) && source.getCurrentSound().equals("music_body")) {
@@ -61,15 +62,13 @@ public class TestScene extends Scene {
         }
         */
         
-        /*
-        if(XJGE.tick(30) && tickCount < 10) {
+        if(XJGE.tick(30) && tickCount < 20) {
             tickCount++;
-            if(tickCount == 10) {
-                //System.out.println(source.getCurrentSound());
-                //source.setLooping(false);
+            if(tickCount == 20) {
+                System.out.println(source.getCurrentSound());
+                source.setLooping(false);
             }
         }
-        */
     }
 
     @Override
