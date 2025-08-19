@@ -1,12 +1,13 @@
 package org.xjge.test;
 
 import java.util.Map;
-import static org.lwjgl.openal.AL10.AL_PLAYING;
+import static org.lwjgl.glfw.GLFW.GLFW_JOYSTICK_1;
 import org.xjge.core.Audio;
 import org.xjge.core.Camera;
 import org.xjge.core.Entity;
 import org.xjge.core.Scene;
 import org.xjge.core.SoundSource;
+import org.xjge.core.UI;
 import org.xjge.core.XJGE;
 import org.xjge.graphics.GLProgram;
 
@@ -36,11 +37,13 @@ public class TestScene extends Scene {
         
         //source = Audio.findSoundSource(true).queueSound("shimmer", true).play();
         
+        /*
         source = Audio.findSoundSource(true)
                        .queueSound("music_intro", false)
                        .queueSound("shimmer", true) //if this were true the queue will not proceed until setLooping(false) is called
                        .queueSound("music_body", true)
                        .play();
+        */
         
         //UI.addWidget(GLFW_JOYSTICK_1, "font_test", new TestWidget());
         //XJGE.setClearColor(Color.BLACK);
@@ -62,6 +65,7 @@ public class TestScene extends Scene {
         }
         */
         
+        /*
         if(XJGE.tick(30) && tickCount < 20) {
             tickCount++;
             if(tickCount == 20) {
@@ -69,6 +73,7 @@ public class TestScene extends Scene {
                 source.setLooping(false);
             }
         }
+        */
     }
 
     @Override

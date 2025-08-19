@@ -8,7 +8,7 @@ import static org.lwjgl.openal.AL11.*;
 /**
  * 
  * @author J Hoffman
- * @since 
+ * @since 2.0.0
  */
 public final class SoundSource {
     
@@ -19,13 +19,13 @@ public final class SoundSource {
     private float pitch  = 1f;
     private float volume = 1f;
     
-    public final int index;
     private int handle;
     private int state = AL_INITIAL;
     private int sampleOffset;
+    public final int index;
     
+    private final Vector3f tempPos = new Vector3f();
     public final Vector3f position = new Vector3f();
-    private final Vector3f temp    = new Vector3f();
     
     private QueuedSound currentSound;
     
@@ -77,15 +77,11 @@ public final class SoundSource {
         }
     }
     
-    void delete() {
-        alDeleteSources(handle);
-    }
-    
     void updatePosition(Vector3f cameraPosition, Vector3f cameraDirection) {
-        position.sub(cameraPosition, temp);
+        position.sub(cameraPosition, tempPos);
 
-        float dot   = temp.dot(cameraDirection);
-        float det   = temp.x * cameraDirection.z - temp.z * cameraDirection.x; //determinant
+        float dot   = tempPos.dot(cameraDirection);
+        float det   = tempPos.x * cameraDirection.z - tempPos.z * cameraDirection.x; //determinant
         float angle = (float) Math.toDegrees(Math.atan2(det, dot)) - 90;
 
         if(angle < 0) {
@@ -99,7 +95,7 @@ public final class SoundSource {
         float x   = (float) -(dist * Math.cos(rad));
         float z   = (float) (dist * Math.sin(rad));
         
-        alSource3f(handle, AL_POSITION, x, temp.y, z);
+        alSource3f(handle, AL_POSITION, x, tempPos.y, z);
     }
     
     void updateQueue() {
@@ -127,8 +123,14 @@ public final class SoundSource {
         }
     }
     
+    void delete() {
+        alDeleteSources(handle);
+    }
+    
     public void release() {
         reserved = false;
+        Logger.logInfo("The reserved sound source at index " + index + 
+                       " has been released by the user");
     }
     
     public boolean isLooping() {
@@ -177,17 +179,17 @@ public final class SoundSource {
         return this;
     }
     
+    public SoundSource setPosition(float x, float y, float z) {
+        position.set(x, y, z);
+        return this;
+    }
+    
     public SoundSource seek(float seconds) {
         if(currentSound == null) return this;
         
         Sound sound = Audio.getSound(currentSound.name);
         alSourcei(handle, AL_SAMPLE_OFFSET, Math.round(seconds * sound.frequency));
         
-        return this;
-    }
-    
-    public SoundSource setPosition(float x, float y, float z) {
-        position.set(x, y, z);
         return this;
     }
     

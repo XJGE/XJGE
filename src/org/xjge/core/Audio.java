@@ -7,12 +7,9 @@ import java.util.Map;
 import java.util.NavigableMap;
 import java.util.TreeMap;
 import org.joml.Vector3f;
-import static org.lwjgl.openal.AL10.AL_GAIN;
 import static org.lwjgl.openal.AL10.AL_INITIAL;
 import static org.lwjgl.openal.AL10.AL_PLAYING;
 import static org.lwjgl.openal.AL10.AL_STOPPED;
-import static org.lwjgl.openal.AL10.alGetSourcef;
-import static org.lwjgl.openal.AL10.alSourceStop;
 import static org.lwjgl.openal.ALC10.alcMakeContextCurrent;
 import static org.lwjgl.openal.ALC11.ALC_ALL_DEVICES_SPECIFIER;
 import static org.lwjgl.openal.ALUtil.getStringList;
@@ -40,6 +37,23 @@ public final class Audio {
     
     private static final NavigableMap<Integer, Speaker> speakers = new TreeMap<>();
     
+    private static int findClosestViewport(Vector3f soundSourcePosition) {
+        for(int i = 0; i < cameraDirections.size(); i++) {
+            if(soundSourcePosition != null) distances.put(i, Math.sqrt(soundSourcePosition.distance(cameraPositions.get(i))));
+            else distances.put(i, 0.0);
+        }
+        
+        return distances.entrySet().stream()
+                        .min(Comparator.comparingDouble(Map.Entry::getValue))
+                        .get()
+                        .getKey();
+    }
+    
+    static void captureViewportCameraData(int viewportID, Camera camera) {
+        cameraPositions.put(viewportID, camera.position);
+        cameraDirections.put(viewportID, camera.direction);
+    }
+    
     static void init() {        
         for(int i = 0; i < MAX_SOURCES; i++) sourcePool[i] = new SoundSource(i);
         
@@ -57,23 +71,6 @@ public final class Audio {
         setSpeaker(speakers.get(0));
     }
     
-    private static int findClosestViewport(Vector3f soundSourcePosition) {
-        for(int i = 0; i < cameraDirections.size(); i++) {
-            if(soundSourcePosition != null) distances.put(i, Math.sqrt(soundSourcePosition.distance(cameraPositions.get(i))));
-            else distances.put(i, 0.0);
-        }
-        
-        return distances.entrySet().stream()
-                .min(Comparator.comparingDouble(Map.Entry::getValue))
-                .get()
-                .getKey();
-    }
-    
-    static void captureViewportCameraData(int viewportID, Camera camera) {
-        cameraPositions.put(viewportID, camera.position);
-        cameraDirections.put(viewportID, camera.direction);
-    }
-    
     static void update() {
         for(int i = 0; i < speaker.getSoundSourceLimit(); i++) {
             if(sourcePool[i].getState() == AL_PLAYING) {
@@ -89,7 +86,15 @@ public final class Audio {
     }
     
     static void cleanup() {
+        for(SoundSource source : sourcePool) {
+            source.stop();
+            source.delete();
+        }
+        
+        sounds.values().forEach(sound -> sound.delete());
+        
         alcMakeContextCurrent(NULL);
+        
         speakers.values().forEach(device -> device.close());
     }
     
@@ -104,10 +109,6 @@ public final class Audio {
     public static void deleteSound(String name) {
         sounds.get(name).delete(); //TODO: check if this is still in use before deleting
         sounds.remove(name);
-    }
-    
-    public static float getSoundDuration(String name) {
-        return (sounds.containsKey(name)) ? sounds.get(name).durationInSeconds : 0f;
     }
     
     public static void pauseAll() {
@@ -164,6 +165,10 @@ public final class Audio {
         }
     }
     
+    public static float getSoundDuration(String name) {
+        return (sounds.containsKey(name)) ? sounds.get(name).durationInSeconds : 0f;
+    }
+    
     public static int getNumSpeakers() {
         return speakers.size();
     }
@@ -200,11 +205,13 @@ public final class Audio {
         
         if(reserve) {
             //Reserved slots: (0 -> 31)
-            for (int i = 0; i < MIN_SOURCES / 2; i++) {
+            for(int i = 0; i < MIN_SOURCES / 2; i++) {
                 SoundSource candidate = sourcePool[i];
                 int state = candidate.getState();
 
                 if (state == AL_STOPPED || state == AL_INITIAL) {
+                    Logger.logInfo("The sound source at index " + candidate.index +
+                                   " has been reserved by the user");
                     candidate.reserved = true;
                     return candidate;
                 }
