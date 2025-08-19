@@ -7,162 +7,60 @@ import java.util.Map;
 import java.util.NavigableMap;
 import java.util.TreeMap;
 import org.joml.Vector3f;
-import static org.lwjgl.openal.AL11.*;
-import static org.lwjgl.openal.ALC10.alcCloseDevice;
+import static org.lwjgl.openal.AL10.AL_GAIN;
+import static org.lwjgl.openal.AL10.AL_INITIAL;
+import static org.lwjgl.openal.AL10.AL_PLAYING;
+import static org.lwjgl.openal.AL10.AL_STOPPED;
+import static org.lwjgl.openal.AL10.alGetSourcef;
+import static org.lwjgl.openal.AL10.alSourceStop;
+import static org.lwjgl.openal.ALC10.alcMakeContextCurrent;
 import static org.lwjgl.openal.ALC11.ALC_ALL_DEVICES_SPECIFIER;
 import static org.lwjgl.openal.ALUtil.getStringList;
 import static org.lwjgl.system.MemoryUtil.NULL;
 
 /**
- * Created: Jun 20, 2021
- * <p>
- * Provides an abstraction of the OpenAL API through which sound effects and 
- * music can be played.
  * 
  * @author J Hoffman
- * @since  2.0.0
+ * @since 2.0.0
  */
 public final class Audio {
-
-    /**
-     * Can be passed to {@link #setSoundSourceState(int, int)} to change the 
-     * current state of every sound source.
-     */
-    public static final int ALL_SOURCES = 0;
     
-    static final int MAX_SOURCES = 64;
-    private static int prevMusicSourceSample;
-    private static int prevMusicSourceState;
-    
-    private static float soundMasterVolume = 1;
-    private static float musicMasterVolume = 1;
-    
-    private static boolean introFinished;
+    static final int MIN_SOURCES = 64;
+    static final int MAX_SOURCES = 256;
     
     private static Speaker speaker;
-    private static String prevMusicSourceSong;
-    private static SoundSource musicSource;
-    private static Sound currSongBody;
     
-    private static final SoundSource[] soundSources = new SoundSource[MAX_SOURCES];
+    private static final SoundSource[] sourcePool = new SoundSource[MAX_SOURCES];
     
-    private static final Map<Integer, Integer> sourceSamples = new HashMap<>();
-    private static final Map<Integer, Integer> sourceStates  = new HashMap<>();
-    private static final Map<Integer, String> sourceSounds   = new HashMap<>();
+    private static final Map<String, Sound> sounds = new HashMap<>();
     
-    private static final Map<Integer, Vector3f> camPos  = new HashMap<>();
-    private static final Map<Integer, Vector3f> camDir  = new HashMap<>();
-    private static final Map<Integer, Double> distances = new TreeMap<>();
-    
-    static final Map<String, Sound> sounds = new HashMap<>();
-    static final Map<String, Song> songs   = new HashMap<>();
+    private static final Map<Integer, Vector3f> cameraPositions  = new HashMap<>();
+    private static final Map<Integer, Vector3f> cameraDirections = new HashMap<>();
+    private static final Map<Integer, Double> distances = new HashMap<>();
     
     private static final NavigableMap<Integer, Speaker> speakers = new TreeMap<>();
     
-    /**
-     * Ensures that the state of the previous OpenAL context is retained between 
-     * configuration changes to the current audio output device.
-     */
-    static void applyContextConfig() {
-        sounds.forEach((filename, sound) -> {
-            sound = new Sound(filename);
-        });
+    static void init() {        
+        for(int i = 0; i < MAX_SOURCES; i++) sourcePool[i] = new SoundSource(i);
         
-        songs.forEach((filename, song) -> {
-            song = (song.intro != null) 
-                 ? new Song(song.intro.filename, song.body.filename)
-                 : new Song(song.body.filename);
-        });
+        var deviceList = getStringList(NULL, ALC_ALL_DEVICES_SPECIFIER);
         
-        var prevSources = new HashMap<Integer, SoundSource>();
-        
-        for(int i = 0; i < soundSources.length; i++) {
-            if(soundSources[i] != null) prevSources.put(soundSources[i].handle, soundSources[i]);
-            else                   soundSources[i] = new SoundSource();
-        }
-        
-        if(!prevSources.isEmpty()) {
-            prevSources.forEach((handle, prevSource) -> {
-                for(SoundSource currSource : soundSources) {
-                    if(handle == currSource.handle) {
-                        currSource = new SoundSource(
-                                prevSource,
-                                sounds.get(sourceSounds.get(handle)),
-                                sourceSamples.get(handle),
-                                sourceStates.get(handle));
-                    }
-                }
-            });
-        } else {
-            for(SoundSource source : soundSources) {
-                sourceStates.put(source.handle, AL_INITIAL);
+        if(deviceList != null) {
+            for(String name : deviceList) {
+                Speaker device = new Speaker(speakers.size(), name);
+                if(device.open()) speakers.put(device.index, device);
             }
+        } else {
+            Logger.logWarning("Could not find any available audio output devices", null);
         }
         
-        if(musicSource != null) {
-            musicSource = new SoundSource(
-                    musicSource,
-                    songs.get(prevMusicSourceSong),
-                    prevMusicSourceSample,
-                    prevMusicSourceState,
-                    introFinished);
-        } else {
-            musicSource = new SoundSource();
-        }
+        setSpeaker(speakers.get(0));
     }
     
-    /**
-     * Queries a pool of {@link SoundSource} objects and returns one which is 
-     * not currently in use. 
-     * <p>
-     * NOTE: If no sound sources are available, the engine will attempt to 
-     * obtain one by returning whichever is playing audio at the lowest volume.
-     * 
-     * @return a sound source object to use for audio output
-     */
-    private static SoundSource findSoundSource() {
-        SoundSource source = null;
-        boolean search    = true;
-        
-        for(int i = 0; search; i++) {
-            if(i < MAX_SOURCES) {
-                if(soundSources[i].getState(AL_STOPPED) || soundSources[i].getState(AL_INITIAL)) {
-                    source = soundSources[i];
-                    search = false;
-                }
-            } else {
-                //We'll just take it then!
-                var tempSources = new HashMap<SoundSource, Float>();
-                for(SoundSource src : soundSources) {
-                    tempSources.put(src, alGetSourcef(src.handle, AL_GAIN));
-                }
-                
-                //Return the source with the lowest volume.
-                source = tempSources.entrySet().stream()
-                        .min(Comparator.comparingDouble(Map.Entry::getValue))
-                        .get()
-                        .getKey();
-                
-                alSourceStop(source.handle);
-                search = false;
-            }
-        }
-        
-        return source;
-    }
-    
-    /**
-     * Returns the ID number of the {@link Viewport} whose camera is positioned
-     * closest to the {@link SoundSource}.
-     * 
-     * @param position the position of the sound source object
-     * 
-     * @return a value used to identify a viewport
-     */
-    private static int findClosestViewport(Vector3f position) {
-        for(int i = 0; i < camDir.size(); i++) {
-            if(position != null) distances.put(i, Math.sqrt(position.distance(camPos.get(i))));
-            else                 distances.put(i, 0.0);
+    private static int findClosestViewport(Vector3f soundSourcePosition) {
+        for(int i = 0; i < cameraDirections.size(); i++) {
+            if(soundSourcePosition != null) distances.put(i, Math.sqrt(soundSourcePosition.distance(cameraPositions.get(i))));
+            else distances.put(i, 0.0);
         }
         
         return distances.entrySet().stream()
@@ -171,313 +69,180 @@ public final class Audio {
                 .getKey();
     }
     
-    /**
-     * Repositions every active {@link SoundSource} object around the single 
-     * OpenAL listener object located at the center of the game world.
-     * 
-     * @see SoundSource#setSourcePosition(Vector3f, Vector3f)
-     */
-    static void updateSoundSourcePositions() {
-        for(SoundSource source : soundSources) {
-            if(source != null && source.getState(AL_PLAYING)) {
-                int id = findClosestViewport(source.getPosition());
-                source.setSourcePosition(camPos.get(id), camDir.get(id));
-            }
-        }
-        
-        camPos.clear();
-        camDir.clear();
+    static void captureViewportCameraData(int viewportID, Camera camera) {
+        cameraPositions.put(viewportID, camera.position);
+        cameraDirections.put(viewportID, camera.direction);
     }
     
-    /**
-     * Captures the orientation of a viewports camera object. This data will be
-     * used to calculate the positions of sound sources within the game world 
-     * relative to each players point of view.
-     * 
-     * @param viewportID a value used to identify the viewport
-     * @param position the current position of the viewports camera object
-     * @param direction the direction the viewports camera is currently facing
-     */
-    static void setViewportCamData(int viewportID, Vector3f position, Vector3f direction) {
-        camPos.put(viewportID, position);
-        camDir.put(viewportID, direction);
-    }
-    
-    /**
-     * Captures the state of each sound source object currently in use. The 
-     * captured state of the sound sources will be transferred to a new OpenAL 
-     * context once it is initialized.
-     * 
-     * @see #applyContextConfig()
-     */
-    static void saveContextConfig() {
-        if(musicSource != null) {
-            for(SoundSource source : soundSources) {
-                sourceSamples.put(source.handle, alGetSourcei(source.handle, AL_SAMPLE_OFFSET));
-                sourceStates.put(source.handle, alGetSourcei(source.handle, AL_SOURCE_STATE));
+    static void update() {
+        for(int i = 0; i < speaker.getSoundSourceLimit(); i++) {
+            if(sourcePool[i].getState() == AL_PLAYING) {
+                int id = findClosestViewport(sourcePool[i].position);
+                sourcePool[i].updatePosition(cameraPositions.get(id), cameraDirections.get(id));
             }
             
-            prevMusicSourceSample = alGetSourcei(musicSource.handle, AL_SAMPLE_OFFSET);
-            prevMusicSourceState  = alGetSourcei(musicSource.handle, AL_SOURCE_STATE);
-        }
-    }
-    
-    /**
-     * Queues the main body section of a piece of music once the intro sequence 
-     * has finished. The body section will loop indefinitely until paused, 
-     * stopped, or another piece of music is played.
-     */
-    static void queueMusicBodySection() {
-        if(alGetSourcei(musicSource.handle, AL_BUFFERS_PROCESSED) == 2 && !introFinished) {
-            alSourceUnqueueBuffers(musicSource.handle);
-            
-            musicSource.queueSound(currSongBody);
-            musicSource.setLooping(true);
-            
-            alSourcePlay(musicSource.handle);
-            
-            introFinished = true;
-        }
-    }
-    
-    /**
-     * Sets the values of the master sound/music volumes using data from the 
-     * engine configuration file.
-     * 
-     * @param soundVol the value of the sound master volume at startup
-     * @param musicVol the value of the music master volume at startup
-     */
-    static void setMasterVolumePreferences(float soundVol, float musicVol) {
-        soundMasterVolume = soundVol;
-        musicMasterVolume = musicVol;
-    }
-    
-    /**
-     * Emits a {@link Sound} from some specified position in the game world.
-     * 
-     * @param sound the sound to play
-     * @param position the position from which the sound will play, or <b>null</b> 
-     *                 to play it without distance attenuation
-     * @param loop if true, the sound will loop indefinitely until stopped
-     * 
-     * @return a value that identifies which {@link SoundSource} was used to play the sound
-     * 
-     * @see #setSoundSourceState(int, int)
-     */
-    public static int playSound(Sound sound, Vector3f position, boolean loop) {
-        SoundSource source = findSoundSource();
-        
-        source.setSound(sound);
-        sourceSounds.put(source.handle, sound.filename);
-        
-        source.setLooping(loop);
-        source.setWorldPosition(position);
-        
-        alSourcePlay(source.handle);
-        ErrorUtils.checkALError();
-        return source.handle;
-    }
-    
-    /**
-     * Plays a song from the beginning. If the song contains an intro sequence 
-     * it will be played first before looping the body section.
-     * <p>
-     * NOTE: Calling this method will interrupt and replace any song that was 
-     * previously playing.
-     * 
-     * @param song the song to start playing
-     */
-    public static void playMusic(Song song) {
-        alSourceStop(musicSource.handle);
-        
-        musicSource = new SoundSource();
-        
-        currSongBody = song.body;
-
-        if(song.intro != null) {
-            introFinished = false;
-            musicSource.queueSound(song.intro);
-            musicSource.queueSound(currSongBody);
-        } else {
-            introFinished = true;
-            musicSource.queueSound(currSongBody);
+            sourcePool[i].updateQueue();
         }
         
-        prevMusicSourceSong = song.body.filename;
-        
-        musicSource.setLooping(introFinished);
-        
-        alSourcePlay(musicSource.handle);
-        ErrorUtils.checkALError();
+        cameraPositions.clear();
+        cameraDirections.clear();
     }
     
-    /**
-     * Pauses whatever song is currently playing at its current measure.
-     * 
-     * @see #resumeMusic()
-     */
-    public static void pauseMusic() {
-        alSourcePause(musicSource.handle);
+    static void cleanup() {
+        alcMakeContextCurrent(NULL);
+        speakers.values().forEach(device -> device.close());
     }
     
-    /**
-     * Resumes playing whatever song was previously paused from where it left off.
-     * 
-     * @see #pauseMusic()
-     */
-    public static void resumeMusic() {
-        alSourcePlay(musicSource.handle);
+    static Sound getSound(String name) {
+        return (sounds.containsKey(name)) ? sounds.get(name) : Sound.placeholder;
     }
     
-    /**
-     * Ceases playing a song. Unlike {@link #pauseMusic()}, stopping a song 
-     * will set reset its measure.
-     */
-    public static void stopMusic() {
-        alSourceStop(musicSource.handle);
+    public static void loadSound(String name, String filename) {
+        sounds.put(name, new Sound(XJGE.getAssetsFilepath(), filename));
     }
     
-    /**
-     * Obtains the current value of the sound master volume.
-     * 
-     * @return the value used to attenuate the volume of all sound effects
-     */
-    public static float getSoundMasterVolume() {
-        return soundMasterVolume;
+    public static void deleteSound(String name) {
+        sounds.get(name).delete(); //TODO: check if this is still in use before deleting
+        sounds.remove(name);
     }
     
-    /**
-     * Provides the current value of the music master volume.
-     * 
-     * @return the value used to attenuate the volume of the games background music
-     */
-    public static float getMusicMasterVolume() {
-        return musicMasterVolume;
+    public static float getSoundDuration(String name) {
+        return (sounds.containsKey(name)) ? sounds.get(name).durationInSeconds : 0f;
     }
     
-    /**
-     * Sets the master volume that will be used to attenuate the overall volume
-     * of all sound effects.
-     * 
-     * @param masterVolume the value used to attenuate the volume of sound effects (between 0 and 1)
-     */
-    public static void setSoundMasterVolume(float masterVolume) {
-        if(masterVolume >= 0 && masterVolume <= 1) {
-            soundMasterVolume = masterVolume;
-            
-            for(SoundSource source : soundSources) {
-                alSourcef(source.handle, AL_GAIN, masterVolume);
-            }
-        }
-    }
-    
-    /**
-     * Sets the master volume that will be used to attenuate the overall volume
-     * of the games background music.
-     * 
-     * @param masterVolume the value used to attenuate the volume of the games music (between 0 and 1)
-     */
-    public static void setMusicMasterVolume(float masterVolume) {
-        if(masterVolume >= 0 && masterVolume <= 1) {
-            musicMasterVolume = masterVolume;
-            alSourcef(musicSource.handle, AL_GAIN, masterVolume);
-        }
-    }
-    
-    /**
-     * Explicitly sets the state of a {@link SoundSource} object.
-     * 
-     * @param handle the unique handle used to identify the sound source or {@link ALL_SOURCES}
-     * @param state the state to set the source to. One of 
-     *              {@link org.lwjgl.openal.AL10#AL_PAUSED AL_PLAYING}, 
-     *              {@link org.lwjgl.openal.AL10#AL_PAUSED AL_PAUSED}, or 
-     *              {@link org.lwjgl.openal.AL10#AL_PAUSED AL_STOPPED}. 
-     */
-    public static void setSoundSourceState(int handle, int state) {
-        if(handle == ALL_SOURCES) {
-            for(SoundSource source : soundSources) {
-                switch(state) {
-                    case AL_PLAYING -> {
-                        if(sourceStates.get(source.handle) == AL_PAUSED || source.getState(AL_PAUSED)) {
-                            alSourcePlay(source.handle);
-                        }
-                    }
-                    
-                    case AL_PAUSED -> {
-                        if(sourceStates.get(source.handle) == AL_PLAYING || source.getState(AL_PLAYING)) {
-                            alSourcePause(source.handle);
-                        }
-                    }
-                        
-                    case AL_STOPPED -> alSourceStop(source.handle);
-                }
-            }
-        } else {
-            if(handle > 0 && handle <= MAX_SOURCES) {
-                switch(state) {
-                    case AL_PLAYING -> {
-                        if(sourceStates.get(handle) == AL_PAUSED || alGetSourcei(handle, AL_SOURCE_STATE) == AL_PAUSED) {
-                            alSourcePlay(handle);
-                        }
-                    }
-                        
-                    case AL_PAUSED -> {
-                        if(sourceStates.get(handle) == AL_PLAYING || alGetSourcei(handle, AL_SOURCE_STATE) == AL_PLAYING) {
-                            alSourcePause(handle);
-                        }
-                    }
-                        
-                    case AL_STOPPED -> alSourceStop(handle);
-                }
+    public static void pauseAll() {
+        for(int i = 0; i < speaker.getSoundSourceLimit(); i++) {
+            if(sourcePool[i].getState() == AL_PLAYING) {
+                sourcePool[i].pause();
+                sourcePool[i].pausedInBulk = true;
             } else {
-                Logger.logWarning("Could not find a sound source with the handle " + handle, null);
+                sourcePool[i].pausedInBulk = false;
             }
         }
-        
-        ErrorUtils.checkALError();
+    }
+    
+    public static void resumeAll() {
+        for(int i = 0; i < speaker.getSoundSourceLimit(); i++) {
+            if(sourcePool[i].pausedInBulk) sourcePool[i].play();
+            sourcePool[i].pausedInBulk = false;
+        }
     }
     
     public static boolean setSpeaker(Speaker speaker) {
         if(speaker == null) {
-            Logger.logInfo("Failed to change speaker. Parameter value cannot be null");
+            Logger.logWarning("Failed to change current speaker. Parameter value cannot be null", null);
             return false;
         }
         
-        Audio.speaker = speaker;
-        Audio.speaker.setContextCurrent();
+        if(Audio.speaker != null) {
+            for(int i = 0; i < MAX_SOURCES; i++) sourcePool[i].cacheState();
+        }
         
-        return true;
+        var soundFiles = new HashMap<String, String>();
+        
+        sounds.forEach((name, sound) -> {
+            soundFiles.put(name, sound.filename);
+            sound.delete();
+        });
+        
+        var newSpeaker = new Speaker(speaker.index, speaker.name);
+        
+        if(newSpeaker.open() && newSpeaker.use()) {
+            if(Audio.speaker != null) Audio.speaker.close();
+            Audio.speaker = newSpeaker;
+            speakers.put(newSpeaker.index, newSpeaker);
+            
+            soundFiles.forEach((name, filename) -> sounds.put(name, new Sound(XJGE.getAssetsFilepath(), filename)));
+            Sound.placeholder = new Sound("/org/xjge/assets/", "xjge_sound_beep.ogg");
+            
+            for(int i = 0; i < Audio.speaker.getSoundSourceLimit(); i++) sourcePool[i].applyState();
+            
+            return true;
+            
+        } else {
+            return false;
+        }
     }
     
     public static int getNumSpeakers() {
         return speakers.size();
     }
     
-    public static Speaker getSpeaker() {
+    public static final Speaker getSpeaker() {
         return speaker;
     }
     
-    public static Speaker getSpeaker(int index) {
+    public static final Speaker getSpeaker(int index) {
         return speakers.get(index);
     }
     
+    /**
+     * The underlying implementation doesn't provide device enumeration during 
+     * runtime so all this does is expose the list of available audio devices 
+     * found at startup
+     * 
+     * @return 
+     */
     public static final NavigableMap<Integer, Speaker> findSpeakers() {
-        speakers.forEach((id, device) -> alcCloseDevice(device.handle));
-        speakers.clear();
+        return Collections.unmodifiableNavigableMap(speakers);
+    }
+    
+    /**
+     * Sources 0-63 are always guaranteed available since that's the imposed 
+     * minimum set by the engine with 0-31 being reservable and 33-256 being 
+     * transient
+     * 
+     * @param reserve
+     * @return 
+     */
+    public static SoundSource findSoundSource(boolean reserve) {
+        int limit = speaker.getSoundSourceLimit();
         
-        var deviceList = getStringList(NULL, ALC_ALL_DEVICES_SPECIFIER);
-        
-        if(deviceList == null) {
-            Logger.logWarning("Failed to find any available speakers", null);
-        } else {
-            for(int i = 0; i < deviceList.size(); i++) {
-                if(!speakers.containsKey(i)) {
-                    speakers.put(i, new Speaker(i, deviceList.get(i)));
+        if(reserve) {
+            //Reserved slots: (0 -> 31)
+            for (int i = 0; i < MIN_SOURCES / 2; i++) {
+                SoundSource candidate = sourcePool[i];
+                int state = candidate.getState();
+
+                if (state == AL_STOPPED || state == AL_INITIAL) {
+                    candidate.reserved = true;
+                    return candidate;
                 }
             }
+            
+            Logger.logWarning("No reservable sound sources are available as the object pool " + 
+                              "has been exhausted. The caller will need to resolve this.", 
+                              null);
+            return null;
+            
+        } else {
+            //Transient slots: (32 -> speaker limit)
+            for(int i = MIN_SOURCES / 2; i < limit; i++) {
+                SoundSource candidate = sourcePool[i];
+                int state = candidate.getState();
+
+                if(state == AL_STOPPED || state == AL_INITIAL) {
+                    return candidate;
+                }
+            }
+
+            //If none are free we'll steal the source furthest from the listener
+            float maxDistanceSquared = -1f;
+            SoundSource farthest    = sourcePool[32];
+
+            for(int i = MIN_SOURCES / 2; i < limit; i++) {
+                SoundSource candidate = sourcePool[i];
+                float distanceSquared  = candidate.position.distanceSquared(0f, 0f, 0f);
+
+                if(distanceSquared > maxDistanceSquared) {
+                    maxDistanceSquared = distanceSquared;
+                    farthest = candidate;
+                }
+            }
+            
+            farthest.stop();
+            return farthest;
         }
-        
-        return Collections.unmodifiableNavigableMap(speakers);
     }
     
 }

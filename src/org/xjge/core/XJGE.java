@@ -162,7 +162,7 @@ public final class XJGE {
         if(!glfwInit()) Logger.logError("Failed to initialize GLFW", null);
         
         Window.create(debugModeEnabled);
-        Audio2.init();
+        Audio.init();
         
         Logger.logSystemInfo();
         
@@ -257,10 +257,8 @@ public final class XJGE {
             put("runGarbageCollection", new TCRunGarbageCollection());
             put("setFullscreen",        new TCSetFullscreen());
             put("setMonitor",           new TCSetMonitor());
-            put("setMusicMasterVolume", new TCSetMusicMasterVolume());
             put("setScene",             new TCSetScene());
             put("setSplitScreenValue",  new TCSetSplitScreenValue());
-            put("setSoundMasterVolume", new TCSetSoundMasterVolume());
             put("setSpeaker",           new TCSetSpeaker());
             put("setVSyncEnabled",      new TCSetVSyncEnabled());
             put("setVideoMode",         new TCSetVideoMode());
@@ -359,19 +357,13 @@ public final class XJGE {
                     if(viewport.active && viewport.currCamera != null) {
                         viewport.currCamera.update();
                         UI.updateWidgets(viewport.id, TARGET_DELTA, delta);
-                        //Audio.setViewportCamData(viewport.id, viewport.currCamera.position, viewport.currCamera.direction);
-                        Audio2.captureViewportCameraData(viewport.id, viewport.currCamera);
+                        Audio.captureViewportCameraData(viewport.id, viewport.currCamera);
                     }
                 }
                 
                 Window.updateMouseClickValue();
-                
-                //Process requests for widget removal
                 UI.processWidgetRemoveRequests();
-                
-                Audio2.update();
-                //Audio.updateSoundSourcePositions();
-                //Audio.queueMusicBodySection();
+                Audio.update();
                 
                 if(tick(60)) {
                     fps    = cycles;
@@ -447,7 +439,7 @@ public final class XJGE {
         }
         
         Window.freeCallbacks();
-        Audio2.cleanup();
+        Audio.cleanup();
         GL.destroy();
         glfwTerminate();
     }

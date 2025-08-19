@@ -2,11 +2,11 @@ package org.xjge.test;
 
 import java.util.Map;
 import static org.lwjgl.openal.AL10.AL_PLAYING;
-import org.xjge.core.Audio2;
+import org.xjge.core.Audio;
 import org.xjge.core.Camera;
 import org.xjge.core.Entity;
 import org.xjge.core.Scene;
-import org.xjge.core.SoundSource2;
+import org.xjge.core.SoundSource;
 import org.xjge.core.XJGE;
 import org.xjge.graphics.GLProgram;
 
@@ -18,7 +18,7 @@ import org.xjge.graphics.GLProgram;
  */
 public class TestScene extends Scene {
     
-    SoundSource2 source;
+    SoundSource source;
     
     int tickCount;
     
@@ -30,13 +30,13 @@ public class TestScene extends Scene {
         
         addEntity(entity);
         
-        Audio2.loadSound("shimmer", "test_shimmer2.ogg");
-        Audio2.loadSound("music_intro", "msc_battle_intro.ogg");
-        Audio2.loadSound("music_body", "msc_battle_body.ogg");
+        Audio.loadSound("shimmer", "test_shimmer2.ogg");
+        Audio.loadSound("music_intro", "msc_battle_intro.ogg");
+        Audio.loadSound("music_body", "msc_battle_body.ogg");
         
-        //source = Audio2.findSoundSource(true).queueSound("shimmer", true).play();
+        //source = Audio.findSoundSource(true).queueSound("shimmer", true).play();
         
-        source = Audio2.findSoundSource(true)
+        source = Audio.findSoundSource(true)
                        .queueSound("music_intro", false)
                        .queueSound("shimmer", true) //if this were true the queue will not proceed until setLooping(false) is called
                        .queueSound("music_body", true)

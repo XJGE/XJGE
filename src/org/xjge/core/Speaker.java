@@ -1,64 +1,100 @@
 package org.xjge.core;
 
 import java.nio.IntBuffer;
+import java.util.ArrayList;
 import org.lwjgl.openal.AL;
+import org.lwjgl.openal.AL10;
+import static org.lwjgl.openal.AL10.AL_NO_ERROR;
+import static org.lwjgl.openal.AL10.alGenSources;
+import static org.lwjgl.openal.AL10.alGetError;
 import org.lwjgl.openal.ALC;
 import static org.lwjgl.openal.ALC10.*;
 import org.lwjgl.openal.ALCCapabilities;
+import static org.lwjgl.system.MemoryUtil.NULL;
 
 /**
- * Created: Jun 20, 2021
- * <p>
- * Represents a peripheral audio output device such as a speaker, headset, or 
- * headphones.
  * 
  * @author J Hoffman
- * @since  2.0.0
+ * @since 
  */
 public final class Speaker {
-
-    final int index;
     
-    public final long handle;
-    private final long context;
+    final int index;
+    private int soundSourceLimit;
+    
+    long deviceHandle;
+    long contextHandle;
     
     public final String name;
-    private final ALCCapabilities capabilities;
+    private ALCCapabilities capabilities;
     
-    /**
-     * Creates a new audio device.
-     * 
-     * @param id the unique number used to identify the device in other parts of 
-     *           the engine
-     * @param name the name of the device as provided by OpenAL
-     */
     Speaker(int index, String name) {
         this.index = index;
         this.name  = name;
-        
-        handle       = alcOpenDevice(name);
-        capabilities = ALC.createCapabilities(handle);
-        context      = alcCreateContext(handle, (IntBuffer) null);
     }
     
-    /**
-     * Before an audio device can start playing sounds from 
-     * {@link SoundSource} objects, OpenAL must create a context. Using this 
-     * method will create a new OpenAL context on the device from which it is 
-     * called and subsequently reload any audio data previously allocated into 
-     * the new context.
-     */
-    void setContextCurrent() {
-        try {
-            alcMakeContextCurrent(context);
-            AL.createCapabilities(capabilities);
-            Audio.applyContextConfig();
-        } catch(IllegalStateException e) {
-            Logger.logError("Failed to initialize an OpenAL context on speaker \"" + name + "\"", e);
+    void close() {
+        if(contextHandle != NULL) {
+            alcDestroyContext(contextHandle);
+            contextHandle = NULL;
+        }
+        
+        if(deviceHandle != NULL) {
+            alcCloseDevice(deviceHandle);
+            deviceHandle = NULL;
         }
     }
     
-    //TODO: display capabilities?
-    //TODO: explore EFX
+    boolean open() {
+        deviceHandle = alcOpenDevice(name);
+        if(deviceHandle == NULL) return false;
+        
+        capabilities  = ALC.createCapabilities(deviceHandle);
+        contextHandle = alcCreateContext(deviceHandle, (IntBuffer) null);
+        
+        if(capabilities == null || contextHandle == NULL) {
+            alcCloseDevice(deviceHandle);
+            deviceHandle = NULL;
+            return false;
+        }
+        
+        try {
+            alcMakeContextCurrent(contextHandle);
+            AL.createCapabilities(capabilities);
+            
+            var sources = new ArrayList<Integer>();
+            
+            while(sources.size() < Audio.MAX_SOURCES) {
+                int sourceHandle = alGenSources();
+                if(alGetError() != AL_NO_ERROR) break;
+                sources.add(sourceHandle);
+            }
+            
+            soundSourceLimit = sources.size();
+            sources.forEach(AL10::alDeleteSources);
+            
+            alcMakeContextCurrent(NULL);
+            
+            return soundSourceLimit >= Audio.MIN_SOURCES;
+            
+        } catch(IllegalStateException exception) {
+            return false;
+        }
+    }
+    
+    boolean use() {
+        try {
+            alcMakeContextCurrent(contextHandle);
+            AL.createCapabilities(capabilities);
+            return true;
+        } catch(IllegalStateException exception) {
+            Logger.logWarning("Failed to change current speaker to \"" + name + "\"", exception);
+            return false;
+        }
+    }
+    
+    public int getSoundSourceLimit() {
+        return soundSourceLimit;
+    }
     
 }

@@ -29,9 +29,9 @@ final class TCSetSpeaker extends TerminalCommand {
         if(!args.isEmpty()) {
             try {
                 int index   = Integer.parseInt(args.get(0));
-                var speaker = Audio2.getSpeaker(index);
+                var speaker = Audio.getSpeaker(index);
                 
-                if(Audio2.setSpeaker(speaker)) {
+                if(Audio.setSpeaker(speaker)) {
                     return new TerminalOutput("Changed current audio device to \"" + speaker.name + 
                                               "\" at index " + speaker.index, Color.WHITE);
                 } else {

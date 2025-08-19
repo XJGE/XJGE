@@ -36,7 +36,7 @@ class EMHardware extends EngineMetricsGroup {
                     output.get(i).append("MONITOR:   \"").append(Window.getMonitor().name)
                                  .append("\" (").append(Window.getMonitor().getInfo()).append(")");
                 }
-                case 3 -> output.get(i).append("SPEAKER:   ").append(Audio2.getSpeaker().name);
+                case 3 -> output.get(i).append("SPEAKER:   ").append(Audio.getSpeaker().name);
                 case 4, 5, 6, 7 -> {
                     output.get(i).append("    ").append(i - 4).append(": ");
                     if(Input.getDevicePresent(i - 4)) output.get(i).append(Input.getDeviceName(i - 4));

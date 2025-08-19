@@ -95,7 +95,7 @@ public final class Logger {
                 case 9  -> " GPU MODEL:\t" + glGetString(GL_RENDERER);
                 case 10 -> " MONITORS:\t" + "Found: " + Window.getNumMonitors() + ", Primary: \"" + 
                            Window.getMonitor().name + "\" (" + Window.getMonitor().getInfo() + ")";
-                case 11 -> " SPEAKERS:\t" + "Found: " + Audio2.getNumSpeakers() + ", Primary: \"" + Audio2.getSpeaker().name;
+                case 11 -> " SPEAKERS:\t" + "Found: " + Audio.getNumSpeakers() + ", Primary: \"" + Audio.getSpeaker().name;
                 case 12 -> " GAMEPADS:\t" + "Found: " + Input.getNumDevices();
             };
             
