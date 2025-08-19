@@ -55,6 +55,7 @@ All notable changes to this project will be documented in this file. The format 
 - Legacy Timer class since the code in the new one (previously StopWatch) proved more useful during development.
 - Font.wrap() since Font.split() does it better.
 - getOutput() and setOutput() from the TerminalCommand class.
+- Sound objects are no longer available to the public API, you'll need to use the Audio class to load and delete them.
 
 ## [3.1.0] - 2025-01-03
 

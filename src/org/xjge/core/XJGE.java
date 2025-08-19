@@ -95,7 +95,6 @@ public final class XJGE {
     private static String cpuModel;
     
     private static Texture engineIcons;
-    private static Sound beep;
     private static Terminal terminal;
     private static EngineMetrics metrics;
     private static Noclip noclip;
@@ -163,7 +162,7 @@ public final class XJGE {
         if(!glfwInit()) Logger.logError("Failed to initialize GLFW", null);
         
         Window.create(debugModeEnabled);
-        Audio.setSpeaker(Audio.findSpeakers().get(0)); //TODO: Audio.init()?
+        Audio2.init();
         
         Logger.logSystemInfo();
         
@@ -247,12 +246,10 @@ public final class XJGE {
         }
 
         engineIcons = new Texture("xjge_engineicons.png");
-        beep        = new Sound("xjge_beep.ogg");
 
         Light.setIconTexture(engineIcons);
         
         engineCommands = new TreeMap<>() {{
-            put("findMonitors",         new TCFindMonitors());
             put("help",                 new TCHelp());
             put("listCommands",         new TCListCommands());
             put("listMonitors",         new TCListMonitors());
@@ -362,7 +359,8 @@ public final class XJGE {
                     if(viewport.active && viewport.currCamera != null) {
                         viewport.currCamera.update();
                         UI.updateWidgets(viewport.id, TARGET_DELTA, delta);
-                        Audio.setViewportCamData(viewport.id, viewport.currCamera.position, viewport.currCamera.direction);
+                        //Audio.setViewportCamData(viewport.id, viewport.currCamera.position, viewport.currCamera.direction);
+                        Audio2.captureViewportCameraData(viewport.id, viewport.currCamera);
                     }
                 }
                 
@@ -371,8 +369,9 @@ public final class XJGE {
                 //Process requests for widget removal
                 UI.processWidgetRemoveRequests();
                 
-                Audio.updateSoundSourcePositions();
-                Audio.queueMusicBodySection();
+                Audio2.update();
+                //Audio.updateSoundSourcePositions();
+                //Audio.queueMusicBodySection();
                 
                 if(tick(60)) {
                     fps    = cycles;
@@ -448,6 +447,7 @@ public final class XJGE {
         }
         
         Window.freeCallbacks();
+        Audio2.cleanup();
         GL.destroy();
         glfwTerminate();
     }

@@ -32,7 +32,7 @@ final class TCListMonitors extends TerminalCommand {
             if(i < Window.getNumMonitors() - 1) monitorList.append(" \n");
         }
         
-        return new TerminalOutput(monitorList.toString(), Color.WHITE);
+        return new TerminalOutput(monitorList.toString(), Color.YELLOW);
     }
 
 }

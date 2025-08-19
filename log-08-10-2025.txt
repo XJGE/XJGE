@@ -1,0 +1,7 @@
+Aug 10, 04:08:16pm, [ERROR], [Audio2.java]: Could not find any available audio output devices
+java.lang.RuntimeException
+	org.xjge.core.Logger.log(Logger.java:59)
+	org.xjge.core.Logger.logError(Logger.java:147)
+	org.xjge.core.Audio2.init(Audio2.java:39)
+	org.xjge.core.XJGE.init(XJGE.java:165)
+	org.xjge.test.Main.main(Main.java:22)

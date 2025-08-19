@@ -824,7 +824,7 @@ public final class Window {
      */
     public static boolean setMonitor(Monitor monitor) {
         if(monitor == null) {
-            Logger.logInfo("Failed to change window monitor. Parameter value cannot be null");
+            Logger.logWarning("Failed to change window monitor. Parameter value cannot be null", null);
             return false;
         }
         
