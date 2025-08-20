@@ -14,7 +14,7 @@ class EMNoclip extends EngineMetricsGroup {
     
     public EMNoclip(String title) {
         super(title);
-        for(int i = 0; i < 3; i++) output.add(new StringBuilder());
+        for(int i = 0; i < 4; i++) output.add(new StringBuilder());
     }
 
     @Override
@@ -34,6 +34,7 @@ class EMNoclip extends EngineMetricsGroup {
                                                         .append(pattern1.format(noclip.direction.z)).append(")");
                 }
                 case 2 -> output.get(i).append("SPEED:     ").append(pattern2.format(noclip.speed * 100)).append("%");
+                case 3 -> output.get(i).append("ENABLED:   ").append(noclip.enabled);
             }
         }
     }

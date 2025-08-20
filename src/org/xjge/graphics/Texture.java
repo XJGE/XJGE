@@ -34,7 +34,7 @@ public final class Texture {
     public final int height;
     public final int channels;
     
-    public static final Texture placeholder = new Texture("/org/xjge/assets/", "xjge_texture_missing.png", GL_TEXTURE_2D);
+    public static final Texture fallback = new Texture("/org/xjge/assets/", "xjge_texture_fallback.png", GL_TEXTURE_2D);
     
     /**
      * Creates a new texture object from the image file specified. If the image 
@@ -141,13 +141,13 @@ public final class Texture {
             return info;
             
         } catch(Exception exception) {
-            Logger.logWarning("Failed to load texture \"" + filename + "\" a placeholder will be used instead", exception);
+            Logger.logWarning("Failed to load texture \"" + filename + "\" a fallback will be used instead", exception);
             
             return new int[] {
-                placeholder.handle,
-                placeholder.width,
-                placeholder.height,
-                placeholder.channels
+                fallback.handle,
+                fallback.width,
+                fallback.height,
+                fallback.channels
             };
         }
     }
@@ -179,7 +179,7 @@ public final class Texture {
      * @see org.lwjgl.opengl.GL11#glDeleteTextures(int)
      */
     public void delete() {
-        if(handle != placeholder.handle) glDeleteTextures(handle);
+        if(handle != fallback.handle) glDeleteTextures(handle);
     }
     
 }

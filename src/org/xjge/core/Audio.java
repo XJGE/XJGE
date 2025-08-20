@@ -99,7 +99,7 @@ public final class Audio {
     }
     
     static Sound getSound(String name) {
-        return (sounds.containsKey(name)) ? sounds.get(name) : Sound.placeholder;
+        return (sounds.containsKey(name)) ? sounds.get(name) : Sound.fallback;
     }
     
     public static void loadSound(String name, String filename) {
@@ -154,7 +154,7 @@ public final class Audio {
             speakers.put(newSpeaker.index, newSpeaker);
             
             soundFiles.forEach((name, filename) -> sounds.put(name, new Sound(XJGE.getAssetsFilepath(), filename)));
-            Sound.placeholder = new Sound("/org/xjge/assets/", "xjge_sound_beep.ogg");
+            Sound.fallback = new Sound("/org/xjge/assets/", "xjge_sound_fallback.ogg");
             
             for(int i = 0; i < Audio.speaker.getSoundSourceLimit(); i++) sourcePool[i].applyState();
             
@@ -204,12 +204,12 @@ public final class Audio {
         int limit = speaker.getSoundSourceLimit();
         
         if(reserve) {
-            //Reserved slots: (0 -> 31)
+            //Reserved slots: (0-31)
             for(int i = 0; i < MIN_SOURCES / 2; i++) {
                 SoundSource candidate = sourcePool[i];
                 int state = candidate.getState();
 
-                if (state == AL_STOPPED || state == AL_INITIAL) {
+                if(state == AL_STOPPED || state == AL_INITIAL) {
                     Logger.logInfo("The sound source at index " + candidate.index +
                                    " has been reserved by the user");
                     candidate.reserved = true;
@@ -223,7 +223,7 @@ public final class Audio {
             return null;
             
         } else {
-            //Transient slots: (32 -> speaker limit)
+            //Transient slots: (32-MAX)
             for(int i = MIN_SOURCES / 2; i < limit; i++) {
                 SoundSource candidate = sourcePool[i];
                 int state = candidate.getState();

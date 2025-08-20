@@ -15,6 +15,35 @@ import static org.lwjgl.opengl.GL30.*;
 public final class ErrorUtils {
 
     /**
+     * Checks the status of the currently bound framebuffer object.
+     * 
+     * @param target the target of the framebuffer completeness check. One of:
+     * <table><tr>
+     * <td>{@link org.lwjgl.opengl.GL30C#GL_FRAMEBUFFER FRAMEBUFFER}</td>
+     * <td>{@link org.lwjgl.opengl.GL30C#GL_READ_FRAMEBUFFER READ_FRAMEBUFFER}</td>
+     * <td>{@link org.lwjgl.opengl.GL30C#GL_DRAW_FRAMEBUFFER DRAW_FRAMEBUFFER}</td>
+     * </tr></table>
+     */
+    static void checkFBStatus(int target) {
+        int status  = glCheckFramebufferStatus(target);
+        String desc = "";
+        
+        if(status != GL_FRAMEBUFFER_COMPLETE) {
+            switch(status) {
+                case GL_FRAMEBUFFER_INCOMPLETE_ATTACHMENT         -> desc = "incomplete attachment";
+                case GL_FRAMEBUFFER_INCOMPLETE_MISSING_ATTACHMENT -> desc = "missing attachment";
+                case GL_FRAMEBUFFER_INCOMPLETE_DRAW_BUFFER        -> desc = "incomplete draw buffer";
+                case GL_FRAMEBUFFER_INCOMPLETE_READ_BUFFER        -> desc = "incomplete read buffer";
+                case GL_FRAMEBUFFER_UNSUPPORTED                   -> desc = "unsupported";
+                case GL_FRAMEBUFFER_INCOMPLETE_MULTISAMPLE        -> desc = "incomplete multisample";
+                case GL_FRAMEBUFFER_UNDEFINED                     -> desc = "undefined";
+            }
+            
+            Logger.logError("Framebuffer Error: (" + status + ") " + desc, null);
+        }
+    }
+    
+    /**
      * Checks the error state of the OpenAL API.
      */
     public static void checkALError() {
@@ -54,35 +83,6 @@ public final class ErrorUtils {
             }
             
             Logger.logError("OpenGL Error: (" + glError + ") " + desc, null);
-        }
-    }
-    
-    /**
-     * Checks the status of the currently bound framebuffer object.
-     * 
-     * @param target the target of the framebuffer completeness check. One of:
-     * <table><tr>
-     * <td>{@link org.lwjgl.opengl.GL30C#GL_FRAMEBUFFER FRAMEBUFFER}</td>
-     * <td>{@link org.lwjgl.opengl.GL30C#GL_READ_FRAMEBUFFER READ_FRAMEBUFFER}</td>
-     * <td>{@link org.lwjgl.opengl.GL30C#GL_DRAW_FRAMEBUFFER DRAW_FRAMEBUFFER}</td>
-     * </tr></table>
-     */
-    static void checkFBStatus(int target) {
-        int status  = glCheckFramebufferStatus(target);
-        String desc = "";
-        
-        if(status != GL_FRAMEBUFFER_COMPLETE) {
-            switch(status) {
-                case GL_FRAMEBUFFER_INCOMPLETE_ATTACHMENT         -> desc = "incomplete attachment";
-                case GL_FRAMEBUFFER_INCOMPLETE_MISSING_ATTACHMENT -> desc = "missing attachment";
-                case GL_FRAMEBUFFER_INCOMPLETE_DRAW_BUFFER        -> desc = "incomplete draw buffer";
-                case GL_FRAMEBUFFER_INCOMPLETE_READ_BUFFER        -> desc = "incomplete read buffer";
-                case GL_FRAMEBUFFER_UNSUPPORTED                   -> desc = "unsupported";
-                case GL_FRAMEBUFFER_INCOMPLETE_MULTISAMPLE        -> desc = "incomplete multisample";
-                case GL_FRAMEBUFFER_UNDEFINED                     -> desc = "undefined";
-            }
-            
-            Logger.logError("Framebuffer Error: (" + status + ") " + desc, null);
         }
     }
     

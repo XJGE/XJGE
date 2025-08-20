@@ -3,7 +3,7 @@ package org.xjge.core;
 import java.util.ArrayList;
 import java.util.List;
 import org.xjge.graphics.Color;
-import static org.xjge.ui.Font.placeholder;
+import org.xjge.ui.Font;
 import org.xjge.ui.Glyph;
 import org.xjge.ui.Rectangle;
 import org.xjge.ui.TextEffect;
@@ -62,12 +62,12 @@ abstract class EngineMetricsGroup {
         for(CharSequence line : output) {
             if(line.length() > longestStringLength) {
                 longestStringLength = line.length();
-                contentAreaWidth    = placeholder.lengthInPixels(line) + 20;
+                contentAreaWidth    = Font.fallback.lengthInPixels(line) + 20;
             }
         }
         
         if(expanded && contentAreaWidth < 328) contentAreaWidth = 328;
-        contentAreaHeight = (output.size() * placeholder.size) + 10;
+        contentAreaHeight = (output.size() * Font.fallback.size) + 10;
         
         contentArea.width  = (expanded) ? contentAreaWidth  : 300;
         contentArea.height = (expanded) ? contentAreaHeight : 0;
@@ -89,24 +89,24 @@ abstract class EngineMetricsGroup {
     
     void render(int cursorPositionX, int cursorPositionY) {
         titleBar.render(1f, Color.BLACK);
-        placeholder.drawString(title, titleBar.positionX + 5, titleBar.positionY + 7, Color.SILVER, 1f);
+        Font.fallback.drawString(title, titleBar.positionX + 5, titleBar.positionY + 7, Color.SILVER, 1f);
         contentArea.render(0.5f, Color.BLACK);
         
         buttonTextColor = (button.contains(cursorPositionX, cursorPositionY))
                         ? Color.WHITE
                         : Color.CYAN;
         
-        placeholder.drawString(!expanded ? "[expand]" : "[collapse]", 
+        Font.fallback.drawString(!expanded ? "[expand]" : "[collapse]", 
                                 button.positionX, 
                                 button.positionY + 8, 
                                 buttonTextColor, 1f);
         
         if(expanded) {
             for(int i = 0; i < output.size(); i++) {
-                placeholder.drawString(output.get(i), 
-                                       contentArea.positionX + 10, 
-                                       titleBar.positionY - (placeholder.size * (i + 1)), 
-                                       highlight);
+                Font.fallback.drawString(output.get(i), 
+                                         contentArea.positionX + 10, 
+                                         titleBar.positionY - (Font.fallback.size * (i + 1)), 
+                                         highlight);
             }
             render();
         }

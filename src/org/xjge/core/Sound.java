@@ -24,7 +24,7 @@ final class Sound {
     
     final String filename;
     
-    static Sound placeholder = new Sound("/org/xjge/assets/", "xjge_sound_beep.ogg");
+    static Sound fallback = new Sound("/org/xjge/assets/", "xjge_sound_fallback.ogg");
     
     Sound(String filepath, String filename) {
         this.filename = filename;
@@ -66,12 +66,12 @@ final class Sound {
             return info;
             
         } catch(Exception exception) {
-            Logger.logWarning("Failed to load sound \"" + filename + "\" a placeholder will be used instead", exception);
+            Logger.logWarning("Failed to load sound \"" + filename + "\" a fallback will be used instead", exception);
             
             return new int[] {
-                placeholder.handle,
-                placeholder.channels,
-                placeholder.frequency
+                fallback.handle,
+                fallback.channels,
+                fallback.frequency
             };
         }
     }

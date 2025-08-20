@@ -1,14 +1,10 @@
 package org.xjge.test;
 
 import java.util.Map;
-import static org.lwjgl.glfw.GLFW.GLFW_JOYSTICK_1;
-import org.xjge.core.Audio;
 import org.xjge.core.Camera;
 import org.xjge.core.Entity;
 import org.xjge.core.Scene;
-import org.xjge.core.SoundSource;
 import org.xjge.core.UI;
-import org.xjge.core.XJGE;
 import org.xjge.graphics.GLProgram;
 
 /**
@@ -19,10 +15,6 @@ import org.xjge.graphics.GLProgram;
  */
 public class TestScene extends Scene {
     
-    SoundSource source;
-    
-    int tickCount;
-    
     public TestScene() {
         super("test");
         
@@ -30,50 +22,10 @@ public class TestScene extends Scene {
         entity.addComponent(new TestMesh(1, 0f, 0f, -5f));
         
         addEntity(entity);
-        
-        Audio.loadSound("shimmer", "test_shimmer2.ogg");
-        Audio.loadSound("music_intro", "msc_battle_intro.ogg");
-        Audio.loadSound("music_body", "msc_battle_body.ogg");
-        
-        //source = Audio.findSoundSource(true).queueSound("shimmer", true).play();
-        
-        /*
-        source = Audio.findSoundSource(true)
-                       .queueSound("music_intro", false)
-                       .queueSound("shimmer", true) //if this were true the queue will not proceed until setLooping(false) is called
-                       .queueSound("music_body", true)
-                       .play();
-        */
-        
-        //UI.addWidget(GLFW_JOYSTICK_1, "font_test", new TestWidget());
-        //XJGE.setClearColor(Color.BLACK);
     }
 
     @Override
     public void update(double targetDelta, double trueDelta) {
-        /*
-        if(XJGE.tick(30) && tickCount < 5) {
-            tickCount++;
-            if(tickCount == 5) {
-                source.play();
-            }
-        }*/
-        
-        /*
-        if(XJGE.tick(120) && source.getCurrentSound().equals("music_body")) {
-            source.seek(11f);
-        }
-        */
-        
-        /*
-        if(XJGE.tick(30) && tickCount < 20) {
-            tickCount++;
-            if(tickCount == 20) {
-                System.out.println(source.getCurrentSound());
-                source.setLooping(false);
-            }
-        }
-        */
     }
 
     @Override

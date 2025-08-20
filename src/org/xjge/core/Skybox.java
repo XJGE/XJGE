@@ -29,7 +29,7 @@ public final class Skybox {
     /**
      * Creates a new skybox using the images specified. These images should all 
      * exhibit the same width/height dimensions in pixels and may exhibit 
-     * transparency. 
+     * transparency.
      * 
      * @param topFilename the filename of the image to use for the top of the skybox
      * @param centerFilename the filename of the image to use for the sides of the skybox

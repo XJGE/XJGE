@@ -54,7 +54,7 @@ class TestMesh extends Component {
         //glEnable(GL_DEPTH_TEST);
         
         glActiveTexture(GL_TEXTURE0);
-        Texture.placeholder.bind(GL_TEXTURE_2D); //TODO: Texture is all black?
+        Texture.fallback.bind(GL_TEXTURE_2D); //TODO: Texture is all black?
         glBindVertexArray(g.vao);
         
         shader.use();

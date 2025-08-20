@@ -164,6 +164,8 @@ public final class XJGE {
         Window.create(debugModeEnabled);
         Audio.init();
         
+        Input.findInputDevices();
+        
         Logger.logSystemInfo();
         
         //Initialize the default shader program that will be provided to the implementation
@@ -245,7 +247,7 @@ public final class XJGE {
             blurProgram.addUniform(GLDataType.MAT4,  "uProjection");
         }
 
-        engineIcons = new Texture("xjge_engineicons.png");
+        engineIcons = new Texture("xjge_texture_icons.png");
 
         Light.setIconTexture(engineIcons);
         
@@ -293,7 +295,7 @@ public final class XJGE {
         glPrograms = Collections.unmodifiableMap(glPrograms);
         noclip     = new Noclip();
         terminal   = new Terminal(engineCommands);
-        metrics  = new EngineMetrics(engineIcons);
+        metrics    = new EngineMetrics(engineIcons);
         
         Window.registerCallbacks(terminal, metrics, noclip);
         Window.show();

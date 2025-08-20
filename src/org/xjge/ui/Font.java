@@ -63,7 +63,7 @@ public final class Font {
     private final int colOffsetHandle;
     private int numGlyphsAllocated;
     
-    public static final Font placeholder = new Font("/org/xjge/assets/", "font_source_code_pro.ttf", DEFAULT_FONT_SIZE);
+    public static final Font fallback = new Font("/org/xjge/assets/", "xjge_font_fallback.ttf", DEFAULT_FONT_SIZE);
     
     private final String charset = " !\"#$%&\'()*+,-./" +
                                    "0123456789:;<=>?"   +
@@ -196,23 +196,23 @@ public final class Font {
             return info;
             
         } catch(Exception exception) {
-            Logger.logWarning("Failed to load font \"" + filename + "\" a placeholder will be used instead", exception);
+            Logger.logWarning("Failed to load font \"" + filename + "\" a fallback will be used instead", exception);
             
-            glyphMetrics.putAll(placeholder.glyphMetrics);
+            glyphMetrics.putAll(fallback.glyphMetrics);
             
             return new int[] {
                 0,
                 DEFAULT_FONT_SIZE,
-                placeholder.textureHandle,
-                placeholder.largestGlyphWidth,
-                placeholder.bitmapWidth,
-                placeholder.bitmapHeight,
-                placeholder.vaoHandle,
-                placeholder.vboHandle,
-                placeholder.iboHandle,
-                placeholder.posOffsetHandle,
-                placeholder.texOffsetHandle,
-                placeholder.colOffsetHandle
+                fallback.textureHandle,
+                fallback.largestGlyphWidth,
+                fallback.bitmapWidth,
+                fallback.bitmapHeight,
+                fallback.vaoHandle,
+                fallback.vboHandle,
+                fallback.iboHandle,
+                fallback.posOffsetHandle,
+                fallback.texOffsetHandle,
+                fallback.colOffsetHandle
             };
         }
     }
@@ -580,7 +580,7 @@ public final class Font {
      * and textures that were generated during initialization.
      */
     public void delete() {
-        if(textureHandle != placeholder.textureHandle) {
+        if(textureHandle != fallback.textureHandle) {
             glDeleteTextures(textureHandle);
             glDeleteVertexArrays(vaoHandle);
             glDeleteBuffers(vboHandle);

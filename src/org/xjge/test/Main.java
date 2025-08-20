@@ -19,7 +19,7 @@ public class Main {
     
     public static void main(String args[]) {
         
-        XJGE.init(true, "/org/xjge/assets/", "org.xjge.test."); //create window with default settings
+        XJGE.init(true, "/org/xjge/assets/", "org.xjge.test.");
         
         {
             var shaderSourceFiles = new LinkedList<GLShader>() {{
