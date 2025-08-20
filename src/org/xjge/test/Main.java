@@ -38,6 +38,22 @@ public class Main {
             XJGE.addGLProgram("test", testProgram);
         }
         
+        {
+            var shaderSourceFiles = new LinkedList<GLShader>() {{
+                add(new GLShader("shader_grid_vertex.glsl",   GL_VERTEX_SHADER));
+                add(new GLShader("shader_grid_fragment.glsl", GL_FRAGMENT_SHADER));
+            }};
+
+            GLProgram gridShader = new GLProgram(shaderSourceFiles, "grid");
+
+            gridShader.addUniform(GLDataType.INT,  "uTexture");
+            gridShader.addUniform(GLDataType.MAT4, "uModel");
+            gridShader.addUniform(GLDataType.MAT4, "uView");
+            gridShader.addUniform(GLDataType.MAT4, "uProjection");
+
+            XJGE.addGLProgram("grid", gridShader);
+        }
+        
         Window.addObserver(new WindowObserver());
         
         //Window.setMinimumSize(640, 480);
