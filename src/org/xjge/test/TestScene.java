@@ -3,14 +3,17 @@ package org.xjge.test;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.net.URL;
 import java.util.HashMap;
 import java.util.Map;
+import org.joml.Vector3f;
 import org.joml.Vector3i;
+import static org.lwjgl.glfw.GLFW.GLFW_JOYSTICK_1;
 import org.xjge.core.Camera;
 import org.xjge.core.Entity;
+import static org.xjge.core.Input.KEY_MOUSE_COMBO;
 import org.xjge.core.Logger;
 import org.xjge.core.Scene;
+import org.xjge.core.Window;
 import org.xjge.graphics.GLProgram;
 
 /**
@@ -23,6 +26,7 @@ public class TestScene extends Scene {
     
     private int openSpaceCount;
     
+    private final CameraOverhead camera  = new CameraOverhead();
     private final GridRenderer gameBoard = new GridRenderer();
     
     private final Map<Vector3i, GridSpace> spaces = new HashMap<>();
@@ -30,10 +34,7 @@ public class TestScene extends Scene {
     public TestScene(String filename) {
         super("test");
         
-        Entity entity = new Entity();
-        entity.addComponent(new TestMesh(1, 0f, 0f, -5f));
-        
-        addEntity(entity);
+        Window.setViewportCamera(GLFW_JOYSTICK_1, camera);
         
         try {
             BufferedReader reader = new BufferedReader(new InputStreamReader(getClass().getResourceAsStream("/org/xjge/assets/" + filename)));
@@ -54,9 +55,10 @@ public class TestScene extends Scene {
                     
                     //Spawn players and enemies
                     if(type == 2) {
-                        //Unit player = new Unit(new Vector3f(x, 0.01f, z), "player", 0, KEY_MOUSE_COMBO);
+                        Entity player = new Entity();
+                        player.addComponent(new ComponentUnit(new Vector3f(x, 0.01f, z), "player", 0, KEY_MOUSE_COMBO));
+                        addEntity(player);
                         //space.occupyingUnit = player;
-                        //addEntity(player);
                         //turns.add(player);
                     } else if(type == 3) {
                         //Unit enemy = new Unit(new Vector3f(x, 0.01f, z), "enemy", 1, AI_GAMEPAD_1);
@@ -83,7 +85,7 @@ public class TestScene extends Scene {
         gameBoard.draw(glPrograms.get("grid"), spaces);
         
         entities.values().forEach(entity -> {
-            if(entity.hasComponent(TestMesh.class)) entity.getComponent(TestMesh.class).render(glPrograms.get("test"));
+            if(entity.hasComponent(ComponentUnit.class)) entity.getComponent(ComponentUnit.class).render(glPrograms.get("test"));
         });
     }
 
