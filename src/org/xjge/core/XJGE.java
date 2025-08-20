@@ -164,15 +164,15 @@ public final class XJGE {
         Window.create(debugModeEnabled);
         Audio.init();
         
-        Input.findInputDevices();
+        Input.findInputDevices(); //TODO: change to findGamepads?
         
         Logger.logSystemInfo();
         
         //Initialize the default shader program that will be provided to the implementation
         {
             var shaderSourceFiles = new LinkedList<GLShader>() {{
-                add(new GLShader("shader_default_vertex.glsl", GL_VERTEX_SHADER));
-                add(new GLShader("shader_default_fragment.glsl", GL_FRAGMENT_SHADER));
+                add(new GLShader("xjge_shader_default_vertex.glsl", GL_VERTEX_SHADER));
+                add(new GLShader("xjge_shader_default_fragment.glsl", GL_FRAGMENT_SHADER));
             }};
 
             GLProgram defaultProgram = new GLProgram(shaderSourceFiles, "default");
@@ -219,8 +219,8 @@ public final class XJGE {
         //Create shader program that will generate shadow map output
         {
             var shaderSourceFiles = new LinkedList<GLShader>() {{
-                add(new GLShader("shader_depth_vertex.glsl", GL_VERTEX_SHADER));
-                add(new GLShader("shader_depth_fragment.glsl", GL_FRAGMENT_SHADER));
+                add(new GLShader("xjge_shader_depth_vertex.glsl", GL_VERTEX_SHADER));
+                add(new GLShader("xjge_shader_depth_fragment.glsl", GL_FRAGMENT_SHADER));
             }};
 
             depthProgram = new GLProgram(shaderSourceFiles, "default");
@@ -234,8 +234,8 @@ public final class XJGE {
         //Create shader program for applying gaussian blur
         {
             var shaderSourceFiles = new LinkedList<GLShader>() {{
-                add(new GLShader("shader_blur_vertex.glsl", GL_VERTEX_SHADER));
-                add(new GLShader("shader_blur_fragment.glsl", GL_FRAGMENT_SHADER));
+                add(new GLShader("xjge_shader_blur_vertex.glsl", GL_VERTEX_SHADER));
+                add(new GLShader("xjge_shader_blur_fragment.glsl", GL_FRAGMENT_SHADER));
             }};
 
             blurProgram = new GLProgram(shaderSourceFiles, "default");
