@@ -63,7 +63,7 @@ public class Main {
         //Window.setIcon("icon.png");
         //Window.setResolution(384, 216);
         
-        XJGE.setScene(new TestScene());
+        XJGE.setScene(new TestScene("map_test.txt"));
         
         XJGE.start(); //show window
         
