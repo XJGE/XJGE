@@ -398,6 +398,22 @@ public final class Window {
         return glfwWindowShouldClose(handle);
     }
     
+    static double getCursorPositionX() {
+        return mouse.cursorPositionX;
+    }
+    
+    static double getCursorPositionY() {
+        return mouse.cursorPositionY;
+    }
+    
+    static int getKeyInputValue(int key) {
+        return glfwGetKey(handle, key);
+    }
+    
+    static int getMouseButtonInputValue(int button) {
+        return glfwGetMouseButton(handle, button);
+    }
+    
     /**
      * Obtains the OpenGL framebuffer object (FBO) handle used for rendering.
      * 

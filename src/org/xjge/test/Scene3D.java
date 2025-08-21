@@ -65,7 +65,7 @@ public class Scene3D extends Scene {
                     //Spawn players and enemies
                     if(type == 2) {
                         Entity player = new Entity();
-                        ComponentUnit unit = new ComponentUnit(new Vector3f(x, 0.01f, z), "player", 0, GLFW_JOYSTICK_1);
+                        ComponentUnit unit = new ComponentUnit(new Vector3f(x, 0.01f, z), "player", 0, KEY_MOUSE_COMBO);
                         player.addComponent(unit);
                         addEntity(player);
                         space.occupyingUnit = unit;

@@ -24,9 +24,6 @@ final class KeyMouseCombo extends InputDevice {
     
     private boolean firstMouse = true;
     
-    private final DoubleBuffer cursorPosX;
-    private final DoubleBuffer cursorPosY;
-    
     /**
      * Creates a new KeyMouseCombo object and applies the users settings to its 
      * control configuration.
@@ -38,13 +35,7 @@ final class KeyMouseCombo extends InputDevice {
      */
     KeyMouseCombo(int id, HashMap<Control, Integer> controls, HashMap<String, Float> settings) {
         super(id, controls, settings);
-        
         name = "Keyboard and Mouse";
-        
-        try(MemoryStack stack = MemoryStack.stackPush()) {
-            cursorPosX = stack.mallocDouble(1);
-            cursorPosY = stack.mallocDouble(1);
-        }
     }
     
     /**
@@ -74,17 +65,14 @@ final class KeyMouseCombo extends InputDevice {
     
     @Override
     protected void poll(double targetDelta, double trueDelta, Puppet puppet, Control control, Command command) {
-        //TODO: reimplement this or use callback
-        
-        /*
         switch(control) {
             case LEFT_STICK_X, LEFT_STICK_Y -> {
                 int key1 = (controls.get(control) & ((control == LEFT_STICK_X) ? axisValues[0] : axisValues[2]));
                 int key2 = (controls.get(control) & ((control == LEFT_STICK_X) ? axisValues[1] : axisValues[3]));
 
-                if(glfwGetKey(Window.HANDLE, key1) == GLFW_PRESS) {
+                if(Window.getKeyInputValue(key1) == GLFW_PRESS) {
                     command.execute(-1, this, control, controls.get(control), targetDelta, trueDelta);
-                } else if(glfwGetKey(Window.HANDLE, key2) == GLFW_PRESS) {
+                } else if(Window.getKeyInputValue(key2) == GLFW_PRESS) {
                     command.execute(1, this, control, controls.get(control), targetDelta, trueDelta);
                 } else {
                     command.execute(0, this, control, controls.get(control), targetDelta, trueDelta);
@@ -92,47 +80,42 @@ final class KeyMouseCombo extends InputDevice {
             }
 
             case RIGHT_STICK_X ->  {
-                glfwGetCursorPos(Window.HANDLE, cursorPosX, cursorPosY);
-
-                if((float) cursorPosX.get(0) != prevAxisX) {
-                    command.execute(findAxisValue((float) cursorPosX.get(0), prevAxisX), 
+                if((float) Window.getCursorPositionX() != prevAxisX) {
+                    command.execute(findAxisValue((float) Window.getCursorPositionX(), prevAxisX), 
                                     this, 
                                     control, 
                                     controls.get(control), 
                                     targetDelta, trueDelta);
-                    prevAxisX = (float) cursorPosX.get(0);
+                    prevAxisX = (float) Window.getCursorPositionX();
                 }
             }
 
             case RIGHT_STICK_Y -> {
-                glfwGetCursorPos(Window.HANDLE, cursorPosX, cursorPosY);
-
-                if((float) cursorPosY.get(0) != prevAxisY) {
-                    command.execute(findAxisValue((float) cursorPosY.get(0), prevAxisY), 
+                if((float) Window.getCursorPositionY() != prevAxisY) {
+                    command.execute(findAxisValue((float) Window.getCursorPositionY(), prevAxisY), 
                                     this, 
                                     control, 
                                     controls.get(control), 
                                     targetDelta, trueDelta);
-                    prevAxisY = (float) cursorPosY.get(0);
+                    prevAxisY = (float) Window.getCursorPositionY();
                 }
             }
 
             case L2, R2 -> {
-                command.execute(glfwGetMouseButton(Window.HANDLE, controls.get(control)), 
+                command.execute(Window.getMouseButtonInputValue(controls.get(control)), 
                                 this, control, 
                                 controls.get(control), 
                                 targetDelta, trueDelta);
             }
 
             default -> {
-                command.execute(glfwGetKey(Window.HANDLE, controls.get(control)), 
+                command.execute(Window.getKeyInputValue(controls.get(control)), 
                                 this, 
                                 control, 
                                 controls.get(control), 
                                 targetDelta, trueDelta);
             }
         }
-        */
     }
 
 }
