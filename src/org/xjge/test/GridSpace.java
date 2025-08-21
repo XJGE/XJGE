@@ -14,7 +14,7 @@ class GridSpace {
     public final int yLocation;
     public final int zLocation;
     
-    //public Unit occupyingUnit;
+    public ComponentUnit occupyingUnit;
     public GridSpace previousSpace;
     
     public GridSpaceStatus status = NO_STATUS;

@@ -95,9 +95,6 @@ public final class XJGE {
     private static String cpuModel;
     
     private static Texture engineIcons;
-    private static Terminal terminal;
-    private static EngineMetrics metrics;
-    private static Noclip noclip;
     
     private static TreeMap<String, TerminalCommand> engineCommands     = new TreeMap<>();
     private static final TreeMap<String, TerminalCommand> userCommands = new TreeMap<>();
@@ -293,11 +290,8 @@ public final class XJGE {
         
         started    = true;
         glPrograms = Collections.unmodifiableMap(glPrograms);
-        noclip     = new Noclip();
-        terminal   = new Terminal(engineCommands);
-        metrics    = new EngineMetrics(engineIcons);
         
-        Window.registerCallbacks(terminal, metrics, noclip);
+        Window.registerCallbacks(engineCommands, engineIcons);
         Window.show();
         
         int cycles = 0;
@@ -318,8 +312,7 @@ public final class XJGE {
             
             while(delta >= TARGET_DELTA) {
                 Input.update(TARGET_DELTA, deltaMetric);
-                if(terminal.show) terminal.update();
-                if(metrics.show) metrics.update(deltaMetric, fps, entityCount, noclip);
+                Window.update(deltaMetric, fps, entityCount);
                 
                 if(tick(20)) {
                     deltaMetric = delta;
@@ -363,7 +356,6 @@ public final class XJGE {
                     }
                 }
                 
-                Window.updateMouseClickValue();
                 UI.processWidgetRemoveRequests();
                 Audio.update();
                 
@@ -417,14 +409,6 @@ public final class XJGE {
                     viewport.render(glPrograms, "texture", projMatrix);
                     viewport.render(glPrograms, "ui", projMatrix);
                 }
-            }
-            
-            if(terminal.show || metrics.show) {
-                glViewport(0, 0, Window.getWidth(), Window.getHeight());
-                UI.updateProjectionMatrix(Window.getWidth(), Window.getHeight(), 0, Integer.MAX_VALUE);
-
-                if(terminal.show) terminal.render();
-                if(metrics.show) metrics.render();
             }
             
             Window.swapBuffers();

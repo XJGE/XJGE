@@ -43,14 +43,14 @@ public class Main {
                 add(new GLShader("shader_grid_vertex.glsl",   GL_VERTEX_SHADER));
                 add(new GLShader("shader_grid_fragment.glsl", GL_FRAGMENT_SHADER));
             }};
-
+            
             GLProgram gridShader = new GLProgram(shaderSourceFiles, "grid");
-
+            
             gridShader.addUniform(GLDataType.INT,  "uTexture");
             gridShader.addUniform(GLDataType.MAT4, "uModel");
             gridShader.addUniform(GLDataType.MAT4, "uView");
             gridShader.addUniform(GLDataType.MAT4, "uProjection");
-
+            
             XJGE.addGLProgram("grid", gridShader);
         }
         
@@ -63,7 +63,7 @@ public class Main {
         //Window.setIcon("icon.png");
         //Window.setResolution(384, 216);
         
-        XJGE.setScene(new TestScene("map_test.txt"));
+        XJGE.setScene(new Scene3D("map_test.txt"));
         
         XJGE.start(); //show window
         

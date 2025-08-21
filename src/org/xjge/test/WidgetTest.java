@@ -20,7 +20,7 @@ import org.xjge.ui.Widget;
  * @author J Hoffman
  * @since  
  */
-public class TestWidget extends Widget {
+public class WidgetTest extends Widget {
     
     Font font = new Font("font_source_code_pro.ttf", 32);
     Timer timer = new Timer();
@@ -36,7 +36,7 @@ public class TestWidget extends Widget {
     int index;
     boolean reverse;
     
-    public TestWidget() {
+    public WidgetTest() {
         icon = new Icon(new Texture("xjge_texture_missing.png"), 64, 64, true);
     }
 
@@ -89,7 +89,7 @@ public class TestWidget extends Widget {
         rectColor = (mouse.hovered(rectangle)) ? Color.RED : Color.BLACK;
         
         if(mouse.clickedOnce()) {
-            //System.out.println("clicked");
+            System.out.println("clicked");
         }
     }
 

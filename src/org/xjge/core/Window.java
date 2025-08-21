@@ -26,6 +26,7 @@ import static org.lwjgl.stb.STBImage.stbi_load_from_memory;
 import org.lwjgl.system.MemoryStack;
 import static org.lwjgl.system.MemoryUtil.NULL;
 import static org.xjge.core.SplitScreenType.*;
+import org.xjge.graphics.Texture;
 
 /**
  * Created: Apr 29, 2021
@@ -58,8 +59,12 @@ public final class Window {
     
     private static long handle = NULL;
     
+    private static Terminal terminal;
+    private static EngineMetrics metrics;
+    private static Noclip noclip;
+    
     private static Monitor monitor;
-    private static String title      = "XJGE v" + XJGE.VERSION;
+    private static String title = "XJGE v" + XJGE.VERSION;
     private static final Mouse mouse = new Mouse();
     private static final Resolution resolution = new Resolution(DEFAULT_WIDTH, DEFAULT_HEIGHT);
     private static final Observable observable = new Observable(Window.class);
@@ -184,7 +189,11 @@ public final class Window {
      * @param terminal the command-line terminal used to make state changes during runtime
      * @param metrics a series of collapsible menus containing debug information
      */
-    static void registerCallbacks(Terminal terminal, EngineMetrics metrics, Noclip noclip) {
+    static void registerCallbacks(TreeMap<String, TerminalCommand> engineCommands, Texture engineIcons) {
+        noclip   = new Noclip();
+        terminal = new Terminal(engineCommands);
+        metrics  = new EngineMetrics(engineIcons);
+        
         glfwErrorReference = GLFWErrorCallback.create((error, description) -> {
             Logger.logWarning("GLFW Error: (" + error + ") " + GLFWErrorCallback.getDescription(description), null);
         });
@@ -342,11 +351,10 @@ public final class Window {
         glfwShowWindow(handle);
     }
     
-    /**
-     * Called internally from the main loop to automatically update the 
-     * previous click value of the mouse.
-     */
-    static void updateMouseClickValue() {
+    static void update(double deltaMetric, int fps, int entityCount) {
+        if(terminal.show) terminal.update();
+        if(metrics.show) metrics.update(deltaMetric, fps, entityCount, noclip);
+        
         mouse.previousClickValue = mouse.currentClickValue;
     }
     
@@ -354,6 +362,14 @@ public final class Window {
      * Swaps the front and back framebuffers, displaying the most recent rendered frame.
      */
     static void swapBuffers() {
+        if(terminal.show || metrics.show) {
+            glViewport(0, 0, width, height);
+            UI.updateProjectionMatrix(width, height, 0, Integer.MAX_VALUE);
+            
+            if(terminal.show) terminal.render();
+            if(metrics.show) metrics.render();
+        }
+        
         glfwSwapBuffers(handle);
     }
     
@@ -803,15 +819,12 @@ public final class Window {
             Logger.logInfo("Failed to set viewport camera. No viewport "+ 
                            "by the ID of " + viewportID + " exists");
         } else {
-            /*
-            //TODO: reimplement this
-            if(viewports[viewportID].currCamera == freeCam) {
+            if(viewports[viewportID].currCamera.equals(noclip)) {
                 //Added in case noclip is enabled when this was called.
                 viewports[viewportID].prevCamera = camera;
             } else {
                 viewports[viewportID].currCamera = camera;
             }
-            */
         }
     }
     

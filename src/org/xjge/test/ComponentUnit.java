@@ -1,9 +1,13 @@
 package org.xjge.test;
 
+import java.util.Map;
+import java.util.UUID;
 import org.joml.Vector3f;
+import org.joml.Vector3i;
 import static org.lwjgl.opengl.GL30.*;
 import org.lwjgl.system.MemoryStack;
 import org.xjge.core.Component;
+import org.xjge.core.Control;
 import org.xjge.core.ErrorUtils;
 import org.xjge.core.Puppet;
 import org.xjge.graphics.GLProgram;
@@ -19,9 +23,12 @@ class ComponentUnit extends Component {
 
     int team;
     
-    private final Vector3f position;
     private final Graphics graphics = new Graphics();
-    //private final Puppet puppet;
+    private final Puppet puppet;
+    final Vector3f position;
+    final String name;
+    
+    Action action = new ActionSelect();
     
     private static final Texture texture;
     
@@ -36,6 +43,21 @@ class ComponentUnit extends Component {
     
     ComponentUnit(Vector3f position, String name, int team, int deviceID) {
         this.position = position;
+        this.name     = name;
+        this.team     = team;
+        
+        puppet = new Puppet(name);
+        
+        puppet.commands.put(Control.DPAD_UP,    new InputState());
+        puppet.commands.put(Control.DPAD_DOWN,  new InputState());
+        puppet.commands.put(Control.DPAD_LEFT,  new InputState());
+        puppet.commands.put(Control.DPAD_RIGHT, new InputState());
+        puppet.commands.put(Control.CROSS,      new InputState());
+        puppet.commands.put(Control.CIRCLE,     new InputState());
+        puppet.commands.put(Control.TRIANGLE,   new InputState());
+        puppet.commands.put(Control.SQUARE,     new InputState());
+        
+        puppet.setInputDevice(deviceID);
         
         //texture offset because I'm too lazy to use sprites
         float t1 = (team == 0) ? 0 : 0.5f;
@@ -87,6 +109,24 @@ class ComponentUnit extends Component {
         glDisable(GL_ALPHA_TEST);
         
         ErrorUtils.checkGLError();
+    }
+    
+    public boolean turnFinished(Scene3D scene, Map<UUID, ComponentUnit> units, Map<Vector3i, GridSpace> spaces) {
+        boolean finished = action.perform(scene, this, units, spaces);
+        if(finished) action = new ActionSelect();
+        return finished;
+    }
+    
+    boolean buttonPressed(Control control) {
+        return ((InputState) puppet.commands.get(control)).buttonPressed;
+    }
+    
+    boolean buttonPressedOnce(Control control) {
+        return ((InputState) puppet.commands.get(control)).buttonPressedOnce;
+    }
+    
+    float getInputValue(Control control) {
+        return ((InputState) puppet.commands.get(control)).inputValue;
     }
     
 }
