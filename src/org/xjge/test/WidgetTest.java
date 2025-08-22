@@ -20,7 +20,7 @@ import org.xjge.ui.Widget;
  * @author J Hoffman
  * @since  
  */
-public class WidgetTest extends Widget {
+class WidgetTest extends Widget {
     
     Font font = new Font("font_source_code_pro.ttf", 32);
     Timer timer = new Timer();

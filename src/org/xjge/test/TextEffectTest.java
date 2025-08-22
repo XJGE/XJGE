@@ -9,7 +9,7 @@ import org.xjge.ui.TextEffect;
  * @author J Hoffman
  * @since  
  */
-public class TextEffectTest extends TextEffect {
+class TextEffectTest extends TextEffect {
 
     boolean ascending;
     

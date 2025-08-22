@@ -9,7 +9,6 @@ import org.xjge.core.Control;
 import org.xjge.core.Input;
 import static org.xjge.core.Input.AI_GAMEPAD_1;
 import org.xjge.core.UI;
-import org.xjge.core.XJGE;
 import static org.xjge.test.GridSpaceStatus.NO_STATUS;
 
 /**

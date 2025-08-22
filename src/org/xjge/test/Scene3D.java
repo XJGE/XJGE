@@ -17,7 +17,6 @@ import org.xjge.core.Entity;
 import static org.xjge.core.Input.KEY_MOUSE_COMBO;
 import org.xjge.core.Logger;
 import org.xjge.core.Scene;
-import org.xjge.core.UI;
 import org.xjge.core.Window;
 import org.xjge.graphics.GLProgram;
 

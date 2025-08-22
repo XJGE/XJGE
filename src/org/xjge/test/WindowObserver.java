@@ -10,7 +10,7 @@ import org.xjge.core.Window;
  * @author J Hoffman
  * @since  
  */
-public class WindowObserver implements PropertyChangeListener {
+class WindowObserver implements PropertyChangeListener {
     
     @Override
     public void propertyChange(PropertyChangeEvent evt) {
