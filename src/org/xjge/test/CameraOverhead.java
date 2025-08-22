@@ -13,7 +13,9 @@ import org.xjge.graphics.GLProgram;
  */
 class CameraOverhead extends Camera {
 
-    private float pitch = 52f;
+    final float height = 6;
+    
+    private float pitch = 36f;
     private float yaw = -90f;
     private float moveSpeed;
     private float moveLerp;
@@ -23,7 +25,7 @@ class CameraOverhead extends Camera {
     
     public CameraOverhead() {
         super(false);
-        fov = 25;
+        fov = 32;
         direction.set(0, 0, -1);
     }
     

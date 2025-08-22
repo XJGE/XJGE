@@ -53,7 +53,7 @@ class ActionMove extends Action {
             
             for(GridSpace space : spaces.values()) if(space.occupyingUnit == activeUnit) {
                 path.add(0, space);
-                baseCamPos.set(path.get(0).xLocation, path.get(0).yLocation + 10, path.get(0).zLocation + 8);
+                baseCamPos.set(path.get(0).xLocation, path.get(0).yLocation + scene.camera.height, path.get(0).zLocation + 8);
             }
             
             initialSpaceSet = true;
@@ -136,7 +136,7 @@ class ActionMove extends Action {
                         nextSpace.previousSpace = prevSpace;
                     }
                     
-                    baseCamPos.set(nextSpace.xLocation, nextSpace.yLocation + 10, nextSpace.zLocation + 8);
+                    baseCamPos.set(nextSpace.xLocation, nextSpace.yLocation + scene.camera.height, nextSpace.zLocation + 8);
                 }
                 
                 if(activeUnit.buttonPressed(Control.CIRCLE)) {

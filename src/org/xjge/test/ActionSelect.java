@@ -28,7 +28,7 @@ class ActionSelect extends Action {
         if(ui == null) {
             ui = new WidgetSelect(activeUnit, units);
             UI.addWidget(GLFW_JOYSTICK_1, "action_select", ui);
-            scene.camera.moveTo(new Vector3f(activeUnit.position.x, 10, activeUnit.position.z + 8), 0.003f);
+            scene.camera.moveTo(new Vector3f(activeUnit.position.x, scene.camera.height, activeUnit.position.z + 8), 0.003f);
             spaces.values().forEach(space -> space.status = NO_STATUS);
             
             if(UI.containsWidget(GLFW_JOYSTICK_1, "roll_outcome")) {

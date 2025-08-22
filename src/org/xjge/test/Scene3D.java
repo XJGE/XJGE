@@ -39,6 +39,8 @@ public class Scene3D extends Scene {
     private final Map<UUID, ComponentUnit> units  = new HashMap<>();
     private final Map<Vector3i, GridSpace> spaces = new HashMap<>();
     
+    private GameMode gameMode = new GameModeExplore();
+    
     public Scene3D(String filename) {
         super("test");
         
@@ -89,7 +91,7 @@ public class Scene3D extends Scene {
 
     @Override
     public void update(double targetDelta, double trueDelta) {
-        //if(gameMode != null) gameMode.execute(this, Collections.unmodifiableMap(entities));
+        if(gameMode != null) gameMode.execute(this, Collections.unmodifiableMap(entities));
         
         if(activeUnit.turnFinished(this, Collections.unmodifiableMap(units), Collections.unmodifiableMap(spaces))) {
             //activeUnit = turns.poll();

@@ -58,10 +58,12 @@ public class Main {
         
         //Window.setMinimumSize(640, 480);
         //Window.setSize(640, 480);
-        //Window.setResizable(false);
         //Window.setTitle("Test");
         //Window.setIcon("icon.png");
         //Window.setResolution(384, 216);
+        Window.setResizable(false);
+        Window.setFullscreen(true);
+        Window.focus();
         
         XJGE.setScene(new Scene3D("map_test.txt"));
         

@@ -441,6 +441,13 @@ public final class Window {
     }
     
     /**
+     * Brings the window to the forefront and requests input focus.
+     */
+    public static void focus() {
+        glfwFocusWindow(handle);
+    }
+    
+    /**
      * Centers the window position on the specified monitor.
      * 
      * @param monitor the monitor on which the window will be centered
