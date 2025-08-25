@@ -1,9 +1,6 @@
 package org.xjge.test;
 
-import java.util.Map;
-import java.util.UUID;
 import org.joml.Vector3f;
-import org.joml.Vector3i;
 import static org.lwjgl.opengl.GL30.*;
 import org.lwjgl.system.MemoryStack;
 import org.xjge.core.Component;
@@ -20,17 +17,17 @@ import org.xjge.graphics.Texture;
  * @since 
  */
 class ComponentUnit extends Component {
-
-    int team;
+    
+    int inputDeviceID;
+    
+    private static final Texture texture;
     
     private final Graphics graphics = new Graphics();
     private final Puppet puppet;
-    final Vector3f position;
+    
     final String name;
-    
-    Action action = new ActionSelect();
-    
-    private static final Texture texture;
+    final Vector3f position;
+    final Vector3f velocity = new Vector3f();
     
     static {
         texture = new Texture("image_units.png");
@@ -41,27 +38,22 @@ class ComponentUnit extends Component {
         glBindTexture(GL_TEXTURE_2D, 0);
     }
     
-    ComponentUnit(Vector3f position, String name, int team, int deviceID) {
-        this.position = position;
-        this.name     = name;
-        this.team     = team;
+    ComponentUnit(String name, float positionX, float positionY, float positionZ, int inputDeviceID) {
+        this.name = name;
+        this.inputDeviceID = inputDeviceID;
         
-        puppet = new Puppet(name);
+        position = new Vector3f(positionX, positionY, positionZ);
+        puppet   = new Puppet(name);
         
-        puppet.commands.put(Control.DPAD_UP,    new InputState());
-        puppet.commands.put(Control.DPAD_DOWN,  new InputState());
-        puppet.commands.put(Control.DPAD_LEFT,  new InputState());
-        puppet.commands.put(Control.DPAD_RIGHT, new InputState());
-        puppet.commands.put(Control.CROSS,      new InputState());
-        puppet.commands.put(Control.CIRCLE,     new InputState());
-        puppet.commands.put(Control.TRIANGLE,   new InputState());
-        puppet.commands.put(Control.SQUARE,     new InputState());
+        puppet.commands.put(Control.LEFT_STICK_X, new CommandMove());
+        puppet.commands.put(Control.LEFT_STICK_Y, new CommandMove());
         
-        puppet.setInputDevice(deviceID);
+        
+        puppet.setInputDevice(inputDeviceID);
         
         //texture offset because I'm too lazy to use sprites
-        float t1 = (team == 0) ? 0 : 0.5f;
-        float t2 = (team == 0) ? 0.5f : 1f;
+        float t1 = (name.equals("player")) ? 0 : 0.5f;
+        float t2 = (name.equals("player")) ? 0.5f : 1f;
         
         try(MemoryStack stack = MemoryStack.stackPush()) {
             graphics.vertices = stack.mallocFloat(20);
@@ -111,22 +103,8 @@ class ComponentUnit extends Component {
         ErrorUtils.checkGLError();
     }
     
-    public boolean turnFinished(Scene3D scene, Map<UUID, ComponentUnit> units, Map<Vector3i, GridSpace> spaces) {
-        boolean finished = action.perform(scene, this, units, spaces);
-        if(finished) action = new ActionSelect();
-        return finished;
-    }
-    
-    boolean buttonPressed(Control control) {
-        return ((InputState) puppet.commands.get(control)).buttonPressed;
-    }
-    
-    boolean buttonPressedOnce(Control control) {
-        return ((InputState) puppet.commands.get(control)).buttonPressedOnce;
-    }
-    
-    float getInputValue(Control control) {
-        return ((InputState) puppet.commands.get(control)).inputValue;
+    boolean turnFinished(Scene3D scene) {
+        return false;
     }
     
 }
