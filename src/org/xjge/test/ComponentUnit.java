@@ -38,16 +38,15 @@ class ComponentUnit extends Component {
         glBindTexture(GL_TEXTURE_2D, 0);
     }
     
-    ComponentUnit(String name, float positionX, float positionY, float positionZ, int inputDeviceID) {
+    ComponentUnit(String name, CameraOverhead camera, float positionX, float positionY, float positionZ, int inputDeviceID) {
         this.name = name;
         this.inputDeviceID = inputDeviceID;
         
         position = new Vector3f(positionX, positionY, positionZ);
         puppet   = new Puppet(name);
         
-        puppet.commands.put(Control.LEFT_STICK_X, new CommandMove());
-        puppet.commands.put(Control.LEFT_STICK_Y, new CommandMove());
-        
+        puppet.commands.put(Control.LEFT_STICK_X, new CommandMove(this, camera));
+        puppet.commands.put(Control.LEFT_STICK_Y, new CommandMove(this, camera));
         
         puppet.setInputDevice(inputDeviceID);
         

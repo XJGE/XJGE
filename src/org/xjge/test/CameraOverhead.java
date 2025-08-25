@@ -8,7 +8,6 @@ import org.xjge.core.Camera;
 import org.xjge.core.Command;
 import org.xjge.core.Control;
 import org.xjge.core.Puppet;
-import org.xjge.core.XJGE;
 import org.xjge.graphics.GLProgram;
 
 /**
@@ -29,7 +28,7 @@ class CameraOverhead extends Camera {
     
     public CameraOverhead() {
         super(false);
-        fov = 32;
+        fov = 40;
         direction.set(0, 0, -1);
         
         puppet.commands.put(Control.RIGHT_STICK_X, new CommandRotateCamera());
@@ -43,10 +42,8 @@ class CameraOverhead extends Camera {
             if(axisMoved()) {
                 if(getButtonID() == GLFW_GAMEPAD_AXIS_RIGHT_X) {
                     yaw += getInputValue();
-                    //System.out.println("X: " + getInputValue());
                 } else if(getButtonID() == GLFW_GAMEPAD_AXIS_RIGHT_Y) {
                     pitch += getInputValue();
-                    //System.out.println("Y: " + getInputValue());
                 }
             }
         }
@@ -55,23 +52,16 @@ class CameraOverhead extends Camera {
     
     @Override
     public void update() {
-        // Clamp pitch to avoid flipping
-        pitch = Math.max(10f, Math.min(80f, pitch));
+        pitch = Math.max(5f, Math.min(80f, pitch)); //clamp pitch to avoid flipping
         
-        // Desired distance behind the target
         float distance = 6f;
         
-        // Compute offset from yaw/pitch spherical coords
+        //compute offset from yaw/pitch spherical coords
         float offsetX = (float) (distance * Math.cos(Math.toRadians(pitch)) * Math.cos(Math.toRadians(yaw)));
         float offsetY = (float) (distance * Math.sin(Math.toRadians(pitch)));
         float offsetZ = (float) (distance * Math.cos(Math.toRadians(pitch)) * Math.sin(Math.toRadians(yaw)));
         
-        // Camera sits at target + offset
-        position.set(nextPosition.x - offsetX,
-                     nextPosition.y + offsetY,
-                     nextPosition.z - offsetZ);
-
-        // Look at target (the unit, not forward vector)
+        position.set(nextPosition.x - offsetX, nextPosition.y + offsetY, nextPosition.z - offsetZ);
         direction.set(nextPosition).sub(position).normalize();
     }
 
@@ -87,7 +77,7 @@ class CameraOverhead extends Camera {
     }
     
     public void setActiveUnit(ComponentUnit unit) {
-        moveTo(new Vector3f(unit.position.x, unit.position.y, unit.position.z), 1f);
+        moveTo(unit.position, 1f);
         puppet.setInputDevice(unit.inputDeviceID);
     }
     
@@ -95,6 +85,21 @@ class CameraOverhead extends Camera {
         this.nextPosition = nextPosition;
         moveSpeed         = speed;
         moveLerp          = 0;
+    }
+    
+    public Vector3f getFlatForward() {
+        Vector3f forward = new Vector3f(direction).normalize();
+        forward.y = 0;
+        
+        return forward.normalize();
+    }
+
+    public Vector3f getRight() {
+        Vector3f forward = getFlatForward();
+        Vector3f right = new Vector3f();
+        forward.cross(up, right);
+        
+        return right.normalize();
     }
     
 }
