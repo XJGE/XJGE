@@ -12,7 +12,6 @@ import org.xjge.core.Command;
  */
 class CommandMove extends Command {
     
-    private final float moveSpeed = 5f;
     private float leftX;
     private float leftY;
     
@@ -33,30 +32,30 @@ class CommandMove extends Command {
                 leftY = -getInputValue();
             }
             
-            applyMovement((float) trueDelta);
+            if(leftX == 0 && leftY == 0) return; //Analog stick is centered
+
+            //Combine raw stick input (no pre-normalize)
+            Vector3f moveDir = new Vector3f();
+            moveDir.fma(leftY, camera.getFlatForward(), moveDir);
+            moveDir.fma(leftX, camera.getRight(), moveDir);
+
+            if(moveDir.lengthSquared() > 0.0001f) {
+                moveDir.normalize();
+
+                //Scale movement by *stick magnitude* (for analog fidelity)
+                float mag = (float)Math.sqrt(leftX * leftX + leftY * leftY);
+                unit.position.fma(((float) trueDelta) * unit.moveSpeed * mag, moveDir, unit.position);
+
+                //Smooth facing toward movement direction
+                float desiredYaw = (float)Math.toDegrees(Math.atan2(moveDir.z, moveDir.x));
+                unit.facingYaw = lerpAngle(unit.facingYaw, desiredYaw, ((float) trueDelta) * 10f);
+            }
         }
+    }
+
+    private float lerpAngle(float a, float b, float t) {
+        float diff = ((b - a + 540f) % 360f) - 180f;
+        return (a + diff * Math.min(1f, t) + 360f) % 360f;
     }
     
-    private void applyMovement(float deltaTime) {
-        if(leftX == 0 && leftY == 0) return;
-
-        //camera-relative basis
-        Vector3f forward = camera.getFlatForward();
-        Vector3f right   = camera.getRight();
-
-        //combine into world move direction
-        Vector3f moveDir = new Vector3f();
-        moveDir.fma(leftY, forward, moveDir);
-        moveDir.fma(leftX, right, moveDir);
-
-        if(moveDir.lengthSquared() > 0.0001f) {
-            moveDir.normalize();
-            
-            unit.position.fma(deltaTime * moveSpeed, moveDir, unit.position);
-
-            //rotate unit to face movement direction
-            //unit.facingYaw = (float)Math.toDegrees(Math.atan2(moveDir.z, moveDir.x));
-        }
-    }
-
 }

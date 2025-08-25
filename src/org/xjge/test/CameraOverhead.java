@@ -17,10 +17,10 @@ import org.xjge.graphics.GLProgram;
  */
 class CameraOverhead extends Camera {
     
-    private float pitch = 36f;
+    private float pitch = 35f;
     private float yaw = -90f;
-    private float moveSpeed;
-    private float moveLerp;
+    
+    private float rotationSpeed = 2.5f;
     
     private final Puppet puppet = new Puppet("camera");
     private final Vector3f temp = new Vector3f();
@@ -36,18 +36,16 @@ class CameraOverhead extends Camera {
     }
     
     class CommandRotateCamera extends Command {
-    
         @Override
         public void execute(double targetDelta, double trueDelta) {
             if(axisMoved()) {
                 if(getButtonID() == GLFW_GAMEPAD_AXIS_RIGHT_X) {
-                    yaw += getInputValue();
+                    yaw += getInputValue() * rotationSpeed;
                 } else if(getButtonID() == GLFW_GAMEPAD_AXIS_RIGHT_Y) {
-                    pitch += getInputValue();
+                    pitch += getInputValue() * rotationSpeed;
                 }
             }
         }
-
     }
     
     @Override
@@ -77,14 +75,8 @@ class CameraOverhead extends Camera {
     }
     
     public void setActiveUnit(ComponentUnit unit) {
-        moveTo(unit.position, 1f);
+        nextPosition = unit.position;
         puppet.setInputDevice(unit.inputDeviceID);
-    }
-    
-    public void moveTo(Vector3f nextPosition, float speed) {
-        this.nextPosition = nextPosition;
-        moveSpeed         = speed;
-        moveLerp          = 0;
     }
     
     public Vector3f getFlatForward() {

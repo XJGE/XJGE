@@ -18,6 +18,9 @@ import org.xjge.graphics.Texture;
  */
 class ComponentUnit extends Component {
     
+    float moveSpeed = 5f;
+    float facingYaw;
+    
     int inputDeviceID;
     
     private static final Texture texture;
