@@ -26,7 +26,7 @@ public class TerminalOutput {
      * @param text the text to show the user
      * @param color the color the text will be rendered in
      */
-    TerminalOutput(String text, Color color) {
+    public TerminalOutput(String text, Color color) {
         this.text  = "> " + text;
         this.color = color;
     }

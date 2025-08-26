@@ -55,6 +55,7 @@ public class Scene3D extends Scene {
                         Entity player = new Entity();
                         ComponentUnit unit = new ComponentUnit("player", camera, x, 0.01f, z, GLFW_JOYSTICK_1);
                         player.addComponent(unit);
+                        player.addComponent(new ComponentAABB(0.5f, 0.6f));
                         addEntity(player);
                         space.occupyingUnit = unit;
                     } else if(type == 3) {
@@ -77,21 +78,11 @@ public class Scene3D extends Scene {
     public void update(double targetDelta, double trueDelta) {
         if(gameMode != null) gameMode.execute(this, Collections.unmodifiableMap(entities));
         
-        /*
-        if(activeUnit.turnFinished(this, Collections.unmodifiableMap(units), Collections.unmodifiableMap(spaces))) {
-            //activeUnit = turns.poll();
-        }
-        
-        entities.forEach((uuid, entity) -> {
-            if(entity != null) {
-                if(entity.hasComponent(ComponentUnit.class)) {
-                    ComponentUnit unit = entity.getComponent(ComponentUnit.class);
-                    units.put(uuid, unit);
-                    if(unit != activeUnit && !turns.contains(unit)) turns.add(unit);
-                }
+        entities.values().forEach(entity -> {
+            if(entity.hasComponent(ComponentAABB.class)) {
+                //update collision detection
             }
         });
-        */
     }
 
     @Override
@@ -99,7 +90,12 @@ public class Scene3D extends Scene {
         grid.draw(glPrograms.get("grid"), spaces);
         
         entities.values().forEach(entity -> {
-            if(entity.hasComponent(ComponentUnit.class)) entity.getComponent(ComponentUnit.class).render(glPrograms.get("test"));
+            if(entity.hasComponent(ComponentUnit.class)) {
+                entity.getComponent(ComponentUnit.class).render(glPrograms.get("test"));
+            }
+            if(entity.hasComponent(ComponentAABB.class) && Main.showBoundingVolumes()) {
+                //render AABB
+            }
         });
     }
 

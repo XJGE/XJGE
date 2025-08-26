@@ -17,6 +17,8 @@ import org.xjge.graphics.GLShader;
  */
 public class Main {
     
+    private static TCShowBoundingVolumes showBoundingVolumes;
+    
     public static void main(String args[]) {
         
         XJGE.init(true, "/org/xjge/assets/", "org.xjge.test.");
@@ -65,10 +67,16 @@ public class Main {
         //Window.setFullscreen(true);
         //Window.focus();
         
-        XJGE.setScene(new Scene3D("map_test.txt"));
+        showBoundingVolumes = new TCShowBoundingVolumes();
+        XJGE.addCommand("showBoundingVolumes", showBoundingVolumes);
         
+        XJGE.setScene(new Scene3D("map_test.txt"));
         XJGE.start(); //show window
         
+    }
+    
+    public static boolean showBoundingVolumes() {
+        return showBoundingVolumes.getValue();
     }
     
 }

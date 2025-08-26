@@ -26,8 +26,6 @@ final class TCSetVSyncEnabled extends TerminalCommand {
 
     @Override
     public TerminalOutput execute(List<String> args) {
-        output = null;
-
         if(!args.isEmpty()) {
             String parameter = args.get(0);
 

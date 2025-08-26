@@ -23,7 +23,6 @@ class CameraOverhead extends Camera {
     private float rotationSpeed = 2.5f;
     
     private final Puppet puppet = new Puppet("camera");
-    private final Vector3f temp = new Vector3f();
     private Vector3f nextPosition = new Vector3f();
     
     public CameraOverhead() {

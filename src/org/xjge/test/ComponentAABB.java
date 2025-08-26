@@ -1,6 +1,7 @@
 package org.xjge.test;
 
 import org.xjge.core.Component;
+import org.xjge.graphics.GLProgram;
 
 /**
  * 
@@ -9,12 +10,16 @@ import org.xjge.core.Component;
  */
 class ComponentAABB extends Component {
 
-    int width;
-    int height;
+    float width;
+    float height;
     
-    ComponentAABB(int width, int height) {
+    ComponentAABB(float width, float height) {
         this.width = width;
         this.height = height;
+    }
+    
+    void render(GLProgram shader) {
+        
     }
     
 }
