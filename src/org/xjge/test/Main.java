@@ -42,7 +42,7 @@ public class Main {
         
         {
             var shaderSourceFiles = new LinkedList<GLShader>() {{
-                add(new GLShader("shader_grid_vertex.glsl",   GL_VERTEX_SHADER));
+                add(new GLShader("shader_grid_vertex.glsl", GL_VERTEX_SHADER));
                 add(new GLShader("shader_grid_fragment.glsl", GL_FRAGMENT_SHADER));
             }};
             
@@ -54,6 +54,22 @@ public class Main {
             gridShader.addUniform(GLDataType.MAT4, "uProjection");
             
             XJGE.addGLProgram("grid", gridShader);
+        }
+        
+        {
+            var shaderSourceFiles = new LinkedList<GLShader>() {{
+                add(new GLShader("shader_volume_vertex.glsl", GL_VERTEX_SHADER));
+                add(new GLShader("shader_volume_fragment.glsl", GL_FRAGMENT_SHADER));
+            }};
+            
+            GLProgram volumeShader = new GLProgram(shaderSourceFiles, "volume");
+            
+            volumeShader.addUniform(GLDataType.VEC3, "uColor");
+            volumeShader.addUniform(GLDataType.MAT4, "uModel");
+            volumeShader.addUniform(GLDataType.MAT4, "uView");
+            volumeShader.addUniform(GLDataType.MAT4, "uProjection");
+            
+            XJGE.addGLProgram("volume", volumeShader);
         }
         
         Window.addObserver(new WindowObserver());

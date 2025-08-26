@@ -55,7 +55,7 @@ public class Scene3D extends Scene {
                         Entity player = new Entity();
                         ComponentUnit unit = new ComponentUnit("player", camera, x, 0.01f, z, GLFW_JOYSTICK_1);
                         player.addComponent(unit);
-                        player.addComponent(new ComponentAABB(0.5f, 0.6f));
+                        player.addComponent(new ComponentAABB(0.5f, 0.8f, 0.5f));
                         addEntity(player);
                         space.occupyingUnit = unit;
                     } else if(type == 3) {
@@ -80,7 +80,7 @@ public class Scene3D extends Scene {
         
         entities.values().forEach(entity -> {
             if(entity.hasComponent(ComponentAABB.class)) {
-                //update collision detection
+                entity.getComponent(ComponentAABB.class).update();
             }
         });
     }
@@ -94,7 +94,7 @@ public class Scene3D extends Scene {
                 entity.getComponent(ComponentUnit.class).render(glPrograms.get("test"));
             }
             if(entity.hasComponent(ComponentAABB.class) && Main.showBoundingVolumes()) {
-                //render AABB
+                entity.getComponent(ComponentAABB.class).render(glPrograms.get("volume"));
             }
         });
     }
