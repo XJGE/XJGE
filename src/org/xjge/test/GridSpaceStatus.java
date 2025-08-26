@@ -7,9 +7,8 @@ package org.xjge.test;
  */
 enum GridSpaceStatus {
 
-    NO_STATUS,
+    NONE,
     SELECTED,
-    PATH,
     INVALID;
     
 }

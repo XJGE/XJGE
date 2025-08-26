@@ -1,6 +1,6 @@
 package org.xjge.test;
 
-import static org.xjge.test.GridSpaceStatus.NO_STATUS;
+import static org.xjge.test.GridSpaceStatus.NONE;
 
 /**
  * 
@@ -9,15 +9,16 @@ import static org.xjge.test.GridSpaceStatus.NO_STATUS;
  */
 class GridSpace {
 
+    public final boolean[] unreachableEdge = new boolean[6];
+    
     public final int type;
     public final int xLocation;
     public final int yLocation;
     public final int zLocation;
     
     public ComponentUnit occupyingUnit;
-    public GridSpace previousSpace;
     
-    public GridSpaceStatus status = NO_STATUS;
+    public GridSpaceStatus status = NONE;
     
     GridSpace(int type, int xLocation, int yLocation, int zLocation) {
         this.type      = type;

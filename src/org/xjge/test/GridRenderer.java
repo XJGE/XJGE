@@ -4,6 +4,7 @@ import java.nio.FloatBuffer;
 import java.util.Map;
 import org.joml.Vector3i;
 import static org.lwjgl.opengl.ARBVertexArrayObject.glBindVertexArray;
+import static org.lwjgl.opengl.GL11C.GL_DEPTH_TEST;
 import static org.lwjgl.opengl.GL33.*;
 import org.lwjgl.system.MemoryStack;
 import org.xjge.core.ErrorUtils;
@@ -33,20 +34,59 @@ class GridRenderer {
         glBindTexture(GL_TEXTURE_2D, 0);
         
         try(MemoryStack stack = MemoryStack.stackPush()) {
-            graphics.vertices = stack.mallocFloat(32);
-            graphics.indices  = stack.mallocInt(6);
+            float[] vertexData = {
+                //Front face
+                -0.5f,-0.5f, 0.5f, 1,1,1, 0,0,
+                 0.5f,-0.5f, 0.5f, 1,1,1, 1,0,
+                 0.5f, 0.5f, 0.5f, 1,1,1, 1,1,
+                -0.5f, 0.5f, 0.5f, 1,1,1, 0,1,
+
+                //Back face
+                -0.5f,-0.5f,-0.5f, 1,1,1, 1,0,
+                 0.5f,-0.5f,-0.5f, 1,1,1, 0,0,
+                 0.5f, 0.5f,-0.5f, 1,1,1, 0,1,
+                -0.5f, 0.5f,-0.5f, 1,1,1, 1,1,
+
+                //Left face
+                -0.5f,-0.5f,-0.5f, 1,1,1, 0,0,
+                -0.5f,-0.5f, 0.5f, 1,1,1, 1,0,
+                -0.5f, 0.5f, 0.5f, 1,1,1, 1,1,
+                -0.5f, 0.5f,-0.5f, 1,1,1, 0,1,
+
+                //Right face
+                 0.5f,-0.5f,-0.5f, 1,1,1, 1,0,
+                 0.5f,-0.5f, 0.5f, 1,1,1, 0,0,
+                 0.5f, 0.5f, 0.5f, 1,1,1, 0,1,
+                 0.5f, 0.5f,-0.5f, 1,1,1, 1,1,
+
+                //Top face
+                -0.5f, 0.5f,-0.5f, 1,1,1, 0,0,
+                -0.5f, 0.5f, 0.5f, 1,1,1, 0,1,
+                 0.5f, 0.5f, 0.5f, 1,1,1, 1,1,
+                 0.5f, 0.5f,-0.5f, 1,1,1, 1,0,
+
+                //Bottom face
+                -0.5f,-0.5f,-0.5f, 1,1,1, 0,1,
+                -0.5f,-0.5f, 0.5f, 1,1,1, 0,0,
+                 0.5f,-0.5f, 0.5f, 1,1,1, 1,0,
+                 0.5f,-0.5f,-0.5f, 1,1,1, 1,1,
+            };
+
+            //Indices (6 faces × 2 triangles each)
+            int[] indexData = {
+                0,1,2,    2,3,0,    //Front
+                4,5,6,    6,7,4,    //Back
+                8,9,10,   10,11,8,  //Left
+                12,13,14, 14,15,12, //Right
+                16,17,18, 18,19,16, //Top
+                20,21,22, 22,23,20  //Bottom
+            };
             
-            //(vec3 position), (vec3 color), (vec2 texcoords)
-            graphics.vertices.put(-0.5f).put(0).put( 0.5f) .put(0).put(0).put(0) .put(0).put(1);
-            graphics.vertices.put( 0.5f).put(0).put( 0.5f) .put(0).put(0).put(0) .put(1).put(1);
-            graphics.vertices.put( 0.5f).put(0).put(-0.5f) .put(0).put(0).put(0) .put(1).put(0);
-            graphics.vertices.put(-0.5f).put(0).put(-0.5f) .put(0).put(0).put(0) .put(0).put(0);
+            graphics.vertices = stack.mallocFloat(vertexData.length);
+            graphics.indices  = stack.mallocInt(indexData.length);
             
-            graphics.indices.put(0).put(1).put(2);
-            graphics.indices.put(2).put(3).put(0);
-            
-            graphics.vertices.flip();
-            graphics.indices.flip();
+            graphics.vertices.put(vertexData).flip();
+            graphics.indices.put(indexData).flip();
         }
         
         graphics.bindBuffers();
@@ -61,21 +101,23 @@ class GridRenderer {
     }
     
     void draw(GLProgram glProgram, Map<Vector3i, GridSpace> spaces) {
+        glEnable(GL_DEPTH_TEST);
         glBindVertexArray(graphics.vao);
         
         try(MemoryStack stack = MemoryStack.stackPush()) {
-            FloatBuffer positions = stack.mallocFloat(spaces.size() * Float.BYTES);
-            FloatBuffer colors    = stack.mallocFloat(spaces.size() * Float.BYTES);
+            FloatBuffer positions = stack.mallocFloat(spaces.size() * 3);
+            FloatBuffer colors    = stack.mallocFloat(spaces.size() * 3);
             
             spaces.values().forEach(space -> {
-                positions.put(space.xLocation).put(space.yLocation).put(space.zLocation);
+                positions.put(space.xLocation)
+                         .put((space.type == 1) ? space.yLocation + 0.5f: space.yLocation - 0.5f)
+                         .put(space.zLocation);
                 
                 switch(space.type) {
                     default -> {
                         switch(space.status) {
                             default       -> colors.put(0.8f).put(0.8f).put(0.8f);
-                            case SELECTED -> colors.put(1).put(1).put(1);
-                            case PATH     -> colors.put(0.8f).put(1f).put(0.8f);
+                            case SELECTED -> colors.put(0.8f).put(1f).put(0.8f);
                             case INVALID  -> colors.put(1f).put(0.8f).put(0.8f);
                         }
                     }
@@ -109,7 +151,8 @@ class GridRenderer {
         glProgram.setUniform("uTexture", 0);
         glProgram.setUniform("uModel", false, graphics.modelMatrix);
         
-        glDrawElementsInstanced(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0, spaces.size());
+        glDrawElementsInstanced(GL_TRIANGLES, 36, GL_UNSIGNED_INT, 0, spaces.size());
+        glDisable(GL_DEPTH_TEST);
         
         ErrorUtils.checkGLError();
     }
