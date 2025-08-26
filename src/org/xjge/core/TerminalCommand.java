@@ -18,8 +18,6 @@ public abstract class TerminalCommand {
     private final String usage;
     private final String syntax;
     
-    TerminalOutput output;
-    
     protected Map<String, TerminalCommand> commands;
     
     /**

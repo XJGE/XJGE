@@ -32,8 +32,6 @@ final class TCSetScene extends TerminalCommand {
 
     @Override
     public TerminalOutput execute(List<String> args) {
-        output = null;
-
         if(args.isEmpty()) {
             return new TerminalOutput(errorNotEnoughArgs(1), Color.RED);
         } else {
