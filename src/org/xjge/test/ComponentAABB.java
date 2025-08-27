@@ -21,9 +21,6 @@ class ComponentAABB extends Component {
     float height;
     float depth;
     
-    final Vector3f position = new Vector3f();
-    final Vector3f velocity = new Vector3f();
-    
     private final Graphics graphics = new Graphics();
     
     ComponentAABB(float width, float height, float depth) {
@@ -65,7 +62,10 @@ class ComponentAABB extends Component {
     }
     
     void update() {
-        graphics.modelMatrix.translation(position);
+        if(owner.hasComponent(ComponentPosition.class)) {
+            Vector3f position = owner.getComponent(ComponentPosition.class).position;
+            graphics.modelMatrix.translation(position);
+        }
     }
     
     void render(GLProgram shader) {

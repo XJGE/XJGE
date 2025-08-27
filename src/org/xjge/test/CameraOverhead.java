@@ -7,6 +7,8 @@ import static org.lwjgl.glfw.GLFW.GLFW_GAMEPAD_AXIS_RIGHT_Y;
 import org.xjge.core.Camera;
 import org.xjge.core.Command;
 import org.xjge.core.Control;
+import org.xjge.core.Entity;
+import org.xjge.core.Logger;
 import org.xjge.core.Puppet;
 import org.xjge.graphics.GLProgram;
 
@@ -73,9 +75,15 @@ class CameraOverhead extends Camera {
         });
     }
     
-    public void setActiveUnit(ComponentUnit unit) {
-        nextPosition = unit.position;
-        puppet.setInputDevice(unit.inputDeviceID);
+    public void follow(Entity entity) {
+        try {
+            nextPosition = entity.getComponent(ComponentPosition.class).position;
+            puppet.setInputDevice(entity.getComponent(ComponentUnit.class).inputDeviceID);
+        } catch(Exception exception) {
+            Logger.logWarning("Uanble to focus camera on entity " + entity + 
+                              " (" + entity.uuid + "). Object is missing one" +
+                              "or more required components", exception);
+        }
     }
     
     public Vector3f getFlatForward() {

@@ -1,10 +1,10 @@
 package org.xjge.test;
 
-import org.joml.Vector3f;
 import static org.lwjgl.opengl.GL30.*;
 import org.lwjgl.system.MemoryStack;
 import org.xjge.core.Component;
 import org.xjge.core.Control;
+import org.xjge.core.Entity;
 import org.xjge.core.ErrorUtils;
 import org.xjge.core.Puppet;
 import org.xjge.graphics.GLProgram;
@@ -18,9 +18,6 @@ import org.xjge.graphics.Texture;
  */
 class ComponentUnit extends Component {
     
-    float moveSpeed = 5f;
-    float facingYaw;
-    
     int inputDeviceID;
     
     private static final Texture texture;
@@ -29,8 +26,6 @@ class ComponentUnit extends Component {
     private final Puppet puppet;
     
     final String name;
-    final Vector3f position;
-    final Vector3f velocity = new Vector3f();
     
     static {
         texture = new Texture("image_units.png");
@@ -41,15 +36,14 @@ class ComponentUnit extends Component {
         glBindTexture(GL_TEXTURE_2D, 0);
     }
     
-    ComponentUnit(String name, CameraOverhead camera, float positionX, float positionY, float positionZ, int inputDeviceID) {
+    ComponentUnit(Entity entity, String name, CameraOverhead camera, int inputDeviceID) {
         this.name = name;
         this.inputDeviceID = inputDeviceID;
         
-        position = new Vector3f(positionX, positionY, positionZ);
-        puppet   = new Puppet(name);
+        puppet = new Puppet(name);
         
-        puppet.commands.put(Control.LEFT_STICK_X, new CommandMove(this, camera));
-        puppet.commands.put(Control.LEFT_STICK_Y, new CommandMove(this, camera));
+        puppet.commands.put(Control.LEFT_STICK_X, new CommandMove(entity, camera));
+        puppet.commands.put(Control.LEFT_STICK_Y, new CommandMove(entity, camera));
         
         puppet.setInputDevice(inputDeviceID);
         
@@ -84,7 +78,9 @@ class ComponentUnit extends Component {
     }
     
     void render(GLProgram shader) {
-        graphics.modelMatrix.translation(position);
+        if(owner.hasComponent(ComponentPosition.class)) {
+            graphics.modelMatrix.translation(owner.getComponent(ComponentPosition.class).position);
+        }
         
         glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
         glEnable(GL_ALPHA_TEST);
@@ -107,6 +103,10 @@ class ComponentUnit extends Component {
     
     boolean turnFinished(Scene3D scene) {
         return false;
+    }
+    
+    Entity getOwner() {
+        return owner;
     }
     
 }
