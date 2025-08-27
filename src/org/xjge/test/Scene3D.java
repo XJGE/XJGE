@@ -83,8 +83,8 @@ public class Scene3D extends Scene {
         if(gameMode != null) gameMode.execute(this, Collections.unmodifiableMap(entities));
         
         entities.values().forEach(entity -> {
-            if(entity.hasComponent(ComponentAABB.class)) {
-                entity.getComponent(ComponentAABB.class).update();
+            if(entity.hasComponent(ComponentAABB.class) && entity.hasComponent(ComponentPosition.class)) {
+                entity.getComponent(ComponentAABB.class).update(entity.getComponent(ComponentPosition.class).position);
             }
         });
     }
@@ -94,8 +94,10 @@ public class Scene3D extends Scene {
         grid.draw(glPrograms.get("grid"), spaces);
         
         entities.values().forEach(entity -> {
-            if(entity.hasComponent(ComponentUnit.class)) {
-                entity.getComponent(ComponentUnit.class).render(glPrograms.get("test"));
+            if(entity.hasComponent(ComponentUnit.class) && entity.hasComponent(ComponentPosition.class)) {
+                entity.getComponent(ComponentUnit.class).render(
+                        entity.getComponent(ComponentPosition.class).position, 
+                        glPrograms.get("test"));
             }
             if(entity.hasComponent(ComponentAABB.class) && Main.showBoundingVolumes()) {
                 entity.getComponent(ComponentAABB.class).render(glPrograms.get("volume"));

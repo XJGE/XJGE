@@ -61,11 +61,8 @@ class ComponentAABB extends Component {
         glEnableVertexAttribArray(0);
     }
     
-    void update() {
-        if(owner.hasComponent(ComponentPosition.class)) {
-            Vector3f position = owner.getComponent(ComponentPosition.class).position;
-            graphics.modelMatrix.translation(position);
-        }
+    void update(Vector3f position) {
+        graphics.modelMatrix.translation(position);
     }
     
     void render(GLProgram shader) {

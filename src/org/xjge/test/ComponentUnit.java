@@ -1,5 +1,6 @@
 package org.xjge.test;
 
+import org.joml.Vector3f;
 import static org.lwjgl.opengl.GL30.*;
 import org.lwjgl.system.MemoryStack;
 import org.xjge.core.Component;
@@ -26,6 +27,7 @@ class ComponentUnit extends Component {
     private final Puppet puppet;
     
     final String name;
+    final Entity entity;
     
     static {
         texture = new Texture("image_units.png");
@@ -37,6 +39,7 @@ class ComponentUnit extends Component {
     }
     
     ComponentUnit(Entity entity, String name, CameraOverhead camera, int inputDeviceID) {
+        this.entity = entity;
         this.name = name;
         this.inputDeviceID = inputDeviceID;
         
@@ -77,10 +80,8 @@ class ComponentUnit extends Component {
         glEnableVertexAttribArray(1);
     }
     
-    void render(GLProgram shader) {
-        if(owner.hasComponent(ComponentPosition.class)) {
-            graphics.modelMatrix.translation(owner.getComponent(ComponentPosition.class).position);
-        }
+    void render(Vector3f position, GLProgram shader) {
+        graphics.modelMatrix.translation(position);
         
         glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
         glEnable(GL_ALPHA_TEST);
@@ -103,10 +104,6 @@ class ComponentUnit extends Component {
     
     boolean turnFinished(Scene3D scene) {
         return false;
-    }
-    
-    Entity getOwner() {
-        return owner;
     }
     
 }

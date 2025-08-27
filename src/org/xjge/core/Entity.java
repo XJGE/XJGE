@@ -50,14 +50,12 @@ public final class Entity {
     }
     
     /**
-     * Adds a component to this entity.
+     * Attaches a component to this entity.
      * 
      * @param <C> any subclass type that extends {@linkplain Component}
-     * @param component the subclass object representing the component to add, 
-     *                  its owner will set to this entity 
+     * @param component the subclass object representing the component to add
      */
     public final <C extends Component> void addComponent(C component) {
-        component.owner = this;
         components.put(component.getClass(), component);
     }
     
@@ -65,11 +63,9 @@ public final class Entity {
      * Removes a component from this entity.
      * 
      * @param <C> any subclass type that extends {@linkplain Component}
-     * @param component the subclass object representing the component to remove, 
-     *                  its owner will be set to null
+     * @param component the subclass object representing the component to remove
      */
     public final <C extends Component> void removeComponent(C component) {
-        component.owner = null;
         components.remove(component.getClass());
     }
     

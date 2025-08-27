@@ -26,7 +26,7 @@ class GameModeBattle extends GameMode {
                 
                 if(unit != activeUnit && !turns.contains(unit)) {
                     if(activeUnit == null) activeUnit = unit;
-                    scene.camera.follow(activeUnit.getOwner());
+                    scene.camera.follow(activeUnit.entity);
                     turns.add(unit);
                 }
             }
