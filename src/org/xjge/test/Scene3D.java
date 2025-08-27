@@ -6,6 +6,7 @@ import java.io.InputStreamReader;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
+import org.joml.Vector3f;
 import org.joml.Vector3i;
 import static org.lwjgl.glfw.GLFW.GLFW_JOYSTICK_1;
 import org.xjge.core.Camera;
@@ -23,10 +24,10 @@ import org.xjge.graphics.GLProgram;
  */
 public class Scene3D extends Scene {
     
-    private final GridRenderer grid = new GridRenderer();
     final CameraOverhead camera = new CameraOverhead();
     
-    private final Map<Vector3i, GridSpace> spaces = new HashMap<>();
+    private final GridRenderer gridRenderer = new GridRenderer();
+    private final Map<Vector3i, GridSpace> gridSpaces = new HashMap<>();
     
     private GameMode gameMode = new GameModeBattle();
     
@@ -45,10 +46,10 @@ public class Scene3D extends Scene {
                 String[] delims = line.split(" ");
                 
                 for(int x = 0; x < delims.length; x++) {
-                    int type        = Integer.parseInt(delims[x]);
-                    GridSpace space = new GridSpace(type, x, 0, z);
+                    int type = Integer.parseInt(delims[x]);
+                    GridSpace gridSpace = new GridSpace(type, x, 0, z);
                     
-                    spaces.put(new Vector3i(x, 0, z), space);
+                    gridSpaces.put(new Vector3i(x, 0, z), gridSpace);
                     
                     //Spawn players and enemies
                     if(type == 2) {
@@ -60,7 +61,7 @@ public class Scene3D extends Scene {
                         player.addComponent(new ComponentUnit(player, "player", camera, GLFW_JOYSTICK_1));
                         
                         addEntity(player);
-                        space.occupyingUnit = player.getComponent(ComponentUnit.class);
+                        gridSpace.occupyingUnit = player.getComponent(ComponentUnit.class);
                         
                     } else if(type == 3) {
                         //Unit enemy = new Unit(new Vector3f(x, 0.01f, z), "enemy", 1, AI_GAMEPAD_1);
@@ -84,14 +85,15 @@ public class Scene3D extends Scene {
         
         entities.values().forEach(entity -> {
             if(entity.hasComponent(ComponentAABB.class) && entity.hasComponent(ComponentPosition.class)) {
-                entity.getComponent(ComponentAABB.class).update(entity.getComponent(ComponentPosition.class).position);
+                Vector3f position = entity.getComponent(ComponentPosition.class).position;
+                entity.getComponent(ComponentAABB.class).update(position, gridSpaces, entities.values());
             }
         });
     }
 
     @Override
     public void render(Map<String, GLProgram> glPrograms, int viewportID, Camera camera, int depthTexHandle) {
-        grid.draw(glPrograms.get("grid"), spaces);
+        gridRenderer.draw(glPrograms.get("grid"), gridSpaces);
         
         entities.values().forEach(entity -> {
             if(entity.hasComponent(ComponentUnit.class) && entity.hasComponent(ComponentPosition.class)) {

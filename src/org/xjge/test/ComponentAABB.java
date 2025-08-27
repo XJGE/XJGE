@@ -1,10 +1,16 @@
 package org.xjge.test;
 
 import java.nio.FloatBuffer;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
+import java.util.Map;
 import org.joml.Vector3f;
+import org.joml.Vector3i;
 import static org.lwjgl.opengl.GL30C.*;
 import org.lwjgl.system.MemoryStack;
 import org.xjge.core.Component;
+import org.xjge.core.Entity;
 import org.xjge.core.ErrorUtils;
 import org.xjge.graphics.Color;
 import org.xjge.graphics.GLProgram;
@@ -22,6 +28,8 @@ class ComponentAABB extends Component {
     float depth;
     
     private final Graphics graphics = new Graphics();
+    
+    private final List<Vector3i> occupiedGridSpaces = new ArrayList<>();
     
     ComponentAABB(float width, float height, float depth) {
         this.width  = width;
@@ -61,8 +69,64 @@ class ComponentAABB extends Component {
         glEnableVertexAttribArray(0);
     }
     
-    void update(Vector3f position) {
+    private List<Integer> addGridSpacesAlongAxis(float position, float size1, float size2) {
+        int minGridSpace = Math.round(position - size1 - 0.5f);
+        int maxGridSpace = Math.round(position + size2 - 0.5f);
+        int spaceBetween = maxGridSpace - minGridSpace;
+        
+        var occupiedCellsAlongAxis = new ArrayList<Integer>();
+        
+        if(minGridSpace == maxGridSpace) {
+            occupiedCellsAlongAxis.add(maxGridSpace);
+        } else {
+            occupiedCellsAlongAxis.add(minGridSpace);
+            
+            for(int c = 0; c <= spaceBetween; c++) {
+                if((minGridSpace + c != maxGridSpace) && (minGridSpace + c != minGridSpace)) {
+                    occupiedCellsAlongAxis.add(minGridSpace + c);
+                }
+            }
+            
+            occupiedCellsAlongAxis.add(maxGridSpace);
+        }
+        
+        return occupiedCellsAlongAxis;
+    }
+    
+    void update(Vector3f position, Map<Vector3i, GridSpace> gridSpaces, Collection<Entity> entities) {
         graphics.modelMatrix.translation(position);
+        
+        occupiedGridSpaces.clear();
+        
+        List<Integer> xGridSpaces = addGridSpacesAlongAxis(position.x, (width / 2), (width / 2));
+        List<Integer> yGridSpaces = addGridSpacesAlongAxis(position.y, 0, height);
+        List<Integer> zGridSpaces = addGridSpacesAlongAxis(position.z, (depth / 2), (depth / 2));
+        
+        xGridSpaces.forEach(x -> {
+            yGridSpaces.forEach(y -> {
+                zGridSpaces.forEach(z -> {
+                    occupiedGridSpaces.add(new Vector3i(x, y, z));
+                });
+            });
+        });
+        
+        entities.forEach(entity -> {
+            if(entity.hasComponent(this.getClass()) && gridSpaces != null) {
+                occupiedGridSpaces.forEach(location -> {
+                    if(gridSpaces.containsKey(location)) {
+                        System.out.println("(" + location.x + ", " + location.y + ", " + location.z + ") " +
+                                           gridSpaces.get(location).type);
+                    }
+                    //if(gridSpaces.get(location) != null) resolveCollision(gridSpaces.get(location));
+                    
+                    /*
+                    if(!entity.equals(this) && ((AABBEntity) entity).occupiedCells.contains(location)) {
+                        resolveCollision(entity);
+                    }
+                    */
+                });
+            }
+        });
     }
     
     void render(GLProgram shader) {
