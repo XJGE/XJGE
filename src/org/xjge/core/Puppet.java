@@ -28,7 +28,7 @@ public final class Puppet {
     public final HashMap<Control, Command> commands = new HashMap<>();
     
     /**
-     * Creates a new puppet object.It is expected that implementing objects will 
+     * Creates a new puppet object. It's expected that implementing objects will 
      * populate the puppets {@link commands} collection inside of its constructor 
      * following the puppet objects initialization.
      * 

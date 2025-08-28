@@ -9,6 +9,7 @@ enum GridSpaceStatus {
 
     NONE,
     SELECTED,
+    PATH,
     INVALID;
     
 }

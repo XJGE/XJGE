@@ -24,7 +24,8 @@ class ComponentUnit extends Component {
     private static final Texture texture;
     
     private final Graphics graphics = new Graphics();
-    private final Puppet puppet;
+    private final Puppet puppetExplore;
+    private final Puppet puppetBattle;
     
     final String name;
     final Entity entity;
@@ -43,12 +44,13 @@ class ComponentUnit extends Component {
         this.name = name;
         this.inputDeviceID = inputDeviceID;
         
-        puppet = new Puppet(name);
+        puppetExplore = new Puppet(name + "_explore");
+        puppetBattle  = new Puppet(name + "_battle"); //TODO: add second puppet that will activate when the game mode changes
         
-        puppet.commands.put(Control.LEFT_STICK_X, new CommandMove(entity, camera));
-        puppet.commands.put(Control.LEFT_STICK_Y, new CommandMove(entity, camera));
+        puppetExplore.commands.put(Control.LEFT_STICK_X, new CommandMove(entity, camera));
+        puppetExplore.commands.put(Control.LEFT_STICK_Y, new CommandMove(entity, camera));
         
-        puppet.setInputDevice(inputDeviceID);
+        puppetExplore.setInputDevice(inputDeviceID);
         
         //texture offset because I'm too lazy to use sprites
         float t1 = (name.equals("player")) ? 0 : 0.5f;

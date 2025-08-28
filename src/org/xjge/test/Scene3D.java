@@ -90,7 +90,7 @@ public class Scene3D extends Scene {
         gridSpaces.forEach((location, gridSpace) -> {
             //left
             tempVec.set(location.x - 1, location.y, location.z);
-            gridSpace.unreachableEdge[0] = gridSpaces.containsKey(tempVec) && gridSpace.type == 1;
+            gridSpace.unreachableEdge[0] = gridSpaces.containsKey(tempVec);
             
             //right
             tempVec.set(location.x + 1, location.y, location.z);
