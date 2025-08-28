@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
+import org.joml.Vector2f;
 import org.joml.Vector3f;
 import org.joml.Vector3i;
 import static org.lwjgl.opengl.GL30C.*;
@@ -27,12 +28,10 @@ class ComponentAABB extends Component {
     float height;
     float depth;
     
-    private float friction = 0.0004f;
-    
     private final Graphics graphics = new Graphics();
-    private final Vector3f gridSpaceOverlap = new Vector3f();
+    private final Vector2f gridSpaceOverlap = new Vector2f();
     
-    private final List<Vector3i> occupiedGridSpaces = new ArrayList<>();
+    private final List<Vector3f> occupiedGridSpaces = new ArrayList<>();
     
     ComponentAABB(float width, float height, float depth) {
         this.width  = width;
@@ -76,12 +75,6 @@ class ComponentAABB extends Component {
         return position1 > position2 && edge;
     }
     
-    private float applyFriction(float axis) {
-        if(axis > friction) return axis - friction;
-        else if(axis < -friction) return axis + friction;
-        else return 0;
-    }
-    
     private List<Integer> addGridSpacesAlongAxis(float position, float minExtent, float maxExtent) {
         int minGridSpace = (int) Math.floor(position - minExtent);
         int maxGridSpace = (int) Math.floor(position + maxExtent);
@@ -92,7 +85,7 @@ class ComponentAABB extends Component {
         return occupiedCells;
     }
     
-    void update(Vector3f position, Map<Vector3i, GridSpace> gridSpaces, Collection<Entity> entities) {
+    void update(Vector3f position, Map<Vector3f, GridSpace> gridSpaces, Collection<Entity> entities) {
         graphics.modelMatrix.translation(position);
         
         occupiedGridSpaces.clear();
@@ -104,7 +97,7 @@ class ComponentAABB extends Component {
         xGridSpaces.forEach(x -> {
             yGridSpaces.forEach(y -> {
                 zGridSpaces.forEach(z -> {
-                    occupiedGridSpaces.add(new Vector3i(x, y, z));
+                    occupiedGridSpaces.add(new Vector3f(x, y, z));
                 });
             });
         });
@@ -119,11 +112,8 @@ class ComponentAABB extends Component {
                                            ? (gridSpace.xLocation - 0.5f) - (position.x + (width / 2))
                                            : (gridSpace.xLocation + 0.5f) - (position.x - (width / 2));
                         
-                        gridSpaceOverlap.y = (position.y < gridSpace.yLocation) 
-                                           ? (gridSpace.yLocation - 0.5f) - (position.y + height)
-                                           : (gridSpace.yLocation + 0.5f) - position.y;
-                        
-                        gridSpaceOverlap.z = (position.z < gridSpace.zLocation + 0.5f) 
+                        //This is actually for the z-axis check
+                        gridSpaceOverlap.y = (position.z < gridSpace.zLocation + 0.5f) 
                                            ? (gridSpace.zLocation - 0.5f) - (position.z + (depth / 2))
                                            : (gridSpace.zLocation + 0.5f) - (position.z - (depth / 2));
                         
@@ -136,10 +126,10 @@ class ComponentAABB extends Component {
                                 }
                             }
                             
-                            case 2 -> {
+                            case 1 -> {
                                 if(!(gridSpace.unreachableEdge[4] && gridSpace.unreachableEdge[5])) {
                                     if(!fauxOverlap(position.z, gridSpace.zLocation, gridSpace.unreachableEdge[4])) {
-                                        position.z += gridSpaceOverlap.z;
+                                        position.z += gridSpaceOverlap.y;
                                     }
                                 }
                             }

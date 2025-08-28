@@ -26,8 +26,9 @@ public class Scene3D extends Scene {
     
     final CameraOverhead camera = new CameraOverhead();
     
+    private final Vector3f tempVec = new Vector3f();
     private final GridRenderer gridRenderer = new GridRenderer();
-    private final Map<Vector3i, GridSpace> gridSpaces = new HashMap<>();
+    private final Map<Vector3f, GridSpace> gridSpaces = new HashMap<>();
     
     private GameMode gameMode = new GameModeBattle();
     
@@ -49,7 +50,7 @@ public class Scene3D extends Scene {
                     int type = Integer.parseInt(delims[x]);
                     GridSpace gridSpace = new GridSpace(type, x, 0, z);
                     
-                    gridSpaces.put(new Vector3i(x, 0, z), gridSpace);
+                    gridSpaces.put(new Vector3f(x, 0, z), gridSpace);
                     
                     //Spawn players and enemies
                     if(type == 2) {
@@ -82,6 +83,32 @@ public class Scene3D extends Scene {
     @Override
     public void update(double targetDelta, double trueDelta) {
         if(gameMode != null) gameMode.execute(this, Collections.unmodifiableMap(entities));
+        
+        gridSpaces.forEach((location, gridSpace) -> {
+            //top
+            tempVec.set(location.x, location.y + 1, location.z);
+            gridSpace.unreachableEdge[0] = gridSpaces.containsKey(tempVec);
+            
+            //bottom
+            tempVec.set(location.x, location.y - 1, location.z);
+            gridSpace.unreachableEdge[1] = gridSpaces.containsKey(tempVec);
+            
+            //left
+            tempVec.set(location.x - 1, location.y, location.z);
+            gridSpace.unreachableEdge[2] = gridSpaces.containsKey(tempVec);
+            
+            //right
+            tempVec.set(location.x + 1, location.y, location.z);
+            gridSpace.unreachableEdge[3] = gridSpaces.containsKey(tempVec);
+            
+            //front
+            tempVec.set(location.x, location.y, location.z + 1);
+            gridSpace.unreachableEdge[4] = gridSpaces.containsKey(tempVec);
+            
+            //back
+            tempVec.set(location.x, location.y, location.z - 1);
+            gridSpace.unreachableEdge[5] = gridSpaces.containsKey(tempVec);
+        });
         
         entities.values().forEach(entity -> {
             if(entity.hasComponent(ComponentAABB.class) && entity.hasComponent(ComponentPosition.class)) {

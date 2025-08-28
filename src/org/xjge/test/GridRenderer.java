@@ -2,7 +2,7 @@ package org.xjge.test;
 
 import java.nio.FloatBuffer;
 import java.util.Map;
-import org.joml.Vector3i;
+import org.joml.Vector3f;
 import static org.lwjgl.opengl.ARBVertexArrayObject.glBindVertexArray;
 import static org.lwjgl.opengl.GL11C.GL_DEPTH_TEST;
 import static org.lwjgl.opengl.GL33.*;
@@ -100,7 +100,7 @@ class GridRenderer {
         glEnableVertexAttribArray(2);
     }
     
-    void draw(GLProgram glProgram, Map<Vector3i, GridSpace> spaces) {
+    void draw(GLProgram glProgram, Map<Vector3f, GridSpace> spaces) {
         glEnable(GL_DEPTH_TEST);
         glBindVertexArray(graphics.vao);
         
