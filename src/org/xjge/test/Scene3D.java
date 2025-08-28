@@ -57,7 +57,7 @@ public class Scene3D extends Scene {
                         Entity player = new Entity();
                         
                         player.addComponent(new ComponentPosition(x, 0.01f, z));
-                        player.addComponent(new ComponentAABB(0.5f, 0.8f, 0.5f));
+                        player.addComponent(new ComponentAABB(0.5f, 1.1f, 0.5f));
                         player.addComponent(new ComponentMovable());
                         player.addComponent(new ComponentUnit(player, "player", camera, GLFW_JOYSTICK_1));
                         
@@ -115,11 +115,13 @@ public class Scene3D extends Scene {
         gridRenderer.draw(glPrograms.get("grid"), gridSpaces);
         
         entities.values().forEach(entity -> {
+            /*
             if(entity.hasComponent(ComponentUnit.class) && entity.hasComponent(ComponentPosition.class)) {
                 entity.getComponent(ComponentUnit.class).render(
                         entity.getComponent(ComponentPosition.class).position, 
                         glPrograms.get("test"));
             }
+            */
             if(entity.hasComponent(ComponentAABB.class) && Main.showBoundingVolumes()) {
                 entity.getComponent(ComponentAABB.class).render(glPrograms.get("volume"));
             }
