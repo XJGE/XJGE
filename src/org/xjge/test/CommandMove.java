@@ -57,7 +57,7 @@ class CommandMove extends Command {
                 moveDir.normalize();
                 
                 //Scale movement by *stick magnitude* (for analog fidelity)
-                float mag = (float)Math.sqrt(leftX * leftX + leftY * leftY);
+                float mag = (float) Math.sqrt(leftX * leftX + leftY * leftY);
                 entityPosition.fma(((float) trueDelta) * movable.moveSpeed * mag, moveDir, entityPosition);
 
                 //Smooth facing toward movement direction

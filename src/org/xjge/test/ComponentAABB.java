@@ -27,7 +27,10 @@ class ComponentAABB extends Component {
     float height;
     float depth;
     
+    private float friction = 0.0004f;
+    
     private final Graphics graphics = new Graphics();
+    private final Vector3f gridSpaceOverlap = new Vector3f();
     
     private final List<Vector3i> occupiedGridSpaces = new ArrayList<>();
     
@@ -69,28 +72,24 @@ class ComponentAABB extends Component {
         glEnableVertexAttribArray(0);
     }
     
-    private List<Integer> addGridSpacesAlongAxis(float position, float size1, float size2) {
-        int minGridSpace = Math.round(position - size1 - 0.5f);
-        int maxGridSpace = Math.round(position + size2 - 0.5f);
-        int spaceBetween = maxGridSpace - minGridSpace;
+    private boolean fauxOverlap(float position1, float position2, boolean edge) {
+        return position1 > position2 && edge;
+    }
+    
+    private float applyFriction(float axis) {
+        if(axis > friction) return axis - friction;
+        else if(axis < -friction) return axis + friction;
+        else return 0;
+    }
+    
+    private List<Integer> addGridSpacesAlongAxis(float position, float minExtent, float maxExtent) {
+        int minGridSpace = (int) Math.floor(position - minExtent);
+        int maxGridSpace = (int) Math.floor(position + maxExtent);
         
-        var occupiedCellsAlongAxis = new ArrayList<Integer>();
-        
-        if(minGridSpace == maxGridSpace) {
-            occupiedCellsAlongAxis.add(maxGridSpace);
-        } else {
-            occupiedCellsAlongAxis.add(minGridSpace);
-            
-            for(int c = 0; c <= spaceBetween; c++) {
-                if((minGridSpace + c != maxGridSpace) && (minGridSpace + c != minGridSpace)) {
-                    occupiedCellsAlongAxis.add(minGridSpace + c);
-                }
-            }
-            
-            occupiedCellsAlongAxis.add(maxGridSpace);
-        }
-        
-        return occupiedCellsAlongAxis;
+        var occupiedCells = new ArrayList<Integer>(maxGridSpace - minGridSpace + 1);
+        for(int c = minGridSpace; c <= maxGridSpace; c++) occupiedCells.add(c);
+
+        return occupiedCells;
     }
     
     void update(Vector3f position, Map<Vector3i, GridSpace> gridSpaces, Collection<Entity> entities) {
@@ -113,17 +112,39 @@ class ComponentAABB extends Component {
         entities.forEach(entity -> {
             if(entity.hasComponent(this.getClass()) && gridSpaces != null) {
                 occupiedGridSpaces.forEach(location -> {
-                    if(gridSpaces.containsKey(location)) {
-                        System.out.println("(" + location.x + ", " + location.y + ", " + location.z + ") " +
-                                           gridSpaces.get(location).type);
+                    if(gridSpaces.containsKey(location) && gridSpaces.get(location).type == 1) {
+                        GridSpace gridSpace = gridSpaces.get(location);
+                        
+                        gridSpaceOverlap.x = (position.x < gridSpace.xLocation + 0.5f) 
+                                           ? (gridSpace.xLocation - 0.5f) - (position.x + (width / 2))
+                                           : (gridSpace.xLocation + 0.5f) - (position.x - (width / 2));
+                        
+                        gridSpaceOverlap.y = (position.y < gridSpace.yLocation) 
+                                           ? (gridSpace.yLocation - 0.5f) - (position.y + height)
+                                           : (gridSpace.yLocation + 0.5f) - position.y;
+                        
+                        gridSpaceOverlap.z = (position.z < gridSpace.zLocation + 0.5f) 
+                                           ? (gridSpace.zLocation - 0.5f) - (position.z + (depth / 2))
+                                           : (gridSpace.zLocation + 0.5f) - (position.z - (depth / 2));
+                        
+                        switch(gridSpaceOverlap.minComponent()) {
+                            case 0 -> {
+                                if(!(gridSpace.unreachableEdge[2] && gridSpace.unreachableEdge[3])) {
+                                    if(!fauxOverlap(position.x, gridSpace.xLocation, gridSpace.unreachableEdge[3])) {
+                                        position.x += gridSpaceOverlap.x;
+                                    }
+                                }
+                            }
+                            
+                            case 2 -> {
+                                if(!(gridSpace.unreachableEdge[4] && gridSpace.unreachableEdge[5])) {
+                                    if(!fauxOverlap(position.z, gridSpace.zLocation, gridSpace.unreachableEdge[4])) {
+                                        position.z += gridSpaceOverlap.z;
+                                    }
+                                }
+                            }
+                        }
                     }
-                    //if(gridSpaces.get(location) != null) resolveCollision(gridSpaces.get(location));
-                    
-                    /*
-                    if(!entity.equals(this) && ((AABBEntity) entity).occupiedCells.contains(location)) {
-                        resolveCollision(entity);
-                    }
-                    */
                 });
             }
         });
