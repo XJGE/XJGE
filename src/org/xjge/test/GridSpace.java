@@ -14,15 +14,15 @@ class GridSpace {
     public final boolean[] unreachableEdge = new boolean[4];
     
     public final int type;
-    public final float xLocation;
-    public final float yLocation;
-    public final float zLocation;
+    public final int xLocation;
+    public final int yLocation;
+    public final int zLocation;
     
     public ComponentUnit occupyingUnit;
     
     public GridSpaceStatus status = NONE;
     
-    GridSpace(int type, float xLocation, float yLocation, float zLocation) {
+    GridSpace(int type, int xLocation, int yLocation, int zLocation) {
         this.type      = type;
         this.xLocation = xLocation;
         this.yLocation = yLocation;

@@ -16,7 +16,6 @@ import org.xjge.core.ErrorUtils;
 import org.xjge.graphics.Color;
 import org.xjge.graphics.GLProgram;
 import org.xjge.graphics.Graphics;
-import static org.xjge.test.GridSpace.SIZE;
 
 /**
  * 
@@ -32,7 +31,7 @@ class ComponentAABB extends Component {
     private final Graphics graphics = new Graphics();
     private final Vector2f gridSpaceOverlap = new Vector2f();
     
-    private final List<Vector3f> occupiedGridSpaces = new ArrayList<>();
+    private final List<Vector3i> occupiedGridSpaces = new ArrayList<>();
     
     ComponentAABB(float width, float height, float depth) {
         this.width  = width;
@@ -86,7 +85,7 @@ class ComponentAABB extends Component {
         return occupiedCells;
     }
     
-    void update(Vector3f position, Map<Vector3f, GridSpace> gridSpaces, Collection<Entity> entities) {
+    void update(Vector3f position, Map<Vector3i, GridSpace> gridSpaces, Collection<Entity> entities) {
         graphics.modelMatrix.translation(position);
         
         occupiedGridSpaces.clear();
@@ -98,7 +97,7 @@ class ComponentAABB extends Component {
         xGridSpaces.forEach(x -> {
             yGridSpaces.forEach(y -> {
                 zGridSpaces.forEach(z -> {
-                    occupiedGridSpaces.add(new Vector3f(x, y, z));
+                    occupiedGridSpaces.add(new Vector3i(x, y, z));
                 });
             });
         });

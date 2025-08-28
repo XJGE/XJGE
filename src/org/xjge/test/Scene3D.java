@@ -14,6 +14,8 @@ import org.xjge.core.Entity;
 import org.xjge.core.Logger;
 import org.xjge.core.Scene;
 import org.xjge.core.Window;
+import org.xjge.core.XJGE;
+import org.xjge.graphics.Color;
 import org.xjge.graphics.GLProgram;
 
 /**
@@ -26,15 +28,16 @@ public class Scene3D extends Scene {
     
     final CameraOverhead camera = new CameraOverhead();
     
-    private final Vector3f tempVec = new Vector3f();
+    private final Vector3i tempVec = new Vector3i();
     private final GridRenderer gridRenderer = new GridRenderer();
-    private final Map<Vector3f, GridSpace> gridSpaces = new HashMap<>();
+    private final Map<Vector3i, GridSpace> gridSpaces = new HashMap<>();
     
     private GameMode gameMode = new GameModeBattle();
     
     public Scene3D(String filename) {
         super("test");
         
+        XJGE.setClearColor(Color.SILVER);
         Window.setViewportCamera(GLFW_JOYSTICK_1, camera);
         
         try {
@@ -50,7 +53,7 @@ public class Scene3D extends Scene {
                     int type = Integer.parseInt(delims[x]);
                     GridSpace gridSpace = new GridSpace(type, x, (type == 1) ? 1 : 0, z);
                     
-                    gridSpaces.put(new Vector3f(x, gridSpace.yLocation, z), gridSpace);
+                    gridSpaces.put(new Vector3i(x, gridSpace.yLocation, z), gridSpace);
                     
                     //Spawn players and enemies
                     if(type == 2) {

@@ -51,7 +51,7 @@ class CameraOverhead extends Camera {
     
     @Override
     public void update() {
-        pitch = Math.max(5f, Math.min(80f, pitch)); //clamp pitch to avoid flipping
+        pitch = Math.max(15f, Math.min(80f, pitch)); //clamp pitch to avoid flipping
         
         float distance = 6f;
         
