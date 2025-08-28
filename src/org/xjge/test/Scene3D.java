@@ -48,9 +48,9 @@ public class Scene3D extends Scene {
                 
                 for(int x = 0; x < delims.length; x++) {
                     int type = Integer.parseInt(delims[x]);
-                    GridSpace gridSpace = new GridSpace(type, x, 0, z);
+                    GridSpace gridSpace = new GridSpace(type, x, (type == 1) ? 1 : 0, z);
                     
-                    gridSpaces.put(new Vector3f(x, 0, z), gridSpace);
+                    gridSpaces.put(new Vector3f(x, gridSpace.yLocation, z), gridSpace);
                     
                     //Spawn players and enemies
                     if(type == 2) {
@@ -87,7 +87,7 @@ public class Scene3D extends Scene {
         gridSpaces.forEach((location, gridSpace) -> {
             //left
             tempVec.set(location.x - 1, location.y, location.z);
-            gridSpace.unreachableEdge[0] = gridSpaces.containsKey(tempVec);
+            gridSpace.unreachableEdge[0] = gridSpaces.containsKey(tempVec) && gridSpace.type == 1;
             
             //right
             tempVec.set(location.x + 1, location.y, location.z);

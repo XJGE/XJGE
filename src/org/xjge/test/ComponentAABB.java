@@ -16,6 +16,7 @@ import org.xjge.core.ErrorUtils;
 import org.xjge.graphics.Color;
 import org.xjge.graphics.GLProgram;
 import org.xjge.graphics.Graphics;
+import static org.xjge.test.GridSpace.SIZE;
 
 /**
  * 
@@ -76,11 +77,11 @@ class ComponentAABB extends Component {
     }
     
     private List<Integer> addGridSpacesAlongAxis(float position, float minExtent, float maxExtent) {
-        int minGridSpace = (int) Math.floor(position - minExtent);
-        int maxGridSpace = (int) Math.floor(position + maxExtent);
+        int minGridSpace = (int) Math.round(position - minExtent);
+        int maxGridSpace = (int) Math.round(position + maxExtent);
         
         var occupiedCells = new ArrayList<Integer>(maxGridSpace - minGridSpace + 1);
-        for(int c = minGridSpace; c <= maxGridSpace; c++) occupiedCells.add(c);
+        for(int i = minGridSpace; i <= maxGridSpace; i++) occupiedCells.add(i);
 
         return occupiedCells;
     }
@@ -90,9 +91,9 @@ class ComponentAABB extends Component {
         
         occupiedGridSpaces.clear();
         
-        List<Integer> xGridSpaces = addGridSpacesAlongAxis(position.x, (width / 2), (width / 2));
+        List<Integer> xGridSpaces = addGridSpacesAlongAxis(position.x, width / 2, width / 2);
         List<Integer> yGridSpaces = addGridSpacesAlongAxis(position.y, 0, height);
-        List<Integer> zGridSpaces = addGridSpacesAlongAxis(position.z, (depth / 2), (depth / 2));
+        List<Integer> zGridSpaces = addGridSpacesAlongAxis(position.z, depth / 2, depth / 2);
         
         xGridSpaces.forEach(x -> {
             yGridSpaces.forEach(y -> {
@@ -101,48 +102,37 @@ class ComponentAABB extends Component {
                 });
             });
         });
-        
-        entities.forEach(entity -> {
-            if(entity.hasComponent(this.getClass()) && gridSpaces != null) {
-                occupiedGridSpaces.forEach(location -> {
-                    if(gridSpaces.containsKey(location) && gridSpaces.get(location).type == 1) {
-                        GridSpace gridSpace = gridSpaces.get(location);
-                        
-                        gridSpaceOverlap.x = (position.x < gridSpace.xLocation + 0.5f) 
-                                           ? (gridSpace.xLocation - 0.5f) - (position.x + (width / 2))
-                                           : (gridSpace.xLocation + 0.5f) - (position.x - (width / 2));
-                        
-                        //This is actually for the z-axis check
-                        gridSpaceOverlap.y = (position.z < gridSpace.zLocation + 0.5f) 
-                                           ? (gridSpace.zLocation - 0.5f) - (position.z + (depth / 2))
-                                           : (gridSpace.zLocation + 0.5f) - (position.z - (depth / 2));
-                        
-                        switch(gridSpaceOverlap.minComponent()) {
-                            case 0 -> {
-                                if(!(gridSpace.unreachableEdge[0] && gridSpace.unreachableEdge[1])) {
-                                    position.x += gridSpaceOverlap.x;
-                                    
-                                    /*
-                                    if(!fauxOverlap(position.x, gridSpace.xLocation, gridSpace.unreachableEdge[1])) {
-                                        position.x += gridSpaceOverlap.x;
-                                    }
-                                    */
-                                }
-                            }
-                            
-                            case 1 -> {
-                                if(!(gridSpace.unreachableEdge[2] && gridSpace.unreachableEdge[3])) {
-                                    position.z += gridSpaceOverlap.y;
-                                    /*
-                                    if(!fauxOverlap(position.z, gridSpace.zLocation, gridSpace.unreachableEdge[2])) {
-                                        position.z += gridSpaceOverlap.y;
-                                    }
-                                    */
-                                }
+
+        occupiedGridSpaces.forEach(location -> {
+            if(gridSpaces.containsKey(location) && gridSpaces.get(location).type == 1) {
+                GridSpace gridSpace = gridSpaces.get(location);
+                
+                gridSpaceOverlap.x = (position.x < gridSpace.xLocation) 
+                                   ? (gridSpace.xLocation - 0.5f) - (position.x + (width / 2))
+                                   : (gridSpace.xLocation + 0.5f) - (position.x - (width / 2));
+                
+                //This is actually for the z-axis check
+                gridSpaceOverlap.y = (position.z < gridSpace.zLocation) 
+                                   ? (gridSpace.zLocation - 0.5f) - (position.z + (depth / 2))
+                                   : (gridSpace.zLocation + 0.5f) - (position.z - (depth / 2));
+                
+                switch(gridSpaceOverlap.minComponent()) {
+                    case 0 -> {
+                        if(!(gridSpace.unreachableEdge[0] && gridSpace.unreachableEdge[1])) {
+                            if(!fauxOverlap(position.x, gridSpace.xLocation, gridSpace.unreachableEdge[1])) {
+                                position.x += gridSpaceOverlap.x;
                             }
                         }
                     }
-                });
+
+                    case 1 -> {
+                        if(!(gridSpace.unreachableEdge[2] && gridSpace.unreachableEdge[3])) {
+                            if(!fauxOverlap(position.z, gridSpace.zLocation, gridSpace.unreachableEdge[2])) {
+                                position.z += gridSpaceOverlap.y;
+                            }
+                        }
+                    }
+                }
             }
         });
     }

@@ -110,7 +110,7 @@ class GridRenderer {
             
             spaces.values().forEach(space -> {
                 positions.put(space.xLocation)
-                         .put((space.type == 1) ? space.yLocation + 0.5f: space.yLocation - 0.5f)
+                         .put(space.yLocation - 0.5f)
                          .put(space.zLocation);
                 
                 switch(space.type) {
