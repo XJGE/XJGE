@@ -85,29 +85,21 @@ public class Scene3D extends Scene {
         if(gameMode != null) gameMode.execute(this, Collections.unmodifiableMap(entities));
         
         gridSpaces.forEach((location, gridSpace) -> {
-            //top
-            tempVec.set(location.x, location.y + 1, location.z);
-            gridSpace.unreachableEdge[0] = gridSpaces.containsKey(tempVec);
-            
-            //bottom
-            tempVec.set(location.x, location.y - 1, location.z);
-            gridSpace.unreachableEdge[1] = gridSpaces.containsKey(tempVec);
-            
             //left
             tempVec.set(location.x - 1, location.y, location.z);
-            gridSpace.unreachableEdge[2] = gridSpaces.containsKey(tempVec);
+            gridSpace.unreachableEdge[0] = gridSpaces.containsKey(tempVec);
             
             //right
             tempVec.set(location.x + 1, location.y, location.z);
-            gridSpace.unreachableEdge[3] = gridSpaces.containsKey(tempVec);
+            gridSpace.unreachableEdge[1] = gridSpaces.containsKey(tempVec);
             
             //front
             tempVec.set(location.x, location.y, location.z + 1);
-            gridSpace.unreachableEdge[4] = gridSpaces.containsKey(tempVec);
+            gridSpace.unreachableEdge[2] = gridSpaces.containsKey(tempVec);
             
             //back
             tempVec.set(location.x, location.y, location.z - 1);
-            gridSpace.unreachableEdge[5] = gridSpaces.containsKey(tempVec);
+            gridSpace.unreachableEdge[3] = gridSpaces.containsKey(tempVec);
         });
         
         entities.values().forEach(entity -> {

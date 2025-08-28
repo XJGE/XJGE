@@ -119,18 +119,25 @@ class ComponentAABB extends Component {
                         
                         switch(gridSpaceOverlap.minComponent()) {
                             case 0 -> {
-                                if(!(gridSpace.unreachableEdge[2] && gridSpace.unreachableEdge[3])) {
-                                    if(!fauxOverlap(position.x, gridSpace.xLocation, gridSpace.unreachableEdge[3])) {
+                                if(!(gridSpace.unreachableEdge[0] && gridSpace.unreachableEdge[1])) {
+                                    position.x += gridSpaceOverlap.x;
+                                    
+                                    /*
+                                    if(!fauxOverlap(position.x, gridSpace.xLocation, gridSpace.unreachableEdge[1])) {
                                         position.x += gridSpaceOverlap.x;
                                     }
+                                    */
                                 }
                             }
                             
                             case 1 -> {
-                                if(!(gridSpace.unreachableEdge[4] && gridSpace.unreachableEdge[5])) {
-                                    if(!fauxOverlap(position.z, gridSpace.zLocation, gridSpace.unreachableEdge[4])) {
+                                if(!(gridSpace.unreachableEdge[2] && gridSpace.unreachableEdge[3])) {
+                                    position.z += gridSpaceOverlap.y;
+                                    /*
+                                    if(!fauxOverlap(position.z, gridSpace.zLocation, gridSpace.unreachableEdge[2])) {
                                         position.z += gridSpaceOverlap.y;
                                     }
+                                    */
                                 }
                             }
                         }

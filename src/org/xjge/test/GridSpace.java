@@ -11,7 +11,7 @@ class GridSpace {
 
     public static final int SIZE = 1;
     
-    public final boolean[] unreachableEdge = new boolean[6];
+    public final boolean[] unreachableEdge = new boolean[4];
     
     public final int type;
     public final float xLocation;
