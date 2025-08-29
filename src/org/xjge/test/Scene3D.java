@@ -12,6 +12,7 @@ import static org.lwjgl.glfw.GLFW.GLFW_JOYSTICK_1;
 import org.xjge.core.Camera;
 import org.xjge.core.Entity;
 import org.xjge.core.Logger;
+import org.xjge.core.Observable;
 import org.xjge.core.Scene;
 import org.xjge.core.Window;
 import org.xjge.core.XJGE;
@@ -28,6 +29,7 @@ public class Scene3D extends Scene {
     
     final CameraOverhead camera = new CameraOverhead();
     
+    private final Observable observable = new Observable(this);
     private final Vector3i tempVec = new Vector3i();
     private final GridRenderer gridRenderer = new GridRenderer();
     private final Map<Vector3i, GridSpace> gridSpaces = new HashMap<>();
@@ -36,6 +38,8 @@ public class Scene3D extends Scene {
     
     public Scene3D(String filename) {
         super("test");
+        
+        observable.properties.put("GAMEMODE_CHANGED", gameMode);
         
         XJGE.setClearColor(Color.SILVER);
         Window.setViewportCamera(GLFW_JOYSTICK_1, camera);
@@ -85,7 +89,10 @@ public class Scene3D extends Scene {
 
     @Override
     public void update(double targetDelta, double trueDelta) {
-        if(gameMode != null) gameMode.execute(this, Collections.unmodifiableMap(entities));
+        if(gameMode != null) {
+            gameMode.execute(this, Collections.unmodifiableMap(entities));
+            observable.notifyObservers("GAMEMODE_CHANGED", gameMode);
+        }
         
         gridSpaces.forEach((location, gridSpace) -> {
             //left
@@ -118,13 +125,6 @@ public class Scene3D extends Scene {
         gridRenderer.draw(glPrograms.get("grid"), gridSpaces);
         
         entities.values().forEach(entity -> {
-            /*
-            if(entity.hasComponent(ComponentUnit.class) && entity.hasComponent(ComponentPosition.class)) {
-                entity.getComponent(ComponentUnit.class).render(
-                        entity.getComponent(ComponentPosition.class).position, 
-                        glPrograms.get("test"));
-            }
-            */
             if(entity.hasComponent(ComponentAABB.class) && Main.showBoundingVolumes()) {
                 entity.getComponent(ComponentAABB.class).render(glPrograms.get("volume"));
             }
