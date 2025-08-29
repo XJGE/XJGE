@@ -20,16 +20,14 @@ class ComponentUnit extends Component implements PropertyChangeListener {
     private final Puppet puppetExplore;
     private final Puppet puppetBattle;
     
-    final String name;
     final Entity entity;
     
-    ComponentUnit(Entity entity, String name, CameraOverhead camera, int inputDeviceID) {
+    ComponentUnit(Entity entity, CameraOverhead camera, int inputDeviceID) {
         this.entity = entity;
-        this.name = name;
         this.inputDeviceID = inputDeviceID;
         
-        puppetExplore = new Puppet(name + "_explore");
-        puppetBattle  = new Puppet(name + "_battle"); //TODO: add second puppet that will activate when the game mode changes
+        puppetExplore = new Puppet("unit_explore");
+        puppetBattle  = new Puppet("unit_battle");
         
         puppetExplore.commands.put(Control.LEFT_STICK_X, new CommandMove(entity, camera));
         puppetExplore.commands.put(Control.LEFT_STICK_Y, new CommandMove(entity, camera));

@@ -147,6 +147,8 @@ public final class XJGE {
             return;
         }
         
+        observable.properties.put("SCENE_CHANGED", scene);
+        
         XJGE.assetsFilepath = assetsFilepath;
         XJGE.scenesFilepath = scenesFilepath;
         
@@ -160,7 +162,6 @@ public final class XJGE {
         
         Window.create(debugModeEnabled);
         Audio.init();
-        
         Input.findInputDevices(); //TODO: change to findGamepads?
         
         Logger.logSystemInfo();
@@ -328,8 +329,7 @@ public final class XJGE {
                     if(scene != null) scene.exit();
                     scene = sceneChangeRequests.poll();
                     Logger.logInfo("Current scene changed to \"" + scene.name + "\"");
-                    //TODO: reimplement observable properties for this class
-                    //observable.notifyObservers("XJGE_SCENE_CHANGED", scene);
+                    observable.notifyObservers("SCENE_CHANGED", scene);
                 }
                 
                 //Process any unresolved events otherwise update the scene normally

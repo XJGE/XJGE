@@ -38,9 +38,12 @@ final class TCSetSplitScreenValue extends TerminalCommand {
                     case "vertical"   -> Window.setSplitScreenType(SplitScreenType.VERTICAL);
                     case "trisect"    -> Window.setSplitScreenType(SplitScreenType.TRISECT);
                     case "quarter"    -> Window.setSplitScreenType(SplitScreenType.QUARTER);
+                    default -> {
+                        return new TerminalOutput(errorInvalidArg(args.get(0), "(none), (horizontal), (vertical), (trisect), or (quarter)"), Color.RED);
+                    }
                 }
                 
-                return new TerminalOutput(errorInvalidArg(args.get(0), "(none), (horizontal), (vertical), (trisect), or (quarter)"), Color.RED);
+                return new TerminalOutput("Split screen value changed: (" + args.get(0) + ")", Color.WHITE);
             }
         }
     }

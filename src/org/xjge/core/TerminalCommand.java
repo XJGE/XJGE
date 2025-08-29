@@ -161,7 +161,7 @@ public abstract class TerminalCommand {
      *         {@link setOutput setOutput()}
      */
     protected String errorInvalidArg(String found, String required) {
-        return "ERROR: Invalid argument. Found " + found + ", required " + required + ".";
+        return "ERROR: Invalid argument. Found \"" + found + "\" but required " + required;
     }
     
 }

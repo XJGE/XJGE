@@ -66,10 +66,11 @@ public class Scene3D extends Scene {
                         player.addComponent(new ComponentPosition(x, 0.01f, z));
                         player.addComponent(new ComponentAABB(0.5f, 1.1f, 0.5f));
                         player.addComponent(new ComponentMovable());
-                        player.addComponent(new ComponentUnit(player, "player", camera, GLFW_JOYSTICK_1));
+                        player.addComponent(new ComponentUnit(player, camera, GLFW_JOYSTICK_1));
+                        
+                        observable.addObserver(player.getComponent(ComponentUnit.class));
                         
                         addEntity(player);
-                        gridSpace.occupyingUnit = player.getComponent(ComponentUnit.class);
                         
                     } else if(type == 3) {
                         //Unit enemy = new Unit(new Vector3f(x, 0.01f, z), "enemy", 1, AI_GAMEPAD_1);
@@ -137,6 +138,10 @@ public class Scene3D extends Scene {
 
     @Override
     public void exit() {
+    }
+    
+    void setGameMode(GameMode gameMode) {
+        this.gameMode = gameMode;
     }
 
 }
