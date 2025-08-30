@@ -2,14 +2,9 @@ package org.xjge.test;
 
 import java.util.Map;
 import org.joml.Vector3f;
-import static org.lwjgl.glfw.GLFW.GLFW_GAMEPAD_AXIS_RIGHT_X;
-import static org.lwjgl.glfw.GLFW.GLFW_GAMEPAD_AXIS_RIGHT_Y;
 import org.xjge.core.Camera;
-import org.xjge.core.Command;
-import org.xjge.core.Control;
 import org.xjge.core.Entity;
 import org.xjge.core.Logger;
-import org.xjge.core.Puppet;
 import org.xjge.graphics.GLProgram;
 
 /**
@@ -19,34 +14,17 @@ import org.xjge.graphics.GLProgram;
  */
 class CameraOverhead extends Camera {
     
-    private float pitch = 35f;
-    private float yaw = -90f;
+    float pitch = 35f;
+    float yaw = -90f;
     
-    private float rotationSpeed = 2.5f;
+    float rotationSpeed = 2.5f;
     
-    private final Puppet puppet = new Puppet("camera");
     private Vector3f nextPosition = new Vector3f();
     
     public CameraOverhead() {
         super(false);
         fov = 40;
         direction.set(0, 0, -1);
-        
-        puppet.commands.put(Control.RIGHT_STICK_X, new CommandRotateCamera());
-        puppet.commands.put(Control.RIGHT_STICK_Y, new CommandRotateCamera());
-    }
-    
-    class CommandRotateCamera extends Command {
-        @Override
-        public void execute(double targetDelta, double trueDelta) {
-            if(axisMoved()) {
-                if(getButtonID() == GLFW_GAMEPAD_AXIS_RIGHT_X) {
-                    yaw += getInputValue() * rotationSpeed;
-                } else if(getButtonID() == GLFW_GAMEPAD_AXIS_RIGHT_Y) {
-                    pitch += getInputValue() * rotationSpeed;
-                }
-            }
-        }
     }
     
     @Override
@@ -76,14 +54,7 @@ class CameraOverhead extends Camera {
     }
     
     public void follow(Entity entity) {
-        try {
-            nextPosition = entity.getComponent(ComponentPosition.class).position;
-            puppet.setInputDevice(entity.getComponent(ComponentUnit.class).inputDeviceID);
-        } catch(Exception exception) {
-            Logger.logWarning("Uanble to focus camera on entity " + entity + 
-                              " (" + entity.uuid + "). Object is missing one" +
-                              "or more required components", exception);
-        }
+        nextPosition = entity.getComponent(ComponentPosition.class).position;
     }
     
     public Vector3f getFlatForward() {

@@ -13,11 +13,12 @@ import org.xjge.core.Entity;
  */
 class GameModeBattle extends GameMode {
 
-    ComponentUnit activeUnit;
-    Queue<ComponentUnit> turns = new LinkedList<>();
+    //ComponentUnit activeUnit;
+    //Queue<ComponentUnit> turns = new LinkedList<>();
     
     @Override
     void execute(Scene3D scene, Map<UUID, Entity> entities) {
+        /*
         if(activeUnit != null && activeUnit.turnFinished(scene)) activeUnit = turns.poll();
         
         entities.forEach((uuid, entity) -> {
@@ -26,11 +27,12 @@ class GameModeBattle extends GameMode {
                 
                 if(unit != activeUnit && !turns.contains(unit)) {
                     if(activeUnit == null) activeUnit = unit;
-                    scene.camera.follow(activeUnit.entity);
+                    //scene.camera.follow(activeUnit.entity);
                     turns.add(unit);
                 }
             }
         });
+        */
     }
 
 }

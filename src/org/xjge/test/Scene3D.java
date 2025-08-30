@@ -12,9 +12,7 @@ import static org.lwjgl.glfw.GLFW.GLFW_JOYSTICK_1;
 import org.xjge.core.Camera;
 import org.xjge.core.Entity;
 import org.xjge.core.Logger;
-import org.xjge.core.Observable;
 import org.xjge.core.Scene;
-import org.xjge.core.Window;
 import org.xjge.core.XJGE;
 import org.xjge.graphics.Color;
 import org.xjge.graphics.GLProgram;
@@ -27,22 +25,16 @@ import org.xjge.graphics.GLProgram;
  */
 public class Scene3D extends Scene {
     
-    final CameraOverhead camera = new CameraOverhead();
-    
-    private final Observable observable = new Observable(this);
     private final Vector3i tempVec = new Vector3i();
     private final GridRenderer gridRenderer = new GridRenderer();
     private final Map<Vector3i, GridSpace> gridSpaces = new HashMap<>();
     
-    private GameMode gameMode = new GameModeBattle();
+    private GameMode gameMode;
     
     public Scene3D(String filename) {
         super("test");
         
-        observable.properties.put("GAMEMODE_CHANGED", gameMode);
-        
         XJGE.setClearColor(Color.SILVER);
-        Window.setViewportCamera(GLFW_JOYSTICK_1, camera);
         
         try {
             BufferedReader reader = new BufferedReader(new InputStreamReader(getClass().getResourceAsStream("/org/xjge/assets/" + filename)));
@@ -63,12 +55,9 @@ public class Scene3D extends Scene {
                     if(type == 2) {
                         Entity player = new Entity();
                         
+                        player.addComponent(new ComponentControllable(GLFW_JOYSTICK_1));
                         player.addComponent(new ComponentPosition(x, 0.01f, z));
                         player.addComponent(new ComponentAABB(0.5f, 1.1f, 0.5f));
-                        player.addComponent(new ComponentMovable());
-                        player.addComponent(new ComponentUnit(player, camera, GLFW_JOYSTICK_1));
-                        
-                        observable.addObserver(player.getComponent(ComponentUnit.class));
                         
                         addEntity(player);
                         
@@ -83,6 +72,10 @@ public class Scene3D extends Scene {
                 z++;
                 line = reader.readLine();
             }
+            
+            //TODO: load initial game mode from map file data
+            setGameMode(new GameModeExplore());
+            
         } catch(IOException exception) {
             Logger.logError("Failed to load map\"" + filename + "\"", exception);
         }
@@ -92,7 +85,6 @@ public class Scene3D extends Scene {
     public void update(double targetDelta, double trueDelta) {
         if(gameMode != null) {
             gameMode.execute(this, Collections.unmodifiableMap(entities));
-            observable.notifyObservers("GAMEMODE_CHANGED", gameMode);
         }
         
         gridSpaces.forEach((location, gridSpace) -> {
@@ -140,7 +132,7 @@ public class Scene3D extends Scene {
     public void exit() {
     }
     
-    void setGameMode(GameMode gameMode) {
+    final void setGameMode(GameMode gameMode) {
         this.gameMode = gameMode;
     }
 
