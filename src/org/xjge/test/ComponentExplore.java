@@ -5,7 +5,6 @@ import static org.lwjgl.glfw.GLFW.GLFW_GAMEPAD_AXIS_LEFT_X;
 import static org.lwjgl.glfw.GLFW.GLFW_GAMEPAD_AXIS_LEFT_Y;
 import static org.lwjgl.glfw.GLFW.GLFW_GAMEPAD_AXIS_RIGHT_X;
 import static org.lwjgl.glfw.GLFW.GLFW_GAMEPAD_AXIS_RIGHT_Y;
-import static org.lwjgl.glfw.GLFW.GLFW_JOYSTICK_1;
 import org.xjge.core.Command;
 import org.xjge.core.Component;
 import org.xjge.core.Control;

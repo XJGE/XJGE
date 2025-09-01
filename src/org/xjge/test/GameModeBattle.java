@@ -1,8 +1,6 @@
 package org.xjge.test;
 
-import java.util.LinkedList;
 import java.util.Map;
-import java.util.Queue;
 import java.util.UUID;
 import org.xjge.core.Entity;
 

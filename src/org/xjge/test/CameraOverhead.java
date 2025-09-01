@@ -4,7 +4,6 @@ import java.util.Map;
 import org.joml.Vector3f;
 import org.xjge.core.Camera;
 import org.xjge.core.Entity;
-import org.xjge.core.Logger;
 import org.xjge.graphics.GLProgram;
 
 /**
@@ -20,6 +19,7 @@ class CameraOverhead extends Camera {
     float rotationSpeed = 2.5f;
     
     private Vector3f nextPosition = new Vector3f();
+    private final Vector3f adjustedTarget = new Vector3f();
     
     public CameraOverhead() {
         super(false);
@@ -47,7 +47,8 @@ class CameraOverhead extends Camera {
         glPrograms.values().forEach(glProgram -> {
             if(glProgram.containsUniform("uView")) {
                 glProgram.use();
-                viewMatrix.setLookAt(position, nextPosition, up);
+                adjustedTarget.set(nextPosition).add(0, 0.5f, 0);
+                viewMatrix.setLookAt(position, adjustedTarget, up);
                 glProgram.setUniform("uView", false, viewMatrix);
             }
         });

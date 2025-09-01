@@ -10,7 +10,7 @@ import org.xjge.core.Entity;
  * @since 
  */
 abstract class GameMode {
-
+    
     abstract void execute(Scene3D scene, Map<UUID, Entity> entities);
     
 }
