@@ -11,6 +11,6 @@ import org.xjge.core.Entity;
  */
 abstract class GameMode {
     
-    abstract void execute(Scene3D scene, Map<UUID, Entity> entities);
+    abstract void execute(SceneExplore scene, Map<UUID, Entity> entities);
     
 }

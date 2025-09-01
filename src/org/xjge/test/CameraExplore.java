@@ -11,9 +11,9 @@ import org.xjge.graphics.GLProgram;
  * @author J Hoffman
  * @since 
  */
-class CameraOverhead extends Camera {
+class CameraExplore extends Camera {
     
-    float pitch = 35f;
+    float pitch = 25f;
     float yaw = -90f;
     
     float rotationSpeed = 2.5f;
@@ -21,7 +21,7 @@ class CameraOverhead extends Camera {
     private Vector3f nextPosition = new Vector3f();
     private final Vector3f adjustedTarget = new Vector3f();
     
-    public CameraOverhead() {
+    public CameraExplore() {
         super(false);
         fov = 40;
         direction.set(0, 0, -1);
@@ -31,7 +31,7 @@ class CameraOverhead extends Camera {
     public void update() {
         pitch = Math.max(15f, Math.min(80f, pitch)); //clamp pitch to avoid flipping
         
-        float distance = 6f;
+        float distance = 5f;
         
         //compute offset from yaw/pitch spherical coords
         float offsetX = (float) (distance * Math.cos(Math.toRadians(pitch)) * Math.cos(Math.toRadians(yaw)));

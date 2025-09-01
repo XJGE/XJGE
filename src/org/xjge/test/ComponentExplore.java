@@ -25,9 +25,9 @@ class ComponentExplore extends Component {
     private final Puppet puppet;
     
     private final Entity entity;
-    private final CameraOverhead camera;
+    private final CameraExplore camera;
     
-    ComponentExplore(int inputDeviceID, Entity entity, CameraOverhead camera) {
+    ComponentExplore(int inputDeviceID, Entity entity, CameraExplore camera) {
         this.entity = entity;
         this.camera = camera;
         
