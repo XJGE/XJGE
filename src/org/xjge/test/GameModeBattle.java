@@ -15,7 +15,7 @@ class GameModeBattle extends GameMode {
     //Queue<ComponentUnit> turns = new LinkedList<>();
     
     @Override
-    void execute(SceneExplore scene, Map<UUID, Entity> entities) {
+    void execute(Scene3D scene, Map<UUID, Entity> entities) {
         /*
         if(activeUnit != null && activeUnit.turnFinished(scene)) activeUnit = turns.poll();
         

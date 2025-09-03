@@ -13,8 +13,6 @@ import org.xjge.core.Camera;
 import org.xjge.core.Entity;
 import org.xjge.core.Logger;
 import org.xjge.core.Scene;
-import org.xjge.core.XJGE;
-import org.xjge.graphics.Color;
 import org.xjge.graphics.GLProgram;
 
 /**
@@ -23,7 +21,7 @@ import org.xjge.graphics.GLProgram;
  * @author J Hoffman
  * @since  
  */
-public class SceneExplore extends Scene {
+public class Scene3D extends Scene {
     
     private final Vector3i tempVec = new Vector3i();
     private final GridRenderer gridRenderer = new GridRenderer();
@@ -31,10 +29,8 @@ public class SceneExplore extends Scene {
     
     private GameMode gameMode;
     
-    public SceneExplore(String filename) {
+    public Scene3D(String filename) {
         super("test");
-        
-        XJGE.setClearColor(Color.SILVER);
         
         try {
             BufferedReader reader = new BufferedReader(new InputStreamReader(getClass().getResourceAsStream("/org/xjge/assets/" + filename)));
@@ -73,7 +69,7 @@ public class SceneExplore extends Scene {
                 line = reader.readLine();
             }
             
-            //TODO: load initial game mode from map file data
+            //TODO: load initial game mode from map file data?
             setGameMode(new GameModeExplore());
             
         } catch(IOException exception) {

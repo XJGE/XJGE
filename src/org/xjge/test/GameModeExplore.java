@@ -17,7 +17,7 @@ class GameModeExplore extends GameMode {
     final CameraExplore camera = new CameraExplore();
     
     @Override
-    void execute(SceneExplore scene, Map<UUID, Entity> entities) {
+    void execute(Scene3D scene, Map<UUID, Entity> entities) {
         if(!componentsAssigned) {
             entities.values().forEach(entity -> {
                 if(entity.hasComponent(ComponentControllable.class)) {

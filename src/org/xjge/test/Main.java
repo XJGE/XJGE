@@ -5,6 +5,7 @@ import static org.lwjgl.opengl.GL20.GL_FRAGMENT_SHADER;
 import static org.lwjgl.opengl.GL20.GL_VERTEX_SHADER;
 import org.xjge.core.Window;
 import org.xjge.core.XJGE;
+import org.xjge.graphics.Color;
 import org.xjge.graphics.GLDataType;
 import org.xjge.graphics.GLProgram;
 import org.xjge.graphics.GLShader;
@@ -75,8 +76,9 @@ public class Main {
         
         XJGE.addObserver(setGameMode);
         
-        XJGE.setScene(new SceneExplore("map_test.txt"));
-        XJGE.start(); //show window
+        XJGE.setClearColor(Color.SILVER);
+        XJGE.setScene(new Scene3D("map_test.txt"));
+        XJGE.start();
         
     }
     
