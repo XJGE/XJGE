@@ -21,7 +21,7 @@ import org.xjge.graphics.GLProgram;
  * @author J Hoffman
  * @since  
  */
-public class SceneExplore extends Scene {
+public class Scene3D extends Scene {
     
     private final Vector3i tempVec = new Vector3i();
     private final GridRenderer gridRenderer = new GridRenderer();
@@ -29,7 +29,7 @@ public class SceneExplore extends Scene {
     
     private GameMode gameMode;
     
-    public SceneExplore(String filename) {
+    public Scene3D(String filename) {
         super("test");
         
         try {
@@ -51,7 +51,7 @@ public class SceneExplore extends Scene {
                     if(type == 2) {
                         Entity player = new Entity();
                         
-                        player.addComponent(new ComponentControllable(GLFW_JOYSTICK_1));
+                        player.addComponent(new ComponentUnit(GLFW_JOYSTICK_1));
                         player.addComponent(new ComponentPosition(x, 0.01f, z));
                         player.addComponent(new ComponentAABB(0.5f, 1.1f, 0.5f));
                         

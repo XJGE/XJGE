@@ -14,8 +14,22 @@ class GameModeBattle extends GameMode {
     //ComponentUnit activeUnit;
     //Queue<ComponentUnit> turns = new LinkedList<>();
     
+    CameraOverhead camera = new CameraOverhead();
+    
     @Override
-    void execute(SceneExplore scene, Map<UUID, Entity> entities) {
+    void execute(Scene3D scene, Map<UUID, Entity> entities) {
+        if(!componentsAssigned) {
+            entities.values().forEach(entity -> {
+                ComponentUnit unit = (entity.hasComponent(ComponentUnit.class)) 
+                                   ? entity.getComponent(ComponentUnit.class) 
+                                   : null; 
+                
+                if(unit != null) entity.addComponent(unit);
+            });
+            
+            componentsAssigned = true;
+        }
+        
         /*
         if(activeUnit != null && activeUnit.turnFinished(scene)) activeUnit = turns.poll();
         

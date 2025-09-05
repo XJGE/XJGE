@@ -25,9 +25,9 @@ class ComponentExplore extends Component {
     private final Puppet puppet;
     
     private final Entity entity;
-    private final CameraExplore camera;
+    private final CameraOverhead camera;
     
-    ComponentExplore(int inputDeviceID, Entity entity, CameraExplore camera) {
+    ComponentExplore(int inputDeviceID, Entity entity, CameraOverhead camera) {
         this.entity = entity;
         this.camera = camera;
         
@@ -36,10 +36,8 @@ class ComponentExplore extends Component {
         
         puppet = new Puppet("explore_" + inputDeviceID);
         
-        puppet.commands.put(Control.LEFT_STICK_X,  new Move());
-        puppet.commands.put(Control.LEFT_STICK_Y,  new Move());
-        puppet.commands.put(Control.RIGHT_STICK_X, new RotateCamera());
-        puppet.commands.put(Control.RIGHT_STICK_Y, new RotateCamera());
+        puppet.commands.put(Control.LEFT_STICK_X, new Move());
+        puppet.commands.put(Control.LEFT_STICK_Y, new Move());
         
         puppet.setInputDevice(inputDeviceID);
     }
@@ -84,21 +82,6 @@ class ComponentExplore extends Component {
         private float lerpAngle(float a, float b, float t) {
             float diff = ((b - a + 540f) % 360f) - 180f;
             return (a + diff * Math.min(1f, t) + 360f) % 360f;
-        }
-        
-    }
-    
-    private class RotateCamera extends Command {
-
-        @Override
-        public void execute(double targetDelta, double trueDelta) {
-            if(axisMoved()) {
-                if(getButtonID() == GLFW_GAMEPAD_AXIS_RIGHT_X) {
-                    camera.yaw += getInputValue() * camera.rotationSpeed;
-                } else if(getButtonID() == GLFW_GAMEPAD_AXIS_RIGHT_Y) {
-                    camera.pitch += getInputValue() * camera.rotationSpeed;
-                }
-            }
         }
         
     }

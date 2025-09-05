@@ -2,8 +2,13 @@ package org.xjge.test;
 
 import java.util.Map;
 import org.joml.Vector3f;
+import static org.lwjgl.glfw.GLFW.GLFW_GAMEPAD_AXIS_RIGHT_X;
+import static org.lwjgl.glfw.GLFW.GLFW_GAMEPAD_AXIS_RIGHT_Y;
 import org.xjge.core.Camera;
+import org.xjge.core.Command;
+import org.xjge.core.Control;
 import org.xjge.core.Entity;
+import org.xjge.core.Puppet;
 import org.xjge.graphics.GLProgram;
 
 /**
@@ -11,7 +16,7 @@ import org.xjge.graphics.GLProgram;
  * @author J Hoffman
  * @since 
  */
-class CameraExplore extends Camera {
+class CameraOverhead extends Camera {
     
     float pitch = 25f;
     float yaw = -90f;
@@ -21,10 +26,15 @@ class CameraExplore extends Camera {
     private Vector3f nextPosition = new Vector3f();
     private final Vector3f adjustedTarget = new Vector3f();
     
-    public CameraExplore() {
+    private final Puppet puppet = new Puppet("camera");
+    
+    public CameraOverhead() {
         super(false);
         fov = 40;
         direction.set(0, 0, -1);
+        
+        puppet.commands.put(Control.RIGHT_STICK_X, new RotateCamera());
+        puppet.commands.put(Control.RIGHT_STICK_Y, new RotateCamera());
     }
     
     @Override
@@ -56,6 +66,10 @@ class CameraExplore extends Camera {
     
     public void follow(Entity entity) {
         nextPosition = entity.getComponent(ComponentPosition.class).position;
+        
+        if(entity.hasComponent(ComponentUnit.class)) {
+            puppet.setInputDevice(entity.getComponent(ComponentUnit.class).inputDeviceID);
+        }
     }
     
     public Vector3f getFlatForward() {
@@ -71,6 +85,21 @@ class CameraExplore extends Camera {
         forward.cross(up, right);
         
         return right.normalize();
+    }
+    
+    private class RotateCamera extends Command {
+
+        @Override
+        public void execute(double targetDelta, double trueDelta) {
+            if(axisMoved()) {
+                if(getButtonID() == GLFW_GAMEPAD_AXIS_RIGHT_X) {
+                    yaw += getInputValue() * rotationSpeed;
+                } else if(getButtonID() == GLFW_GAMEPAD_AXIS_RIGHT_Y) {
+                    pitch += getInputValue() * rotationSpeed;
+                }
+            }
+        }
+        
     }
     
 }

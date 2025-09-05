@@ -14,7 +14,7 @@ import org.xjge.graphics.Color;
  */
 class TCSetGameMode extends TerminalCommand implements PropertyChangeListener {
 
-    private SceneExplore currentScene;
+    private Scene3D currentScene;
     
     public TCSetGameMode() {
         super("Used to change the current game mode. This will affect the " + 
@@ -49,8 +49,8 @@ class TCSetGameMode extends TerminalCommand implements PropertyChangeListener {
     @Override
     public void propertyChange(PropertyChangeEvent evt) {
         if(evt.getPropertyName().equals("SCENE_CHANGED")) {
-            if(evt.getNewValue() instanceof SceneExplore) {
-                currentScene = (SceneExplore) evt.getNewValue();
+            if(evt.getNewValue() instanceof Scene3D) {
+                currentScene = (Scene3D) evt.getNewValue();
             }
         }
     }

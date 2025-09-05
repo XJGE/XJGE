@@ -12,15 +12,13 @@ import org.xjge.core.Entity;
  */
 class GameModeExplore extends GameMode {
     
-    private boolean componentsAssigned;
-    
-    final CameraExplore camera = new CameraExplore();
+    final CameraOverhead camera = new CameraOverhead();
     
     @Override
-    void execute(SceneExplore scene, Map<UUID, Entity> entities) {
+    void execute(Scene3D scene, Map<UUID, Entity> entities) {
         if(!componentsAssigned) {
             entities.values().forEach(entity -> {
-                if(entity.hasComponent(ComponentControllable.class)) {
+                if(entity.hasComponent(ComponentUnit.class)) {
                     entity.addComponent(new ComponentExplore(GLFW_JOYSTICK_1, entity, camera));
                 }
             });
