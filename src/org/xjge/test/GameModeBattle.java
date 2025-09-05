@@ -1,8 +1,12 @@
 package org.xjge.test;
 
+import java.util.LinkedList;
 import java.util.Map;
+import java.util.Queue;
 import java.util.UUID;
+import static org.lwjgl.glfw.GLFW.GLFW_JOYSTICK_1;
 import org.xjge.core.Entity;
+import org.xjge.core.Window;
 
 /**
  * 
@@ -11,8 +15,8 @@ import org.xjge.core.Entity;
  */
 class GameModeBattle extends GameMode {
 
-    //ComponentUnit activeUnit;
-    //Queue<ComponentUnit> turns = new LinkedList<>();
+    ComponentUnit activeUnit;
+    Queue<ComponentUnit> turns = new LinkedList<>();
     
     CameraOverhead camera = new CameraOverhead();
     
@@ -27,10 +31,10 @@ class GameModeBattle extends GameMode {
                 if(unit != null) entity.addComponent(unit);
             });
             
+            Window.setViewportCamera(GLFW_JOYSTICK_1, camera);
             componentsAssigned = true;
         }
         
-        /*
         if(activeUnit != null && activeUnit.turnFinished(scene)) activeUnit = turns.poll();
         
         entities.forEach((uuid, entity) -> {
@@ -39,12 +43,11 @@ class GameModeBattle extends GameMode {
                 
                 if(unit != activeUnit && !turns.contains(unit)) {
                     if(activeUnit == null) activeUnit = unit;
-                    //scene.camera.follow(activeUnit.entity);
+                    camera.follow(entity);
                     turns.add(unit);
                 }
             }
         });
-        */
     }
 
 }

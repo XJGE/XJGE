@@ -24,4 +24,8 @@ class ComponentUnit extends Component {
         this.inputDeviceID = inputDeviceID;
     }
     
+    boolean turnFinished(Scene3D scene) {
+        return false;
+    }
+    
 }

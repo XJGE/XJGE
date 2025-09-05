@@ -3,8 +3,6 @@ package org.xjge.test;
 import org.joml.Vector3f;
 import static org.lwjgl.glfw.GLFW.GLFW_GAMEPAD_AXIS_LEFT_X;
 import static org.lwjgl.glfw.GLFW.GLFW_GAMEPAD_AXIS_LEFT_Y;
-import static org.lwjgl.glfw.GLFW.GLFW_GAMEPAD_AXIS_RIGHT_X;
-import static org.lwjgl.glfw.GLFW.GLFW_GAMEPAD_AXIS_RIGHT_Y;
 import org.xjge.core.Command;
 import org.xjge.core.Component;
 import org.xjge.core.Control;

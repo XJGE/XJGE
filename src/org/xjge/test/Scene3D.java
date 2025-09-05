@@ -70,7 +70,7 @@ public class Scene3D extends Scene {
             }
             
             //TODO: load initial game mode from map file data?
-            setGameMode(new GameModeExplore());
+            setGameMode(new GameModeBattle());
             
         } catch(IOException exception) {
             Logger.logError("Failed to load map\"" + filename + "\"", exception);
