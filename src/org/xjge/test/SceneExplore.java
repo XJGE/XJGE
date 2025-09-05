@@ -21,7 +21,7 @@ import org.xjge.graphics.GLProgram;
  * @author J Hoffman
  * @since  
  */
-public class Scene3D extends Scene {
+public class SceneExplore extends Scene {
     
     private final Vector3i tempVec = new Vector3i();
     private final GridRenderer gridRenderer = new GridRenderer();
@@ -29,7 +29,7 @@ public class Scene3D extends Scene {
     
     private GameMode gameMode;
     
-    public Scene3D(String filename) {
+    public SceneExplore(String filename) {
         super("test");
         
         try {

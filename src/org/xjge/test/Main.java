@@ -77,7 +77,7 @@ public class Main {
         XJGE.addObserver(setGameMode);
         
         XJGE.setClearColor(Color.SILVER);
-        XJGE.setScene(new Scene3D("map_test.txt"));
+        XJGE.setScene(new SceneExplore("map_test.txt"));
         XJGE.start();
         
     }
