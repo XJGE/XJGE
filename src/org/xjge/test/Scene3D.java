@@ -10,9 +10,11 @@ import org.joml.Vector3f;
 import org.joml.Vector3i;
 import org.xjge.core.Camera;
 import org.xjge.core.Entity;
+import static org.xjge.core.Input.AI_GAMEPAD_1;
 import static org.xjge.core.Input.KEY_MOUSE_COMBO;
 import org.xjge.core.Logger;
 import org.xjge.core.Scene;
+import org.xjge.graphics.Color;
 import org.xjge.graphics.GLProgram;
 
 /**
@@ -53,15 +55,20 @@ public class Scene3D extends Scene {
                         
                         player.addComponent(new ComponentUnit(KEY_MOUSE_COMBO));
                         player.addComponent(new ComponentPosition(x, 0.01f, z));
-                        player.addComponent(new ComponentAABB(0.5f, 1.1f, 0.5f));
+                        player.addComponent(new ComponentAABB(0.5f, 1.1f, 0.5f, Color.BLUE));
                         
                         addEntity(player);
                         
                     } else if(type == 3) {
-                        //Unit enemy = new Unit(new Vector3f(x, 0.01f, z), "enemy", 1, AI_GAMEPAD_1);
-                        //space.occupyingUnit = enemy;
-                        //addEntity(enemy);
-                        //turns.add(enemy);
+                        /*
+                        Entity enemy = new Entity();
+                        
+                        enemy.addComponent(new ComponentUnit(AI_GAMEPAD_1));
+                        enemy.addComponent(new ComponentPosition(x, 0.01f, z));
+                        enemy.addComponent(new ComponentAABB(0.5f, 1.1f, 0.5f, Color.RED));
+                        
+                        addEntity(enemy);
+                        */
                     }
                 }
                 

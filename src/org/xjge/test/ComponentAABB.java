@@ -31,12 +31,15 @@ class ComponentAABB extends Component {
     private final Graphics graphics = new Graphics();
     private final Vector2f gridSpaceOverlap = new Vector2f();
     
+    private final Color color; //TODO: this is temporary, we'll use Cyan in prod.
+    
     private final List<Vector3i> occupiedGridSpaces = new ArrayList<>();
     
-    ComponentAABB(float width, float height, float depth) {
+    ComponentAABB(float width, float height, float depth, Color color) {
         this.width  = width;
         this.height = height;
         this.depth  = depth;
+        this.color  = color;
         
         try(MemoryStack stack = MemoryStack.stackPush()) {
             int[] indexData = {
@@ -146,7 +149,7 @@ class ComponentAABB extends Component {
         glBindVertexArray(graphics.vao);
         
         shader.setUniform("uModel", false, graphics.modelMatrix);
-        shader.setUniform("uColor", Color.CYAN.asVector3f());
+        shader.setUniform("uColor", color.asVector3f());
         
         try(MemoryStack stack = MemoryStack.stackPush()) {
             FloatBuffer vertices = stack.mallocFloat(24);
