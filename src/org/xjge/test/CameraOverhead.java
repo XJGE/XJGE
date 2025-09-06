@@ -2,13 +2,16 @@ package org.xjge.test;
 
 import java.util.Map;
 import org.joml.Vector3f;
-import static org.lwjgl.glfw.GLFW.GLFW_GAMEPAD_AXIS_RIGHT_X;
-import static org.lwjgl.glfw.GLFW.GLFW_GAMEPAD_AXIS_RIGHT_Y;
+import static org.lwjgl.glfw.GLFW.GLFW_CURSOR;
+import static org.lwjgl.glfw.GLFW.GLFW_CURSOR_DISABLED;
+import static org.lwjgl.glfw.GLFW.GLFW_CURSOR_NORMAL;
 import org.xjge.core.Camera;
 import org.xjge.core.Command;
 import org.xjge.core.Control;
 import org.xjge.core.Entity;
+import static org.xjge.core.Input.KEY_MOUSE_COMBO;
 import org.xjge.core.Puppet;
+import org.xjge.core.Window;
 import org.xjge.graphics.GLProgram;
 
 /**
@@ -17,6 +20,9 @@ import org.xjge.graphics.GLProgram;
  * @since 
  */
 class CameraOverhead extends Camera {
+    
+    private boolean enableRotation;
+    private boolean lookInversion;
     
     float pitch = 25f;
     float yaw = -90f;
@@ -33,6 +39,7 @@ class CameraOverhead extends Camera {
         fov = 40;
         direction.set(0, 0, -1);
         
+        puppet.commands.put(Control.R2, new EnableRotation());
         puppet.commands.put(Control.RIGHT_STICK_X, new RotateCameraYaw());
         puppet.commands.put(Control.RIGHT_STICK_Y, new RotateCameraPitch());
     }
@@ -68,7 +75,10 @@ class CameraOverhead extends Camera {
         nextPosition = entity.getComponent(ComponentPosition.class).position;
         
         if(entity.hasComponent(ComponentUnit.class)) {
-            puppet.setInputDevice(entity.getComponent(ComponentUnit.class).inputDeviceID);
+            int inputDeviceID = entity.getComponent(ComponentUnit.class).inputDeviceID;
+            rotationSpeed = (inputDeviceID == KEY_MOUSE_COMBO) ? 0.5f : 2.5f;
+            lookInversion = inputDeviceID == KEY_MOUSE_COMBO;
+            puppet.setInputDevice(inputDeviceID);
         }
     }
     
@@ -87,13 +97,25 @@ class CameraOverhead extends Camera {
         return right.normalize();
     }
     
+    private class EnableRotation extends Command {
+
+        @Override
+        public void execute(double targetDelta, double trueDelta) {
+            if(getDeviceID() == KEY_MOUSE_COMBO) {
+                enableRotation = buttonPressed();
+                Window.setInputMode(GLFW_CURSOR, enableRotation ? GLFW_CURSOR_DISABLED : GLFW_CURSOR_NORMAL);
+            } else {
+                enableRotation = true;
+            }
+        }
+        
+    }
+    
     private class RotateCameraYaw extends Command {
 
         @Override
         public void execute(double targetDelta, double trueDelta) {
-            if(axisMoved()) {
-                yaw += getInputValue() * rotationSpeed;
-            }
+            if(axisMoved() && enableRotation) yaw += getInputValue() * rotationSpeed;
         }
         
     }
@@ -102,7 +124,13 @@ class CameraOverhead extends Camera {
 
         @Override
         public void execute(double targetDelta, double trueDelta) {
-            if(axisMoved()) pitch += getInputValue() * rotationSpeed;
+            if(axisMoved() && enableRotation) {
+                if(lookInversion) {
+                    pitch -= getInputValue() * rotationSpeed;
+                } else {
+                    pitch += getInputValue() * rotationSpeed;
+                }
+            }
         }
         
     }
