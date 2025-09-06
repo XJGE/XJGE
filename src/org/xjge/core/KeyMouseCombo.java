@@ -1,10 +1,8 @@
 package org.xjge.core;
 
 import static org.xjge.core.Control.*;
-import java.nio.DoubleBuffer;
 import java.util.HashMap;
 import static org.lwjgl.glfw.GLFW.*;
-import org.lwjgl.system.MemoryStack;
 
 /**
  * Created: May 3, 2021

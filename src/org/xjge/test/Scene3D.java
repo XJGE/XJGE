@@ -8,9 +8,9 @@ import java.util.HashMap;
 import java.util.Map;
 import org.joml.Vector3f;
 import org.joml.Vector3i;
-import static org.lwjgl.glfw.GLFW.GLFW_JOYSTICK_1;
 import org.xjge.core.Camera;
 import org.xjge.core.Entity;
+import static org.xjge.core.Input.KEY_MOUSE_COMBO;
 import org.xjge.core.Logger;
 import org.xjge.core.Scene;
 import org.xjge.graphics.GLProgram;
@@ -51,7 +51,7 @@ public class Scene3D extends Scene {
                     if(type == 2) {
                         Entity player = new Entity();
                         
-                        player.addComponent(new ComponentUnit(GLFW_JOYSTICK_1));
+                        player.addComponent(new ComponentUnit(KEY_MOUSE_COMBO));
                         player.addComponent(new ComponentPosition(x, 0.01f, z));
                         player.addComponent(new ComponentAABB(0.5f, 1.1f, 0.5f));
                         

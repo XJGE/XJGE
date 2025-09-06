@@ -160,9 +160,9 @@ public final class Input {
             put(DPAD_LEFT,     GLFW_KEY_LEFT);
             put(LEFT_STICK_X,  GLFW_KEY_A | GLFW_KEY_D);
             put(LEFT_STICK_Y,  GLFW_KEY_W | GLFW_KEY_S);
-            put(RIGHT_STICK_X, 0);
-            put(RIGHT_STICK_Y, 0);
-            put(L2,            GLFW_MOUSE_BUTTON_LEFT);
+            put(RIGHT_STICK_X, GLFW_GAMEPAD_AXIS_RIGHT_X);
+            put(RIGHT_STICK_Y, GLFW_GAMEPAD_AXIS_RIGHT_Y);
+            put(L2,            GLFW_MOUSE_BUTTON_LEFT); //TODO: Only queries the mouse during poll(), what if we wanna assign these to keys?
             put(R2,            GLFW_MOUSE_BUTTON_RIGHT);
         }};
         

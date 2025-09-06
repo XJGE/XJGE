@@ -33,8 +33,8 @@ class CameraOverhead extends Camera {
         fov = 40;
         direction.set(0, 0, -1);
         
-        puppet.commands.put(Control.RIGHT_STICK_X, new RotateCamera());
-        puppet.commands.put(Control.RIGHT_STICK_Y, new RotateCamera());
+        puppet.commands.put(Control.RIGHT_STICK_X, new RotateCameraYaw());
+        puppet.commands.put(Control.RIGHT_STICK_Y, new RotateCameraPitch());
     }
     
     @Override
@@ -87,17 +87,22 @@ class CameraOverhead extends Camera {
         return right.normalize();
     }
     
-    private class RotateCamera extends Command {
+    private class RotateCameraYaw extends Command {
 
         @Override
         public void execute(double targetDelta, double trueDelta) {
             if(axisMoved()) {
-                if(getButtonID() == GLFW_GAMEPAD_AXIS_RIGHT_X) {
-                    yaw += getInputValue() * rotationSpeed;
-                } else if(getButtonID() == GLFW_GAMEPAD_AXIS_RIGHT_Y) {
-                    pitch += getInputValue() * rotationSpeed;
-                }
+                yaw += getInputValue() * rotationSpeed;
             }
+        }
+        
+    }
+    
+    private class RotateCameraPitch extends Command {
+
+        @Override
+        public void execute(double targetDelta, double trueDelta) {
+            if(axisMoved()) pitch += getInputValue() * rotationSpeed;
         }
         
     }
