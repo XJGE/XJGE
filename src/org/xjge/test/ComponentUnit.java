@@ -16,6 +16,8 @@ class ComponentUnit extends Component {
     int mana;
     final int inputDeviceID;
     
+    final UnitAction[] actions = new UnitAction[3];
+    
     final String[] items = new String[3];
     
     final ArrayList<String> spells = new ArrayList<>();
@@ -25,7 +27,7 @@ class ComponentUnit extends Component {
     }
     
     boolean turnFinished(Scene3D scene) {
-        return false;
+        return false; //TODO: when this returns true this units turn is over and the next will be queued
     }
     
 }

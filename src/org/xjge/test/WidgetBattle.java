@@ -3,10 +3,10 @@ package org.xjge.test;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import static org.lwjgl.glfw.GLFW.*;
 import org.xjge.core.Mouse;
 import org.xjge.core.SplitScreenType;
 import org.xjge.core.Window;
-import org.xjge.core.XJGE;
 import org.xjge.graphics.Color;
 import org.xjge.graphics.GLProgram;
 import org.xjge.ui.Font;
@@ -27,6 +27,9 @@ class WidgetBattle extends Widget {
     private final List<Option> options = new ArrayList<>();
     
     private class Option {
+        
+        boolean used;
+        
         final String name;
         final Rectangle background;
         
@@ -34,6 +37,7 @@ class WidgetBattle extends Widget {
             this.name       = name;
             this.background = new Rectangle(10, 0, 300, 35);
         }
+        
     }
     
     WidgetBattle(ComponentUnit activeUnit) {
@@ -50,6 +54,8 @@ class WidgetBattle extends Widget {
     public void update(double targetDelta, double trueDelta) {
         if(choice == -1) choice = options.size() - 1;
         if(choice == options.size()) choice = 0;
+        
+        //currentAction.perform();
     }
 
     @Override
@@ -74,10 +80,20 @@ class WidgetBattle extends Widget {
 
     @Override
     public void processKeyboardInput(int key, int action, int mods) {
+        if(action == GLFW_PRESS) {
+            switch(key) {
+                case GLFW_KEY_UP   -> choice--;
+                case GLFW_KEY_DOWN -> choice++;
+                case GLFW_KEY_ENTER -> {
+                    
+                }
+            }
+        }
     }
 
     @Override
     public void processMouseInput(Mouse mouse) {
+        
     }
 
     @Override
