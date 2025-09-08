@@ -16,14 +16,14 @@ class GameModeExplore extends GameMode {
     
     @Override
     void execute(Scene3D scene, Map<UUID, Entity> entities) {
-        if(!componentsAssigned) {
+        if(!initialized) {
             entities.values().forEach(entity -> {
                 if(entity.hasComponent(ComponentUnit.class)) {
                     entity.addComponent(new ComponentExplore(GLFW_JOYSTICK_1, entity, camera));
                 }
             });
             
-            componentsAssigned = true;
+            initialized = true;
         }
     }
 

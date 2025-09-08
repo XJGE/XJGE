@@ -15,48 +15,51 @@ import org.xjge.core.Window;
  * @since 
  */
 class GameModeBattle extends GameMode {
-
-    ComponentUnit activeUnit;
-    Queue<ComponentUnit> turns = new LinkedList<>();
     
-    CameraOverhead camera = new CameraOverhead();
+    private final TurnManager turnManager = new TurnManager();
+    private final CameraOverhead camera = new CameraOverhead();
+    
+    private void attachUI(TurnContext turnContext, Map<UUID, Entity> entities) {
+        if(UI.containsWidget(GLFW_JOYSTICK_1, "battle_actions")) UI.removeWidget(GLFW_JOYSTICK_1, "battle_actions");
+        
+        if(turnContext != null) {
+            Entity unitEntity = entities.values().stream()
+                                        .filter(entity -> entity.getComponent(ComponentUnit.class) == turnContext.unit)
+                                        .findFirst().orElse(null);
+
+            if(unitEntity != null) camera.follow(unitEntity);
+            
+            UI.addWidget(GLFW_JOYSTICK_1, "battle_actions", new WidgetBattle(turnContext.unit));
+        }
+    }
     
     @Override
     void execute(Scene3D scene, Map<UUID, Entity> entities) {
-        if(!componentsAssigned) {
+        if(!initialized) {
             entities.values().forEach(entity -> {
-                ComponentUnit unit = (entity.hasComponent(ComponentUnit.class)) 
-                                   ? entity.getComponent(ComponentUnit.class) 
-                                   : null; 
-                
-                if(unit != null) entity.addComponent(unit);
+                if(entity.hasComponent(ComponentUnit.class)) {
+                    ComponentUnit unit = entity.getComponent(ComponentUnit.class);
+                    turnManager.queueUnit(unit);
+                }
             });
             
             Window.setViewportCamera(GLFW_JOYSTICK_1, camera);
-            componentsAssigned = true;
-        }
-        
-        if(activeUnit != null && activeUnit.turnFinished(scene)) {
-            activeUnit = turns.poll();
+            turnManager.startNextTurn(scene, entities);
+            attachUI(turnManager.getCurrentContext(), entities);
             
-            if(UI.containsWidget(GLFW_JOYSTICK_1, "battle_actions")) UI.removeWidget(GLFW_JOYSTICK_1, "battle_actions");
-            UI.addWidget(GLFW_JOYSTICK_1, "battle_actions", new WidgetBattle(activeUnit));
+            initialized = true;
         }
         
-        entities.forEach((uuid, entity) -> {
-            if(entity != null && entity.hasComponent(ComponentUnit.class)) {
-                ComponentUnit unit = entity.getComponent(ComponentUnit.class);
-                
-                if(unit != activeUnit && !turns.contains(unit)) {
-                    if(activeUnit == null) {
-                        activeUnit = unit;
-                        UI.addWidget(GLFW_JOYSTICK_1, "battle_actions", new WidgetBattle(activeUnit));
-                    }
-                    camera.follow(entity);
-                    turns.add(unit);
-                }
+        TurnContext turnContext = turnManager.getCurrentContext();
+        
+        if(turnContext != null) {
+            turnManager.update();
+            
+            if(turnContext.isFinished()) {
+                turnManager.startNextTurn(scene, entities);
+                attachUI(turnManager.getCurrentContext(), entities);
             }
-        });
+        }
     }
 
 }

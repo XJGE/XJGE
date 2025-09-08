@@ -1,10 +1,54 @@
 package org.xjge.test;
 
+import java.util.EnumMap;
+import java.util.Map;
+import java.util.UUID;
+import org.xjge.core.Entity;
+
 /**
  * 
  * @author J Hoffman
  * @since 
  */
-public class TurnContext {
+class TurnContext {
 
+    private boolean finished;
+    
+    final ComponentUnit unit;
+    final Scene3D scene;
+    final Map<UUID, Entity> entities;
+    
+    private final EnumMap<ActionCategory, UnitAction> chosenActions = new EnumMap<>(ActionCategory.class);
+    
+    TurnContext(ComponentUnit unit, Scene3D scene, Map<UUID, Entity> entities) {
+        this.unit = unit;
+        this.scene = scene;
+        this.entities = entities;
+    }
+    
+    boolean addAction(ActionCategory category, UnitAction action) {
+        if(chosenActions.containsKey(category)) return false;
+        chosenActions.put(category, action);
+        return true;
+    }
+    
+    boolean isFinished() {
+        return finished;
+    }
+    
+    ActionResult executeActions() {
+        if(chosenActions.isEmpty()) return ActionResult.PENDING;
+        
+        for(var entry : chosenActions.entrySet()) {
+            ActionResult result = entry.getValue().perform(this);
+            
+            if(result == ActionResult.PENDING || result == ActionResult.TRIGGER_RTR) {
+                return result;
+            }
+        }
+        
+        finished = true;
+        return ActionResult.SUCCESS;
+    }
+    
 }

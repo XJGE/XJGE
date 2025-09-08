@@ -11,7 +11,7 @@ import org.xjge.core.Entity;
  */
 abstract class GameMode {
     
-    protected boolean componentsAssigned;
+    protected boolean initialized;
     
     abstract void execute(Scene3D scene, Map<UUID, Entity> entities);
     
