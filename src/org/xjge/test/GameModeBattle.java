@@ -1,8 +1,6 @@
 package org.xjge.test;
 
-import java.util.LinkedList;
 import java.util.Map;
-import java.util.Queue;
 import java.util.UUID;
 import static org.lwjgl.glfw.GLFW.GLFW_JOYSTICK_1;
 import org.xjge.core.Entity;
@@ -29,7 +27,7 @@ class GameModeBattle extends GameMode {
 
             if(unitEntity != null) camera.follow(unitEntity);
             
-            UI.addWidget(GLFW_JOYSTICK_1, "battle_actions", new WidgetBattle(turnContext.unit));
+            UI.addWidget(GLFW_JOYSTICK_1, "battle_actions", new WidgetBattle(turnContext));
         }
     }
     
