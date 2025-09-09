@@ -58,6 +58,8 @@ public class Scene3D extends Scene {
                         
                         addEntity(player);
                         
+                        gridSpace.occupyingUnit = player.getComponent(ComponentUnit.class);
+                        
                     } else if(type == 3) {
                         /*
                         Entity enemy = new Entity();

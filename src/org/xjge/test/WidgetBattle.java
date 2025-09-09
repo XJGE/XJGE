@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import static org.lwjgl.glfw.GLFW.*;
-import org.xjge.core.Control;
 import org.xjge.core.Mouse;
 import org.xjge.core.SplitScreenType;
 import org.xjge.core.Window;
@@ -30,6 +29,7 @@ class WidgetBattle extends Widget {
     private State state = State.MENU;
     private UnitAction pendingAction;
     private ActionCategory pendingCategory;
+    private GridSelector gridSelector;
     
     private final List<Option> options = new ArrayList<>();
     
@@ -70,6 +70,13 @@ class WidgetBattle extends Widget {
 
         if(choice == -1) choice = options.size() - 1;
         if(choice == options.size()) choice = 0;
+        
+        if(gridSelector != null) {
+            List<GridSpace> path = gridSelector.prompt(turnContext);
+            if(path != null) {
+                //pendingAction = new UnitActionMove(path);
+            }
+        }
     }
 
     @Override
@@ -98,10 +105,12 @@ class WidgetBattle extends Widget {
         
         switch(state) {
             case MENU -> {
+                gridSelector = null;
+                
                 switch(key) {
                     case GLFW_KEY_UP   -> choice--;
                     case GLFW_KEY_DOWN -> choice++;
-                    case GLFW_KEY_ENTER -> {
+                    case GLFW_KEY_ENTER, GLFW_KEY_SPACE -> {
                         Option option = options.get(choice);
                         
                         if(!option.used) {
@@ -109,11 +118,12 @@ class WidgetBattle extends Widget {
                                 case "Move" -> {
                                     pendingCategory = ActionCategory.MOVE;
                                     pendingAction   = null;
+                                    if(gridSelector == null) gridSelector = new GridSelector();
                                     state = State.TARGET;
                                 }
 
                                 case "Cast Spell" -> {
-
+                                    
                                 }
 
                                 case "Use Item" -> {
@@ -127,8 +137,7 @@ class WidgetBattle extends Widget {
             case TARGET -> {
                 switch(pendingCategory) {
                     case MOVE -> {
-                        //TODO: allow players to traverse grid
-                        //List<GridSpace> path = GridSelector.prompt(turnContext);
+                        
                     }
                     case SPELL -> {
                         //TODO: open spell list and select
@@ -145,7 +154,7 @@ class WidgetBattle extends Widget {
                         pendingAction = null;
                         state = State.MENU;
                     }
-                    case GLFW_KEY_ENTER -> {
+                    case GLFW_KEY_ENTER, GLFW_KEY_SPACE -> {
                         if(pendingAction != null) {
                             turnContext.addAction(pendingCategory, pendingAction);
                             options.get(choice).used = true;

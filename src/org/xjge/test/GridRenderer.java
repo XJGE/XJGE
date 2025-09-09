@@ -117,7 +117,8 @@ class GridRenderer {
                     default -> {
                         switch(space.status) {
                             default       -> colors.put(0.8f).put(0.8f).put(0.8f);
-                            case SELECTED -> colors.put(0.8f).put(1f).put(0.8f);
+                            case SELECTED -> colors.put(1f).put(1f).put(1f);
+                            case PATH     -> colors.put(0.8f).put(1f).put(0.8f);
                             case INVALID  -> colors.put(1f).put(0.8f).put(0.8f);
                         }
                     }
