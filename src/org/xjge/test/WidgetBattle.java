@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import static org.lwjgl.glfw.GLFW.*;
+import org.xjge.core.Control;
 import org.xjge.core.Mouse;
 import org.xjge.core.SplitScreenType;
 import org.xjge.core.Window;
@@ -59,6 +60,14 @@ class WidgetBattle extends Widget {
     
     @Override
     public void update(double targetDelta, double trueDelta) {
+        /*
+        TODO: 
+        use input state of the unit instead? This way controllers and keyboards 
+        alike will follow the same logic
+        
+        if(turnContext.unit.buttonPressed(Control.DPAD_UP)) System.out.println("up pressed");
+        */
+
         if(choice == -1) choice = options.size() - 1;
         if(choice == options.size()) choice = 0;
     }
@@ -119,7 +128,7 @@ class WidgetBattle extends Widget {
                 switch(pendingCategory) {
                     case MOVE -> {
                         //TODO: allow players to traverse grid
-                        //Vector3i destination = GridSelector.prompt(turnContext);
+                        //List<GridSpace> path = GridSelector.prompt(turnContext);
                     }
                     case SPELL -> {
                         //TODO: open spell list and select

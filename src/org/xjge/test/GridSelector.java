@@ -1,10 +1,16 @@
 package org.xjge.test;
 
+import java.util.List;
+
 /**
  * 
  * @author J Hoffman
  * @since 
  */
-public class GridSelector {
+class GridSelector {
 
+    List<GridSpace> prompt(TurnContext turnContext) {
+        return null;
+    }
+    
 }

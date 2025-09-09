@@ -2,6 +2,7 @@ package org.xjge.test;
 
 import java.util.Map;
 import java.util.UUID;
+import org.joml.Vector3i;
 import static org.lwjgl.glfw.GLFW.GLFW_JOYSTICK_1;
 import org.xjge.core.Entity;
 
@@ -15,7 +16,7 @@ class GameModeExplore extends GameMode {
     final CameraOverhead camera = new CameraOverhead();
     
     @Override
-    void execute(Scene3D scene, Map<UUID, Entity> entities) {
+    void execute(Scene3D scene, Map<UUID, Entity> entities, Map<Vector3i, GridSpace> gridSpaces) {
         if(!initialized) {
             entities.values().forEach(entity -> {
                 if(entity.hasComponent(ComponentUnit.class)) {

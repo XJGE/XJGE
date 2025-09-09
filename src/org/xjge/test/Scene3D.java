@@ -10,7 +10,6 @@ import org.joml.Vector3f;
 import org.joml.Vector3i;
 import org.xjge.core.Camera;
 import org.xjge.core.Entity;
-import static org.xjge.core.Input.AI_GAMEPAD_1;
 import static org.xjge.core.Input.KEY_MOUSE_COMBO;
 import org.xjge.core.Logger;
 import org.xjge.core.Scene;
@@ -87,7 +86,7 @@ public class Scene3D extends Scene {
     @Override
     public void update(double targetDelta, double trueDelta) {
         if(gameMode != null) {
-            gameMode.execute(this, Collections.unmodifiableMap(entities));
+            gameMode.execute(this, Collections.unmodifiableMap(entities), Collections.unmodifiableMap(gridSpaces));
         }
         
         gridSpaces.forEach((location, gridSpace) -> {

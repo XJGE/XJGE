@@ -4,6 +4,7 @@ import java.util.LinkedList;
 import java.util.Map;
 import java.util.Queue;
 import java.util.UUID;
+import org.joml.Vector3i;
 import org.xjge.core.Entity;
 
 /**
@@ -28,10 +29,10 @@ class TurnManager {
         queue.add(unit);
     }
     
-    void startNextTurn(Scene3D scene, Map<UUID, Entity> entities) {
+    void startNextTurn(Scene3D scene, Map<UUID, Entity> entities, Map<Vector3i, GridSpace> gridSpaces) {
         if(queue.isEmpty()) return;
         ComponentUnit unit = queue.poll();
-        currentContext = new TurnContext(unit, scene, entities);
+        currentContext = new TurnContext(unit, scene, entities, gridSpaces);
     }
     
     void update() {

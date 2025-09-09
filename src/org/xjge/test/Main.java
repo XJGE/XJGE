@@ -1,12 +1,8 @@
 package org.xjge.test;
 
-import java.util.HashMap;
 import java.util.LinkedList;
 import static org.lwjgl.opengl.GL20.GL_FRAGMENT_SHADER;
 import static org.lwjgl.opengl.GL20.GL_VERTEX_SHADER;
-import org.xjge.core.Control;
-import org.xjge.core.Input;
-import static org.xjge.core.Input.KEY_MOUSE_COMBO;
 import org.xjge.core.Window;
 import org.xjge.core.XJGE;
 import org.xjge.graphics.Color;

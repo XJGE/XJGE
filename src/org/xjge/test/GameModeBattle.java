@@ -2,6 +2,7 @@ package org.xjge.test;
 
 import java.util.Map;
 import java.util.UUID;
+import org.joml.Vector3i;
 import static org.lwjgl.glfw.GLFW.GLFW_JOYSTICK_1;
 import org.xjge.core.Entity;
 import org.xjge.core.UI;
@@ -17,13 +18,13 @@ class GameModeBattle extends GameMode {
     private final TurnManager turnManager = new TurnManager();
     private final CameraOverhead camera = new CameraOverhead();
     
-    private void attachUI(TurnContext turnContext, Map<UUID, Entity> entities) {
+    private void attachUI(TurnContext turnContext) {
         if(UI.containsWidget(GLFW_JOYSTICK_1, "battle_actions")) UI.removeWidget(GLFW_JOYSTICK_1, "battle_actions");
         
         if(turnContext != null) {
-            Entity unitEntity = entities.values().stream()
-                                        .filter(entity -> entity.getComponent(ComponentUnit.class) == turnContext.unit)
-                                        .findFirst().orElse(null);
+            Entity unitEntity = turnContext.entities.values().stream()
+                                                    .filter(entity -> entity.getComponent(ComponentUnit.class) == turnContext.unit)
+                                                    .findFirst().orElse(null);
 
             if(unitEntity != null) camera.follow(unitEntity);
             
@@ -32,7 +33,7 @@ class GameModeBattle extends GameMode {
     }
     
     @Override
-    void execute(Scene3D scene, Map<UUID, Entity> entities) {
+    void execute(Scene3D scene, Map<UUID, Entity> entities, Map<Vector3i, GridSpace> gridSpaces) {
         if(!initialized) {
             entities.values().forEach(entity -> {
                 if(entity.hasComponent(ComponentUnit.class)) {
@@ -42,8 +43,8 @@ class GameModeBattle extends GameMode {
             });
             
             Window.setViewportCamera(GLFW_JOYSTICK_1, camera);
-            turnManager.startNextTurn(scene, entities);
-            attachUI(turnManager.getCurrentContext(), entities);
+            turnManager.startNextTurn(scene, entities, gridSpaces);
+            attachUI(turnManager.getCurrentContext());
             
             initialized = true;
         }
@@ -54,8 +55,8 @@ class GameModeBattle extends GameMode {
             turnManager.update();
             
             if(turnContext.isFinished()) {
-                turnManager.startNextTurn(scene, entities);
-                attachUI(turnManager.getCurrentContext(), entities);
+                turnManager.startNextTurn(scene, entities, gridSpaces);
+                attachUI(turnManager.getCurrentContext());
             }
         }
     }
