@@ -79,35 +79,24 @@ final class KeyMouseCombo extends InputDevice {
 
             case RIGHT_STICK_X ->  {
                 if((float) Window.getCursorPositionX() != prevAxisX) {
-                    command.execute(findAxisValue((float) Window.getCursorPositionX(), prevAxisX), 
-                                    this, 
-                                    control,  
-                                    targetDelta, trueDelta);
+                    command.execute(findAxisValue((float) Window.getCursorPositionX(), prevAxisX), this, control, targetDelta, trueDelta);
                     prevAxisX = (float) Window.getCursorPositionX();
                 }
             }
 
             case RIGHT_STICK_Y -> {
                 if((float) Window.getCursorPositionY() != prevAxisY) {
-                    command.execute(findAxisValue((float) Window.getCursorPositionY(), prevAxisY), 
-                                    this, 
-                                    control, 
-                                    targetDelta, trueDelta);
+                    command.execute(findAxisValue((float) Window.getCursorPositionY(), prevAxisY), this, control, targetDelta, trueDelta);
                     prevAxisY = (float) Window.getCursorPositionY();
                 }
             }
 
             case L2, R2 -> {
-                command.execute(Window.getMouseButtonInputValue(controls.get(control)), 
-                                this, control, 
-                                targetDelta, trueDelta);
+                command.execute(Window.getMouseButtonInputValue(controls.get(control)), this, control, targetDelta, trueDelta);
             }
 
             default -> {
-                command.execute(Window.getKeyInputValue(controls.get(control)), 
-                                this, 
-                                control, 
-                                targetDelta, trueDelta);
+                command.execute(Window.getKeyInputValue(controls.get(control)), this, control, targetDelta, trueDelta);
             }
         }
     }

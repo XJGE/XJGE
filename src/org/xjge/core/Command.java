@@ -51,10 +51,10 @@ public abstract class Command {
      * @param trueDelta the actual time (in seconds) it took the current game tick to complete
      */
     void execute(float inputValue, InputDevice device, Control control, double targetDelta, double trueDelta) {
-        this.inputValue   = inputValue;
-        this.device       = device;
-        this.control      = control;
-        this.deviceID     = device.id;
+        this.inputValue = inputValue;
+        this.device     = device;
+        this.control    = control;
+        this.deviceID   = device.id;
         
         execute(targetDelta, trueDelta);
     }

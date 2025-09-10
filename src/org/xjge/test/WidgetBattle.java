@@ -3,7 +3,7 @@ package org.xjge.test;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import static org.lwjgl.glfw.GLFW.*;
+import org.xjge.core.Control;
 import org.xjge.core.Mouse;
 import org.xjge.core.SplitScreenType;
 import org.xjge.core.Window;
@@ -60,13 +60,71 @@ class WidgetBattle extends Widget {
     
     @Override
     public void update(double targetDelta, double trueDelta) {
-        /*
-        TODO: 
-        use input state of the unit instead? This way controllers and keyboards 
-        alike will follow the same logic
-        
-        if(turnContext.unit.buttonPressed(Control.DPAD_UP)) System.out.println("up pressed");
-        */
+        switch(state) {
+            case MENU -> {
+                gridSelector = null;
+
+                if(turnContext.unit.buttonPressedOnce(Control.DPAD_UP)) {
+                    choice--;
+                } else if(turnContext.unit.buttonPressedOnce(Control.DPAD_DOWN)) {
+                    choice++;
+                } else if(turnContext.unit.buttonPressedOnce(Control.CROSS)) {
+                    Option option = options.get(choice);
+                    
+                    if(!option.used) {
+                        switch(option.name) {
+                            case "Move" -> {
+                                pendingCategory = ActionCategory.MOVE;
+                                pendingAction   = null;
+                                if(gridSelector == null) gridSelector = new GridSelector();
+                                state = State.TARGET;
+                            }
+
+                            case "Cast Spell" -> {
+                                
+                            }
+
+                            case "Use Item" -> {
+                                
+                            }
+                        }
+                    }
+                }
+            }
+
+            case TARGET -> {
+                switch(pendingCategory) {
+                    case MOVE -> {
+                        
+                    }
+                    case SPELL -> {
+                        //TODO: open spell list and select
+                        //SpellSelector
+                    }
+                    case ITEM -> {
+                        //TODO: open item inventory and select
+                        //ItemSelector
+                    }
+                }
+                
+                if(turnContext.unit.buttonPressedOnce(Control.CIRCLE)) {
+                    if(gridSelector != null) {
+                        turnContext.gridSpaces.values().forEach(gridSpace -> {
+                            gridSpace.status = GridSpaceStatus.NONE;
+                        });
+                    }
+                    
+                    pendingAction = null;
+                    state = State.MENU;
+                } else if(turnContext.unit.buttonPressedOnce(Control.CROSS)) {
+                    if(pendingAction != null) {
+                        turnContext.addAction(pendingCategory, pendingAction);
+                        options.get(choice).used = true;
+                        state = State.MENU;
+                    }
+                }
+            }
+        }
 
         if(choice == -1) choice = options.size() - 1;
         if(choice == options.size()) choice = 0;
@@ -101,69 +159,7 @@ class WidgetBattle extends Widget {
 
     @Override
     public void processKeyboardInput(int key, int action, int mods) {
-        if(action != GLFW_PRESS) return;
         
-        switch(state) {
-            case MENU -> {
-                gridSelector = null;
-                
-                switch(key) {
-                    case GLFW_KEY_UP   -> choice--;
-                    case GLFW_KEY_DOWN -> choice++;
-                    case GLFW_KEY_ENTER, GLFW_KEY_SPACE -> {
-                        Option option = options.get(choice);
-                        
-                        if(!option.used) {
-                            switch(option.name) {
-                                case "Move" -> {
-                                    pendingCategory = ActionCategory.MOVE;
-                                    pendingAction   = null;
-                                    if(gridSelector == null) gridSelector = new GridSelector();
-                                    state = State.TARGET;
-                                }
-
-                                case "Cast Spell" -> {
-                                    
-                                }
-
-                                case "Use Item" -> {
-
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-            case TARGET -> {
-                switch(pendingCategory) {
-                    case MOVE -> {
-                        
-                    }
-                    case SPELL -> {
-                        //TODO: open spell list and select
-                        //SpellSelector
-                    }
-                    case ITEM -> {
-                        //TODO: open item inventory and select
-                        //ItemSelector
-                    }
-                }
-                
-                switch(key) {
-                    case GLFW_KEY_ESCAPE -> {
-                        pendingAction = null;
-                        state = State.MENU;
-                    }
-                    case GLFW_KEY_ENTER, GLFW_KEY_SPACE -> {
-                        if(pendingAction != null) {
-                            turnContext.addAction(pendingCategory, pendingAction);
-                            options.get(choice).used = true;
-                            state = State.MENU;
-                        }
-                    }
-                }
-            }
-        }
     }
 
     @Override
