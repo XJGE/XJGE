@@ -19,8 +19,8 @@ class GameModeExplore extends GameMode {
     void execute(Scene3D scene, Map<UUID, Entity> entities, Map<Vector3i, GridSpace> gridSpaces) {
         if(!initialized) {
             entities.values().forEach(entity -> {
-                if(entity.hasComponent(ComponentUnit.class)) {
-                    entity.addComponent(new ComponentExplore(GLFW_JOYSTICK_1, entity, camera));
+                if(entity.hasAttribute(AttributeUnit.class)) {
+                    entity.addAttribute(new AttributeExplore(GLFW_JOYSTICK_1, entity, camera));
                 }
             });
             

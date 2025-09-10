@@ -5,7 +5,7 @@ package org.xjge.core;
  * <p>
  * Base class used to define the behavior of an {@linkplain Entity} object.
  * <p>
- * Components are intended to be narrow in scope and only contain the minimum 
+ * Attributes are intended to be narrow in scope and only contain the minimum 
  * amount of data and logic necessary to complete a single task.
  * <p>
  * Subclasses of this type should extend this class to implement specific 
@@ -14,4 +14,4 @@ package org.xjge.core;
  * @author J Hoffman
  * @since  4.0.0
  */
-public abstract class Component {}
+public abstract class Attribute {}

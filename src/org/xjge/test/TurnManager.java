@@ -16,7 +16,7 @@ class TurnManager {
 
     private TurnContext currentContext;
     
-    private final Queue<ComponentUnit> queue = new LinkedList<>();
+    private final Queue<AttributeUnit> queue = new LinkedList<>();
     
     private void endTurn() {
         if(currentContext != null) {
@@ -25,13 +25,13 @@ class TurnManager {
         }
     }
     
-    void queueUnit(ComponentUnit unit) {
+    void queueUnit(AttributeUnit unit) {
         queue.add(unit);
     }
     
     void startNextTurn(Scene3D scene, Map<UUID, Entity> entities, Map<Vector3i, GridSpace> gridSpaces) {
         if(queue.isEmpty()) return;
-        ComponentUnit unit = queue.poll();
+        AttributeUnit unit = queue.poll();
         currentContext = new TurnContext(unit, scene, entities, gridSpaces);
     }
     

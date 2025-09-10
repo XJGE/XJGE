@@ -52,21 +52,21 @@ public class Scene3D extends Scene {
                     if(type == 2) {
                         Entity player = new Entity();
                         
-                        player.addComponent(new ComponentUnit(KEY_MOUSE_COMBO));
-                        player.addComponent(new ComponentPosition(x, 0.01f, z));
-                        player.addComponent(new ComponentAABB(0.5f, 1.1f, 0.5f, Color.BLUE));
+                        player.addAttribute(new AttributeUnit(KEY_MOUSE_COMBO));
+                        player.addAttribute(new AttributePosition(x, 0.01f, z));
+                        player.addAttribute(new AttributeAABB(0.5f, 1.1f, 0.5f, Color.BLUE));
                         
                         addEntity(player);
                         
-                        gridSpace.occupyingUnit = player.getComponent(ComponentUnit.class);
+                        gridSpace.occupyingUnit = player.getAttribute(AttributeUnit.class);
                         
                     } else if(type == 3) {
                         /*
                         Entity enemy = new Entity();
                         
-                        enemy.addComponent(new ComponentUnit(AI_GAMEPAD_1));
-                        enemy.addComponent(new ComponentPosition(x, 0.01f, z));
-                        enemy.addComponent(new ComponentAABB(0.5f, 1.1f, 0.5f, Color.RED));
+                        enemy.addComponent(new AttributeUnit(AI_GAMEPAD_1));
+                        enemy.addComponent(new AttributePosition(x, 0.01f, z));
+                        enemy.addComponent(new AttributeAABB(0.5f, 1.1f, 0.5f, Color.RED));
                         
                         addEntity(enemy);
                         */
@@ -110,9 +110,9 @@ public class Scene3D extends Scene {
         });
         
         entities.values().forEach(entity -> {
-            if(entity.hasComponent(ComponentAABB.class) && entity.hasComponent(ComponentPosition.class)) {
-                Vector3f position = entity.getComponent(ComponentPosition.class).position;
-                entity.getComponent(ComponentAABB.class).update(position, gridSpaces, entities.values());
+            if(entity.hasAttribute(AttributeAABB.class) && entity.hasAttribute(AttributePosition.class)) {
+                Vector3f position = entity.getAttribute(AttributePosition.class).position;
+                entity.getAttribute(AttributeAABB.class).update(position, gridSpaces, entities.values());
             }
         });
     }
@@ -122,8 +122,8 @@ public class Scene3D extends Scene {
         gridRenderer.draw(glPrograms.get("grid"), gridSpaces);
         
         entities.values().forEach(entity -> {
-            if(entity.hasComponent(ComponentAABB.class) && Main.showBoundingVolumes()) {
-                entity.getComponent(ComponentAABB.class).render(glPrograms.get("volume"));
+            if(entity.hasAttribute(AttributeAABB.class) && Main.showBoundingVolumes()) {
+                entity.getAttribute(AttributeAABB.class).render(glPrograms.get("volume"));
             }
         });
     }

@@ -5,8 +5,8 @@ All notable changes to this project will be documented in this file. The format 
 ## [4.0.0] - 2025-
 
 ### Added
-- New abstract Component class that can be used to define the behavior of Entity objects.
-- The ability to query, add, and remove components from an Entity object.
+- New abstract Attribute class that can be used to define the behavior of Entity objects.
+- The ability to query, add, and remove attributes from an Entity object.
 - Randomly assigned UUIDs to identify entities at runtime.
 - New bind() method to the Texture class which is used instead of directly referencing its handle.
 - New TextEffect class that can be used to create custom effects for Font.drawString() by altering the data of the Glyph objects it generates.

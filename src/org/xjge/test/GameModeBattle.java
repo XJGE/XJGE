@@ -23,7 +23,7 @@ class GameModeBattle extends GameMode {
         
         if(turnContext != null) {
             Entity unitEntity = turnContext.entities.values().stream()
-                                                    .filter(entity -> entity.getComponent(ComponentUnit.class) == turnContext.unit)
+                                                    .filter(entity -> entity.getAttribute(AttributeUnit.class) == turnContext.unit)
                                                     .findFirst().orElse(null);
 
             if(unitEntity != null) camera.follow(unitEntity);
@@ -36,8 +36,8 @@ class GameModeBattle extends GameMode {
     void execute(Scene3D scene, Map<UUID, Entity> entities, Map<Vector3i, GridSpace> gridSpaces) {
         if(!initialized) {
             entities.values().forEach(entity -> {
-                if(entity.hasComponent(ComponentUnit.class)) {
-                    ComponentUnit unit = entity.getComponent(ComponentUnit.class);
+                if(entity.hasAttribute(AttributeUnit.class)) {
+                    AttributeUnit unit = entity.getAttribute(AttributeUnit.class);
                     turnManager.queueUnit(unit);
                 }
             });

@@ -1,7 +1,7 @@
 package org.xjge.test;
 
 import org.xjge.core.Command;
-import org.xjge.core.Component;
+import org.xjge.core.Attribute;
 import org.xjge.core.Control;
 import org.xjge.core.Puppet;
 
@@ -10,7 +10,7 @@ import org.xjge.core.Puppet;
  * @author J Hoffman
  * @since 
  */
-class ComponentUnit extends Component {
+class AttributeUnit extends Attribute {
 
     int maxHealth;
     int maxMana;
@@ -38,7 +38,7 @@ class ComponentUnit extends Component {
         }
     }
     
-    ComponentUnit(int inputDeviceID) {
+    AttributeUnit(int inputDeviceID) {
         this.inputDeviceID = inputDeviceID;
         
         puppet = new Puppet("unit_" + inputDeviceID);
