@@ -30,7 +30,6 @@ import static org.lwjgl.glfw.GLFW.GLFW_PRESS;
 public abstract class Command {
 
     private int deviceID;
-    private int glfwButtonID;
     
     private float inputValue;
     
@@ -51,12 +50,11 @@ public abstract class Command {
      *                    it should take for one game tick to complete
      * @param trueDelta the actual time (in seconds) it took the current game tick to complete
      */
-    void execute(float inputValue, InputDevice device, Control control, int glfwButtonID, double targetDelta, double trueDelta) {
+    void execute(float inputValue, InputDevice device, Control control, double targetDelta, double trueDelta) {
         this.inputValue   = inputValue;
         this.device       = device;
         this.control      = control;
         this.deviceID     = device.id;
-        this.glfwButtonID = glfwButtonID;
         
         execute(targetDelta, trueDelta);
     }

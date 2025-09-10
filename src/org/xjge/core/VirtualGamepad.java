@@ -60,7 +60,7 @@ class VirtualGamepad extends InputDevice {
 
     @Override
     protected void poll(double targetDelta, double trueDelta, Puppet puppet, Control control, Command command) {
-        command.execute(inputValues.get(control), this, control, -1, targetDelta, trueDelta);
+        command.execute(inputValues.get(control), this, control, targetDelta, trueDelta);
     }
     
 }

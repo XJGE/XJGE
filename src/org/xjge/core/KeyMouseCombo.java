@@ -69,11 +69,11 @@ final class KeyMouseCombo extends InputDevice {
                 int key2 = (controls.get(control) & ((control == LEFT_STICK_X) ? axisValues[1] : axisValues[3]));
 
                 if(Window.getKeyInputValue(key1) == GLFW_PRESS) {
-                    command.execute(-1, this, control, controls.get(control), targetDelta, trueDelta);
+                    command.execute(-1, this, control, targetDelta, trueDelta);
                 } else if(Window.getKeyInputValue(key2) == GLFW_PRESS) {
-                    command.execute(1, this, control, controls.get(control), targetDelta, trueDelta);
+                    command.execute(1, this, control, targetDelta, trueDelta);
                 } else {
-                    command.execute(0, this, control, controls.get(control), targetDelta, trueDelta);
+                    command.execute(0, this, control, targetDelta, trueDelta);
                 }
             }
 
@@ -81,8 +81,7 @@ final class KeyMouseCombo extends InputDevice {
                 if((float) Window.getCursorPositionX() != prevAxisX) {
                     command.execute(findAxisValue((float) Window.getCursorPositionX(), prevAxisX), 
                                     this, 
-                                    control, 
-                                    controls.get(control), 
+                                    control,  
                                     targetDelta, trueDelta);
                     prevAxisX = (float) Window.getCursorPositionX();
                 }
@@ -93,7 +92,6 @@ final class KeyMouseCombo extends InputDevice {
                     command.execute(findAxisValue((float) Window.getCursorPositionY(), prevAxisY), 
                                     this, 
                                     control, 
-                                    controls.get(control), 
                                     targetDelta, trueDelta);
                     prevAxisY = (float) Window.getCursorPositionY();
                 }
@@ -102,7 +100,6 @@ final class KeyMouseCombo extends InputDevice {
             case L2, R2 -> {
                 command.execute(Window.getMouseButtonInputValue(controls.get(control)), 
                                 this, control, 
-                                controls.get(control), 
                                 targetDelta, trueDelta);
             }
 
@@ -110,7 +107,6 @@ final class KeyMouseCombo extends InputDevice {
                 command.execute(Window.getKeyInputValue(controls.get(control)), 
                                 this, 
                                 control, 
-                                controls.get(control), 
                                 targetDelta, trueDelta);
             }
         }

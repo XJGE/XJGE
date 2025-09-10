@@ -72,7 +72,6 @@ final class Gamepad extends InputDevice {
                     command.execute(state.axes(controls.get(control)), 
                                     this, 
                                     control, 
-                                    controls.get(control), 
                                     targetDelta, trueDelta);
                 }
 
@@ -80,8 +79,7 @@ final class Gamepad extends InputDevice {
                     command.execute(
                             state.buttons(controls.get(control)), 
                             this, 
-                            control, 
-                            controls.get(control), 
+                            control,  
                             targetDelta, trueDelta);
                 }
             }
