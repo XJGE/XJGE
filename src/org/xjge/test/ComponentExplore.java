@@ -48,11 +48,14 @@ class ComponentExplore extends Component {
         @Override
         public void execute(double targetDelta, double trueDelta) {
             if(axisMoved() && entity.hasComponent(ComponentPosition.class)) {
+                /*
+                //TODO: split this into two cases for each axis
                 if(getButtonID() == GLFW_GAMEPAD_AXIS_LEFT_X) {
                     leftX = getInputValue();
                 } else if (getButtonID() == GLFW_GAMEPAD_AXIS_LEFT_Y) {
                     leftY = -getInputValue();
                 }
+                */
 
                 if(leftX == 0 && leftY == 0) return; //Analog stick is centered
 

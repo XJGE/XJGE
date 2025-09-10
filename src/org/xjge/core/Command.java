@@ -86,25 +86,6 @@ public abstract class Command {
     }
     
     /**
-     * Obtains a value used by GLFW to identify an interactive component. More
-     * specifically, this method can be used to return which GLFW button has 
-     * been assigned to the current {@link Control} object being used to execute 
-     * this command. This is particularly useful in instances where we want to 
-     * give users the ability to manually reconfigure the layout of the 
-     * interactive components on their input devices.
-     * <p>
-     * NOTE: This should <i>not</i> be used to supplement the functionality of 
-     * the control object, which exists to decouple device-specific button 
-     * layouts from game-defined ones.
-     * 
-     * @return the GLFW value used to identify the interactive component 
-     *         executing this command
-     */
-    protected int getButtonID() {
-        return glfwButtonID;
-    }
-    
-    /**
      * Provides subclasses with a value that denotes some preference of the 
      * input device currently being used to execute this command.
      * <p>
