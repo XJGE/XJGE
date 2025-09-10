@@ -112,6 +112,8 @@ class WidgetBattle extends Widget {
                         turnContext.gridSpaces.values().forEach(gridSpace -> {
                             gridSpace.status = GridSpaceStatus.NONE;
                         });
+                        
+                        gridSelector = null;
                     }
                     
                     pendingAction = null;
