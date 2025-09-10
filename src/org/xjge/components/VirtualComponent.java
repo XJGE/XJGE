@@ -5,7 +5,7 @@ package org.xjge.components;
  * @author J Hoffman
  * @since 
  */
-public final class AIComponent implements Component {
+public final class VirtualComponent implements Component {
 
     @Override
     public float getInputValue() {

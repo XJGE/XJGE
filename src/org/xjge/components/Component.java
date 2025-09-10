@@ -6,8 +6,8 @@ package org.xjge.components;
  * @since 4.0.0
  */
 public sealed interface Component permits 
-        AIComponent, AxisComponent, ButtonComponent, 
-        CursorComponent, ScrollWheelComponent {
+        AxisComponent, ButtonComponent, CursorComponent, 
+        ScrollWheelComponent, VirtualComponent {
     
     abstract float getInputValue();
     
