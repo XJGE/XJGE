@@ -42,4 +42,21 @@ final class InputDevice2 {
         }
     }
     
+    
+    /*
+    TODO:
+    
+    var controls = new HashMap<Control, Component>() {{
+        put(Control.DPAD_UP, new ButtonComponent(GLFW_GAMEPAD_BUTTON_DPAD_UP));
+        //etc.
+    }};
+    
+    Input.setDeviceControls(GLFW_JOYSTICK_1, controls);
+    
+    //or if you wanna display the current controls to the user or whatever:
+    
+    var currentControls = Input.getDeviceControls(GLKW_JOYSTICK_1);
+    
+    */
+    
 }
