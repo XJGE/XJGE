@@ -1,18 +1,18 @@
 package org.xjge.test;
 
 import org.joml.Vector3f;
-import org.xjge.core.Attribute;
+import org.xjge.core.Component;
 
 /**
  * 
  * @author J Hoffman
  * @since 
  */
-class AttributePosition extends Attribute {
+class ComponentPosition extends Component {
 
     final Vector3f position;
     
-    AttributePosition(float x, float y, float z) {
+    ComponentPosition(float x, float y, float z) {
         position = new Vector3f(x, y, z);
     }
     

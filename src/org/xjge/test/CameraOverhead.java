@@ -72,10 +72,10 @@ class CameraOverhead extends Camera {
     }
     
     public void follow(Entity entity) {
-        nextPosition = entity.getAttribute(AttributePosition.class).position;
+        nextPosition = entity.getComponent(ComponentPosition.class).position;
         
-        if(entity.hasAttribute(AttributeUnit.class)) {
-            int inputDeviceID = entity.getAttribute(AttributeUnit.class).inputDeviceID;
+        if(entity.hasComponent(ComponentUnit.class)) {
+            int inputDeviceID = entity.getComponent(ComponentUnit.class).inputDeviceID;
             rotationSpeed = (inputDeviceID == KEY_MOUSE_COMBO) ? 0.5f : 2.5f;
             lookInversion = inputDeviceID == KEY_MOUSE_COMBO;
             puppet.setInputDevice(inputDeviceID);

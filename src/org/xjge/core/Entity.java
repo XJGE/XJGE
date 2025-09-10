@@ -8,11 +8,11 @@ import java.util.UUID;
  * Created: May 7, 2021
  * <p>
  * Used to represent a distinct object in the scene, typically composed of 
- * several {@link Attribute attributes} which define its behavior.
+ * several {@link Component components} which define its behavior.
  * <p>
  * This class serves as the foundation of the engines entity component system 
  * (or ECS). Entity objects themselves are essentially just containers that gain
- * functionality through their attached attributes.
+ * functionality through their attached components.
  * 
  * @author J Hoffman
  * @since  2.0.0
@@ -23,7 +23,7 @@ public final class Entity {
     
     public final UUID uuid;
     
-    private final Map<Class<? extends Attribute>, Attribute> attibutes = new HashMap<>();
+    private final Map<Class<? extends Component>, Component> components = new HashMap<>();
     
     /**
      * Creates a new entity object with a random UUID.
@@ -50,23 +50,23 @@ public final class Entity {
     }
     
     /**
-     * Attaches a attribute to this entity.
+     * Attaches a component to this entity.
      * 
-     * @param <C> any subclass type that extends {@link Attribute}
-     * @param attribute the subclass object representing the attribute to add
+     * @param <C> any subclass type that extends {@link Component}
+     * @param component the subclass object representing the component to add
      */
-    public final <C extends Attribute> void addAttribute(C attribute) {
-        attibutes.put(attribute.getClass(), attribute);
+    public final <C extends Component> void addComponent(C component) {
+        components.put(component.getClass(), component);
     }
     
     /**
-     * Removes a attribute from this entity.
+     * Removes a component from this entity.
      * 
-     * @param <C> any subclass type that extends {@link Attribute}
-     * @param attribute the subclass object representing the attribute to remove
+     * @param <C> any subclass type that extends {@link Component}
+     * @param component the subclass object representing the component to remove
      */
-    public final <C extends Attribute> void removeAttribute(C attribute) {
-        attibutes.remove(attribute.getClass());
+    public final <C extends Component> void removeComponent(C component) {
+        components.remove(component.getClass());
     }
     
     /**
@@ -78,13 +78,13 @@ public final class Entity {
     }
     
     /**
-     * Checks to see if this entity has the specified attribute attached.
+     * Checks to see if this entity has the specified component attached.
      * 
-     * @param attribute the subclass object representing the attribute to check for
-     * @return true, if the entity has a attribute of the specified type
+     * @param component the subclass object representing the component to check for
+     * @return true, if the entity has a component of the specified type
      */
-    public final boolean hasAttribute(Class<? extends Attribute> attribute) {
-        return attibutes.containsKey(attribute);
+    public final boolean hasComponent(Class<? extends Component> component) {
+        return components.containsKey(component);
     }
     
     /**
@@ -99,15 +99,15 @@ public final class Entity {
     }
     
     /**
-     * Retrieves a attribute of the specified type from this entity.
+     * Retrieves a component of the specified type from this entity.
      * 
-     * @param <C> any subclass type that extends {@link Attribute}
-     * @param attribute the subclass object representing the attribute to retrieve
-     * @return the attribute instance of the specified type or <b>null</b> if no
-     *         such attribute is currently attached
+     * @param <C> any subclass type that extends {@link Component}
+     * @param component the subclass object representing the component to retrieve
+     * @return the component instance of the specified type or <b>null</b> if no
+     *         such component is currently attached
      */
-    public final <C extends Attribute> C getAttribute(Class<C> attribute) {
-        return attribute.cast(attibutes.get(attribute));
+    public final <C extends Component> C getComponent(Class<C> component) {
+        return component.cast(components.get(component));
     }
     
 }

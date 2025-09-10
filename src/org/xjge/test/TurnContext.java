@@ -15,14 +15,14 @@ class TurnContext {
 
     private boolean finished;
     
-    final AttributeUnit unit;
+    final ComponentUnit unit;
     final Scene3D scene;
     final Map<UUID, Entity> entities;
     final Map<Vector3i, GridSpace> gridSpaces;
     
     private final EnumMap<ActionCategory, UnitAction> chosenActions = new EnumMap<>(ActionCategory.class);
     
-    TurnContext(AttributeUnit unit, Scene3D scene, Map<UUID, Entity> entities, Map<Vector3i, GridSpace> gridSpaces) {
+    TurnContext(ComponentUnit unit, Scene3D scene, Map<UUID, Entity> entities, Map<Vector3i, GridSpace> gridSpaces) {
         this.unit = unit;
         this.scene = scene;
         this.entities = entities;

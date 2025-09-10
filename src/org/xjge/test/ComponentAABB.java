@@ -10,7 +10,7 @@ import org.joml.Vector3f;
 import org.joml.Vector3i;
 import static org.lwjgl.opengl.GL30C.*;
 import org.lwjgl.system.MemoryStack;
-import org.xjge.core.Attribute;
+import org.xjge.core.Component;
 import org.xjge.core.Entity;
 import org.xjge.core.ErrorUtils;
 import org.xjge.graphics.Color;
@@ -22,7 +22,7 @@ import org.xjge.graphics.Graphics;
  * @author J Hoffman
  * @since 
  */
-class AttributeAABB extends Attribute {
+class ComponentAABB extends Component {
 
     float width;
     float height;
@@ -35,7 +35,7 @@ class AttributeAABB extends Attribute {
     
     private final List<Vector3i> occupiedGridSpaces = new ArrayList<>();
     
-    AttributeAABB(float width, float height, float depth, Color color) {
+    ComponentAABB(float width, float height, float depth, Color color) {
         this.width  = width;
         this.height = height;
         this.depth  = depth;

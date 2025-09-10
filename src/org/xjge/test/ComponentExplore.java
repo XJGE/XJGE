@@ -4,7 +4,7 @@ import org.joml.Vector3f;
 import static org.lwjgl.glfw.GLFW.GLFW_GAMEPAD_AXIS_LEFT_X;
 import static org.lwjgl.glfw.GLFW.GLFW_GAMEPAD_AXIS_LEFT_Y;
 import org.xjge.core.Command;
-import org.xjge.core.Attribute;
+import org.xjge.core.Component;
 import org.xjge.core.Control;
 import org.xjge.core.Entity;
 import org.xjge.core.Puppet;
@@ -15,7 +15,7 @@ import org.xjge.core.Window;
  * @author J Hoffman
  * @since 
  */
-class AttributeExplore extends Attribute {
+class ComponentExplore extends Component {
     
     float moveSpeed = 5f;
     float facingYaw;
@@ -25,7 +25,7 @@ class AttributeExplore extends Attribute {
     private final Entity entity;
     private final CameraOverhead camera;
     
-    AttributeExplore(int inputDeviceID, Entity entity, CameraOverhead camera) {
+    ComponentExplore(int inputDeviceID, Entity entity, CameraOverhead camera) {
         this.entity = entity;
         this.camera = camera;
         
@@ -47,7 +47,7 @@ class AttributeExplore extends Attribute {
         
         @Override
         public void execute(double targetDelta, double trueDelta) {
-            if(axisMoved() && entity.hasAttribute(AttributePosition.class)) {
+            if(axisMoved() && entity.hasComponent(ComponentPosition.class)) {
                 if(getButtonID() == GLFW_GAMEPAD_AXIS_LEFT_X) {
                     leftX = getInputValue();
                 } else if (getButtonID() == GLFW_GAMEPAD_AXIS_LEFT_Y) {
@@ -64,7 +64,7 @@ class AttributeExplore extends Attribute {
                 if(moveDir.lengthSquared() > 0.0001f) {
                     moveDir.normalize();
                     
-                    Vector3f position = entity.getAttribute(AttributePosition.class).position;
+                    Vector3f position = entity.getComponent(ComponentPosition.class).position;
 
                     //Scale movement by *stick magnitude* (for analog fidelity)
                     float mag = (float) Math.sqrt(leftX * leftX + leftY * leftY);

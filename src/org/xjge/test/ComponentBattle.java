@@ -1,6 +1,6 @@
 package org.xjge.test;
 
-import org.xjge.core.Attribute;
+import org.xjge.core.Component;
 import org.xjge.core.Control;
 import org.xjge.core.Puppet;
 
@@ -9,11 +9,11 @@ import org.xjge.core.Puppet;
  * @author J Hoffman
  * @since 
  */
-class AttributeBattle extends Attribute {
+class ComponentBattle extends Component {
 
     private Puppet puppet;
     
-    AttributeBattle(AttributeUnit unit) {
+    ComponentBattle(ComponentUnit unit) {
         
         puppet = new Puppet("battle_" + unit.inputDeviceID);
         
