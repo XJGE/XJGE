@@ -22,7 +22,7 @@ import org.joml.Vector3f;
  */
 public abstract class Camera {
     
-    protected float fov = 45.0f;
+    public float fov = 45.0f;
     
     private static float orthoNear = Short.MIN_VALUE;
     private static float orthoFar  = Short.MAX_VALUE;

@@ -1,0 +1,83 @@
+package org.xjge.test;
+
+import java.util.Map;
+import org.joml.Matrix4f;
+import org.joml.Vector3f;
+import org.xjge.core.Camera;
+import org.xjge.graphics.GLProgram;
+
+/**
+ * 
+ * @author J Hoffman
+ * @since 
+ */
+class CameraManager {
+
+    private boolean transitioning;
+    
+    private float transitionTime;
+    private float transitionDuration;
+    private float blendedFOV;
+    
+    private Vector3f blendedPosition  = new Vector3f();
+    private Vector3f blendedDirection = new Vector3f();
+    
+    private Camera currentCamera;
+    private Camera previousCamera;
+    
+    void setActiveCamera(Camera camera, float duration) {
+        if(duration <= 0f || currentCamera == null) {
+            currentCamera = camera;
+            transitioning = false;
+        } else {
+            previousCamera     = currentCamera;
+            currentCamera      = camera;
+            transitionDuration = duration;
+            transitionTime     = 0f;
+            transitioning      = true;
+        }
+    }
+    
+    void update(double targetDelta, double trueDelta) {
+        if(transitioning) {
+            transitionTime += trueDelta;
+            float t = Math.min(1f, transitionTime / transitionDuration);
+            float eased = easeInOutQuad(t);
+
+            blendedPosition.set(previousCamera.position)
+                           .lerp(currentCamera.position, eased);
+            blendedDirection.set(previousCamera.direction)
+                            .lerp(currentCamera.direction, eased);
+            blendedFOV = lerp(previousCamera.fov, currentCamera.fov, eased);
+
+            if(t >= 1f) transitioning = false;
+        } else {
+            currentCamera.update(targetDelta, trueDelta);
+        }
+    }
+    
+    void render(Map<String, GLProgram> glPrograms) {
+        if(transitioning) {
+            Matrix4f view = new Matrix4f().lookAt(blendedPosition,
+                                                  new Vector3f(blendedPosition).add(blendedDirection),
+                                                  new Vector3f(0,1,0));
+            for (GLProgram prog : glPrograms.values()) {
+                if (prog.containsUniform("uView")) {
+                    prog.use();
+                    prog.setUniform("uView", false, view);
+                }
+            }
+        } else {
+            currentCamera.render(glPrograms);
+        }
+    }
+    
+    private float lerp(float a, float b, float t) {
+        return a + (b - a) * t;
+    }
+
+    private float easeInOutQuad(float t) {
+        return (t < 0.5f) ? 2*t*t : -1+(4-2*t)*t;
+    }
+    
+}

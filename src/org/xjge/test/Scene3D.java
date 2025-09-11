@@ -24,11 +24,13 @@ import org.xjge.graphics.GLProgram;
  */
 public class Scene3D extends Scene {
     
+    private GameMode gameMode;
+    
+    private CameraManager cameraManager;
+    
     private final Vector3i tempVec = new Vector3i();
     private final GridRenderer gridRenderer = new GridRenderer();
     private final Map<Vector3i, GridSpace> gridSpaces = new HashMap<>();
-    
-    private GameMode gameMode;
     
     public Scene3D(String filename) {
         super("test");
@@ -91,6 +93,8 @@ public class Scene3D extends Scene {
             gameMode.execute(this, Collections.unmodifiableMap(entities), Collections.unmodifiableMap(gridSpaces));
         }
         
+        cameraManager.update(targetDelta, trueDelta);
+        
         gridSpaces.forEach((location, gridSpace) -> {
             //left
             tempVec.set(location.x - 1, location.y, location.z);
@@ -119,6 +123,8 @@ public class Scene3D extends Scene {
 
     @Override
     public void render(Map<String, GLProgram> glPrograms, int viewportID, Camera camera, int depthTexHandle) {
+        cameraManager.render(glPrograms);
+        
         gridRenderer.draw(glPrograms.get("grid"), gridSpaces);
         
         entities.values().forEach(entity -> {
