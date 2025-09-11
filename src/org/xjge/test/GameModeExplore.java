@@ -13,7 +13,7 @@ import org.xjge.core.Entity;
  */
 class GameModeExplore extends GameMode {
     
-    final CameraOverhead camera = new CameraOverhead();
+    final CameraFollow camera = new CameraFollow();
     
     @Override
     void execute(Scene3D scene, Map<UUID, Entity> entities, Map<Vector3i, GridSpace> gridSpaces) {

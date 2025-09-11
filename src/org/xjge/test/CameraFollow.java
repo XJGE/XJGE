@@ -19,7 +19,7 @@ import org.xjge.graphics.GLProgram;
  * @author J Hoffman
  * @since 
  */
-class CameraOverhead extends Camera {
+class CameraFollow extends Camera {
     
     private boolean enableRotation;
     private boolean lookInversion;
@@ -34,7 +34,7 @@ class CameraOverhead extends Camera {
     
     private final Puppet puppet = new Puppet("camera");
     
-    public CameraOverhead() {
+    public CameraFollow() {
         super(false);
         fov = 40;
         direction.set(0, 0, -1);
@@ -45,7 +45,7 @@ class CameraOverhead extends Camera {
     }
     
     @Override
-    public void update() {
+    public void update(double targetDelta, double trueDelta) {
         pitch = Math.max(15f, Math.min(80f, pitch)); //clamp pitch to avoid flipping
         
         float distance = 5f;

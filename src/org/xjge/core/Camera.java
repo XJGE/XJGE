@@ -86,8 +86,13 @@ public abstract class Camera {
      * Optional abstract method which can be used to organize camera logic not 
      * directly related to rendering. Examples of this include applying effects
      * such as camera shake or dolly motion.
+     * 
+     * @param targetDelta a constant value denoting the desired time (in 
+     *                    seconds) it should take for one game tick to complete
+     * @param trueDelta the actual time (in seconds) it took the current game
+     *                  tick to complete
      */
-    public abstract void update();
+    public abstract void update(double targetDelta, double trueDelta);
     
     /**
      * Used to organize calls to the OpenGL API and other code pertaining to

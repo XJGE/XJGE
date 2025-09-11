@@ -39,7 +39,7 @@ final class Noclip extends Camera {
     }
 
     @Override
-    public void update() {
+    public void update(double targetDelta, double trueDelta) {
         if(pressed[0]) position.add(direction.mul(speed, tempDirec));
         if(pressed[1]) position.sub(direction.cross(up, tempRight).normalize().mul(speed));
         if(pressed[2]) position.sub(direction.mul(speed, tempDirec));

@@ -16,7 +16,7 @@ import org.xjge.core.Window;
 class GameModeBattle extends GameMode {
     
     private final TurnManager turnManager = new TurnManager();
-    private final CameraOverhead camera = new CameraOverhead();
+    private final CameraFollow camera = new CameraFollow();
     
     private void attachUI(TurnContext turnContext) {
         if(UI.containsWidget(GLFW_JOYSTICK_1, "battle_actions")) UI.removeWidget(GLFW_JOYSTICK_1, "battle_actions");
