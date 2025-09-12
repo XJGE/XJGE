@@ -2,8 +2,10 @@ package org.xjge.test;
 
 import java.util.ArrayList;
 import java.util.List;
+import org.joml.Vector3f;
 import org.joml.Vector3i;
 import org.xjge.core.Control;
+import org.xjge.core.XJGE;
 import static org.xjge.test.GridSpaceStatus.*;
 
 /**
@@ -14,9 +16,17 @@ import static org.xjge.test.GridSpaceStatus.*;
 class GridSelector {
 
     private boolean initialSpaceSet;
+    private boolean basePosSet;
+    
+    private float currZoomDistance;
+    private float prevZoomDistance;
     
     private int stage;
     private int range;
+    
+    private final Vector3f baseCamPos = new Vector3f();
+    private final Vector3f prevCamPos = new Vector3f();
+    private final Vector3f nextCamPos = new Vector3f();
     
     private final List<GridSpace> path = new ArrayList<>();
     
@@ -36,6 +46,13 @@ class GridSelector {
                 stage = 1;
             }
             case 1 -> {
+                if(!basePosSet && turnContext.scene.usingOverheadCam()) {
+                    baseCamPos.set(path.get(0).xLocation, path.get(0).yLocation + 10, path.get(0).zLocation + 8);
+                    nextCamPos.set(path.get(0).xLocation, 5, path.get(0).zLocation + 4);
+                    
+                    basePosSet = true;
+                }
+                
                 GridSpace prevSpace = path.get(path.size() - 1);
                 GridSpace nextSpace = null;
                 
@@ -57,6 +74,29 @@ class GridSelector {
                         path.add(nextSpace);
                         nextSpace.previousSpace = prevSpace;
                     }
+                    
+                    baseCamPos.set(nextSpace.xLocation, nextSpace.yLocation + 10, nextSpace.zLocation + 8);
+                }
+                
+                if(turnContext.scene.usingOverheadCam()) {
+                    if(turnContext.unit.buttonPressed(Control.L1)) {
+                        currZoomDistance = XJGE.clampValue(-5.0f, 0f, currZoomDistance + 0.25f);
+                    } else if(turnContext.unit.buttonPressed(Control.R1)) {
+                        currZoomDistance = XJGE.clampValue(-5.0f, 0f, currZoomDistance - 0.25f);
+                    }
+
+                    nextCamPos.set(baseCamPos);
+
+                    if(!nextCamPos.equals(prevCamPos) || currZoomDistance != prevZoomDistance) {
+                        nextCamPos.add(turnContext.scene.getOverheadCameraDirection().x * currZoomDistance,
+                                       turnContext.scene.getOverheadCameraDirection().y * currZoomDistance,
+                                       turnContext.scene.getOverheadCameraDirection().z * currZoomDistance);
+                    }
+
+                    turnContext.scene.moveOverheadCamera(nextCamPos, 0.05f);
+
+                    prevCamPos.set(nextCamPos);
+                    prevZoomDistance = currZoomDistance;
                 }
                 
                 boolean validPath = range >= path.size() - 1;

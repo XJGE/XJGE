@@ -52,6 +52,8 @@ class ComponentUnit extends Component {
         puppet.commands.put(Control.CIRCLE,     new InputState());
         puppet.commands.put(Control.TRIANGLE,   new InputState());
         puppet.commands.put(Control.SQUARE,     new InputState());
+        puppet.commands.put(Control.L1,         new InputState());
+        puppet.commands.put(Control.R1,         new InputState());
     }
     
     boolean buttonPressed(Control control) {

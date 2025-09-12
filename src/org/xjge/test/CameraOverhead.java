@@ -47,8 +47,9 @@ class CameraOverhead extends Camera {
         glPrograms.values().forEach(glProgram -> {
             if(glProgram.containsUniform("uView")) {
                 glProgram.use();
-                adjustedTarget.set(nextPosition).add(0, 0.5f, 0);
-                viewMatrix.setLookAt(position, adjustedTarget, up);
+                //adjustedTarget.set(nextPosition).add(0, 0.5f, 0);
+                //viewMatrix.setLookAt(position, adjustedTarget, up);
+                viewMatrix.setLookAt(position, position.add(direction, temp), up);
                 glProgram.setUniform("uView", false, viewMatrix);
             }
         });

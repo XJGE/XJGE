@@ -161,5 +161,17 @@ public class Scene3D extends Scene {
     final void setCameraOverhead(float duration) {
         cameraManager.setActiveCamera(cameraOverhead, duration);
     }
+    
+    final void moveOverheadCamera(Vector3f nextPosition, float speed) {
+        cameraOverhead.moveTo(nextPosition, speed);
+    }
+    
+    final boolean usingOverheadCam() {
+        return cameraManager.usingOverheadCam();
+    }
+    
+    final Vector3f getOverheadCameraDirection() {
+        return cameraOverhead.direction;
+    }
 
 }

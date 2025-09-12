@@ -63,13 +63,19 @@ class CameraManager {
             Matrix4f view = new Matrix4f().lookAt(blendedPosition,
                                                   new Vector3f(blendedPosition).add(blendedDirection),
                                                   new Vector3f(0,1,0));
-            for (GLProgram prog : glPrograms.values()) {
-                if (prog.containsUniform("uView")) {
+            for(GLProgram prog : glPrograms.values()) {
+                if(prog.containsUniform("uView")) {
                     prog.use();
                     prog.setUniform("uView", false, view);
                 }
+                
+                //TODO update proj matrix for FOV transition
             }
         }
+    }
+    
+    boolean usingOverheadCam() {
+        return currentCamera instanceof CameraOverhead;
     }
     
     private float lerp(float a, float b, float t) {
