@@ -26,7 +26,9 @@ public class Scene3D extends Scene {
     
     private GameMode gameMode;
     
-    private CameraManager cameraManager;
+    private final CameraManager cameraManager   = new CameraManager();
+    private final CameraFollow cameraFollow     = new CameraFollow();
+    private final CameraOverhead cameraOverhead = new CameraOverhead();
     
     private final Vector3i tempVec = new Vector3i();
     private final GridRenderer gridRenderer = new GridRenderer();
@@ -144,6 +146,20 @@ public class Scene3D extends Scene {
     
     final void setGameMode(GameMode gameMode) {
         this.gameMode = gameMode;
+    }
+    
+    final void setCameraFollow(ComponentUnit unit, float duration) {
+        Entity unitEntity = entities.values().stream()
+                                    .filter(entity -> entity.getComponent(ComponentUnit.class) == unit)
+                                    .findFirst().orElse(null);
+
+        if(unitEntity != null) cameraFollow.follow(unitEntity);
+
+        cameraManager.setActiveCamera(cameraFollow, duration);
+    }
+    
+    final void setCameraOverhead(float duration) {
+        cameraManager.setActiveCamera(cameraOverhead, duration);
     }
 
 }

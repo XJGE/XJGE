@@ -3,7 +3,9 @@ package org.xjge.test;
 import java.util.Map;
 import org.joml.Matrix4f;
 import org.joml.Vector3f;
+import static org.lwjgl.glfw.GLFW.GLFW_JOYSTICK_1;
 import org.xjge.core.Camera;
+import org.xjge.core.Window;
 import org.xjge.graphics.GLProgram;
 
 /**
@@ -27,6 +29,7 @@ class CameraManager {
     
     void setActiveCamera(Camera camera, float duration) {
         if(duration <= 0f || currentCamera == null) {
+            Window.setViewportCamera(GLFW_JOYSTICK_1, camera);
             currentCamera = camera;
             transitioning = false;
         } else {
@@ -51,8 +54,6 @@ class CameraManager {
             blendedFOV = lerp(previousCamera.fov, currentCamera.fov, eased);
 
             if(t >= 1f) transitioning = false;
-        } else {
-            currentCamera.update(targetDelta, trueDelta);
         }
     }
     
@@ -67,8 +68,6 @@ class CameraManager {
                     prog.setUniform("uView", false, view);
                 }
             }
-        } else {
-            currentCamera.render(glPrograms);
         }
     }
     

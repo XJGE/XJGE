@@ -76,7 +76,10 @@ class WidgetBattle extends Widget {
                             case "Move" -> {
                                 pendingCategory = ActionCategory.MOVE;
                                 pendingAction   = null;
-                                if(gridSelector == null) gridSelector = new GridSelector();
+                                if(gridSelector == null) {
+                                    gridSelector = new GridSelector();
+                                    turnContext.scene.setCameraOverhead(1.5f);
+                                }
                                 state = State.TARGET;
                             }
 
@@ -112,6 +115,8 @@ class WidgetBattle extends Widget {
                         turnContext.gridSpaces.values().forEach(gridSpace -> {
                             gridSpace.status = GridSpaceStatus.NONE;
                         });
+                        
+                        turnContext.scene.setCameraFollow(turnContext.unit, 1.5f);
                         
                         gridSelector = null;
                     }

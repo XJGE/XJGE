@@ -33,6 +33,7 @@ class TurnManager {
         if(queue.isEmpty()) return;
         ComponentUnit unit = queue.poll();
         currentContext = new TurnContext(unit, scene, entities, gridSpaces);
+        scene.setCameraFollow(unit, 0);
     }
     
     void update() {

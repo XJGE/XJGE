@@ -6,7 +6,6 @@ import org.joml.Vector3i;
 import static org.lwjgl.glfw.GLFW.GLFW_JOYSTICK_1;
 import org.xjge.core.Entity;
 import org.xjge.core.UI;
-import org.xjge.core.Window;
 
 /**
  * 
@@ -16,20 +15,10 @@ import org.xjge.core.Window;
 class GameModeBattle extends GameMode {
     
     private final TurnManager turnManager = new TurnManager();
-    private final CameraFollow camera = new CameraFollow();
     
     private void attachUI(TurnContext turnContext) {
         if(UI.containsWidget(GLFW_JOYSTICK_1, "battle_actions")) UI.removeWidget(GLFW_JOYSTICK_1, "battle_actions");
-        
-        if(turnContext != null) {
-            Entity unitEntity = turnContext.entities.values().stream()
-                                                    .filter(entity -> entity.getComponent(ComponentUnit.class) == turnContext.unit)
-                                                    .findFirst().orElse(null);
-
-            if(unitEntity != null) camera.follow(unitEntity);
-            
-            UI.addWidget(GLFW_JOYSTICK_1, "battle_actions", new WidgetBattle(turnContext));
-        }
+        if(turnContext != null) UI.addWidget(GLFW_JOYSTICK_1, "battle_actions", new WidgetBattle(turnContext));
     }
     
     @Override
@@ -42,7 +31,6 @@ class GameModeBattle extends GameMode {
                 }
             });
             
-            Window.setViewportCamera(GLFW_JOYSTICK_1, camera);
             turnManager.startNextTurn(scene, entities, gridSpaces);
             attachUI(turnManager.getCurrentContext());
             

@@ -92,7 +92,7 @@ public abstract class Camera {
      * @param trueDelta the actual time (in seconds) it took the current game
      *                  tick to complete
      */
-    public abstract void update(double targetDelta, double trueDelta);
+    protected abstract void update(double targetDelta, double trueDelta);
     
     /**
      * Used to organize calls to the OpenGL API and other code pertaining to
@@ -101,7 +101,7 @@ public abstract class Camera {
      * 
      * @param glPrograms an immutable collection containing the shader programs compiled during startup
      */
-    public abstract void render(Map<String, GLProgram> glPrograms);
+    protected abstract void render(Map<String, GLProgram> glPrograms);
     
     /**
      * Changes the current projection type the camera will use. 
