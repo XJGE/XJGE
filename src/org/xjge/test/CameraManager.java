@@ -47,13 +47,14 @@ class CameraManager {
             float t = Math.min(1f, transitionTime / transitionDuration);
             float eased = easeInOutQuad(t);
 
-            blendedPosition.set(previousCamera.position)
-                           .lerp(currentCamera.position, eased);
-            blendedDirection.set(previousCamera.direction)
-                            .lerp(currentCamera.direction, eased);
+            blendedPosition.set(previousCamera.position).lerp(currentCamera.position, eased);
+            blendedDirection.set(previousCamera.direction).lerp(currentCamera.direction, eased);
             blendedFOV = lerp(previousCamera.fov, currentCamera.fov, eased);
 
-            if(t >= 1f) transitioning = false;
+            if(t >= 1f) {
+                Window.setViewportCamera(GLFW_JOYSTICK_1, currentCamera);
+                transitioning = false;
+            }
         }
     }
     

@@ -154,7 +154,7 @@ public class Scene3D extends Scene {
                                     .findFirst().orElse(null);
 
         if(unitEntity != null) cameraFollow.follow(unitEntity);
-
+        
         cameraManager.setActiveCamera(cameraFollow, duration);
     }
     
