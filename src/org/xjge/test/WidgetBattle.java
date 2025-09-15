@@ -34,16 +34,18 @@ class WidgetBattle extends Widget {
     private final List<Option> options = new ArrayList<>();
     
     private enum State {
-        MENU, TARGET;
+        MENU, TARGET, CONFIRM;
     }
     
     private class Option {
         boolean used;
         final String name;
         final Rectangle background;
+        final ActionCategory category;
         
-        Option(String name) {
+        Option(String name, ActionCategory category) {
             this.name       = name;
+            this.category   = category;
             this.background = new Rectangle(10, 0, 300, 35);
         }
     }
@@ -51,9 +53,9 @@ class WidgetBattle extends Widget {
     WidgetBattle(TurnContext turnContext) {
         this.turnContext = turnContext;
         
-        options.add(new Option("Move"));
-        options.add(new Option("Cast Spell"));
-        options.add(new Option("Use Item"));
+        options.add(new Option("Move", MOVE));
+        options.add(new Option("Cast Spell", SPELL));
+        options.add(new Option("Use Item", ITEM));
         
         relocate(Window.getSplitScreenType(), Window.getResolutionWidth(), Window.getResolutionHeight());
     }
@@ -61,90 +63,21 @@ class WidgetBattle extends Widget {
     @Override
     public void update(double targetDelta, double trueDelta) {
         switch(state) {
-            case MENU -> {
-                gridSelector = null;
-
-                if(turnContext.unit.buttonPressedOnce(Control.DPAD_UP)) {
-                    choice--;
-                } else if(turnContext.unit.buttonPressedOnce(Control.DPAD_DOWN)) {
-                    choice++;
-                } else if(turnContext.unit.buttonPressedOnce(Control.CROSS)) {
-                    Option option = options.get(choice);
-                    
-                    if(!option.used) {
-                        switch(option.name) {
-                            case "Move" -> {
-                                pendingCategory = ActionCategory.MOVE;
-                                pendingAction   = null;
-                                if(gridSelector == null) {
-                                    gridSelector = new GridSelector();
-                                    turnContext.scene.setCameraOverhead(1.5f);
-                                }
-                                state = State.TARGET;
-                            }
-
-                            case "Cast Spell" -> {
-                                
-                            }
-
-                            case "Use Item" -> {
-                                
-                            }
-                        }
-                    }
-                }
-            }
-
-            case TARGET -> {
-                switch(pendingCategory) {
-                    case MOVE -> {
-                        
-                    }
-                    case SPELL -> {
-                        //TODO: open spell list and select
-                        //SpellSelector
-                    }
-                    case ITEM -> {
-                        //TODO: open item inventory and select
-                        //ItemSelector
-                    }
-                }
-                
-                if(turnContext.unit.buttonPressedOnce(Control.CIRCLE)) {
-                    if(gridSelector != null) {
-                        turnContext.gridSpaces.values().forEach(gridSpace -> {
-                            gridSpace.status = GridSpaceStatus.NONE;
-                        });
-                        
-                        turnContext.scene.setCameraFollow(turnContext.unit, 1.5f);
-                        
-                        gridSelector = null;
-                    }
-                    
-                    pendingAction = null;
-                    state = State.MENU;
-                } else if(turnContext.unit.buttonPressedOnce(Control.CROSS)) {
-                    //System.out.println(pendingAction);
-                    
-                    if(pendingAction != null) {
-                        //turnContext.addAction(pendingCategory, pendingAction);
-                        //options.get(choice).used = true;
-                        //state = State.MENU;
-                    }
-                }
-            }
+            case MENU -> handleMenuInput();
+            case TARGET -> handleTargetInput();
+            case CONFIRM -> handleConfirmInput();
         }
 
-        if(choice == -1) choice = options.size() - 1;
-        if(choice == options.size()) choice = 0;
-        
+        //Wrap choice
+        if(choice < 0) choice = options.size() - 1;
+        if(choice >= options.size()) choice = 0;
+
+        //Handle grid selector (continuous prompt)
         if(gridSelector != null) {
             List<GridSpace> path = gridSelector.prompt(turnContext);
-            if(path != null && pendingAction == null) {
+            if (path != null && pendingAction == null && pendingCategory == ActionCategory.MOVE) {
                 pendingAction = new UnitActionMove(path);
-                turnContext.addAction(pendingCategory, pendingAction);
-                options.get(choice).used = true;
-                state = State.MENU;
+                commitPendingAction();
             }
         }
     }
@@ -166,21 +99,76 @@ class WidgetBattle extends Widget {
     }
 
     @Override
-    public final void relocate(SplitScreenType splitType, int viewportWidth, int viewportHeight) {
-    }
+    public final void relocate(SplitScreenType splitType, int viewportWidth, int viewportHeight) {}
 
     @Override
-    public void processKeyboardInput(int key, int action, int mods) {
-        
-    }
+    public void processKeyboardInput(int key, int action, int mods) {}
 
     @Override
-    public void processMouseInput(Mouse mouse) {
-        
-    }
+    public void processMouseInput(Mouse mouse) {}
 
     @Override
-    public void delete() {
+    public void delete() {}
+    
+    private void handleMenuInput() {
+        gridSelector = null;
+
+        if(turnContext.unit.buttonPressedOnce(Control.DPAD_UP)) choice--;
+        if(turnContext.unit.buttonPressedOnce(Control.DPAD_DOWN)) choice++;
+
+        if(turnContext.unit.buttonPressedOnce(Control.CROSS)) {
+            Option option = options.get(choice);
+            if(!option.used) {
+                pendingCategory = option.category;
+                pendingAction   = null;
+
+                switch(option.category) {
+                    case MOVE -> {
+                        gridSelector = new GridSelector();
+                        turnContext.scene.setCameraOverhead(1.5f);
+                        state = State.TARGET;
+                    }
+                    case SPELL, ITEM -> {
+                        //TODO: open selector UIs
+                        state = State.TARGET;
+                    }
+                }
+            }
+        }
+    }
+
+    private void handleTargetInput() {
+        if(turnContext.unit.buttonPressedOnce(Control.CIRCLE)) {
+            cancelTargeting();
+        } else if(turnContext.unit.buttonPressedOnce(Control.CROSS) && pendingAction != null) {
+            state = State.CONFIRM;
+        }
+    }
+
+    private void handleConfirmInput() {
+        //Could extend with "are you sure?" UI
+        commitPendingAction();
+    }
+
+    private void commitPendingAction() {
+        turnContext.addAction(pendingCategory, pendingAction);
+        options.get(choice).used = true;
+        resetTargeting();
+        state = State.MENU;
+    }
+
+    private void cancelTargeting() {
+        resetTargeting();
+        state = State.MENU;
+    }
+
+    private void resetTargeting() {
+        if(gridSelector != null) {
+            turnContext.gridSpaces.values().forEach(gs -> gs.status = GridSpaceStatus.NONE);
+            turnContext.scene.setCameraFollow(turnContext.unit, 1.5f);
+            gridSelector = null;
+        }
+        pendingAction = null;
     }
 
 }
