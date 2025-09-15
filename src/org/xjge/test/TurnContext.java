@@ -3,6 +3,7 @@ package org.xjge.test;
 import java.util.EnumMap;
 import java.util.Map;
 import java.util.UUID;
+import org.joml.Vector3f;
 import org.joml.Vector3i;
 import org.xjge.core.Entity;
 
@@ -15,6 +16,7 @@ class TurnContext {
 
     private boolean finished;
     
+    final Vector3f unitPos;
     final ComponentUnit unit;
     final Scene3D scene;
     final Map<UUID, Entity> entities;
@@ -27,6 +29,14 @@ class TurnContext {
         this.scene = scene;
         this.entities = entities;
         this.gridSpaces = gridSpaces;
+        
+        unitPos = entities.values().stream()
+                          .filter(entity -> entity.hasComponent(ComponentUnit.class) 
+                                      && entity.getComponent(ComponentUnit.class) == unit)
+                          .map(entity -> entity.getComponent(ComponentPosition.class).position)
+                          .findFirst()
+                          .orElse(null);
+        
         //TODO: might be better to provide entities and grid info from Scene3D object
     }
     

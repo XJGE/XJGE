@@ -75,7 +75,6 @@ class CameraFollow extends Camera {
     public void follow(Entity entity) {
         nextPosition = entity.getComponent(ComponentPosition.class).position;
         
-        
         if(entity.hasComponent(ComponentUnit.class)) {
             int inputDeviceID = entity.getComponent(ComponentUnit.class).inputDeviceID;
             rotationSpeed = (inputDeviceID == KEY_MOUSE_COMBO) ? 0.5f : 2.5f;

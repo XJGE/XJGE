@@ -39,6 +39,8 @@ class CameraOverhead extends Camera {
         direction.x = (float) (Math.cos(Math.toRadians(yaw)) * Math.cos(Math.toRadians(pitch)));
         direction.y = (float) Math.sin(Math.toRadians(pitch)) * -1;
         direction.z = (float) (Math.sin(Math.toRadians(yaw)) * Math.cos(Math.toRadians(pitch)));
+        
+        position.add(direction, temp);
     }
 
     @Override
@@ -46,7 +48,7 @@ class CameraOverhead extends Camera {
         glPrograms.values().forEach(glProgram -> {
             if(glProgram.containsUniform("uView")) {
                 glProgram.use();
-                viewMatrix.setLookAt(position, position.add(direction, temp), up);
+                viewMatrix.setLookAt(position, temp, up);
                 glProgram.setUniform("uView", false, viewMatrix);
             }
         });

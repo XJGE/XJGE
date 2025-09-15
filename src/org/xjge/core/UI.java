@@ -118,10 +118,6 @@ public final class UI {
     public static boolean containsWidget(int viewportID, String name) {
         String failureReason = validateInput(viewportID, name);
         
-        if(failureReason == null && !widgets.get(viewportID).containsKey(name)) {
-            failureReason = "Viewport " + viewportID + " does not contain a widget with the name \"" + name + "\"";
-        }
-        
         if(failureReason == null) {
             return widgets.get(viewportID).containsKey(name);
         } else {            

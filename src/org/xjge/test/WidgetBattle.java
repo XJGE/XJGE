@@ -124,10 +124,12 @@ class WidgetBattle extends Widget {
                     pendingAction = null;
                     state = State.MENU;
                 } else if(turnContext.unit.buttonPressedOnce(Control.CROSS)) {
+                    //System.out.println(pendingAction);
+                    
                     if(pendingAction != null) {
-                        turnContext.addAction(pendingCategory, pendingAction);
-                        options.get(choice).used = true;
-                        state = State.MENU;
+                        //turnContext.addAction(pendingCategory, pendingAction);
+                        //options.get(choice).used = true;
+                        //state = State.MENU;
                     }
                 }
             }
@@ -138,8 +140,11 @@ class WidgetBattle extends Widget {
         
         if(gridSelector != null) {
             List<GridSpace> path = gridSelector.prompt(turnContext);
-            if(path != null) {
-                //pendingAction = new UnitActionMove(path);
+            if(path != null && pendingAction == null) {
+                pendingAction = new UnitActionMove(path);
+                turnContext.addAction(pendingCategory, pendingAction);
+                options.get(choice).used = true;
+                state = State.MENU;
             }
         }
     }

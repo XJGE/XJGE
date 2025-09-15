@@ -16,27 +16,37 @@ import org.xjge.core.UI;
  */
 class GameModeBattle extends GameMode {
     
+    private int count;
+    
     private TurnContext currentContext;
     
     private final Queue<ComponentUnit> queue = new LinkedList<>();
     
-    private void endTurn() {
+    private void endTurn(Scene3D scene, Map<UUID, Entity> entities, Map<Vector3i, GridSpace> gridSpaces) {
         if(currentContext != null) {
             queue.add(currentContext.unit);
             currentContext = null;
+            startNextTurn(scene, entities, gridSpaces);
+            attachUI();
         }
     }
     
     private void startNextTurn(Scene3D scene, Map<UUID, Entity> entities, Map<Vector3i, GridSpace> gridSpaces) {
-        if(queue.isEmpty()) return;
+        if(queue.isEmpty()) {
+            currentContext = null;
+            return;
+        }
+        
         ComponentUnit unit = queue.poll();
         currentContext = new TurnContext(unit, scene, entities, gridSpaces);
+        
         scene.setCameraFollow(unit, 0);
     }
     
     private void attachUI() {
-        if(UI.containsWidget(GLFW_JOYSTICK_1, "battle_actions")) UI.removeWidget(GLFW_JOYSTICK_1, "battle_actions");
-        if(currentContext != null) UI.addWidget(GLFW_JOYSTICK_1, "battle_actions", new WidgetBattle(currentContext));
+        if(UI.containsWidget(GLFW_JOYSTICK_1, "battle_actions_" + count)) UI.removeWidget(GLFW_JOYSTICK_1, "battle_actions_" + count);
+        count++;
+        if(currentContext != null) UI.addWidget(GLFW_JOYSTICK_1, "battle_actions_" + count, new WidgetBattle(currentContext));
     }
     
     @Override
@@ -57,11 +67,8 @@ class GameModeBattle extends GameMode {
         
         if(currentContext != null) {
             ActionResult result = currentContext.executeActions();
-            if(currentContext.isFinished() || result == ActionResult.FAILURE) endTurn();
-            
-            if(currentContext.isFinished()) {
-                startNextTurn(scene, entities, gridSpaces);
-                attachUI();
+            if(currentContext.isFinished() || result == ActionResult.FAILURE) {
+                endTurn(scene, entities, gridSpaces);
             }
         }
     }

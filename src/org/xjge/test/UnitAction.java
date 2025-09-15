@@ -7,6 +7,6 @@ package org.xjge.test;
  */
 abstract class UnitAction {
 
-    abstract ActionResult perform(TurnContext context);
+    abstract ActionResult perform(TurnContext turnContext);
     
 }
