@@ -20,7 +20,6 @@ class CameraOverhead extends Camera {
     
     private final Vector3f temp = new Vector3f();
     private Vector3f nextPosition = new Vector3f();
-    private final Vector3f adjustedTarget = new Vector3f();
     
     CameraOverhead() {
         super(false);
@@ -47,8 +46,6 @@ class CameraOverhead extends Camera {
         glPrograms.values().forEach(glProgram -> {
             if(glProgram.containsUniform("uView")) {
                 glProgram.use();
-                //adjustedTarget.set(nextPosition).add(0, 0.5f, 0);
-                //viewMatrix.setLookAt(position, adjustedTarget, up);
                 viewMatrix.setLookAt(position, position.add(direction, temp), up);
                 glProgram.setUniform("uView", false, viewMatrix);
             }

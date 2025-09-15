@@ -166,10 +166,6 @@ public class Scene3D extends Scene {
         cameraOverhead.moveTo(nextPosition, speed);
     }
     
-    final boolean usingOverheadCam() {
-        return cameraManager.usingOverheadCam();
-    }
-    
     final Vector3f getOverheadCameraDirection() {
         return cameraOverhead.direction;
     }

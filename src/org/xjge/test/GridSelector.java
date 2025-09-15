@@ -44,15 +44,11 @@ class GridSelector {
             case 0 -> {
                 range = 5; //TODO: add items that extend or reduce this
                 stage = 1;
+                
+                baseCamPos.set(path.get(0).xLocation, path.get(0).yLocation + 10, path.get(0).zLocation + 8);
+                nextCamPos.set(path.get(0).xLocation, 5, path.get(0).zLocation + 4);
             }
             case 1 -> {
-                if(!basePosSet && turnContext.scene.usingOverheadCam()) {
-                    baseCamPos.set(path.get(0).xLocation, path.get(0).yLocation + 10, path.get(0).zLocation + 8);
-                    nextCamPos.set(path.get(0).xLocation, 5, path.get(0).zLocation + 4);
-                    
-                    basePosSet = true;
-                }
-                
                 GridSpace prevSpace = path.get(path.size() - 1);
                 GridSpace nextSpace = null;
                 
@@ -78,26 +74,22 @@ class GridSelector {
                     baseCamPos.set(nextSpace.xLocation, nextSpace.yLocation + 10, nextSpace.zLocation + 8);
                 }
                 
-                if(turnContext.scene.usingOverheadCam()) {
-                    if(turnContext.unit.buttonPressed(Control.L1)) {
-                        currZoomDistance = XJGE.clampValue(-5.0f, 0f, currZoomDistance + 0.25f);
-                    } else if(turnContext.unit.buttonPressed(Control.R1)) {
-                        currZoomDistance = XJGE.clampValue(-5.0f, 0f, currZoomDistance - 0.25f);
-                    }
-
-                    nextCamPos.set(baseCamPos);
-
-                    if(!nextCamPos.equals(prevCamPos) || currZoomDistance != prevZoomDistance) {
-                        nextCamPos.add(turnContext.scene.getOverheadCameraDirection().x * currZoomDistance,
-                                       turnContext.scene.getOverheadCameraDirection().y * currZoomDistance,
-                                       turnContext.scene.getOverheadCameraDirection().z * currZoomDistance);
-                    }
-
-                    turnContext.scene.moveOverheadCamera(nextCamPos, 0.05f);
-
-                    prevCamPos.set(nextCamPos);
-                    prevZoomDistance = currZoomDistance;
+                if(turnContext.unit.buttonPressed(Control.L1)) {
+                    currZoomDistance = XJGE.clampValue(-5.0f, 0f, currZoomDistance + 0.25f);
+                } else if(turnContext.unit.buttonPressed(Control.R1)) {
+                    currZoomDistance = XJGE.clampValue(-5.0f, 0f, currZoomDistance - 0.25f);
                 }
+
+                nextCamPos.set(baseCamPos);
+
+                if(!nextCamPos.equals(prevCamPos) || currZoomDistance != prevZoomDistance) {
+                    nextCamPos.add(turnContext.scene.getOverheadCameraDirection().x * currZoomDistance,
+                                   turnContext.scene.getOverheadCameraDirection().y * currZoomDistance,
+                                   turnContext.scene.getOverheadCameraDirection().z * currZoomDistance);
+                }
+
+                prevCamPos.set(nextCamPos);
+                prevZoomDistance = currZoomDistance;
                 
                 boolean validPath = range >= path.size() - 1;
                 
@@ -128,6 +120,8 @@ class GridSelector {
                 return path;
             }
         }
+        
+        turnContext.scene.moveOverheadCamera(nextCamPos, 0.05f);
         
         return null;
     }

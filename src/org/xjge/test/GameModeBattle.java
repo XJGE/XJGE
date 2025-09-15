@@ -1,6 +1,8 @@
 package org.xjge.test;
 
+import java.util.LinkedList;
 import java.util.Map;
+import java.util.Queue;
 import java.util.UUID;
 import org.joml.Vector3i;
 import static org.lwjgl.glfw.GLFW.GLFW_JOYSTICK_1;
@@ -14,11 +16,27 @@ import org.xjge.core.UI;
  */
 class GameModeBattle extends GameMode {
     
-    private final TurnManager turnManager = new TurnManager();
+    private TurnContext currentContext;
     
-    private void attachUI(TurnContext turnContext) {
+    private final Queue<ComponentUnit> queue = new LinkedList<>();
+    
+    private void endTurn() {
+        if(currentContext != null) {
+            queue.add(currentContext.unit);
+            currentContext = null;
+        }
+    }
+    
+    private void startNextTurn(Scene3D scene, Map<UUID, Entity> entities, Map<Vector3i, GridSpace> gridSpaces) {
+        if(queue.isEmpty()) return;
+        ComponentUnit unit = queue.poll();
+        currentContext = new TurnContext(unit, scene, entities, gridSpaces);
+        scene.setCameraFollow(unit, 0);
+    }
+    
+    private void attachUI() {
         if(UI.containsWidget(GLFW_JOYSTICK_1, "battle_actions")) UI.removeWidget(GLFW_JOYSTICK_1, "battle_actions");
-        if(turnContext != null) UI.addWidget(GLFW_JOYSTICK_1, "battle_actions", new WidgetBattle(turnContext));
+        if(currentContext != null) UI.addWidget(GLFW_JOYSTICK_1, "battle_actions", new WidgetBattle(currentContext));
     }
     
     @Override
@@ -27,24 +45,23 @@ class GameModeBattle extends GameMode {
             entities.values().forEach(entity -> {
                 if(entity.hasComponent(ComponentUnit.class)) {
                     ComponentUnit unit = entity.getComponent(ComponentUnit.class);
-                    turnManager.queueUnit(unit);
+                    queue.add(unit);
                 }
             });
             
-            turnManager.startNextTurn(scene, entities, gridSpaces);
-            attachUI(turnManager.getCurrentContext());
+            startNextTurn(scene, entities, gridSpaces);
+            attachUI();
             
             initialized = true;
         }
         
-        TurnContext turnContext = turnManager.getCurrentContext();
-        
-        if(turnContext != null) {
-            turnManager.update();
+        if(currentContext != null) {
+            ActionResult result = currentContext.executeActions();
+            if(currentContext.isFinished() || result == ActionResult.FAILURE) endTurn();
             
-            if(turnContext.isFinished()) {
-                turnManager.startNextTurn(scene, entities, gridSpaces);
-                attachUI(turnManager.getCurrentContext());
+            if(currentContext.isFinished()) {
+                startNextTurn(scene, entities, gridSpaces);
+                attachUI();
             }
         }
     }
