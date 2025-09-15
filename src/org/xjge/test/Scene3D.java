@@ -162,12 +162,18 @@ public class Scene3D extends Scene {
         cameraManager.setActiveCamera(cameraOverhead, duration);
     }
     
-    final void moveOverheadCamera(Vector3f nextPosition, float speed) {
-        cameraOverhead.moveTo(nextPosition, speed);
+    void focusOverheadCamera(GridSpace space, float speed) {
+        Vector3f target = new Vector3f(space.xLocation, space.yLocation + 10, space.zLocation + 8);
+        cameraOverhead.moveTo(target, speed);
+    }
+
+    void adjustOverheadZoom(float delta) {
+        cameraOverhead.adjustZoom(delta);
     }
     
-    final Vector3f getOverheadCameraDirection() {
-        return cameraOverhead.direction;
+    void snapOverheadCamera(GridSpace space) {
+        Vector3f target = new Vector3f(space.xLocation, space.yLocation + 10, space.zLocation + 8);
+        cameraOverhead.setPosition(target);
     }
 
 }

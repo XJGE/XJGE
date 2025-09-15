@@ -112,10 +112,10 @@ class WidgetBattle extends Widget {
     
     private void handleMenuInput() {
         gridSelector = null;
-
+        
         if(turnContext.unit.buttonPressedOnce(Control.DPAD_UP)) choice--;
         if(turnContext.unit.buttonPressedOnce(Control.DPAD_DOWN)) choice++;
-
+        
         if(turnContext.unit.buttonPressedOnce(Control.CROSS)) {
             Option option = options.get(choice);
             if(!option.used) {
@@ -125,7 +125,16 @@ class WidgetBattle extends Widget {
                 switch(option.category) {
                     case MOVE -> {
                         gridSelector = new GridSelector();
-                        turnContext.scene.setCameraOverhead(1.5f);
+
+                        //Snap overhead camera to the units starting space
+                        GridSpace unitSpace = turnContext.gridSpaces.values().stream()
+                            .filter(space -> space.occupyingUnit == turnContext.unit)
+                            .findFirst()
+                            .orElse(null);
+
+                        if(unitSpace != null) turnContext.scene.snapOverheadCamera(unitSpace);
+
+                        turnContext.scene.setCameraOverhead(0.75f);
                         state = State.TARGET;
                     }
                     case SPELL, ITEM -> {
@@ -165,9 +174,10 @@ class WidgetBattle extends Widget {
     private void resetTargeting() {
         if(gridSelector != null) {
             turnContext.gridSpaces.values().forEach(gs -> gs.status = GridSpaceStatus.NONE);
-            turnContext.scene.setCameraFollow(turnContext.unit, 1.5f);
+            turnContext.scene.setCameraFollow(turnContext.unit, 0.75f);
             gridSelector = null;
         }
+        
         pendingAction = null;
     }
 

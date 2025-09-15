@@ -17,6 +17,7 @@ class CameraOverhead extends Camera {
     private float yaw = -90f;
     private float moveSpeed;
     private float moveLerp;
+    private float zoomDistance = 1f;
     
     private final Vector3f temp = new Vector3f();
     private Vector3f nextPosition = new Vector3f();
@@ -40,6 +41,13 @@ class CameraOverhead extends Camera {
         direction.y = (float) Math.sin(Math.toRadians(pitch)) * -1;
         direction.z = (float) (Math.sin(Math.toRadians(yaw)) * Math.cos(Math.toRadians(pitch)));
         
+        /*
+        position.add(direction.x * zoomDistance,
+                     direction.y * zoomDistance,
+                     direction.z * zoomDistance, 
+                     temp);
+        */
+        
         position.add(direction, temp);
     }
 
@@ -58,6 +66,22 @@ class CameraOverhead extends Camera {
         this.nextPosition = nextPosition;
         moveSpeed         = speed;
         moveLerp          = 0;
+    }
+    
+    public void adjustZoom(float delta) {
+        zoomDistance = XJGE.clampValue(-5f, 1f, zoomDistance + delta);
+    }
+    
+    public void setPosition(Vector3f nextPosition) {
+        this.nextPosition = nextPosition;
+        
+        position.set(nextPosition);
+        
+        direction.x = (float) (Math.cos(Math.toRadians(yaw)) * Math.cos(Math.toRadians(pitch)));
+        direction.y = (float) Math.sin(Math.toRadians(pitch)) * -1;
+        direction.z = (float) (Math.sin(Math.toRadians(yaw)) * Math.cos(Math.toRadians(pitch)));
+        
+        position.add(direction, temp);
     }
 
 }
