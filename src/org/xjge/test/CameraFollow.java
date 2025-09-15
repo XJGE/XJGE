@@ -50,13 +50,15 @@ class CameraFollow extends Camera {
         
         float distance = 5f;
         
+        adjustedTarget.set(nextPosition).add(0, 0.5f, 0);
+        
         //compute offset from yaw/pitch spherical coords
         float offsetX = (float) (distance * Math.cos(Math.toRadians(pitch)) * Math.cos(Math.toRadians(yaw)));
         float offsetY = (float) (distance * Math.sin(Math.toRadians(pitch)));
         float offsetZ = (float) (distance * Math.cos(Math.toRadians(pitch)) * Math.sin(Math.toRadians(yaw)));
         
-        position.set(nextPosition.x - offsetX, nextPosition.y + offsetY, nextPosition.z - offsetZ);
-        direction.set(nextPosition).sub(position).normalize();
+        position.set(adjustedTarget.x - offsetX, adjustedTarget.y + offsetY, adjustedTarget.z - offsetZ);
+        direction.set(adjustedTarget).sub(position).normalize();
     }
 
     @Override
@@ -64,7 +66,6 @@ class CameraFollow extends Camera {
         glPrograms.values().forEach(glProgram -> {
             if(glProgram.containsUniform("uView")) {
                 glProgram.use();
-                adjustedTarget.set(nextPosition).add(0, 0.5f, 0);
                 viewMatrix.setLookAt(position, adjustedTarget, up);
                 glProgram.setUniform("uView", false, viewMatrix);
             }
@@ -73,6 +74,7 @@ class CameraFollow extends Camera {
     
     public void follow(Entity entity) {
         nextPosition = entity.getComponent(ComponentPosition.class).position;
+        
         
         if(entity.hasComponent(ComponentUnit.class)) {
             int inputDeviceID = entity.getComponent(ComponentUnit.class).inputDeviceID;

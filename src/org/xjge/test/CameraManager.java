@@ -21,8 +21,8 @@ class CameraManager {
     private float transitionDuration;
     private float blendedFOV;
     
-    private Vector3f blendedPosition  = new Vector3f();
-    private Vector3f blendedDirection = new Vector3f();
+    private final Vector3f blendedPosition  = new Vector3f();
+    private final Vector3f blendedDirection = new Vector3f();
     
     private Camera currentCamera;
     private Camera previousCamera;
