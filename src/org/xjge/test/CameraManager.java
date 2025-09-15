@@ -63,13 +63,17 @@ class CameraManager {
             Matrix4f view = new Matrix4f().lookAt(blendedPosition,
                                                   new Vector3f(blendedPosition).add(blendedDirection),
                                                   new Vector3f(0,1,0));
+            
+            Matrix4f proj = new Matrix4f().setPerspective((float) Math.toRadians(blendedFOV), 
+                                                          (float) Window.getResolutionWidth() / Window.getResolutionHeight(), 
+                                                          0.1f, Float.POSITIVE_INFINITY);
+            
             for(GLProgram prog : glPrograms.values()) {
-                if(prog.containsUniform("uView")) {
+                if(prog.containsUniform("uView") && prog.containsUniform("uProjection")) {
                     prog.use();
                     prog.setUniform("uView", false, view);
+                    prog.setUniform("uProjection", false, proj);
                 }
-                
-                //TODO update proj matrix for FOV transition
             }
         }
     }
