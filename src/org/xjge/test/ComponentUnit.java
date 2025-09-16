@@ -1,5 +1,6 @@
 package org.xjge.test;
 
+import java.util.UUID;
 import org.xjge.core.Command;
 import org.xjge.core.Component;
 import org.xjge.core.Control;
@@ -38,10 +39,10 @@ class ComponentUnit extends Component {
         }
     }
     
-    ComponentUnit(int inputDeviceID) {
+    ComponentUnit(int inputDeviceID, UUID uuid) {
         this.inputDeviceID = inputDeviceID;
         
-        puppet = new Puppet("unit_" + inputDeviceID);
+        puppet = new Puppet("unit_" + uuid); //TODO: name must be unique, added uuid
         puppet.setInputDevice(inputDeviceID);
         
         puppet.commands.put(Control.DPAD_UP,    new InputState());

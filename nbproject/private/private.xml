@@ -2,18 +2,18 @@
 <project-private xmlns="http://www.netbeans.org/ns/project-private/1">
     <editor-bookmarks xmlns="http://www.netbeans.org/ns/editor-bookmarks/2" lastBookmarkId="22">
         <file>
-            <url>src/org/xjge/core/Viewport.java</url>
-            <bookmark id="12">
-                <name/>
-                <line>159</line>
-                <key/>
-            </bookmark>
-        </file>
-        <file>
             <url>src/org/xjge/ui/UI.java</url>
             <bookmark id="9">
                 <name/>
                 <line>52</line>
+                <key/>
+            </bookmark>
+        </file>
+        <file>
+            <url>src/org/xjge/core/Viewport.java</url>
+            <bookmark id="12">
+                <name/>
+                <line>159</line>
                 <key/>
             </bookmark>
         </file>
@@ -23,8 +23,7 @@
             <file>file:/C:/Users/jhoff/Projects/XJGE/src/org/xjge/test/GridSelector.java</file>
             <file>file:/C:/Users/jhoff/Projects/XJGE/src/org/xjge/test/CameraOverhead.java</file>
             <file>file:/C:/Users/jhoff/Projects/XJGE/src/org/xjge/test/WidgetBattle.java</file>
-            <file>file:/C:/Users/jhoff/Projects/XJGE/src/org/xjge/test/CameraManager.java</file>
-            <file>file:/C:/Users/jhoff/Projects/XJGE/src/org/xjge/test/GameModeBattle.java</file>
+            <file>file:/C:/Users/jhoff/Projects/XJGE/src/org/xjge/test/UnitActionMove.java</file>
             <file>file:/C:/Users/jhoff/Projects/XJGE/src/org/xjge/test/Scene3D.java</file>
         </group>
     </open-files>
