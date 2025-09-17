@@ -16,7 +16,7 @@ class UnitActionMove extends UnitAction {
     private float t;
     
     private final List<GridSpace> path;
-    private static final float MOVE_SPEED = 10f;
+    private static final float MOVE_SPEED = 7f;
     
     UnitActionMove(List<GridSpace> path) {
         this.path = path;

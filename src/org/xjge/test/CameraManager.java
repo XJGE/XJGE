@@ -43,6 +43,11 @@ class CameraManager {
     
     void update(double targetDelta, double trueDelta) {
         if(transitioning) {
+            if(currentCamera instanceof CameraFollow) {
+                //Might need this for the melee cam or something
+                //((CameraFollow) currentCamera).update(targetDelta, trueDelta);
+            }
+            
             transitionTime += trueDelta;
             float t = Math.min(1f, transitionTime / transitionDuration);
             float eased = easeInOutQuad(t);
