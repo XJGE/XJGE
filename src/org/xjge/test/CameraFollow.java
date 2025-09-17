@@ -81,6 +81,8 @@ class CameraFollow extends Camera {
             lookInversion = inputDeviceID == KEY_MOUSE_COMBO;
             puppet.setInputDevice(inputDeviceID);
         }
+        
+        update(0.016, 0.016); //Fixes snap following unit movement into an unoccupied space
     }
     
     public Vector3f getFlatForward() {

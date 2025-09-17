@@ -24,7 +24,10 @@ class UnitActionMove extends UnitAction {
     
     @Override
     boolean perform(TurnContext turnContext) {
-        if(path.isEmpty() || pathIndex >= path.size()) return true;
+        if(path.isEmpty() || pathIndex >= path.size()) {
+            turnContext.scene.setCameraFollow(turnContext.unit, 0.4f);
+            return true;
+        }
         
         GridSpace from = path.get(pathIndex - 1);
         GridSpace to   = path.get(pathIndex);
@@ -49,7 +52,10 @@ class UnitActionMove extends UnitAction {
         }
         
         //Finished path traversal
-        if(pathIndex >= path.size()) return true;
+        if(pathIndex >= path.size()) {
+            turnContext.scene.setCameraFollow(turnContext.unit, 0.4f);
+            return true;
+        }
         
         return false;
     }
