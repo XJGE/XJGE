@@ -134,7 +134,7 @@ class WidgetBattle extends Widget {
 
                         if(unitSpace != null) turnContext.scene.snapOverheadCamera(unitSpace);
 
-                        turnContext.scene.setCameraOverhead(0.75f);
+                        turnContext.scene.setCameraOverhead(0.4f);
                         state = State.TARGET;
                     }
                     case SPELL, ITEM -> {
@@ -148,7 +148,8 @@ class WidgetBattle extends Widget {
 
     private void handleTargetInput() {
         if(turnContext.unit.buttonPressedOnce(Control.CIRCLE)) {
-            cancelTargeting();
+            resetTargeting();
+            state = State.MENU;
         } else if(turnContext.unit.buttonPressedOnce(Control.CROSS) && pendingAction != null) {
             state = State.CONFIRM;
         }
@@ -166,15 +167,10 @@ class WidgetBattle extends Widget {
         state = State.MENU;
     }
 
-    private void cancelTargeting() {
-        resetTargeting();
-        state = State.MENU;
-    }
-
     private void resetTargeting() {
         if(gridSelector != null) {
             turnContext.gridSpaces.values().forEach(gs -> gs.status = GridSpaceStatus.NONE);
-            turnContext.scene.setCameraFollow(turnContext.unit, 0.75f);
+            turnContext.scene.setCameraFollow(turnContext.unit, 0.4f);
             gridSelector = null;
         }
         
