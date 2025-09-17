@@ -65,12 +65,7 @@ class GameModeBattle extends GameMode {
             initialized = true;
         }
         
-        if(currentContext != null) {
-            ActionResult result = currentContext.executeActions();
-            if(currentContext.isFinished() || result == ActionResult.FAILURE) {
-                endTurn(scene, entities, gridSpaces);
-            }
-        }
+        if(currentContext != null && currentContext.executeActions()) endTurn(scene, entities, gridSpaces);
     }
 
 }

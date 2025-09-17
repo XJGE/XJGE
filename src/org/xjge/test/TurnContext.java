@@ -40,29 +40,19 @@ class TurnContext {
         //TODO: might be better to provide entities and grid info from Scene3D object
     }
     
+    void finish() {
+        finished = true; //Finish turn early
+    }
+    
     boolean addAction(ActionCategory category, UnitAction action) {
         if(chosenActions.containsKey(category)) return false;
         chosenActions.put(category, action);
         return true;
     }
     
-    boolean isFinished() {
+    boolean executeActions() {
+        chosenActions.entrySet().removeIf(entry -> entry.getValue().perform(this));
         return finished;
-    }
-    
-    ActionResult executeActions() {
-        if(chosenActions.isEmpty()) return ActionResult.PENDING;
-        
-        for(var entry : chosenActions.entrySet()) {
-            ActionResult result = entry.getValue().perform(this);
-            
-            if(result == ActionResult.PENDING || result == ActionResult.TRIGGER_RTR) {
-                return result;
-            }
-        }
-        
-        finished = true;
-        return ActionResult.SUCCESS;
     }
     
 }

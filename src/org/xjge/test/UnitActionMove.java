@@ -2,8 +2,6 @@ package org.xjge.test;
 
 import java.util.List;
 import org.xjge.core.XJGE;
-import static org.xjge.test.ActionResult.PENDING;
-import static org.xjge.test.ActionResult.SUCCESS;
 
 /**
  * 
@@ -16,7 +14,7 @@ class UnitActionMove extends UnitAction {
     private float t;
     
     private final List<GridSpace> path;
-    private static final float MOVE_SPEED = 7f;
+    private static final float MOVE_SPEED = 6f;
     
     UnitActionMove(List<GridSpace> path) {
         this.path = path;
@@ -25,8 +23,8 @@ class UnitActionMove extends UnitAction {
     }
     
     @Override
-    ActionResult perform(TurnContext turnContext) {
-        if(path.isEmpty() || pathIndex >= path.size()) return SUCCESS;
+    boolean perform(TurnContext turnContext) {
+        if(path.isEmpty() || pathIndex >= path.size()) return true;
         
         GridSpace from = path.get(pathIndex - 1);
         GridSpace to   = path.get(pathIndex);
@@ -42,7 +40,7 @@ class UnitActionMove extends UnitAction {
         turnContext.unitPos.z = newZ;
         
         //Reached target space, move to the next segment
-        if (t >= 1f) {
+        if(t >= 1f) {
             from.occupyingUnit = null;
             to.occupyingUnit   = turnContext.unit;
             
@@ -51,9 +49,9 @@ class UnitActionMove extends UnitAction {
         }
         
         //Finished path traversal
-        if(pathIndex >= path.size()) return SUCCESS;
+        if(pathIndex >= path.size()) return true;
         
-        return PENDING;
+        return false;
     }
     
 }
