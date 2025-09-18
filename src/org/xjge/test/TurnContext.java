@@ -30,12 +30,7 @@ class TurnContext {
         this.entities = entities;
         this.gridSpaces = gridSpaces;
         
-        unitPos = entities.values().stream()
-                          .filter(entity -> entity.hasComponent(ComponentUnit.class) 
-                                      && entity.getComponent(ComponentUnit.class) == unit)
-                          .map(entity -> entity.getComponent(ComponentPosition.class).position)
-                          .findFirst()
-                          .orElse(null);
+        unitPos = getUnitPos(unit);
         
         //TODO: might be better to provide entities and grid info from Scene3D object
     }
@@ -53,6 +48,15 @@ class TurnContext {
     boolean executeActions() {
         chosenActions.entrySet().removeIf(entry -> entry.getValue().perform(this));
         return finished;
+    }
+    
+    final Vector3f getUnitPos(ComponentUnit unit) {
+        return entities.values().stream()
+                       .filter(entity -> entity.hasComponent(ComponentUnit.class) 
+                                   && entity.getComponent(ComponentUnit.class) == unit)
+                       .map(entity -> entity.getComponent(ComponentPosition.class).position)
+                       .findFirst()
+                       .orElse(null);
     }
     
 }

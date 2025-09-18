@@ -11,17 +11,19 @@ import org.joml.Vector3f;
  */
 class ShotMelee {
 
-    final Vector3f attacker = new Vector3f();
-    final Vector3f defender = new Vector3f();
+    final Vector3f attackerPos = new Vector3f();
+    final Vector3f defenderPos = new Vector3f();
     final float yaw, pitch;
     final float duration; //In seconds
+    final float lerpFactor;
     
-    ShotMelee(Vector3f attacker, Vector3f defender, float yaw, float pitch, float duration) {
-        this.attacker.set(attacker);
-        this.defender.set(defender);
+    ShotMelee(Vector3f attackerPos, Vector3f defenderPos, float yaw, float pitch, float duration, float lerpFactor) {
+        this.attackerPos.set(attackerPos);
+        this.defenderPos.set(defenderPos);
         this.yaw = yaw;
         this.pitch = pitch;
         this.duration = duration;
+        this.lerpFactor = lerpFactor;
     }
     
 }

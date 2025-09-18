@@ -1,5 +1,6 @@
 package org.xjge.test;
 
+import java.util.ArrayList;
 import java.util.List;
 import org.joml.Vector3f;
 import org.xjge.core.XJGE;
@@ -10,23 +11,23 @@ import org.xjge.core.XJGE;
  * @since 
  */
 class UnitActionMove extends UnitAction {
-
-    private boolean queueRTR;
-    private boolean cameraSet;
     
+    private boolean queueRTR;
+    
+    private int currentShotIndex;
     private int pathIndex;
-    private float t;
+    
+    private float shotTimer;
+    private float pathLerp;
     
     private final List<GridSpace> path;
     private static final float MOVE_SPEED = 6f;
     
-    private final Vector3f cameraPosition = new Vector3f();
-    private final Vector3f cameraTarget   = new Vector3f();
+    private final List<ShotMelee> shotSequence = new ArrayList<>();
     
     UnitActionMove(List<GridSpace> path) {
         this.path = path;
         this.pathIndex = 1; //Start moving toward the 2nd space
-        this.t = 0f;
     }
     
     @Override
@@ -36,49 +37,77 @@ class UnitActionMove extends UnitAction {
             return true;
         }
         
-        if(!queueRTR && path.get(path.size() - 1).occupyingUnit != null) queueRTR = true;
+        if(!queueRTR && path.get(path.size() - 1).occupyingUnit != null) {
+            queueRTR = true;
+            setupShotSequence(turnContext);
+        }
         
         if(queueRTR && pathIndex == path.size() - 1) {
-            if(!cameraSet) {
-                //TODO: align the camera, we might use multiple different angles during the RTR
-                cameraPosition.set(10, 0, 10);
-                cameraTarget.set(turnContext.unitPos);
-                turnContext.scene.setCameraMelee(cameraPosition, cameraTarget, 0.4f);
-                cameraSet = true;
-            }
-            
-            //TODO: use unit input from turnContext
-        } else {
-            GridSpace from = path.get(pathIndex - 1);
-            GridSpace to   = path.get(pathIndex);
+            //Run the shot sequence
+            if(currentShotIndex < shotSequence.size()) {
+                ShotMelee shot = shotSequence.get(currentShotIndex);
 
-            //Advance interpolation
-            t += 0.016f * MOVE_SPEED; //TODO: supply deltaTime
-            if(t > 1f) t = 1f;
+                //Apply focus + angles through Scene3D
+                turnContext.scene.focusMeleeCamera(shot.attackerPos, shot.defenderPos, shot.lerpFactor);
+                turnContext.scene.setMeleeCameraAngles(shot.yaw, shot.pitch, shot.lerpFactor);
+                turnContext.scene.setCameraMelee(shot.duration > 0 ? shot.duration : 0.4f);
 
-            float newX = XJGE.lerp(from.xLocation, to.xLocation, t);
-            float newZ = XJGE.lerp(from.zLocation, to.zLocation, t);
-
-            turnContext.unitPos.x = newX;
-            turnContext.unitPos.z = newZ;
-
-            //Reached target space, move to the next segment
-            if(t >= 1f) {
-                from.occupyingUnit = null;
-                to.occupyingUnit   = turnContext.unit;
-
-                pathIndex++;
-                t = 0f;
+                //Tick shot timer
+                shotTimer += 0.016f; //TODO: supply deltaTime
+                if(shotTimer >= shot.duration) {
+                    shotTimer = 0f;
+                    currentShotIndex++;
+                }
+            } else {
+                // finished all shots, proceed to RTR resolution
+                // TODO: begin RTR input/logic here
             }
 
-            //Finished path traversal
-            if(pathIndex >= path.size()) {
-                turnContext.scene.setCameraFollow(turnContext.unit, 0.4f);
-                return true;
-            }
+            return false; //Busy with RTR
+        }
+        
+        GridSpace from = path.get(pathIndex - 1);
+        GridSpace to   = path.get(pathIndex);
+
+        //Advance interpolation
+        pathLerp += 0.016f * MOVE_SPEED; //TODO: supply deltaTime
+        if(pathLerp > 1f) pathLerp = 1f;
+
+        float newX = XJGE.lerp(from.xLocation, to.xLocation, pathLerp);
+        float newZ = XJGE.lerp(from.zLocation, to.zLocation, pathLerp);
+
+        turnContext.unitPos.x = newX;
+        turnContext.unitPos.z = newZ;
+
+        //Reached target space, move to the next segment
+        if(pathLerp >= 1f) {
+            from.occupyingUnit = null;
+            to.occupyingUnit   = turnContext.unit;
+
+            pathIndex++;
+            pathLerp = 0f;
+        }
+
+        //Finished path traversal
+        if(pathIndex >= path.size()) {
+            turnContext.scene.setCameraFollow(turnContext.unit, 0.4f);
+            return true;
         }
         
         return false;
+    }
+    
+    private void setupShotSequence(TurnContext turnContext) {
+        shotSequence.clear();
+        currentShotIndex = 0;
+        shotTimer = 0f;
+
+        Vector3f attackerPos = turnContext.unitPos;
+        Vector3f defenderPos = turnContext.getUnitPos(path.get(path.size() - 1).occupyingUnit);
+        
+        //Simple 2-shot example sequence
+        shotSequence.add(new ShotMelee(attackerPos, defenderPos, -90f, 45f, 1.5f, 0.1f)); //Lerp to wide
+        shotSequence.add(new ShotMelee(attackerPos, defenderPos, 45f, 30f, 1.0f, 1.0f));  //Snap to closeup
     }
     
 }
