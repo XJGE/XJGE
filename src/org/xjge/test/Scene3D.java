@@ -29,6 +29,7 @@ public class Scene3D extends Scene {
     private final CameraManager cameraManager   = new CameraManager();
     private final CameraFollow cameraFollow     = new CameraFollow();
     private final CameraOverhead cameraOverhead = new CameraOverhead();
+    private final CameraMelee cameraMelee       = new CameraMelee();
     
     private final Vector3i tempVec = new Vector3i();
     private final GridRenderer gridRenderer = new GridRenderer();
@@ -149,6 +150,11 @@ public class Scene3D extends Scene {
         if(unitEntity != null) cameraFollow.follow(unitEntity);
         
         cameraManager.setActiveCamera(cameraFollow, duration);
+    }
+    
+    final void setCameraMelee(Vector3f position, Vector3f target, float duration) {
+        cameraMelee.lookAt(position, target);
+        cameraManager.setActiveCamera(cameraMelee, duration);
     }
     
     final void setCameraOverhead(float duration) {
