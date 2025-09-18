@@ -74,14 +74,8 @@ class CameraOverhead extends Camera {
     
     public void setPosition(Vector3f nextPosition) {
         this.nextPosition = nextPosition;
-        
-        position.set(nextPosition);
-        
-        direction.x = (float) (Math.cos(Math.toRadians(yaw)) * Math.cos(Math.toRadians(pitch)));
-        direction.y = (float) Math.sin(Math.toRadians(pitch)) * -1;
-        direction.z = (float) (Math.sin(Math.toRadians(yaw)) * Math.cos(Math.toRadians(pitch)));
-        
-        position.add(direction, temp);
+        moveLerp = 1;
+        update(0.016, 0.016);
     }
 
 }

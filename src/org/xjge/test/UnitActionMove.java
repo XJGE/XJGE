@@ -15,19 +15,18 @@ class UnitActionMove extends UnitAction {
     private boolean queueRTR;
     
     private int currentShotIndex;
-    private int pathIndex;
+    private int pathIndex = 1; //Start moving toward the 2nd space
     
     private float shotTimer;
     private float pathLerp;
+    private final float MOVE_SPEED = 6f;
     
     private final List<GridSpace> path;
-    private static final float MOVE_SPEED = 6f;
     
     private final List<ShotMelee> shotSequence = new ArrayList<>();
     
     UnitActionMove(List<GridSpace> path) {
         this.path = path;
-        this.pathIndex = 1; //Start moving toward the 2nd space
     }
     
     @Override
@@ -50,7 +49,7 @@ class UnitActionMove extends UnitAction {
                 //Apply focus + angles through Scene3D
                 turnContext.scene.focusMeleeCamera(shot.attackerPos, shot.defenderPos, shot.lerpFactor);
                 turnContext.scene.setMeleeCameraAngles(shot.yaw, shot.pitch, shot.lerpFactor);
-                turnContext.scene.setCameraMelee(shot.duration > 0 ? shot.duration : 0.4f);
+                turnContext.scene.setCameraMelee(shot.duration);
 
                 //Tick shot timer
                 shotTimer += 0.016f; //TODO: supply deltaTime
@@ -106,7 +105,7 @@ class UnitActionMove extends UnitAction {
         Vector3f defenderPos = turnContext.getUnitPos(path.get(path.size() - 1).occupyingUnit);
         
         //Simple 2-shot example sequence
-        shotSequence.add(new ShotMelee(attackerPos, defenderPos, -90f, 45f, 1.5f, 0.1f)); //Lerp to wide
+        shotSequence.add(new ShotMelee(attackerPos, defenderPos, -90f, 52f, 1.5f, 0.1f)); //Lerp to wide
         shotSequence.add(new ShotMelee(attackerPos, defenderPos, 45f, 30f, 1.0f, 1.0f));  //Snap to closeup
     }
     
