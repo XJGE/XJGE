@@ -26,7 +26,7 @@ public class Scene3D extends Scene {
     
     private GameMode gameMode;
     
-    private final CameraManager cameraManager   = new CameraManager();
+    private final ViewTransitioner cameraManager   = new ViewTransitioner();
     private final CameraFollow cameraFollow     = new CameraFollow();
     private final CameraOverhead cameraOverhead = new CameraOverhead();
     private final CameraMelee cameraMelee       = new CameraMelee();
@@ -153,7 +153,6 @@ public class Scene3D extends Scene {
     }
     
     final void setCameraMelee(Vector3f position, Vector3f target, float duration) {
-        cameraMelee.lookAt(position, target);
         cameraManager.setActiveCamera(cameraMelee, duration);
     }
     

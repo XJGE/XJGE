@@ -40,13 +40,14 @@ class UnitActionMove extends UnitAction {
         
         if(queueRTR && pathIndex == path.size() - 1) {
             if(!cameraSet) {
+                //TODO: align the camera, we might use multiple different angles during the RTR
                 cameraPosition.set(10, 0, 10);
                 cameraTarget.set(turnContext.unitPos);
                 turnContext.scene.setCameraMelee(cameraPosition, cameraTarget, 0.4f);
                 cameraSet = true;
             }
             
-            //TODO: implement melee RTR
+            //TODO: use unit input from turnContext
         } else {
             GridSpace from = path.get(pathIndex - 1);
             GridSpace to   = path.get(pathIndex);

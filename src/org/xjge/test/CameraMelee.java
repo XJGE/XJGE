@@ -12,11 +12,17 @@ import org.xjge.graphics.GLProgram;
  */
 class CameraMelee extends Camera {
 
-    private float pitch = 52f;
+    private float pitch = 45f;
     private float yaw = -90f;
     
-    private Vector3f nextPosition = new Vector3f();
-    private final Vector3f adjustedTarget = new Vector3f();
+    private float distance = 5f;
+    
+    private final Vector3f attackerPos = new Vector3f();
+    private final Vector3f defenderPos = new Vector3f();
+    private final Vector3f midpoint    = new Vector3f();
+    private final Vector3f smoothedPos = new Vector3f();
+    
+    private final Vector3f desiredTarget = new Vector3f();
     
     CameraMelee() {
         super(false);
@@ -24,19 +30,32 @@ class CameraMelee extends Camera {
     
     @Override
     protected void update(double targetDelta, double trueDelta) {
-        pitch = Math.max(15f, Math.min(80f, pitch)); //clamp pitch to avoid flipping
+        pitch = Math.max(15f, Math.min(80f, pitch));
         
-        float distance = 5f;
+        //Find midpoint between units
+        midpoint.set(attackerPos).add(defenderPos).mul(0.5f);
+        desiredTarget.set(midpoint).add(0, 0.5f, 0);
         
-        adjustedTarget.set(nextPosition).add(0, 0.5f, 0);
+        //Adjust camera distance based on unit spacing
+        float baseDist = attackerPos.distance(defenderPos) * 0.75f + 4f;
+        distance = Math.max(4f, Math.min(8f, baseDist));
         
-        //compute offset from yaw/pitch spherical coords
-        float offsetX = (float) (distance * Math.cos(Math.toRadians(pitch)) * Math.cos(Math.toRadians(yaw)));
-        float offsetY = (float) (distance * Math.sin(Math.toRadians(pitch)));
-        float offsetZ = (float) (distance * Math.cos(Math.toRadians(pitch)) * Math.sin(Math.toRadians(yaw)));
+        //Spherical offset
+        float offsetX = (float)(distance * Math.cos(Math.toRadians(pitch)) * Math.cos(Math.toRadians(yaw)));
+        float offsetY = (float)(distance * Math.sin(Math.toRadians(pitch)));
+        float offsetZ = (float)(distance * Math.cos(Math.toRadians(pitch)) * Math.sin(Math.toRadians(yaw)));
         
-        position.set(adjustedTarget.x - offsetX, adjustedTarget.y + offsetY, adjustedTarget.z - offsetZ);
-        direction.set(adjustedTarget).sub(position).normalize();
+        Vector3f desiredPos = new Vector3f(
+            desiredTarget.x - offsetX,
+            desiredTarget.y + offsetY,
+            desiredTarget.z - offsetZ
+        );
+        
+        //Smooth transition
+        smoothedPos.lerp(desiredPos, (float)(targetDelta * 5.0)); //Tweak factor
+        position.set(smoothedPos);
+        
+        direction.set(desiredTarget).sub(position).normalize();
     }
 
     @Override
@@ -44,16 +63,20 @@ class CameraMelee extends Camera {
         glPrograms.values().forEach(glProgram -> {
             if(glProgram.containsUniform("uView")) {
                 glProgram.use();
-                viewMatrix.setLookAt(position, adjustedTarget, up);
+                viewMatrix.setLookAt(position, desiredTarget, up);
                 glProgram.setUniform("uView", false, viewMatrix);
             }
         });
     }
     
-    public void lookAt(Vector3f position, Vector3f target) {
-        nextPosition.set(position);
-        adjustedTarget.set(target);
-        update(0.016, 0.016);
+    public void focus(Vector3f attacker, Vector3f defender) {
+        attackerPos.set(attacker);
+        defenderPos.set(defender);
+    }
+    
+    public void setAngles(float newYaw, float newPitch) {
+        yaw = newYaw;
+        pitch = newPitch;
     }
 
 }

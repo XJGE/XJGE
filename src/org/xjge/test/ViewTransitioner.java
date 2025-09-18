@@ -13,7 +13,7 @@ import org.xjge.graphics.GLProgram;
  * @author J Hoffman
  * @since 
  */
-class CameraManager {
+class ViewTransitioner {
 
     private boolean transitioning;
     
