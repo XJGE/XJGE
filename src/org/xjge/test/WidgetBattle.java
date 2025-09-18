@@ -3,7 +3,10 @@ package org.xjge.test;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import static org.lwjgl.glfw.GLFW.GLFW_JOYSTICK_1;
+import static org.lwjgl.glfw.GLFW.GLFW_JOYSTICK_4;
 import org.xjge.core.Control;
+import static org.xjge.core.Input.KEY_MOUSE_COMBO;
 import org.xjge.core.Mouse;
 import org.xjge.core.SplitScreenType;
 import org.xjge.core.Window;
@@ -75,7 +78,7 @@ class WidgetBattle extends Widget {
         //Handle grid selector (continuous prompt)
         if(gridSelector != null) {
             List<GridSpace> path = gridSelector.prompt(turnContext);
-            if (path != null && pendingAction == null && pendingCategory == ActionCategory.MOVE) {
+            if(path != null && pendingAction == null && pendingCategory == ActionCategory.MOVE) {
                 pendingAction = new UnitActionMove(path);
                 commitPendingAction();
             }
@@ -90,11 +93,24 @@ class WidgetBattle extends Widget {
             option.background.positionY = Window.getResolutionHeight() - (option.background.height * (i + 1)) - (10 * (i + 1));
             
             option.background.render(0.5f, Color.BLACK);
-            Font.fallback.drawString(option.name, 
+            Font.fallback.drawString(((choice == i) ? "> " : "  ") + option.name, 
                                      option.background.positionX + 10, 
                                      option.background.positionY + 10, 
-                                     (choice == i) ? Color.YELLOW : Color.WHITE, 
+                                     (option.used) ? Color.GRAY : Color.WHITE, 
                                      1f);
+            
+            if(turnContext.unit.inputDeviceID == KEY_MOUSE_COMBO) {
+                Font.fallback.drawString("[SPACE] - Select Action", 10, 10, Color.YELLOW, 1f);
+                
+                Font.fallback.drawString("[ARROW KEYS] - Nav Menu", 310, 10, Color.YELLOW, 1f);
+
+                switch(state) {
+                    case MENU   -> Font.fallback.drawString("[Q] - End Turn", 600, 10, Color.YELLOW, 1f);
+                    case TARGET -> Font.fallback.drawString("[Q] - Cancel", 600, 10, Color.YELLOW, 1f);
+                }
+            } else if(turnContext.unit.inputDeviceID >= GLFW_JOYSTICK_1 && turnContext.unit.inputDeviceID <= GLFW_JOYSTICK_4) {
+                //TODO: add controller input hints
+            }
         }
     }
 
@@ -116,8 +132,11 @@ class WidgetBattle extends Widget {
         if(turnContext.unit.buttonPressedOnce(Control.DPAD_UP)) choice--;
         if(turnContext.unit.buttonPressedOnce(Control.DPAD_DOWN)) choice++;
         
-        if(turnContext.unit.buttonPressedOnce(Control.CROSS)) {
+        if(turnContext.unit.buttonPressedOnce(Control.CIRCLE)) {
+            if(state == State.MENU) turnContext.endTurn();
+        } else if(turnContext.unit.buttonPressedOnce(Control.CROSS)) {
             Option option = options.get(choice);
+            
             if(!option.used) {
                 pendingCategory = option.category;
                 pendingAction   = null;

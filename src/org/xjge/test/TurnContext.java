@@ -40,7 +40,7 @@ class TurnContext {
         //TODO: might be better to provide entities and grid info from Scene3D object
     }
     
-    void finish() {
+    void endTurn() {
         finished = true; //Finish turn early
     }
     
