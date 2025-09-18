@@ -12,8 +12,6 @@ import org.xjge.core.XJGE;
  */
 class UnitActionMove extends UnitAction {
     
-    private boolean queueRTR;
-    
     private int currentShotIndex;
     private int pathIndex = 1; //Start moving toward the 2nd space
     
@@ -21,8 +19,10 @@ class UnitActionMove extends UnitAction {
     private float pathLerp;
     private final float MOVE_SPEED = 6f;
     
-    private final List<GridSpace> path;
+    private ComponentUnit targetUnit;
+    private Vector3f targetUnitPos;
     
+    private final List<GridSpace> path;
     private final List<ShotMelee> shotSequence = new ArrayList<>();
     
     UnitActionMove(List<GridSpace> path) {
@@ -36,12 +36,37 @@ class UnitActionMove extends UnitAction {
             return true;
         }
         
-        if(!queueRTR && path.get(path.size() - 1).occupyingUnit != null) {
-            queueRTR = true;
+        if(targetUnit == null && path.get(path.size() - 1).occupyingUnit != null) {
+            targetUnit    = path.get(path.size() - 1).occupyingUnit;
+            targetUnitPos = turnContext.getUnitPos(targetUnit);
             setupShotSequence(turnContext);
         }
         
-        if(queueRTR && pathIndex == path.size() - 1) {
+        /*
+        FLOW:
+            1. Gridspace selected, unit starts moving.
+            2a. No unit targeted, camera stays overhead until movement is complete.
+            2b. Moving to occupied gridspace, follow unit with over-shoulder camera
+                that points in the direction of the target unit.
+            3a. Once the grid space adjacent to the target unit is reached trigger 
+                block RTR, snap to over-shoulder camera for target unit this time 
+                facing the attacker if the target is a player
+            3b. Once the grid space adjacent to the target unit is reached trigger 
+                melee RTR, camera doesn't change until the end of the action.
+        
+        RTRs only apply to players, AI can miss via RNG but a prompt wont appear 
+        for them, camera effects change as well since we want to emphasize the 
+        players perspective during actions.
+        */
+        
+        if(targetUnit != null) {
+            float distanceFromTarget = turnContext.unitPos.distance(targetUnitPos);
+            System.out.println(distanceFromTarget);
+            
+            
+        }
+        
+        if(targetUnit != null && pathIndex == path.size() - 1) {
             //Run the shot sequence
             if(currentShotIndex < shotSequence.size()) {
                 ShotMelee shot = shotSequence.get(currentShotIndex);
@@ -58,8 +83,8 @@ class UnitActionMove extends UnitAction {
                     currentShotIndex++;
                 }
             } else {
-                // finished all shots, proceed to RTR resolution
-                // TODO: begin RTR input/logic here
+                //finished all shots, proceed to RTR resolution
+                //TODO: begin RTR input/logic here
             }
 
             return false; //Busy with RTR
@@ -82,11 +107,10 @@ class UnitActionMove extends UnitAction {
         if(pathLerp >= 1f) {
             from.occupyingUnit = null;
             to.occupyingUnit   = turnContext.unit;
-
             pathIndex++;
             pathLerp = 0f;
         }
-
+        
         //Finished path traversal
         if(pathIndex >= path.size()) {
             turnContext.scene.setCameraFollow(turnContext.unit, 0.4f);
