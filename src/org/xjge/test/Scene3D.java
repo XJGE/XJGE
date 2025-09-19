@@ -157,12 +157,8 @@ public class Scene3D extends Scene {
         cameraManager.setActiveCamera(cameraMelee, duration);
     }
     
-    void focusMeleeCamera(Vector3f attackerPos, Vector3f defenderPos, float lerp) {
-        cameraMelee.focus(attackerPos, defenderPos, lerp);
-    }
-    
-    void setMeleeCameraAngles(float yaw, float pitch, float lerp) {
-        cameraMelee.setAngles(yaw, pitch, lerp);
+    void focusMeleeCamera(Vector3f attackerPos, Vector3f defenderPos) {
+        cameraMelee.focus(attackerPos, defenderPos);
     }
     
     final void setCameraOverhead(float duration) {

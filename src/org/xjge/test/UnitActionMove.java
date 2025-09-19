@@ -12,12 +12,14 @@ import org.xjge.core.XJGE;
  */
 class UnitActionMove extends UnitAction {
     
+    private boolean cameraChanged;
+    
     private int currentShotIndex;
     private int pathIndex = 1; //Start moving toward the 2nd space
     
     private float shotTimer;
     private float pathLerp;
-    private final float MOVE_SPEED = 6f;
+    private final float MOVE_SPEED = 2f; //6f
     
     private ComponentUnit targetUnit;
     private Vector3f targetUnitPos;
@@ -42,34 +44,8 @@ class UnitActionMove extends UnitAction {
             setupShotSequence(turnContext);
         }
         
-        /*
-        FLOW:
-            1. Gridspace selected, unit starts moving.
-            2a. No unit targeted, camera stays overhead until movement is complete.
-            2b. Moving to occupied gridspace, follow unit with over-shoulder camera
-                that points in the direction of the target unit.
-            3a. Once the grid space adjacent to the target unit is reached trigger 
-                block RTR, snap to over-shoulder camera for target unit this time 
-                facing the attacker if the target is a player
-            3b. Once the grid space adjacent to the target unit is reached trigger 
-                melee RTR, camera doesn't change until the end of the action.
-        
-        RTRs only apply to players, AI can miss via RNG but a prompt wont appear 
-        for them, camera effects change as well since we want to emphasize the 
-        players perspective during actions.
-        
-        We could even extend this by having different block RTRs for different 
-        enemies, or different melee attacks unique to characters
-        */
-        
-        if(targetUnit != null) {
-            float distanceFromTarget = turnContext.unitPos.distance(targetUnitPos);
-            System.out.println(distanceFromTarget);
-            
-            
-        }
-        
         if(targetUnit != null && pathIndex == path.size() - 1) {
+            /*
             //Run the shot sequence
             if(currentShotIndex < shotSequence.size()) {
                 ShotMelee shot = shotSequence.get(currentShotIndex);
@@ -89,6 +65,7 @@ class UnitActionMove extends UnitAction {
                 //finished all shots, proceed to RTR resolution
                 //TODO: begin RTR input/logic here
             }
+            */
 
             return false; //Busy with RTR
         }
@@ -112,6 +89,19 @@ class UnitActionMove extends UnitAction {
             to.occupyingUnit   = turnContext.unit;
             pathIndex++;
             pathLerp = 0f;
+        }
+        
+        if(targetUnit != null && pathIndex <= path.size() - 1 && !cameraChanged) {
+            //turnContext.scene.setMeleeCameraAngles(-90f, 15f, 0.1f);
+            //turnContext.scene.setMeleeCameraFollowAttacker(true);
+            //turnContext.scene.setCameraMelee(0f);
+            turnContext.scene.setCameraFollow(turnContext.unit, 0.1f);
+            cameraChanged = true;
+        }
+        
+        if(cameraChanged) {
+            Vector3f adjustedPos = new Vector3f(turnContext.unitPos).add(0, 0, 0);
+            turnContext.scene.focusMeleeCamera(adjustedPos, targetUnitPos);
         }
         
         //Finished path traversal
