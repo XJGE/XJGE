@@ -57,6 +57,9 @@ class UnitActionMove extends UnitAction {
         RTRs only apply to players, AI can miss via RNG but a prompt wont appear 
         for them, camera effects change as well since we want to emphasize the 
         players perspective during actions.
+        
+        We could even extend this by having different block RTRs for different 
+        enemies, or different melee attacks unique to characters
         */
         
         if(targetUnit != null) {
