@@ -155,6 +155,7 @@ public class Scene3D extends Scene {
     final void setCameraMelee(float duration) {
         cameraMelee.position.set(cameraOverhead.position);
         cameraMelee.direction.set(cameraOverhead.direction);
+        cameraMelee.resetSide();
         cameraMelee.update(0.016f, 0.016f);
         cameraManager.setActiveCamera(cameraMelee, duration);
     }

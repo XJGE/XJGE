@@ -12,6 +12,8 @@ import org.xjge.graphics.GLProgram;
  */
 class CameraMelee extends Camera {
 
+    private int chosenSide = 0; //0 = unchosen, +1 = perp1, -1 = perp2;
+    
     private float distance = 4f;
     private float height   = 1.5f;
 
@@ -32,27 +34,34 @@ class CameraMelee extends Camera {
         Vector3f dir = new Vector3f(defenderPos).sub(attackerPos);
         dir.y = 0;
         if(dir.lengthSquared() < 0.0001f) dir.set(0, 0, 1);
-
         dir.normalize();
 
         //Perpendicular vectors on both sides
         Vector3f perp1 = new Vector3f(-dir.z, 0, dir.x).normalize();
         Vector3f perp2 = new Vector3f(dir.z, 0, -dir.x).normalize();
         
-        Vector3f candidate1 = new Vector3f(desiredTarget).add(perp1.mul(distance)).add(0, height, 0);
-        Vector3f candidate2 = new Vector3f(desiredTarget).add(perp2.mul(distance)).add(0, height, 0);
+        if(chosenSide == 0) {
+            Vector3f candidate1 = new Vector3f(desiredTarget).add(perp1.mul(distance)).add(0, height, 0);
+            Vector3f candidate2 = new Vector3f(desiredTarget).add(perp2.mul(distance)).add(0, height, 0);
+            
+            //TODO: factor in walls/level geom so the units aren't hidden
+            
+            float dist1 = candidate1.distanceSquared(position);
+            float dist2 = candidate2.distanceSquared(position);
+
+            chosenSide = (dist1 <= dist2) ? +1 : -1;
+        }
         
-        System.out.println("cam pos: " + position);
-        System.out.println("perp1: " + perp1 + " " + candidate1.distanceSquared(position));
-        System.out.println("perp2: " + perp2 + " " + candidate2.distanceSquared(position));
+        //System.out.println("cam pos: " + position);
+        //System.out.println("perp1: " + perp1 + " " + candidate1.distanceSquared(position));
+        //System.out.println("perp2: " + perp2 + " " + candidate2.distanceSquared(position));
         
-        Vector3f desiredPos = candidate1.distanceSquared(position) < candidate2.distanceSquared(position)
-                            ? candidate1
-                            : candidate2;
-        
+        Vector3f perp = (chosenSide == +1) ? perp1 : perp2;
+        Vector3f desiredPos = new Vector3f(desiredTarget).add(perp.mul(distance)).add(0, height, 0);
+
         smoothedPos.lerp(desiredPos, (float)(targetDelta * 10.0));
         position.set(smoothedPos);
-        
+
         direction.set(desiredTarget).sub(position).normalize();
     }
 
@@ -70,6 +79,10 @@ class CameraMelee extends Camera {
     public void focus(Vector3f attackerPos, Vector3f defenderPos) {
         this.attackerPos.set(attackerPos);
         this.defenderPos.set(defenderPos);
+    }
+
+    void resetSide() {
+        chosenSide = 0;
     }
 
 }
