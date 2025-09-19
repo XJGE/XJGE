@@ -3,7 +3,6 @@ package org.xjge.test;
 import java.util.Map;
 import org.joml.Vector3f;
 import org.xjge.core.Camera;
-import org.xjge.core.XJGE;
 import org.xjge.graphics.GLProgram;
 
 /**
@@ -13,16 +12,13 @@ import org.xjge.graphics.GLProgram;
  */
 class CameraMelee extends Camera {
 
-    private float pitch = 45f;
-    private float distance = 5f;
+    private float distance = 4f;
+    private float height   = 1.5f;
 
     private final Vector3f attackerPos = new Vector3f();
     private final Vector3f defenderPos = new Vector3f();
     private final Vector3f smoothedPos = new Vector3f();
     private final Vector3f desiredTarget = new Vector3f();
-
-    private final Vector3f offsetBehind = new Vector3f(); // Computed behind attacker
-    private final Vector3f forward = new Vector3f();      // Direction attacker is facing
 
     CameraMelee() {
         super(false);
@@ -30,23 +26,33 @@ class CameraMelee extends Camera {
 
     @Override
     protected void update(double targetDelta, double trueDelta) {
-        // Slightly above defender for framing
-        desiredTarget.set(defenderPos).add(0, 1.0f, 0);
+        desiredTarget.set(attackerPos).add(defenderPos).mul(0.5f).add(0, 0.3f, 0);
+        
+        //Direction from attacker to defender (XZ plane)
+        Vector3f dir = new Vector3f(defenderPos).sub(attackerPos);
+        dir.y = 0;
+        if(dir.lengthSquared() < 0.0001f) dir.set(0, 0, 1);
 
-        // Compute direction from attacker to defender
-        forward.set(defenderPos).sub(attackerPos).normalize();
+        dir.normalize();
 
-        // Position the camera behind the attacker
-        offsetBehind.set(forward).mul(-distance); // move opposite to facing direction
-        offsetBehind.y = distance * 0.5f;        // lift camera slightly
-
-        Vector3f desiredPos = new Vector3f(attackerPos).add(offsetBehind);
-
-        // Smooth interpolation
-        smoothedPos.lerp(desiredPos, (float) (targetDelta * 5.0));
+        //Perpendicular vectors on both sides
+        Vector3f perp1 = new Vector3f(-dir.z, 0, dir.x).normalize();
+        Vector3f perp2 = new Vector3f(dir.z, 0, -dir.x).normalize();
+        
+        Vector3f candidate1 = new Vector3f(desiredTarget).add(perp1.mul(distance)).add(0, height, 0);
+        Vector3f candidate2 = new Vector3f(desiredTarget).add(perp2.mul(distance)).add(0, height, 0);
+        
+        System.out.println("cam pos: " + position);
+        System.out.println("perp1: " + perp1 + " " + candidate1.distanceSquared(position));
+        System.out.println("perp2: " + perp2 + " " + candidate2.distanceSquared(position));
+        
+        Vector3f desiredPos = candidate1.distanceSquared(position) < candidate2.distanceSquared(position)
+                            ? candidate1
+                            : candidate2;
+        
+        smoothedPos.lerp(desiredPos, (float)(targetDelta * 10.0));
         position.set(smoothedPos);
-
-        // Camera always looks at the defender
+        
         direction.set(desiredTarget).sub(position).normalize();
     }
 
@@ -61,15 +67,9 @@ class CameraMelee extends Camera {
         });
     }
 
-    public void focus(Vector3f attacker, Vector3f defender) {
-        attackerPos.set(attacker);
-        if (defender != null) {
-            defenderPos.set(defender);
-        }
-    }
-
-    public void setPitch(float newPitch) {
-        pitch = Math.max(15f, Math.min(80f, newPitch));
+    public void focus(Vector3f attackerPos, Vector3f defenderPos) {
+        this.attackerPos.set(attackerPos);
+        this.defenderPos.set(defenderPos);
     }
 
 }

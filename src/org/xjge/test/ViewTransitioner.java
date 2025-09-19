@@ -43,9 +43,8 @@ class ViewTransitioner {
     
     void update(double targetDelta, double trueDelta) {
         if(transitioning) {
-            if(currentCamera instanceof CameraFollow) {
-                //Might need this for the melee cam or something
-                //((CameraFollow) currentCamera).update(targetDelta, trueDelta);
+            if(currentCamera instanceof CameraMelee) {
+                ((CameraMelee) currentCamera).update(targetDelta, trueDelta);
             }
             
             transitionTime += trueDelta;

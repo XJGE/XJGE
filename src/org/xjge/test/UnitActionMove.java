@@ -14,18 +14,15 @@ class UnitActionMove extends UnitAction {
     
     private boolean cameraChanged;
     
-    private int currentShotIndex;
-    private int pathIndex = 1; //Start moving toward the 2nd space
+    private int pathIndex = 1;
     
-    private float shotTimer;
     private float pathLerp;
-    private final float MOVE_SPEED = 2f; //6f
+    private final float MOVE_SPEED = 6f;
     
     private ComponentUnit targetUnit;
     private Vector3f targetUnitPos;
     
     private final List<GridSpace> path;
-    private final List<ShotMelee> shotSequence = new ArrayList<>();
     
     UnitActionMove(List<GridSpace> path) {
         this.path = path;
@@ -41,31 +38,16 @@ class UnitActionMove extends UnitAction {
         if(targetUnit == null && path.get(path.size() - 1).occupyingUnit != null) {
             targetUnit    = path.get(path.size() - 1).occupyingUnit;
             targetUnitPos = turnContext.getUnitPos(targetUnit);
-            setupShotSequence(turnContext);
         }
         
         if(targetUnit != null && pathIndex == path.size() - 1) {
-            /*
-            //Run the shot sequence
-            if(currentShotIndex < shotSequence.size()) {
-                ShotMelee shot = shotSequence.get(currentShotIndex);
-
-                //Apply focus + angles through Scene3D
-                turnContext.scene.focusMeleeCamera(shot.attackerPos, shot.defenderPos, shot.lerpFactor);
-                turnContext.scene.setMeleeCameraAngles(shot.yaw, shot.pitch, shot.lerpFactor);
-                turnContext.scene.setCameraMelee(shot.duration);
-
-                //Tick shot timer
-                shotTimer += 0.016f; //TODO: supply deltaTime
-                if(shotTimer >= shot.duration) {
-                    shotTimer = 0f;
-                    currentShotIndex++;
-                }
-            } else {
-                //finished all shots, proceed to RTR resolution
-                //TODO: begin RTR input/logic here
+            turnContext.scene.focusMeleeCamera(turnContext.unitPos, targetUnitPos);
+            
+            if(!cameraChanged) {
+                turnContext.scene.setCameraMelee(0.6f);
+                cameraChanged = true;
             }
-            */
+            //TODO: capture input logic for RTR
 
             return false; //Busy with RTR
         }
@@ -91,19 +73,6 @@ class UnitActionMove extends UnitAction {
             pathLerp = 0f;
         }
         
-        if(targetUnit != null && pathIndex <= path.size() - 1 && !cameraChanged) {
-            //turnContext.scene.setMeleeCameraAngles(-90f, 15f, 0.1f);
-            //turnContext.scene.setMeleeCameraFollowAttacker(true);
-            //turnContext.scene.setCameraMelee(0f);
-            turnContext.scene.setCameraFollow(turnContext.unit, 0.1f);
-            cameraChanged = true;
-        }
-        
-        if(cameraChanged) {
-            Vector3f adjustedPos = new Vector3f(turnContext.unitPos).add(0, 0, 0);
-            turnContext.scene.focusMeleeCamera(adjustedPos, targetUnitPos);
-        }
-        
         //Finished path traversal
         if(pathIndex >= path.size()) {
             turnContext.scene.setCameraFollow(turnContext.unit, 0.4f);
@@ -111,19 +80,6 @@ class UnitActionMove extends UnitAction {
         }
         
         return false;
-    }
-    
-    private void setupShotSequence(TurnContext turnContext) {
-        shotSequence.clear();
-        currentShotIndex = 0;
-        shotTimer = 0f;
-
-        Vector3f attackerPos = turnContext.unitPos;
-        Vector3f defenderPos = turnContext.getUnitPos(path.get(path.size() - 1).occupyingUnit);
-        
-        //Simple 2-shot example sequence
-        shotSequence.add(new ShotMelee(attackerPos, defenderPos, -90f, 52f, 1.5f, 0.1f)); //Lerp to wide
-        shotSequence.add(new ShotMelee(attackerPos, defenderPos, 45f, 30f, 1.0f, 1.0f));  //Snap to closeup
     }
     
 }
