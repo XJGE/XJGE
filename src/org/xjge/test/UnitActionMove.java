@@ -31,7 +31,7 @@ class UnitActionMove extends UnitAction {
     @Override
     boolean perform(TurnContext turnContext) {
         if(path.isEmpty() || pathIndex >= path.size()) {
-            turnContext.scene.setCameraFollow(turnContext.unit, 0.4f);
+            turnContext.scene.setCameraFollow(turnContext.unit, 0.6f);
             return true;
         }
         
@@ -44,7 +44,7 @@ class UnitActionMove extends UnitAction {
             turnContext.scene.focusMeleeCamera(turnContext.unitPos, targetUnitPos);
             
             if(!cameraChanged) {
-                turnContext.scene.setCameraMelee(0.6f);
+                turnContext.scene.setCameraMelee(0.8f);
                 cameraChanged = true;
             }
             //TODO: capture input logic for RTR
@@ -75,7 +75,7 @@ class UnitActionMove extends UnitAction {
         
         //Finished path traversal
         if(pathIndex >= path.size()) {
-            turnContext.scene.setCameraFollow(turnContext.unit, 0.4f);
+            turnContext.scene.setCameraFollow(turnContext.unit, 0.6f);
             return true;
         }
         

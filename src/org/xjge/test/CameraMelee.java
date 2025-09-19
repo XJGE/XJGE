@@ -28,7 +28,7 @@ class CameraMelee extends Camera {
 
     @Override
     protected void update(double targetDelta, double trueDelta) {
-        desiredTarget.set(attackerPos).add(defenderPos).mul(0.5f).add(0, 0.3f, 0);
+        desiredTarget.set(attackerPos).add(defenderPos).mul(0.5f).add(0, 0.4f, 0);
         
         //Direction from attacker to defender (XZ plane)
         Vector3f dir = new Vector3f(defenderPos).sub(attackerPos);
@@ -51,10 +51,6 @@ class CameraMelee extends Camera {
 
             chosenSide = (dist1 <= dist2) ? +1 : -1;
         }
-        
-        //System.out.println("cam pos: " + position);
-        //System.out.println("perp1: " + perp1 + " " + candidate1.distanceSquared(position));
-        //System.out.println("perp2: " + perp2 + " " + candidate2.distanceSquared(position));
         
         Vector3f perp = (chosenSide == +1) ? perp1 : perp2;
         Vector3f desiredPos = new Vector3f(desiredTarget).add(perp.mul(distance)).add(0, height, 0);

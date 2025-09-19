@@ -153,7 +153,7 @@ class WidgetBattle extends Widget {
 
                         if(unitSpace != null) turnContext.scene.snapOverheadCamera(unitSpace);
 
-                        turnContext.scene.setCameraOverhead(0.4f);
+                        turnContext.scene.setCameraOverhead(0.6f);
                         state = State.TARGET;
                     }
                     case SPELL, ITEM -> {
@@ -168,7 +168,7 @@ class WidgetBattle extends Widget {
     private void handleTargetInput() {
         if(turnContext.unit.buttonPressedOnce(Control.CIRCLE)) {
             resetTargeting();
-            turnContext.scene.setCameraFollow(turnContext.unit, 0.4f);
+            turnContext.scene.setCameraFollow(turnContext.unit, 0.6f);
             state = State.MENU;
         } else if(turnContext.unit.buttonPressedOnce(Control.CROSS) && pendingAction != null) {
             state = State.CONFIRM;
