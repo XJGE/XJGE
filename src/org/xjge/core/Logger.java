@@ -155,6 +155,8 @@ public final class Logger {
             file = new File("log-" + fileDate + " (" + duplicate + ").txt");
         }
         
+        //TODO: output error message/crash report to user
+        
         try(PrintWriter logText = new PrintWriter(new OutputStreamWriter(new FileOutputStream(file.getName()), StandardCharsets.UTF_8))) {
             int maxSize = 3 * 1024 * 1024; //Roughly 3mb
             

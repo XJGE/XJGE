@@ -164,6 +164,12 @@ public final class XJGE {
         Audio.init();
         Input.findInputDevices(); //TODO: change to findGamepads?
         
+        try {
+           Thread.sleep(10); //Give OpenAL time to initialize, clown ass API
+        } catch(InterruptedException exception) {
+            Logger.logError("Error encountered while waiting... How lame.", exception);
+        }
+        
         Logger.logSystemInfo();
         
         //Initialize the default shader program that will be provided to the implementation
