@@ -14,8 +14,8 @@ class CameraMelee extends Camera {
 
     private int chosenSide = 0; //0 = unchosen, +1 = perp1, -1 = perp2;
     
-    private float distance = 4f;
-    private float height   = 1.5f;
+    private float distance = 3.5f;
+    private float height   = 1.3f;
 
     private final Vector3f attackerPos = new Vector3f();
     private final Vector3f defenderPos = new Vector3f();
@@ -55,7 +55,7 @@ class CameraMelee extends Camera {
         Vector3f perp = (chosenSide == +1) ? perp1 : perp2;
         Vector3f desiredPos = new Vector3f(desiredTarget).add(perp.mul(distance)).add(0, height, 0);
 
-        smoothedPos.lerp(desiredPos, (float)(targetDelta * 10.0));
+        smoothedPos.lerp(desiredPos, (float)(targetDelta * 20.0));
         position.set(smoothedPos);
 
         direction.set(desiredTarget).sub(position).normalize();

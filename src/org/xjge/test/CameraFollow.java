@@ -48,9 +48,9 @@ class CameraFollow extends Camera {
     public void update(double targetDelta, double trueDelta) {
         pitch = Math.max(15f, Math.min(80f, pitch)); //clamp pitch to avoid flipping
         
-        float distance = 5f;
+        float distance = 4.5f;
         
-        adjustedTarget.set(nextPosition).add(0, 0.5f, 0);
+        adjustedTarget.set(nextPosition).add(0, 0.8f, 0);
         
         //compute offset from yaw/pitch spherical coords
         float offsetX = (float) (distance * Math.cos(Math.toRadians(pitch)) * Math.cos(Math.toRadians(yaw)));
