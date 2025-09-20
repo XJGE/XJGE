@@ -24,7 +24,7 @@ class CameraFollow extends Camera {
     private boolean enableRotation;
     private boolean lookInversion;
     
-    float pitch = 25f;
+    float pitch = 17f;
     float yaw = -90f;
     
     float rotationSpeed = 2.5f;
@@ -46,7 +46,7 @@ class CameraFollow extends Camera {
     
     @Override
     public void update(double targetDelta, double trueDelta) {
-        pitch = Math.max(15f, Math.min(80f, pitch)); //clamp pitch to avoid flipping
+        pitch = Math.max(5f, Math.min(60f, pitch)); //clamp pitch to avoid flipping
         
         float distance = 4.5f;
         

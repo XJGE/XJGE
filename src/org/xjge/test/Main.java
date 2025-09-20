@@ -65,8 +65,8 @@ public class Main {
         //Window.setIcon("icon.png");
         //Window.setResolution(384, 216);
         Window.setResizable(false);
-        //Window.setFullscreen(true);
-        //Window.focus();
+        Window.setFullscreen(true);
+        Window.focus();
         
         showBoundingVolumes = new TCShowBoundingVolumes();
         setGameMode         = new TCSetGameMode();
