@@ -142,7 +142,7 @@ class UnitActionMove extends UnitAction {
                             }
                         } else if(targetUnit.isPlayer) {
                             //player defending
-                            if(turnContext.unit.buttonPressed(Control.CROSS)) {
+                            if(targetUnit.buttonPressed(Control.CROSS)) {
                                 rtrOutcome[attackCount] = true;
                             }
                         }

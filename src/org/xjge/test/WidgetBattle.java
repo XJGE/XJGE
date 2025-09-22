@@ -112,6 +112,16 @@ class WidgetBattle extends Widget {
                 //TODO: add controller input hints
             }
         }
+        
+        Font.fallback.drawString("Health " + turnContext.unit.health, 
+                                 Window.getResolutionWidth() - 120, 
+                                 Window.getResolutionHeight() - 20, 
+                                 Color.RED, 1f);
+        
+        Font.fallback.drawString("Mana " + turnContext.unit.mana, 
+                                 Window.getResolutionWidth() - 120, 
+                                 Window.getResolutionHeight() - 40, 
+                                 Color.CYAN, 1f);
     }
 
     @Override
