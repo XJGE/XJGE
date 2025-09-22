@@ -3,6 +3,7 @@ package org.xjge.test;
 import java.util.List;
 import java.util.Random;
 import org.joml.Vector3f;
+import org.joml.Vector3i;
 import static org.lwjgl.glfw.GLFW.GLFW_JOYSTICK_1;
 import org.xjge.core.Control;
 import org.xjge.core.Timer;
@@ -18,6 +19,7 @@ class UnitActionMove extends UnitAction {
     
     private boolean cameraChanged;
     private boolean widgetAdded;
+    private boolean outcomesApplied;
     private final boolean[] attackerOutcome = new boolean[2];
     private final boolean[] defenderOutcome = new boolean[2];
     
@@ -49,6 +51,9 @@ class UnitActionMove extends UnitAction {
             return true;
         }
         
+        GridSpace from = path.get(pathIndex - 1);
+        GridSpace to   = path.get(pathIndex);
+        
         if(targetUnit == null && path.get(path.size() - 1).occupyingUnit != null) {
             targetUnit    = path.get(path.size() - 1).occupyingUnit;
             targetUnitPos = turnContext.getUnitPos(targetUnit);
@@ -62,11 +67,8 @@ class UnitActionMove extends UnitAction {
                 cameraChanged = true;
             }
             
-            return meleeStage(turnContext);
+            return meleeStage(turnContext, to);
         }
-        
-        GridSpace from = path.get(pathIndex - 1);
-        GridSpace to   = path.get(pathIndex);
 
         //Advance interpolation
         pathLerp += 0.016f * MOVE_SPEED; //TODO: supply deltaTime
@@ -95,7 +97,7 @@ class UnitActionMove extends UnitAction {
         return false;
     }
     
-    private boolean meleeStage(TurnContext turnContext) {
+    private boolean meleeStage(TurnContext turnContext, GridSpace to) {
         if(!turnContext.scene.CameraTransitionComplete()) return false;
         
         if(meleeDirection == null) {
@@ -110,6 +112,8 @@ class UnitActionMove extends UnitAction {
                     if(timer.tick(5)) currentTick++;
                 } else {
                     widgetAdded     = false;
+                    outcomesApplied = false;
+                    currentTick     = 0;
                     meleeStageIndex = (attackCount == 1) ? 2 : 1;
                 }
             }
@@ -143,14 +147,47 @@ class UnitActionMove extends UnitAction {
                             if(turnContext.unit.buttonPressedOnce(Control.CROSS)) {
                                 attackerOutcome[attackCount] = true;
                             }
-                            defenderOutcome[attackCount] = rand.nextBoolean();
+                            //defenderOutcome[attackCount] = rand.nextBoolean();
                         } else if(targetUnit.isPlayer) {
                             //player defending
                             if(targetUnit.buttonPressedOnce(Control.CROSS)) {
                                 defenderOutcome[attackCount] = true;
                             }
-                            attackerOutcome[attackCount] = rand.nextBoolean();
+                            //attackerOutcome[attackCount] = rand.nextBoolean();
                         }
+                    }
+                    
+                    if(currentTick > 23 && !outcomesApplied) {
+                        if(attackerOutcome[attackCount] && defenderOutcome[attackCount]) {
+                            targetUnit.health--;
+                            //UI.addWidget(-1hp);
+                        } else if(!attackerOutcome[attackCount] && defenderOutcome[attackCount]) {
+                            //UI.addWidget(miss!)
+                        } else if(attackerOutcome[attackCount] && !defenderOutcome[attackCount]) {
+                            targetUnit.health -= 2;
+                            //UI.addWidget(-2hp);
+                            
+                            //Apply knockback rules
+                            if(attackCount == 1) {
+                                Vector3i nextLocation = new Vector3i(to.xLocation + (int)meleeDirection.x, 
+                                                                     to.yLocation, 
+                                                                     to.zLocation + (int)meleeDirection.z);
+                                
+                                if(turnContext.gridSpaces.containsKey(nextLocation)) {
+                                    GridSpace nextSpace = turnContext.gridSpaces.get(nextLocation);
+                                    
+                                    //TODO: add check if gridspace is solid or not
+                                    
+                                    nextSpace.occupyingUnit = targetUnit;
+                                    targetUnitPos.set(nextSpace.xLocation, nextSpace.yLocation, nextSpace.zLocation);
+                                    turnContext.unitPos.set(to.xLocation, to.yLocation, to.zLocation);
+                                }
+                            }
+                        } else {
+                            //UI.addWidget(miss!)
+                        }
+                        
+                        outcomesApplied = true;
                     }
                 } else {
                     attackCount++;
@@ -164,9 +201,7 @@ class UnitActionMove extends UnitAction {
                 System.out.println("A2: " + attackerOutcome[1]);
                 System.out.println("D2: " + defenderOutcome[1]);
                 meleeStageIndex = 4;
-            }
-            case 4 -> {
-                
+                return true;
             }
         }
         
