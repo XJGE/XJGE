@@ -14,8 +14,8 @@ class CameraMelee extends Camera {
 
     private int chosenSide = 0; //0 = unchosen, +1 = perp1, -1 = perp2;
     
-    private float distance = 3.5f;
-    private float height   = 1.3f;
+    private float distance = 4.2f;
+    private float height   = 0.9f;
 
     private final Vector3f attackerPos = new Vector3f();
     private final Vector3f defenderPos = new Vector3f();
@@ -24,6 +24,7 @@ class CameraMelee extends Camera {
 
     CameraMelee() {
         super(false);
+        fov = 40;
     }
 
     @Override
@@ -58,13 +59,15 @@ class CameraMelee extends Camera {
         smoothedPos.lerp(desiredPos, (float)(targetDelta * 20.0));
         position.set(smoothedPos);
 
+        desiredTarget.y += 0.25f;
+        
         direction.set(desiredTarget).sub(position).normalize();
     }
 
     @Override
     protected void render(Map<String, GLProgram> glPrograms) {
         glPrograms.values().forEach(glProgram -> {
-            if (glProgram.containsUniform("uView")) {
+            if(glProgram.containsUniform("uView")) {
                 glProgram.use();
                 viewMatrix.setLookAt(position, desiredTarget, up);
                 glProgram.setUniform("uView", false, viewMatrix);

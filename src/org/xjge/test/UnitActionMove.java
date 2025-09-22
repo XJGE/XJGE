@@ -44,7 +44,7 @@ class UnitActionMove extends UnitAction {
             turnContext.scene.focusMeleeCamera(turnContext.unitPos, targetUnitPos);
             
             if(!cameraChanged) {
-                turnContext.scene.setCameraMelee(0.3f);
+                turnContext.scene.setCameraMelee(0.4f);
                 cameraChanged = true;
             }
             //TODO: capture input logic for RTR
