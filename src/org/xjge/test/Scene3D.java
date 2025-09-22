@@ -56,14 +56,14 @@ public class Scene3D extends Scene {
                     //Spawn players and enemies
                     if(type == 2) {
                         Entity player = new Entity();
-                        player.addComponent(new ComponentUnit(KEY_MOUSE_COMBO, player.uuid));
+                        player.addComponent(new ComponentUnit(true, KEY_MOUSE_COMBO, player.uuid));
                         player.addComponent(new ComponentPosition(x, 0.01f, z));
                         player.addComponent(new ComponentAABB(0.5f, 1.1f, 0.5f, Color.BLUE));
                         addEntity(player);
                         gridSpace.occupyingUnit = player.getComponent(ComponentUnit.class);
                     } else if(type == 3) {
                         Entity enemy = new Entity();
-                        enemy.addComponent(new ComponentUnit(KEY_MOUSE_COMBO, enemy.uuid));
+                        enemy.addComponent(new ComponentUnit(false, KEY_MOUSE_COMBO, enemy.uuid));
                         enemy.addComponent(new ComponentPosition(x, 0.01f, z));
                         enemy.addComponent(new ComponentAABB(0.5f, 1.1f, 0.5f, Color.RED));
                         addEntity(enemy);

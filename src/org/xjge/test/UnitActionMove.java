@@ -2,7 +2,10 @@ package org.xjge.test;
 
 import java.util.List;
 import org.joml.Vector3f;
+import static org.lwjgl.glfw.GLFW.GLFW_JOYSTICK_1;
+import org.xjge.core.Control;
 import org.xjge.core.Timer;
+import org.xjge.core.UI;
 import org.xjge.core.XJGE;
 
 /**
@@ -13,6 +16,8 @@ import org.xjge.core.XJGE;
 class UnitActionMove extends UnitAction {
     
     private boolean cameraChanged;
+    private boolean widgetAdded;
+    private boolean[] rtrOutcome = new boolean[2];
     
     private int pathIndex = 1;
     private int meleeStageIndex;
@@ -101,6 +106,7 @@ class UnitActionMove extends UnitAction {
                 if(currentTick < 2) {
                     if(timer.tick(5)) currentTick++;
                 } else {
+                    widgetAdded     = false;
                     meleeStageIndex = (attackCount == 1) ? 2 : 1;
                 }
             }
@@ -122,6 +128,25 @@ class UnitActionMove extends UnitAction {
                     turnContext.unitPos.x += meleeDirection.x * offset * 0.1f;
                     turnContext.unitPos.z += meleeDirection.z * offset * 0.1f;
                     currentTick++;
+                    
+                    if(currentTick > 17 && currentTick < 23) {
+                        if(!widgetAdded) {
+                            UI.addWidget(GLFW_JOYSTICK_1, "melee_qte", new WidgetQTE());
+                            widgetAdded = true;
+                        }
+                        
+                        if(turnContext.unit.isPlayer) {
+                            //player attacking
+                            if(turnContext.unit.buttonPressed(Control.CROSS)) {
+                                rtrOutcome[attackCount] = true;
+                            }
+                        } else if(targetUnit.isPlayer) {
+                            //player defending
+                            if(turnContext.unit.buttonPressed(Control.CROSS)) {
+                                rtrOutcome[attackCount] = true;
+                            }
+                        }
+                    }
                 } else {
                     attackCount++;
                     currentTick = 0;
@@ -129,6 +154,11 @@ class UnitActionMove extends UnitAction {
                 }
             }
             case 3 -> {
+                System.out.println("A: " + rtrOutcome[0]);
+                System.out.println("B: " + rtrOutcome[1]);
+                meleeStageIndex = 4;
+            }
+            case 4 -> {
                 
             }
         }

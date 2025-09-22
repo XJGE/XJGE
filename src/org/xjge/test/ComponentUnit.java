@@ -13,10 +13,12 @@ import org.xjge.core.Puppet;
  */
 class ComponentUnit extends Component {
 
-    int maxHealth;
-    int maxMana;
-    int health;
-    int mana;
+    final boolean isPlayer;
+    
+    int maxHealth = 10;
+    int maxMana   = 10;
+    int health    = maxHealth;
+    int mana      = maxMana;
     final int inputDeviceID;
     
     private final Puppet puppet;
@@ -39,7 +41,8 @@ class ComponentUnit extends Component {
         }
     }
     
-    ComponentUnit(int inputDeviceID, UUID uuid) {
+    ComponentUnit(boolean isPlayer, int inputDeviceID, UUID uuid) {
+        this.isPlayer      = isPlayer;
         this.inputDeviceID = inputDeviceID;
         
         puppet = new Puppet("unit_" + uuid); //TODO: name must be unique, added uuid
