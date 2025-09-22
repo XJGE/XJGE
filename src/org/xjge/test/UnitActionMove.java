@@ -1,8 +1,8 @@
 package org.xjge.test;
 
-import java.util.ArrayList;
 import java.util.List;
 import org.joml.Vector3f;
+import org.xjge.core.Timer;
 import org.xjge.core.XJGE;
 
 /**
@@ -15,12 +15,18 @@ class UnitActionMove extends UnitAction {
     private boolean cameraChanged;
     
     private int pathIndex = 1;
+    private int meleeStageIndex;
+    private int currentTick;
+    private int attackCount;
     
     private float pathLerp;
+    private float meleeLerp;
     private final float MOVE_SPEED = 6f;
     
     private ComponentUnit targetUnit;
     private Vector3f targetUnitPos;
+    private Vector3f meleeDirection;
+    private final Timer timer = new Timer();
     
     private final List<GridSpace> path;
     
@@ -44,12 +50,11 @@ class UnitActionMove extends UnitAction {
             turnContext.scene.focusMeleeCamera(turnContext.unitPos, targetUnitPos);
             
             if(!cameraChanged) {
-                turnContext.scene.setCameraMelee(0.4f);
+                turnContext.scene.setCameraMelee(0.5f);
                 cameraChanged = true;
             }
-            //TODO: capture input logic for RTR
-
-            return false; //Busy with RTR
+            
+            return meleeStage(turnContext);
         }
         
         GridSpace from = path.get(pathIndex - 1);
@@ -77,6 +82,55 @@ class UnitActionMove extends UnitAction {
         if(pathIndex >= path.size()) {
             turnContext.scene.setCameraFollow(turnContext.unit, 0.5f);
             return true;
+        }
+        
+        return false;
+    }
+    
+    private boolean meleeStage(TurnContext turnContext) {
+        if(!turnContext.scene.CameraTransitionComplete()) return false;
+        
+        if(meleeDirection == null) {
+            meleeDirection = new Vector3f(targetUnitPos.x - turnContext.unitPos.x, 
+                                          0,
+                                          targetUnitPos.z - turnContext.unitPos.z).normalize();
+        }
+        
+        switch(meleeStageIndex) {
+            case 0 -> {
+                if(currentTick < 2) {
+                    if(timer.tick(5)) currentTick++;
+                } else {
+                    meleeStageIndex = (attackCount == 1) ? 2 : 1;
+                }
+            }
+            case 1 -> {
+                //Back up
+                meleeLerp += 0.05f;
+                turnContext.unitPos.x -= meleeDirection.x * 0.02f;
+                turnContext.unitPos.z -= meleeDirection.z * 0.02f;
+                if(meleeLerp >= 1f) {
+                    meleeLerp = 0f;
+                    meleeStageIndex++;
+                    currentTick = 0;
+                }
+            }
+            case 2 -> {
+                if(currentTick <= 40) {
+                    float t = currentTick / 20f;
+                    float offset = (float)Math.sin(t * Math.PI);
+                    turnContext.unitPos.x += meleeDirection.x * offset * 0.1f;
+                    turnContext.unitPos.z += meleeDirection.z * offset * 0.1f;
+                    currentTick++;
+                } else {
+                    attackCount++;
+                    currentTick = 0;
+                    meleeStageIndex = (attackCount > 1) ? 3 : 0;
+                }
+            }
+            case 3 -> {
+                
+            }
         }
         
         return false;

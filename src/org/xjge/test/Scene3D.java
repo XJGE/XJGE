@@ -181,5 +181,9 @@ public class Scene3D extends Scene {
         Vector3f target = new Vector3f(space.xLocation, space.yLocation + 10, space.zLocation + 8);
         cameraOverhead.setPosition(target);
     }
+    
+    boolean CameraTransitionComplete() {
+        return cameraManager.transitionComplete();
+    }
 
 }

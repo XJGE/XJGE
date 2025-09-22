@@ -90,4 +90,8 @@ class ViewTransitioner {
         return (t < 0.5f) ? 2*t*t : -1+(4-2*t)*t;
     }
     
+    boolean transitionComplete() {
+        return !transitioning;
+    }
+    
 }

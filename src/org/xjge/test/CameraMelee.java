@@ -14,8 +14,8 @@ class CameraMelee extends Camera {
 
     private int chosenSide = 0; //0 = unchosen, +1 = perp1, -1 = perp2;
     
-    private float distance = 4.2f;
-    private float height   = 0.9f;
+    private final float distance = 4.2f;
+    private final float height   = 1.1f;
 
     private final Vector3f attackerPos = new Vector3f();
     private final Vector3f defenderPos = new Vector3f();
