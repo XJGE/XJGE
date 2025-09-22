@@ -1,6 +1,7 @@
 package org.xjge.test;
 
 import java.util.List;
+import java.util.Random;
 import org.joml.Vector3f;
 import static org.lwjgl.glfw.GLFW.GLFW_JOYSTICK_1;
 import org.xjge.core.Control;
@@ -17,7 +18,8 @@ class UnitActionMove extends UnitAction {
     
     private boolean cameraChanged;
     private boolean widgetAdded;
-    private boolean[] rtrOutcome = new boolean[2];
+    private final boolean[] attackerOutcome = new boolean[2];
+    private final boolean[] defenderOutcome = new boolean[2];
     
     private int pathIndex = 1;
     private int meleeStageIndex;
@@ -32,6 +34,7 @@ class UnitActionMove extends UnitAction {
     private Vector3f targetUnitPos;
     private Vector3f meleeDirection;
     private final Timer timer = new Timer();
+    private final Random rand = new Random();
     
     private final List<GridSpace> path;
     
@@ -137,14 +140,16 @@ class UnitActionMove extends UnitAction {
                         
                         if(turnContext.unit.isPlayer) {
                             //player attacking
-                            if(turnContext.unit.buttonPressed(Control.CROSS)) {
-                                rtrOutcome[attackCount] = true;
+                            if(turnContext.unit.buttonPressedOnce(Control.CROSS)) {
+                                attackerOutcome[attackCount] = true;
                             }
+                            defenderOutcome[attackCount] = rand.nextBoolean();
                         } else if(targetUnit.isPlayer) {
                             //player defending
-                            if(targetUnit.buttonPressed(Control.CROSS)) {
-                                rtrOutcome[attackCount] = true;
+                            if(targetUnit.buttonPressedOnce(Control.CROSS)) {
+                                defenderOutcome[attackCount] = true;
                             }
+                            attackerOutcome[attackCount] = rand.nextBoolean();
                         }
                     }
                 } else {
@@ -154,8 +159,10 @@ class UnitActionMove extends UnitAction {
                 }
             }
             case 3 -> {
-                System.out.println("A: " + rtrOutcome[0]);
-                System.out.println("B: " + rtrOutcome[1]);
+                System.out.println("A1: " + attackerOutcome[0]);
+                System.out.println("D1: " + defenderOutcome[0]);
+                System.out.println("A2: " + attackerOutcome[1]);
+                System.out.println("D2: " + defenderOutcome[1]);
                 meleeStageIndex = 4;
             }
             case 4 -> {
