@@ -150,13 +150,13 @@ class UnitActionMove extends UnitAction {
                             if(turnContext.unit.buttonPressedOnce(Control.CROSS)) {
                                 attackerOutcome[attackCount] = true;
                             }
-                            //defenderOutcome[attackCount] = rand.nextBoolean();
+                            defenderOutcome[attackCount] = rand.nextBoolean();
                         } else if(targetUnit.isPlayer) {
                             //player defending
                             if(targetUnit.buttonPressedOnce(Control.CROSS)) {
                                 defenderOutcome[attackCount] = true;
                             }
-                            //attackerOutcome[attackCount] = rand.nextBoolean();
+                            attackerOutcome[attackCount] = rand.nextBoolean();
                         }
                     }
                     
@@ -186,9 +186,8 @@ class UnitActionMove extends UnitAction {
                                     if(turnContext.gridSpaces.containsKey(nextLocation)) {
                                         nextSpace = turnContext.gridSpaces.get(nextLocation);
                                         
-                                        if(nextSpace.type != 1) {
+                                        if(nextSpace.type == 1) {
                                             nextSpace = null;
-                                        } else {
                                             GridSpace end = path.get(path.size() - 2);
                                             pathEnd = new Vector3f(end.xLocation, end.yLocation, end.zLocation);
                                         }
@@ -237,6 +236,10 @@ class UnitActionMove extends UnitAction {
                     }
                 }
                 
+                /*
+                TODO: this is just for testing, we could add as part of the UI
+                      but it might be better to have logged for weird edge cases
+                */
                 if(currentTick == 0) {
                     System.out.println("A1: " + attackerOutcome[0]);
                     System.out.println("D1: " + defenderOutcome[0]);
