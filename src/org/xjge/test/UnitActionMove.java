@@ -35,9 +35,12 @@ class UnitActionMove extends UnitAction {
     private ComponentUnit targetUnit;
     private Vector3f targetUnitPos;
     private Vector3f meleeDirection;
+    private Vector3f nextPosition;
+    private Vector3f pathEnd;
     private final Timer timer = new Timer();
     private final Random rand = new Random();
     
+    private GridSpace nextSpace;
     private final List<GridSpace> path;
     
     UnitActionMove(List<GridSpace> path) {
@@ -160,30 +163,36 @@ class UnitActionMove extends UnitAction {
                     if(currentTick > 23 && !outcomesApplied) {
                         if(attackerOutcome[attackCount] && defenderOutcome[attackCount]) {
                             targetUnit.health--;
+                            GridSpace end = path.get(path.size() - 2);
+                            pathEnd = new Vector3f(end.xLocation, end.yLocation, end.zLocation);
                             //UI.addWidget(-1hp);
                         } else if(!attackerOutcome[attackCount] && defenderOutcome[attackCount]) {
+                            GridSpace end = path.get(path.size() - 2);
+                            pathEnd = new Vector3f(end.xLocation, end.yLocation, end.zLocation);
                             //UI.addWidget(miss!)
                         } else if(attackerOutcome[attackCount] && !defenderOutcome[attackCount]) {
                             targetUnit.health -= 2;
                             //UI.addWidget(-2hp);
                             
-                            //Apply knockback rules
-                            if(attackCount == 1) {
+                            if(attackCount == 1) { //TODO: fix bug where enemy is against wall (requires y-axis check)
                                 Vector3i nextLocation = new Vector3i(to.xLocation + (int)meleeDirection.x, 
                                                                      to.yLocation, 
                                                                      to.zLocation + (int)meleeDirection.z);
                                 
+                                nextPosition = new Vector3f(nextLocation.x, nextLocation.y, nextLocation.z);
+                                pathEnd      = new Vector3f(to.xLocation, to.yLocation, to.zLocation);
+                                
                                 if(turnContext.gridSpaces.containsKey(nextLocation)) {
-                                    GridSpace nextSpace = turnContext.gridSpaces.get(nextLocation);
+                                    nextSpace = turnContext.gridSpaces.get(nextLocation);
                                     
-                                    //TODO: add check if gridspace is solid or not
-                                    
-                                    nextSpace.occupyingUnit = targetUnit;
-                                    targetUnitPos.set(nextSpace.xLocation, nextSpace.yLocation, nextSpace.zLocation);
-                                    turnContext.unitPos.set(to.xLocation, to.yLocation, to.zLocation);
+                                    attackCount++;
+                                    currentTick = 0;
+                                    meleeStageIndex = 3;
                                 }
                             }
                         } else {
+                            GridSpace end = path.get(path.size() - 2);
+                            pathEnd = new Vector3f(end.xLocation, end.yLocation, end.zLocation);
                             //UI.addWidget(miss!)
                         }
                         
@@ -196,12 +205,38 @@ class UnitActionMove extends UnitAction {
                 }
             }
             case 3 -> {
-                System.out.println("A1: " + attackerOutcome[0]);
-                System.out.println("D1: " + defenderOutcome[0]);
-                System.out.println("A2: " + attackerOutcome[1]);
-                System.out.println("D2: " + defenderOutcome[1]);
-                meleeStageIndex = 4;
-                return true;
+                float t = currentTick / 20f;
+                turnContext.unitPos.lerp(pathEnd, t);
+                
+                if(nextSpace != null) {
+                    //Apply knockback rules
+                    targetUnitPos.lerp(nextPosition, t);
+                    
+                    nextSpace.occupyingUnit = targetUnit;
+                    path.getLast().occupyingUnit = turnContext.unit;
+                    
+                    if(t == 1) {
+                        turnContext.scene.setCameraFollow(turnContext.unit, 0.5f);
+                        return true;
+                    }
+                } else {
+                    if(t == 1) {
+                        path.get(path.size() - 2).occupyingUnit = turnContext.unit;
+                        turnContext.scene.setCameraFollow(turnContext.unit, 0.5f);
+                        return true;
+                    }
+                }
+                
+                if(currentTick == 0) {
+                    System.out.println("A1: " + attackerOutcome[0]);
+                    System.out.println("D1: " + defenderOutcome[0]);
+                    System.out.println("A2: " + attackerOutcome[1]);
+                    System.out.println("D2: " + defenderOutcome[1]);
+                }
+                
+                currentTick++;
+                
+                return false;
             }
         }
         
