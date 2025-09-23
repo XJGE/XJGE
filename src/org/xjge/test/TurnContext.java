@@ -39,6 +39,10 @@ class TurnContext {
         finished = true; //Finish turn early
     }
     
+    boolean actionsInProgress() {
+        return !chosenActions.isEmpty();
+    }
+    
     boolean addAction(ActionCategory category, UnitAction action) {
         if(chosenActions.containsKey(category)) return false;
         chosenActions.put(category, action);

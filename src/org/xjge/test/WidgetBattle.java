@@ -65,10 +65,12 @@ class WidgetBattle extends Widget {
     
     @Override
     public void update(double targetDelta, double trueDelta) {
-        switch(state) {
-            case MENU -> handleMenuInput();
-            case TARGET -> handleTargetInput();
-            case CONFIRM -> handleConfirmInput();
+        if(!turnContext.actionsInProgress()) {
+            switch(state) {
+                case MENU -> handleMenuInput();
+                case TARGET -> handleTargetInput();
+                case CONFIRM -> handleConfirmInput();
+            }
         }
 
         //Wrap choice
