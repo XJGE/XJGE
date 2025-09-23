@@ -174,20 +174,30 @@ class UnitActionMove extends UnitAction {
                             targetUnit.health -= 2;
                             //UI.addWidget(-2hp);
                             
-                            if(attackCount == 1) { //TODO: fix bug where enemy is against wall (requires y-axis check)
-                                Vector3i nextLocation = new Vector3i(to.xLocation + (int)meleeDirection.x, 
-                                                                     to.yLocation, 
+                            if(attackCount == 1) {
+                                for(int i = 0; i < 2; i++) {
+                                    Vector3i nextLocation = new Vector3i(to.xLocation + (int)meleeDirection.x, 
+                                                                     to.yLocation + i, 
                                                                      to.zLocation + (int)meleeDirection.z);
-                                
-                                nextPosition = new Vector3f(nextLocation.x, nextLocation.y, nextLocation.z);
-                                pathEnd      = new Vector3f(to.xLocation, to.yLocation, to.zLocation);
-                                
-                                if(turnContext.gridSpaces.containsKey(nextLocation)) {
-                                    nextSpace = turnContext.gridSpaces.get(nextLocation);
                                     
-                                    attackCount++;
-                                    currentTick = 0;
-                                    meleeStageIndex = 3;
+                                    nextPosition = new Vector3f(nextLocation.x, nextLocation.y, nextLocation.z);
+                                    pathEnd      = new Vector3f(to.xLocation, to.yLocation, to.zLocation);
+
+                                    if(turnContext.gridSpaces.containsKey(nextLocation)) {
+                                        nextSpace = turnContext.gridSpaces.get(nextLocation);
+                                        
+                                        if(nextSpace.type != 1) {
+                                            nextSpace = null;
+                                        } else {
+                                            GridSpace end = path.get(path.size() - 2);
+                                            pathEnd = new Vector3f(end.xLocation, end.yLocation, end.zLocation);
+                                        }
+
+                                        attackCount++;
+                                        currentTick = 0;
+                                        meleeStageIndex = 3;
+                                        break;
+                                    }
                                 }
                             }
                         } else {
@@ -208,7 +218,7 @@ class UnitActionMove extends UnitAction {
                 float t = currentTick / 20f;
                 turnContext.unitPos.lerp(pathEnd, t);
                 
-                if(nextSpace != null) {
+                if(nextSpace != null && nextSpace.type != 1) {
                     //Apply knockback rules
                     targetUnitPos.lerp(nextPosition, t);
                     
