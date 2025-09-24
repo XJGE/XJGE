@@ -15,6 +15,8 @@ import org.xjge.core.Logger;
 import org.xjge.core.Scene;
 import org.xjge.graphics.Color;
 import org.xjge.graphics.GLProgram;
+import static org.xjge.test.GridSpace.TYPE_SPAWN_ENEMY;
+import static org.xjge.test.GridSpace.TYPE_SPAWN_PLAYER;
 
 /**
  * Created: Jan 31, 2025
@@ -54,14 +56,14 @@ public class Scene3D extends Scene {
                     gridSpaces.put(new Vector3i(x, gridSpace.yLocation, z), gridSpace);
                     
                     //Spawn players and enemies
-                    if(type == 2) {
+                    if(type == TYPE_SPAWN_PLAYER) {
                         Entity player = new Entity();
                         player.addComponent(new ComponentUnit(true, KEY_MOUSE_COMBO, player.uuid));
                         player.addComponent(new ComponentPosition(x, 0.01f, z));
                         player.addComponent(new ComponentAABB(0.5f, 1.1f, 0.5f, Color.BLUE));
                         addEntity(player);
                         gridSpace.occupyingUnit = player.getComponent(ComponentUnit.class);
-                    } else if(type == 3) {
+                    } else if(type == TYPE_SPAWN_ENEMY) {
                         Entity enemy = new Entity();
                         enemy.addComponent(new ComponentUnit(false, KEY_MOUSE_COMBO, enemy.uuid));
                         enemy.addComponent(new ComponentPosition(x, 0.01f, z));

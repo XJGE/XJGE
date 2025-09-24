@@ -9,6 +9,7 @@ import org.xjge.core.Control;
 import org.xjge.core.Timer;
 import org.xjge.core.UI;
 import org.xjge.core.XJGE;
+import static org.xjge.test.GridSpace.TYPE_SOLID;
 
 /**
  * 
@@ -189,7 +190,7 @@ class UnitActionMove extends UnitAction {
                                     if(turnContext.gridSpaces.containsKey(nextLocation)) {
                                         nextSpace = turnContext.gridSpaces.get(nextLocation);
                                         
-                                        if(nextSpace.type == 1) {
+                                        if(nextSpace.type == TYPE_SOLID) {
                                             nextSpace = null;
                                             GridSpace end = path.get(path.size() - 2);
                                             pathEnd = new Vector3f(end.xLocation, end.yLocation, end.zLocation);
@@ -269,17 +270,6 @@ class UnitActionMove extends UnitAction {
                         
                         return true;
                     }
-                }
-                
-                /*
-                TODO: this is just for testing, we could add as part of the UI
-                      but it might be better to have logged for weird edge cases
-                */
-                if(currentTick == 0) {
-                    System.out.println("A1: " + attackerOutcome[0]);
-                    System.out.println("D1: " + defenderOutcome[0]);
-                    System.out.println("A2: " + attackerOutcome[1]);
-                    System.out.println("D2: " + defenderOutcome[1]);
                 }
 
                 currentTick++;

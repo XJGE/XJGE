@@ -16,6 +16,7 @@ import org.xjge.core.ErrorUtils;
 import org.xjge.graphics.Color;
 import org.xjge.graphics.GLProgram;
 import org.xjge.graphics.Graphics;
+import static org.xjge.test.GridSpace.TYPE_SOLID;
 
 /**
  * 
@@ -106,7 +107,7 @@ class ComponentAABB extends Component {
         });
 
         occupiedGridSpaces.forEach(location -> {
-            if(gridSpaces.containsKey(location) && gridSpaces.get(location).type == 1) {
+            if(gridSpaces.containsKey(location) && gridSpaces.get(location).type == TYPE_SOLID) {
                 GridSpace gridSpace = gridSpaces.get(location);
                 
                 gridSpaceOverlap.x = (position.x < gridSpace.xLocation) 

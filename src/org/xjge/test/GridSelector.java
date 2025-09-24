@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 import org.joml.Vector3i;
 import org.xjge.core.Control;
+import static org.xjge.test.GridSpace.TYPE_SOLID;
 
 /**
  * 
@@ -43,7 +44,7 @@ class GridSelector {
                 GridSpace prevSpace = path.get(path.size() - 1);
                 GridSpace nextSpace = handleDirectionalInput(turnContext, prevSpace);
 
-                if(nextSpace != null && nextSpace.type != 1) {
+                if(nextSpace != null && nextSpace.type != TYPE_SOLID) {
                     if(path.contains(nextSpace)) {
                         //Remove loop
                         for(int i = path.size() - 1; i > path.indexOf(nextSpace); i--) {

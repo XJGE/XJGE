@@ -11,6 +11,7 @@ import org.xjge.core.ErrorUtils;
 import org.xjge.graphics.GLProgram;
 import org.xjge.graphics.Graphics;
 import org.xjge.graphics.Texture;
+import static org.xjge.test.GridSpace.TYPE_SOLID;
 
 /**
  * 
@@ -122,7 +123,7 @@ class GridRenderer {
                             case INVALID  -> colors.put(1f).put(0.8f).put(0.8f);
                         }
                     }
-                    case 1 -> colors.put(0.4f).put(0.4f).put(0.4f);
+                    case TYPE_SOLID -> colors.put(0.4f).put(0.4f).put(0.4f);
                 }
             });
             
