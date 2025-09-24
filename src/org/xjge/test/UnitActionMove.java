@@ -139,7 +139,7 @@ class UnitActionMove extends UnitAction {
                     turnContext.unitPos.z += meleeDirection.z * offset * 0.1f;
                     currentTick++;
                     
-                    if(currentTick > 17 && currentTick < 23) {
+                    if(currentTick > 15 && currentTick < 25) {
                         if(!widgetAdded) {
                             UI.addWidget(GLFW_JOYSTICK_1, "melee_qte", new WidgetQTE());
                             widgetAdded = true;
@@ -160,7 +160,7 @@ class UnitActionMove extends UnitAction {
                         }
                     }
                     
-                    if(currentTick > 23 && !outcomesApplied) {
+                    if(currentTick > 25 && !outcomesApplied) {
                         if(attackerOutcome[attackCount] && defenderOutcome[attackCount]) {
                             targetUnit.health--;
                             GridSpace end = path.get(path.size() - 2);
