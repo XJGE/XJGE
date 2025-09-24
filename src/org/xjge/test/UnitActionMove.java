@@ -215,23 +215,54 @@ class UnitActionMove extends UnitAction {
             }
             case 3 -> {
                 float t = currentTick / 20f;
+                if(t > 1f) t = 1f;
                 turnContext.unitPos.lerp(pathEnd, t);
-                
+
                 if(nextSpace != null && nextSpace.type != 1) {
-                    //Apply knockback rules
                     targetUnitPos.lerp(nextPosition, t);
                     
-                    nextSpace.occupyingUnit = targetUnit;
-                    path.getLast().occupyingUnit = turnContext.unit;
-                    
-                    if(t == 1) {
+                    if(t >= 1f) {
+                        GridSpace attackerDest = path.get(path.size() - 1);
+                        GridSpace defenderDest = nextSpace;
+                        
+                        for(GridSpace gs : turnContext.gridSpaces.values()) {
+                            if(gs.occupyingUnit == turnContext.unit && gs != attackerDest) {
+                                gs.occupyingUnit = null;
+                            }
+                            if(gs.occupyingUnit == targetUnit && gs != defenderDest) {
+                                gs.occupyingUnit = null;
+                            }
+                        }
+                        
+                        defenderDest.occupyingUnit = targetUnit;
+                        attackerDest.occupyingUnit = turnContext.unit;
+                        
+                        nextSpace = null;
+                        nextPosition = null;
+                        pathEnd = null;
+
                         turnContext.scene.setCameraFollow(turnContext.unit, 0.5f);
+                        
                         return true;
                     }
                 } else {
-                    if(t == 1) {
-                        path.get(path.size() - 2).occupyingUnit = turnContext.unit;
+                    if(t >= 1f) {
+                        GridSpace attackerDest = path.get(Math.max(0, path.size() - 2));
+                        
+                        for(GridSpace gs : turnContext.gridSpaces.values()) {
+                            if(gs.occupyingUnit == turnContext.unit && gs != attackerDest) {
+                                gs.occupyingUnit = null;
+                            }
+                        }
+
+                        attackerDest.occupyingUnit = turnContext.unit;
+                        
+                        nextSpace = null;
+                        nextPosition = null;
+                        pathEnd = null;
+
                         turnContext.scene.setCameraFollow(turnContext.unit, 0.5f);
+                        
                         return true;
                     }
                 }
@@ -246,7 +277,7 @@ class UnitActionMove extends UnitAction {
                     System.out.println("A2: " + attackerOutcome[1]);
                     System.out.println("D2: " + defenderOutcome[1]);
                 }
-                
+
                 currentTick++;
                 
                 return false;

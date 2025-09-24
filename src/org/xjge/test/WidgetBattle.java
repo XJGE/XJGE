@@ -161,7 +161,7 @@ class WidgetBattle extends Widget {
                         GridSpace unitSpace = turnContext.gridSpaces.values().stream()
                             .filter(space -> space.occupyingUnit == turnContext.unit)
                             .findFirst()
-                            .orElse(null);
+                            .orElse(null); 
 
                         if(unitSpace != null) turnContext.scene.snapOverheadCamera(unitSpace);
 
