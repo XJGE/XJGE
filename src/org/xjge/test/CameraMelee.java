@@ -83,5 +83,9 @@ class CameraMelee extends Camera {
     void resetSide() {
         chosenSide = 0;
     }
+    
+    int getChosenSide() {
+        return chosenSide;
+    }
 
 }

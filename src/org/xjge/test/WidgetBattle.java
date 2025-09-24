@@ -156,15 +156,15 @@ class WidgetBattle extends Widget {
                 switch(option.category) {
                     case MOVE -> {
                         gridSelector = new GridSelector();
-
+                        
                         //Snap overhead camera to the units starting space
                         GridSpace unitSpace = turnContext.gridSpaces.values().stream()
                             .filter(space -> space.occupyingUnit == turnContext.unit)
                             .findFirst()
                             .orElse(null); 
-
+                        
                         if(unitSpace != null) turnContext.scene.snapOverheadCamera(unitSpace);
-
+                        
                         turnContext.scene.setCameraOverhead(0.5f);
                         state = State.TARGET;
                     }

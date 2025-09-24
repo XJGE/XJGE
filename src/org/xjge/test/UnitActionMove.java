@@ -165,20 +165,23 @@ class UnitActionMove extends UnitAction {
                             targetUnit.health--;
                             GridSpace end = path.get(path.size() - 2);
                             pathEnd = new Vector3f(end.xLocation, end.yLocation, end.zLocation);
-                            //UI.addWidget(-1hp);
+                            WidgetDamage widget = new WidgetDamage(turnContext.scene.getMeleeCameraSide(), "-1hp (blocked)");
+                            UI.addWidget(GLFW_JOYSTICK_1, "damage_" + widget.uuid, widget);
                         } else if(!attackerOutcome[attackCount] && defenderOutcome[attackCount]) {
                             GridSpace end = path.get(path.size() - 2);
                             pathEnd = new Vector3f(end.xLocation, end.yLocation, end.zLocation);
-                            //UI.addWidget(miss!)
+                            WidgetDamage widget = new WidgetDamage(turnContext.scene.getMeleeCameraSide(), "miss!");
+                            UI.addWidget(GLFW_JOYSTICK_1, "damage_" + widget.uuid, widget);
                         } else if(attackerOutcome[attackCount] && !defenderOutcome[attackCount]) {
                             targetUnit.health -= 2;
-                            //UI.addWidget(-2hp);
+                            WidgetDamage widget = new WidgetDamage(turnContext.scene.getMeleeCameraSide(), "-2hp");
+                            UI.addWidget(GLFW_JOYSTICK_1, "damage_" + widget.uuid, widget);
                             
                             if(attackCount == 1) {
                                 for(int i = 0; i < 2; i++) {
                                     Vector3i nextLocation = new Vector3i(to.xLocation + (int)meleeDirection.x, 
-                                                                     to.yLocation + i, 
-                                                                     to.zLocation + (int)meleeDirection.z);
+                                                                         to.yLocation + i, 
+                                                                         to.zLocation + (int)meleeDirection.z);
                                     
                                     nextPosition = new Vector3f(nextLocation.x, nextLocation.y, nextLocation.z);
                                     pathEnd      = new Vector3f(to.xLocation, to.yLocation, to.zLocation);
@@ -202,7 +205,8 @@ class UnitActionMove extends UnitAction {
                         } else {
                             GridSpace end = path.get(path.size() - 2);
                             pathEnd = new Vector3f(end.xLocation, end.yLocation, end.zLocation);
-                            //UI.addWidget(miss!)
+                            WidgetDamage widget = new WidgetDamage(turnContext.scene.getMeleeCameraSide(), "miss!");
+                            UI.addWidget(GLFW_JOYSTICK_1, "damage_" + widget.uuid, widget);
                         }
                         
                         outcomesApplied = true;

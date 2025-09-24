@@ -185,5 +185,9 @@ public class Scene3D extends Scene {
     boolean CameraTransitionComplete() {
         return cameraManager.transitionComplete();
     }
+    
+    int getMeleeCameraSide() {
+        return cameraMelee.getChosenSide();
+    }
 
 }
