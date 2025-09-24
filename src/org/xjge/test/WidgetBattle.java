@@ -26,10 +26,11 @@ import org.xjge.ui.Widget;
  */
 class WidgetBattle extends Widget {
 
-    int choice;
+    int mainMenuChoice;
+    int subMenuChoice;
     
     private final TurnContext turnContext;
-    private State state = State.MENU;
+    private State state = State.MAINMENU;
     private UnitAction pendingAction;
     private ActionCategory pendingCategory;
     private GridSelector gridSelector;
@@ -37,7 +38,7 @@ class WidgetBattle extends Widget {
     private final List<Option> options = new ArrayList<>();
     
     private enum State {
-        MENU, TARGET, CONFIRM;
+        MAINMENU, SUBMENU, TARGET, CONFIRM;
     }
     
     private class Option {
@@ -67,15 +68,16 @@ class WidgetBattle extends Widget {
     public void update(double targetDelta, double trueDelta) {
         if(!turnContext.actionsInProgress()) {
             switch(state) {
-                case MENU -> handleMenuInput();
+                case MAINMENU -> handleMainMenuInput();
+                case SUBMENU -> handleSubMenuInput();
                 case TARGET -> handleTargetInput();
                 case CONFIRM -> handleConfirmInput();
             }
         }
 
-        //Wrap choice
-        if(choice < 0) choice = options.size() - 1;
-        if(choice >= options.size()) choice = 0;
+        //Wrap mainMenuChoice
+        if(mainMenuChoice < 0) mainMenuChoice = options.size() - 1;
+        if(mainMenuChoice >= options.size()) mainMenuChoice = 0;
 
         //Handle grid selector (continuous prompt)
         if(gridSelector != null) {
@@ -95,7 +97,7 @@ class WidgetBattle extends Widget {
             option.background.positionY = Window.getResolutionHeight() - (option.background.height * (i + 1)) - (10 * (i + 1));
             
             option.background.render(0.5f, Color.BLACK);
-            Font.fallback.drawString(((choice == i) ? "> " : "  ") + option.name, 
+            Font.fallback.drawString(((mainMenuChoice == i) ? "> " : "  ") + option.name, 
                                      option.background.positionX + 10, 
                                      option.background.positionY + 10, 
                                      (option.used) ? Color.GRAY : Color.WHITE, 
@@ -107,7 +109,7 @@ class WidgetBattle extends Widget {
                 Font.fallback.drawString("[ARROW KEYS] - Nav Menu", 310, 10, Color.YELLOW, 1f);
 
                 switch(state) {
-                    case MENU   -> Font.fallback.drawString("[Q] - End Turn", 600, 10, Color.YELLOW, 1f);
+                    case MAINMENU -> Font.fallback.drawString("[Q] - End Turn", 600, 10, Color.YELLOW, 1f);
                     case TARGET -> Font.fallback.drawString("[Q] - Cancel", 600, 10, Color.YELLOW, 1f);
                 }
             } else if(turnContext.unit.inputDeviceID >= GLFW_JOYSTICK_1 && turnContext.unit.inputDeviceID <= GLFW_JOYSTICK_4) {
@@ -138,16 +140,16 @@ class WidgetBattle extends Widget {
     @Override
     public void delete() {}
     
-    private void handleMenuInput() {
+    private void handleMainMenuInput() {
         gridSelector = null;
         
-        if(turnContext.unit.buttonPressedOnce(Control.DPAD_UP)) choice--;
-        if(turnContext.unit.buttonPressedOnce(Control.DPAD_DOWN)) choice++;
+        if(turnContext.unit.buttonPressedOnce(Control.DPAD_UP)) mainMenuChoice--;
+        if(turnContext.unit.buttonPressedOnce(Control.DPAD_DOWN)) mainMenuChoice++;
         
         if(turnContext.unit.buttonPressedOnce(Control.CIRCLE)) {
-            if(state == State.MENU) turnContext.endTurn();
+            if(state == State.MAINMENU) turnContext.endTurn();
         } else if(turnContext.unit.buttonPressedOnce(Control.CROSS)) {
-            Option option = options.get(choice);
+            Option option = options.get(mainMenuChoice);
             
             if(!option.used) {
                 pendingCategory = option.category;
@@ -169,19 +171,22 @@ class WidgetBattle extends Widget {
                         state = State.TARGET;
                     }
                     case SPELL, ITEM -> {
-                        //TODO: open selector UIs
-                        state = State.TARGET;
+                        state = State.SUBMENU;
                     }
                 }
             }
         }
+    }
+    
+    private void handleSubMenuInput() {
+        //TODO: handle this for spells and items
     }
 
     private void handleTargetInput() {
         if(turnContext.unit.buttonPressedOnce(Control.CIRCLE)) {
             resetTargeting();
             turnContext.scene.setCameraFollow(turnContext.unit, 0.5f);
-            state = State.MENU;
+            state = State.MAINMENU;
         } else if(turnContext.unit.buttonPressedOnce(Control.CROSS) && pendingAction != null) {
             state = State.CONFIRM;
         }
@@ -194,9 +199,9 @@ class WidgetBattle extends Widget {
 
     private void commitPendingAction() {
         turnContext.addAction(pendingCategory, pendingAction);
-        options.get(choice).used = true;
+        options.get(mainMenuChoice).used = true;
         resetTargeting();
-        state = State.MENU;
+        state = State.MAINMENU;
     }
 
     private void resetTargeting() {
