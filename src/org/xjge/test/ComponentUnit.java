@@ -1,5 +1,6 @@
 package org.xjge.test;
 
+import java.util.ArrayList;
 import java.util.UUID;
 import org.xjge.core.Command;
 import org.xjge.core.Component;
@@ -23,9 +24,9 @@ class ComponentUnit extends Component {
     
     private final Puppet puppet;
     
-    //final UnitAction[] actions = new UnitAction[3];
-    //final String[] items = new String[3];
-    //final ArrayList<String> spells = new ArrayList<>();
+    //TODO: these could be their own components like ComponentInventory and ComponentSpellbook
+    final String[] items = new String[3];
+    final ArrayList<String> spells = new ArrayList<>();
     
     private class InputState extends Command {
         boolean buttonPressed;
@@ -44,6 +45,35 @@ class ComponentUnit extends Component {
     ComponentUnit(boolean isPlayer, int inputDeviceID, UUID uuid) {
         this.isPlayer      = isPlayer;
         this.inputDeviceID = inputDeviceID;
+        
+        /*
+        TODO: Just providing a standard set of spells here for now, in the future
+        these will be learnable and/or unique to characters.
+        */
+        spells.add("Flash"); //Instantly teleport to an unoccupied gridspace of your choice
+        spells.add("Manabolt"); //Simple ranged attack that requires a aiming RTR/minigame
+        spells.add("Mud Trap"); //AOE spell that slows movement while they're inside an affected gridspace
+        
+        /*
+        MANABOLT MINIGAME:
+        
+        */
+        
+        /*
+        ITEMS:
+        Health Potion - Restores HP 
+        Mana Potion - Restores Mana
+        Speed Potion - Increases range you can move for one turn
+        */
+        
+        /*
+        CRYSTAL BALL MINIGAME:
+        - Mechanically works like rolling dice in mario party. (light RNG)
+        - Crystal Balls can be unique to characters
+        - A Crystal Ball appears on screen with a hand, players must wave a hand
+          for numbers to start cycling using an analog stick
+        - While moving the hand they'll press the action button to select a number
+        */
         
         puppet = new Puppet("unit_" + uuid); //TODO: name must be unique, added uuid
         puppet.setInputDevice(inputDeviceID);

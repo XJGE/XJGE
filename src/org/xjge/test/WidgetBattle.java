@@ -126,6 +126,26 @@ class WidgetBattle extends Widget {
                                  Window.getResolutionWidth() - 120, 
                                  Window.getResolutionHeight() - 40, 
                                  Color.CYAN, 1f);
+        
+        //Render submenus
+        if(state.equals(State.SUBMENU)) {
+            if(pendingCategory != null) {
+                switch(pendingCategory) {
+                    case SPELL -> {
+                        
+                    }
+                    case ITEM -> {
+                        for(int i = 0; i < turnContext.unit.items.length; i++) {
+                            String itemName = turnContext.unit.items[i];
+                            
+                            if(itemName != null) {
+                                
+                            }
+                        }
+                    }
+                }
+            }
+        }
     }
 
     @Override
@@ -171,6 +191,7 @@ class WidgetBattle extends Widget {
                         state = State.TARGET;
                     }
                     case SPELL, ITEM -> {
+                        subMenuChoice = 0;
                         state = State.SUBMENU;
                     }
                 }
@@ -179,7 +200,21 @@ class WidgetBattle extends Widget {
     }
     
     private void handleSubMenuInput() {
-        //TODO: handle this for spells and items
+        if(turnContext.unit.buttonPressedOnce(Control.DPAD_UP)) subMenuChoice--;
+        if(turnContext.unit.buttonPressedOnce(Control.DPAD_DOWN)) subMenuChoice++;
+        
+        if(turnContext.unit.buttonPressedOnce(Control.CIRCLE)) {
+            if(state == State.SUBMENU) state = State.MAINMENU;
+        } else if(turnContext.unit.buttonPressedOnce(Control.CROSS)) {
+            switch(options.get(mainMenuChoice).category) {
+                case SPELL -> {
+                    
+                }
+                case ITEM -> {
+                    
+                }
+            }
+        }
     }
 
     private void handleTargetInput() {
