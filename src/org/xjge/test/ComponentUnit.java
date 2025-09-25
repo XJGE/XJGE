@@ -55,12 +55,29 @@ class ComponentUnit extends Component {
         spells.add("Mud Trap"); //AOE spell that slows movement while they're inside an affected gridspace
         
         /*
-        MANABOLT MINIGAME:
+        FLASH MINIGAME:
+        - The player selects a group of grid spaces (lets limit it to 5x5 area for now).
+        - The target space cycles rapidly (highlights moves across valid destinations)
+        - players must press the action button at the right moment to select the desired 
+          space or risk ending up somewhere else in the targeted area.
         
+        MANABOLT MINIGAME:
+        A target appears over the unit we select, players must keep the cursor
+        within the target before the time limit expires. The cursor will move 
+        and rotate on its own requiring the player to readjust it frequently.
+        
+        MUD TRAP MINIGAME:
+        - The player selects a group of grid spaces (lets limit it to 5x5 area for now).
+        - The camera takes an isometric birds-eye view of the selected area 
+          (or we display a seperate grid mirroring the spaces?)
+        - The player must "paint" each space using the cursor or analog stick 
+          before the timer runs out.
+        - brush size is roughly 1/4 that of a gridspace meaning the space must be
+          sufficiently colored in for it to register as "selected"
         */
         
         /*
-        ITEMS:
+        ITEMS: (All of these use the crystal ball minigame to determine effectiveness)
         Health Potion - Restores HP 
         Mana Potion - Restores Mana
         Speed Potion - Increases range you can move for one turn
