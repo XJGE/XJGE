@@ -35,6 +35,7 @@ class WidgetBattle extends Widget {
     private ActionCategory pendingCategory;
     private GridSelector gridSelector;
     
+    private final Rectangle[] rectangles = new Rectangle[3];
     private final List<Option> options = new ArrayList<>();
     
     private enum State {
@@ -61,6 +62,8 @@ class WidgetBattle extends Widget {
         options.add(new Option("Cast Spell", SPELL));
         options.add(new Option("Use Item", ITEM));
         
+        for(int i = 0; i < rectangles.length; i++) rectangles[i] = new Rectangle(50, 0, 300, 35);
+        
         relocate(Window.getSplitScreenType(), Window.getResolutionWidth(), Window.getResolutionHeight());
     }
     
@@ -78,6 +81,10 @@ class WidgetBattle extends Widget {
         //Wrap mainMenuChoice
         if(mainMenuChoice < 0) mainMenuChoice = options.size() - 1;
         if(mainMenuChoice >= options.size()) mainMenuChoice = 0;
+        
+        //Wrap subMenuChoice
+        if(subMenuChoice < 0) subMenuChoice = options.size() - 1;
+        if(subMenuChoice >= options.size()) subMenuChoice = 0;
 
         //Handle grid selector (continuous prompt)
         if(gridSelector != null) {
@@ -94,7 +101,10 @@ class WidgetBattle extends Widget {
         for(int i = 0; i < options.size(); i++) {
             Option option = options.get(i);
             
-            option.background.positionY = Window.getResolutionHeight() - (option.background.height * (i + 1)) - (10 * (i + 1));
+            int yOffset = (i == 2 && state == State.SUBMENU && pendingCategory.equals(SPELL)) 
+                        ? 135 
+                        : 0;
+            option.background.positionY = (Window.getResolutionHeight() - yOffset) - (option.background.height * (i + 1)) - (10 * (i + 1));
             
             option.background.render(0.5f, Color.BLACK);
             Font.fallback.drawString(((mainMenuChoice == i) ? "> " : "  ") + option.name, 
@@ -122,25 +132,50 @@ class WidgetBattle extends Widget {
                                  Window.getResolutionHeight() - 20, 
                                  Color.RED, 1f);
         
+        /*
         Font.fallback.drawString("Mana " + turnContext.unit.mana, 
                                  Window.getResolutionWidth() - 120, 
                                  Window.getResolutionHeight() - 40, 
                                  Color.CYAN, 1f);
+        */
         
         //Render submenus
         if(state.equals(State.SUBMENU)) {
             if(pendingCategory != null) {
                 switch(pendingCategory) {
                     case SPELL -> {
-                        
+                        for(int i = 0; i < turnContext.unit.spells.size(); i++) {
+                            Spell spell = turnContext.unit.spells.get(i);
+                            
+                            rectangles[i].positionY = (Window.getResolutionHeight() - 90) - (rectangles[i].height * (i + 1)) - (10 * (i + 1));
+                            rectangles[i].render(0.5f, Color.BLACK);
+                            
+                            Font.fallback.drawString(((subMenuChoice == i) ? "> " : "  ") + spell.name(), 
+                                     rectangles[i].positionX + 10, 
+                                     rectangles[i].positionY + 10, 
+                                     Color.CYAN, 1f);
+                            
+                            /*
+                            TODO: I'm gonna skip mana cost for the MVP since we want to stress test here
+                            
+                            Font.fallback.drawString(spell.cost() + " SP", 
+                                     rectangles[i].positionX + rectangles[i].width - 60, 
+                                     rectangles[i].positionY + 10, 
+                                     Color.CYAN, 1f);
+                            */
+                        }
                     }
                     case ITEM -> {
-                        for(int i = 0; i < turnContext.unit.items.length; i++) {
-                            String itemName = turnContext.unit.items[i];
+                        for(int i = 0; i < turnContext.unit.items.size(); i++) {
+                            String itemName = turnContext.unit.items.get(i);
                             
-                            if(itemName != null) {
-                                
-                            }
+                            rectangles[i].positionY = (Window.getResolutionHeight() - 135) - (rectangles[i].height * (i + 1)) - (10 * (i + 1));
+                            rectangles[i].render(0.5f, Color.BLACK);
+                            
+                            Font.fallback.drawString(((subMenuChoice == i) ? "> " : "  ") + itemName, 
+                                     rectangles[i].positionX + 10, 
+                                     rectangles[i].positionY + 10, 
+                                     Color.YELLOW, 1f);
                         }
                     }
                 }

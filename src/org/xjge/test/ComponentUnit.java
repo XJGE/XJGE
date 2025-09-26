@@ -25,8 +25,8 @@ class ComponentUnit extends Component {
     private final Puppet puppet;
     
     //TODO: these could be their own components like ComponentInventory and ComponentSpellbook
-    final String[] items = new String[3];
-    final ArrayList<String> spells = new ArrayList<>();
+    final ArrayList<String> items = new ArrayList<>();
+    final ArrayList<Spell> spells = new ArrayList<>();
     
     private class InputState extends Command {
         boolean buttonPressed;
@@ -46,13 +46,17 @@ class ComponentUnit extends Component {
         this.isPlayer      = isPlayer;
         this.inputDeviceID = inputDeviceID;
         
+        items.add("Health Potion");
+        //items.add("Mana Potion");
+        //items.add("Speed Potion");
+        
         /*
         TODO: Just providing a standard set of spells here for now, in the future
         these will be learnable and/or unique to characters.
         */
-        spells.add("Flash"); //Instantly teleport to an unoccupied gridspace of your choice
-        spells.add("Manabolt"); //Simple ranged attack that requires a aiming RTR/minigame
-        spells.add("Mud Trap"); //AOE spell that slows movement while they're inside an affected gridspace
+        spells.add(new Spell(3, "Flash"));
+        spells.add(new Spell(5, "Manabolt"));
+        spells.add(new Spell(7, "Mud Trap"));
         
         /*
         FLASH MINIGAME:
