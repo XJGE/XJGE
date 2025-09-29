@@ -11,7 +11,7 @@ import static org.xjge.test.GridSpace.TYPE_SOLID;
  * @author J Hoffman
  * @since 
  */
-class GridSelector {
+class GridPathSelector {
     
     private boolean initialSpaceSet;
     

@@ -6,7 +6,7 @@ package org.xjge.test;
  * @since 
  */
 class UnitActionFlash extends UnitAction {
-
+    
     @Override
     boolean perform(TurnContext turnContext) {
         

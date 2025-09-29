@@ -33,7 +33,8 @@ class WidgetBattle extends Widget {
     private State state = State.MAINMENU;
     private UnitAction pendingAction;
     private ActionCategory pendingCategory;
-    private GridSelector gridSelector;
+    private GridAreaSelector areaSelector;
+    private GridPathSelector pathSelector;
     
     private final Rectangle[] rectangles = new Rectangle[3];
     private final List<Option> options = new ArrayList<>();
@@ -86,13 +87,18 @@ class WidgetBattle extends Widget {
         if(subMenuChoice < 0) subMenuChoice = options.size() - 1;
         if(subMenuChoice >= options.size()) subMenuChoice = 0;
 
-        //Handle grid selector (continuous prompt)
-        if(gridSelector != null) {
-            List<GridSpace> path = gridSelector.prompt(turnContext);
+        //Handle path selector
+        if(pathSelector != null) {
+            List<GridSpace> path = pathSelector.prompt(turnContext);
             if(path != null && pendingAction == null && pendingCategory == ActionCategory.MOVE) {
                 pendingAction = new UnitActionMove(path);
                 commitPendingAction();
             }
+        }
+        
+        //Handle area selector
+        if(areaSelector != null) {
+            List<GridSpace> area = areaSelector.prompt(turnContext);
         }
     }
 
@@ -196,7 +202,8 @@ class WidgetBattle extends Widget {
     public void delete() {}
     
     private void handleMainMenuInput() {
-        gridSelector = null;
+        areaSelector = null;
+        pathSelector = null;
         
         if(turnContext.unit.buttonPressedOnce(Control.DPAD_UP)) mainMenuChoice--;
         if(turnContext.unit.buttonPressedOnce(Control.DPAD_DOWN)) mainMenuChoice++;
@@ -212,7 +219,7 @@ class WidgetBattle extends Widget {
 
                 switch(option.category) {
                     case MOVE -> {
-                        gridSelector = new GridSelector();
+                        pathSelector = new GridPathSelector();
                         
                         //Snap overhead camera to the units starting space
                         GridSpace unitSpace = turnContext.gridSpaces.values().stream()
@@ -243,7 +250,20 @@ class WidgetBattle extends Widget {
         } else if(turnContext.unit.buttonPressedOnce(Control.CROSS)) {
             switch(options.get(mainMenuChoice).category) {
                 case SPELL -> {
+                    //TODO: this switch is fine for 3 spells but will become unmanagable if more are added later
+                    switch(turnContext.unit.spells.get(subMenuChoice).name()) {
+                        case "Flash" -> {
+                            areaSelector = new GridAreaSelector();
+                        }
+                        case "Manabolt" -> {
+                            
+                        }
+                        case "Mud Trap" -> {
+                            
+                        }
+                    }
                     
+                    state = State.TARGET;
                 }
                 case ITEM -> {
                     
@@ -275,9 +295,9 @@ class WidgetBattle extends Widget {
     }
 
     private void resetTargeting() {
-        if(gridSelector != null) {
+        if(pathSelector != null) {
             turnContext.gridSpaces.values().forEach(gs -> gs.status = GridSpaceStatus.NONE);
-            gridSelector = null;
+            pathSelector = null;
         }
         
         pendingAction = null;
