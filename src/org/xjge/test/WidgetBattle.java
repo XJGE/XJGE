@@ -101,7 +101,7 @@ class WidgetBattle extends Widget {
         //Handle area selector
         if(areaSelector != null) {
             List<GridSpace> area = areaSelector.prompt(turnContext);
-            if(area != null && pendingAction != null && pendingCategory == ActionCategory.SPELL) {
+            if(area != null && pendingAction == null && pendingCategory == ActionCategory.SPELL) {
                 pendingAction = new UnitActionFlash(area);
                 commitPendingAction();
             }
@@ -273,6 +273,7 @@ class WidgetBattle extends Widget {
                             if(unitSpace != null) turnContext.scene.snapOverheadCamera(unitSpace);
 
                             turnContext.scene.setCameraOverhead(0.5f);
+                            state = State.TARGET;
                         }
                         case "Manabolt" -> {
                             

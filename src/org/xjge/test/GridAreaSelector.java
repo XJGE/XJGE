@@ -23,8 +23,8 @@ class GridAreaSelector {
     GridAreaSelector() {
         int index = 0;
         
-        for(int x = -2; x < 3; x++) {
-            for(int y = -2; y < 3; y++) {
+        for(int y = -2; y < 3; y++) {
+            for(int x = -2; x < 3; x++) {
                 locations[index] = new Vector3i(x, 0, y);
                 index++;
             }
@@ -67,6 +67,8 @@ class GridAreaSelector {
                 }
                 
                 applyIndicators(turnContext);
+                
+                if(turnContext.unit.buttonPressedOnce(Control.CROSS)) stage = 2;
             }
             case 2 -> {
                 return area;
