@@ -314,6 +314,11 @@ class WidgetBattle extends Widget {
     }
 
     private void resetTargeting() {
+        if(areaSelector != null) {
+            turnContext.gridSpaces.values().forEach(gs -> gs.status = GridSpaceStatus.NONE);
+            areaSelector = null;
+        }
+        
         if(pathSelector != null) {
             turnContext.gridSpaces.values().forEach(gs -> gs.status = GridSpaceStatus.NONE);
             pathSelector = null;

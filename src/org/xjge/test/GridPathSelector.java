@@ -36,7 +36,7 @@ class GridPathSelector {
 
         switch(stage) {
             case 0 -> {
-                range = 5; // TODO: factor in modifiers
+                range = 5; //TODO: factor in modifiers
                 stage = 1;
             }
 
@@ -57,13 +57,6 @@ class GridPathSelector {
 
                     //Camera request: smoothly move toward latest selected space
                     turnContext.scene.focusOverheadCamera(nextSpace, 0.02f);
-                }
-
-                //Zoom control (delegated to scene/camera)
-                if(turnContext.unit.buttonPressed(Control.L1)) {
-                    turnContext.scene.adjustOverheadZoom(+0.25f);
-                } else if(turnContext.unit.buttonPressed(Control.R1)) {
-                    turnContext.scene.adjustOverheadZoom(-0.25f);
                 }
 
                 boolean validPath = validatePath(turnContext);

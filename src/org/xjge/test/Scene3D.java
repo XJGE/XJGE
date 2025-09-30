@@ -174,10 +174,6 @@ public class Scene3D extends Scene {
         Vector3f target = new Vector3f(space.xLocation, space.yLocation + 10, space.zLocation + 8);
         cameraOverhead.moveTo(target, speed);
     }
-
-    void adjustOverheadZoom(float delta) {
-        cameraOverhead.adjustZoom(delta);
-    }
     
     void snapOverheadCamera(GridSpace space) {
         Vector3f target = new Vector3f(space.xLocation, space.yLocation + 10, space.zLocation + 8);

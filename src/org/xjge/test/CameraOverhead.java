@@ -68,10 +68,6 @@ class CameraOverhead extends Camera {
         moveLerp          = 0;
     }
     
-    public void adjustZoom(float delta) {
-        zoomDistance = XJGE.clampValue(-5f, 1f, zoomDistance + delta);
-    }
-    
     public void setPosition(Vector3f nextPosition) {
         this.nextPosition = nextPosition;
         moveLerp = 1;
