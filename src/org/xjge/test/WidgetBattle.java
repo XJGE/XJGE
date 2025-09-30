@@ -26,6 +26,8 @@ import org.xjge.ui.Widget;
  */
 class WidgetBattle extends Widget {
 
+    private boolean renderSubMenus;
+    
     int mainMenuChoice;
     int subMenuChoice;
     
@@ -99,6 +101,10 @@ class WidgetBattle extends Widget {
         //Handle area selector
         if(areaSelector != null) {
             List<GridSpace> area = areaSelector.prompt(turnContext);
+            if(area != null && pendingAction != null && pendingCategory == ActionCategory.SPELL) {
+                pendingAction = new UnitActionFlash(area);
+                commitPendingAction();
+            }
         }
     }
 
@@ -107,7 +113,7 @@ class WidgetBattle extends Widget {
         for(int i = 0; i < options.size(); i++) {
             Option option = options.get(i);
             
-            int yOffset = (i == 2 && state == State.SUBMENU && pendingCategory.equals(SPELL)) 
+            int yOffset = (i == 2 && renderSubMenus && pendingCategory.equals(SPELL)) 
                         ? 135 
                         : 0;
             option.background.positionY = (Window.getResolutionHeight() - yOffset) - (option.background.height * (i + 1)) - (10 * (i + 1));
@@ -146,7 +152,7 @@ class WidgetBattle extends Widget {
         */
         
         //Render submenus
-        if(state.equals(State.SUBMENU)) {
+        if(renderSubMenus) {
             if(pendingCategory != null) {
                 switch(pendingCategory) {
                     case SPELL -> {
@@ -204,6 +210,7 @@ class WidgetBattle extends Widget {
     private void handleMainMenuInput() {
         areaSelector = null;
         pathSelector = null;
+        renderSubMenus = false;
         
         if(turnContext.unit.buttonPressedOnce(Control.DPAD_UP)) mainMenuChoice--;
         if(turnContext.unit.buttonPressedOnce(Control.DPAD_DOWN)) mainMenuChoice++;
@@ -242,6 +249,8 @@ class WidgetBattle extends Widget {
     }
     
     private void handleSubMenuInput() {
+        renderSubMenus = true;
+        
         if(turnContext.unit.buttonPressedOnce(Control.DPAD_UP)) subMenuChoice--;
         if(turnContext.unit.buttonPressedOnce(Control.DPAD_DOWN)) subMenuChoice++;
         
@@ -254,6 +263,16 @@ class WidgetBattle extends Widget {
                     switch(turnContext.unit.spells.get(subMenuChoice).name()) {
                         case "Flash" -> {
                             areaSelector = new GridAreaSelector();
+                            
+                            //Snap overhead camera to the units starting space
+                            GridSpace unitSpace = turnContext.gridSpaces.values().stream()
+                                .filter(space -> space.occupyingUnit == turnContext.unit)
+                                .findFirst()
+                                .orElse(null);
+
+                            if(unitSpace != null) turnContext.scene.snapOverheadCamera(unitSpace);
+
+                            turnContext.scene.setCameraOverhead(0.5f);
                         }
                         case "Manabolt" -> {
                             
@@ -276,7 +295,7 @@ class WidgetBattle extends Widget {
         if(turnContext.unit.buttonPressedOnce(Control.CIRCLE)) {
             resetTargeting();
             turnContext.scene.setCameraFollow(turnContext.unit, 0.5f);
-            state = State.MAINMENU;
+            state = (renderSubMenus) ? State.SUBMENU : State.MAINMENU;
         } else if(turnContext.unit.buttonPressedOnce(Control.CROSS) && pendingAction != null) {
             state = State.CONFIRM;
         }

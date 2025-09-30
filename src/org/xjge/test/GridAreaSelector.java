@@ -1,5 +1,6 @@
 package org.xjge.test;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -8,6 +9,8 @@ import java.util.List;
  * @since 
  */
 class GridAreaSelector {
+    
+    private final List<GridSpace> area = new ArrayList<>();
 
     List<GridSpace> prompt(TurnContext turnContext) {
         return null;
