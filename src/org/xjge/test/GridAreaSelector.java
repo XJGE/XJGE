@@ -17,14 +17,16 @@ class GridAreaSelector {
     
     private GridSpace nextSpace;
     private final Vector3i offset = new Vector3i();
-    private final Vector3i[] locations = new Vector3i[25];
+    private final Vector3i[] locations;
     private final List<GridSpace> area = new ArrayList<>();
     
-    GridAreaSelector() {
+    GridAreaSelector(int range) {
         int index = 0;
+        int length = range + range + 1;
+        locations = new Vector3i[length * length];
         
-        for(int y = -2; y < 3; y++) {
-            for(int x = -2; x < 3; x++) {
+        for(int y = -range; y < range + 1; y++) {
+            for(int x = -range; x < range + 1; x++) {
                 locations[index] = new Vector3i(x, 0, y);
                 index++;
             }

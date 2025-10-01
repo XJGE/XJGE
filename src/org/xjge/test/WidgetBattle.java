@@ -263,10 +263,12 @@ class WidgetBattle extends Widget {
         } else if(turnContext.unit.buttonPressedOnce(Control.CROSS)) {
             switch(options.get(mainMenuChoice).category) {
                 case SPELL -> {
+                    pendingSpell = turnContext.unit.spells.get(subMenuChoice).name();
+                    
                     //TODO: this switch is fine for 3 spells but will become unmanagable if more are added later
-                    switch(turnContext.unit.spells.get(subMenuChoice).name()) {
+                    switch(pendingSpell) {
                         case "Flash", "Mud Trap" -> {
-                            areaSelector = new GridAreaSelector();
+                            areaSelector = new GridAreaSelector(pendingSpell.equals("Flash") ? 2 : 1);
                             
                             //Snap overhead camera to the units starting space
                             GridSpace unitSpace = turnContext.gridSpaces.values().stream()
@@ -277,7 +279,6 @@ class WidgetBattle extends Widget {
                             if(unitSpace != null) turnContext.scene.snapOverheadCamera(unitSpace);
                             
                             turnContext.scene.setCameraOverhead(0.5f);
-                            pendingSpell = turnContext.unit.spells.get(subMenuChoice).name();
                             state = State.TARGET;
                         }
                         case "Manabolt" -> {

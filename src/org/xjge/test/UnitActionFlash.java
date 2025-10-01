@@ -44,7 +44,7 @@ class UnitActionFlash extends UnitAction {
                     tickSpeed = 4 + tickCount; 
                     tickCount++;
 
-                    if(tickCount > 25) stage = 2;
+                    if(tickCount > 20) stage = 2;
                 }
             }
             //Stop the selection timer and teleport the unit
