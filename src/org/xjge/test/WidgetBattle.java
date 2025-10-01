@@ -35,6 +35,7 @@ class WidgetBattle extends Widget {
     private State state = State.MAINMENU;
     private UnitAction pendingAction;
     private ActionCategory pendingCategory;
+    private String pendingSpell;
     private GridAreaSelector areaSelector;
     private GridPathSelector pathSelector;
     
@@ -101,8 +102,11 @@ class WidgetBattle extends Widget {
         //Handle area selector
         if(areaSelector != null) {
             List<GridSpace> area = areaSelector.prompt(turnContext);
-            if(area != null && pendingAction == null && pendingCategory == ActionCategory.SPELL) {
-                pendingAction = new UnitActionFlash(area);
+            if(area != null && pendingAction == null && pendingSpell != null && pendingCategory == ActionCategory.SPELL) {
+                pendingAction = switch(pendingSpell) {
+                    default -> new UnitActionFlash(area);
+                    case "Mud Trap" -> new UnitActionMudTrap(area);
+                };
                 commitPendingAction();
             }
         }
@@ -261,7 +265,7 @@ class WidgetBattle extends Widget {
                 case SPELL -> {
                     //TODO: this switch is fine for 3 spells but will become unmanagable if more are added later
                     switch(turnContext.unit.spells.get(subMenuChoice).name()) {
-                        case "Flash" -> {
+                        case "Flash", "Mud Trap" -> {
                             areaSelector = new GridAreaSelector();
                             
                             //Snap overhead camera to the units starting space
@@ -269,16 +273,14 @@ class WidgetBattle extends Widget {
                                 .filter(space -> space.occupyingUnit == turnContext.unit)
                                 .findFirst()
                                 .orElse(null);
-
+                            
                             if(unitSpace != null) turnContext.scene.snapOverheadCamera(unitSpace);
-
+                            
                             turnContext.scene.setCameraOverhead(0.5f);
+                            pendingSpell = turnContext.unit.spells.get(subMenuChoice).name();
                             state = State.TARGET;
                         }
                         case "Manabolt" -> {
-                            
-                        }
-                        case "Mud Trap" -> {
                             
                         }
                     }
@@ -326,6 +328,7 @@ class WidgetBattle extends Widget {
         }
         
         pendingAction = null;
+        pendingSpell = null;
     }
 
 }
