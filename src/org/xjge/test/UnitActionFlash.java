@@ -26,6 +26,9 @@ class UnitActionFlash extends UnitAction {
     
     UnitActionFlash(List<GridSpace> area) {
         this.area = area;
+        
+        //TODO: quick fix for teleporting to an occupied space, maybe have some kind of melee/attack RTR instead?
+        area.removeIf(space -> space.occupyingUnit != null);
     }
     
     @Override
