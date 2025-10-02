@@ -9,6 +9,8 @@ import static org.xjge.test.GridSpaceStatus.NONE;
  */
 class GridSpace {
     
+    public boolean muddy; //TODO: Simple boolean for now but we might end up having an enum control this
+    
     public final boolean[] unreachableEdge = new boolean[4];
     
     public static final int TYPE_OPEN         = 0;

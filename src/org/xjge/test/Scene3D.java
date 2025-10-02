@@ -175,6 +175,19 @@ public class Scene3D extends Scene {
         cameraOverhead.moveTo(target, speed);
     }
     
+    void focusOverheadCamera(Entity entity, float speed) {
+        if(entity.hasComponent(ComponentPosition.class)) {
+            Vector3f target = new Vector3f(entity.getComponent(ComponentPosition.class).position.x,
+                                           entity.getComponent(ComponentPosition.class).position.y + 10,
+                                           entity.getComponent(ComponentPosition.class).position.z + 8);
+            
+            cameraOverhead.moveTo(target, speed);
+        } else {
+            Logger.logWarning("Failed to focus the overhead camera on entity " + entity.uuid +
+                              " because it doesn not contain a position component", null);
+        }
+    }
+    
     void snapOverheadCamera(GridSpace space) {
         Vector3f target = new Vector3f(space.xLocation, space.yLocation + 10, space.zLocation + 8);
         cameraOverhead.setPosition(target);

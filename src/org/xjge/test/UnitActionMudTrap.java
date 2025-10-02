@@ -1,6 +1,7 @@
 package org.xjge.test;
 
 import java.util.List;
+import org.xjge.core.Entity;
 
 /**
  * 
@@ -11,6 +12,7 @@ class UnitActionMudTrap extends UnitAction {
 
     private int stage;
     
+    private final Entity mudBall = new Entity();
     private final List<GridSpace> area;
     
     UnitActionMudTrap(List<GridSpace> area) {
@@ -19,15 +21,26 @@ class UnitActionMudTrap extends UnitAction {
     
     @Override
     boolean perform(TurnContext turnContext) {
+        /*
+        Lets implement it like this for now:
+        
+        range game- a bar appears and players must stop it between a section 
+        to be accurate or risk under/over shooting it
+        */
+        
         switch(stage) {
             case 0 -> {
-                /*
-                Lets implement it like this for now:
+                mudBall.addComponent(new ComponentPosition(turnContext.unitPos.x, turnContext.unitPos.y, turnContext.unitPos.z));
+                mudBall.addComponent(new ComponentMudBall());
                 
-                Player must paint spaces by selecting each grid space and clicking to
-                change their color before the timer runs out- how dark a space is determines
-                it's chance to be considered "muddy" once evaluated
-                */
+                turnContext.scene.addEntity(mudBall);
+                
+                turnContext.scene.focusOverheadCamera(mudBall, 0.02f);
+                
+                stage = 1;
+            }
+            case 1 -> {
+                
             }
         }
         
