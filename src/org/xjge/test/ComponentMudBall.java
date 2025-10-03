@@ -93,7 +93,7 @@ class ComponentMudBall extends Component {
         currentPos.z = XJGE.lerp(startPos.z, targetPos.z, t);
 
         //Add arc vertically (y)
-        float height = 2.0f * (1 - (t * 2 - 1) * (t * 2 - 1)); // parabola 0->1->0
+        float height = 2.0f * (1 - (t * 2 - 1) * (t * 2 - 1)); //Parabola 0->1->0
         currentPos.y = XJGE.lerp(startPos.y, targetPos.y, t) + height;
 
         if(t >= 1f) {

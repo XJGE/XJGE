@@ -32,16 +32,6 @@ class UnitActionMudTrap extends UnitAction {
     
     @Override
     boolean perform(TurnContext turnContext) {
-        /*
-        Lets implement it like this for now:
-        
-        Players hold the space/cross causing the mud ball to grow in size, once 
-        the button is released the mud ball will be thrown to the target area. 
-        If the button is held for too long it will burst covering the immediate 
-        area surrounding the player. The size of the mud ball at the time of 
-        launch determines its AOE.
-        */
-        
         switch(stage) {
             case 0 -> {
                 mudBall.addComponent(new ComponentPosition(turnContext.unitPos.x, turnContext.unitPos.y + 1, turnContext.unitPos.z));
@@ -68,16 +58,18 @@ class UnitActionMudTrap extends UnitAction {
                         targetSpace = new Vector3f(area.get(4).xLocation, area.get(4).yLocation, area.get(4).zLocation);
                     }
                 } else {
-                    System.out.println(throwStrength);
                     mudBall.getComponent(ComponentMudBall.class)
                            .launch(mudBall.getComponent(ComponentPosition.class).position, 
                                    targetSpace, 
                                    throwStrength);
+                    
+                    //TODO: make the overhead camera follow mud ball as it travels
+                    
                     stage = 3;
                 }
             }
             case 3 -> {
-                
+                //TODO: on impact, apply mud to tiles where the mud ball landed
             }
         }
         
