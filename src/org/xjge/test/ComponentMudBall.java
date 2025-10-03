@@ -38,10 +38,10 @@ class ComponentMudBall extends Component {
             graphics.indices  = stack.mallocInt(6);
             
             //(vec3 position), (vec2 texcoords)
-            graphics.vertices.put(-0.5f).put(0).put( 0.5f) .put(0).put(1);
-            graphics.vertices.put( 0.5f).put(0).put( 0.5f) .put(1).put(1);
-            graphics.vertices.put( 0.5f).put(0).put(-0.5f) .put(1).put(0);
-            graphics.vertices.put(-0.5f).put(0).put(-0.5f) .put(0).put(0);
+            graphics.vertices.put(-0.5f).put( 0.5f).put(0) .put(0).put(1);
+            graphics.vertices.put( 0.5f).put( 0.5f).put(0) .put(1).put(1);
+            graphics.vertices.put( 0.5f).put(-0.5f).put(0) .put(1).put(0);
+            graphics.vertices.put(-0.5f).put(-0.5f).put(0) .put(0).put(0);
             
             graphics.indices.put(0).put(1).put(2);
             graphics.indices.put(2).put(3).put(0);
@@ -59,7 +59,7 @@ class ComponentMudBall extends Component {
         glEnableVertexAttribArray(1);
     }
     
-    void render(Map<String, GLProgram> glPrograms, Vector3f position) {
+    void render(Map<String, GLProgram> glPrograms, Vector3f position, Vector3f cameraPos) {
         glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
         glEnable(GL_ALPHA_TEST);
         glAlphaFunc(GL_GREATER, 0);
@@ -73,6 +73,8 @@ class ComponentMudBall extends Component {
         glProgram.use();
         
         graphics.modelMatrix.translation(position);
+        graphics.modelMatrix.billboardSpherical(position, cameraPos);
+        graphics.modelMatrix.scale(0.75f);
         
         glProgram.setUniform("uTexture", 0);
         glProgram.setUniform("uColor", Color.BROWN.asVector3f());

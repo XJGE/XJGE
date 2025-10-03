@@ -129,7 +129,8 @@ public class Scene3D extends Scene {
             if(entity.hasComponent(ComponentMudBall.class) && entity.hasComponent(ComponentPosition.class)) {
                 entity.getComponent(ComponentMudBall.class)
                       .render(glPrograms, 
-                              entity.getComponent(ComponentPosition.class).position);
+                              entity.getComponent(ComponentPosition.class).position,
+                              cameraOverhead.position);
             }
             
             if(entity.hasComponent(ComponentAABB.class) && Main.showBoundingVolumes()) {
