@@ -126,6 +126,12 @@ public class Scene3D extends Scene {
         gridRenderer.draw(glPrograms.get("grid"), gridSpaces);
         
         entities.values().forEach(entity -> {
+            if(entity.hasComponent(ComponentMudBall.class) && entity.hasComponent(ComponentPosition.class)) {
+                entity.getComponent(ComponentMudBall.class)
+                      .render(glPrograms, 
+                              entity.getComponent(ComponentPosition.class).position);
+            }
+            
             if(entity.hasComponent(ComponentAABB.class) && Main.showBoundingVolumes()) {
                 entity.getComponent(ComponentAABB.class).render(glPrograms.get("volume"));
             }
