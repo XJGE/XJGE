@@ -24,8 +24,11 @@ class UnitActionMudTrap extends UnitAction {
         /*
         Lets implement it like this for now:
         
-        range game- a bar appears and players must stop it between a section 
-        to be accurate or risk under/over shooting it
+        Players hold the space/cross causing the mud ball to grow in size, once 
+        the button is released the mud ball will be thrown to the target area. 
+        If the button is held for too long it will burst covering the immediate 
+        area surrounding the player. The size of the mud ball at the time of 
+        launch determines its AOE.
         */
         
         switch(stage) {

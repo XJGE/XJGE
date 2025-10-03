@@ -1,6 +1,8 @@
 package org.xjge.test;
 
+import org.lwjgl.system.MemoryStack;
 import org.xjge.core.Component;
+import org.xjge.graphics.Graphics;
 
 /**
  * 
@@ -9,4 +11,24 @@ import org.xjge.core.Component;
  */
 class ComponentMudBall extends Component {
 
+    private final Graphics g = new Graphics();
+    
+    ComponentMudBall() {
+        try(MemoryStack stack = MemoryStack.stackPush()) {
+            
+        }
+    }
+    
+    void update() {
+        
+    }
+    
+    void render() {
+        
+    }
+    
+    void destroy() {
+        
+    }
+    
 }

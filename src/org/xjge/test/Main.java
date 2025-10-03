@@ -57,6 +57,23 @@ public class Main {
             XJGE.addGLProgram("volume", volumeShader);
         }
         
+        {
+            var shaderSourceFiles = new LinkedList<GLShader>() {{
+                add(new GLShader("shader_mudball_vertex.glsl", GL_VERTEX_SHADER));
+                add(new GLShader("shader_mudball_fragment.glsl", GL_FRAGMENT_SHADER));
+            }};
+            
+            GLProgram mudballShader = new GLProgram(shaderSourceFiles, "mudball");
+            
+            mudballShader.addUniform(GLDataType.INT,  "uTexture");
+            mudballShader.addUniform(GLDataType.VEC3, "uColor");
+            mudballShader.addUniform(GLDataType.MAT4, "uModel");
+            mudballShader.addUniform(GLDataType.MAT4, "uView");
+            mudballShader.addUniform(GLDataType.MAT4, "uProjection");
+            
+            XJGE.addGLProgram("mudball", mudballShader);
+        }
+        
         Window.addObserver(new WindowObserver());
         
         //Window.setMinimumSize(640, 480);

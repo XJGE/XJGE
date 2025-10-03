@@ -268,7 +268,9 @@ class WidgetBattle extends Widget {
                     //TODO: this switch is fine for 3 spells but will become unmanagable if more are added later
                     switch(pendingSpell) {
                         case "Flash", "Mud Trap" -> {
-                            areaSelector = new GridAreaSelector(pendingSpell.equals("Flash") ? 2 : 1);
+                            areaSelector = (pendingSpell.equals("Flash")) 
+                                         ? new GridAreaSelector(2, -1) 
+                                         : new GridAreaSelector(1, 8);
                             
                             //Snap overhead camera to the units starting space
                             GridSpace unitSpace = turnContext.gridSpaces.values().stream()

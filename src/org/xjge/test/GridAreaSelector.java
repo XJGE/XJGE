@@ -20,13 +20,13 @@ class GridAreaSelector {
     private final Vector3i[] locations;
     private final List<GridSpace> area = new ArrayList<>();
     
-    GridAreaSelector(int range) {
+    GridAreaSelector(int radius, int range) {
         int index = 0;
-        int length = range + range + 1;
+        int length = radius + radius + 1;
         locations = new Vector3i[length * length];
         
-        for(int y = -range; y < range + 1; y++) {
-            for(int x = -range; x < range + 1; x++) {
+        for(int y = -radius; y < radius + 1; y++) {
+            for(int x = -radius; x < radius + 1; x++) {
                 locations[index] = new Vector3i(x, 0, y);
                 index++;
             }
