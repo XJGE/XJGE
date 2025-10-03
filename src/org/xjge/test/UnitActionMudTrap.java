@@ -1,6 +1,7 @@
 package org.xjge.test;
 
 import java.util.List;
+import org.joml.Vector3f;
 import static org.lwjgl.glfw.GLFW.GLFW_JOYSTICK_1;
 import org.xjge.core.Entity;
 import org.xjge.core.Timer;
@@ -19,8 +20,9 @@ class UnitActionMudTrap extends UnitAction {
     
     private int stage;
     
-    private final Timer throwDelay = new Timer();
+    private Vector3f targetSpace;
     private WidgetMudToss widget;
+    private final Timer throwDelay = new Timer();
     private final Entity mudBall = new Entity();
     private final List<GridSpace> area;
     
@@ -61,13 +63,21 @@ class UnitActionMudTrap extends UnitAction {
             }
             case 2 -> {
                 if(!delayOver) {
-                    if(throwDelay.tick(5, 15, true) && throwDelay.getTime() == 4) {
+                    if(throwDelay.tick(5, 12, true) && throwDelay.getTime() == 4) {
                         delayOver = true;
+                        targetSpace = new Vector3f(area.get(4).xLocation, area.get(4).yLocation, area.get(4).zLocation);
                     }
                 } else {
                     System.out.println(throwStrength);
-                    //TODO: detect mudball landed (posZ <= 0);
+                    mudBall.getComponent(ComponentMudBall.class)
+                           .launch(mudBall.getComponent(ComponentPosition.class).position, 
+                                   targetSpace, 
+                                   throwStrength);
+                    stage = 3;
                 }
+            }
+            case 3 -> {
+                
             }
         }
         

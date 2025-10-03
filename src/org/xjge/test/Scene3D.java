@@ -116,6 +116,10 @@ public class Scene3D extends Scene {
                 Vector3f position = entity.getComponent(ComponentPosition.class).position;
                 entity.getComponent(ComponentAABB.class).update(position, gridSpaces, entities.values());
             }
+            
+            if(entity.hasComponent(ComponentMudBall.class)) {
+                entity.getComponent(ComponentMudBall.class).update(targetDelta);
+            }
         });
     }
 

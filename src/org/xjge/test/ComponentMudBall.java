@@ -7,6 +7,7 @@ import static org.lwjgl.opengl.GL30.glBindVertexArray;
 import org.lwjgl.system.MemoryStack;
 import org.xjge.core.Component;
 import org.xjge.core.ErrorUtils;
+import org.xjge.core.XJGE;
 import org.xjge.graphics.Color;
 import org.xjge.graphics.GLProgram;
 import org.xjge.graphics.Graphics;
@@ -18,6 +19,15 @@ import org.xjge.graphics.Texture;
  * @since 
  */
 class ComponentMudBall extends Component {
+    
+    private boolean active;
+    
+    private float flightTime;
+    private float elapsedTime;
+    
+    private Vector3f startPos;
+    private Vector3f targetPos;
+    private Vector3f currentPos;
     
     private final Graphics graphics = new Graphics();
     
@@ -57,6 +67,39 @@ class ComponentMudBall extends Component {
         
         glEnableVertexAttribArray(0);
         glEnableVertexAttribArray(1);
+    }
+    
+    void launch(Vector3f start, Vector3f target, float accuracy) {
+        startPos = new Vector3f(start);
+        
+        //Scale the target distance based on accuracy value provided during RTR
+        Vector3f dir = new Vector3f(target).sub(start).mul(accuracy);
+        targetPos = new Vector3f(start).add(dir);
+
+        currentPos = start;
+        flightTime = 1.0f;
+        elapsedTime = 0f;
+        active = true;
+    }
+    
+    void update(double delta) {
+        if(!active) return;
+
+        elapsedTime += delta;
+        float t = Math.min(elapsedTime / flightTime, 1f);
+
+        //Interpolate horizontally (x/z)
+        currentPos.x = XJGE.lerp(startPos.x, targetPos.x, t);
+        currentPos.z = XJGE.lerp(startPos.z, targetPos.z, t);
+
+        //Add arc vertically (y)
+        float height = 2.0f * (1 - (t * 2 - 1) * (t * 2 - 1)); // parabola 0->1->0
+        currentPos.y = XJGE.lerp(startPos.y, targetPos.y, t) + height;
+
+        if(t >= 1f) {
+            active = false; 
+            //TODO: trigger mud trap effect on landing
+        }
     }
     
     void render(Map<String, GLProgram> glPrograms, Vector3f position, Vector3f cameraPos) {
