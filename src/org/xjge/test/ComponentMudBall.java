@@ -2,10 +2,12 @@ package org.xjge.test;
 
 import java.util.Map;
 import org.joml.Vector3f;
+import org.joml.Vector3i;
 import static org.lwjgl.opengl.GL20.*;
 import static org.lwjgl.opengl.GL30.glBindVertexArray;
 import org.lwjgl.system.MemoryStack;
 import org.xjge.core.Component;
+import org.xjge.core.Entity;
 import org.xjge.core.ErrorUtils;
 import org.xjge.core.XJGE;
 import org.xjge.graphics.Color;
@@ -21,6 +23,7 @@ import org.xjge.graphics.Texture;
 class ComponentMudBall extends Component {
     
     private boolean active;
+    private boolean landed;
     
     private float flightTime;
     private float elapsedTime;
@@ -82,7 +85,7 @@ class ComponentMudBall extends Component {
         active = true;
     }
     
-    void update(double delta) {
+    void update(double delta, Map<Vector3i, GridSpace> gridSpaces, Entity owner) {
         if(!active) return;
 
         elapsedTime += delta;
@@ -97,8 +100,23 @@ class ComponentMudBall extends Component {
         currentPos.y = XJGE.lerp(startPos.y, targetPos.y, t) + height;
 
         if(t >= 1f) {
-            active = false; 
-            //TODO: trigger mud trap effect on landing
+            active = false;
+            landed = true;
+            
+            int centerX = Math.round(currentPos.x);
+            int centerZ = Math.round(currentPos.z);
+            
+            for(int z = -1; z <= 1; z++) {
+                for(int x = -1; x <= 1; x++) {
+                    GridSpace space = gridSpaces.get(new Vector3i(centerX + x, 0, centerZ + z));
+                    
+                    if(space != null && space.type != GridSpace.TYPE_SOLID) {
+                        space.muddy = true;
+                    }
+                }
+            }
+            
+            owner.removeFromScene();
         }
     }
     
@@ -131,7 +149,16 @@ class ComponentMudBall extends Component {
     }
     
     void destroy() {
+        /*
+        TODO: might be worthwhile to add a destroy() method to Scene3D that allows 
+        components to free buffers/resources after their owner has requested removal
+        */
         graphics.freeBuffers();
+    }
+    
+    
+    boolean landed() {
+        return landed;
     }
     
 }

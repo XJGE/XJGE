@@ -23,6 +23,7 @@ class UnitActionMudTrap extends UnitAction {
     private Vector3f targetSpace;
     private WidgetMudToss widget;
     private final Timer throwDelay = new Timer();
+    private final Timer landDelay = new Timer();
     private final Entity mudBall = new Entity();
     private final List<GridSpace> area;
     
@@ -63,13 +64,18 @@ class UnitActionMudTrap extends UnitAction {
                                    targetSpace, 
                                    throwStrength);
                     
-                    //TODO: make the overhead camera follow mud ball as it travels
-                    
                     stage = 3;
                 }
             }
             case 3 -> {
-                //TODO: on impact, apply mud to tiles where the mud ball landed
+                turnContext.scene.focusOverheadCamera(mudBall, 1f);
+                
+                if(mudBall == null || mudBall.getComponent(ComponentMudBall.class).landed()) {
+                    if(landDelay.tick(5, 12, true) && landDelay.getTime() == 4) {
+                        turnContext.scene.setCameraFollow(turnContext.unit, 0.5f);
+                        return true;
+                    }
+                }
             }
         }
         

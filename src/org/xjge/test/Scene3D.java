@@ -8,11 +8,13 @@ import java.util.HashMap;
 import java.util.Map;
 import org.joml.Vector3f;
 import org.joml.Vector3i;
+import static org.lwjgl.glfw.GLFW.GLFW_JOYSTICK_1;
 import org.xjge.core.Camera;
 import org.xjge.core.Entity;
 import static org.xjge.core.Input.KEY_MOUSE_COMBO;
 import org.xjge.core.Logger;
 import org.xjge.core.Scene;
+import org.xjge.core.UI;
 import org.xjge.graphics.Color;
 import org.xjge.graphics.GLProgram;
 import static org.xjge.test.GridSpace.TYPE_SPAWN_ENEMY;
@@ -37,8 +39,15 @@ public class Scene3D extends Scene {
     private final GridRenderer gridRenderer = new GridRenderer();
     private final Map<Vector3i, GridSpace> gridSpaces = new HashMap<>();
     
+    public Scene3D() {
+        this("map_test.txt");
+        //Added this for resetting the scene during runtime
+    }
+    
     public Scene3D(String filename) {
         super("test");
+        
+        UI.clearWidgets(GLFW_JOYSTICK_1);
         
         try {
             BufferedReader reader = new BufferedReader(new InputStreamReader(getClass().getResourceAsStream("/org/xjge/assets/" + filename)));
@@ -118,7 +127,7 @@ public class Scene3D extends Scene {
             }
             
             if(entity.hasComponent(ComponentMudBall.class)) {
-                entity.getComponent(ComponentMudBall.class).update(targetDelta);
+                entity.getComponent(ComponentMudBall.class).update(targetDelta, gridSpaces, entity);
             }
         });
     }

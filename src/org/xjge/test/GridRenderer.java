@@ -12,6 +12,9 @@ import org.xjge.graphics.GLProgram;
 import org.xjge.graphics.Graphics;
 import org.xjge.graphics.Texture;
 import static org.xjge.test.GridSpace.TYPE_SOLID;
+import static org.xjge.test.GridSpaceStatus.INVALID;
+import static org.xjge.test.GridSpaceStatus.PATH;
+import static org.xjge.test.GridSpaceStatus.SELECTED;
 
 /**
  * 
@@ -116,11 +119,20 @@ class GridRenderer {
                 
                 switch(space.type) {
                     default -> {
-                        switch(space.status) {
-                            default       -> colors.put(0.8f).put(0.8f).put(0.8f);
-                            case SELECTED -> colors.put(1f).put(1f).put(1f);
-                            case PATH     -> colors.put(0.8f).put(1f).put(0.8f);
-                            case INVALID  -> colors.put(1f).put(0.8f).put(0.8f);
+                        if(space.muddy) {
+                            switch(space.status) {
+                                default       -> colors.put(0.8f).put(0.7f).put(0.6f);
+                                case SELECTED -> colors.put(0.9f).put(0.8f).put(0.7f);
+                                case PATH     -> colors.put(0.7f).put(0.8f).put(0.6f);
+                                case INVALID  -> colors.put(0.9f).put(0.7f).put(0.6f);
+                            }
+                        } else {
+                            switch(space.status) {
+                                default       -> colors.put(0.8f).put(0.8f).put(0.8f);
+                                case SELECTED -> colors.put(1f).put(1f).put(1f);
+                                case PATH     -> colors.put(0.8f).put(1f).put(0.8f);
+                                case INVALID  -> colors.put(1f).put(0.8f).put(0.8f);
+                            }
                         }
                     }
                     case TYPE_SOLID -> colors.put(0.4f).put(0.4f).put(0.4f);
