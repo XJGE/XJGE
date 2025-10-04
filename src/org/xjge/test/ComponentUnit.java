@@ -16,6 +16,8 @@ class ComponentUnit extends Component {
 
     final boolean isPlayer;
     
+    int moveRange = 5;
+    
     int maxHealth = 10;
     int maxMana   = 10;
     int health    = maxHealth;

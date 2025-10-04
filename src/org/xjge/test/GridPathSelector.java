@@ -13,33 +13,25 @@ import static org.xjge.test.GridSpace.TYPE_SOLID;
  */
 class GridPathSelector {
     
-    private boolean initialSpaceSet;
-    
     private int stage;
-    private int range;
 
     private final List<GridSpace> path = new ArrayList<>();
 
     List<GridSpace> prompt(TurnContext turnContext) {
-        if(!initialSpaceSet) {
-            for(GridSpace gridSpace : turnContext.gridSpaces.values()) {
-                if(gridSpace.occupyingUnit == turnContext.unit) {
-                    gridSpace.status = GridSpaceStatus.SELECTED;
-                    path.add(0, gridSpace);
-
-                    //Camera request: look at starting space
-                    turnContext.scene.focusOverheadCamera(gridSpace, 0.5f);
-                }
-            }
-            initialSpaceSet = true;
-        }
-
         switch(stage) {
             case 0 -> {
-                range = 5; //TODO: factor in modifiers
+                for(GridSpace gridSpace : turnContext.gridSpaces.values()) {
+                    if(gridSpace.occupyingUnit == turnContext.unit) {
+                        gridSpace.status = GridSpaceStatus.SELECTED;
+                        path.add(0, gridSpace);
+
+                        //Camera request: look at starting space
+                        turnContext.scene.focusOverheadCamera(gridSpace, 0.5f);
+                    }
+                }
+                
                 stage = 1;
             }
-
             case 1 -> {
                 GridSpace prevSpace = path.get(path.size() - 1);
                 GridSpace nextSpace = handleDirectionalInput(turnContext, prevSpace);
@@ -89,13 +81,19 @@ class GridPathSelector {
     }
 
     private boolean validatePath(TurnContext turnContext) {
-        boolean valid = range >= path.size() - 1;
+        boolean valid = turnContext.unit.moveRange >= path.size() - 1;
+        int moveCost = 0;
+        
         for(int i = 0; i < path.size(); i++) {
             GridSpace space = path.get(i);
-            if(i != path.size() - 1 && space.occupyingUnit != null && space.occupyingUnit != turnContext.unit) {
+            moveCost += space.muddy ? 2 : 1;
+            
+            if((i != path.size() - 1 && space.occupyingUnit != null && space.occupyingUnit != turnContext.unit) ||
+               moveCost > turnContext.unit.moveRange) {
                 valid = false;
             }
         }
+        
         return valid;
     }
 
