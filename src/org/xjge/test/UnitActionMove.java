@@ -31,7 +31,7 @@ class UnitActionMove extends UnitAction {
     
     private float pathLerp;
     private float meleeLerp;
-    private final float MOVE_SPEED = 6f;
+    private float moveSpeed = 6f;
     
     private ComponentUnit targetUnit;
     private Vector3f targetUnitPos;
@@ -73,9 +73,9 @@ class UnitActionMove extends UnitAction {
             
             return meleeStage(turnContext, to);
         }
-
+        
         //Advance interpolation
-        pathLerp += 0.016f * MOVE_SPEED; //TODO: supply deltaTime
+        pathLerp += 0.016f * (to.muddy ? 3f : 6f); //TODO: supply deltaTime
         if(pathLerp > 1f) pathLerp = 1f;
 
         float newX = XJGE.lerp(from.xLocation, to.xLocation, pathLerp);
