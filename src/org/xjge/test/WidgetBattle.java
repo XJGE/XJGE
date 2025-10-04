@@ -38,6 +38,7 @@ class WidgetBattle extends Widget {
     private String pendingSpell;
     private GridAreaSelector areaSelector;
     private GridPathSelector pathSelector;
+    private UnitSelector unitSelector;
     
     private final Rectangle[] rectangles = new Rectangle[3];
     private final List<Option> options = new ArrayList<>();
@@ -284,7 +285,9 @@ class WidgetBattle extends Widget {
                             state = State.TARGET;
                         }
                         case "Manabolt" -> {
+                            unitSelector = new UnitSelector();
                             
+                            state = State.TARGET;
                         }
                     }
                     

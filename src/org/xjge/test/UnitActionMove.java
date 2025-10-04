@@ -31,7 +31,6 @@ class UnitActionMove extends UnitAction {
     
     private float pathLerp;
     private float meleeLerp;
-    private float moveSpeed = 6f;
     
     private ComponentUnit targetUnit;
     private Vector3f targetUnitPos;
