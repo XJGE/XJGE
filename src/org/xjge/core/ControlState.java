@@ -11,7 +11,7 @@ import static org.xjge.core.Control.RIGHT_STICK_Y;
  * @author J Hoffman
  * @since 
  */
-public class InputState {
+public final class ControlState {
 
     private boolean pressRequested;
     

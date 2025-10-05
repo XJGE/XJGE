@@ -1,17 +1,17 @@
 package org.xjge.test;
 
-import org.xjge.core.InputState;
-import org.xjge.core.PuppetAction;
+import org.xjge.core.ControlState;
+import org.xjge.core.ControllableAction;
 
 /**
  * 
  * @author J Hoffman
  * @since 
  */
-public class TestAction extends PuppetAction {
+public class TestAction extends ControllableAction {
 
     @Override
-    public void perform(InputState inputState, double targetDelta, double trueDelta) {
+    public void perform(ControlState controlState, double targetDelta, double trueDelta) {
         
     }
 

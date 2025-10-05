@@ -9,12 +9,12 @@ import java.util.UUID;
  * @author J Hoffman
  * @since 
  */
-public final class Puppet2 {
+public final class Controllable {
 
     final UUID uuid = UUID.randomUUID();
     private InputDevice2 device;
     
-    public final Map<Control, PuppetAction> actions = new HashMap<>();
+    public final Map<Control, ControllableAction> actions = new HashMap<>();
     
     void process(double targetDelta, double trueDelta) {
         if(device != null && device.enabled && !actions.isEmpty()) {

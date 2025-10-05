@@ -11,7 +11,7 @@ import java.util.UUID;
  */
 public class Input2 {
 
-    private static final Map<UUID, Puppet2> puppets = new HashMap<>();
+    private static final Map<UUID, Controllable> puppets = new HashMap<>();
     private static final Map<Integer, InputDevice2> inputDevices = new HashMap<>();
     
     /**
