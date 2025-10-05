@@ -1,8 +1,10 @@
 package org.xjge.test;
 
 import java.util.Map;
+import org.xjge.core.Control;
 import org.xjge.core.Mouse;
 import org.xjge.core.SplitScreenType;
+import org.xjge.core.Window;
 import org.xjge.graphics.GLProgram;
 import org.xjge.graphics.Texture;
 import org.xjge.ui.Icon;
@@ -14,35 +16,57 @@ import org.xjge.ui.Widget;
  * @since 
  */
 class WidgetManabolt extends Widget {
-
-    private Texture targetTexture;
-    private Icon targetIcon;
     
-    WidgetManabolt() {
+    private final TurnContext turnContext;
+    private Texture targetTexture;
+    private Texture markerTexture;
+    private Icon targetIcon;
+    private Icon markerIcon;
+    
+    WidgetManabolt(TurnContext turnContext) {
+        this.turnContext = turnContext;
+        
         targetTexture = new Texture("image_target.png");
         targetIcon = new Icon(targetTexture, 100, 100, true);
+        targetIcon.scale.set(2);
+        
+        markerTexture = new Texture("image_marker.png");
+        markerIcon = new Icon(markerTexture, 50, 50, true);
+        
+        relocate(Window.getSplitScreenType(), Window.getResolutionWidth(), Window.getResolutionHeight());
     }
     
     @Override
     public void update(double targetDelta, double trueDelta) {
+        //TODO: axisMoved() doesnt function reliably. deadzone issue maybe?
+        
+        if(turnContext.unit.axisMoved(Control.RIGHT_STICK_X)) {
+            markerIcon.position.x += turnContext.unit.getInputValue(Control.RIGHT_STICK_X);
+        }
+        
+        if(turnContext.unit.axisMoved(Control.RIGHT_STICK_Y)) {
+            markerIcon.position.y += turnContext.unit.getInputValue(Control.RIGHT_STICK_Y);
+        }
+        
+        System.out.println(markerIcon.position.x + ", " + markerIcon.position.y);
     }
 
     @Override
     public void render(Map<String, GLProgram> glPrograms) {
         targetIcon.render();
+        markerIcon.render();
     }
 
     @Override
-    public void relocate(SplitScreenType splitType, int viewportWidth, int viewportHeight) {
+    public final void relocate(SplitScreenType splitType, int viewportWidth, int viewportHeight) {
+        targetIcon.position.set(viewportWidth / 2, viewportHeight / 2);
     }
 
     @Override
-    public void processKeyboardInput(int key, int action, int mods) {
-    }
+    public void processKeyboardInput(int key, int action, int mods) {}
 
     @Override
-    public void processMouseInput(Mouse mouse) {
-    }
+    public void processMouseInput(Mouse mouse) {}
 
     @Override
     public void delete() {

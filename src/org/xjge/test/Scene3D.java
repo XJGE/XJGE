@@ -146,6 +146,10 @@ public class Scene3D extends Scene {
                               cameraOverhead.position);
             }
             
+            if(entity.hasComponent(ComponentArrow.class)) {
+                entity.getComponent(ComponentArrow.class).render(glPrograms, cameraOverhead.position);
+            }
+            
             if(entity.hasComponent(ComponentAABB.class) && Main.showBoundingVolumes()) {
                 entity.getComponent(ComponentAABB.class).render(glPrograms.get("volume"));
             }

@@ -31,12 +31,14 @@ class ComponentUnit extends Component {
     final ArrayList<Spell> spells = new ArrayList<>();
     
     private class InputState extends Command {
+        boolean axisMoved;
         boolean buttonPressed;
         boolean buttonPressedOnce;
         float inputValue;
 
         @Override
         public void execute(double targetDelta, double trueDelta) {
+            axisMoved         = axisMoved();
             buttonPressed     = buttonPressed();
             buttonPressedOnce = buttonPressedOnce();
             inputValue        = getInputValue();
@@ -61,28 +63,6 @@ class ComponentUnit extends Component {
         spells.add(new Spell(7, "Mud Trap"));
         
         /*
-        FLASH MINIGAME:
-        - The player selects a group of grid spaces (lets limit it to 5x5 area for now).
-        - The target space cycles rapidly (highlights moves across valid destinations)
-        - players must press the action button at the right moment to select the desired 
-          space or risk ending up somewhere else in the targeted area.
-        
-        MANABOLT MINIGAME:
-        A target appears over the unit we select, players must keep the cursor
-        within the target before the time limit expires. The cursor will move 
-        and rotate on its own requiring the player to readjust it frequently.
-        
-        MUD TRAP MINIGAME:
-        - The player selects a group of grid spaces (lets limit it to 5x5 area for now).
-        - The camera takes an isometric birds-eye view of the selected area 
-          (or we display a seperate grid mirroring the spaces?)
-        - The player must "paint" each space using the cursor or analog stick 
-          before the timer runs out.
-        - brush size is roughly 1/4 that of a gridspace meaning the space must be
-          sufficiently colored in for it to register as "selected"
-        */
-        
-        /*
         ITEMS: (All of these use the crystal ball minigame to determine effectiveness)
         Health Potion - Restores HP 
         Mana Potion - Restores Mana
@@ -101,16 +81,22 @@ class ComponentUnit extends Component {
         puppet = new Puppet("unit_" + uuid); //TODO: name must be unique, added uuid
         puppet.setInputDevice(inputDeviceID);
         
-        puppet.commands.put(Control.DPAD_UP,    new InputState());
-        puppet.commands.put(Control.DPAD_DOWN,  new InputState());
-        puppet.commands.put(Control.DPAD_LEFT,  new InputState());
-        puppet.commands.put(Control.DPAD_RIGHT, new InputState());
-        puppet.commands.put(Control.CROSS,      new InputState());
-        puppet.commands.put(Control.CIRCLE,     new InputState());
-        puppet.commands.put(Control.TRIANGLE,   new InputState());
-        puppet.commands.put(Control.SQUARE,     new InputState());
-        puppet.commands.put(Control.L1,         new InputState());
-        puppet.commands.put(Control.R1,         new InputState());
+        puppet.commands.put(Control.DPAD_UP,       new InputState());
+        puppet.commands.put(Control.DPAD_DOWN,     new InputState());
+        puppet.commands.put(Control.DPAD_LEFT,     new InputState());
+        puppet.commands.put(Control.DPAD_RIGHT,    new InputState());
+        puppet.commands.put(Control.CROSS,         new InputState());
+        puppet.commands.put(Control.CIRCLE,        new InputState());
+        puppet.commands.put(Control.TRIANGLE,      new InputState());
+        puppet.commands.put(Control.SQUARE,        new InputState());
+        puppet.commands.put(Control.L1,            new InputState());
+        puppet.commands.put(Control.R1,            new InputState());
+        puppet.commands.put(Control.RIGHT_STICK_X, new InputState());
+        puppet.commands.put(Control.RIGHT_STICK_Y, new InputState());
+    }
+    
+    boolean axisMoved(Control control) {
+        return ((InputState) puppet.commands.get(control)).axisMoved;
     }
     
     boolean buttonPressed(Control control) {

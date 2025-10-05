@@ -11,17 +11,18 @@ import org.xjge.core.UI;
 class UnitActionManabolt extends UnitAction {
 
     private final ComponentUnit targetUnit;
-    private final WidgetManabolt widget;
+    private WidgetManabolt widget;
     
     UnitActionManabolt(ComponentUnit targetUnit) {
         this.targetUnit = targetUnit;
-        widget = new WidgetManabolt();
-        UI.addWidget(GLFW_JOYSTICK_1, "manabolt_minigame", widget);
     }
     
     @Override
     boolean perform(TurnContext turnContext) {
-        
+        if(widget == null) {
+            widget = new WidgetManabolt(turnContext);
+            UI.addWidget(GLFW_JOYSTICK_1, "manabolt_minigame", widget);
+        }
         
         return false;
     }
