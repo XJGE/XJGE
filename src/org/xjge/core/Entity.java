@@ -54,9 +54,11 @@ public final class Entity {
      * 
      * @param <C> any subclass type that extends {@link Component}
      * @param component the subclass object representing the component to add
+     * @return the entity object that the component is being attached to
      */
-    public final <C extends Component> void addComponent(C component) {
+    public final <C extends Component> Entity addComponent(C component) {
         components.put(component.getClass(), component);
+        return this;
     }
     
     /**

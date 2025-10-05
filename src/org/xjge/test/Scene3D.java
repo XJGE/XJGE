@@ -208,9 +208,8 @@ public class Scene3D extends Scene {
         }
     }
     
-    void snapOverheadCamera(GridSpace space) {
-        Vector3f target = new Vector3f(space.xLocation, space.yLocation + 10, space.zLocation + 8);
-        cameraOverhead.setPosition(target);
+    void snapOverheadCamera(float x, float y, float z) {
+        cameraOverhead.setPosition(new Vector3f(x, y + 10, z + 8));
     }
     
     boolean CameraTransitionComplete() {

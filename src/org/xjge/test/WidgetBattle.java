@@ -3,12 +3,15 @@ package org.xjge.test;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import org.joml.Vector3f;
 import static org.lwjgl.glfw.GLFW.GLFW_JOYSTICK_1;
 import static org.lwjgl.glfw.GLFW.GLFW_JOYSTICK_4;
 import org.xjge.core.Control;
+import org.xjge.core.Entity;
 import static org.xjge.core.Input.KEY_MOUSE_COMBO;
 import org.xjge.core.Mouse;
 import org.xjge.core.SplitScreenType;
+import org.xjge.core.Timer;
 import org.xjge.core.Window;
 import org.xjge.graphics.Color;
 import org.xjge.graphics.GLProgram;
@@ -36,9 +39,11 @@ class WidgetBattle extends Widget {
     private UnitAction pendingAction;
     private ActionCategory pendingCategory;
     private String pendingSpell;
+    private String errorMessage;
     private GridAreaSelector areaSelector;
     private GridPathSelector pathSelector;
     private UnitSelector unitSelector;
+    private Timer errorTimer = new Timer();
     
     private final Rectangle[] rectangles = new Rectangle[3];
     private final List<Option> options = new ArrayList<>();
@@ -111,6 +116,16 @@ class WidgetBattle extends Widget {
                 commitPendingAction();
             }
         }
+        
+        //Handle unit selector
+        if(unitSelector != null) {
+            ComponentUnit targetUnit = unitSelector.prompt(turnContext);
+            
+            if(targetUnit != null && pendingAction == null && pendingCategory == ActionCategory.SPELL) {
+                pendingAction = new UnitActionManabolt(targetUnit);
+                commitPendingAction();
+            }
+        }
     }
 
     @Override
@@ -148,6 +163,15 @@ class WidgetBattle extends Widget {
                                  Window.getResolutionWidth() - 120, 
                                  Window.getResolutionHeight() - 20, 
                                  Color.RED, 1f);
+        
+        if(errorMessage != null) {
+            Font.fallback.drawString(errorMessage, 10, 40, Color.RED, 1f);
+            
+            if(errorTimer.tick(4, 60, true) && errorTimer.getTime() >= 3) {
+                errorTimer.reset();
+                errorMessage = null;
+            }
+        }
         
         /*
         Font.fallback.drawString("Mana " + turnContext.unit.mana, 
@@ -239,7 +263,9 @@ class WidgetBattle extends Widget {
                             .findFirst()
                             .orElse(null); 
                         
-                        if(unitSpace != null) turnContext.scene.snapOverheadCamera(unitSpace);
+                        if(unitSpace != null) {
+                            turnContext.scene.snapOverheadCamera(unitSpace.xLocation, unitSpace.yLocation, unitSpace.zLocation);
+                        }
                         
                         turnContext.scene.setCameraOverhead(0.5f);
                         state = State.TARGET;
@@ -279,15 +305,29 @@ class WidgetBattle extends Widget {
                                 .findFirst()
                                 .orElse(null);
                             
-                            if(unitSpace != null) turnContext.scene.snapOverheadCamera(unitSpace);
+                            if(unitSpace != null) {
+                                turnContext.scene.snapOverheadCamera(unitSpace.xLocation, unitSpace.yLocation, unitSpace.zLocation);
+                            }
                             
                             turnContext.scene.setCameraOverhead(0.5f);
                             state = State.TARGET;
                         }
                         case "Manabolt" -> {
-                            unitSelector = new UnitSelector();
+                            List<Entity> units = new ArrayList<>();
                             
-                            state = State.TARGET;
+                            turnContext.entities.values().forEach(entity -> {
+                                if(entity.hasComponent(ComponentUnit.class) && entity.hasComponent(ComponentPosition.class) &&
+                                   entity.getComponent(ComponentUnit.class) != turnContext.unit) {
+                                    units.add(entity);
+                                }
+                            });
+                            
+                            if(units.isEmpty()) {
+                                errorMessage = "No selectable units present, battle should end.";
+                            } else {
+                                unitSelector = new UnitSelector(units);
+                                state = State.TARGET;
+                            }
                         }
                     }
                     
@@ -332,6 +372,8 @@ class WidgetBattle extends Widget {
             turnContext.gridSpaces.values().forEach(gs -> gs.status = GridSpaceStatus.NONE);
             pathSelector = null;
         }
+        
+        if(unitSelector != null) unitSelector = null;
         
         pendingAction = null;
         pendingSpell = null;
