@@ -1,14 +1,14 @@
 package org.xjge.test;
 
 import org.joml.Vector3f;
-import org.xjge.core.Component;
+import org.xjge.core.EntityComponent;
 
 /**
  * 
  * @author J Hoffman
  * @since 
  */
-class ComponentPosition extends Component {
+class ComponentPosition extends EntityComponent {
 
     final Vector3f position;
     

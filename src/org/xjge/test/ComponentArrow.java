@@ -4,7 +4,7 @@ import java.util.Map;
 import org.joml.Vector3f;
 import static org.lwjgl.opengl.GL30.*;
 import org.lwjgl.system.MemoryStack;
-import org.xjge.core.Component;
+import org.xjge.core.EntityComponent;
 import org.xjge.core.ErrorUtils;
 import org.xjge.graphics.Color;
 import org.xjge.graphics.GLProgram;
@@ -16,7 +16,7 @@ import org.xjge.graphics.Texture;
  * @author J Hoffman
  * @since 
  */
-class ComponentArrow extends Component {
+class ComponentArrow extends EntityComponent {
 
     private final Vector3f target = new Vector3f();
     private final Vector3f up = new Vector3f(0, 1, 0);

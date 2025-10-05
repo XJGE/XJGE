@@ -3,7 +3,7 @@ package org.xjge.test;
 import java.util.ArrayList;
 import java.util.UUID;
 import org.xjge.core.Command;
-import org.xjge.core.Component;
+import org.xjge.core.EntityComponent;
 import org.xjge.core.Control;
 import org.xjge.core.Puppet;
 
@@ -12,7 +12,7 @@ import org.xjge.core.Puppet;
  * @author J Hoffman
  * @since 
  */
-class ComponentUnit extends Component {
+class ComponentUnit extends EntityComponent {
 
     final boolean isPlayer;
     

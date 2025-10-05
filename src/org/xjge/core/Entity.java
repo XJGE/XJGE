@@ -8,7 +8,7 @@ import java.util.UUID;
  * Created: May 7, 2021
  * <p>
  * Used to represent a distinct object in the scene, typically composed of 
- * several {@link Component components} which define its behavior.
+ * several {@link EntityComponent components} which define its behavior.
  * <p>
  * This class serves as the foundation of the engines entity component system 
  * (or ECS). Entity objects themselves are essentially just containers that gain
@@ -23,7 +23,7 @@ public final class Entity {
     
     public final UUID uuid;
     
-    private final Map<Class<? extends Component>, Component> components = new HashMap<>();
+    private final Map<Class<? extends EntityComponent>, EntityComponent> components = new HashMap<>();
     
     /**
      * Creates a new entity object with a random UUID.
@@ -52,11 +52,11 @@ public final class Entity {
     /**
      * Attaches a component to this entity.
      * 
-     * @param <C> any subclass type that extends {@link Component}
+     * @param <C> any subclass type that extends {@link EntityComponent}
      * @param component the subclass object representing the component to add
      * @return the entity object that the component is being attached to
      */
-    public final <C extends Component> Entity addComponent(C component) {
+    public final <C extends EntityComponent> Entity addComponent(C component) {
         components.put(component.getClass(), component);
         return this;
     }
@@ -64,10 +64,10 @@ public final class Entity {
     /**
      * Removes a component from this entity.
      * 
-     * @param <C> any subclass type that extends {@link Component}
+     * @param <C> any subclass type that extends {@link EntityComponent}
      * @param component the subclass object representing the component to remove
      */
-    public final <C extends Component> void removeComponent(C component) {
+    public final <C extends EntityComponent> void removeComponent(C component) {
         components.remove(component.getClass());
     }
     
@@ -85,7 +85,7 @@ public final class Entity {
      * @param component the subclass object representing the component to check for
      * @return true, if the entity has a component of the specified type
      */
-    public final boolean hasComponent(Class<? extends Component> component) {
+    public final boolean hasComponent(Class<? extends EntityComponent> component) {
         return components.containsKey(component);
     }
     
@@ -103,12 +103,12 @@ public final class Entity {
     /**
      * Retrieves a component of the specified type from this entity.
      * 
-     * @param <C> any subclass type that extends {@link Component}
+     * @param <C> any subclass type that extends {@link EntityComponent}
      * @param component the subclass object representing the component to retrieve
      * @return the component instance of the specified type or <b>null</b> if no
      *         such component is currently attached
      */
-    public final <C extends Component> C getComponent(Class<C> component) {
+    public final <C extends EntityComponent> C getComponent(Class<C> component) {
         return component.cast(components.get(component));
     }
     

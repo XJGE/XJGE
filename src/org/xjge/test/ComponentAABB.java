@@ -10,7 +10,7 @@ import org.joml.Vector3f;
 import org.joml.Vector3i;
 import static org.lwjgl.opengl.GL30C.*;
 import org.lwjgl.system.MemoryStack;
-import org.xjge.core.Component;
+import org.xjge.core.EntityComponent;
 import org.xjge.core.Entity;
 import org.xjge.core.ErrorUtils;
 import org.xjge.graphics.Color;
@@ -23,7 +23,7 @@ import static org.xjge.test.GridSpace.TYPE_SOLID;
  * @author J Hoffman
  * @since 
  */
-class ComponentAABB extends Component {
+class ComponentAABB extends EntityComponent {
 
     float width;
     float height;

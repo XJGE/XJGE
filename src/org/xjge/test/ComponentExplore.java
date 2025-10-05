@@ -2,7 +2,7 @@ package org.xjge.test;
 
 import org.joml.Vector3f;
 import org.xjge.core.Command;
-import org.xjge.core.Component;
+import org.xjge.core.EntityComponent;
 import org.xjge.core.Control;
 import org.xjge.core.Entity;
 import org.xjge.core.Puppet;
@@ -13,7 +13,7 @@ import org.xjge.core.Window;
  * @author J Hoffman
  * @since 
  */
-class ComponentExplore extends Component {
+class ComponentExplore extends EntityComponent {
     
     float moveSpeed = 5f;
     float facingYaw;

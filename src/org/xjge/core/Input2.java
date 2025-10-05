@@ -11,20 +11,15 @@ import java.util.UUID;
  */
 public class Input2 {
 
-    private static final Map<UUID, Controllable> puppets = new HashMap<>();
+    private static final Map<UUID, Controllable> controllables = new HashMap<>();
     private static final Map<Integer, InputDevice2> inputDevices = new HashMap<>();
     
-    /**
-     * Capture "snapshots" of the input state for each connected device
-     */
-    void pollInputDevices() {
+    void update(double targetDelta, double trueDelta) {
+        //Cache the current control state of input devices for this frame
         inputDevices.values().forEach(device -> device.poll());
-    }
-    
-    void processPuppetActions(double targetDelta, double trueDelta) {
-        puppets.values().forEach(puppet -> {
-            
-        });
+        
+        //Process the user-defined actions of controllable objects
+        controllables.values().forEach(controllable -> controllable.process(targetDelta, trueDelta));
     }
     
 }

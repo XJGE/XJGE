@@ -6,7 +6,7 @@ import org.joml.Vector3i;
 import static org.lwjgl.opengl.GL20.*;
 import static org.lwjgl.opengl.GL30.glBindVertexArray;
 import org.lwjgl.system.MemoryStack;
-import org.xjge.core.Component;
+import org.xjge.core.EntityComponent;
 import org.xjge.core.Entity;
 import org.xjge.core.ErrorUtils;
 import org.xjge.core.XJGE;
@@ -20,7 +20,7 @@ import org.xjge.graphics.Texture;
  * @author J Hoffman
  * @since 
  */
-class ComponentMudBall extends Component {
+class ComponentMudBall extends EntityComponent {
     
     private boolean active;
     private boolean landed;
