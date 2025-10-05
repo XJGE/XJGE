@@ -65,7 +65,7 @@ final class Gamepad extends InputDevice {
     }
     
     @Override
-    protected void poll(double targetDelta, double trueDelta, Puppet puppet, Control control, Command command) {
+    protected void poll(double targetDelta, double trueDelta, Control control, Command command) {
         if(glfwJoystickPresent(id) && glfwGetGamepadState(id, state)) {
             switch(control) {
                 case LEFT_STICK_X, LEFT_STICK_Y, RIGHT_STICK_X, RIGHT_STICK_Y, L2, R2 -> {

@@ -8,7 +8,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.PrintWriter;
 import java.util.Collections;
-import java.util.EmptyStackException;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.Map;
@@ -387,21 +386,6 @@ public final class Input {
     }
     
     /**
-     * Used internally by the engine to revert the enabled state of the 
-     * keyboard and mouse.
-     */
-    static void revertKeyboardEnabledState() {
-        InputDevice keyboard = inputDevices.get(KEY_MOUSE_COMBO);
-        
-        try {
-            keyboard.enabledStates.pop();
-            keyboard.enabled = keyboard.enabledStates.peek();
-        } catch(EmptyStackException e) {
-            keyboard.enabled = true;
-        }
-    }
-    
-    /**
      * Obtains an input device at the specified index.
      * 
      * @param deviceID the number used to identify the input device. One of: 
@@ -711,13 +695,10 @@ public final class Input {
      */
     public static void setDeviceEnabled(int deviceID, boolean enabled) {
         if(inputDevices.containsKey(deviceID)) {
-            InputDevice device = inputDevices.get(deviceID);
-            
-            device.enabledStates.add(enabled);
-            device.enabled = device.enabledStates.peek();
-        } else {
+            inputDevices.get(deviceID).enabled = enabled;
+        } else {            
             Logger.logWarning("Failed to change the enabled state of input device " + 
-                              deviceID + ". Could not find an input device at this index",
+                              deviceID + ". Could not find a device at this index",
                               null);
         }
     }

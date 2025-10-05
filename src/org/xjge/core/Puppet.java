@@ -50,7 +50,7 @@ public final class Puppet {
     void processInput(double targetDelta, double trueDelta) {
         if(device != null && device.enabled && !commands.isEmpty()) {
             commands.forEach((control, command) -> {
-                device.poll(targetDelta, trueDelta, this, control, command);
+                device.poll(targetDelta, trueDelta, control, command);
             });
         }
     }

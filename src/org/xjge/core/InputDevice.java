@@ -13,13 +13,11 @@ import java.util.Stack;
  */
 abstract class InputDevice {
 
-    final int id;
+    protected boolean enabled = true;
     
-    boolean enabled = true;
+    protected final int id;
     
     protected String name;
-    
-    Stack<Boolean> enabledStates = new Stack<>();
     
     final HashMap<Control, Integer> controls;
     final HashMap<String, Float> settings;
@@ -45,11 +43,10 @@ abstract class InputDevice {
      * @param inputDevice the input device to copy
      */
     InputDevice(InputDevice inputDevice) {
-        id            = inputDevice.id;
-        enabled       = inputDevice.enabled;
-        controls      = inputDevice.controls;
-        enabledStates = inputDevice.enabledStates;
-        settings      = inputDevice.settings;
+        id       = inputDevice.id;
+        enabled  = inputDevice.enabled;
+        controls = inputDevice.controls;
+        settings = inputDevice.settings;
     }
     
     /**
@@ -61,6 +58,6 @@ abstract class InputDevice {
      * @param trueDelta the actual time (in seconds) it took the current game
      *                  tick to complete
      */
-    protected abstract void poll(double targetDelta, double trueDelta, Puppet puppet, Control control, Command command);
+    protected abstract void poll(double targetDelta, double trueDelta, Control control, Command command);
     
 }

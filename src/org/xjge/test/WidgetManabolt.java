@@ -38,7 +38,7 @@ class WidgetManabolt extends Widget {
     
     @Override
     public void update(double targetDelta, double trueDelta) {
-        //TODO: axisMoved() doesnt function reliably. deadzone issue maybe?
+        //TODO: axisMoved() only works if the cursor/axis was moved prior to displaying this widget
         
         if(turnContext.unit.axisMoved(Control.RIGHT_STICK_X)) {
             markerIcon.position.x += turnContext.unit.getInputValue(Control.RIGHT_STICK_X);

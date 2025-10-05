@@ -62,7 +62,7 @@ final class KeyMouseCombo extends InputDevice {
     }
     
     @Override
-    protected void poll(double targetDelta, double trueDelta, Puppet puppet, Control control, Command command) {
+    protected void poll(double targetDelta, double trueDelta, Control control, Command command) {
         switch(control) {
             case LEFT_STICK_X, LEFT_STICK_Y -> {
                 int key1 = (controls.get(control) & ((control == LEFT_STICK_X) ? axisValues[0] : axisValues[2]));
@@ -78,16 +78,30 @@ final class KeyMouseCombo extends InputDevice {
             }
 
             case RIGHT_STICK_X ->  {
-                if((float) Window.getCursorPositionX() != prevAxisX) {
-                    command.execute(findAxisValue((float) Window.getCursorPositionX(), prevAxisX), this, control, targetDelta, trueDelta);
-                    prevAxisX = (float) Window.getCursorPositionX();
+                float currentValue = (float) Window.getCursorPositionX();
+                
+                if(firstMouse) {
+                    prevAxisX = currentValue;
+                    firstMouse = false;
+                }
+                
+                if(currentValue != prevAxisX) {
+                    command.execute(currentValue - prevAxisX, this, control, targetDelta, trueDelta);
+                    prevAxisX = currentValue;
                 }
             }
 
             case RIGHT_STICK_Y -> {
-                if((float) Window.getCursorPositionY() != prevAxisY) {
-                    command.execute(findAxisValue((float) Window.getCursorPositionY(), prevAxisY), this, control, targetDelta, trueDelta);
-                    prevAxisY = (float) Window.getCursorPositionY();
+                float currentValue = (float) Window.getCursorPositionY();
+                
+                if(firstMouse) {
+                    prevAxisY = currentValue;
+                    firstMouse = false;
+                }
+                
+                if(currentValue != prevAxisY) {
+                    command.execute(currentValue - prevAxisY, this, control, targetDelta, trueDelta);
+                    prevAxisY = currentValue;
                 }
             }
 

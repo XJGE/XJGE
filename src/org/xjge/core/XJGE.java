@@ -161,14 +161,8 @@ public final class XJGE {
         if(!glfwInit()) Logger.logError("Failed to initialize GLFW", null);
         
         Window.create(debugModeEnabled);
-        Audio.init();
+        Audio.init(); //TODO: fix the bug here that causes ExceptionInInitializerError/IllegalStateException
         Input.findInputDevices(); //TODO: change to findGamepads?
-        
-        try {
-           Thread.sleep(10); //Give OpenAL time to initialize, clown ass API
-        } catch(InterruptedException exception) {
-            Logger.logError("Error encountered while waiting... How lame.", exception);
-        }
         
         Logger.logSystemInfo();
         
