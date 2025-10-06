@@ -8,7 +8,7 @@ package org.xjge.core;
  * @author J Hoffman
  * @since  2.0.0
  */
-final class Key {
+final class KeyboardKey {
     
     private final char c;
     private final char C;
@@ -20,7 +20,7 @@ final class Key {
      * @param c the default letter/symbol of the key
      * @param C the letter/symbol of the key when shift is held
      */
-    Key(char c, char C) {
+    KeyboardKey(char c, char C) {
         this.c = c;
         this.C = C;
     }
@@ -33,7 +33,7 @@ final class Key {
      * 
      * @return one of the letters/symbols the key represents
      */
-    char getChar(boolean shiftHeld) {
+    char getCharacter(boolean shiftHeld) {
         return (!shiftHeld) ? c : C; 
     }
 }

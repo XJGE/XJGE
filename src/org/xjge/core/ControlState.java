@@ -25,7 +25,7 @@ public final class ControlState {
     void update(InputDevice2 device, Control control) {
         this.device  = device;
         this.control = control;
-        inputValue   = device.inputValues.get(control);
+        inputValue   = device.controlValues.get(control);
         deviceID     = device.id;
     }
     

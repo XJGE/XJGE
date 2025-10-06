@@ -346,7 +346,7 @@ final class Terminal {
             cursorBlink = true;
             
             Input.keyChars.forEach((k, c) -> {
-                if(key == k) insertChar(c.getChar((mods == GLFW_MOD_SHIFT)));
+                if(key == k) insertChar(c.getCharacter((mods == GLFW_MOD_SHIFT)));
             });
             
             switch(key) {

@@ -13,14 +13,17 @@ abstract class InputDevice2 {
     
     protected final int id;
     
+    protected final String name;
+    
     protected Map<String, Float> settings;
-    protected Map<Control, Float> inputValues;
+    protected Map<Control, Float> controlValues;
     protected Map<Control, Integer> controlBindings;
     
-    InputDevice2(int id) {
-        this.id = id;
+    InputDevice2(int id, String name) {
+        this.id   = id;
+        this.name = name;
     }
     
-    protected abstract void poll();
+    protected abstract void captureControlState();
     
 }
