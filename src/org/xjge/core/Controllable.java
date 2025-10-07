@@ -28,7 +28,7 @@ public final class Controllable {
         } else {
             if(Input2.getDeviceConnectionStatus(deviceID)) {
                 this.deviceID = deviceID;
-                Input2.addControllable(this);
+                Input2.registerControllable(this);
             } else {
                 Logger.logWarning("Failed to set the input device of controllable object \"" + name + 
                                   "\". Could not locate an input device at index " + deviceID, null);

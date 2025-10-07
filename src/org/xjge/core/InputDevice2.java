@@ -9,7 +9,7 @@ import java.util.Map;
  */
 abstract class InputDevice2 {
 
-    protected boolean enabled;
+    protected boolean enabled = true;
     
     protected final int id;
     

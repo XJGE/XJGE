@@ -12,7 +12,6 @@ final class InputDeviceVirtual extends InputDevice2 {
     }
 
     @Override
-    protected void captureControlState() {
-    }
+    protected void captureControlState() {}
 
 }

@@ -27,6 +27,14 @@ final class InputDeviceGamepad extends InputDevice2 {
             Logger.logWarning("Unsupported controller \"" + name + "\" connected at index " + id, null);
         }
     }
+    
+    InputDeviceGamepad(InputDeviceGamepad gamepad) {
+        super(gamepad.id, gamepad.name);
+        enabled         = gamepad.enabled;
+        settings        = gamepad.settings;
+        controlValues   = gamepad.controlValues;
+        controlBindings = gamepad.controlBindings;
+    }
 
     @Override
     protected void captureControlState() {

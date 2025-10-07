@@ -6,6 +6,7 @@ import java.util.LinkedList;
 import java.util.Map;
 import java.util.Queue;
 import java.util.UUID;
+import java.util.concurrent.ConcurrentLinkedQueue;
 import static org.lwjgl.glfw.GLFW.*;
 
 /**
@@ -15,7 +16,7 @@ import static org.lwjgl.glfw.GLFW.*;
  */
 public class Input2 {
 
-    private static final boolean gamepadConnected[] = new boolean[4];
+    private static final boolean connectedGamepads[] = new boolean[4];
     
     public static final int NO_DEVICE = -1;
     public static final int KEYBOARD  = 4;
@@ -23,50 +24,47 @@ public class Input2 {
     
     private static final Observable observable = new Observable(Input2.class);
     
+    private static final Queue<Integer> gamepadConnectionQueue = new ConcurrentLinkedQueue<>();
     private static final Queue<Controllable> controllableQueue = new LinkedList<>();
     private static final Map<UUID, Controllable> controllables = new HashMap<>();
     private static final Map<Integer, InputDevice2> inputDevices = new HashMap<>();
     
     static {
         for(int i = 0; i < GLFW_JOYSTICK_5; i++) {
-            observable.properties.put("GAMEPAD_" + i + "_CONNECTED", gamepadConnected[i]);
+            observable.properties.put("GAMEPAD_" + i + "_CONNECTED", connectedGamepads[i]);
         }
         
         glfwSetJoystickCallback((jid, event) -> {
-            switch(event) {
-                case GLFW_CONNECTED -> {
-                    findDevices();
-                    
-                    if(jid < GLFW_JOYSTICK_5) {
-                        gamepadConnected[jid] = true;
-                        observable.notifyObservers("GAMEPAD_" + jid + "_CONNECTED", gamepadConnected[jid]);
+            if(jid < GLFW_JOYSTICK_5) {
+                gamepadConnectionQueue.add(jid);
+                
+                switch(event) {
+                    case GLFW_CONNECTED -> {
+                        Logger.logInfo("Input device \"" + getDeviceName(jid) + "\" " +
+                                       "connected at position " + jid);
                     }
-                    
-                    Logger.logInfo("Input device \"" + getDeviceName(jid) + "\" " +
-                                   "connected at position " + jid);
-                }
-                case GLFW_DISCONNECTED -> {
-                    findDevices();
-                    
-                    if(jid < GLFW_JOYSTICK_5) {
-                        gamepadConnected[jid] = false;
-                        observable.notifyObservers("GAMEPAD_" + jid + "_CONNECTED", gamepadConnected[jid]);
+                    case GLFW_DISCONNECTED -> {
+                        Logger.logInfo("Input device \"" + getDeviceName(jid) + "\" " +
+                                       "disconnected at position " + jid);
                     }
-                    
-                    Logger.logInfo("Input device \"" + getDeviceName(jid) + "\" " +
-                                   "disconnected at position " + jid);
                 }
             }
         });
     }
     
-    static void findDevices() {
-        
-    }
-    
     static void update(double targetDelta, double trueDelta) {
         //Cache the current control state of all input devices for this frame
         inputDevices.values().forEach(device -> device.captureControlState());
+        
+        //Process pending gamepad connection events
+        while(!controllableQueue.isEmpty()) {
+            int deviceID = gamepadConnectionQueue.poll();
+            connectedGamepads[deviceID] = glfwJoystickPresent(deviceID);
+            
+            if(connectedGamepads[deviceID]) {
+                inputDevices.put(deviceID, inputDevices.containsKey(deviceID) ? inputDevices.get(deviceID) : new InputDeviceGamepad(deviceID));
+            }
+        }
         
         //Fulfill any pending requests to register controllable objects
         while(!controllableQueue.isEmpty()) {
@@ -89,8 +87,8 @@ public class Input2 {
         controllables.values().removeIf(controllable -> controllable.getInputDeviceID() == NO_DEVICE);
     }
     
-    static void addControllable(Controllable controllable) {
-        
+    static void registerControllable(Controllable controllable) {
+        controllableQueue.add(controllable);
     }
     
     public static void addObserver(PropertyChangeListener observer) {
@@ -125,7 +123,7 @@ public class Input2 {
         if(inputDevices.containsKey(deviceID)) {
             return switch(deviceID) {
                 case GLFW_JOYSTICK_1, GLFW_JOYSTICK_2, 
-                     GLFW_JOYSTICK_3, GLFW_JOYSTICK_4 -> gamepadConnected[deviceID];
+                     GLFW_JOYSTICK_3, GLFW_JOYSTICK_4 -> connectedGamepads[deviceID];
                 default -> true;
             };
         } else {
