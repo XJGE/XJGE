@@ -8,7 +8,7 @@ package org.xjge.core;
 final class InputDeviceVirtual extends InputDevice2 {
 
     InputDeviceVirtual(int id) {
-        super(id, "Virtual Device");
+        super(id);
     }
 
     @Override

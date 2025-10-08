@@ -7,8 +7,8 @@ package org.xjge.core;
  */
 final class InputDeviceKeyboard extends InputDevice2 {
 
-    InputDeviceKeyboard(int id) {
-        super(id, "Generic Keyboard");
+    InputDeviceKeyboard() {
+        super(Input2.KEYBOARD);
     }
 
     @Override

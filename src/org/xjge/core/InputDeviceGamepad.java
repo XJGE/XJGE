@@ -2,7 +2,6 @@ package org.xjge.core;
 
 import static org.lwjgl.glfw.GLFW.*;
 import org.lwjgl.glfw.GLFWGamepadState;
-import org.lwjgl.system.MemoryStack;
 import static org.xjge.core.Control.*;
 
 /**
@@ -11,31 +10,43 @@ import static org.xjge.core.Control.*;
  * @since 
  */
 final class InputDeviceGamepad extends InputDevice2 {
-
+    
     private GLFWGamepadState state;
     
     InputDeviceGamepad(int id) {
-        super(id, glfwJoystickIsGamepad(id) ? glfwGetGamepadName(id) : glfwGetJoystickName(id));
+        super(id);
+        validate();
+    }
+    
+    void freeState() {
+        if(state != null) {
+            state.free();
+            state = null;
+            connected = false;
+        }
+    }
+
+    final boolean validate() {
+        freeState();
         
-        if(glfwJoystickIsGamepad(id)) {
-            try(MemoryStack stack = MemoryStack.stackPush()) {
-                state = new GLFWGamepadState(stack.malloc(40));
-                state.buttons(stack.malloc(15));
-                state.axes(stack.mallocFloat(6));
-            }
+        if(glfwJoystickPresent(id)) {
+            boolean isGamepad = glfwJoystickIsGamepad(id);
+            
+            name = (isGamepad && glfwGetGamepadName(id) != null)
+                 ? glfwGetGamepadName(id)
+                 : glfwGetJoystickName(id);
+            
+            if(isGamepad) state = GLFWGamepadState.create();
+            
+            connected = true;
+            return isGamepad;
+            
         } else {
-            Logger.logWarning("Unsupported controller \"" + name + "\" connected at index " + id, null);
+            connected = false;
+            return false;
         }
     }
     
-    InputDeviceGamepad(InputDeviceGamepad gamepad) {
-        super(gamepad.id, gamepad.name);
-        enabled         = gamepad.enabled;
-        settings        = gamepad.settings;
-        controlValues   = gamepad.controlValues;
-        controlBindings = gamepad.controlBindings;
-    }
-
     @Override
     protected void captureControlState() {
         if(glfwJoystickPresent(id) && glfwGetGamepadState(id, state)) {

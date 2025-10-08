@@ -7,8 +7,8 @@ package org.xjge.core;
  */
 final class InputDeviceMouse extends InputDevice2 {
 
-    InputDeviceMouse(int id) {
-        super(id, "Generic Mouse");
+    InputDeviceMouse() {
+        super(Input2.MOUSE);
     }
 
     @Override
