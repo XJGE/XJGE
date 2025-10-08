@@ -1,5 +1,6 @@
 package org.xjge.core;
 
+import java.util.HashMap;
 import java.util.Map;
 
 /**
@@ -16,9 +17,9 @@ abstract class InputDevice2 {
     
     protected String name = "Unspecified Device";
     
-    protected Map<String, Float> settings;
-    protected Map<Control, Float> controlValues;
-    protected Map<Control, Integer> controlBindings;
+    protected final Map<String, Float> settings = new HashMap<>();
+    protected final Map<Control, Float> controlValues = new HashMap<>();
+    protected final Map<Control, Integer> controlBindings = new HashMap<>();
     
     InputDevice2(int id) {
         this.id = id;

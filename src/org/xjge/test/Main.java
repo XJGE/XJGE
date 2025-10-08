@@ -3,7 +3,6 @@ package org.xjge.test;
 import java.util.LinkedList;
 import static org.lwjgl.opengl.GL20.GL_FRAGMENT_SHADER;
 import static org.lwjgl.opengl.GL20.GL_VERTEX_SHADER;
-import org.xjge.core.Controllable;
 import org.xjge.core.Window;
 import org.xjge.core.XJGE;
 import org.xjge.graphics.Color;
@@ -11,7 +10,7 @@ import org.xjge.graphics.GLDataType;
 import org.xjge.graphics.GLProgram;
 import org.xjge.graphics.GLShader;
 
-/**
+/**I
  * Created: Jan 31, 2025
  * 
  * @author J Hoffman
@@ -24,6 +23,15 @@ public class Main {
     
     public static void main(String args[]) {
         
+        XJGE.init(true, "/org/xjge/assets/", "org.xjge.test.");
+        
+        Window.setResizable(false);
+        Window.focus();
+        
+        XJGE.setScene(new SceneControllerTest());
+        XJGE.start();
+        
+        /*
         XJGE.init(true, "/org/xjge/assets/", "org.xjge.test.");
         
         {
@@ -97,7 +105,7 @@ public class Main {
         XJGE.setClearColor(Color.SILVER);
         XJGE.setScene(new Scene3D("map_test.txt"));
         XJGE.start();
-        
+        */
     }
     
     public static boolean showBoundingVolumes() {

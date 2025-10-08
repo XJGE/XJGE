@@ -312,7 +312,8 @@ public final class XJGE {
             ticked   = false;
             
             while(delta >= TARGET_DELTA) {
-                Input.update(TARGET_DELTA, deltaMetric);
+                //Input.update(TARGET_DELTA, deltaMetric);
+                Input2.update(TARGET_DELTA, deltaMetric);
                 Window.update(deltaMetric, fps, entityCount);
                 
                 if(tick(20)) {
