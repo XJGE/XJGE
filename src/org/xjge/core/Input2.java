@@ -22,7 +22,7 @@ public class Input2 {
     
     private static final Observable observable = new Observable(Input2.class);
     
-    private static final Queue<Runnable> deviceConnectionEvents  = new ConcurrentLinkedQueue();
+    private static final Queue<Runnable> deviceConnectionEvents  = new ConcurrentLinkedQueue<>();
     private static final Queue<Controllable> controllableQueue   = new LinkedList<>();
     private static final Map<UUID, Controllable> controllables   = new HashMap<>();
     private static final Map<Integer, InputDevice2> inputDevices = new HashMap<>();

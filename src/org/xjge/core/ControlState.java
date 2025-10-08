@@ -60,7 +60,8 @@ public final class ControlState {
     }
     
     public boolean triggerPulled() {
-        return false; //TODO: reimplement this
+        boolean isNotAxis = (control == Control.L2) || (control == Control.R2);
+        return ((deviceID == Input2.KEYBOARD || deviceID == Input2.MOUSE) ? inputValue > 0 : inputValue > -1) && isNotAxis;
     }
     
     public float getInputValue() {
