@@ -13,7 +13,7 @@ import static org.lwjgl.glfw.GLFW.*;
 /**
  * 
  * @author J Hoffman
- * @since 
+ * @since  2.0.0
  */
 public class Input2 {
     

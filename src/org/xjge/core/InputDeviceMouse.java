@@ -54,17 +54,11 @@ final class InputDeviceMouse extends InputDevice2 {
         
         for(var entry : controlBindings.entrySet()) {
             Control control = entry.getKey();
-            int binding     = entry.getValue();
             float value     = 0f;
-            
-            if(binding == CONTROL_UNSUPPORTED) {
-                controlValues.put(control, value);
-                continue;
-            }
             
             switch(control) {
                 case CROSS, CIRCLE, SQUARE, TRIANGLE, L1, R1, L2, R2 -> {
-                    value = Window.getMouseButtonInputValue(binding);
+                    value = Window.getMouseButtonInputValue(entry.getValue());
                 }
                 case LEFT_STICK_X -> {
                     value = (float) scrollSpeedX;
@@ -74,12 +68,8 @@ final class InputDeviceMouse extends InputDevice2 {
                     value = (float) scrollSpeedY;
                     scrollSpeedY = 0;
                 }
-                case RIGHT_STICK_X -> {
-                    value = (float) mouse.getCursorPositionX();
-                }
-                case RIGHT_STICK_Y -> {
-                    value = (float) mouse.getCursorPositionY();
-                }
+                case RIGHT_STICK_X -> value = (float) mouse.getCursorPositionX();
+                case RIGHT_STICK_Y -> value = (float) mouse.getCursorPositionY();
             }
             
             controlValues.put(control, value);

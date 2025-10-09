@@ -5,7 +5,7 @@ import org.xjge.core.Control;
 import org.xjge.core.ControlState;
 import org.xjge.core.Controllable;
 import org.xjge.core.ControllableAction;
-import static org.xjge.core.Input2.MOUSE;
+import static org.xjge.core.Input2.KEYBOARD;
 import org.xjge.core.Mouse;
 import org.xjge.core.SplitScreenType;
 import org.xjge.graphics.Color;
@@ -47,7 +47,7 @@ public class WidgetInputTest extends Widget {
             controllable.actions.put(control, new InputState());
         }
         
-        controllable.setInputDevice(MOUSE);
+        controllable.setInputDevice(KEYBOARD);
         //Window.setInputMode(GLFW_CURSOR, GLFW_CURSOR_DISABLED);
     }
     
