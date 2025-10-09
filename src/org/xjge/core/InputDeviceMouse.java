@@ -6,7 +6,7 @@ import static org.xjge.core.Control.*;
 /**
  * 
  * @author J Hoffman
- * @since 
+ * @since  4.0.0
  */
 final class InputDeviceMouse extends InputDevice2 {
 
@@ -45,7 +45,7 @@ final class InputDeviceMouse extends InputDevice2 {
     
     static void setScrollSpeedValues(double scrollSpeedX, double scrollSpeedY) {
         InputDeviceMouse.scrollSpeedX = scrollSpeedX;
-        InputDeviceMouse.scrollSpeedY = -scrollSpeedY;
+        InputDeviceMouse.scrollSpeedY = scrollSpeedY;
     }
 
     @Override
@@ -75,12 +75,10 @@ final class InputDeviceMouse extends InputDevice2 {
                     scrollSpeedY = 0;
                 }
                 case RIGHT_STICK_X -> {
-                    double normalizedX = (mouse.getCursorPositionX() / Window.getWidth()) * 2.0 - 1.0;
-                    value = (float) Math.max(-1.0, Math.min(1.0, normalizedX));
+                    value = (float) mouse.getCursorPositionX();
                 }
                 case RIGHT_STICK_Y -> {
-                    double normalizedY = (mouse.getCursorPositionY() / Window.getHeight()) * 2.0 - 1.0;
-                    value = (float) Math.max(-1.0, Math.min(1.0, -normalizedY));
+                    value = (float) mouse.getCursorPositionY();
                 }
             }
             

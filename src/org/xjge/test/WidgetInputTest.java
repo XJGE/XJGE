@@ -48,6 +48,7 @@ public class WidgetInputTest extends Widget {
         }
         
         controllable.setInputDevice(MOUSE);
+        //Window.setInputMode(GLFW_CURSOR, GLFW_CURSOR_DISABLED);
     }
     
     @Override

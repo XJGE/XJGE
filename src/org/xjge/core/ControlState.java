@@ -9,13 +9,14 @@ import static org.xjge.core.Control.RIGHT_STICK_Y;
 /**
  * 
  * @author J Hoffman
- * @since 
+ * @since  4.0.0
  */
 public final class ControlState {
 
     private boolean pressRequested;
     
-    private float inputValue;
+    private float currentInputValue;
+    private float previousInputValue;
     
     private int deviceID;
     
@@ -25,8 +26,9 @@ public final class ControlState {
     void update(InputDevice2 device, Control control) {
         this.device  = device;
         this.control = control;
-        inputValue   = device.controlValues.get(control);
-        deviceID     = device.id;
+        previousInputValue = currentInputValue;
+        currentInputValue  = device.controlValues.get(control);
+        deviceID = device.id;
     }
     
     public boolean axisMoved() {
@@ -41,11 +43,21 @@ public final class ControlState {
             isNotTrigger = true;
         }
         
-        return Math.abs(inputValue) > (deadzone) && isNotTrigger;
+        if(!isNotTrigger) return false;
+        
+        float inputValue = 0;
+        
+        if(device instanceof InputDeviceMouse) {
+            inputValue = currentInputValue - previousInputValue;
+        } else {
+            inputValue = currentInputValue;
+        }
+        
+        return Math.abs(inputValue) > (deadzone);
     }
     
     public boolean buttonPressed() {
-        return inputValue == GLFW_PRESS;
+        return currentInputValue == GLFW_PRESS;
     }
     
     public boolean buttonPressedOnce() {
@@ -61,11 +73,11 @@ public final class ControlState {
     
     public boolean triggerPulled() {
         boolean isNotAxis = (control == Control.L2) || (control == Control.R2);
-        return ((deviceID == Input2.KEYBOARD || deviceID == Input2.MOUSE) ? inputValue > 0 : inputValue > -1) && isNotAxis;
+        return ((deviceID == Input2.KEYBOARD || deviceID == Input2.MOUSE) ? currentInputValue > 0 : currentInputValue > -1) && isNotAxis;
     }
     
     public float getInputValue() {
-        return inputValue;
+        return currentInputValue;
     }
     
     public int getDeviceID() {
