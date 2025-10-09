@@ -141,12 +141,12 @@ public class Input2 {
         }
     }
     
-    public static void setDeviceSettings(int deviceID) {
+    public static void setDeviceSettings(int deviceID, Map<String, Float> settings) {
         //TODO: add this
     }
     
-    public static void setDeviceControlBindings(int deviceID) {
-        //TODO: add this
+    public static void setDeviceControlBindings(int deviceID, Map<Control, Integer> controlBindings) {
+        //TODO: add this (remember to include check for CONTROL_UNSUPPORTED binding)
     }
     
     public static Map<String, Float> getDeviceSettings(int deviceID) {

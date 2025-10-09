@@ -1,11 +1,11 @@
 package org.xjge.test;
 
 import java.util.Map;
-import static org.lwjgl.glfw.GLFW.GLFW_JOYSTICK_1;
 import org.xjge.core.Control;
 import org.xjge.core.ControlState;
 import org.xjge.core.Controllable;
 import org.xjge.core.ControllableAction;
+import static org.xjge.core.Input2.MOUSE;
 import org.xjge.core.Mouse;
 import org.xjge.core.SplitScreenType;
 import org.xjge.graphics.Color;
@@ -47,7 +47,7 @@ public class WidgetInputTest extends Widget {
             controllable.actions.put(control, new InputState());
         }
         
-        controllable.setInputDevice(GLFW_JOYSTICK_1);
+        controllable.setInputDevice(MOUSE);
     }
     
     @Override

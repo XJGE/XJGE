@@ -10,6 +10,9 @@ import static org.xjge.core.Control.*;
  */
 final class InputDeviceMouse extends InputDevice2 {
 
+    private static double scrollSpeedX;
+    private static double scrollSpeedY;
+    
     private final Mouse mouse;
     
     InputDeviceMouse(Mouse mouse) {
@@ -30,14 +33,19 @@ final class InputDeviceMouse extends InputDevice2 {
                 case TRIANGLE      -> controlBindings.put(control, GLFW_MOUSE_BUTTON_MIDDLE);
                 case L1            -> controlBindings.put(control, GLFW_MOUSE_BUTTON_4);
                 case R1            -> controlBindings.put(control, GLFW_MOUSE_BUTTON_5);
-                case LEFT_STICK_X  -> controlBindings.put(control, 0);
-                case LEFT_STICK_Y  -> controlBindings.put(control, 0);
-                case RIGHT_STICK_X -> controlBindings.put(control, 0);
-                case RIGHT_STICK_Y -> controlBindings.put(control, 0);
+                case LEFT_STICK_X  -> controlBindings.put(control, 8);
+                case LEFT_STICK_Y  -> controlBindings.put(control, 9);
+                case RIGHT_STICK_X -> controlBindings.put(control, 10);
+                case RIGHT_STICK_Y -> controlBindings.put(control, 11);
                 case L2            -> controlBindings.put(control, GLFW_MOUSE_BUTTON_LEFT);
                 case R2            -> controlBindings.put(control, GLFW_MOUSE_BUTTON_RIGHT);
             }
         }
+    }
+    
+    static void setScrollSpeedValues(double scrollSpeedX, double scrollSpeedY) {
+        InputDeviceMouse.scrollSpeedX = scrollSpeedX;
+        InputDeviceMouse.scrollSpeedY = -scrollSpeedY;
     }
 
     @Override
@@ -45,20 +53,38 @@ final class InputDeviceMouse extends InputDevice2 {
         if(Window.getMinimized()) return;
         
         for(var entry : controlBindings.entrySet()) {
-            Control control  = entry.getKey();
-            int binding      = entry.getValue();
-            float value      = 0f;
+            Control control = entry.getKey();
+            int binding     = entry.getValue();
+            float value     = 0f;
             
-            if(binding == CONTROL_UNSUPPORTED) continue;
+            if(binding == CONTROL_UNSUPPORTED) {
+                controlValues.put(control, value);
+                continue;
+            }
             
             switch(control) {
-                case CROSS, CIRCLE, SQUARE, TRIANGLE -> {
-                    value = mouse.getButtonID();
-                    controlValues.put(control, value);
+                case CROSS, CIRCLE, SQUARE, TRIANGLE, L1, R1, L2, R2 -> {
+                    value = Window.getMouseButtonInputValue(binding);
                 }
-                case L2 -> value = mouse.leftHeld ? 1f : 0f;
-                case R2 -> value = mouse.rightHeld ? 1f : 0f;
+                case LEFT_STICK_X -> {
+                    value = (float) scrollSpeedX;
+                    scrollSpeedX = 0;
+                }
+                case LEFT_STICK_Y -> {
+                    value = (float) scrollSpeedY;
+                    scrollSpeedY = 0;
+                }
+                case RIGHT_STICK_X -> {
+                    double normalizedX = (mouse.getCursorPositionX() / Window.getWidth()) * 2.0 - 1.0;
+                    value = (float) Math.max(-1.0, Math.min(1.0, normalizedX));
+                }
+                case RIGHT_STICK_Y -> {
+                    double normalizedY = (mouse.getCursorPositionY() / Window.getHeight()) * 2.0 - 1.0;
+                    value = (float) Math.max(-1.0, Math.min(1.0, -normalizedY));
+                }
             }
+            
+            controlValues.put(control, value);
         }
     }
 

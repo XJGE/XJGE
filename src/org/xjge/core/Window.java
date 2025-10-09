@@ -71,7 +71,7 @@ public final class Window {
     private static final Resolution resolution = new Resolution(DEFAULT_WIDTH, DEFAULT_HEIGHT);
     private static final Observable observable = new Observable(Window.class);
     
-    //These fields have been added to prevent possible issues with GC invalidating callbacks
+    //These fields were added to prevent issues with GC invalidating callbacks
     private static GLFWErrorCallback         glfwErrorReference;
     private static GLFWMonitorCallback       glfwMonitorReference;
     private static GLFWWindowIconifyCallback glfwWindowIconifyReference;
@@ -300,9 +300,11 @@ public final class Window {
             
             if(!terminal.show && !metrics.show && !noclip.enabled) {
                 UI.processMouseInput(mouse);
+                InputDeviceMouse.setScrollSpeedValues(scrollSpeedX, scrollSpeedY);
             } else {
                 if(terminal.show) terminal.scrollBar.processMouseInput(mouse);
                 if(metrics.show) metrics.processMouseInput(mouse);
+                //TODO: include feature that allows the public API to add their own debug widgets?
                 if(noclip.enabled) noclip.speed = XJGE.clampValue(0.01f, 1f, noclip.speed + ((float) mouse.scrollSpeedY * 0.01f));
             }
             
