@@ -33,10 +33,10 @@ final class InputDeviceMouse extends InputDevice2 {
                 case TRIANGLE      -> controlBindings.put(control, GLFW_MOUSE_BUTTON_MIDDLE);
                 case L1            -> controlBindings.put(control, GLFW_MOUSE_BUTTON_4);
                 case R1            -> controlBindings.put(control, GLFW_MOUSE_BUTTON_5);
-                case LEFT_STICK_X  -> controlBindings.put(control, 8);
-                case LEFT_STICK_Y  -> controlBindings.put(control, 9);
-                case RIGHT_STICK_X -> controlBindings.put(control, 10);
-                case RIGHT_STICK_Y -> controlBindings.put(control, 11);
+                case LEFT_STICK_X  -> controlBindings.put(control, CONTROL_VIRTUALIZED);
+                case LEFT_STICK_Y  -> controlBindings.put(control, CONTROL_VIRTUALIZED);
+                case RIGHT_STICK_X -> controlBindings.put(control, CONTROL_VIRTUALIZED);
+                case RIGHT_STICK_Y -> controlBindings.put(control, CONTROL_VIRTUALIZED);
                 case L2            -> controlBindings.put(control, GLFW_MOUSE_BUTTON_LEFT);
                 case R2            -> controlBindings.put(control, GLFW_MOUSE_BUTTON_RIGHT);
             }

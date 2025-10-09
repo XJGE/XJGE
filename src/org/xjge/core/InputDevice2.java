@@ -11,6 +11,7 @@ import java.util.Map;
 abstract class InputDevice2 {
 
     protected static final int CONTROL_UNSUPPORTED = -1;
+    protected static final int CONTROL_VIRTUALIZED = -2;
     
     boolean connected;
     protected boolean enabled = true;

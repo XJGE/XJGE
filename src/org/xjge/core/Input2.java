@@ -113,6 +113,27 @@ public class Input2 {
         
     }
     
+    public static int[] getKeyboardAxisBindings(boolean leftStick) {
+        InputDeviceKeyboard keyboard = (InputDeviceKeyboard) inputDevices.get(KEYBOARD);
+        return (leftStick) ? keyboard.leftAxisBindings : keyboard.rightAxisBindings;
+    }
+    
+    public static void setKeyboardAxisBindings(boolean leftStick, int upKey, int leftKey, int downKey, int rightKey) {
+        InputDeviceKeyboard keyboard = (InputDeviceKeyboard) inputDevices.get(KEYBOARD);
+        
+        if(leftStick) {
+            keyboard.leftAxisBindings[0] = upKey;
+            keyboard.leftAxisBindings[1] = leftKey;
+            keyboard.leftAxisBindings[2] = downKey;
+            keyboard.leftAxisBindings[3] = rightKey;
+        } else {
+            keyboard.rightAxisBindings[0] = upKey;
+            keyboard.rightAxisBindings[1] = leftKey;
+            keyboard.rightAxisBindings[2] = downKey;
+            keyboard.rightAxisBindings[3] = rightKey;
+        }
+    }
+    
     public static boolean getDeviceEnabled(int deviceID) {
         if(inputDevices.containsKey(deviceID)) {
             return inputDevices.get(deviceID).enabled;
@@ -141,14 +162,6 @@ public class Input2 {
         }
     }
     
-    public static void setDeviceSettings(int deviceID, Map<String, Float> settings) {
-        //TODO: add this
-    }
-    
-    public static void setDeviceControlBindings(int deviceID, Map<Control, Integer> controlBindings) {
-        //TODO: add this (remember to include check for CONTROL_UNSUPPORTED binding)
-    }
-    
     public static Map<String, Float> getDeviceSettings(int deviceID) {
         return Collections.unmodifiableMap(inputDevices.get(deviceID).settings);
     }
@@ -157,25 +170,12 @@ public class Input2 {
         return Collections.unmodifiableMap(inputDevices.get(deviceID).controlBindings);
     }
     
-    public static void setKeyboardAxisBindings(boolean leftStick, int upKey, int leftKey, int downKey, int rightKey) {
-        InputDeviceKeyboard keyboard = (InputDeviceKeyboard) inputDevices.get(KEYBOARD);
-        
-        if(leftStick) {
-            keyboard.leftAxisBindings[0] = upKey;
-            keyboard.leftAxisBindings[1] = leftKey;
-            keyboard.leftAxisBindings[2] = downKey;
-            keyboard.leftAxisBindings[3] = rightKey;
-        } else {
-            keyboard.rightAxisBindings[0] = upKey;
-            keyboard.rightAxisBindings[1] = leftKey;
-            keyboard.rightAxisBindings[2] = downKey;
-            keyboard.rightAxisBindings[3] = rightKey;
-        }
+    public static void setDeviceSettings(int deviceID, Map<String, Float> settings) {
+        //TODO: add this
     }
     
-    public static int[] getKeyboardAxisBindings(boolean leftStick) {
-        InputDeviceKeyboard keyboard = (InputDeviceKeyboard) inputDevices.get(KEYBOARD);
-        return (leftStick) ? keyboard.leftAxisBindings : keyboard.rightAxisBindings;
+    public static void setDeviceControlBindings(int deviceID, Map<Control, Integer> controlBindings) {
+        //TODO: add this (remember to include check for CONTROL_UNSUPPORTED binding)
     }
     
 }
