@@ -1,6 +1,7 @@
 package org.xjge.core;
 
 import java.beans.PropertyChangeListener;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.Map;
@@ -35,7 +36,7 @@ public class Input2 {
         }
         
         inputDevices.put(KEYBOARD, new InputDeviceKeyboard());
-        inputDevices.put(MOUSE, new InputDeviceMouse());
+        inputDevices.put(MOUSE, new InputDeviceMouse(Window.getMouse()));
         
         glfwSetJoystickCallback((id, event) -> {
             if(id < GLFW_JOYSTICK_5) {
@@ -138,6 +139,22 @@ public class Input2 {
         } else {
             return null;
         }
+    }
+    
+    public static void setDeviceSettings(int deviceID) {
+        //TODO: add this
+    }
+    
+    public static void setDeviceControlBindings(int deviceID) {
+        //TODO: add this
+    }
+    
+    public static Map<String, Float> getDeviceSettings(int deviceID) {
+        return Collections.unmodifiableMap(inputDevices.get(deviceID).settings);
+    }
+    
+    public static Map<Control, Integer> getDeviceControlBindings(int deviceID) {
+        return Collections.unmodifiableMap(inputDevices.get(deviceID).controlBindings);
     }
     
 }

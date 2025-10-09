@@ -432,6 +432,16 @@ public final class Window {
     }
     
     /**
+     * Used to supply a reference of the mouse object to the Input class for use
+     * by InputDeviceMouse.
+     * 
+     * @return 
+     */
+    static Mouse getMouse() {
+        return mouse;
+    }
+    
+    /**
      * Obtains the viewports managed by the window.
      * 
      * @return an array of {@linkplain Viewport} objects

@@ -10,6 +10,8 @@ import java.util.Map;
  */
 abstract class InputDevice2 {
 
+    protected static final int CONTROL_UNSUPPORTED = -1;
+    
     boolean connected;
     protected boolean enabled = true;
     
