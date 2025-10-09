@@ -6,12 +6,12 @@ import static org.xjge.core.Control.*;
 /**
  * 
  * @author J Hoffman
- * @since 
+ * @since  4.0.0
  */
 final class InputDeviceKeyboard extends InputDevice2 {
 
-    int[] leftAxisValues  = new int[4];
-    int[] rightAxisValues = new int[4];
+    int[] leftAxisBindings  = new int[4];
+    int[] rightAxisBindings = new int[4];
     
     InputDeviceKeyboard() {
         super(Input2.KEYBOARD);
@@ -21,15 +21,15 @@ final class InputDeviceKeyboard extends InputDevice2 {
         settings.put("leftDeadzone", 0.15f);
         settings.put("rightDeadzone", 0.15f);
         
-        leftAxisValues[0] = GLFW_KEY_W;
-        leftAxisValues[1] = GLFW_KEY_A;
-        leftAxisValues[2] = GLFW_KEY_S;
-        leftAxisValues[3] = GLFW_KEY_D;
+        leftAxisBindings[0] = GLFW_KEY_W;
+        leftAxisBindings[1] = GLFW_KEY_A;
+        leftAxisBindings[2] = GLFW_KEY_S;
+        leftAxisBindings[3] = GLFW_KEY_D;
         
-        rightAxisValues[0] = GLFW_KEY_I;
-        rightAxisValues[1] = GLFW_KEY_J;
-        rightAxisValues[2] = GLFW_KEY_K;
-        rightAxisValues[3] = GLFW_KEY_L;
+        rightAxisBindings[0] = GLFW_KEY_I;
+        rightAxisBindings[1] = GLFW_KEY_J;
+        rightAxisBindings[2] = GLFW_KEY_K;
+        rightAxisBindings[3] = GLFW_KEY_L;
         
         controlBindings.put(CROSS,         GLFW_KEY_SPACE);
         controlBindings.put(CIRCLE,        GLFW_KEY_LEFT_SHIFT);
@@ -46,10 +46,10 @@ final class InputDeviceKeyboard extends InputDevice2 {
         controlBindings.put(DPAD_RIGHT,    GLFW_KEY_RIGHT);
         controlBindings.put(DPAD_DOWN,     GLFW_KEY_DOWN);
         controlBindings.put(DPAD_LEFT,     GLFW_KEY_LEFT);
-        controlBindings.put(LEFT_STICK_X,  leftAxisValues[1] | leftAxisValues[3]);
-        controlBindings.put(LEFT_STICK_Y,  leftAxisValues[0] | leftAxisValues[2]);
-        controlBindings.put(RIGHT_STICK_X, rightAxisValues[1] | rightAxisValues[3]);
-        controlBindings.put(RIGHT_STICK_Y, rightAxisValues[0] | rightAxisValues[2]);
+        controlBindings.put(LEFT_STICK_X,  CONTROL_UNSUPPORTED);
+        controlBindings.put(LEFT_STICK_Y,  CONTROL_UNSUPPORTED);
+        controlBindings.put(RIGHT_STICK_X, CONTROL_UNSUPPORTED);
+        controlBindings.put(RIGHT_STICK_Y, CONTROL_UNSUPPORTED);
         controlBindings.put(L2,            GLFW_KEY_U);
         controlBindings.put(R2,            GLFW_KEY_O);
     }
@@ -68,10 +68,10 @@ final class InputDeviceKeyboard extends InputDevice2 {
             Control control = entry.getKey();
             
             float value = switch(control) {
-                case LEFT_STICK_X  -> findAxisValue(leftAxisValues[1], leftAxisValues[3]);
-                case LEFT_STICK_Y  -> findAxisValue(leftAxisValues[0], leftAxisValues[2]);
-                case RIGHT_STICK_X -> findAxisValue(rightAxisValues[1], rightAxisValues[3]);
-                case RIGHT_STICK_Y -> findAxisValue(rightAxisValues[0], rightAxisValues[2]);
+                case LEFT_STICK_X  -> findAxisValue(leftAxisBindings[1], leftAxisBindings[3]);
+                case LEFT_STICK_Y  -> findAxisValue(leftAxisBindings[0], leftAxisBindings[2]);
+                case RIGHT_STICK_X -> findAxisValue(rightAxisBindings[1], rightAxisBindings[3]);
+                case RIGHT_STICK_Y -> findAxisValue(rightAxisBindings[0], rightAxisBindings[2]);
                 default -> Window.getKeyInputValue(entry.getValue());
             };
             
