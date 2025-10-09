@@ -42,14 +42,20 @@ final class InputDeviceMouse extends InputDevice2 {
 
     @Override
     protected void captureControlState() {
-        //TODO: return if window is minimized
+        if(Window.getMinimized()) return;
         
         for(var entry : controlBindings.entrySet()) {
             Control control  = entry.getKey();
             int binding      = entry.getValue();
             float value      = 0f;
             
+            if(binding == CONTROL_UNSUPPORTED) continue;
+            
             switch(control) {
+                case CROSS, CIRCLE, SQUARE, TRIANGLE -> {
+                    value = mouse.getButtonID();
+                    controlValues.put(control, value);
+                }
                 case L2 -> value = mouse.leftHeld ? 1f : 0f;
                 case R2 -> value = mouse.rightHeld ? 1f : 0f;
             }

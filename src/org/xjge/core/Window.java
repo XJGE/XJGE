@@ -16,6 +16,7 @@ import org.lwjgl.glfw.GLFWKeyCallback;
 import org.lwjgl.glfw.GLFWMonitorCallback;
 import org.lwjgl.glfw.GLFWMouseButtonCallback;
 import org.lwjgl.glfw.GLFWScrollCallback;
+import org.lwjgl.glfw.GLFWWindowIconifyCallback;
 import org.lwjgl.glfw.GLFWWindowPosCallback;
 import org.lwjgl.glfw.GLFWWindowSizeCallback;
 import org.lwjgl.opengl.GL;
@@ -42,6 +43,7 @@ public final class Window {
     private static boolean debugModeEnabled;
     private static boolean fullscreen;
     private static boolean resizable;
+    private static boolean minimized;
     private static boolean restrict4K   = true;
     private static boolean vSyncEnabled = true;
     
@@ -70,14 +72,15 @@ public final class Window {
     private static final Observable observable = new Observable(Window.class);
     
     //These fields have been added to prevent possible issues with GC invalidating callbacks
-    private static GLFWErrorCallback       glfwErrorReference;
-    private static GLFWMonitorCallback     glfwMonitorReference;
-    private static GLFWWindowSizeCallback  glfwWindowSizeReference;
-    private static GLFWWindowPosCallback   glfwWindowPositionReference;
-    private static GLFWCursorPosCallback   glfwCursorPositionReference;
-    private static GLFWMouseButtonCallback glfwMouseButtonReference;
-    private static GLFWScrollCallback      glfwScrollReference;
-    private static GLFWKeyCallback         glfwKeyReference;
+    private static GLFWErrorCallback         glfwErrorReference;
+    private static GLFWMonitorCallback       glfwMonitorReference;
+    private static GLFWWindowIconifyCallback glfwWindowIconifyReference;
+    private static GLFWWindowSizeCallback    glfwWindowSizeReference;
+    private static GLFWWindowPosCallback     glfwWindowPositionReference;
+    private static GLFWCursorPosCallback     glfwCursorPositionReference;
+    private static GLFWMouseButtonCallback   glfwMouseButtonReference;
+    private static GLFWScrollCallback        glfwScrollReference;
+    private static GLFWKeyCallback           glfwKeyReference;
     
     private static final Viewport[] viewports = new Viewport[4];
     
@@ -143,6 +146,7 @@ public final class Window {
         //Register observable properties for public API use
         observable.properties.put("WINDOW_FULLSCREEN_CHANGED",        fullscreen);
         observable.properties.put("WINDOW_RESIZABLE_CHANGED",         resizable);
+        observable.properties.put("WINDOW_MINIMIZE_VALUE_CHANGED",    minimized);
         observable.properties.put("WINDOW_MINIMUM_WIDTH_CHANGED",     minWidth);
         observable.properties.put("WINDOW_MINIMUM_HEIGHT_CHANGED",    minHeight);
         observable.properties.put("WINDOW_WIDTH_CHANGED",             width);
@@ -217,6 +221,11 @@ public final class Window {
                     Logger.logInfo("New monitor \"" + eventMonitor.name + "\" connected at index " + eventMonitor.index);
                 }
             }
+        });
+        
+        glfwWindowIconifyReference = GLFWWindowIconifyCallback.create((window, iconified) -> {
+            minimized = iconified;
+            observable.notifyObservers("WINDOW_MINIMIZE_VALUE_CHANGED", minimized);
         });
         
         glfwWindowSizeReference = GLFWWindowSizeCallback.create((window, newWidth, newHeight) -> {
@@ -380,6 +389,7 @@ public final class Window {
     static void freeCallbacks() {
         glfwErrorReference.free();
         glfwMonitorReference.free();
+        glfwWindowIconifyReference.free();
         glfwWindowSizeReference.free();
         glfwWindowPositionReference.free();
         glfwCursorPositionReference.free();
@@ -543,6 +553,14 @@ public final class Window {
         Window.resizable = resizable;
         glfwSetWindowAttrib(handle, GLFW_RESIZABLE, Window.resizable ? GLFW_TRUE : GLFW_FALSE);
         observable.notifyObservers("WINDOW_RESIZABLE_CHANGED", Window.resizable);
+    }
+    
+    public static void setMinimized(boolean minimized) {
+        if(minimized) {
+            glfwIconifyWindow(handle);
+        } else {
+            glfwRestoreWindow(handle);
+        }
     }
     
     /**
@@ -892,6 +910,10 @@ public final class Window {
     
     public static boolean getResizable() {
         return resizable;
+    }
+    
+    public static boolean getMinimized() {
+        return minimized;
     }
     
     public static boolean get4KRestricted() {

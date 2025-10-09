@@ -147,7 +147,7 @@ public final class XJGE {
             return;
         }
         
-        observable.properties.put("SCENE_CHANGED", scene);
+        observable.properties.put("XJGE_SCENE_CHANGED", scene);
         
         XJGE.assetsFilepath = assetsFilepath;
         XJGE.scenesFilepath = scenesFilepath;

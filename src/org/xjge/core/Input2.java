@@ -32,7 +32,7 @@ public class Input2 {
         for(int i = 0; i < GLFW_JOYSTICK_5; i++) {
             var gamepad = new InputDeviceGamepad(i);
             inputDevices.put(i, gamepad);
-            observable.properties.put("GAMEPAD_" + i + "_CONNECTED", gamepad.connected);
+            observable.properties.put("INPUT_DEVICE_" + i + "_CONNECTED", gamepad.connected);
         }
         
         inputDevices.put(KEYBOARD, new InputDeviceKeyboard());
@@ -55,7 +55,7 @@ public class Input2 {
                         }
                     }
                     
-                    observable.notifyObservers("GAMEPAD_" + id + "_CONNECTED", gamepad.connected);
+                    observable.notifyObservers("INPUT_DEVICE_" + id + "_CONNECTED", gamepad.connected);
                 });
             }
         });
