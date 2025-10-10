@@ -5,7 +5,7 @@ package org.xjge.core;
  * @author J Hoffman
  * @since  4.0.0
  */
-final class InputDeviceVirtual extends InputDevice2 {
+final class InputDeviceVirtual extends InputDevice {
 
     InputDeviceVirtual(int id) {
         super(id);

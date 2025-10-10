@@ -6,6 +6,7 @@ import java.util.Map;
 import java.util.Queue;
 import org.joml.Matrix4f;
 import org.joml.Matrix4fc;
+import static org.lwjgl.glfw.GLFW.GLFW_MOD_SHIFT;
 import org.xjge.graphics.GLProgram;
 import org.xjge.ui.Widget;
 
@@ -52,9 +53,11 @@ public final class UI {
         }
     }
     
-    static void processKeyboardInput(int key, int action, int mods) {
+    static void processKeyboardInput(int key, int action, int mods, Character character) {
         //TODO: only listens on viewport 0 for now, extend this to all that are currently active.
-        widgets.get(0).values().forEach(widget -> widget.processKeyboardInput(key, action, mods));
+        widgets.get(0).values().forEach(widget -> {
+            widget.processKeyboardInput(key, action, mods, character);
+        });
     }
     
     static void processMouseInput(Mouse mouse) {

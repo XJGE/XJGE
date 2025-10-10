@@ -96,7 +96,7 @@ public final class Logger {
                 case 10 -> " MONITORS:\t" + "Found: " + Window.getNumMonitors() + ", Primary: \"" + 
                            Window.getMonitor().name + "\" (" + Window.getMonitor().getInfo() + ")";
                 case 11 -> " SPEAKERS:\t" + "Found: " + Audio.getSpeakerCount() + ", Primary: \"" + Audio.getSpeaker().name + "\"";
-                case 12 -> " GAMEPADS:\t" + "Found: " + Input2.getGamepadCount();
+                case 12 -> " GAMEPADS:\t" + "Found: " + Input.getGamepadCount();
             };
             
             System.out.println(info);

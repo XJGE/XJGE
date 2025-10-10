@@ -7,10 +7,10 @@ import static org.lwjgl.glfw.GLFW.*;
 /**
  * 
  * @author J Hoffman
- * @since 
+ * @since  4.0.0
  */
-public class Keyboard {
-
+class Keyboard {
+    
     private final Map<Integer, KeyboardKey> keyCharacters;
     
     Keyboard() {
@@ -66,7 +66,7 @@ public class Keyboard {
         }};
     }
     
-    public Character getKeyCharacter(int key, int mods) {
+    Character getKeyCharacter(int key, int mods) {
         if(keyCharacters.containsKey(key)) {
             return keyCharacters.get(key).getCharacter((mods == GLFW_MOD_SHIFT));
         } else {

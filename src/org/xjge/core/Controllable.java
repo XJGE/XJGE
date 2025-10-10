@@ -11,7 +11,7 @@ import java.util.UUID;
  */
 public final class Controllable {
     
-    private int deviceID = Input2.NO_DEVICE;
+    private int deviceID = Input.NO_DEVICE;
     
     final UUID uuid = UUID.randomUUID();
     public final String name;
@@ -23,12 +23,12 @@ public final class Controllable {
     }
     
     public void setInputDevice(int deviceID) {
-        if(deviceID == Input2.NO_DEVICE) {
+        if(deviceID == Input.NO_DEVICE) {
             this.deviceID = deviceID;
         } else {
-            if(Input2.getDeviceConnectionStatus(deviceID)) {
+            if(Input.getDeviceConnectionStatus(deviceID)) {
                 this.deviceID = deviceID;
-                Input2.registerControllable(this);
+                Input.registerControllable(this);
             } else {
                 Logger.logWarning("Failed to set the input device of controllable object \"" + name + 
                                   "\". Could not locate an input device at index " + deviceID, null);

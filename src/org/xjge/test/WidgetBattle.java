@@ -3,12 +3,11 @@ package org.xjge.test;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import org.joml.Vector3f;
 import static org.lwjgl.glfw.GLFW.GLFW_JOYSTICK_1;
 import static org.lwjgl.glfw.GLFW.GLFW_JOYSTICK_4;
 import org.xjge.core.Control;
 import org.xjge.core.Entity;
-import static org.xjge.core.Input.KEY_MOUSE_COMBO;
+import org.xjge.core.Input;
 import org.xjge.core.Mouse;
 import org.xjge.core.SplitScreenType;
 import org.xjge.core.Timer;
@@ -145,7 +144,7 @@ class WidgetBattle extends Widget {
                                      (option.used) ? Color.GRAY : Color.WHITE, 
                                      1f);
             
-            if(turnContext.unit.inputDeviceID == KEY_MOUSE_COMBO) {
+            if(turnContext.unit.inputDeviceID == Input.KEYBOARD) {
                 Font.fallback.drawString("[SPACE] - Select Action", 10, 10, Color.YELLOW, 1f);
                 
                 Font.fallback.drawString("[ARROW KEYS] - Nav Menu", 310, 10, Color.YELLOW, 1f);
@@ -228,7 +227,7 @@ class WidgetBattle extends Widget {
     public final void relocate(SplitScreenType splitType, int viewportWidth, int viewportHeight) {}
 
     @Override
-    public void processKeyboardInput(int key, int action, int mods) {}
+    public void processKeyboardInput(int key, int action, int mods, Character character) {}
 
     @Override
     public void processMouseInput(Mouse mouse) {}

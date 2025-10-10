@@ -5,7 +5,7 @@ import org.xjge.core.Control;
 import org.xjge.core.ControlState;
 import org.xjge.core.Controllable;
 import org.xjge.core.ControllableAction;
-import org.xjge.core.Input2;
+import org.xjge.core.Input;
 import org.xjge.core.Mouse;
 import org.xjge.core.SplitScreenType;
 import org.xjge.core.XJGE;
@@ -50,7 +50,7 @@ public class WidgetInputTest extends Widget {
             controllable.actions.put(control, new InputState());
         }
         
-        virtualID = Input2.createVirtualDevice();
+        virtualID = Input.createVirtualDevice();
         
         //controllable.setInputDevice(GLFW_JOYSTICK_1);
         //Window.setInputMode(GLFW_CURSOR, GLFW_CURSOR_DISABLED);
@@ -58,13 +58,13 @@ public class WidgetInputTest extends Widget {
     
     @Override
     public void update(double targetDelta, double trueDelta) {
-        if(controllable.getInputDeviceID() == Input2.NO_DEVICE) {
+        if(controllable.getInputDeviceID() == Input.NO_DEVICE) {
             controllable.setInputDevice(virtualID);
         }
         
         if(XJGE.tick(30)) {
             inputValue = (inputValue == 1) ? -1 : 1;
-            Input2.setVirtualDeviceInput(virtualID, Control.R2, inputValue);
+            Input.setVirtualDeviceInput(virtualID, Control.R2, inputValue);
         }
     }
 
@@ -92,7 +92,7 @@ public class WidgetInputTest extends Widget {
     }
 
     @Override
-    public void processKeyboardInput(int key, int action, int mods) {
+    public void processKeyboardInput(int key, int action, int mods, Character character) {
     }
 
     @Override

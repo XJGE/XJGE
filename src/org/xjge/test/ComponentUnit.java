@@ -2,10 +2,11 @@ package org.xjge.test;
 
 import java.util.ArrayList;
 import java.util.UUID;
-import org.xjge.core.Command;
 import org.xjge.core.EntityComponent;
 import org.xjge.core.Control;
-import org.xjge.core.Puppet;
+import org.xjge.core.ControlState;
+import org.xjge.core.Controllable;
+import org.xjge.core.ControllableAction;
 
 /**
  * 
@@ -24,24 +25,24 @@ class ComponentUnit extends EntityComponent {
     int mana      = maxMana;
     final int inputDeviceID;
     
-    private final Puppet puppet;
+    private final Controllable puppet;
     
     //TODO: these could be their own components like ComponentInventory and ComponentSpellbook
     final ArrayList<String> items = new ArrayList<>();
     final ArrayList<Spell> spells = new ArrayList<>();
     
-    private class InputState extends Command {
+    private class InputState extends ControllableAction {
         boolean axisMoved;
         boolean buttonPressed;
         boolean buttonPressedOnce;
         float inputValue;
 
         @Override
-        public void execute(double targetDelta, double trueDelta) {
-            axisMoved         = axisMoved();
-            buttonPressed     = buttonPressed();
-            buttonPressedOnce = buttonPressedOnce();
-            inputValue        = getInputValue();
+        public void perform(ControlState controlState, double targetDelta, double trueDelta) {
+            axisMoved         = controlState.axisMoved();
+            buttonPressed     = controlState.buttonPressed();
+            buttonPressedOnce = controlState.buttonPressedOnce();
+            inputValue        = controlState.getInputValue();
             //TODO: extend this to capture more state depending on what's needed
         }
     }
@@ -78,37 +79,37 @@ class ComponentUnit extends EntityComponent {
         - While moving the hand they'll press the action button to select a number
         */
         
-        puppet = new Puppet("unit_" + uuid); //TODO: name must be unique, added uuid
+        puppet = new Controllable("unit_" + uuid); //TODO: name must be unique, added uuid
         puppet.setInputDevice(inputDeviceID);
         
-        puppet.commands.put(Control.DPAD_UP,       new InputState());
-        puppet.commands.put(Control.DPAD_DOWN,     new InputState());
-        puppet.commands.put(Control.DPAD_LEFT,     new InputState());
-        puppet.commands.put(Control.DPAD_RIGHT,    new InputState());
-        puppet.commands.put(Control.CROSS,         new InputState());
-        puppet.commands.put(Control.CIRCLE,        new InputState());
-        puppet.commands.put(Control.TRIANGLE,      new InputState());
-        puppet.commands.put(Control.SQUARE,        new InputState());
-        puppet.commands.put(Control.L1,            new InputState());
-        puppet.commands.put(Control.R1,            new InputState());
-        puppet.commands.put(Control.RIGHT_STICK_X, new InputState());
-        puppet.commands.put(Control.RIGHT_STICK_Y, new InputState());
+        puppet.actions.put(Control.DPAD_UP,       new InputState());
+        puppet.actions.put(Control.DPAD_DOWN,     new InputState());
+        puppet.actions.put(Control.DPAD_LEFT,     new InputState());
+        puppet.actions.put(Control.DPAD_RIGHT,    new InputState());
+        puppet.actions.put(Control.CROSS,         new InputState());
+        puppet.actions.put(Control.CIRCLE,        new InputState());
+        puppet.actions.put(Control.TRIANGLE,      new InputState());
+        puppet.actions.put(Control.SQUARE,        new InputState());
+        puppet.actions.put(Control.L1,            new InputState());
+        puppet.actions.put(Control.R1,            new InputState());
+        puppet.actions.put(Control.RIGHT_STICK_X, new InputState()); //TODO: we'll need to seperate this to a seperate object and pass Input.MOUSE
+        puppet.actions.put(Control.RIGHT_STICK_Y, new InputState());
     }
     
     boolean axisMoved(Control control) {
-        return ((InputState) puppet.commands.get(control)).axisMoved;
+        return ((InputState) puppet.actions.get(control)).axisMoved;
     }
     
     boolean buttonPressed(Control control) {
-        return ((InputState) puppet.commands.get(control)).buttonPressed;
+        return ((InputState) puppet.actions.get(control)).buttonPressed;
     }
     
     boolean buttonPressedOnce(Control control) {
-        return ((InputState) puppet.commands.get(control)).buttonPressedOnce;
+        return ((InputState) puppet.actions.get(control)).buttonPressedOnce;
     }
     
     float getInputValue(Control control) {
-        return ((InputState) puppet.commands.get(control)).inputValue;
+        return ((InputState) puppet.actions.get(control)).inputValue;
     }
     
 }

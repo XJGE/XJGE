@@ -20,10 +20,10 @@ public final class ControlState {
     
     private int deviceID;
     
-    private InputDevice2 device;
+    private InputDevice device;
     private Control control;
     
-    void update(InputDevice2 device, Control control) {
+    void update(InputDevice device, Control control) {
         this.device  = device;
         this.control = control;
         previousInputValue = currentInputValue;
@@ -73,7 +73,7 @@ public final class ControlState {
     
     public boolean triggerPulled() {
         boolean isNotAxis = (control == Control.L2) || (control == Control.R2);
-        return ((deviceID == Input2.KEYBOARD || deviceID == Input2.MOUSE) ? currentInputValue > 0 : currentInputValue > -1) && isNotAxis;
+        return ((deviceID == Input.KEYBOARD || deviceID == Input.MOUSE) ? currentInputValue > 0 : currentInputValue > -1) && isNotAxis;
     }
     
     public float getInputValue() {

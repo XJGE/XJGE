@@ -162,7 +162,7 @@ public final class XJGE {
         
         Window.create(debugModeEnabled);
         Audio.init(); //TODO: fix the bug here that causes ExceptionInInitializerError/IllegalStateException
-        Input.findInputDevices(); //TODO: change to findGamepads?
+        Input.init();
         
         Logger.logSystemInfo();
         
@@ -313,7 +313,7 @@ public final class XJGE {
             
             while(delta >= TARGET_DELTA) {
                 //Input.update(TARGET_DELTA, deltaMetric);
-                Input2.update(TARGET_DELTA, deltaMetric);
+                Input.update(TARGET_DELTA, deltaMetric);
                 Window.update(deltaMetric, fps, entityCount);
                 
                 if(tick(20)) {
@@ -427,7 +427,7 @@ public final class XJGE {
         
         Window.freeCallbacks();
         Audio.freeResources();
-        Input2.freeDevices();
+        Input.freeDevices();
         GL.destroy();
         glfwTerminate();
     }

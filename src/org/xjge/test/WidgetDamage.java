@@ -74,7 +74,7 @@ class WidgetDamage extends Widget {
     }
 
     @Override
-    public void processKeyboardInput(int key, int action, int mods) {
+    public void processKeyboardInput(int key, int action, int mods, Character character) {
     }
 
     @Override

@@ -8,7 +8,7 @@ import static org.xjge.core.Control.*;
  * @author J Hoffman
  * @since  4.0.0
  */
-final class InputDeviceMouse extends InputDevice2 {
+final class InputDeviceMouse extends InputDevice {
 
     private static double scrollSpeedX;
     private static double scrollSpeedY;
@@ -16,7 +16,7 @@ final class InputDeviceMouse extends InputDevice2 {
     private final Mouse mouse;
     
     InputDeviceMouse(Mouse mouse) {
-        super(Input2.MOUSE);
+        super(Input.MOUSE);
         this.mouse = mouse;
         name       = "Generic Mouse";
         connected  = true;

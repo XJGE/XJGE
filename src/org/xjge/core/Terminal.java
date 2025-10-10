@@ -340,14 +340,12 @@ final class Terminal {
      * @param mods a value supplied by GLFW denoting whether any mod keys where 
      *             held (such as shift or control)
      */
-    void processKeyboardInput(int key, int action, int mods) {
+    void processKeyboardInput(int key, int action, int mods, Character character) {
         if(action == GLFW_PRESS || action == GLFW_REPEAT) {
             idleTime    = 0;
             cursorBlink = true;
             
-            Input.keyChars.forEach((k, c) -> {
-                if(key == k) insertChar(c.getCharacter((mods == GLFW_MOD_SHIFT)));
-            });
+            if(character != null) insertChar(character);
             
             switch(key) {
                 case GLFW_KEY_BACKSPACE -> {

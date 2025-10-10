@@ -11,7 +11,7 @@ import static org.xjge.core.Control.*;
  * @author J Hoffman
  * @since 
  */
-final class InputDeviceGamepad extends InputDevice2 {
+final class InputDeviceGamepad extends InputDevice {
     
     private GLFWGamepadState state;
     

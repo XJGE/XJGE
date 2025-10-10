@@ -6,11 +6,12 @@ import static org.lwjgl.glfw.GLFW.GLFW_CURSOR;
 import static org.lwjgl.glfw.GLFW.GLFW_CURSOR_DISABLED;
 import static org.lwjgl.glfw.GLFW.GLFW_CURSOR_NORMAL;
 import org.xjge.core.Camera;
-import org.xjge.core.Command;
 import org.xjge.core.Control;
+import org.xjge.core.ControlState;
+import org.xjge.core.Controllable;
+import org.xjge.core.ControllableAction;
 import org.xjge.core.Entity;
-import static org.xjge.core.Input.KEY_MOUSE_COMBO;
-import org.xjge.core.Puppet;
+import org.xjge.core.Input;
 import org.xjge.core.Window;
 import org.xjge.graphics.GLProgram;
 
@@ -32,16 +33,16 @@ class CameraFollow extends Camera {
     private Vector3f nextPosition = new Vector3f();
     private final Vector3f adjustedTarget = new Vector3f();
     
-    private final Puppet puppet = new Puppet("camera");
+    private final Controllable puppet = new Controllable("camera");
     
     public CameraFollow() {
         super(false);
         fov = 40;
         direction.set(0, 0, -1);
         
-        puppet.commands.put(Control.R2, new EnableRotation());
-        puppet.commands.put(Control.RIGHT_STICK_X, new RotateCameraYaw());
-        puppet.commands.put(Control.RIGHT_STICK_Y, new RotateCameraPitch());
+        puppet.actions.put(Control.R2, new EnableRotation());
+        puppet.actions.put(Control.RIGHT_STICK_X, new RotateCameraYaw());
+        puppet.actions.put(Control.RIGHT_STICK_Y, new RotateCameraPitch());
     }
     
     @Override
@@ -77,8 +78,8 @@ class CameraFollow extends Camera {
         
         if(entity.hasComponent(ComponentUnit.class)) {
             int inputDeviceID = entity.getComponent(ComponentUnit.class).inputDeviceID;
-            rotationSpeed = (inputDeviceID == KEY_MOUSE_COMBO) ? 0.5f : 2.5f;
-            lookInversion = inputDeviceID == KEY_MOUSE_COMBO;
+            rotationSpeed = (inputDeviceID == Input.MOUSE) ? 0.5f : 2.5f;
+            lookInversion = inputDeviceID == Input.MOUSE;
             puppet.setInputDevice(inputDeviceID);
         }
         
@@ -100,12 +101,12 @@ class CameraFollow extends Camera {
         return right.normalize();
     }
     
-    private class EnableRotation extends Command {
+    private class EnableRotation extends ControllableAction {
 
         @Override
-        public void execute(double targetDelta, double trueDelta) {
-            if(getDeviceID() == KEY_MOUSE_COMBO) {
-                enableRotation = buttonPressed();
+        public void perform(ControlState controlState, double targetDelta, double trueDelta) {
+            if(controlState.getDeviceID() == Input.MOUSE) {
+                enableRotation = controlState.buttonPressed();
                 Window.setInputMode(GLFW_CURSOR, enableRotation ? GLFW_CURSOR_DISABLED : GLFW_CURSOR_NORMAL);
             } else {
                 enableRotation = true;
@@ -114,24 +115,24 @@ class CameraFollow extends Camera {
         
     }
     
-    private class RotateCameraYaw extends Command {
+    private class RotateCameraYaw extends ControllableAction {
 
         @Override
-        public void execute(double targetDelta, double trueDelta) {
-            if(axisMoved() && enableRotation) yaw += getInputValue() * rotationSpeed;
+        public void perform(ControlState controlState, double targetDelta, double trueDelta) {
+            if(controlState.axisMoved() && enableRotation) yaw += controlState.getInputValue() * rotationSpeed;
         }
         
     }
     
-    private class RotateCameraPitch extends Command {
+    private class RotateCameraPitch extends ControllableAction {
 
         @Override
-        public void execute(double targetDelta, double trueDelta) {
-            if(axisMoved() && enableRotation) {
+        public void perform(ControlState controlState, double targetDelta, double trueDelta) {
+            if(controlState.axisMoved() && enableRotation) {
                 if(lookInversion) {
-                    pitch -= getInputValue() * rotationSpeed;
+                    pitch -= controlState.getInputValue() * rotationSpeed;
                 } else {
-                    pitch += getInputValue() * rotationSpeed;
+                    pitch += controlState.getInputValue() * rotationSpeed;
                 }
             }
         }

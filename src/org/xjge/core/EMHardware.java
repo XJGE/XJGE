@@ -39,7 +39,7 @@ class EMHardware extends EngineMetricsGroup {
                 case 3 -> output.get(i).append("SPEAKER:   ").append(Audio.getSpeaker().name);
                 case 4, 5, 6, 7 -> {
                     output.get(i).append("    ").append(i - 4).append(": ");
-                    if(Input.getDevicePresent(i - 4)) output.get(i).append(Input.getDeviceName(i - 4));
+                    if(Input.getDeviceConnectionStatus(i - 4)) output.get(i).append(Input.getDeviceName(i - 4));
                 }
             }
         }
@@ -54,7 +54,7 @@ class EMHardware extends EngineMetricsGroup {
     protected void render() {
         for(int i = 0; i < icons.length; i++) {
             if(i != icons.length - 1) {
-                if(Input.getDevicePresent(i)) {
+                if(Input.getDeviceConnectionStatus(i)) {
                     if(Input.getDeviceEnabled(i)) icons[i].setSubImage(2, 0);
                     else                          icons[i].setSubImage(1, 0);
                 } else {

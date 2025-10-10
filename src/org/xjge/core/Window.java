@@ -67,7 +67,8 @@ public final class Window {
     
     private static Monitor monitor;
     private static String title = "XJGE v" + XJGE.VERSION;
-    private static final Mouse mouse = new Mouse();
+    private static final Keyboard keyboard = new Keyboard();
+    private static final Mouse mouse       = new Mouse();
     private static final Resolution resolution = new Resolution(DEFAULT_WIDTH, DEFAULT_HEIGHT);
     private static final Observable observable = new Observable(Window.class);
     
@@ -332,14 +333,14 @@ public final class Window {
             }
             
             if(terminal.show) {
-                terminal.processKeyboardInput(key, action, mods);
+                terminal.processKeyboardInput(key, action, mods, keyboard.getKeyCharacter(key, mods));
             } else if(noclip.enabled) {
                 if(key == GLFW_KEY_W) noclip.pressed[0] = (action != GLFW_RELEASE);
                 if(key == GLFW_KEY_A) noclip.pressed[1] = (action != GLFW_RELEASE);
                 if(key == GLFW_KEY_S) noclip.pressed[2] = (action != GLFW_RELEASE);
                 if(key == GLFW_KEY_D) noclip.pressed[3] = (action != GLFW_RELEASE);
             } else {
-                UI.processKeyboardInput(key, action, mods);
+                UI.processKeyboardInput(key, action, mods, keyboard.getKeyCharacter(key, mods));
             }
             
             mouse.mods = mods;

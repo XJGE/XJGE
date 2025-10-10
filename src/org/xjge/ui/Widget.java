@@ -58,7 +58,7 @@ public abstract class Widget {
      * @param mods a number provided by GLFW that indicates whether or not any 
      *             modifier key (shift, alt, etc.) was in use concurrently
      */
-    public abstract void processKeyboardInput(int key, int action, int mods);
+    public abstract void processKeyboardInput(int key, int action, int mods, Character character);
     
     /**
      * Called automatically anytime input is performed using the mouse.

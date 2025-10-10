@@ -1,63 +1,33 @@
 package org.xjge.core;
 
 import java.util.HashMap;
-import java.util.Stack;
+import java.util.Map;
 
 /**
- * Created: May 3, 2021
- * <p>
- * Represents a peripheral device that can capture input actions from a user.
  * 
  * @author J Hoffman
  * @since  2.0.0
  */
 abstract class InputDevice {
 
+    protected static final int CONTROL_UNSUPPORTED = -1;
+    protected static final int CONTROL_VIRTUAL     = -2;
+    
+    boolean connected;
     protected boolean enabled = true;
     
     protected final int id;
     
-    protected String name;
+    protected String name = "Unspecified Device";
     
-    final HashMap<Control, Integer> controls;
-    final HashMap<String, Float> settings;
+    protected final Map<String, Float> settings           = new HashMap<>();
+    protected final Map<Control, Float> controlValues     = new HashMap<>();
+    protected final Map<Control, Integer> controlBindings = new HashMap<>();
     
-    /**
-     * Creates a new input device object and applies the users settings to its 
-     * control configuration.
-     * 
-     * @param id the unique number used to identify the device in other parts of 
-     *           the engine
-     * @param controls a collection of various {@link Control} mappings
-     * @param settings a collection containing additional user preferences
-     */
-    InputDevice(int id, HashMap<Control, Integer> controls, HashMap<String, Float> settings) {
-        this.id       = id;
-        this.controls = controls;
-        this.settings = settings;
+    InputDevice(int id) {
+        this.id = id;
     }
     
-    /**
-     * Creates a new input device object from an existing one.
-     * 
-     * @param inputDevice the input device to copy
-     */
-    InputDevice(InputDevice inputDevice) {
-        id       = inputDevice.id;
-        enabled  = inputDevice.enabled;
-        controls = inputDevice.controls;
-        settings = inputDevice.settings;
-    }
-    
-    /**
-     * Processes the input actions of a device by looking for state changes in 
-     * its interactive components.
-     * 
-     * @param targetDelta a constant value denoting the desired time (in 
-     *                    seconds) it should take for one game tick to complete
-     * @param trueDelta the actual time (in seconds) it took the current game
-     *                  tick to complete
-     */
-    protected abstract void poll(double targetDelta, double trueDelta, Control control, Command command);
+    protected abstract void captureControlState();
     
 }

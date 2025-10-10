@@ -8,13 +8,13 @@ import static org.xjge.core.Control.*;
  * @author J Hoffman
  * @since  4.0.0
  */
-final class InputDeviceKeyboard extends InputDevice2 {
+final class InputDeviceKeyboard extends InputDevice {
 
     int[] leftAxisBindings  = new int[4];
     int[] rightAxisBindings = new int[4];
     
     InputDeviceKeyboard() {
-        super(Input2.KEYBOARD);
+        super(Input.KEYBOARD);
         name      = "Generic Keyboard";
         connected = true;
         

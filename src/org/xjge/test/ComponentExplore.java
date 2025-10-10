@@ -1,11 +1,12 @@
 package org.xjge.test;
 
 import org.joml.Vector3f;
-import org.xjge.core.Command;
 import org.xjge.core.EntityComponent;
 import org.xjge.core.Control;
+import org.xjge.core.ControlState;
+import org.xjge.core.Controllable;
+import org.xjge.core.ControllableAction;
 import org.xjge.core.Entity;
-import org.xjge.core.Puppet;
 import org.xjge.core.Window;
 
 /**
@@ -18,7 +19,7 @@ class ComponentExplore extends EntityComponent {
     float moveSpeed = 5f;
     float facingYaw;
     
-    private final Puppet puppet;
+    private final Controllable puppet;
     
     private final Entity entity;
     private final CameraFollow camera;
@@ -30,22 +31,22 @@ class ComponentExplore extends EntityComponent {
         Window.setViewportCamera(inputDeviceID, camera);
         camera.follow(entity);
         
-        puppet = new Puppet("explore_" + inputDeviceID);
+        puppet = new Controllable("explore_" + inputDeviceID);
         
-        puppet.commands.put(Control.LEFT_STICK_X, new Move());
-        puppet.commands.put(Control.LEFT_STICK_Y, new Move());
+        puppet.actions.put(Control.LEFT_STICK_X, new Move());
+        puppet.actions.put(Control.LEFT_STICK_Y, new Move());
         
         puppet.setInputDevice(inputDeviceID);
     }
     
-    private class Move extends Command {
+    private class Move extends ControllableAction {
 
         private float leftX;
         private float leftY;
         
         @Override
-        public void execute(double targetDelta, double trueDelta) {
-            if(axisMoved() && entity.hasComponent(ComponentPosition.class)) {
+        public void perform(ControlState controlState, double targetDelta, double trueDelta) {
+            if(controlState.axisMoved() && entity.hasComponent(ComponentPosition.class)) {
                 /*
                 //TODO: split this into two cases for each axis
                 if(getButtonID() == GLFW_GAMEPAD_AXIS_LEFT_X) {
