@@ -5,9 +5,10 @@ import org.xjge.core.Control;
 import org.xjge.core.ControlState;
 import org.xjge.core.Controllable;
 import org.xjge.core.ControllableAction;
-import static org.xjge.core.Input2.MOUSE;
+import org.xjge.core.Input2;
 import org.xjge.core.Mouse;
 import org.xjge.core.SplitScreenType;
+import org.xjge.core.XJGE;
 import org.xjge.graphics.Color;
 import org.xjge.graphics.GLProgram;
 import org.xjge.ui.Font;
@@ -21,6 +22,8 @@ import org.xjge.ui.Widget;
 public class WidgetInputTest extends Widget {
 
     private int yOffset;
+    private int virtualID;
+    private int inputValue;
     
     private final Controllable controllable = new Controllable("test");
     
@@ -47,12 +50,22 @@ public class WidgetInputTest extends Widget {
             controllable.actions.put(control, new InputState());
         }
         
-        controllable.setInputDevice(MOUSE);
+        virtualID = Input2.createVirtualDevice();
+        
+        //controllable.setInputDevice(GLFW_JOYSTICK_1);
         //Window.setInputMode(GLFW_CURSOR, GLFW_CURSOR_DISABLED);
     }
     
     @Override
     public void update(double targetDelta, double trueDelta) {
+        if(controllable.getInputDeviceID() == Input2.NO_DEVICE) {
+            controllable.setInputDevice(virtualID);
+        }
+        
+        if(XJGE.tick(30)) {
+            inputValue = (inputValue == 1) ? -1 : 1;
+            Input2.setVirtualDeviceInput(virtualID, Control.R2, inputValue);
+        }
     }
 
     @Override

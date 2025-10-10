@@ -426,7 +426,8 @@ public final class XJGE {
         }
         
         Window.freeCallbacks();
-        Audio.cleanup();
+        Audio.freeResources();
+        Input2.freeDevices();
         GL.destroy();
         glfwTerminate();
     }

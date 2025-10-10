@@ -8,6 +8,7 @@ import java.util.Map;
 import java.util.Queue;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentLinkedQueue;
+import java.util.concurrent.atomic.AtomicInteger;
 import static org.lwjgl.glfw.GLFW.*;
 
 /**
@@ -23,6 +24,7 @@ public class Input2 {
     
     private static final Observable observable = new Observable(Input2.class);
     
+    private static final AtomicInteger virtualDeviceCounter      = new AtomicInteger(100);
     private static final Queue<Runnable> deviceConnectionEvents  = new ConcurrentLinkedQueue<>();
     private static final Queue<Controllable> controllableQueue   = new LinkedList<>();
     private static final Map<UUID, Controllable> controllables   = new HashMap<>();
@@ -93,6 +95,13 @@ public class Input2 {
         controllableQueue.add(controllable);
     }
     
+    static void freeDevices() {
+        inputDevices.values().forEach(device -> {
+            device.connected = false;
+            if(device instanceof InputDeviceGamepad gamepad) gamepad.freeState();
+        });
+    }
+    
     public static void addObserver(PropertyChangeListener observer) {
         observable.addObserver(observer);
     }
@@ -101,21 +110,73 @@ public class Input2 {
         observable.removeObserver(observer);
     }
     
+    public static int getGamepadCount() {
+        int count = 0;
+        
+        for(InputDevice2 device : inputDevices.values()) {
+            if(device instanceof InputDeviceGamepad gamepad && gamepad.connected) count++;
+        }
+        
+        return count;
+    }
+    
     public static int createVirtualDevice() {
-        return 0; //TODO: create queue for adding this so we don't risk a concurrent modification of inputDevices
+        int deviceID = virtualDeviceCounter.getAndIncrement();
+        
+        deviceConnectionEvents.add(() -> {
+            var virtualDevice = new InputDeviceVirtual(deviceID);
+            inputDevices.put(deviceID, virtualDevice);
+            observable.notifyObservers("INPUT_DEVICE_" + deviceID + "_CONNECTED", virtualDevice.connected);
+            Logger.logInfo("New virtual input device created and assigned to index " + deviceID);
+        });
+        
+        return deviceID;
     }
     
     public static void destroyVirtualDevice(int deviceID) {
-        
+        deviceConnectionEvents.add(() -> {
+            InputDevice2 device = inputDevices.get(deviceID);
+            
+            if(device == null) {
+                Logger.logWarning("Attempted to destroy a virtual input device at index " + 
+                                  deviceID + " but it does not exist", null);
+                return;
+            }
+            
+            if(!(device instanceof InputDeviceVirtual)) {
+                Logger.logWarning("Operation ignored. User attempted to destroy a " + 
+                                  "non-virtual input device at index " + deviceID, null);
+                return;
+            }
+            
+            device.connected = false;
+            observable.notifyObservers("INPUT_DEVICE_" + deviceID + "_CONNECTED", device.connected);
+            Logger.logInfo("Virtual input device " + deviceID + " destroyed successfully");
+            inputDevices.remove(deviceID);
+        });
     }
     
     public static void setVirtualDeviceInput(int deviceID, Control control, float inputValue) {
+        InputDevice2 device = inputDevices.get(deviceID);
         
+        if(device == null) {
+            Logger.logWarning("Attempted to change the input state of a virtual " + 
+                              "input device at index " + deviceID + " but it does not exist", null);
+            return;
+        }
+        
+        if(!(device instanceof InputDeviceVirtual)) {
+            Logger.logWarning("Operation ignored. User attempted to change the " + 
+                              "input state of a non-virtual input device at index " + deviceID, null);
+            return;
+        }
+        
+        device.controlValues.put(control, XJGE.clampValue(-1f, 1f, inputValue));
     }
     
     public static int[] getKeyboardAxisBindings(boolean leftStick) {
         InputDeviceKeyboard keyboard = (InputDeviceKeyboard) inputDevices.get(KEYBOARD);
-        return (leftStick) ? keyboard.leftAxisBindings : keyboard.rightAxisBindings;
+        return (leftStick) ? keyboard.leftAxisBindings.clone() : keyboard.rightAxisBindings.clone();
     }
     
     public static void setKeyboardAxisBindings(boolean leftStick, int upKey, int leftKey, int downKey, int rightKey) {

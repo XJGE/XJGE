@@ -46,10 +46,10 @@ final class InputDeviceKeyboard extends InputDevice2 {
         controlBindings.put(DPAD_RIGHT,    GLFW_KEY_RIGHT);
         controlBindings.put(DPAD_DOWN,     GLFW_KEY_DOWN);
         controlBindings.put(DPAD_LEFT,     GLFW_KEY_LEFT);
-        controlBindings.put(LEFT_STICK_X,  CONTROL_VIRTUALIZED);
-        controlBindings.put(LEFT_STICK_Y,  CONTROL_VIRTUALIZED);
-        controlBindings.put(RIGHT_STICK_X, CONTROL_VIRTUALIZED);
-        controlBindings.put(RIGHT_STICK_Y, CONTROL_VIRTUALIZED);
+        controlBindings.put(LEFT_STICK_X,  CONTROL_VIRTUAL);
+        controlBindings.put(LEFT_STICK_Y,  CONTROL_VIRTUAL);
+        controlBindings.put(RIGHT_STICK_X, CONTROL_VIRTUAL);
+        controlBindings.put(RIGHT_STICK_Y, CONTROL_VIRTUAL);
         controlBindings.put(L2,            GLFW_KEY_U);
         controlBindings.put(R2,            GLFW_KEY_O);
     }

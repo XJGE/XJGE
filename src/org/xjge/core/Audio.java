@@ -85,7 +85,7 @@ public final class Audio {
         cameraDirections.clear();
     }
     
-    static void cleanup() {
+    static void freeResources() {
         for(SoundSource source : sourcePool) {
             source.stop();
             source.delete();
@@ -169,7 +169,7 @@ public final class Audio {
         return (sounds.containsKey(name)) ? sounds.get(name).durationInSeconds : 0f;
     }
     
-    public static int getNumSpeakers() {
+    public static int getSpeakerCount() {
         return speakers.size();
     }
     
