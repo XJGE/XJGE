@@ -10,6 +10,8 @@ import java.util.UUID;
 import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.atomic.AtomicInteger;
 import static org.lwjgl.glfw.GLFW.*;
+import static org.xjge.core.InputDevice2.CONTROL_UNSUPPORTED;
+import static org.xjge.core.InputDevice2.CONTROL_VIRTUAL;
 
 /**
  * 
@@ -232,11 +234,56 @@ public class Input2 {
     }
     
     public static void setDeviceSettings(int deviceID, Map<String, Float> settings) {
-        //TODO: add this
+        InputDevice2 device = inputDevices.get(deviceID);
+        
+        if(device == null) {
+            Logger.logWarning("Operation ignored. User attempted to modify settings for " + 
+                              "a non-existent input device at index " + deviceID, null);
+            return;
+        }
+        
+        for(var entry : settings.entrySet()) {
+            String key = entry.getKey();
+            Float value = entry.getValue();
+
+            if(value == null || Float.isNaN(value) || Float.isInfinite(value)) {
+                Logger.logWarning("Operation ignored. Invalid setting value used for \"" + 
+                                  key + "\" on the input device at index " + deviceID, null);
+                continue;
+            }
+
+            device.settings.put(key, value);
+        }
     }
     
     public static void setDeviceControlBindings(int deviceID, Map<Control, Integer> controlBindings) {
-        //TODO: add this (remember to include check for CONTROL_UNSUPPORTED binding)
+        InputDevice2 device = inputDevices.get(deviceID);
+        
+        if(device == null) {
+            Logger.logWarning("Operation ignored. User attempted to change control " + 
+                              "bindings for a non-existent input device at index " + deviceID, null);
+            return;
+        }
+        
+        for(var entry : controlBindings.entrySet()) {
+            Control control = entry.getKey();
+            int binding     = entry.getValue();
+
+            //Skip unsupported or virtual bindings
+            if(binding == CONTROL_UNSUPPORTED || binding == CONTROL_VIRTUAL) {
+                Logger.logInfo("Control rebind skipped for " + control + ". The input device at index " + 
+                               deviceID + " does not support this control or provides it virtually");
+                continue;
+            }
+
+            //Validate control type per device
+            if(!device.controlBindings.containsKey(control)) {
+                Logger.logWarning("Control " + control + " not recognized by the input device at index " + deviceID, null);
+                continue;
+            }
+
+            device.controlBindings.put(control, binding);
+        }
     }
     
 }
