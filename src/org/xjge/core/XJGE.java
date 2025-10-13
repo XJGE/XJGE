@@ -161,8 +161,9 @@ public final class XJGE {
         if(!glfwInit()) Logger.logError("Failed to initialize GLFW", null);
         
         Window.create(debugModeEnabled);
-        Audio.init(); //TODO: fix the bug here that causes ExceptionInInitializerError/IllegalStateException
-        Input.init();
+        
+        synchronized(Audio.class) { Audio.init(); }
+        synchronized(Input.class) { Input.init(); }
         
         Logger.logSystemInfo();
         
