@@ -80,6 +80,14 @@ public final class ControlState {
         return currentInputValue;
     }
     
+    public float getDeltaCursorX() {
+        return (device instanceof InputDeviceMouse mouse) ? mouse.getDeltaCursorX() : 0f;
+    }
+    
+    public float getDeltaCursorY() {
+        return (device instanceof InputDeviceMouse mouse) ? mouse.getDeltaCursorY() : 0f;
+    }
+    
     public int getDeviceID() {
         return deviceID;
     }

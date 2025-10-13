@@ -25,15 +25,6 @@ public class Main {
         
         XJGE.init(true, "/org/xjge/assets/", "org.xjge.test.");
         
-        Window.setResizable(false);
-        Window.focus();
-        
-        XJGE.setScene(new SceneControllerTest());
-        XJGE.start();
-        
-        /*
-        XJGE.init(true, "/org/xjge/assets/", "org.xjge.test.");
-        
         {
             var shaderSourceFiles = new LinkedList<GLShader>() {{
                 add(new GLShader("shader_grid_vertex.glsl", GL_VERTEX_SHADER));
@@ -105,7 +96,7 @@ public class Main {
         XJGE.setClearColor(Color.SILVER);
         XJGE.setScene(new Scene3D("map_test.txt"));
         XJGE.start();
-        */
+        
     }
     
     public static boolean showBoundingVolumes() {

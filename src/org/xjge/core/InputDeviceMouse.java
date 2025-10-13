@@ -10,6 +10,11 @@ import static org.xjge.core.Control.*;
  */
 final class InputDeviceMouse extends InputDevice {
 
+    private float deltaCursorX;
+    private float deltaCursorY;
+    
+    private double previousCursorX;
+    private double previousCursorY;
     private static double scrollSpeedX;
     private static double scrollSpeedY;
     
@@ -47,10 +52,27 @@ final class InputDeviceMouse extends InputDevice {
         InputDeviceMouse.scrollSpeedX = scrollSpeedX;
         InputDeviceMouse.scrollSpeedY = scrollSpeedY;
     }
+    
+    float getDeltaCursorX() {
+        return deltaCursorX;
+    }
+    
+    float getDeltaCursorY() {
+        return deltaCursorY;
+    }
 
     @Override
     protected void captureControlState() {
         if(Window.getMinimized()) return;
+        
+        double currentCursorX = mouse.getCursorPositionX();
+        double currentCursorY = mouse.getCursorPositionY();
+        
+        deltaCursorX = (float) (currentCursorX - previousCursorX);
+        deltaCursorY = (float) (currentCursorY - previousCursorY);
+        
+        previousCursorX = currentCursorX;
+        previousCursorY = currentCursorY;
         
         for(var entry : controlBindings.entrySet()) {
             Control control = entry.getKey();
@@ -68,8 +90,8 @@ final class InputDeviceMouse extends InputDevice {
                     value = (float) scrollSpeedY;
                     scrollSpeedY = 0;
                 }
-                case RIGHT_STICK_X -> value = (float) mouse.getCursorPositionX();
-                case RIGHT_STICK_Y -> value = (float) mouse.getCursorPositionY();
+                case RIGHT_STICK_X -> value = (float) currentCursorX;
+                case RIGHT_STICK_Y -> value = (float) currentCursorY;
             }
             
             controlValues.put(control, value);

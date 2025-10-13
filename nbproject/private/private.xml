@@ -2,14 +2,6 @@
 <project-private xmlns="http://www.netbeans.org/ns/project-private/1">
     <editor-bookmarks xmlns="http://www.netbeans.org/ns/editor-bookmarks/2" lastBookmarkId="23">
         <file>
-            <url>src/org/xjge/core/Viewport.java</url>
-            <bookmark id="12">
-                <name/>
-                <line>159</line>
-                <key/>
-            </bookmark>
-        </file>
-        <file>
             <url>src/org/xjge/ui/UI.java</url>
             <bookmark id="9">
                 <name/>
@@ -17,14 +9,18 @@
                 <key/>
             </bookmark>
         </file>
+        <file>
+            <url>src/org/xjge/core/Viewport.java</url>
+            <bookmark id="12">
+                <name/>
+                <line>159</line>
+                <key/>
+            </bookmark>
+        </file>
     </editor-bookmarks>
     <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
         <group>
-            <file>file:/C:/Users/jhoff/Projects/XJGE/src/org/xjge/core/Input2.java</file>
-            <file>file:/C:/Users/jhoff/Projects/XJGE/src/org/xjge/core/InputDeviceVirtual.java</file>
-            <file>file:/C:/Users/jhoff/Projects/XJGE/src/org/xjge/test/WidgetInputTest.java</file>
-            <file>file:/C:/Users/jhoff/Projects/XJGE/src/org/xjge/core/InputDeviceMouse.java</file>
-            <file>file:/C:/Users/jhoff/Projects/XJGE/src/org/xjge/core/InputDeviceKeyboard.java</file>
+            <file>file:/C:/Users/jhoff/Projects/XJGE/src/org/xjge/test/Main.java</file>
         </group>
     </open-files>
 </project-private>

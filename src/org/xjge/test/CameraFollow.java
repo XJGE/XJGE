@@ -13,6 +13,7 @@ import org.xjge.core.ControllableAction;
 import org.xjge.core.Entity;
 import org.xjge.core.Input;
 import org.xjge.core.Window;
+import org.xjge.core.XJGE;
 import org.xjge.graphics.GLProgram;
 
 /**
@@ -78,9 +79,9 @@ class CameraFollow extends Camera {
         
         if(entity.hasComponent(ComponentUnit.class)) {
             int inputDeviceID = entity.getComponent(ComponentUnit.class).inputDeviceID;
-            rotationSpeed = (inputDeviceID == Input.MOUSE) ? 0.5f : 2.5f;
-            lookInversion = inputDeviceID == Input.MOUSE;
-            puppet.setInputDevice(inputDeviceID);
+            rotationSpeed = (inputDeviceID == Input.KEYBOARD) ? 0.5f : 2.5f;
+            lookInversion = inputDeviceID == Input.KEYBOARD;
+            puppet.setInputDevice(inputDeviceID == Input.KEYBOARD ? Input.MOUSE : inputDeviceID);
         }
         
         update(0.016, 0.016); //Fixes snap following unit movement into an unoccupied space
@@ -119,20 +120,28 @@ class CameraFollow extends Camera {
 
         @Override
         public void perform(ControlState controlState, double targetDelta, double trueDelta) {
-            if(controlState.axisMoved() && enableRotation) yaw += controlState.getInputValue() * rotationSpeed;
+            float inputValue = controlState.getDeviceID() == Input.MOUSE
+                             ? controlState.getDeltaCursorX() 
+                             : controlState.getInputValue();
+            
+            if(controlState.axisMoved() && enableRotation) yaw += inputValue * rotationSpeed;
         }
         
     }
     
     private class RotateCameraPitch extends ControllableAction {
-
+        
         @Override
         public void perform(ControlState controlState, double targetDelta, double trueDelta) {
+            float inputValue = controlState.getDeviceID() == Input.MOUSE
+                             ? controlState.getDeltaCursorY() 
+                             : controlState.getInputValue();
+            
             if(controlState.axisMoved() && enableRotation) {
                 if(lookInversion) {
-                    pitch -= controlState.getInputValue() * rotationSpeed;
+                    pitch -= inputValue * rotationSpeed;
                 } else {
-                    pitch += controlState.getInputValue() * rotationSpeed;
+                    pitch += inputValue * rotationSpeed;
                 }
             }
         }
