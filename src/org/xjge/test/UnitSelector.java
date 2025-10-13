@@ -52,4 +52,9 @@ class UnitSelector {
         return null;
     }
     
+    
+    void removeArrow() {
+        arrowIndicator.removeFromScene();
+    }
+    
 }

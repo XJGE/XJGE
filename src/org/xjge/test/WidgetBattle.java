@@ -372,7 +372,10 @@ class WidgetBattle extends Widget {
             pathSelector = null;
         }
         
-        if(unitSelector != null) unitSelector = null;
+        if(unitSelector != null) {
+            unitSelector.removeArrow();
+            unitSelector = null;
+        }
         
         pendingAction = null;
         pendingSpell = null;
