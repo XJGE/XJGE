@@ -2,6 +2,7 @@ package org.xjge.test;
 
 import java.util.Map;
 import org.xjge.core.Control;
+import org.xjge.core.Input;
 import org.xjge.core.Mouse;
 import org.xjge.core.SplitScreenType;
 import org.xjge.core.Window;
@@ -38,17 +39,21 @@ class WidgetManabolt extends Widget {
     
     @Override
     public void update(double targetDelta, double trueDelta) {
-        //TODO: axisMoved() only works if the cursor/axis was moved prior to displaying this widget
-        
-        if(turnContext.unit.axisMoved(Control.RIGHT_STICK_X)) {
-            markerIcon.position.x += turnContext.unit.getInputValue(Control.RIGHT_STICK_X);
+        if(turnContext.unit.inputDeviceID == Input.KEYBOARD) {
+            if(turnContext.unit.axisMoved(Control.RIGHT_STICK_X, 1)) {
+                markerIcon.position.x = turnContext.unit.getInputValue(Control.RIGHT_STICK_X, 1);
+            }
+            if(turnContext.unit.axisMoved(Control.RIGHT_STICK_Y, 1)) {
+                markerIcon.position.y = turnContext.unit.getInputValue(Control.RIGHT_STICK_Y, 1);
+            }
+        } else {
+            if(turnContext.unit.axisMoved(Control.RIGHT_STICK_X, 0)) {
+                markerIcon.position.x += turnContext.unit.getInputValue(Control.RIGHT_STICK_X, 0);
+            }
+            if(turnContext.unit.axisMoved(Control.RIGHT_STICK_Y, 0)) {
+                markerIcon.position.y += turnContext.unit.getInputValue(Control.RIGHT_STICK_Y, 0);
+            }
         }
-        
-        if(turnContext.unit.axisMoved(Control.RIGHT_STICK_Y)) {
-            markerIcon.position.y += turnContext.unit.getInputValue(Control.RIGHT_STICK_Y);
-        }
-        
-        System.out.println(markerIcon.position.x + ", " + markerIcon.position.y);
     }
 
     @Override

@@ -41,7 +41,7 @@ class UnitSelector {
                                   .target(selectedEntity.getComponent(ComponentPosition.class).position);
                     
                     //TODO: handle input for cycling targets
-                    if(turnContext.unit.buttonPressedOnce(Control.CROSS)) {
+                    if(turnContext.unit.buttonPressedOnce(Control.CROSS, 0)) {
                         arrowIndicator.removeFromScene();
                         return selectedEntity.getComponent(ComponentUnit.class);
                     }

@@ -147,13 +147,13 @@ class UnitActionMove extends UnitAction {
                         
                         if(turnContext.unit.isPlayer) {
                             //player attacking
-                            if(turnContext.unit.buttonPressedOnce(Control.CROSS)) {
+                            if(turnContext.unit.buttonPressedOnce(Control.CROSS, 0)) {
                                 attackerOutcome[attackCount] = true;
                             }
                             defenderOutcome[attackCount] = rand.nextBoolean();
                         } else if(targetUnit.isPlayer) {
                             //player defending
-                            if(targetUnit.buttonPressedOnce(Control.CROSS)) {
+                            if(targetUnit.buttonPressedOnce(Control.CROSS, 0)) {
                                 defenderOutcome[attackCount] = true;
                             }
                             attackerOutcome[attackCount] = rand.nextBoolean();

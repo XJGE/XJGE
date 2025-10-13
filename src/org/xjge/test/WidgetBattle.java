@@ -240,12 +240,12 @@ class WidgetBattle extends Widget {
         pathSelector = null;
         renderSubMenus = false;
         
-        if(turnContext.unit.buttonPressedOnce(Control.DPAD_UP)) mainMenuChoice--;
-        if(turnContext.unit.buttonPressedOnce(Control.DPAD_DOWN)) mainMenuChoice++;
+        if(turnContext.unit.buttonPressedOnce(Control.DPAD_UP, 0)) mainMenuChoice--;
+        if(turnContext.unit.buttonPressedOnce(Control.DPAD_DOWN, 0)) mainMenuChoice++;
         
-        if(turnContext.unit.buttonPressedOnce(Control.CIRCLE)) {
+        if(turnContext.unit.buttonPressedOnce(Control.CIRCLE, 0)) {
             if(state == State.MAINMENU) turnContext.endTurn();
-        } else if(turnContext.unit.buttonPressedOnce(Control.CROSS)) {
+        } else if(turnContext.unit.buttonPressedOnce(Control.CROSS, 0)) {
             Option option = options.get(mainMenuChoice);
             
             if(!option.used) {
@@ -281,12 +281,12 @@ class WidgetBattle extends Widget {
     private void handleSubMenuInput() {
         renderSubMenus = true;
         
-        if(turnContext.unit.buttonPressedOnce(Control.DPAD_UP)) subMenuChoice--;
-        if(turnContext.unit.buttonPressedOnce(Control.DPAD_DOWN)) subMenuChoice++;
+        if(turnContext.unit.buttonPressedOnce(Control.DPAD_UP, 0)) subMenuChoice--;
+        if(turnContext.unit.buttonPressedOnce(Control.DPAD_DOWN, 0)) subMenuChoice++;
         
-        if(turnContext.unit.buttonPressedOnce(Control.CIRCLE)) {
+        if(turnContext.unit.buttonPressedOnce(Control.CIRCLE, 0)) {
             if(state == State.SUBMENU) state = State.MAINMENU;
-        } else if(turnContext.unit.buttonPressedOnce(Control.CROSS)) {
+        } else if(turnContext.unit.buttonPressedOnce(Control.CROSS, 0)) {
             switch(options.get(mainMenuChoice).category) {
                 case SPELL -> {
                     pendingSpell = turnContext.unit.spells.get(subMenuChoice).name();
@@ -340,11 +340,11 @@ class WidgetBattle extends Widget {
     }
 
     private void handleTargetInput() {
-        if(turnContext.unit.buttonPressedOnce(Control.CIRCLE)) {
+        if(turnContext.unit.buttonPressedOnce(Control.CIRCLE, 0)) {
             resetTargeting();
             turnContext.scene.setCameraFollow(turnContext.unit, 0.5f);
             state = (renderSubMenus) ? State.SUBMENU : State.MAINMENU;
-        } else if(turnContext.unit.buttonPressedOnce(Control.CROSS) && pendingAction != null) {
+        } else if(turnContext.unit.buttonPressedOnce(Control.CROSS, 0) && pendingAction != null) {
             state = State.CONFIRM;
         }
     }

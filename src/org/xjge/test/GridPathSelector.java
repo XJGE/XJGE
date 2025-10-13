@@ -55,7 +55,7 @@ class GridPathSelector {
 
                 applyIndicators(turnContext, validPath);
 
-                if(validPath && turnContext.unit.buttonPressedOnce(Control.CROSS)) stage = 2;
+                if(validPath && turnContext.unit.buttonPressedOnce(Control.CROSS, 0)) stage = 2;
             }
 
             case 2 -> {
@@ -67,13 +67,13 @@ class GridPathSelector {
     }
 
     private GridSpace handleDirectionalInput(TurnContext turnContext, GridSpace prev) {
-        if(turnContext.unit.buttonPressedOnce(Control.DPAD_UP)) {
+        if(turnContext.unit.buttonPressedOnce(Control.DPAD_UP, 0)) {
             return turnContext.gridSpaces.get(new Vector3i(prev.xLocation, prev.yLocation, prev.zLocation - 1));
-        } else if(turnContext.unit.buttonPressedOnce(Control.DPAD_DOWN)) {
+        } else if(turnContext.unit.buttonPressedOnce(Control.DPAD_DOWN, 0)) {
             return turnContext.gridSpaces.get(new Vector3i(prev.xLocation, prev.yLocation, prev.zLocation + 1));
-        } else if(turnContext.unit.buttonPressedOnce(Control.DPAD_LEFT)) {
+        } else if(turnContext.unit.buttonPressedOnce(Control.DPAD_LEFT, 0)) {
             return turnContext.gridSpaces.get(new Vector3i(prev.xLocation - 1, prev.yLocation, prev.zLocation));
-        } else if(turnContext.unit.buttonPressedOnce(Control.DPAD_RIGHT)) {
+        } else if(turnContext.unit.buttonPressedOnce(Control.DPAD_RIGHT, 0)) {
             return turnContext.gridSpaces.get(new Vector3i(prev.xLocation + 1, prev.yLocation, prev.zLocation));
         }
         

@@ -36,7 +36,7 @@ class UnitActionFlash extends UnitAction {
         switch(stage) {
             //Handle input
             case 0 -> {
-                if(turnContext.unit.buttonPressedOnce(Control.CROSS) && !beginSlowdown) {
+                if(turnContext.unit.buttonPressedOnce(Control.CROSS, 0) && !beginSlowdown) {
                     beginSlowdown = true;
                     stage = 1;
                 }

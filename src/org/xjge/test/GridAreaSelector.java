@@ -70,7 +70,7 @@ class GridAreaSelector {
                 
                 applyIndicators(turnContext);
                 
-                if(turnContext.unit.buttonPressedOnce(Control.CROSS)) stage = 2;
+                if(turnContext.unit.buttonPressedOnce(Control.CROSS, 0)) stage = 2;
             }
             case 2 -> {
                 return area;
@@ -83,13 +83,13 @@ class GridAreaSelector {
     private GridSpace handleDirectionalInput(TurnContext turnContext, GridSpace prev) {
         Vector3i candidatePos = null;
         
-        if(turnContext.unit.buttonPressedOnce(Control.DPAD_UP)) {
+        if(turnContext.unit.buttonPressedOnce(Control.DPAD_UP, 0)) {
             candidatePos = new Vector3i(prev.xLocation, prev.yLocation, prev.zLocation - 1);
-        } else if(turnContext.unit.buttonPressedOnce(Control.DPAD_DOWN)) {
+        } else if(turnContext.unit.buttonPressedOnce(Control.DPAD_DOWN, 0)) {
             candidatePos = new Vector3i(prev.xLocation, prev.yLocation, prev.zLocation + 1);
-        } else if(turnContext.unit.buttonPressedOnce(Control.DPAD_LEFT)) {
+        } else if(turnContext.unit.buttonPressedOnce(Control.DPAD_LEFT, 0)) {
             candidatePos = new Vector3i(prev.xLocation - 1, prev.yLocation, prev.zLocation);
-        } else if(turnContext.unit.buttonPressedOnce(Control.DPAD_RIGHT)) {
+        } else if(turnContext.unit.buttonPressedOnce(Control.DPAD_RIGHT, 0)) {
             candidatePos = new Vector3i(prev.xLocation + 1, prev.yLocation, prev.zLocation);
         }
 

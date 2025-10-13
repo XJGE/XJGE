@@ -42,7 +42,7 @@ class WidgetMudToss extends Widget {
     
     @Override
     public void update(double targetDelta, double trueDelta) {
-        if(unit.buttonPressedOnce(Control.CROSS)) {
+        if(unit.buttonPressedOnce(Control.CROSS, 0)) {
             stopped = true;
             result = indicator.height / 280f;
         }

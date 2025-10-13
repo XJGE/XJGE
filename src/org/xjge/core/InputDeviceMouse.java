@@ -53,10 +53,20 @@ final class InputDeviceMouse extends InputDevice {
         InputDeviceMouse.scrollSpeedY = scrollSpeedY;
     }
     
+    /**
+     * Obtains a value denoting the rate of change of the cursors horizontal position
+     * 
+     * @return 
+     */
     float getDeltaCursorX() {
         return deltaCursorX;
     }
     
+    /**
+     * Obtains a value denoting the rate of change of the cursors vertical position
+     * 
+     * @return 
+     */
     float getDeltaCursorY() {
         return deltaCursorY;
     }
