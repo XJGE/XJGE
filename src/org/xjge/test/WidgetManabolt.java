@@ -1,6 +1,7 @@
 package org.xjge.test;
 
 import java.util.Map;
+import java.util.Random;
 import org.joml.Vector2f;
 import static org.lwjgl.glfw.GLFW.GLFW_JOYSTICK_1;
 import org.xjge.core.Control;
@@ -30,11 +31,11 @@ class WidgetManabolt extends Widget {
     private boolean blink;
     private boolean onTarget;
     
-    private float orbitAngle = 0f;
-    private float orbitSpeed = 6f;
+    private float orbitAngle;
+    private float orbitSpeed;
     private float radiusX = 120f;
-    private float radiusY = 5f;
-    private float ovalRotation = 0f;
+    private float radiusY;
+    private float ovalRotation;
     private final float rotationDriftSpeed;
     
     private int tickCount;
@@ -47,6 +48,7 @@ class WidgetManabolt extends Widget {
     private Icon markerIcon;
     
     private Timer countdown = new Timer();
+    private Random random = new Random();
     
     private Rectangle background = new Rectangle(0, 0, 50, 300);
     private Rectangle indicator = new Rectangle(0, 0, 30, 280);
@@ -62,7 +64,9 @@ class WidgetManabolt extends Widget {
         markerIcon = new Icon(markerTexture, 50, 50, true);
         markerIcon.scale.set(1.5f);
         
-        rotationDriftSpeed = (float) ((Math.random() > 0.5) ? -Math.random() : Math.random());
+        orbitSpeed = (random.nextBoolean()) ? -6f : 6f;
+        radiusY = 5f + random.nextFloat(6f);
+        rotationDriftSpeed = (random.nextBoolean()) ? -random.nextFloat(2f) : random.nextFloat(2f);
         
         relocate(Window.getSplitScreenType(), Window.getResolutionWidth(), Window.getResolutionHeight());
     }
