@@ -161,8 +161,7 @@ public final class XJGE {
         if(!glfwInit()) Logger.logError("Failed to initialize GLFW", null);
         
         Window.create(debugModeEnabled);
-        
-        Audio.init();
+        Audio.init(debugModeEnabled);
         Input.init();
         
         Logger.logSystemInfo();

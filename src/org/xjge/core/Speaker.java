@@ -33,22 +33,19 @@ public final class Speaker {
         this.name  = name;
     }
     
-    boolean open() {
-        var tempDeviceHandle = alcOpenDevice(name);
-        if(tempDeviceHandle == NULL) return false;
-        
-        var tempContextHandle = alcCreateContext(tempDeviceHandle, (IntBuffer) null);
-        
-        if(tempContextHandle == NULL) {
-            alcCloseDevice(tempDeviceHandle);
-            return false;
-        }
-        
-        var tempCapabilities = ALC.createCapabilities(tempDeviceHandle);
-        
+    boolean open(boolean debugModeEnabled) {
         try {
-            alcMakeContextCurrent(tempContextHandle);
-            AL.createCapabilities(tempCapabilities);
+            deviceHandle  = alcOpenDevice(name);
+            contextHandle = alcCreateContext(deviceHandle, (IntBuffer) null);
+            
+            if(deviceHandle == NULL) {
+                throw new IllegalStateException("Failed to generate a device handle for speaker \"" + name + "\"");
+            } else if(contextHandle == NULL) {
+                throw new IllegalStateException("Failed to generate a context handle for speaker \"" + name + "\"");
+            }
+            
+            alcMakeContextCurrent(contextHandle);
+            AL.createCapabilities(ALC.createCapabilities(deviceHandle));
             
             var sources = new ArrayList<Integer>();
             
@@ -64,17 +61,19 @@ public final class Speaker {
             alcMakeContextCurrent(NULL);
             
             if(soundSourceLimit >= Audio.MIN_SOURCES) {
-                deviceHandle  = tempDeviceHandle;
-                contextHandle = tempContextHandle;
                 return true;
             } else {
-                alcDestroyContext(tempContextHandle);
-                alcCloseDevice(tempDeviceHandle);
-                return false;
+                throw new IllegalStateException("Speaker \"" + name + "\" does not support the minimum number of sound sources");
             }
         } catch(IllegalStateException exception) {
-            alcDestroyContext(tempContextHandle);
-            alcCloseDevice(tempDeviceHandle);
+            if(contextHandle != NULL) alcDestroyContext(contextHandle);
+            if(deviceHandle != NULL) alcCloseDevice(deviceHandle);
+            
+            if(debugModeEnabled) {
+                Logger.logWarning("Speaker \"" + name + "\" excluded from list of usable devices", exception);
+            }
+            
+            contextHandle = deviceHandle = NULL;
             return false;
         }
     }
@@ -82,7 +81,8 @@ public final class Speaker {
     boolean use() {
         try {
             if(deviceHandle == NULL || contextHandle == NULL) {
-                throw new IllegalStateException("Device or context handle is null");
+                throw new IllegalStateException("Speaker \"" + name + "\" has no valid device or " + 
+                                                "context handle, it may have been closed by the system");
             }
             
             alcMakeContextCurrent(contextHandle);

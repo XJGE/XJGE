@@ -54,7 +54,7 @@ public final class Audio {
         cameraDirections.put(viewportID, camera.direction);
     }
     
-    static void init() {        
+    static void init(boolean debugModeEnabled) {        
         for(int i = 0; i < MAX_SOURCES; i++) sourcePool[i] = new SoundSource(i);
         
         var deviceList = getStringList(NULL, ALC_ALL_DEVICES_SPECIFIER);
@@ -62,7 +62,7 @@ public final class Audio {
         if(deviceList != null && !deviceList.isEmpty()) {
             for(String name : deviceList) {
                 Speaker device = new Speaker(speakers.size(), name);
-                if(device.open()) speakers.put(device.index, device);
+                if(device.open(debugModeEnabled)) speakers.put(device.index, device);
             }
         } else {
             Logger.logWarning("Could not find any available audio output devices", null);
@@ -146,11 +146,8 @@ public final class Audio {
             sound.delete();
         });
         
-        var newSpeaker = new Speaker(speaker.index, speaker.name);
-        
-        if(newSpeaker.use()) {
-            Audio.speaker = newSpeaker;
-            speakers.put(newSpeaker.index, newSpeaker);
+        if(speaker.use()) {
+            Audio.speaker = speaker;
             
             soundFiles.forEach((name, filename) -> sounds.put(name, new Sound(XJGE.getAssetsFilepath(), filename)));
             Sound.fallback = new Sound("/org/xjge/assets/", "xjge_sound_fallback.ogg");
