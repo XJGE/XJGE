@@ -39,9 +39,10 @@ class WidgetBattle extends Widget {
     private ActionCategory pendingCategory;
     private String pendingSpell;
     private String errorMessage;
-    private GridAreaSelector areaSelector;
-    private GridPathSelector pathSelector;
-    private UnitSelector unitSelector;
+    private SelectorGridArea areaSelector;
+    private SelectorGridPath pathSelector;
+    private SelectorUnit unitSelector;
+    private SelectorNumber numberSelector;
     private Timer errorTimer = new Timer();
     
     private final Rectangle[] rectangles = new Rectangle[3];
@@ -92,8 +93,14 @@ class WidgetBattle extends Widget {
         if(mainMenuChoice >= options.size()) mainMenuChoice = 0;
         
         //Wrap subMenuChoice
-        if(subMenuChoice < 0) subMenuChoice = options.size() - 1;
-        if(subMenuChoice >= options.size()) subMenuChoice = 0;
+        int limit = (pendingCategory == ActionCategory.ITEM) 
+                  ? turnContext.unit.items.size()
+                  : options.size();
+        
+        if(limit > 0) {
+            if(subMenuChoice < 0) subMenuChoice = limit - 1;
+            if(subMenuChoice >= limit) subMenuChoice = 0;
+        }
 
         //Handle path selector
         if(pathSelector != null) {
@@ -124,6 +131,11 @@ class WidgetBattle extends Widget {
                 pendingAction = new UnitActionManabolt(targetUnit);
                 commitPendingAction();
             }
+        }
+        
+        //Handle number selector
+        if(numberSelector != null) {
+            
         }
     }
 
@@ -207,8 +219,6 @@ class WidgetBattle extends Widget {
                     }
                     case ITEM -> {
                         for(int i = 0; i < turnContext.unit.items.size(); i++) {
-                            System.out.println(i + " " + subMenuChoice);
-                            
                             String itemName = turnContext.unit.items.get(i);
                             
                             rectangles[i].positionY = (Window.getResolutionHeight() - 135) - (rectangles[i].height * (i + 1)) - (10 * (i + 1));
@@ -256,7 +266,7 @@ class WidgetBattle extends Widget {
 
                 switch(option.category) {
                     case MOVE -> {
-                        pathSelector = new GridPathSelector();
+                        pathSelector = new SelectorGridPath();
                         
                         //Snap overhead camera to the units starting space
                         GridSpace unitSpace = turnContext.gridSpaces.values().stream()
@@ -297,8 +307,8 @@ class WidgetBattle extends Widget {
                     switch(pendingSpell) {
                         case "Flash", "Mud Trap" -> {
                             areaSelector = (pendingSpell.equals("Flash")) 
-                                         ? new GridAreaSelector(2, -1) 
-                                         : new GridAreaSelector(1, 8);
+                                         ? new SelectorGridArea(2, -1) 
+                                         : new SelectorGridArea(1, 8);
                             
                             //Snap overhead camera to the units starting space
                             GridSpace unitSpace = turnContext.gridSpaces.values().stream()
@@ -326,7 +336,7 @@ class WidgetBattle extends Widget {
                             if(units.isEmpty()) {
                                 errorMessage = "No selectable units present, battle should end.";
                             } else {
-                                unitSelector = new UnitSelector(units);
+                                unitSelector = new SelectorUnit(units);
                                 state = State.TARGET;
                             }
                         }
@@ -335,7 +345,11 @@ class WidgetBattle extends Widget {
                     state = State.TARGET;
                 }
                 case ITEM -> {
+                    if(numberSelector == null) {
+                        numberSelector = new SelectorNumber();
+                    }
                     
+                    state = State.TARGET;
                 }
             }
         }

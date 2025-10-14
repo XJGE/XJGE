@@ -11,7 +11,7 @@ import static org.xjge.test.GridSpace.TYPE_SOLID;
  * @author J Hoffman
  * @since 
  */
-class GridAreaSelector {
+class SelectorGridArea {
     
     private int stage;
     
@@ -20,7 +20,7 @@ class GridAreaSelector {
     private final Vector3i[] locations;
     private final List<GridSpace> area = new ArrayList<>();
     
-    GridAreaSelector(int radius, int range) {
+    SelectorGridArea(int radius, int range) {
         int index = 0;
         int length = radius + radius + 1;
         locations = new Vector3i[length * length];

@@ -10,7 +10,7 @@ import org.xjge.core.Entity;
  * @author J Hoffman
  * @since 
  */
-class UnitSelector {
+class SelectorUnit {
 
     private int stage;
     private int index;
@@ -18,7 +18,7 @@ class UnitSelector {
     private Entity arrowIndicator;
     private final List<Entity> units;
     
-    UnitSelector(List<Entity> units) {
+    SelectorUnit(List<Entity> units) {
         this.units = units;
     }
     
