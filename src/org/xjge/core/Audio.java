@@ -59,7 +59,7 @@ public final class Audio {
         
         var deviceList = getStringList(NULL, ALC_ALL_DEVICES_SPECIFIER);
         
-        if(deviceList != null) {
+        if(deviceList != null && !deviceList.isEmpty()) {
             for(String name : deviceList) {
                 Speaker device = new Speaker(speakers.size(), name);
                 if(device.open()) speakers.put(device.index, device);
@@ -148,8 +148,7 @@ public final class Audio {
         
         var newSpeaker = new Speaker(speaker.index, speaker.name);
         
-        if(newSpeaker.open() && newSpeaker.use()) {
-            if(Audio.speaker != null) Audio.speaker.close();
+        if(newSpeaker.use()) {
             Audio.speaker = newSpeaker;
             speakers.put(newSpeaker.index, newSpeaker);
             

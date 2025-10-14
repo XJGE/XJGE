@@ -207,6 +207,8 @@ class WidgetBattle extends Widget {
                     }
                     case ITEM -> {
                         for(int i = 0; i < turnContext.unit.items.size(); i++) {
+                            System.out.println(i + " " + subMenuChoice);
+                            
                             String itemName = turnContext.unit.items.get(i);
                             
                             rectangles[i].positionY = (Window.getResolutionHeight() - 135) - (rectangles[i].height * (i + 1)) - (10 * (i + 1));

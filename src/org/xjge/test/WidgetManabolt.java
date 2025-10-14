@@ -97,7 +97,7 @@ class WidgetManabolt extends Widget {
                 }
             }
 
-            orbitAngle += orbitSpeed * dt;
+            orbitAngle += orbitSpeed * dt; //TODO: lerp orbit speed to change from pos/neg and vice versa?
             if(orbitAngle > Math.PI * 2) orbitAngle -= Math.PI * 2;
 
             ovalRotation += rotationDriftSpeed * dt;

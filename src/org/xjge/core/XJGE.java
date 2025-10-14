@@ -162,8 +162,8 @@ public final class XJGE {
         
         Window.create(debugModeEnabled);
         
-        synchronized(Audio.class) { Audio.init(); }
-        synchronized(Input.class) { Input.init(); }
+        Audio.init();
+        Input.init();
         
         Logger.logSystemInfo();
         
