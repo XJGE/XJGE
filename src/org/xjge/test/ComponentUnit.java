@@ -37,6 +37,8 @@ class ComponentUnit extends EntityComponent {
         boolean buttonPressed;
         boolean buttonPressedOnce;
         float inputValue;
+        float deltaCursorX;
+        float deltaCursorY;
 
         @Override
         public void perform(ControlState controlState, double targetDelta, double trueDelta) {
@@ -44,6 +46,8 @@ class ComponentUnit extends EntityComponent {
             buttonPressed     = controlState.buttonPressed();
             buttonPressedOnce = controlState.buttonPressedOnce();
             inputValue        = controlState.getInputValue();
+            deltaCursorX      = controlState.getDeltaCursorX();
+            deltaCursorY      = controlState.getDeltaCursorY();
             //TODO: extend this to capture more state depending on what's needed
         }
     }
@@ -118,6 +122,14 @@ class ComponentUnit extends EntityComponent {
     
     float getInputValue(Control control, int index) {
         return ((InputState) controllables[index].actions.get(control)).inputValue;
+    }
+    
+    float getDeltaCursorX(Control control, int index) {
+        return ((InputState) controllables[index].actions.get(control)).deltaCursorX;
+    }
+    
+    float getDeltaCursorY(Control control, int index) {
+        return ((InputState) controllables[index].actions.get(control)).deltaCursorY;
     }
     
 }

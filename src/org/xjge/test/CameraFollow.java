@@ -13,7 +13,6 @@ import org.xjge.core.ControllableAction;
 import org.xjge.core.Entity;
 import org.xjge.core.Input;
 import org.xjge.core.Window;
-import org.xjge.core.XJGE;
 import org.xjge.graphics.GLProgram;
 
 /**
@@ -72,6 +71,10 @@ class CameraFollow extends Camera {
                 glProgram.setUniform("uView", false, viewMatrix);
             }
         });
+    }
+    
+    void unbindControllable() {
+        puppet.setInputDevice(Input.NO_DEVICE);
     }
     
     public void follow(Entity entity) {

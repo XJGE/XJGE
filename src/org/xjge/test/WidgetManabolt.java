@@ -83,10 +83,10 @@ class WidgetManabolt extends Widget {
             
             if(turnContext.unit.inputDeviceID == Input.KEYBOARD) {
                 if(turnContext.unit.axisMoved(Control.RIGHT_STICK_X, 1)) {
-                    cursorPos.x = turnContext.unit.getInputValue(Control.RIGHT_STICK_X, 1);
+                    cursorPos.x += turnContext.unit.getDeltaCursorX(Control.RIGHT_STICK_X, 1);
                 }
                 if(turnContext.unit.axisMoved(Control.RIGHT_STICK_Y, 1)) {
-                    cursorPos.y = turnContext.unit.getInputValue(Control.RIGHT_STICK_Y, 1);
+                    cursorPos.y += turnContext.unit.getDeltaCursorY(Control.RIGHT_STICK_Y, 1);
                 }
             } else {
                 if(turnContext.unit.axisMoved(Control.RIGHT_STICK_X, 0)) {

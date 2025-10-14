@@ -33,6 +33,10 @@ class ViewTransitioner {
             currentCamera = camera;
             transitioning = false;
         } else {
+            if(currentCamera instanceof CameraFollow followCam) {
+                followCam.unbindControllable();
+            }
+            
             previousCamera     = currentCamera;
             currentCamera      = camera;
             transitionDuration = duration;

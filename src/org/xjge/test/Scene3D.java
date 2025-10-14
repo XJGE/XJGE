@@ -30,7 +30,7 @@ public class Scene3D extends Scene {
     
     private GameMode gameMode;
     
-    private final ViewTransitioner cameraManager   = new ViewTransitioner();
+    private final ViewTransitioner cameraManager = new ViewTransitioner();
     private final CameraFollow cameraFollow     = new CameraFollow();
     private final CameraOverhead cameraOverhead = new CameraOverhead();
     private final CameraMelee cameraMelee       = new CameraMelee();

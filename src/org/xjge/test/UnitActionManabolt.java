@@ -1,9 +1,13 @@
 package org.xjge.test;
 
 import java.util.Random;
+import static org.lwjgl.glfw.GLFW.GLFW_CURSOR;
+import static org.lwjgl.glfw.GLFW.GLFW_CURSOR_DISABLED;
+import static org.lwjgl.glfw.GLFW.GLFW_CURSOR_NORMAL;
 import static org.lwjgl.glfw.GLFW.GLFW_JOYSTICK_1;
 import org.xjge.core.Timer;
 import org.xjge.core.UI;
+import org.xjge.core.Window;
 
 /**
  * 
@@ -34,6 +38,7 @@ class UnitActionManabolt extends UnitAction {
                 if(widget == null) {
                     widget = new WidgetManabolt(turnContext);
                     UI.addWidget(GLFW_JOYSTICK_1, "manabolt_minigame", widget);
+                    Window.setInputMode(GLFW_CURSOR, GLFW_CURSOR_DISABLED);
                     stage = 1;
                 }
             }
@@ -68,6 +73,7 @@ class UnitActionManabolt extends UnitAction {
             case 3 -> {
                 if(finishDelay.tick(7, 12, true) && finishDelay.getTime() == 6) {
                     turnContext.scene.setCameraFollow(turnContext.unit, 0.5f);
+                    Window.setInputMode(GLFW_CURSOR, GLFW_CURSOR_NORMAL);
                     return true;
                 }
             }
