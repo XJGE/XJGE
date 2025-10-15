@@ -135,7 +135,11 @@ class WidgetBattle extends Widget {
         
         //Handle number selector
         if(numberSelector != null) {
+            int result = numberSelector.prompt(turnContext);
             
+            if(result != -1) {
+                
+            }
         }
     }
 
@@ -345,10 +349,7 @@ class WidgetBattle extends Widget {
                     state = State.TARGET;
                 }
                 case ITEM -> {
-                    if(numberSelector == null) {
-                        numberSelector = new SelectorNumber();
-                    }
-                    
+                    if(numberSelector == null) numberSelector = new SelectorNumber();
                     state = State.TARGET;
                 }
             }
@@ -391,6 +392,10 @@ class WidgetBattle extends Widget {
         if(unitSelector != null) {
             unitSelector.removeArrow();
             unitSelector = null;
+        }
+        
+        if(numberSelector != null) {
+            numberSelector = null;
         }
         
         pendingAction = null;

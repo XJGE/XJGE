@@ -3,6 +3,7 @@ package org.xjge.core;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.NavigableMap;
 import java.util.TreeMap;
@@ -10,6 +11,9 @@ import org.joml.Vector3f;
 import static org.lwjgl.openal.AL10.AL_INITIAL;
 import static org.lwjgl.openal.AL10.AL_PLAYING;
 import static org.lwjgl.openal.AL10.AL_STOPPED;
+import static org.lwjgl.openal.ALC10.ALC_DEFAULT_DEVICE_SPECIFIER;
+import static org.lwjgl.openal.ALC10.alcGetString;
+import static org.lwjgl.openal.ALC10.alcIsExtensionPresent;
 import static org.lwjgl.openal.ALC10.alcMakeContextCurrent;
 import static org.lwjgl.openal.ALC11.ALC_ALL_DEVICES_SPECIFIER;
 import static org.lwjgl.openal.ALUtil.getStringList;
@@ -57,18 +61,41 @@ public final class Audio {
     static void init(boolean debugModeEnabled) {        
         for(int i = 0; i < MAX_SOURCES; i++) sourcePool[i] = new SoundSource(i);
         
-        var deviceList = getStringList(NULL, ALC_ALL_DEVICES_SPECIFIER);
+        String primarySpeakerName = alcGetString(NULL, ALC_DEFAULT_DEVICE_SPECIFIER);
+        List<String> deviceList   = null;
         
-        if(deviceList != null && !deviceList.isEmpty()) {
-            for(String name : deviceList) {
-                Speaker device = new Speaker(speakers.size(), name);
-                if(device.open(debugModeEnabled)) speakers.put(device.index, device);
-            }
-        } else {
-            Logger.logWarning("Could not find any available audio output devices", null);
+        //Attempt to populate the device list using OpenAL's enumeration extension
+        if(alcIsExtensionPresent(NULL, "ALC_ENUMERATION_ALL_EXT") || alcIsExtensionPresent(NULL, "ALC_ENUMERATION_EXT")) {
+            try { Thread.sleep(50); } catch(InterruptedException ignored) {}
+            deviceList = getStringList(NULL, ALC_ALL_DEVICES_SPECIFIER);
         }
         
-        setSpeaker(speakers.get(0));
+        //Fallback in case OpenAL is unable to populate the device list
+        if(deviceList == null || deviceList.isEmpty()) {
+            Logger.logWarning("OpenAL failed to enumerate audio devices", null);
+            deviceList = List.of(primarySpeakerName != null ? primarySpeakerName : "Primary Speaker");
+        }
+        
+        //Populate list of available speaker objects
+        for(String name : deviceList) {
+            Speaker device = new Speaker(speakers.size(), name);
+            if(device.open(debugModeEnabled)) speakers.put(device.index, device);
+        }
+        
+        //Last ditch effort if OpenAL is being stubborn
+        if(speakers.isEmpty()) {
+            Speaker fallback = new Speaker(0, primarySpeakerName);
+            if(fallback.open(debugModeEnabled)) speakers.put(0, fallback);
+            Logger.logWarning("Could not find any available audio devices, " + 
+                              "attempting to use fallback \"" + fallback.name + "\"", null);
+        }
+        
+        try {
+            setSpeaker(speakers.get(0));
+        } catch(NullPointerException exception) {
+            Logger.logError("Failed to find an available audio output device, " + 
+                            "please check audio drivers or connected speakers.", exception);
+        }
     }
     
     static void update() {
