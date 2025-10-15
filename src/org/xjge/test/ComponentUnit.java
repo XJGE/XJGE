@@ -97,6 +97,8 @@ class ComponentUnit extends EntityComponent {
             controllables[i].actions.put(Control.SQUARE,        new InputState());
             controllables[i].actions.put(Control.L1,            new InputState());
             controllables[i].actions.put(Control.R1,            new InputState());
+            controllables[i].actions.put(Control.L2,            new InputState());
+            controllables[i].actions.put(Control.R2,            new InputState());
             controllables[i].actions.put(Control.RIGHT_STICK_X, new InputState());
             controllables[i].actions.put(Control.RIGHT_STICK_Y, new InputState());
             
