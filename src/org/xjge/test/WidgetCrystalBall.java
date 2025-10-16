@@ -21,16 +21,27 @@ import org.xjge.ui.Widget;
 class WidgetCrystalBall extends Widget {
 
     private boolean spinning;
+    private boolean stop;
     
     private final int maxMomentum = 70;
     private int momentum;
     
-    private Vector2f prevCursorPos = new Vector2f();
+    private final Vector2f prevCursorPos = new Vector2f();
     
     private final TurnContext turnContext;
     private final Icon ballIcon = new Icon(new Texture("image_crystalball.png"), 100, 100, true);
     private final Icon wandIcon = new Icon(new Texture("image_wand.png"), 100, 20, false);
-    private final Icon[] numbers = new Icon[6];
+    private final Number[] numbers = new Number[6];
+    
+    private class Number { 
+        final int value;
+        final Icon icon;
+        
+        Number(int value, Icon icon) {
+            this.value = value;
+            this.icon  = icon;
+        }
+    }
     
     WidgetCrystalBall(TurnContext turnContext) {
         this.turnContext = turnContext;
@@ -42,13 +53,13 @@ class WidgetCrystalBall extends Widget {
         Texture numberTexture = new Texture("image_numbers.png");
         
         for(int i = 0; i < numbers.length; i++) {
-            numbers[i] = new Icon(numberTexture, 30, 30, true);
+            numbers[i] = new Number(i, new Icon(numberTexture, 30, 30, true));
             
             int x = (i > 2) ? i - 3 : i;
             int y = (i > 2) ? 1 : 0;
             
-            numbers[i].setSubImage(x, y);
-            numbers[i].scale.set(2.5f);
+            numbers[i].icon.setSubImage(x, y);
+            numbers[i].icon.scale.set(2.5f);
         }
         
         relocate(Window.getSplitScreenType(), Window.getResolutionWidth(), Window.getResolutionHeight());
@@ -65,6 +76,9 @@ class WidgetCrystalBall extends Widget {
             if(turnContext.unit.axisMoved(Control.RIGHT_STICK_Y, 1)) {
                 wandIcon.position.y += turnContext.unit.getDeltaCursorY(Control.RIGHT_STICK_X, 1);
             }
+            if(spinning && !stop && turnContext.unit.buttonPressed(Control.L2, 1)) {
+                stop = true;
+            }
         } else {
             if(turnContext.unit.axisMoved(Control.RIGHT_STICK_X, 0)) {
                 wandIcon.position.x += turnContext.unit.getInputValue(Control.RIGHT_STICK_X, 0) * 4f;
@@ -80,26 +94,20 @@ class WidgetCrystalBall extends Widget {
             if(momentum >= maxMomentum) spinning = true;
         }
         
-        /*
-        1. Wave wand to "charge" the crystal ball, numbers will start spinning
-        2. Once the ball is fully charged the numbers will continue to cycle (carousel effect)
-        3. Press the action button to select a number (light RNG)
-        */
-        
         float speed  = (spinning) ? maxMomentum : momentum;
         float center = Window.getResolutionWidth() / 2f;
 
-        for(Icon number : numbers) {
-            number.position.x -= speed * 0.2f;
-            if(number.position.x < center - (90 * number.scale.x)) {
-                number.position.x = center + (90 * number.scale.x);
+        for(Number number : numbers) {
+            number.icon.position.x -= speed * 0.2f;
+            if(number.icon.position.x < center - (90 * number.icon.scale.x)) {
+                number.icon.position.x = center + (90 * number.icon.scale.x);
             }
             
-            float maxDistance = 30f * number.scale.x;
-            float distance = Math.abs(number.position.x - center);
-
+            float maxDistance = 30f * number.icon.scale.x;
+            float distance = Math.abs(number.icon.position.x - center);
+            
             float normalized = 1f - Math.min(distance / maxDistance, 1f);
-            number.setOpacity(normalized);
+            number.icon.setOpacity(normalized);
         }
 
         if(!spinning) {
@@ -116,7 +124,7 @@ class WidgetCrystalBall extends Widget {
     @Override
     public void render(Map<String, GLProgram> glPrograms) {
         ballIcon.render();
-        for(Icon number : numbers) number.render();
+        for(Number number : numbers) number.icon.render();
         wandIcon.render();
     }
 
@@ -126,7 +134,7 @@ class WidgetCrystalBall extends Widget {
         wandIcon.position.set(ballIcon.position.x + 200, ballIcon.position.y + 100);
         
         for(int i = 0; i < numbers.length; i++) {
-            numbers[i].position.set(ballIcon.position.x + (i * (30 * numbers[i].scale.x)), ballIcon.position.y + 10);
+            numbers[i].icon.position.set(ballIcon.position.x + (i * (30 * numbers[i].icon.scale.x)), ballIcon.position.y + 10);
         }
     }
 
