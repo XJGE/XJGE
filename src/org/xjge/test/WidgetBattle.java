@@ -136,9 +136,9 @@ class WidgetBattle extends Widget {
         //Handle number selector
         if(numberSelector != null) {
             int result = numberSelector.prompt(turnContext);
-            
             if(result != -1) {
-                
+                turnContext.unit.items.remove(subMenuChoice);
+                commitPendingAction();
             }
         }
     }
@@ -372,7 +372,9 @@ class WidgetBattle extends Widget {
     }
 
     private void commitPendingAction() {
-        turnContext.addAction(pendingCategory, pendingAction);
+        if(pendingAction != null) {
+            turnContext.addAction(pendingCategory, pendingAction);
+        }
         options.get(mainMenuChoice).used = true;
         resetTargeting();
         state = State.MAINMENU;

@@ -8,6 +8,7 @@ import static org.lwjgl.glfw.GLFW.GLFW_JOYSTICK_1;
 import org.xjge.core.Timer;
 import org.xjge.core.UI;
 import org.xjge.core.Window;
+import org.xjge.graphics.Color;
 
 /**
  * 
@@ -59,10 +60,10 @@ class UnitActionManabolt extends UnitAction {
                     WidgetDamage damageWidget;
                 
                     if(success) {
-                        damageWidget = new WidgetDamage(random.nextInt(2), "-3hp");
+                        damageWidget = new WidgetDamage(random.nextInt(2), "-3hp", Color.RED);
                         targetUnit.health -= 3;
                     } else {
-                        damageWidget = new WidgetDamage(random.nextInt(2), "miss!");
+                        damageWidget = new WidgetDamage(random.nextInt(2), "miss!", Color.WHITE);
                     }
                     
                     UI.addWidget(GLFW_JOYSTICK_1, "damage_" + damageWidget.uuid, damageWidget);

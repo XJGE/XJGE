@@ -9,6 +9,7 @@ import org.xjge.core.Control;
 import org.xjge.core.Timer;
 import org.xjge.core.UI;
 import org.xjge.core.XJGE;
+import org.xjge.graphics.Color;
 import static org.xjge.test.GridSpace.TYPE_SOLID;
 
 /**
@@ -165,16 +166,16 @@ class UnitActionMove extends UnitAction {
                             targetUnit.health--;
                             GridSpace end = path.get(path.size() - 2);
                             pathEnd = new Vector3f(end.xLocation, end.yLocation, end.zLocation);
-                            WidgetDamage widget = new WidgetDamage(turnContext.scene.getMeleeCameraSide(), "-1hp (blocked)");
+                            WidgetDamage widget = new WidgetDamage(turnContext.scene.getMeleeCameraSide(), "-1hp (blocked)", Color.RED);
                             UI.addWidget(GLFW_JOYSTICK_1, "damage_" + widget.uuid, widget);
                         } else if(!attackerOutcome[attackCount] && defenderOutcome[attackCount]) {
                             GridSpace end = path.get(path.size() - 2);
                             pathEnd = new Vector3f(end.xLocation, end.yLocation, end.zLocation);
-                            WidgetDamage widget = new WidgetDamage(turnContext.scene.getMeleeCameraSide(), "miss!");
+                            WidgetDamage widget = new WidgetDamage(turnContext.scene.getMeleeCameraSide(), "miss!", Color.WHITE);
                             UI.addWidget(GLFW_JOYSTICK_1, "damage_" + widget.uuid, widget);
                         } else if(attackerOutcome[attackCount] && !defenderOutcome[attackCount]) {
                             targetUnit.health -= 2;
-                            WidgetDamage widget = new WidgetDamage(turnContext.scene.getMeleeCameraSide(), "-2hp");
+                            WidgetDamage widget = new WidgetDamage(turnContext.scene.getMeleeCameraSide(), "-2hp", Color.RED);
                             UI.addWidget(GLFW_JOYSTICK_1, "damage_" + widget.uuid, widget);
                             
                             if(attackCount == 1) {
@@ -205,7 +206,7 @@ class UnitActionMove extends UnitAction {
                         } else {
                             GridSpace end = path.get(path.size() - 2);
                             pathEnd = new Vector3f(end.xLocation, end.yLocation, end.zLocation);
-                            WidgetDamage widget = new WidgetDamage(turnContext.scene.getMeleeCameraSide(), "miss!");
+                            WidgetDamage widget = new WidgetDamage(turnContext.scene.getMeleeCameraSide(), "miss!", Color.WHITE);
                             UI.addWidget(GLFW_JOYSTICK_1, "damage_" + widget.uuid, widget);
                         }
                         

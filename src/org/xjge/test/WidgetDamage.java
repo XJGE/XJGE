@@ -35,12 +35,11 @@ class WidgetDamage extends Widget {
     private final Vector2f velocity = new Vector2f(0, 10);
     final UUID uuid = UUID.randomUUID();
 
-    WidgetDamage(int side, String text) {
+    WidgetDamage(int side, String text, Color textColor) {
         this.side = side;
         this.text = text;
-        
+        this.textColor = textColor;
         velocity.x = (side == 1) ? 6 : -6;
-        textColor = (text.contains("miss!")) ? Color.WHITE : Color.RED;
     }
     
     @Override
