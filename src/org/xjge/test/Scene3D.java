@@ -15,6 +15,7 @@ import org.xjge.core.Input;
 import org.xjge.core.Logger;
 import org.xjge.core.Scene;
 import org.xjge.core.UI;
+import org.xjge.core.XJGE;
 import org.xjge.graphics.Color;
 import org.xjge.graphics.GLProgram;
 import static org.xjge.test.GridSpace.TYPE_SPAWN_ENEMY;
@@ -121,6 +122,12 @@ public class Scene3D extends Scene {
         });
         
         entities.values().forEach(entity -> {
+            //TODO: temp event to reset game once a units health is depeleted for testing
+            if(entity.hasComponent(ComponentUnit.class)) {
+                var unit = entity.getComponent(ComponentUnit.class);
+                if(unit.health <= 0) XJGE.addEvent(new EventGameOver(0, unit));
+            }
+            
             if(entity.hasComponent(ComponentAABB.class) && entity.hasComponent(ComponentPosition.class)) {
                 Vector3f position = entity.getComponent(ComponentPosition.class).position;
                 entity.getComponent(ComponentAABB.class).update(position, gridSpaces, entities.values());
