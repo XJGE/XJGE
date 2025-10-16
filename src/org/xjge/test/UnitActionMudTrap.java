@@ -56,7 +56,14 @@ class UnitActionMudTrap extends UnitAction {
                 if(!delayOver) {
                     if(throwDelay.tick(5, 12, true) && throwDelay.getTime() == 4) {
                         delayOver = true;
-                        targetSpace = new Vector3f(area.get(4).xLocation, area.get(4).yLocation, area.get(4).zLocation);
+                        
+                        //Area is never empty as ensured by call in WidgetBattle
+                        for(GridSpace space : area) {
+                            if(space.target) {
+                                targetSpace = new Vector3f(space.xLocation, space.yLocation, space.zLocation);
+                                break;
+                            }
+                        }
                     }
                 } else {
                     mudBall.getComponent(ComponentMudBall.class)

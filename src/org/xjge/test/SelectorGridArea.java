@@ -106,11 +106,14 @@ class SelectorGridArea {
             if(area.contains(space)) {
                 if(space.equals(nextSpace)) {
                     space.status = GridSpaceStatus.SELECTED;
+                    space.target = true;
                 } else {
                     space.status = GridSpaceStatus.PATH;
+                    space.target = false;
                 }
             } else {
                 space.status = GridSpaceStatus.NONE;
+                space.target = false;
             }
         }
     }

@@ -10,6 +10,7 @@ import static org.xjge.test.GridSpaceStatus.NONE;
 class GridSpace {
     
     public boolean muddy; //TODO: Simple boolean for now but we might end up having an enum control this
+    public boolean target; //TODO: band-aid fix only used for mud minigame targeting
     
     public final boolean[] unreachableEdge = new boolean[4];
     

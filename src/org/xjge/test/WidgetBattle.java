@@ -115,7 +115,9 @@ class WidgetBattle extends Widget {
         //Handle area selector
         if(areaSelector != null) {
             List<GridSpace> area = areaSelector.prompt(turnContext);
-            if(area != null && pendingAction == null && pendingSpell != null && pendingCategory == ActionCategory.SPELL) {
+            
+            if(area != null && !area.isEmpty() && pendingAction == null && 
+               pendingSpell != null && pendingCategory == ActionCategory.SPELL) {
                 pendingAction = switch(pendingSpell) {
                     default -> new UnitActionFlash(area);
                     case "Mud Trap" -> new UnitActionMudTrap(area);
