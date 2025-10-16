@@ -72,6 +72,8 @@ class WidgetBattle extends Widget {
         options.add(new Option("Cast Spell", SPELL));
         options.add(new Option("Use Item", ITEM));
         
+        if(turnContext.unit.items.isEmpty()) options.get(2).used = true;
+        
         for(int i = 0; i < rectangles.length; i++) rectangles[i] = new Rectangle(50, 0, 300, 35);
         
         relocate(Window.getSplitScreenType(), Window.getResolutionWidth(), Window.getResolutionHeight());

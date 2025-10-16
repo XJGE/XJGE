@@ -125,17 +125,19 @@ class WidgetCrystalBall extends Widget {
                 }
             }
         }
+        
+        float spacing = 30f * numbers[0].icon.scale.x;
+        float totalSpan = spacing * numbers.length;
 
         for(Number number : numbers) {
             number.icon.position.x -= momentum * 0.2f;
-            if(number.icon.position.x < center - (90 * number.icon.scale.x)) {
-                number.icon.position.x = center + (90 * number.icon.scale.x);
+
+            if(number.icon.position.x < center - totalSpan / 2f) {
+                number.icon.position.x += totalSpan;
             }
-            
-            float maxDistance = 30f * number.icon.scale.x;
+
             float distance = Math.abs(number.icon.position.x - center);
-            
-            float normalized = 1f - Math.min(distance / maxDistance, 1f);
+            float normalized = 1f - Math.min(distance / spacing, 1f);
             number.icon.setOpacity(normalized);
         }
 
