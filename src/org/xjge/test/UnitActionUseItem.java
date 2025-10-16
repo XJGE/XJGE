@@ -11,16 +11,22 @@ import org.xjge.graphics.Color;
  * @author J Hoffman
  * @since 
  */
-class SelectorNumber {
+class UnitActionUseItem extends UnitAction {
     
     private int stage;
+    private final int subMenuChoice;
     
     private WidgetCrystalBall ballWidget;
     private WidgetDamage damageWidget;
     private final Timer timer = new Timer();
     private final Random random = new Random();
     
-    int prompt(TurnContext turnContext) {
+    UnitActionUseItem(int subMenuChoice) {
+        this.subMenuChoice = subMenuChoice;
+    }
+    
+    @Override
+    boolean perform(TurnContext turnContext) {
         switch(stage) {
             case 0 -> {
                 ballWidget = new WidgetCrystalBall(turnContext);
@@ -29,15 +35,23 @@ class SelectorNumber {
             }
             case 1 -> {
                 if(ballWidget.finished() && timer.tick(3, 30, false) && timer.getTime() == 0) {
+                    if(turnContext.unit.health + ballWidget.result() > turnContext.unit.maxHealth) {
+                        turnContext.unit.health = turnContext.unit.maxHealth;
+                    } else {
+                        turnContext.unit.health += ballWidget.result();
+                    }
+                    
                     damageWidget = new WidgetDamage(random.nextInt(2), "+" + ballWidget.result() + "hp", Color.GREEN);
                     UI.addWidget(GLFW_JOYSTICK_1, "damage_" + damageWidget.uuid, damageWidget);
                     UI.removeWidget(GLFW_JOYSTICK_1, "number_selector");
-                    return ballWidget.result();
+                    turnContext.unit.items.remove(subMenuChoice);
+                    
+                    return true;
                 }
             }
         }
         
-        return -1;
+        return false;
     }
     
 }

@@ -42,7 +42,6 @@ class WidgetBattle extends Widget {
     private SelectorGridArea areaSelector;
     private SelectorGridPath pathSelector;
     private SelectorUnit unitSelector;
-    private SelectorNumber numberSelector;
     private Timer errorTimer = new Timer();
     
     private final Rectangle[] rectangles = new Rectangle[3];
@@ -131,15 +130,6 @@ class WidgetBattle extends Widget {
             
             if(targetUnit != null && pendingAction == null && pendingCategory == ActionCategory.SPELL) {
                 pendingAction = new UnitActionManabolt(targetUnit);
-                commitPendingAction();
-            }
-        }
-        
-        //Handle number selector
-        if(numberSelector != null) {
-            int result = numberSelector.prompt(turnContext);
-            if(result != -1) {
-                turnContext.unit.items.remove(subMenuChoice);
                 commitPendingAction();
             }
         }
@@ -351,8 +341,9 @@ class WidgetBattle extends Widget {
                     state = State.TARGET;
                 }
                 case ITEM -> {
-                    if(numberSelector == null) numberSelector = new SelectorNumber();
-                    state = State.TARGET;
+                    //TODO: this has the same issue as spells, might need a selector for certain items
+                    pendingAction = new UnitActionUseItem(subMenuChoice);
+                    commitPendingAction();
                 }
             }
         }
@@ -396,10 +387,6 @@ class WidgetBattle extends Widget {
         if(unitSelector != null) {
             unitSelector.removeArrow();
             unitSelector = null;
-        }
-        
-        if(numberSelector != null) {
-            numberSelector = null;
         }
         
         pendingAction = null;
