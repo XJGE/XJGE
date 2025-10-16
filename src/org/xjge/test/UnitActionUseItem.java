@@ -1,9 +1,13 @@
 package org.xjge.test;
 
 import java.util.Random;
+import static org.lwjgl.glfw.GLFW.GLFW_CURSOR;
+import static org.lwjgl.glfw.GLFW.GLFW_CURSOR_DISABLED;
+import static org.lwjgl.glfw.GLFW.GLFW_CURSOR_NORMAL;
 import static org.lwjgl.glfw.GLFW.GLFW_JOYSTICK_1;
 import org.xjge.core.Timer;
 import org.xjge.core.UI;
+import org.xjge.core.Window;
 import org.xjge.graphics.Color;
 
 /**
@@ -31,6 +35,8 @@ class UnitActionUseItem extends UnitAction {
             case 0 -> {
                 ballWidget = new WidgetCrystalBall(turnContext);
                 UI.addWidget(GLFW_JOYSTICK_1, "number_selector", ballWidget);
+                turnContext.scene.ignoreFollowCameraInput(true);
+                Window.setInputMode(GLFW_CURSOR, GLFW_CURSOR_DISABLED);
                 stage = 1;
             }
             case 1 -> {
@@ -44,6 +50,8 @@ class UnitActionUseItem extends UnitAction {
                     damageWidget = new WidgetDamage(random.nextInt(2), "+" + ballWidget.result() + "hp", Color.GREEN);
                     UI.addWidget(GLFW_JOYSTICK_1, "damage_" + damageWidget.uuid, damageWidget);
                     UI.removeWidget(GLFW_JOYSTICK_1, "number_selector");
+                    Window.setInputMode(GLFW_CURSOR, GLFW_CURSOR_NORMAL);
+                    turnContext.scene.ignoreFollowCameraInput(false);
                     turnContext.unit.items.remove(subMenuChoice);
                     
                     return true;

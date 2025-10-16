@@ -27,8 +27,9 @@ class CameraFollow extends Camera {
     
     float pitch = 17f;
     float yaw = -90f;
-    
     float rotationSpeed = 2.5f;
+    
+    private int inputDeviceID;
     
     private Vector3f nextPosition = new Vector3f();
     private final Vector3f adjustedTarget = new Vector3f();
@@ -77,11 +78,15 @@ class CameraFollow extends Camera {
         puppet.setInputDevice(Input.NO_DEVICE);
     }
     
+    void rebindControllable() {
+        puppet.setInputDevice(inputDeviceID == Input.KEYBOARD ? Input.MOUSE : inputDeviceID);
+    }
+    
     public void follow(Entity entity) {
         nextPosition = entity.getComponent(ComponentPosition.class).position;
         
         if(entity.hasComponent(ComponentUnit.class)) {
-            int inputDeviceID = entity.getComponent(ComponentUnit.class).inputDeviceID;
+            inputDeviceID = entity.getComponent(ComponentUnit.class).inputDeviceID;
             rotationSpeed = (inputDeviceID == Input.KEYBOARD) ? 0.5f : 2.5f;
             lookInversion = inputDeviceID == Input.KEYBOARD;
             puppet.setInputDevice(inputDeviceID == Input.KEYBOARD ? Input.MOUSE : inputDeviceID);

@@ -178,6 +178,14 @@ public class Scene3D extends Scene {
         cameraManager.setActiveCamera(cameraFollow, duration);
     }
     
+    final void ignoreFollowCameraInput(boolean ignore) {
+        if(ignore) {
+            cameraFollow.unbindControllable();
+        } else {
+            cameraFollow.rebindControllable();
+        }
+    }
+    
     final void setCameraMelee(float duration) {
         cameraMelee.position.set(cameraOverhead.position);
         cameraMelee.direction.set(cameraOverhead.direction);
@@ -188,6 +196,10 @@ public class Scene3D extends Scene {
     
     void focusMeleeCamera(Vector3f attackerPos, Vector3f defenderPos) {
         cameraMelee.focus(attackerPos, defenderPos);
+    }
+    
+    int getMeleeCameraSide() {
+        return cameraMelee.getChosenSide();
     }
     
     final void setCameraOverhead(float duration) {
@@ -218,10 +230,6 @@ public class Scene3D extends Scene {
     
     boolean CameraTransitionComplete() {
         return cameraManager.transitionComplete();
-    }
-    
-    int getMeleeCameraSide() {
-        return cameraMelee.getChosenSide();
     }
 
 }
