@@ -23,11 +23,13 @@ class WidgetCrystalBall extends Widget {
     private boolean spinning;
     private boolean stop;
     
+    private final float deceleration = 0.5f;
+    
     private final int maxMomentum = 70;
     private int momentum;
     
+    private Number landedNumber = null;
     private final Vector2f prevCursorPos = new Vector2f();
-    
     private final TurnContext turnContext;
     private final Icon ballIcon = new Icon(new Texture("image_crystalball.png"), 100, 100, true);
     private final Icon wandIcon = new Icon(new Texture("image_wand.png"), 100, 20, false);
@@ -53,7 +55,7 @@ class WidgetCrystalBall extends Widget {
         Texture numberTexture = new Texture("image_numbers.png");
         
         for(int i = 0; i < numbers.length; i++) {
-            numbers[i] = new Number(i, new Icon(numberTexture, 30, 30, true));
+            numbers[i] = new Number(i + 1, new Icon(numberTexture, 30, 30, true));
             
             int x = (i > 2) ? i - 3 : i;
             int y = (i > 2) ? 1 : 0;
@@ -88,17 +90,44 @@ class WidgetCrystalBall extends Widget {
             }
         }
         
-        if(momentum < maxMomentum) {
+        if(landedNumber != null) return;
+        
+        if(momentum < maxMomentum && !stop) {
             momentum += Math.abs(prevCursorPos.x - wandIcon.position.x) * 0.02f;
             momentum += Math.abs(prevCursorPos.y - wandIcon.position.y) * 0.02f;
             if(momentum >= maxMomentum) spinning = true;
         }
         
-        float speed  = (spinning) ? maxMomentum : momentum;
         float center = Window.getResolutionWidth() / 2f;
+        
+        if(spinning && stop) {
+            if(momentum > 0) {
+                momentum -= deceleration;
+            } else {
+                momentum = 0;
+                spinning = false;
+                float closestDistance = Float.MAX_VALUE;
+                Number closest = null;
+                
+                for(Number number : numbers) {
+                    float distance = Math.abs(number.icon.position.x - center);
+                    if(distance < closestDistance) {
+                        closestDistance = distance;
+                        closest = number;
+                    }
+                }
+                
+                landedNumber = closest;
+                
+                if(landedNumber != null) {
+                    float offset = center - landedNumber.icon.position.x;
+                    for(Number number : numbers) number.icon.position.x += offset;
+                }
+            }
+        }
 
         for(Number number : numbers) {
-            number.icon.position.x -= speed * 0.2f;
+            number.icon.position.x -= momentum * 0.2f;
             if(number.icon.position.x < center - (90 * number.icon.scale.x)) {
                 number.icon.position.x = center + (90 * number.icon.scale.x);
             }
@@ -110,7 +139,7 @@ class WidgetCrystalBall extends Widget {
             number.icon.setOpacity(normalized);
         }
 
-        if(!spinning) {
+        if(!spinning && !stop) {
             if(!turnContext.unit.axisMoved(Control.RIGHT_STICK_X, 0) &&
                !turnContext.unit.axisMoved(Control.RIGHT_STICK_Y, 0)) {
                 if(momentum > 0 && XJGE.tick(5)) momentum--;
@@ -146,6 +175,14 @@ class WidgetCrystalBall extends Widget {
 
     @Override
     public void delete() {
+    }
+    
+    boolean finished() {
+        return landedNumber != null;
+    }
+    
+    int result() {
+        return landedNumber.value;
     }
 
 }
