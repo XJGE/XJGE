@@ -8,12 +8,9 @@ import org.xjge.core.Mouse;
 import org.xjge.core.SplitScreenType;
 import org.xjge.core.Window;
 import org.xjge.core.XJGE;
-import org.xjge.graphics.Color;
 import org.xjge.graphics.GLProgram;
 import org.xjge.graphics.Texture;
-import org.xjge.ui.Font;
 import org.xjge.ui.Icon;
-import org.xjge.ui.Rectangle;
 import org.xjge.ui.Widget;
 
 /**
@@ -31,7 +28,6 @@ class WidgetCrystalBall extends Widget {
     private final int maxMomentum = 70;
     private int momentum;
     
-    private Rectangle background = new Rectangle();
     private Number landedNumber = null;
     private final Vector2f prevCursorPos = new Vector2f();
     private final TurnContext turnContext;
@@ -158,22 +154,6 @@ class WidgetCrystalBall extends Widget {
 
     @Override
     public void render(Map<String, GLProgram> glPrograms) {
-        background.render(0.5f, Color.BLACK);
-        
-        for(int i = 0; i < 4; i++) {
-            int yOffset = background.positionY + background.height - (25 * (i + 1));
-            
-            String controlA = (turnContext.unit.inputDeviceID == Input.KEYBOARD) ? "[CURSOR]" : "[RIGHT STICK]";
-            String controlB = (turnContext.unit.inputDeviceID == Input.KEYBOARD) ? "[SPACE]" : "[CROSS]";
-            
-            switch(i) {
-                case 0 -> Font.fallback.drawString("MINIGAME RULES:", background.positionX + 10, yOffset, Color.CYAN, 1f);
-                case 1 -> Font.fallback.drawString("Wave the wand using the", background.positionX + 10, yOffset, Color.SILVER, 1f);
-                case 2 -> Font.fallback.drawString(controlA + " then select", background.positionX + 10, yOffset, Color.SILVER, 1f);
-                case 3 -> Font.fallback.drawString("a number with " + controlB, background.positionX + 10, yOffset, Color.SILVER, 1f);
-            }
-        } 
-        
         ballIcon.render();
         for(Number number : numbers) number.icon.render();
         wandIcon.render();
@@ -187,11 +167,6 @@ class WidgetCrystalBall extends Widget {
         for(int i = 0; i < numbers.length; i++) {
             numbers[i].icon.position.set(ballIcon.position.x + (i * (30 * numbers[i].icon.scale.x)), ballIcon.position.y + 10);
         }
-        
-        background.positionX = 420;
-        background.positionY = 10;
-        background.width = 350;
-        background.height = 140;
     }
 
     @Override

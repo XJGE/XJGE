@@ -4,6 +4,7 @@ import java.util.List;
 import org.joml.Vector3f;
 import static org.lwjgl.glfw.GLFW.GLFW_JOYSTICK_1;
 import org.xjge.core.Entity;
+import org.xjge.core.Input;
 import org.xjge.core.Timer;
 import org.xjge.core.UI;
 
@@ -44,6 +45,11 @@ class UnitActionMudTrap extends UnitAction {
                 widget = new WidgetMudToss(turnContext.unit);
                 UI.addWidget(GLFW_JOYSTICK_1, "mud_minigame", widget);
                 
+                String[] text = (turnContext.unit.inputDeviceID == Input.KEYBOARD) 
+                              ? new String[] {"Press [SPACE] when the", "indicator fills up to", "improve throw accuracy"} 
+                              : new String[] {"Press [CROSS] when the", "indicator fills up to", "improve throw accuracy"};
+                UI.addWidget(GLFW_JOYSTICK_1, "minigame_rules", new WidgetRules(text));
+                
                 stage = 1;
             }
             case 1 -> {
@@ -80,6 +86,7 @@ class UnitActionMudTrap extends UnitAction {
                 if(mudBall == null || mudBall.getComponent(ComponentMudBall.class).landed()) {
                     if(landDelay.tick(5, 12, true) && landDelay.getTime() == 4) {
                         turnContext.scene.setCameraFollow(turnContext.unit, 0.5f);
+                        UI.removeWidget(GLFW_JOYSTICK_1, "minigame_rules");
                         return true;
                     }
                 }

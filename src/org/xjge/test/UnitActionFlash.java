@@ -1,8 +1,11 @@
 package org.xjge.test;
 
 import java.util.List;
+import static org.lwjgl.glfw.GLFW.GLFW_JOYSTICK_1;
 import org.xjge.core.Control;
+import org.xjge.core.Input;
 import org.xjge.core.Timer;
+import org.xjge.core.UI;
 
 /**
  * 
@@ -13,6 +16,7 @@ class UnitActionFlash extends UnitAction {
     
     private boolean beginSlowdown;
     private boolean unitMoved;
+    private boolean widgetAdded;
     
     private int tickCount;
     private int tickSpeed = 4;
@@ -33,6 +37,14 @@ class UnitActionFlash extends UnitAction {
     
     @Override
     boolean perform(TurnContext turnContext) {
+        if(!widgetAdded) {
+            String[] text = (turnContext.unit.inputDeviceID == Input.KEYBOARD) 
+                          ? new String[] {"Press [SPACE] when the", "desired tile lights up", "to teleport there"} 
+                          : new String[] {"Press [CROSS] when the", "desired tile lights up", "to teleport there"};
+            UI.addWidget(GLFW_JOYSTICK_1, "minigame_rules", new WidgetRules(text));
+            widgetAdded = true;
+        }
+        
         switch(stage) {
             //Handle input
             case 0 -> {
@@ -70,6 +82,8 @@ class UnitActionFlash extends UnitAction {
                     } else if(waitTimer.getTime() == 4) {
                         
                         turnContext.scene.setCameraFollow(turnContext.unit, 0.5f);
+                        UI.removeWidget(GLFW_JOYSTICK_1, "minigame_rules");
+                        
                         return true;
                     }
                 }

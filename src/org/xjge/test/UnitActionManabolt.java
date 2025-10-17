@@ -5,6 +5,7 @@ import static org.lwjgl.glfw.GLFW.GLFW_CURSOR;
 import static org.lwjgl.glfw.GLFW.GLFW_CURSOR_DISABLED;
 import static org.lwjgl.glfw.GLFW.GLFW_CURSOR_NORMAL;
 import static org.lwjgl.glfw.GLFW.GLFW_JOYSTICK_1;
+import org.xjge.core.Input;
 import org.xjge.core.Timer;
 import org.xjge.core.UI;
 import org.xjge.core.Window;
@@ -40,6 +41,12 @@ class UnitActionManabolt extends UnitAction {
                     widget = new WidgetManabolt(turnContext);
                     UI.addWidget(GLFW_JOYSTICK_1, "manabolt_minigame", widget);
                     Window.setInputMode(GLFW_CURSOR, GLFW_CURSOR_DISABLED);
+                    
+                    String[] text = (turnContext.unit.inputDeviceID == Input.KEYBOARD) 
+                          ? new String[] {"Center the crosshairs inside", "the target using the", "[CURSOR] to attack"} 
+                          : new String[] {"Center the crosshairs inside", "the target using the", "[RIGHT STICK] to attack"};
+                    UI.addWidget(GLFW_JOYSTICK_1, "minigame_rules", new WidgetRules(text));
+                    
                     stage = 1;
                 }
             }
@@ -75,6 +82,7 @@ class UnitActionManabolt extends UnitAction {
                 if(finishDelay.tick(7, 12, true) && finishDelay.getTime() == 6) {
                     turnContext.scene.setCameraFollow(turnContext.unit, 0.5f);
                     Window.setInputMode(GLFW_CURSOR, GLFW_CURSOR_NORMAL);
+                    UI.removeWidget(GLFW_JOYSTICK_1, "minigame_rules");
                     return true;
                 }
             }

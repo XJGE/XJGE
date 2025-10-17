@@ -6,6 +6,7 @@ import org.joml.Vector3f;
 import org.joml.Vector3i;
 import static org.lwjgl.glfw.GLFW.GLFW_JOYSTICK_1;
 import org.xjge.core.Control;
+import org.xjge.core.Input;
 import org.xjge.core.Timer;
 import org.xjge.core.UI;
 import org.xjge.core.XJGE;
@@ -50,8 +51,16 @@ class UnitActionMove extends UnitAction {
     
     @Override
     boolean perform(TurnContext turnContext) {
+        if(UI.containsWidget(GLFW_JOYSTICK_1, "minigame_rules")) {
+            String[] text = (turnContext.unit.inputDeviceID == Input.KEYBOARD) 
+                          ? new String[] {"Press [SPACE] when the", "prompt appears to block", "or attack"} 
+                          : new String[] {"Press [CROSS] when the", "prompt appears to block", "or attack"};
+            UI.addWidget(GLFW_JOYSTICK_1, "minigame_rules", new WidgetRules(text));
+        }
+        
         if(path.isEmpty() || pathIndex >= path.size()) {
             turnContext.scene.setCameraFollow(turnContext.unit, 0.5f);
+            UI.removeWidget(GLFW_JOYSTICK_1, "minigame_rules");
             return true;
         }
         
@@ -95,6 +104,7 @@ class UnitActionMove extends UnitAction {
         //Finished path traversal
         if(pathIndex >= path.size()) {
             turnContext.scene.setCameraFollow(turnContext.unit, 0.5f);
+            UI.removeWidget(GLFW_JOYSTICK_1, "minigame_rules");
             return true;
         }
         
@@ -247,6 +257,7 @@ class UnitActionMove extends UnitAction {
                         pathEnd = null;
 
                         turnContext.scene.setCameraFollow(turnContext.unit, 0.5f);
+                        UI.removeWidget(GLFW_JOYSTICK_1, "minigame_rules");
                         
                         return true;
                     }
@@ -267,6 +278,7 @@ class UnitActionMove extends UnitAction {
                         pathEnd = null;
 
                         turnContext.scene.setCameraFollow(turnContext.unit, 0.5f);
+                        UI.removeWidget(GLFW_JOYSTICK_1, "minigame_rules");
                         
                         return true;
                     }
