@@ -49,6 +49,7 @@ public class Scene3D extends Scene {
         super("test");
         
         UI.clearWidgets(GLFW_JOYSTICK_1);
+        int inputDeviceID = Input.KEYBOARD;
         
         try {
             BufferedReader reader = new BufferedReader(new InputStreamReader(getClass().getResourceAsStream("/org/xjge/assets/" + filename)));
@@ -68,14 +69,14 @@ public class Scene3D extends Scene {
                     //Spawn players and enemies
                     if(type == TYPE_SPAWN_PLAYER) {
                         Entity player = new Entity();
-                        player.addComponent(new ComponentUnit(true, Input.KEYBOARD, player.uuid));
+                        player.addComponent(new ComponentUnit(true, inputDeviceID, player.uuid));
                         player.addComponent(new ComponentPosition(x, 0.01f, z));
                         player.addComponent(new ComponentAABB(0.5f, 1.1f, 0.5f, Color.BLUE));
                         addEntity(player);
                         gridSpace.occupyingUnit = player.getComponent(ComponentUnit.class);
                     } else if(type == TYPE_SPAWN_ENEMY) {
                         Entity enemy = new Entity();
-                        enemy.addComponent(new ComponentUnit(false, Input.KEYBOARD, enemy.uuid));
+                        enemy.addComponent(new ComponentUnit(false, inputDeviceID, enemy.uuid));
                         enemy.addComponent(new ComponentPosition(x, 0.01f, z));
                         enemy.addComponent(new ComponentAABB(0.5f, 1.1f, 0.5f, Color.RED));
                         addEntity(enemy);

@@ -34,7 +34,7 @@ class WidgetBattle extends Widget {
     int subMenuChoice;
     
     private final TurnContext turnContext;
-    private State state = State.MAINMENU;
+    private State state = State.MAIN_MENU;
     private UnitAction pendingAction;
     private ActionCategory pendingCategory;
     private String pendingSpell;
@@ -44,11 +44,12 @@ class WidgetBattle extends Widget {
     private SelectorUnit unitSelector;
     private Timer errorTimer = new Timer();
     
+    private final Rectangle controlBackground = new Rectangle();
     private final Rectangle[] rectangles = new Rectangle[3];
     private final List<Option> options = new ArrayList<>();
     
     private enum State {
-        MAINMENU, SUBMENU, TARGET, CONFIRM;
+        MAIN_MENU, SUB_MENU, TARGET, CONFIRM;
     }
     
     private class Option {
@@ -82,8 +83,8 @@ class WidgetBattle extends Widget {
     public void update(double targetDelta, double trueDelta) {
         if(!turnContext.actionsInProgress()) {
             switch(state) {
-                case MAINMENU -> handleMainMenuInput();
-                case SUBMENU -> handleSubMenuInput();
+                case MAIN_MENU -> handleMainMenuInput();
+                case SUB_MENU -> handleSubMenuInput();
                 case TARGET -> handleTargetInput();
                 case CONFIRM -> handleConfirmInput();
             }
@@ -153,18 +154,71 @@ class WidgetBattle extends Widget {
                                      option.background.positionY + 10, 
                                      (option.used) ? Color.GRAY : Color.WHITE, 
                                      1f);
+        }
+        
+        controlBackground.render(0.5f, Color.BLACK);
+        Font.fallback.drawString("HOW TO PLAY:", 20, controlBackground.positionY + controlBackground.height - 25, Color.YELLOW, 1f);
+        
+        for(int i = 0; i < 4; i++) {
+            int yOffset = controlBackground.positionY + controlBackground.height - (25 * (i + 2));
             
-            if(turnContext.unit.inputDeviceID == Input.KEYBOARD) {
-                Font.fallback.drawString("[SPACE] - Select Action", 10, 10, Color.YELLOW, 1f);
+            if(state != State.MAIN_MENU) {
+                String nav     = (turnContext.unit.inputDeviceID == Input.KEYBOARD) ? "[ARROW KEYS]" : "[D-PAD]";
+                String confirm = (turnContext.unit.inputDeviceID == Input.KEYBOARD) ? "[SPACE]" : "[CROSS]";
+                String cancel  = (turnContext.unit.inputDeviceID == Input.KEYBOARD) ? "[Q]" : "[CIRCLE]";
                 
-                Font.fallback.drawString("[ARROW KEYS] - Nav Menu", 310, 10, Color.YELLOW, 1f);
-
-                switch(state) {
-                    case MAINMENU -> Font.fallback.drawString("[Q] - End Turn", 600, 10, Color.YELLOW, 1f);
-                    case TARGET -> Font.fallback.drawString("[Q] - Cancel", 600, 10, Color.YELLOW, 1f);
+                switch(pendingCategory) {
+                    case MOVE -> {
+                        switch(i) {
+                            case 0 -> Font.fallback.drawString("Define Path - " + nav, 20, yOffset, Color.SILVER, 1f);
+                            case 1 -> Font.fallback.drawString("Confirm     - " + confirm, 20, yOffset, Color.SILVER, 1f);
+                            case 2 -> Font.fallback.drawString("Cancel      - " + cancel, 20, yOffset, Color.SILVER, 1f);
+                        }
+                    }
+                    case SPELL -> {
+                        if(pendingSpell == null) {
+                            switch(i) {
+                                case 0 -> Font.fallback.drawString("Select a spell with " + confirm + " or", 20, yOffset, Color.SILVER, 1f);
+                                case 1 -> Font.fallback.drawString("press " + cancel + " to exit submenu", 20, yOffset, Color.SILVER, 1f);
+                            }
+                        } else {
+                            switch(pendingSpell) {
+                                case "Flash", "Mud Trap" -> {
+                                    switch(i) {
+                                        case 0 -> Font.fallback.drawString("Move Area - " + nav, 20, yOffset, Color.SILVER, 1f);
+                                        case 1 -> Font.fallback.drawString("Confirm   - " + confirm, 20, yOffset, Color.SILVER, 1f);
+                                        case 2 -> Font.fallback.drawString("Cancel    - " + cancel, 20, yOffset, Color.SILVER, 1f);
+                                    }
+                                }
+                                case "Manabolt" -> {
+                                    switch(i) {
+                                        case 0 -> Font.fallback.drawString("Change Target - " + nav, 20, yOffset, Color.SILVER, 1f);
+                                        case 1 -> Font.fallback.drawString("Confirm       - " + confirm, 20, yOffset, Color.SILVER, 1f);
+                                        case 2 -> Font.fallback.drawString("Cancel        - " + cancel, 20, yOffset, Color.SILVER, 1f);
+                                    }
+                                }
+                            }
+                        }
+                    }
+                    case ITEM -> {
+                        switch(i) {
+                            case 0 -> Font.fallback.drawString("Choose an item from the list", 20, yOffset, Color.SILVER, 1f);
+                            case 1 -> Font.fallback.drawString("with " + confirm + ", items can only", 20, yOffset, Color.SILVER, 1f);
+                            case 2 -> Font.fallback.drawString("used once.", 20, yOffset, Color.SILVER, 1f);
+                        }
+                    }
                 }
-            } else if(turnContext.unit.inputDeviceID >= GLFW_JOYSTICK_1 && turnContext.unit.inputDeviceID <= GLFW_JOYSTICK_4) {
-                //TODO: add controller input hints
+            } else {
+                String nav     = (turnContext.unit.inputDeviceID == Input.KEYBOARD) ? "[ARROW KEYS]" : "[D-PAD]";
+                String confirm = (turnContext.unit.inputDeviceID == Input.KEYBOARD) ? "[SPACE]" : "[CROSS]";
+                String exit    = (turnContext.unit.inputDeviceID == Input.KEYBOARD) ? "[Q]" : "[CIRCLE]";
+                
+                switch(i) {
+                    case 0 -> Font.fallback.drawString("Use the " + nav + " to navigate", 20, yOffset, Color.SILVER, 1f);
+                    case 1 -> Font.fallback.drawString("the menu, " + confirm + " to select an ", 20, yOffset, Color.SILVER, 1f);
+                    case 2 -> Font.fallback.drawString("action, and " + exit +" to end your", 20, yOffset, Color.SILVER, 1f);
+                    case 3 -> Font.fallback.drawString("turn.", 20, yOffset, Color.SILVER, 1f);
+                }
             }
         }
         
@@ -234,7 +288,12 @@ class WidgetBattle extends Widget {
     }
 
     @Override
-    public final void relocate(SplitScreenType splitType, int viewportWidth, int viewportHeight) {}
+    public final void relocate(SplitScreenType splitType, int viewportWidth, int viewportHeight) {
+        controlBackground.positionX = 10;
+        controlBackground.positionY = 10;
+        controlBackground.width = 400;
+        controlBackground.height = 140;
+    }
 
     @Override
     public void processKeyboardInput(int key, int action, int mods, Character character) {}
@@ -254,7 +313,7 @@ class WidgetBattle extends Widget {
         if(turnContext.unit.buttonPressedOnce(Control.DPAD_DOWN, 0)) mainMenuChoice++;
         
         if(turnContext.unit.buttonPressedOnce(Control.CIRCLE, 0)) {
-            if(state == State.MAINMENU) turnContext.endTurn();
+            if(state == State.MAIN_MENU) turnContext.endTurn();
         } else if(turnContext.unit.buttonPressedOnce(Control.CROSS, 0)) {
             Option option = options.get(mainMenuChoice);
             
@@ -281,7 +340,7 @@ class WidgetBattle extends Widget {
                     }
                     case SPELL, ITEM -> {
                         subMenuChoice = 0;
-                        state = State.SUBMENU;
+                        state = State.SUB_MENU;
                     }
                 }
             }
@@ -295,7 +354,7 @@ class WidgetBattle extends Widget {
         if(turnContext.unit.buttonPressedOnce(Control.DPAD_DOWN, 0)) subMenuChoice++;
         
         if(turnContext.unit.buttonPressedOnce(Control.CIRCLE, 0)) {
-            if(state == State.SUBMENU) state = State.MAINMENU;
+            if(state == State.SUB_MENU) state = State.MAIN_MENU;
         } else if(turnContext.unit.buttonPressedOnce(Control.CROSS, 0)) {
             switch(options.get(mainMenuChoice).category) {
                 case SPELL -> {
@@ -355,7 +414,7 @@ class WidgetBattle extends Widget {
         if(turnContext.unit.buttonPressedOnce(Control.CIRCLE, 0)) {
             resetTargeting();
             turnContext.scene.setCameraFollow(turnContext.unit, 0.5f);
-            state = (renderSubMenus) ? State.SUBMENU : State.MAINMENU;
+            state = (renderSubMenus) ? State.SUB_MENU : State.MAIN_MENU;
         } else if(turnContext.unit.buttonPressedOnce(Control.CROSS, 0) && pendingAction != null) {
             state = State.CONFIRM;
         }
@@ -372,7 +431,7 @@ class WidgetBattle extends Widget {
         }
         options.get(mainMenuChoice).used = true;
         resetTargeting();
-        state = State.MAINMENU;
+        state = State.MAIN_MENU;
     }
 
     private void resetTargeting() {

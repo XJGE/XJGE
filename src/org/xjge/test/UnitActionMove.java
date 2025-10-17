@@ -142,7 +142,7 @@ class UnitActionMove extends UnitAction {
                     
                     if(currentTick > 15 && currentTick < 25) {
                         if(!widgetAdded) {
-                            UI.addWidget(GLFW_JOYSTICK_1, "melee_qte", new WidgetQTE());
+                            UI.addWidget(GLFW_JOYSTICK_1, "melee_qte", new WidgetMelee());
                             widgetAdded = true;
                         }
                         

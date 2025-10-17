@@ -17,7 +17,7 @@ import org.xjge.ui.Widget;
  * @author J Hoffman
  * @since 
  */
-class WidgetQTE extends Widget {
+class WidgetMelee extends Widget {
 
     private int tickCount;
     private int offsetY;

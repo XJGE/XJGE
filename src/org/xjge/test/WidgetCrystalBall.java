@@ -11,6 +11,7 @@ import org.xjge.core.XJGE;
 import org.xjge.graphics.GLProgram;
 import org.xjge.graphics.Texture;
 import org.xjge.ui.Icon;
+import org.xjge.ui.Rectangle;
 import org.xjge.ui.Widget;
 
 /**
@@ -28,6 +29,7 @@ class WidgetCrystalBall extends Widget {
     private final int maxMomentum = 70;
     private int momentum;
     
+    private Rectangle background = new Rectangle();
     private Number landedNumber = null;
     private final Vector2f prevCursorPos = new Vector2f();
     private final TurnContext turnContext;
