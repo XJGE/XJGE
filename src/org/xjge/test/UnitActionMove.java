@@ -51,13 +51,6 @@ class UnitActionMove extends UnitAction {
     
     @Override
     boolean perform(TurnContext turnContext) {
-        if(UI.containsWidget(GLFW_JOYSTICK_1, "minigame_rules")) {
-            String[] text = (turnContext.unit.inputDeviceID == Input.KEYBOARD) 
-                          ? new String[] {"Press [SPACE] when the", "prompt appears to block", "or attack"} 
-                          : new String[] {"Press [CROSS] when the", "prompt appears to block", "or attack"};
-            UI.addWidget(GLFW_JOYSTICK_1, "minigame_rules", new WidgetRules(text));
-        }
-        
         if(path.isEmpty() || pathIndex >= path.size()) {
             turnContext.scene.setCameraFollow(turnContext.unit, 0.5f);
             UI.removeWidget(GLFW_JOYSTICK_1, "minigame_rules");
@@ -70,6 +63,13 @@ class UnitActionMove extends UnitAction {
         if(targetUnit == null && path.get(path.size() - 1).occupyingUnit != null) {
             targetUnit    = path.get(path.size() - 1).occupyingUnit;
             targetUnitPos = turnContext.getUnitPos(targetUnit);
+            
+            if(!UI.containsWidget(GLFW_JOYSTICK_1, "minigame_rules")) {
+                String[] text = (turnContext.unit.inputDeviceID == Input.KEYBOARD) 
+                              ? new String[] {"Press [SPACE] when the", "prompt appears to block", "or attack"} 
+                              : new String[] {"Press [CROSS] when the", "prompt appears to block", "or attack"};
+                UI.addWidget(GLFW_JOYSTICK_1, "minigame_rules", new WidgetRules(text));
+            }
         }
         
         if(targetUnit != null && pathIndex == path.size() - 1) {
