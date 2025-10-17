@@ -53,7 +53,7 @@ class UnitActionMove extends UnitAction {
     boolean perform(TurnContext turnContext) {
         if(path.isEmpty() || pathIndex >= path.size()) {
             turnContext.scene.setCameraFollow(turnContext.unit, 0.5f);
-            UI.removeWidget(GLFW_JOYSTICK_1, "minigame_rules");
+            if(UI.containsWidget(GLFW_JOYSTICK_1, "minigame_rules")) UI.removeWidget(GLFW_JOYSTICK_1, "minigame_rules");
             return true;
         }
         
@@ -104,7 +104,7 @@ class UnitActionMove extends UnitAction {
         //Finished path traversal
         if(pathIndex >= path.size()) {
             turnContext.scene.setCameraFollow(turnContext.unit, 0.5f);
-            UI.removeWidget(GLFW_JOYSTICK_1, "minigame_rules");
+            if(UI.containsWidget(GLFW_JOYSTICK_1, "minigame_rules")) UI.removeWidget(GLFW_JOYSTICK_1, "minigame_rules");
             return true;
         }
         
@@ -257,7 +257,7 @@ class UnitActionMove extends UnitAction {
                         pathEnd = null;
 
                         turnContext.scene.setCameraFollow(turnContext.unit, 0.5f);
-                        UI.removeWidget(GLFW_JOYSTICK_1, "minigame_rules");
+                        if(UI.containsWidget(GLFW_JOYSTICK_1, "minigame_rules")) UI.removeWidget(GLFW_JOYSTICK_1, "minigame_rules");
                         
                         return true;
                     }
@@ -278,7 +278,7 @@ class UnitActionMove extends UnitAction {
                         pathEnd = null;
 
                         turnContext.scene.setCameraFollow(turnContext.unit, 0.5f);
-                        UI.removeWidget(GLFW_JOYSTICK_1, "minigame_rules");
+                        if(UI.containsWidget(GLFW_JOYSTICK_1, "minigame_rules")) UI.removeWidget(GLFW_JOYSTICK_1, "minigame_rules");
                         
                         return true;
                     }

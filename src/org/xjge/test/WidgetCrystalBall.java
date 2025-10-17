@@ -24,6 +24,7 @@ class WidgetCrystalBall extends Widget {
     private boolean stop;
     
     private final float deceleration = 0.5f;
+    private final float dampening;
     
     private final int maxMomentum = 70;
     private int momentum;
@@ -47,6 +48,8 @@ class WidgetCrystalBall extends Widget {
     
     WidgetCrystalBall(TurnContext turnContext) {
         this.turnContext = turnContext;
+        
+        dampening = (turnContext.unit.inputDeviceID == Input.KEYBOARD) ? 0.02f : 0.07f;
         
         ballIcon.scale.set(2f);
         wandIcon.scale.set(1.5f);
@@ -83,18 +86,21 @@ class WidgetCrystalBall extends Widget {
             }
         } else {
             if(turnContext.unit.axisMoved(Control.RIGHT_STICK_X, 0)) {
-                wandIcon.position.x += turnContext.unit.getInputValue(Control.RIGHT_STICK_X, 0) * 4f;
+                wandIcon.position.x += turnContext.unit.getInputValue(Control.RIGHT_STICK_X, 0) * 20f;
             }
             if(turnContext.unit.axisMoved(Control.RIGHT_STICK_Y, 0)) {
-                wandIcon.position.y += -(turnContext.unit.getInputValue(Control.RIGHT_STICK_Y, 0)) * 4f;
+                wandIcon.position.y += -(turnContext.unit.getInputValue(Control.RIGHT_STICK_Y, 0)) * 20f;
+            }
+            if(spinning && !stop && turnContext.unit.buttonPressed(Control.CROSS, 0)) {
+                stop = true;
             }
         }
         
         if(landedNumber != null) return;
         
         if(momentum < maxMomentum && !stop) {
-            momentum += Math.abs(prevCursorPos.x - wandIcon.position.x) * 0.02f;
-            momentum += Math.abs(prevCursorPos.y - wandIcon.position.y) * 0.02f;
+            momentum += Math.abs(prevCursorPos.x - wandIcon.position.x) * dampening;
+            momentum += Math.abs(prevCursorPos.y - wandIcon.position.y) * dampening;
             if(momentum >= maxMomentum) spinning = true;
         }
         

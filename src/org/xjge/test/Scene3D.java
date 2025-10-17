@@ -76,7 +76,7 @@ public class Scene3D extends Scene {
                         gridSpace.occupyingUnit = player.getComponent(ComponentUnit.class);
                     } else if(type == TYPE_SPAWN_ENEMY) {
                         Entity enemy = new Entity();
-                        enemy.addComponent(new ComponentUnit(false, inputDeviceID, enemy.uuid));
+                        enemy.addComponent(new ComponentUnit(false, GLFW_JOYSTICK_1, enemy.uuid));
                         enemy.addComponent(new ComponentPosition(x, 0.01f, z));
                         enemy.addComponent(new ComponentAABB(0.5f, 1.1f, 0.5f, Color.RED));
                         addEntity(enemy);
