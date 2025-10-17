@@ -161,13 +161,25 @@ class UnitActionMove extends UnitAction {
                             if(turnContext.unit.buttonPressedOnce(Control.CROSS, 0)) {
                                 attackerOutcome[attackCount] = true;
                             }
-                            defenderOutcome[attackCount] = rand.nextBoolean();
+                            
+                            if(targetUnit.buttonPressedOnce(Control.CROSS, 0)) {
+                                defenderOutcome[attackCount] = true;
+                            }
+                            
+                            //TODO: remove/modify old AI controls
+                            //defenderOutcome[attackCount] = rand.nextBoolean();                            
                         } else if(targetUnit.isPlayer) {
                             //player defending
                             if(targetUnit.buttonPressedOnce(Control.CROSS, 0)) {
                                 defenderOutcome[attackCount] = true;
                             }
-                            attackerOutcome[attackCount] = rand.nextBoolean();
+                            
+                            if(turnContext.unit.buttonPressedOnce(Control.CROSS, 0)) {
+                                attackerOutcome[attackCount] = true;
+                            }
+                            
+                            //TODO: remove/modify old AI controls
+                            //attackerOutcome[attackCount] = rand.nextBoolean();
                         }
                     }
                     
