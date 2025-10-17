@@ -39,8 +39,8 @@ class UnitActionFlash extends UnitAction {
     boolean perform(TurnContext turnContext) {
         if(!widgetAdded) {
             String[] text = (turnContext.unit.inputDeviceID == Input.KEYBOARD) 
-                          ? new String[] {"Press [SPACE] when the", "desired tile lights up", "to teleport there"} 
-                          : new String[] {"Press [CROSS] when the", "desired tile lights up", "to teleport there"};
+                          ? new String[] {"Press [SPACE] when the", "desired tile lights up", "to teleport there", ""} 
+                          : new String[] {"Press [CROSS] when the", "desired tile lights up", "to teleport there", ""};
             UI.addWidget(GLFW_JOYSTICK_1, "minigame_rules", new WidgetRules(text));
             widgetAdded = true;
         }

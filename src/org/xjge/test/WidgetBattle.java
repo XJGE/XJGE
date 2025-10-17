@@ -157,10 +157,13 @@ class WidgetBattle extends Widget {
         }
         
         controlBackground.render(0.5f, Color.BLACK);
-        Font.fallback.drawString("HOW TO PLAY:", 20, controlBackground.positionY + controlBackground.height - 25, Color.YELLOW, 1f);
         
-        for(int i = 0; i < 4; i++) {
-            int yOffset = controlBackground.positionY + controlBackground.height - (25 * (i + 2));
+        //TODO: could be handled better using a TextEffect or icons in the future
+        for(int i = 0; i < 6; i++) {
+            int xOffset = controlBackground.positionX + 10;
+            int yOffset = controlBackground.positionY + controlBackground.height - (25 * (i + 1));
+            
+            if(i == 0) Font.fallback.drawString("HOW TO PLAY:", xOffset, yOffset, Color.YELLOW, 1f);
             
             if(state != State.MAIN_MENU) {
                 String nav     = (turnContext.unit.inputDeviceID == Input.KEYBOARD) ? "[ARROW KEYS]" : "[D-PAD]";
@@ -170,31 +173,33 @@ class WidgetBattle extends Widget {
                 switch(pendingCategory) {
                     case MOVE -> {
                         switch(i) {
-                            case 0 -> Font.fallback.drawString("Define Path - " + nav, 20, yOffset, Color.SILVER, 1f);
-                            case 1 -> Font.fallback.drawString("Confirm     - " + confirm, 20, yOffset, Color.SILVER, 1f);
-                            case 2 -> Font.fallback.drawString("Cancel      - " + cancel, 20, yOffset, Color.SILVER, 1f);
+                            case 1 -> Font.fallback.drawString("Aim the target with " + nav, xOffset, yOffset, Color.SILVER, 1f);
+                            case 2 -> Font.fallback.drawString("then confirm placement with", xOffset, yOffset, Color.SILVER, 1f);
+                            case 3 -> Font.fallback.drawString(confirm + " or cancel using " + cancel, xOffset, yOffset, Color.SILVER, 1f);
+                            case 4 -> Font.fallback.drawString("initiate a melee attack by", xOffset, yOffset, Color.SILVER, 1f);
+                            case 5 -> Font.fallback.drawString("landing on an opponents tile", xOffset, yOffset, Color.SILVER, 1f);
                         }
                     }
                     case SPELL -> {
                         if(pendingSpell == null) {
                             switch(i) {
-                                case 0 -> Font.fallback.drawString("Select a spell with " + confirm + " or", 20, yOffset, Color.SILVER, 1f);
-                                case 1 -> Font.fallback.drawString("press " + cancel + " to exit submenu", 20, yOffset, Color.SILVER, 1f);
+                                case 1 -> Font.fallback.drawString("Select a spell with " + confirm + " or", xOffset, yOffset, Color.SILVER, 1f);
+                                case 2 -> Font.fallback.drawString("press " + cancel + " to exit submenu", xOffset, yOffset, Color.SILVER, 1f);
                             }
                         } else {
                             switch(pendingSpell) {
                                 case "Flash", "Mud Trap" -> {
                                     switch(i) {
-                                        case 0 -> Font.fallback.drawString("Move Area - " + nav, 20, yOffset, Color.SILVER, 1f);
-                                        case 1 -> Font.fallback.drawString("Confirm   - " + confirm, 20, yOffset, Color.SILVER, 1f);
-                                        case 2 -> Font.fallback.drawString("Cancel    - " + cancel, 20, yOffset, Color.SILVER, 1f);
+                                        case 1 -> Font.fallback.drawString("Move Area - " + nav, xOffset, yOffset, Color.SILVER, 1f);
+                                        case 2 -> Font.fallback.drawString("Confirm   - " + confirm, xOffset, yOffset, Color.SILVER, 1f);
+                                        case 3 -> Font.fallback.drawString("Cancel    - " + cancel, xOffset, yOffset, Color.SILVER, 1f);
                                     }
                                 }
                                 case "Manabolt" -> {
                                     switch(i) {
-                                        case 0 -> Font.fallback.drawString("Change Target - " + nav, 20, yOffset, Color.SILVER, 1f);
-                                        case 1 -> Font.fallback.drawString("Confirm       - " + confirm, 20, yOffset, Color.SILVER, 1f);
-                                        case 2 -> Font.fallback.drawString("Cancel        - " + cancel, 20, yOffset, Color.SILVER, 1f);
+                                        case 1 -> Font.fallback.drawString("Change Target - " + nav, xOffset, yOffset, Color.SILVER, 1f);
+                                        case 2 -> Font.fallback.drawString("Confirm       - " + confirm, xOffset, yOffset, Color.SILVER, 1f);
+                                        case 3 -> Font.fallback.drawString("Cancel        - " + cancel, xOffset, yOffset, Color.SILVER, 1f);
                                     }
                                 }
                             }
@@ -202,9 +207,9 @@ class WidgetBattle extends Widget {
                     }
                     case ITEM -> {
                         switch(i) {
-                            case 0 -> Font.fallback.drawString("Choose an item from the list", 20, yOffset, Color.SILVER, 1f);
-                            case 1 -> Font.fallback.drawString("with " + confirm + ", items can only", 20, yOffset, Color.SILVER, 1f);
-                            case 2 -> Font.fallback.drawString("used once.", 20, yOffset, Color.SILVER, 1f);
+                            case 1 -> Font.fallback.drawString("Choose an item from the list", xOffset, yOffset, Color.SILVER, 1f);
+                            case 2 -> Font.fallback.drawString("with " + confirm + ", items can only", xOffset, yOffset, Color.SILVER, 1f);
+                            case 3 -> Font.fallback.drawString("used once.", xOffset, yOffset, Color.SILVER, 1f);
                         }
                     }
                 }
@@ -214,10 +219,10 @@ class WidgetBattle extends Widget {
                 String exit    = (turnContext.unit.inputDeviceID == Input.KEYBOARD) ? "[Q]" : "[CIRCLE]";
                 
                 switch(i) {
-                    case 0 -> Font.fallback.drawString("Use the " + nav + " to navigate", 20, yOffset, Color.SILVER, 1f);
-                    case 1 -> Font.fallback.drawString("the menu, " + confirm + " to select an ", 20, yOffset, Color.SILVER, 1f);
-                    case 2 -> Font.fallback.drawString("action, and " + exit +" to end your", 20, yOffset, Color.SILVER, 1f);
-                    case 3 -> Font.fallback.drawString("turn.", 20, yOffset, Color.SILVER, 1f);
+                    case 1 -> Font.fallback.drawString("Use the " + nav + " to navigate", xOffset, yOffset, Color.SILVER, 1f);
+                    case 2 -> Font.fallback.drawString("the menu, " + confirm + " to select an ", xOffset, yOffset, Color.SILVER, 1f);
+                    case 3 -> Font.fallback.drawString("action, and " + exit +" to end your", xOffset, yOffset, Color.SILVER, 1f);
+                    case 4 -> Font.fallback.drawString("turn.", xOffset, yOffset, Color.SILVER, 1f);
                 }
             }
         }
@@ -289,10 +294,10 @@ class WidgetBattle extends Widget {
 
     @Override
     public final void relocate(SplitScreenType splitType, int viewportWidth, int viewportHeight) {
-        controlBackground.positionX = 10;
-        controlBackground.positionY = 10;
-        controlBackground.width = 400;
-        controlBackground.height = 140;
+        controlBackground.width     = 400;
+        controlBackground.height    = 165;
+        controlBackground.positionX = viewportWidth - controlBackground.width - 10;
+        controlBackground.positionY = 160;
     }
 
     @Override

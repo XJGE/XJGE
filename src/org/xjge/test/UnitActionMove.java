@@ -66,8 +66,8 @@ class UnitActionMove extends UnitAction {
             
             if(!UI.containsWidget(GLFW_JOYSTICK_1, "minigame_rules")) {
                 String[] text = (turnContext.unit.inputDeviceID == Input.KEYBOARD) 
-                              ? new String[] {"Press [SPACE] when the", "prompt appears to block", "or attack"} 
-                              : new String[] {"Press [CROSS] when the", "prompt appears to block", "or attack"};
+                              ? new String[] {"Press [SPACE] when the", "prompt appears to block", "incoming attacks or", "strike your opponent"} 
+                              : new String[] {"Press [CROSS] when the", "prompt appears to block", "incoming attacks or", "strike your opponent"};
                 UI.addWidget(GLFW_JOYSTICK_1, "minigame_rules", new WidgetRules(text));
             }
         }

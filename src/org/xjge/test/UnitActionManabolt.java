@@ -43,8 +43,8 @@ class UnitActionManabolt extends UnitAction {
                     Window.setInputMode(GLFW_CURSOR, GLFW_CURSOR_DISABLED);
                     
                     String[] text = (turnContext.unit.inputDeviceID == Input.KEYBOARD) 
-                          ? new String[] {"Center the crosshairs inside", "the target using the", "[CURSOR] to attack"} 
-                          : new String[] {"Center the crosshairs inside", "the target using the", "[RIGHT STICK] to attack"};
+                          ? new String[] {"Center the crosshairs inside", "the target using the", "[CURSOR] to attack", "before time expires"} 
+                          : new String[] {"Center the crosshairs inside", "the target using the", "[RIGHT STICK] to attack", "before time expires"};
                     UI.addWidget(GLFW_JOYSTICK_1, "minigame_rules", new WidgetRules(text));
                     
                     stage = 1;

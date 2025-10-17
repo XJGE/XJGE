@@ -40,8 +40,8 @@ class UnitActionUseItem extends UnitAction {
                 Window.setInputMode(GLFW_CURSOR, GLFW_CURSOR_DISABLED);
                 
                 String[] text = (turnContext.unit.inputDeviceID == Input.KEYBOARD) 
-                              ? new String[] {"Wave the wand using the", "[CURSOR] then select", "a number with [LEFT CLICK]"} 
-                              : new String[] {"Wave the wand using the", "[RIGHT STICK] then select", "a number with [CROSS]"};
+                              ? new String[] {"Wave the wand using the", "[CURSOR] then select", "a number with [LEFT CLICK]", ""} 
+                              : new String[] {"Wave the wand using the", "[RIGHT STICK] then select", "a number with [CROSS]", ""};
                 UI.addWidget(GLFW_JOYSTICK_1, "minigame_rules", new WidgetRules(text));
                 
                 stage = 1;

@@ -46,8 +46,8 @@ class UnitActionMudTrap extends UnitAction {
                 UI.addWidget(GLFW_JOYSTICK_1, "mud_minigame", widget);
                 
                 String[] text = (turnContext.unit.inputDeviceID == Input.KEYBOARD) 
-                              ? new String[] {"Press [SPACE] when the", "indicator fills up to", "improve throw accuracy"} 
-                              : new String[] {"Press [CROSS] when the", "indicator fills up to", "improve throw accuracy"};
+                              ? new String[] {"Press [SPACE] when the", "indicator fills up to", "improve throw accuracy", ""} 
+                              : new String[] {"Press [CROSS] when the", "indicator fills up to", "improve throw accuracy", ""};
                 UI.addWidget(GLFW_JOYSTICK_1, "minigame_rules", new WidgetRules(text));
                 
                 stage = 1;
