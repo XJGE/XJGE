@@ -29,8 +29,8 @@ class ComponentUnit extends EntityComponent {
     private final Controllable[] controllables = new Controllable[2];
     
     //TODO: these could be their own components like ComponentInventory and ComponentSpellbook
-    final ArrayList<String> items = new ArrayList<>();
-    final ArrayList<Spell> spells = new ArrayList<>();
+    final ArrayList<String> items  = new ArrayList<>();
+    final ArrayList<String> spells = new ArrayList<>();
     
     private class InputState extends ControllableAction {
         boolean axisMoved;
@@ -64,9 +64,9 @@ class ComponentUnit extends EntityComponent {
         TODO: Just providing a standard set of spells here for now, in the future
         these will be learnable and/or unique to characters.
         */
-        spells.add(new Spell(3, "Flash"));
-        spells.add(new Spell(5, "Manabolt"));
-        spells.add(new Spell(7, "Mud Trap"));
+        spells.add("Flash");
+        spells.add("Manabolt");
+        spells.add("Mud Trap");
         
         /*
         ITEMS: (All of these use the crystal ball minigame to determine effectiveness)

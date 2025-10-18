@@ -254,12 +254,12 @@ class WidgetBattle extends Widget {
                 switch(pendingCategory) {
                     case SPELL -> {
                         for(int i = 0; i < turnContext.unit.spells.size(); i++) {
-                            Spell spell = turnContext.unit.spells.get(i);
+                            String spell = turnContext.unit.spells.get(i);
                             
                             rectangles[i].positionY = (Window.getResolutionHeight() - 90) - (rectangles[i].height * (i + 1)) - (10 * (i + 1));
                             rectangles[i].render(0.5f, Color.BLACK);
                             
-                            Font.fallback.drawString(((subMenuChoice == i) ? "> " : "  ") + spell.name(), 
+                            Font.fallback.drawString(((subMenuChoice == i) ? "> " : "  ") + spell, 
                                      rectangles[i].positionX + 10, 
                                      rectangles[i].positionY + 10, 
                                      Color.CYAN, 1f);
@@ -363,7 +363,7 @@ class WidgetBattle extends Widget {
         } else if(turnContext.unit.buttonPressedOnce(Control.CROSS, 0)) {
             switch(options.get(mainMenuChoice).category) {
                 case SPELL -> {
-                    pendingSpell = turnContext.unit.spells.get(subMenuChoice).name();
+                    pendingSpell = turnContext.unit.spells.get(subMenuChoice);
                     
                     //TODO: this switch is fine for 3 spells but will become unmanagable if more are added later
                     switch(pendingSpell) {
