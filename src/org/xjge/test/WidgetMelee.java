@@ -28,19 +28,19 @@ class WidgetMelee extends Widget {
     @Override
     public void update(double targetDelta, double trueDelta) {
         if(timer.tick(5)) {
-            textColor = (tickCount % 2 == 0) ? Color.WHITE : Color.CYAN;
+            textColor = (tickCount % 2 == 0) ? Color.WHITE : Color.BLACK;
             tickCount++;
         }
         
         offsetY += 2;
         
-        if(tickCount > 4) UI.removeWidget(GLFW_JOYSTICK_1, "melee_qte");
+        if(tickCount > 6) UI.removeWidget(GLFW_JOYSTICK_1, "melee_qte");
     }
 
     @Override
     public void render(Map<String, GLProgram> glPrograms) {
-        int halfWidth = Font.fallback.lengthInPixels("[PRESS SPACE!]") / 2;
-        Font.fallback.drawString("[PRESS SPACE!]", 
+        int halfWidth = Font.fallback.lengthInPixels("[PRESS SPACE/CIRCLE]") / 2;
+        Font.fallback.drawString("[PRESS SPACE/CIRCLE]", 
                                  (Window.getResolutionWidth() / 2) - halfWidth, 
                                  (Window.getResolutionHeight() - 200) + offsetY, 
                                  textColor, 1f);
