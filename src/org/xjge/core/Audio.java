@@ -20,9 +20,10 @@ import static org.lwjgl.openal.ALUtil.getStringList;
 import static org.lwjgl.system.MemoryUtil.NULL;
 
 /**
+ * Provides a single point of access through which sound effects and music can be played.
  * 
  * @author J Hoffman
- * @since 2.0.0
+ * @since  2.0.0
  */
 public final class Audio {
     
@@ -41,6 +42,13 @@ public final class Audio {
     
     private static final NavigableMap<Integer, Speaker> speakers = new TreeMap<>();
     
+    /**
+     * Obtains a number used to identify the {@linkplain Viewport} whose {@linkplain Camera} is positioned closest to some 
+     * {@linkplain SoundSource}. 
+     * 
+     * @param soundSourcePosition a {@linkplain Vector3f} object used to represent the position of the sound source in 3D space
+     * @return the ID number of the viewport with the closest camera relative to the sound source position
+     */
     private static int findClosestViewport(Vector3f soundSourcePosition) {
         for(int i = 0; i < cameraDirections.size(); i++) {
             if(soundSourcePosition != null) distances.put(i, Math.sqrt(soundSourcePosition.distance(cameraPositions.get(i))));
@@ -53,11 +61,24 @@ public final class Audio {
                         .getKey();
     }
     
+    /**
+     * Caches the current camera position and direction of every active viewport. This data is updated each frame and is used by
+     * the audio system to dynamically reposition sound sources.
+     * 
+     * @param viewportID a number used to identify the viewport
+     * @param camera the current {@linkplain Camera} object bound to the viewport
+     */
     static void captureViewportCameraData(int viewportID, Camera camera) {
         cameraPositions.put(viewportID, camera.position);
         cameraDirections.put(viewportID, camera.direction);
     }
     
+    /**
+     * Called automatically by the engine during startup to initialize the audio system. During initialization, the engine will 
+     * attempt to find any available audio devices and provide them to the user.
+     * 
+     * @param debugModeEnabled if true, additional developer tools will be available for use
+     */
     static void init(boolean debugModeEnabled) {        
         for(int i = 0; i < MAX_SOURCES; i++) sourcePool[i] = new SoundSource(i);
         

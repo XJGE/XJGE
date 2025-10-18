@@ -136,7 +136,7 @@ public final class Window {
     /**
      * Initializes the applications window, framebuffer, and viewports.
      * 
-     * @param debugModeEnabled if true, debug features will be available for use
+     * @param debugModeEnabled if true, additional developer tools will be available for use
      */
     static void create(boolean debugModeEnabled) {
         Window.debugModeEnabled = debugModeEnabled;
