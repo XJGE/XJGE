@@ -67,8 +67,8 @@ class UnitActionManabolt extends UnitAction {
                     WidgetDamage damageWidget;
                 
                     if(success) {
-                        damageWidget = new WidgetDamage(random.nextInt(2), "-3hp", Color.RED);
-                        targetUnit.health -= 3;
+                        damageWidget = new WidgetDamage(random.nextInt(2), "-2hp", Color.RED);
+                        targetUnit.health -= 2;
                     } else {
                         damageWidget = new WidgetDamage(random.nextInt(2), "miss!", Color.WHITE);
                     }
