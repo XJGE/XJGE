@@ -1,7 +1,6 @@
 package org.xjge.test;
 
 import java.util.List;
-import java.util.Random;
 import org.joml.Vector3f;
 import org.joml.Vector3i;
 import static org.lwjgl.glfw.GLFW.GLFW_JOYSTICK_1;
@@ -40,7 +39,6 @@ class UnitActionMove extends UnitAction {
     private Vector3f nextPosition;
     private Vector3f pathEnd;
     private final Timer timer = new Timer();
-    private final Random rand = new Random();
     
     private GridSpace nextSpace;
     private final List<GridSpace> path;
