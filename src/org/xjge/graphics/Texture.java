@@ -40,6 +40,7 @@ public final class Texture {
      * Creates a new texture object from the image file specified. If the image 
      * file cannot be found, the engine will use a placeholder texture instead.
      * 
+     * @param filepath the file location relative to this applications executable jar
      * @param filename the name of the file to load (with extension)
      * @param target the OpenGL texture target. One of:
      * <table><caption></caption><tr>
