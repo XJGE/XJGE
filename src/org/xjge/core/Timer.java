@@ -2,7 +2,7 @@ package org.xjge.core;
 
 /**
  * Provides a simple timing mechanism that exhibits greater accuracy than 
- * {@link Game#tick(int)} alone by capturing the timestamp of the initial game 
+ * {@link XJGE#tick(int)} alone by capturing the timestamp of the initial game 
  * tick from which {@link tick(int, int, boolean)} was called and comparing it 
  * to subsequent ticks until the specified number of cycles have passed.
  * 
@@ -18,7 +18,7 @@ public final class Timer {
     
     /**
      * Simplified version of {@link tick(int, int, boolean)} that mimics the 
-     * functionality of the {@link Game#tick(int)} method but with improved 
+     * functionality of the {@link XJGE#tick(int)} method but with improved 
      * accuracy.
      * 
      * @param speed the number of game ticks to wait before changing the time 

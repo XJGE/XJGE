@@ -4,7 +4,7 @@
  * <br><br>
  * <table border="1"><caption>Core Classes:</caption>
  * <tr><td><b>Name</b></td><td><b>Description</b></td></tr>
- * <tr><td>{@linkplain Hardware}</td><td>Manages the state of various 
+ * <tr><td>{Hardware}</td><td>Manages the state of various 
  *         peripheral devices including those used for audio output and 
  *         visual display.</td></tr>
  * <tr><td>{@linkplain Input}</td><td>Provides a single point of access through 

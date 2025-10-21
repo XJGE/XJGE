@@ -34,17 +34,7 @@ public final class Texture {
     public final int height;
     public final int channels;
     
-    public static final Texture fallback = new Texture("/org/xjge/assets/", "xjge_texture_fallback.png", GL_TEXTURE_2D);
-    
-    /**
-     * Creates a new texture object from the image file specified. If the image 
-     * file cannot be found, the engine will use a placeholder texture instead.
-     * 
-     * @param filename the name of the file to load (with extension)
-     */
-    public Texture(String filename) {
-        this(XJGE.getAssetsFilepath(), filename, GL_TEXTURE_2D);
-    }
+    public static final Texture fallback = new Texture(XJGE.ASSETS_FILEPATH, "xjge_texture_fallback.png", GL_TEXTURE_2D);
     
     /**
      * Creates a new texture object from the image file specified. If the image 
@@ -64,14 +54,7 @@ public final class Texture {
      * <td>{@link org.lwjgl.opengl.GL13#GL_PROXY_TEXTURE_CUBE_MAP PROXY_TEXTURE_CUBE_MAP}</td>
      * </tr></table>
      */
-    public Texture(String filename, int target) {
-        this(XJGE.getAssetsFilepath(), filename, target);
-    }
-    
-    /**
-     * Default constructor used internally to load the placeholder texture.
-     */
-    private Texture(String filepath, String filename, int target) {
+    public Texture(String filepath, String filename, int target) {
         int[] info = loadTexture(filepath, filename, target);
         
         handle   = info[0];

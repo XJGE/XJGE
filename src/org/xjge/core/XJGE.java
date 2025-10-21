@@ -24,6 +24,7 @@ import org.lwjgl.opengl.GL;
 import static org.lwjgl.opengl.GL32.*;
 import org.xjge.graphics.Color;
 import org.xjge.graphics.PostProcessShader;
+import org.xjge.ui.Font;
 
 /**
  * Created: Apr 28, 2021
@@ -35,7 +36,7 @@ import org.xjge.graphics.PostProcessShader;
  * More specifically this class provides the following features:
  * <ul>
  * <li>The ability to change how the screen will be 
- *     {@linkplain setScreenSplit divided} during split screen mode.</li>
+ *     {@linkplain Window#setResolution(int, int) divided} during split screen mode.</li>
  * <li>Convenient access to the {@linkplain getDefaultGLProgram default shader 
  *     program} used internally by the engine.</li>
  * <li>The ability to provide the engine with supplemental {@linkplain 
@@ -43,8 +44,8 @@ import org.xjge.graphics.PostProcessShader;
  *     {@linkplain addGLProgram shader programs}.</li>
  * <li>Control over which {@link Camera} object each viewport will use to 
  *     display the scene from their perspective.</li>
- * <li>The ability to {@linkplain addUIWidget add} and {@linkplain 
- *     removeUIWidget remove} UI widgets from viewports.</li>
+ * <li>The ability to {@linkplain UI#addWidget add} and {@linkplain 
+ *     UI#removeWidget(int, java.lang.String) remove} UI widgets from viewports.</li>
  * </ul>
  * <p>
  * Before the engines features can be used {@link init init()} must be called 
@@ -54,7 +55,6 @@ import org.xjge.graphics.PostProcessShader;
  * @author J Hoffman
  * @since  2.0.0
  * 
- * @see Hardware
  * @see Input
  * @see Monitor
  * @see Logger
@@ -89,8 +89,8 @@ public final class XJGE {
     
     public static final Path PRESENT_WORKING_DIRECTORY = Path.of("").toAbsolutePath();
     
-    public static final String VERSION   = "4.0.0-beta1";
-    private static String assetsFilepath = "/org/xjge/assets/";
+    public static final String VERSION         = "4.0.0-beta1";
+    public static final String ASSETS_FILEPATH = "/org/xjge/assets/";
     private static String scenesFilepath;
     private static String cpuModel;
     
@@ -141,16 +141,13 @@ public final class XJGE {
      */
     private XJGE() {}
     
-    public static void init(boolean debugModeEnabled, String assetsFilepath, String scenesFilepath) {
+    public static void init(boolean debugModeEnabled, String scenesFilepath) {
         if(initialized) {
             Logger.logInfo("XJGE has already been initialized");
             return;
         }
         
         observable.properties.put("XJGE_SCENE_CHANGED", scene);
-        
-        XJGE.assetsFilepath = assetsFilepath;
-        XJGE.scenesFilepath = scenesFilepath;
         
         String javaVersion = System.getProperty("java.version");
         
@@ -161,16 +158,12 @@ public final class XJGE {
         if(!glfwInit()) Logger.logError("Failed to initialize GLFW", null);
         
         Window.create(debugModeEnabled);
-        Audio.init(debugModeEnabled);
-        Input.init();
-        
-        Logger.logSystemInfo();
         
         //Initialize the default shader program that will be provided to the implementation
         {
             var shaderSourceFiles = new LinkedList<GLShader>() {{
-                add(new GLShader("xjge_shader_default_vertex.glsl", GL_VERTEX_SHADER));
-                add(new GLShader("xjge_shader_default_fragment.glsl", GL_FRAGMENT_SHADER));
+                add(new GLShader(ASSETS_FILEPATH, "xjge_shader_default_vertex.glsl", GL_VERTEX_SHADER));
+                add(new GLShader(ASSETS_FILEPATH, "xjge_shader_default_fragment.glsl", GL_FRAGMENT_SHADER));
             }};
 
             GLProgram defaultProgram = new GLProgram(shaderSourceFiles, "default");
@@ -217,8 +210,8 @@ public final class XJGE {
         //Create shader program that will generate shadow map output
         {
             var shaderSourceFiles = new LinkedList<GLShader>() {{
-                add(new GLShader("xjge_shader_depth_vertex.glsl", GL_VERTEX_SHADER));
-                add(new GLShader("xjge_shader_depth_fragment.glsl", GL_FRAGMENT_SHADER));
+                add(new GLShader(ASSETS_FILEPATH, "xjge_shader_depth_vertex.glsl", GL_VERTEX_SHADER));
+                add(new GLShader(ASSETS_FILEPATH, "xjge_shader_depth_fragment.glsl", GL_FRAGMENT_SHADER));
             }};
 
             depthProgram = new GLProgram(shaderSourceFiles, "default");
@@ -232,8 +225,8 @@ public final class XJGE {
         //Create shader program for applying gaussian blur
         {
             var shaderSourceFiles = new LinkedList<GLShader>() {{
-                add(new GLShader("xjge_shader_blur_vertex.glsl", GL_VERTEX_SHADER));
-                add(new GLShader("xjge_shader_blur_fragment.glsl", GL_FRAGMENT_SHADER));
+                add(new GLShader(ASSETS_FILEPATH, "xjge_shader_blur_vertex.glsl", GL_VERTEX_SHADER));
+                add(new GLShader(ASSETS_FILEPATH, "xjge_shader_blur_fragment.glsl", GL_FRAGMENT_SHADER));
             }};
 
             blurProgram = new GLProgram(shaderSourceFiles, "default");
@@ -245,8 +238,7 @@ public final class XJGE {
             blurProgram.addUniform(GLDataType.MAT4,  "uProjection");
         }
 
-        engineIcons = new Texture("xjge_texture_icons.png");
-
+        engineIcons = new Texture(ASSETS_FILEPATH, "xjge_texture_icons.png", GL_TEXTURE_2D);
         Light.setIconTexture(engineIcons);
         
         engineCommands = new TreeMap<>() {{
@@ -265,6 +257,13 @@ public final class XJGE {
             put("terminate",            new TCTerminate());
         }};
         
+        XJGE.scenesFilepath = scenesFilepath;
+        
+        Audio.init(debugModeEnabled);
+        Input.init();
+        
+        Logger.logSystemInfo();
+        
         initialized = true;
     }
     
@@ -273,7 +272,7 @@ public final class XJGE {
      * loop.
      * <p>
      * NOTE: This should be called <i>after</i> setting the initial scene with 
-     * {@link Game#setScene(Scene)} and supplying whatever additional 
+     * {@link XJGE#setScene(Scene)} and supplying whatever additional 
      * {@link org.xjge.graphics.GLProgram shader programs} 
      * and {@linkplain addCommand terminal commands} the implementation 
      * requires.
@@ -721,17 +720,6 @@ public final class XJGE {
      */
     static boolean getLightSourcesVisible() {
         return showLightSources;
-    }
-    
-    /**
-     * Obtains a user-provided string denoting the location of the sounds, 
-     * images, .glsl files, and whatever other assets are used by the 
-     * implementation.
-     * 
-     * @return a filepath to the location containing the games assets
-     */
-    public static String getAssetsFilepath() {
-        return assetsFilepath;
     }
     
     /**

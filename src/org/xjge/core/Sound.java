@@ -22,11 +22,13 @@ final class Sound {
     final int channels;
     final int frequency;
     
+    final String filepath;
     final String filename;
     
-    static Sound fallback = new Sound("/org/xjge/assets/", "xjge_sound_fallback.ogg");
+    static Sound fallback = new Sound(XJGE.ASSETS_FILEPATH, "xjge_sound_fallback.ogg");
     
     Sound(String filepath, String filename) {
+        this.filepath = filepath;
         this.filename = filename;
         
         int[] info = loadSound(filepath, filename);

@@ -100,7 +100,7 @@ public class Model {
     public Model(String filename, int aiArgs) {
         this.filename = filename;
         
-        try(InputStream file = Model.class.getResourceAsStream(XJGE.getAssetsFilepath() + filename)) {
+        try(InputStream file = Model.class.getResourceAsStream(XJGE.ASSETS_FILEPATH + filename)) {
             loadModel(file, aiArgs);
         } catch(Exception e) {
             Logger.logWarning("Failed to load model \"" + filename + "\"", e);
@@ -185,7 +185,7 @@ public class Model {
         
         aiFileIO.set(openProcedure, closeProcedure, NULL);
         
-        aiScene = aiImportFileEx((XJGE.getAssetsFilepath() + filename), aiArgs, aiFileIO);
+        aiScene = aiImportFileEx((XJGE.ASSETS_FILEPATH + filename), aiArgs, aiFileIO);
         
         if(aiScene == null) {
             MemoryUtil.memFree(modelBuf);
@@ -302,7 +302,7 @@ public class Model {
             AIString aiFilename = AIString.calloc();
             Assimp.aiGetMaterialTexture(aiMaterial, aiTextureType_DIFFUSE, 0, aiFilename, (IntBuffer) null, null, null, null, null, null);
             
-            textures[i] = new Texture(aiFilename.dataString());
+            textures[i] = new Texture(XJGE.ASSETS_FILEPATH, aiFilename.dataString(), GL_TEXTURE_2D);
             
             aiFilename.free();
             

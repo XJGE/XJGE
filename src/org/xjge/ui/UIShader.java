@@ -6,6 +6,7 @@ import org.joml.Vector2fc;
 import org.joml.Vector3fc;
 import static org.lwjgl.opengl.GL20.GL_FRAGMENT_SHADER;
 import static org.lwjgl.opengl.GL20.GL_VERTEX_SHADER;
+import org.xjge.core.XJGE;
 import org.xjge.graphics.GLDataType;
 import org.xjge.graphics.GLProgram;
 import org.xjge.graphics.GLShader;
@@ -28,10 +29,10 @@ class UIShader {
      */
     private UIShader() {
         var shaderSourceFiles = new LinkedList<GLShader>() {{
-            add(new GLShader("xjge_shader_ui_vertex.glsl", GL_VERTEX_SHADER));
-            add(new GLShader("xjge_shader_ui_fragment.glsl", GL_FRAGMENT_SHADER));
+            add(new GLShader(XJGE.ASSETS_FILEPATH, "xjge_shader_ui_vertex.glsl", GL_VERTEX_SHADER));
+            add(new GLShader(XJGE.ASSETS_FILEPATH, "xjge_shader_ui_fragment.glsl", GL_FRAGMENT_SHADER));
         }};
-
+        
         shader = new GLProgram(shaderSourceFiles, "default");
 
         shader.use();

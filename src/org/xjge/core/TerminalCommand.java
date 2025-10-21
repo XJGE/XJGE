@@ -128,8 +128,7 @@ public abstract class TerminalCommand {
      * 
      * @param required the minimum number of arguments required by this command
      * 
-     * @return an error message as a string that can be passed to 
-     *         {@link setOutput setOutput()}
+     * @return an error message as a string that can be displayed to the user
      */
     protected String errorNotEnoughArgs(int required) {
         return "ERROR: Invalid number of arguments. Required at least " + required + ".";
@@ -142,8 +141,7 @@ public abstract class TerminalCommand {
      * @param numPassed the number of arguments provided by the user
      * @param maxArgs the maximum number of arguments allowed by the command
      * 
-     * @return an error message as a string that can be passed to 
-     *         {@link setOutput setOutput()}
+     * @return an error message as a string that can be displayed to the user
      */
     protected String errorTooManyArgs(int numPassed, int maxArgs) {
         return "ERROR: Invalid number of arguments. Found " + numPassed + ", max of " + maxArgs + " allowed.";
@@ -157,8 +155,7 @@ public abstract class TerminalCommand {
      * @param found the argument provided by the user
      * @param required the argument(s) or data types as accepted by the command
      * 
-     * @return an error message as a string that can be passed to 
-     *         {@link setOutput setOutput()}
+     * @return an error message as a string that can be displayed to the user
      */
     protected String errorInvalidArg(String found, String required) {
         return "ERROR: Invalid argument. Found \"" + found + "\" but required " + required;

@@ -27,20 +27,6 @@ public final class Skybox {
     private final Matrix4f newView  = new Matrix4f();
     
     /**
-     * Creates a new skybox using the images specified. These images should all 
-     * exhibit the same width/height dimensions in pixels and may exhibit 
-     * transparency.
-     * 
-     * @param topFilename the filename of the image to use for the top of the skybox
-     * @param centerFilename the filename of the image to use for the sides of the skybox
-     * @param bottomFilename the filename of the image to use for the bottom of the skybox
-     * @param useLinearFilter if true, the textures will be filtered without hard edges
-     */
-    public Skybox(String topFilename, String centerFilename, String bottomFilename, boolean useLinearFilter) {
-        this(centerFilename, centerFilename, topFilename, bottomFilename, centerFilename, centerFilename, useLinearFilter);
-    }
-    
-    /**
      * Overloaded version of {@link Skybox(String, String, String, boolean)}. This 
      * variant permits more variation between faces of the skybox.
      * 
@@ -52,7 +38,7 @@ public final class Skybox {
      * @param backFilename the filename of the image to use for the back of the skybox
      * @param useLinearFilter if true, the textures will be filtered without hard edges
      */
-    public Skybox(String rightFilename, String leftFilename, String topFilename, String bottomFilename, 
+    public Skybox(String filepath, String rightFilename, String leftFilename, String topFilename, String bottomFilename, 
                   String frontFilename, String backFilename, boolean useLinearFilter) {
         
         Map<Integer, String> images = new HashMap<>();
@@ -68,7 +54,7 @@ public final class Skybox {
             }
         }
         
-        cubemap = new Cubemap(images, useLinearFilter);
+        cubemap = new Cubemap(filepath, images, useLinearFilter);
         g       = new Graphics();
         
         g.vertices = MemoryUtil.memAllocFloat(192);

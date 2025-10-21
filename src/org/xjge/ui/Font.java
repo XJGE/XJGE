@@ -63,7 +63,7 @@ public final class Font {
     private final int colOffsetHandle;
     private int numGlyphsAllocated;
     
-    public static final Font fallback = new Font("/org/xjge/assets/", "xjge_font_fallback.ttf", DEFAULT_FONT_SIZE);
+    public static final Font fallback = new Font(XJGE.ASSETS_FILEPATH, "xjge_font_fallback.ttf", DEFAULT_FONT_SIZE);
     
     private final String charset = " !\"#$%&\'()*+,-./" +
                                    "0123456789:;<=>?"   +
@@ -92,21 +92,11 @@ public final class Font {
     /**
      * Creates a new font object using data from the provided file.
      * 
-     * @param filename the name of the file to load (with extension)
-     * @param size the size of the font in non-pixel units
-     */
-    public Font(String filename, int size) {
-        this(XJGE.getAssetsFilepath(), filename, size);
-    }
-    
-    /**
-     * Delegating constructor for internal use only.
-     * 
      * @param filepath the file location relative to this applications executable jar
      * @param filename the name of the file to load (with extension)
      * @param size the size of the font in non-pixel units
      */
-    private Font(String filepath, String filename, int size) {
+    public Font(String filepath, String filename, int size) {
         int[] info = loadFont(filepath, filename, size);
         
         isBitmapFont      = info[0] == 1;

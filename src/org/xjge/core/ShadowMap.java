@@ -20,7 +20,7 @@ import org.xjge.graphics.GLProgram;
  * NOTE: Entities that wish to produce shadows can do so by supplying their 
  * model matrix (and texture if necessary) to the depth shader program made 
  * accessible through their 
- * {@linkplain Entity#renderShadow(org.xjge.graphics.GLProgram) renderShadow()} 
+ * {Entity#renderShadow(org.xjge.graphics.GLProgram) renderShadow()} 
  * methods.
  * 
  * @author J Hoffman

@@ -39,7 +39,7 @@ public abstract class Widget {
      * elements to better suit the size of the viewport.
      * <br><br>
      * The arguments provided here are done so out of convenience but can be 
-     * accessed statically though the {@link Window} class if needed.
+     * accessed statically though the {@link org.xjge.core.Window} class if needed.
      * 
      * @param splitType the value that denotes how the screen is being divided
      * @param viewportWidth the width (in internal resolution pixels) of the 

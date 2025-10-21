@@ -3,7 +3,7 @@ package org.xjge.core;
 /**
  * Created: May 3, 2021
  * <p>
- * Represents an interactive component on a {@link Gamepad} such as an analog 
+ * Represents an interactive component on a {@link InputDeviceGamepad} such as an analog 
  * stick, button, or trigger.
  * 
  * @author J Hoffman

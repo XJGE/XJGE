@@ -720,9 +720,9 @@ public final class Window {
      * 
      * @param filename the name of the file to load (with extension)
      */
-    public static void setIcon(String filename) {
+    public static void setIcon(String filepath, String filename) {
         try(MemoryStack stack = MemoryStack.stackPush()) {
-            InputStream file = Window.class.getResourceAsStream(XJGE.getAssetsFilepath() + filename);
+            InputStream file = Window.class.getResourceAsStream(filepath + filename);
             byte[] iconData  = file.readAllBytes();
             
             IntBuffer widthBuf   = stack.mallocInt(1);

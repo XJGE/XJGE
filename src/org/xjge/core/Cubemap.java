@@ -39,12 +39,12 @@ final class Cubemap {
      *               parse texture data from
      * @param useLinearFilter if true, the textures will be filtered without hard edges
      */
-    Cubemap(Map<Integer, String> images, boolean useLinearFilter) {
+    Cubemap(String filepath, Map<Integer, String> images, boolean useLinearFilter) {
         handle = glGenTextures();
         glBindTexture(GL_TEXTURE_CUBE_MAP, handle);
         
         images.forEach((target, filename) -> {
-            try(InputStream file = Cubemap.class.getResourceAsStream(XJGE.getAssetsFilepath() + filename)) {
+            try(InputStream file = Cubemap.class.getResourceAsStream(filepath + filename)) {
                 loadCubemapTexture(target, file);
             } catch(Exception e) {
                 Logger.logWarning("Failed to load cubemap texture \"" + filename + "\"", e);

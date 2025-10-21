@@ -38,9 +38,9 @@ public final class GLShader {
      * <td>{@link org.lwjgl.opengl.GL43#GL_COMPUTE_SHADER GL_COMPUTE_SHADER}</td>
      * </tr></table>
      */
-    public GLShader(String filename, int stage) {
+    public GLShader(String filepath, String filename, int stage) {
         StringBuilder output = new StringBuilder();
-        InputStream file     = GLShader.class.getResourceAsStream(XJGE.getAssetsFilepath() + filename);
+        InputStream file     = GLShader.class.getResourceAsStream(filepath + filename);
         
         try(BufferedReader reader = new BufferedReader(new InputStreamReader(file, "UTF-8"))) {
             String line;
