@@ -119,6 +119,9 @@ public final class Audio {
         }
     }
     
+    /**
+     * Called once per frame to dynamically reposition sound sources using the camera orientation of every active viewport.
+     */
     static void update() {
         for(int i = 0; i < speaker.getSoundSourceLimit(); i++) {
             if(sourcePool[i].getState() == AL_PLAYING) {
@@ -133,17 +136,18 @@ public final class Audio {
         cameraDirections.clear();
     }
     
+    /**
+     * Frees all resources used by the audio system and shuts it down gracefully.
+     */
     static void freeResources() {
         for(SoundSource source : sourcePool) {
             source.stop();
             source.delete();
         }
         
-        sounds.values().forEach(sound -> sound.delete());
-        
+        sounds.values().forEach(Sound::delete);
         alcMakeContextCurrent(NULL);
-        
-        speakers.values().forEach(device -> device.close());
+        speakers.values().forEach(Speaker::close);
     }
     
     static Sound getSound(String name) {
