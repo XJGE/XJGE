@@ -1,7 +1,6 @@
 package org.xjge.graphics;
 
 import org.xjge.core.Logger;
-import org.xjge.core.XJGE;
 import java.io.BufferedReader;
 import java.io.InputStream;
 import java.io.InputStreamReader;
