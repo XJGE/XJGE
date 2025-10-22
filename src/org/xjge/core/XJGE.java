@@ -44,8 +44,7 @@ import org.xjge.graphics.PostProcessShader;
  *     {@linkplain addGLProgram shader programs}.</li>
  * <li>Control over which {@link Camera} object each viewport will use to 
  *     display the scene from their perspective.</li>
- * <li>The ability to {@linkplain UI#addWidget add} and {@linkplain 
- *     UI#removeWidget(int, java.lang.String) remove} UI widgets from viewports.</li>
+ * <li>The ability to {@link UIManager#addWidget add} and {@link UIManager#removeWidget(int, java.lang.String) remove} UIManager widgets from viewports.</li>
  * </ul>
  * <p>
  * Before the engines features can be used {@link init init()} must be called 
@@ -55,7 +54,7 @@ import org.xjge.graphics.PostProcessShader;
  * @author J Hoffman
  * @since  2.0.0
  * 
- * @see Input
+ * @see InputSystem
  * @see Monitor
  * @see Logger
  * @see Terminal
@@ -140,6 +139,12 @@ public final class XJGE {
      */
     private XJGE() {}
     
+    /**
+     * 
+     * @param debugModeEnabled if true, additional developer tools will be available for use
+     * @param assetsFolderFilepath the absolute filepath to wherever the games assets are stored
+     * @param scenesPackage the relative package path containing the game scene subclasses
+     */
     public static void init(boolean debugModeEnabled, String assetsFolderFilepath, String scenesPackage) {
         if(initialized) {
             Logger.logInfo("XJGE has already been initialized");
@@ -265,8 +270,8 @@ public final class XJGE {
         
         XJGE.scenesPackage = scenesPackage;
         
-        Audio.init(debugModeEnabled);
-        Input.init();
+        AudioSystem.init(debugModeEnabled);
+        InputSystem.init();
         
         Logger.logSystemInfo();
         
@@ -318,7 +323,7 @@ public final class XJGE {
             
             while(delta >= TARGET_DELTA) {
                 //Input.update(TARGET_DELTA, deltaMetric);
-                Input.update(TARGET_DELTA, deltaMetric);
+                InputSystem.update(TARGET_DELTA, deltaMetric);
                 Window.update(deltaMetric, fps, entityCount);
                 
                 if(tick(20)) {
@@ -351,19 +356,19 @@ public final class XJGE {
                 }
                 
                 //Add new widget to a viewport asynchronously
-                UI.processWidgetAddRequests();
+                UIManager.processWidgetAddRequests();
                 
-                //Update viewport cameras and UI widgets
+                //Update viewport cameras and UIManager widgets
                 for(Viewport viewport : Window.getViewports()) {
                     if(viewport.active && viewport.currCamera != null) {
                         viewport.currCamera.update(TARGET_DELTA, delta);
-                        UI.updateWidgets(viewport.id, TARGET_DELTA, delta);
-                        Audio.captureViewportCameraData(viewport.id, viewport.currCamera);
+                        UIManager.updateWidgets(viewport.id, TARGET_DELTA, delta);
+                        AudioSystem.captureViewportCameraData(viewport.id, viewport.currCamera);
                     }
                 }
                 
-                UI.processWidgetRemoveRequests();
-                Audio.update();
+                UIManager.processWidgetRemoveRequests();
+                AudioSystem.update();
                 
                 if(tick(60)) {
                     fps    = cycles;
@@ -431,8 +436,8 @@ public final class XJGE {
         }
         
         Window.freeCallbacks();
-        Audio.freeResources();
-        Input.freeDevices();
+        AudioSystem.freeResources();
+        InputSystem.freeDevices();
         GL.destroy();
         glfwTerminate();
     }

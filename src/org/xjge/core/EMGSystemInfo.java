@@ -11,9 +11,9 @@ import static org.lwjgl.opengl.GL11.glGetString;
  * @author J Hoffman
  * @since 4.0.0
  */
-class EMSystemInfo extends EngineMetricsGroup {
+class EMGSystemInfo extends EngineMetricsGroup {
     
-    EMSystemInfo(String title) {
+    EMGSystemInfo(String title) {
         super(title);
         for(int i = 0; i < 6; i++) output.add(new StringBuilder());
     }

@@ -7,12 +7,12 @@ import java.text.DecimalFormat;
  * @author J Hoffman
  * @since 4.0.0
  */
-class EMNoclip extends EngineMetricsGroup {
+class EMGNoclip extends EngineMetricsGroup {
 
     private final DecimalFormat pattern1 = new DecimalFormat("0.0");
     private final DecimalFormat pattern2 = new DecimalFormat("0");
     
-    public EMNoclip(String title) {
+    public EMGNoclip(String title) {
         super(title);
         for(int i = 0; i < 4; i++) output.add(new StringBuilder());
     }

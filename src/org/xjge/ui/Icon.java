@@ -8,7 +8,7 @@ import org.joml.Vector2i;
 import org.joml.Vector3f;
 import static org.lwjgl.opengl.GL30.*;
 import org.lwjgl.system.MemoryStack;
-import org.xjge.core.UI;
+import org.xjge.core.UIManager;
 import org.xjge.graphics.Atlas;
 import org.xjge.graphics.Color;
 import org.xjge.graphics.Graphics;
@@ -215,7 +215,7 @@ public final class Icon {
         UIShader.getInstance().setUniform("uOpacity", opacity);
         UIShader.getInstance().setUniform("uColor", color.asVector3f());
         UIShader.getInstance().setUniform("uModel", graphics.modelMatrix);
-        UIShader.getInstance().setUniform("uProjection", UI.getProjectionMatrix());
+        UIShader.getInstance().setUniform("uProjection", UIManager.getProjectionMatrix());
         UIShader.getInstance().setUniform("uTexCoords", texCoords);
         UIShader.getInstance().setUniform("uTexture", 0);
         

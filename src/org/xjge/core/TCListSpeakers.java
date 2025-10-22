@@ -23,12 +23,12 @@ final class TCListSpeakers extends TerminalCommand {
     public TerminalOutput execute(List<String> args) {
         var speakerList = new StringBuilder();
         
-        for(int i = 0; i < Audio.getSpeakerCount(); i++) {
-            var speaker = Audio.getSpeaker(i);
+        for(int i = 0; i < AudioSystem.getSpeakerCount(); i++) {
+            var speaker = AudioSystem.getSpeaker(i);
             
             speakerList.append("\"").append(speaker.name).append("\" at index ").append(i);
             
-            if(i < Audio.getSpeakerCount() - 1) speakerList.append(" \n");
+            if(i < AudioSystem.getSpeakerCount() - 1) speakerList.append(" \n");
         }
         
         return new TerminalOutput(speakerList.toString(), Color.YELLOW);

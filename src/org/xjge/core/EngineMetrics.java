@@ -20,10 +20,10 @@ final class EngineMetrics {
     
     EngineMetrics(Texture engineIcons) {
         groups = new EngineMetricsGroup[] {
-            new EMPerformance("Performance"),
-            new EMSystemInfo("System Info"),
-            new EMHardware("Hardware", engineIcons),
-            new EMNoclip("Noclip")
+            new EMGPerformance("Performance"),
+            new EMGSystemInfo("System Info"),
+            new EMGHardware("Hardware", engineIcons),
+            new EMGNoclip("Noclip")
         };
         
         groups[0].expanded = true;

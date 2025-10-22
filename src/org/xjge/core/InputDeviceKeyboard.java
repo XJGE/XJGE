@@ -14,7 +14,7 @@ final class InputDeviceKeyboard extends InputDevice {
     int[] rightAxisBindings = new int[4];
     
     InputDeviceKeyboard() {
-        super(Input.KEYBOARD);
+        super(InputSystem.KEYBOARD);
         name      = "Generic Keyboard";
         connected = true;
         

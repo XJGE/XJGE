@@ -55,7 +55,7 @@ public final class SoundSource {
         setVolume(volume);
         
         if(currentSound != null) {
-            Sound sound = Audio.getSound(currentSound.name);
+            Sound sound = AudioSystem.getSound(currentSound.name);
             
             alSourceQueueBuffers(handle, sound.handle);
             alSourcei(handle, AL_LOOPING, (currentSound.looping) ? AL_TRUE : AL_FALSE);
@@ -63,7 +63,7 @@ public final class SoundSource {
         }
         
         for(QueuedSound queuedSound : soundQueue) {
-            Sound sound = Audio.getSound(queuedSound.name);
+            Sound sound = AudioSystem.getSound(queuedSound.name);
             alSourceQueueBuffers(handle, sound.handle);
         }
         
@@ -114,7 +114,7 @@ public final class SoundSource {
             alSourcei(handle, AL_BUFFER, 0);
             
             currentSound = soundQueue.poll();
-            Sound sound = Audio.getSound(currentSound.name);
+            Sound sound = AudioSystem.getSound(currentSound.name);
             
             alSourceQueueBuffers(handle, sound.handle);
             alSourcei(handle, AL_LOOPING, (currentSound.looping) ? AL_TRUE : AL_FALSE);
@@ -187,7 +187,7 @@ public final class SoundSource {
     public SoundSource seek(float seconds) {
         if(currentSound == null) return this;
         
-        Sound sound = Audio.getSound(currentSound.name);
+        Sound sound = AudioSystem.getSound(currentSound.name);
         alSourcei(handle, AL_SAMPLE_OFFSET, Math.round(seconds * sound.frequency));
         
         return this;

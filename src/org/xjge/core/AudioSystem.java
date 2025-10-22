@@ -1,6 +1,5 @@
 package org.xjge.core;
 
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
@@ -26,7 +25,7 @@ import static org.lwjgl.system.MemoryUtil.NULL;
  * @author J Hoffman
  * @since  2.0.0
  */
-public final class Audio {
+public final class AudioSystem {
     
     static final int MIN_SOURCES = 64;
     static final int MAX_SOURCES = 256;
@@ -155,7 +154,7 @@ public final class Audio {
         return (sounds.containsKey(name)) ? sounds.get(name) : Sound.FALLBACK;
     }
     
-    public static void loadSound(String name, String filepath, String filename) {
+    public static void loadSound(String name, String filename) {
         sounds.put(name, new Sound(filename, false));
     }
     
@@ -188,7 +187,7 @@ public final class Audio {
             return false;
         }
         
-        if(Audio.speaker != null) {
+        if(AudioSystem.speaker != null) {
             for(int i = 0; i < MAX_SOURCES; i++) sourcePool[i].cacheState();
         }
         
@@ -200,12 +199,12 @@ public final class Audio {
         });
         
         if(speaker.use()) {
-            Audio.speaker = speaker;
+            AudioSystem.speaker = speaker;
             
             soundFiles.forEach((name, filename) -> sounds.put(name, new Sound(filename, false)));
             Sound.FALLBACK = new Sound("xjge_sound_fallback.ogg", true);
             
-            for(int i = 0; i < Audio.speaker.getSoundSourceLimit(); i++) sourcePool[i].applyState();
+            for(int i = 0; i < AudioSystem.speaker.getSoundSourceLimit(); i++) sourcePool[i].applyState();
             
             return true;
             

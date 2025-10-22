@@ -130,8 +130,8 @@ final class Viewport {
      * <ol>
      * <li>The perspective of the camera object used by this viewport is 
      *     rendered.</li>
-     * <li>The viewports UI components will be drawn in order of their 
-     *     z-positions.</li> 
+     * <li>The viewports UIManager components will be drawn in order of their 
+     z-positions.</li> 
      * <li>The texture attachment associated with this viewport by the engines 
      *     framebuffer will be updated to reflect the changes made in the 
      *     previous two steps.</li>
@@ -155,9 +155,9 @@ final class Viewport {
             }
             
             case "ui" -> {
-                UI.updateProjectionMatrix(width, height, Short.MIN_VALUE, Short.MAX_VALUE);
-                UI.renderWidgets(id, glPrograms);
-                resetCamera(glPrograms); //TODO: is this even necessary now since the projection matrix is handled by UI?
+                UIManager.updateProjectionMatrix(width, height, Short.MIN_VALUE, Short.MAX_VALUE);
+                UIManager.renderWidgets(id, glPrograms);
+                resetCamera(glPrograms); //TODO: is this even necessary now since the projection matrix is handled by UIManager?
             }
             
             case "texture" -> {
@@ -218,7 +218,7 @@ final class Viewport {
         createTextureAttachment();
         bloom.createTextureAttachments(width, height);
         
-        UI.relocateWidgets(id, width, height);
+        UIManager.relocateWidgets(id, width, height);
     }
     
     /**

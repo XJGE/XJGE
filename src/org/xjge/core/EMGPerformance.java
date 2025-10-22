@@ -7,14 +7,14 @@ import java.text.DecimalFormat;
  * @author J Hoffman
  * @since 4.0.0
  */
-class EMPerformance extends EngineMetricsGroup {
+class EMGPerformance extends EngineMetricsGroup {
     
     private long memoryFree;
     private long memoryUsed;
     
     private final DecimalFormat pattern = new DecimalFormat("0");
     
-    EMPerformance(String title) {
+    EMGPerformance(String title) {
         super(title);
         for(int i = 0; i < 4; i++) output.add(new StringBuilder());
     }

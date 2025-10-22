@@ -252,7 +252,7 @@ public final class Window {
                 mouse.cursorPositionX = cursorPositionX * scaleX;
                 mouse.cursorPositionY = resolution.height - Math.abs((cursorPositionY * scaleY));
 
-                UI.processMouseInput(mouse);
+                UIManager.processMouseInput(mouse);
             } else {
                 mouse.cursorPositionX = cursorPositionX;
                 mouse.cursorPositionY = height - cursorPositionY;
@@ -288,7 +288,7 @@ public final class Window {
             }
             
             if(!terminal.show && !metrics.show) {
-                UI.processMouseInput(mouse);
+                UIManager.processMouseInput(mouse);
             } else {
                 if(terminal.show) terminal.scrollBar.processMouseInput(mouse);
                 if(metrics.show) metrics.processMouseInput(mouse);
@@ -300,7 +300,7 @@ public final class Window {
             mouse.scrollSpeedY = scrollSpeedY;
             
             if(!terminal.show && !metrics.show && !noclip.enabled) {
-                UI.processMouseInput(mouse);
+                UIManager.processMouseInput(mouse);
                 InputDeviceMouse.setScrollSpeedValues(scrollSpeedX, scrollSpeedY);
             } else {
                 if(terminal.show) terminal.scrollBar.processMouseInput(mouse);
@@ -340,7 +340,7 @@ public final class Window {
                 if(key == GLFW_KEY_S) noclip.pressed[2] = (action != GLFW_RELEASE);
                 if(key == GLFW_KEY_D) noclip.pressed[3] = (action != GLFW_RELEASE);
             } else {
-                UI.processKeyboardInput(key, action, mods, keyboard.getKeyCharacter(key, mods));
+                UIManager.processKeyboardInput(key, action, mods, keyboard.getKeyCharacter(key, mods));
             }
             
             mouse.mods = mods;
@@ -376,7 +376,7 @@ public final class Window {
     static void swapBuffers() {
         if(terminal.show || metrics.show) {
             glViewport(0, 0, width, height);
-            UI.updateProjectionMatrix(width, height, 0, Integer.MAX_VALUE);
+            UIManager.updateProjectionMatrix(width, height, 0, Integer.MAX_VALUE);
             
             if(terminal.show) terminal.render();
             if(metrics.show) metrics.render();

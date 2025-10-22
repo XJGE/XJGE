@@ -49,7 +49,7 @@ public final class Speaker {
             
             var sources = new ArrayList<Integer>();
             
-            while(sources.size() < Audio.MAX_SOURCES) {
+            while(sources.size() < AudioSystem.MAX_SOURCES) {
                 int sourceHandle = alGenSources();
                 if(alGetError() != AL_NO_ERROR) break;
                 sources.add(sourceHandle);
@@ -60,7 +60,7 @@ public final class Speaker {
             
             alcMakeContextCurrent(NULL);
             
-            if(soundSourceLimit >= Audio.MIN_SOURCES) {
+            if(soundSourceLimit >= AudioSystem.MIN_SOURCES) {
                 return true;
             } else {
                 throw new IllegalStateException("Speaker \"" + name + "\" does not support the minimum number of sound sources");

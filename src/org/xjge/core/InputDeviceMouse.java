@@ -21,7 +21,7 @@ final class InputDeviceMouse extends InputDevice {
     private final Mouse mouse;
     
     InputDeviceMouse(Mouse mouse) {
-        super(Input.MOUSE);
+        super(InputSystem.MOUSE);
         this.mouse = mouse;
         name       = "Generic Mouse";
         connected  = true;

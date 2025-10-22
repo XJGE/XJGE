@@ -1,6 +1,6 @@
 package org.xjge.ui;
 
-import org.xjge.core.UI;
+import org.xjge.core.UIManager;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
@@ -533,7 +533,7 @@ public final class Font {
         UIShader.getInstance().setUniform("uType", 0);
         UIShader.getInstance().setUniform("uTexture", 0);
         UIShader.getInstance().setUniform("uIsBitmapFont", (isBitmapFont) ? 1 : 0);
-        UIShader.getInstance().setUniform("uProjection", UI.getProjectionMatrix());
+        UIShader.getInstance().setUniform("uProjection", UIManager.getProjectionMatrix());
         
         glDrawElementsInstanced(GL_TRIANGLES, indexBuffer.capacity(), GL_UNSIGNED_INT, 0, glyphPool.size());
         glDisable(GL_BLEND);

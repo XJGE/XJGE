@@ -20,13 +20,13 @@ import static org.xjge.core.InputDevice.CONTROL_VIRTUAL;
  * @author J Hoffman
  * @since  2.0.0
  */
-public class Input {
+public class InputSystem {
     
     public static final int NO_DEVICE = -1;
     public static final int KEYBOARD  = 4;
     public static final int MOUSE     = 5;
     
-    private static final Observable observable = new Observable(Input.class);
+    private static final Observable observable = new Observable(InputSystem.class);
     
     private static final AtomicInteger virtualDeviceCounter      = new AtomicInteger(100);
     private static final Queue<Runnable> deviceConnectionEvents  = new ConcurrentLinkedQueue<>();

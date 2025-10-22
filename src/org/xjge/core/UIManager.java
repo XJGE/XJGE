@@ -15,7 +15,7 @@ import org.xjge.ui.Widget;
  * @author J Hoffman
  * @since 4.0.0
  */
-public final class UI {
+public final class UIManager {
 
     private static final Matrix4f projectionMatrix = new Matrix4f();
     

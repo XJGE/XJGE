@@ -10,11 +10,11 @@ import org.xjge.ui.Icon;
  * @author J Hoffman
  * @since 4.0.0
  */
-class EMHardware extends EngineMetricsGroup {
+class EMGHardware extends EngineMetricsGroup {
 
     private final Icon[] icons = new Icon[4];
     
-    public EMHardware(String title, Texture engineIcons) {
+    public EMGHardware(String title, Texture engineIcons) {
         super(title);
         for(int i = 0; i < 8; i++) output.add(new StringBuilder());
         
@@ -36,10 +36,10 @@ class EMHardware extends EngineMetricsGroup {
                     output.get(i).append("MONITOR:   \"").append(Window.getMonitor().name)
                                  .append("\" (").append(Window.getMonitor().getInfo()).append(")");
                 }
-                case 3 -> output.get(i).append("SPEAKER:   ").append(Audio.getSpeaker().name);
+                case 3 -> output.get(i).append("SPEAKER:   ").append(AudioSystem.getSpeaker().name);
                 case 4, 5, 6, 7 -> {
                     output.get(i).append("    ").append(i - 4).append(": ");
-                    if(Input.getDeviceConnectionStatus(i - 4)) output.get(i).append(Input.getDeviceName(i - 4));
+                    if(InputSystem.getDeviceConnectionStatus(i - 4)) output.get(i).append(InputSystem.getDeviceName(i - 4));
                 }
             }
         }
@@ -54,8 +54,8 @@ class EMHardware extends EngineMetricsGroup {
     protected void render() {
         for(int i = 0; i < icons.length; i++) {
             if(i != icons.length - 1) {
-                if(Input.getDeviceConnectionStatus(i)) {
-                    if(Input.getDeviceEnabled(i)) icons[i].setSubImage(2, 0);
+                if(InputSystem.getDeviceConnectionStatus(i)) {
+                    if(InputSystem.getDeviceEnabled(i)) icons[i].setSubImage(2, 0);
                     else                          icons[i].setSubImage(1, 0);
                 } else {
                     icons[i].setSubImage(0, 0);
