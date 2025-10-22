@@ -7,6 +7,11 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 
 /**
+ * Represents an external asset source rooted in a local filesystem directory.
+ * <p>
+ * Files are loaded using absolute paths relative to this root. In debug mode,
+ * this class can monitor files for changes and notify listeners (e.g. textures,
+ * shaders) to reload automatically.
  * 
  * @author J Hoffman
  * @since 4.0.0

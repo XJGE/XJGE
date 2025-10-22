@@ -88,7 +88,7 @@ public final class XJGE {
     
     public static final Path PRESENT_WORKING_DIRECTORY = Path.of("").toAbsolutePath();
     
-    public static final String VERSION = "4.0.0-beta2";
+    public static final String VERSION = "4.0.0-beta3";
     private static String scenesPackage;
     private static String cpuModel;
     
