@@ -10,8 +10,8 @@ import java.io.InputStream;
  */
 interface AssetSource {
 
-    boolean exists(String filepath);
+    boolean exists(String filename);
     
-    InputStream open(String filepath) throws IOException;
+    InputStream open(String filename) throws IOException;
     
 }

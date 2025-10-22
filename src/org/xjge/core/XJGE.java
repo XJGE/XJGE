@@ -9,6 +9,7 @@ import org.xjge.graphics.GLDataType;
 import org.xjge.graphics.GLProgram;
 import org.xjge.graphics.GLShader;
 import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
@@ -24,7 +25,6 @@ import org.lwjgl.opengl.GL;
 import static org.lwjgl.opengl.GL32.*;
 import org.xjge.graphics.Color;
 import org.xjge.graphics.PostProcessShader;
-import org.xjge.ui.Font;
 
 /**
  * Created: Apr 28, 2021
@@ -141,11 +141,18 @@ public final class XJGE {
      */
     private XJGE() {}
     
-    public static void init(boolean debugModeEnabled, String scenesFilepath) {
+    public static void init(boolean debugModeEnabled, String assetsFolderFilepath, String scenesFolderFilepath) {
         if(initialized) {
             Logger.logInfo("XJGE has already been initialized");
             return;
         }
+        
+        if(debugModeEnabled) {
+            AssetManager.addSource(new AssetSourceExternal(Paths.get(assetsFolderFilepath)));
+        }
+        
+        AssetManager.addSource(new AssetSourceInternal(XJGE.class.getClassLoader()));
+        AssetManager.addSource(new AssetSourceFallback(XJGE.class.getClassLoader()));
         
         observable.properties.put("XJGE_SCENE_CHANGED", scene);
         
