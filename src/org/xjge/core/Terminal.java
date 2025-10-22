@@ -93,7 +93,7 @@ final class Terminal {
     Terminal(TreeMap<String, TerminalCommand> commands) {
         this.commands = commands;
         
-        glyphAdvance = Font.fallback.getGlyphAdvance('>');
+        glyphAdvance = Font.FALLBACK.getGlyphAdvance('>');
         cursorPosition.x  = glyphAdvance;
         commandPosition.x = glyphAdvance;
         
@@ -141,11 +141,11 @@ final class Terminal {
         
         for(TerminalOutput commandOutput : output) {
             commandOutput.lines.clear();
-            var newLines = Font.fallback.split(commandOutput.text, outputArea.width - 40);
+            var newLines = Font.FALLBACK.split(commandOutput.text, outputArea.width - 40);
             
             for(int i = 0; i < newLines.size(); i++) {
                 commandOutput.lines.add((i == 0) ? newLines.get(i) : "  " + newLines.get(i));
-                outputLength += Font.fallback.size;
+                outputLength += Font.FALLBACK.size;
             }
         }
         
@@ -288,7 +288,7 @@ final class Terminal {
     void render() {
         outputArea.render(0.5f, Color.BLACK);
         
-        int yOffset = ((outputArea.positionY + 6) - Font.fallback.size) - scrollBar.getContentOffset();
+        int yOffset = ((outputArea.positionY + 6) - Font.FALLBACK.size) - scrollBar.getContentOffset();
         
         glEnable(GL_SCISSOR_TEST);
         glScissor(outputArea.positionX, outputArea.positionY, outputArea.width, outputArea.height);
@@ -297,8 +297,8 @@ final class Terminal {
             var commandOutput = output.get(i);
             
             for(int j = commandOutput.lines.size() - 1; j >= 0; j--) {
-                yOffset += Font.fallback.size;
-                Font.fallback.drawString(commandOutput.lines.get(j), 12, yOffset, commandOutput.color, 1f);
+                yOffset += Font.FALLBACK.size;
+                Font.FALLBACK.drawString(commandOutput.lines.get(j), 12, yOffset, commandOutput.color, 1f);
             }
         }
         
@@ -307,20 +307,20 @@ final class Terminal {
         scrollBar.render();
         commandLine.render(1, Color.BLACK);
         
-        Font.fallback.drawString(">", caretPosition.x, caretPosition.y, Color.WHITE, 1f);
+        Font.FALLBACK.drawString(">", caretPosition.x, caretPosition.y, Color.WHITE, 1f);
         
-        if(!suggestion.isEmpty()) Font.fallback.drawString(suggestion, commandPosition.x, commandPosition.y, Color.GRAY, 1f);
-        if(cursorBlink) Font.fallback.drawString("_", cursorPosition.x, cursorPosition.y, Color.WHITE, 1f);
+        if(!suggestion.isEmpty()) Font.FALLBACK.drawString(suggestion, commandPosition.x, commandPosition.y, Color.GRAY, 1f);
+        if(cursorBlink) Font.FALLBACK.drawString("_", cursorPosition.x, cursorPosition.y, Color.WHITE, 1f);
         
         if(typed.length() > 0) {
-            if(validateCommand()) Font.fallback.drawString(typed, commandPosition.x, commandPosition.y, highlight);
-            else Font.fallback.drawString(typed, commandPosition.x, commandPosition.y, Color.WHITE, 1f);
+            if(validateCommand()) Font.FALLBACK.drawString(typed, commandPosition.x, commandPosition.y, highlight);
+            else Font.FALLBACK.drawString(typed, commandPosition.x, commandPosition.y, Color.WHITE, 1f);
         }
     }
     
     void relocate(int windowWidth, int windowHeight) {
         commandLine.width  = windowWidth;
-        commandLine.height = Font.fallback.size + 2;
+        commandLine.height = Font.FALLBACK.size + 2;
         
         outputArea.positionY = commandLine.height;
         outputArea.width     = windowWidth;

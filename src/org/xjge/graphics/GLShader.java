@@ -2,9 +2,12 @@ package org.xjge.graphics;
 
 import org.xjge.core.Logger;
 import java.io.BufferedReader;
+import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.nio.charset.StandardCharsets;
 import static org.lwjgl.opengl.GL20.*;
+import org.xjge.core.AssetManager;
 
 /**
  * Created: May 2, 2021
@@ -37,22 +40,14 @@ public final class GLShader {
      * <td>{@link org.lwjgl.opengl.GL43#GL_COMPUTE_SHADER GL_COMPUTE_SHADER}</td>
      * </tr></table>
      */
-    public GLShader(String filepath, String filename, int stage) {
-        StringBuilder output = new StringBuilder();
-        InputStream file     = GLShader.class.getResourceAsStream(filepath + filename);
+    public GLShader(String filename, int stage) {
+        String sourceCode = "";
         
-        try(BufferedReader reader = new BufferedReader(new InputStreamReader(file, "UTF-8"))) {
-            String line;
-            while((line = reader.readLine()) != null) {
-                output.append(line).append("\n");
-            }
-        } catch(Exception e) {
-            Logger.logError("Failed to parse GLSL file \"" + filename + "\". " + 
-                             "Check filename, path, or extension", 
-                             e);
+        try(InputStream file = AssetManager.open(filename)) {
+            sourceCode = loadShader(file);
+        } catch(Exception exception) {
+            Logger.logError("Failed to load GLSL file \"" + filename + "\"", exception);
         }
-        
-        CharSequence sourceCode = output.toString();
         
         handle = glCreateShader(stage);
         glShaderSource(handle, sourceCode);
@@ -60,6 +55,19 @@ public final class GLShader {
         
         if(glGetShaderi(handle, GL_COMPILE_STATUS) != GL_TRUE) {
             Logger.logError("Failed to parse GLSL file \"" + filename + "\" (" + glGetShaderInfoLog(handle) + ")", null);
+        }
+    }
+    
+    private static String loadShader(InputStream file) throws IOException {
+        try(BufferedReader reader = new BufferedReader(new InputStreamReader(file, StandardCharsets.UTF_8))) {
+            StringBuilder builder = new StringBuilder();
+            String line;
+
+            while((line = reader.readLine()) != null) {
+                builder.append(line).append('\n');
+            }
+
+            return builder.toString();
         }
     }
     

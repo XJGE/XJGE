@@ -8,11 +8,11 @@ import java.util.List;
 /**
  * 
  * @author J Hoffman
- * @since 
+ * @since 4.0.0
  */
 public final class AssetManager {
     
-    private static List<AssetSource> sources = new ArrayList<>();
+    private static final List<AssetSource> sources = new ArrayList<>();
     
     static void addSource(AssetSource source) {
         AssetManager.sources.add(source);

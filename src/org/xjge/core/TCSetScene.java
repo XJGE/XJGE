@@ -39,7 +39,7 @@ final class TCSetScene extends TerminalCommand {
                 return new TerminalOutput(errorTooManyArgs(args.size(), 1), Color.RED);
             } else {
                 try {
-                    Class<?> c = Class.forName(XJGE.getScenesFilepath() + args.get(0));
+                    Class<?> c = Class.forName(XJGE.getScenesPackage() + args.get(0));
 
                     if(!c.getSimpleName().equals("Scene") && Scene.class.isAssignableFrom(c)) {
                         //Assumes the scenes constructor has no parameters.

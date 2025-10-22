@@ -89,9 +89,8 @@ public final class XJGE {
     
     public static final Path PRESENT_WORKING_DIRECTORY = Path.of("").toAbsolutePath();
     
-    public static final String VERSION         = "4.0.0-beta1";
-    public static final String ASSETS_FILEPATH = "/org/xjge/assets/";
-    private static String scenesFilepath;
+    public static final String VERSION = "4.0.0-beta2";
+    private static String scenesPackage;
     private static String cpuModel;
     
     private static Texture engineIcons;
@@ -141,7 +140,7 @@ public final class XJGE {
      */
     private XJGE() {}
     
-    public static void init(boolean debugModeEnabled, String assetsFolderFilepath, String scenesFolderFilepath) {
+    public static void init(boolean debugModeEnabled, String assetsFolderFilepath, String scenesPackage) {
         if(initialized) {
             Logger.logInfo("XJGE has already been initialized");
             return;
@@ -169,8 +168,8 @@ public final class XJGE {
         //Initialize the default shader program that will be provided to the implementation
         {
             var shaderSourceFiles = new LinkedList<GLShader>() {{
-                add(new GLShader(ASSETS_FILEPATH, "xjge_shader_default_vertex.glsl", GL_VERTEX_SHADER));
-                add(new GLShader(ASSETS_FILEPATH, "xjge_shader_default_fragment.glsl", GL_FRAGMENT_SHADER));
+                add(new GLShader("xjge_shader_default_vertex.glsl", GL_VERTEX_SHADER));
+                add(new GLShader("xjge_shader_default_fragment.glsl", GL_FRAGMENT_SHADER));
             }};
 
             GLProgram defaultProgram = new GLProgram(shaderSourceFiles, "default");
@@ -217,8 +216,8 @@ public final class XJGE {
         //Create shader program that will generate shadow map output
         {
             var shaderSourceFiles = new LinkedList<GLShader>() {{
-                add(new GLShader(ASSETS_FILEPATH, "xjge_shader_depth_vertex.glsl", GL_VERTEX_SHADER));
-                add(new GLShader(ASSETS_FILEPATH, "xjge_shader_depth_fragment.glsl", GL_FRAGMENT_SHADER));
+                add(new GLShader("xjge_shader_depth_vertex.glsl", GL_VERTEX_SHADER));
+                add(new GLShader("xjge_shader_depth_fragment.glsl", GL_FRAGMENT_SHADER));
             }};
 
             depthProgram = new GLProgram(shaderSourceFiles, "default");
@@ -232,8 +231,8 @@ public final class XJGE {
         //Create shader program for applying gaussian blur
         {
             var shaderSourceFiles = new LinkedList<GLShader>() {{
-                add(new GLShader(ASSETS_FILEPATH, "xjge_shader_blur_vertex.glsl", GL_VERTEX_SHADER));
-                add(new GLShader(ASSETS_FILEPATH, "xjge_shader_blur_fragment.glsl", GL_FRAGMENT_SHADER));
+                add(new GLShader("xjge_shader_blur_vertex.glsl", GL_VERTEX_SHADER));
+                add(new GLShader("xjge_shader_blur_fragment.glsl", GL_FRAGMENT_SHADER));
             }};
 
             blurProgram = new GLProgram(shaderSourceFiles, "default");
@@ -245,7 +244,7 @@ public final class XJGE {
             blurProgram.addUniform(GLDataType.MAT4,  "uProjection");
         }
 
-        engineIcons = new Texture(ASSETS_FILEPATH, "xjge_texture_icons.png", GL_TEXTURE_2D);
+        engineIcons = new Texture("xjge_texture_icons.png");
         Light.setIconTexture(engineIcons);
         
         engineCommands = new TreeMap<>() {{
@@ -264,7 +263,7 @@ public final class XJGE {
             put("terminate",            new TCTerminate());
         }};
         
-        XJGE.scenesFilepath = scenesFilepath;
+        XJGE.scenesPackage = scenesPackage;
         
         Audio.init(debugModeEnabled);
         Input.init();
@@ -735,8 +734,8 @@ public final class XJGE {
      * 
      * @return a filepath to the location containing the games scene subclasses
      */
-    public static String getScenesFilepath() {
-        return scenesFilepath;
+    public static String getScenesPackage() {
+        return scenesPackage;
     }
     
     /**

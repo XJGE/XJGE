@@ -62,12 +62,12 @@ abstract class EngineMetricsGroup {
         for(CharSequence line : output) {
             if(line.length() > longestStringLength) {
                 longestStringLength = line.length();
-                contentAreaWidth    = Font.fallback.lengthInPixels(line) + 20;
+                contentAreaWidth    = Font.FALLBACK.lengthInPixels(line) + 20;
             }
         }
         
         if(expanded && contentAreaWidth < 328) contentAreaWidth = 328;
-        contentAreaHeight = (output.size() * Font.fallback.size) + 10;
+        contentAreaHeight = (output.size() * Font.FALLBACK.size) + 10;
         
         contentArea.width  = (expanded) ? contentAreaWidth  : 300;
         contentArea.height = (expanded) ? contentAreaHeight : 0;
@@ -89,23 +89,23 @@ abstract class EngineMetricsGroup {
     
     void render(int cursorPositionX, int cursorPositionY) {
         titleBar.render(1f, Color.BLACK);
-        Font.fallback.drawString(title, titleBar.positionX + 5, titleBar.positionY + 7, Color.SILVER, 1f);
+        Font.FALLBACK.drawString(title, titleBar.positionX + 5, titleBar.positionY + 7, Color.SILVER, 1f);
         contentArea.render(0.5f, Color.BLACK);
         
         buttonTextColor = (button.contains(cursorPositionX, cursorPositionY))
                         ? Color.WHITE
                         : Color.CYAN;
         
-        Font.fallback.drawString(!expanded ? "[expand]" : "[collapse]", 
+        Font.FALLBACK.drawString(!expanded ? "[expand]" : "[collapse]", 
                                 button.positionX, 
                                 button.positionY + 8, 
                                 buttonTextColor, 1f);
         
         if(expanded) {
             for(int i = 0; i < output.size(); i++) {
-                Font.fallback.drawString(output.get(i), 
+                Font.FALLBACK.drawString(output.get(i), 
                                          contentArea.positionX + 10, 
-                                         titleBar.positionY - (Font.fallback.size * (i + 1)), 
+                                         titleBar.positionY - (Font.FALLBACK.size * (i + 1)), 
                                          highlight);
             }
             render();

@@ -1,5 +1,6 @@
 package org.xjge.core;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
@@ -151,11 +152,11 @@ public final class Audio {
     }
     
     static Sound getSound(String name) {
-        return (sounds.containsKey(name)) ? sounds.get(name) : Sound.fallback;
+        return (sounds.containsKey(name)) ? sounds.get(name) : Sound.FALLBACK;
     }
     
     public static void loadSound(String name, String filepath, String filename) {
-        sounds.put(name, new Sound(filepath, filename));
+        sounds.put(name, new Sound(filename, false));
     }
     
     public static void deleteSound(String name) {
@@ -191,18 +192,18 @@ public final class Audio {
             for(int i = 0; i < MAX_SOURCES; i++) sourcePool[i].cacheState();
         }
         
-        var soundFiles = new HashMap<String, String[]>();
+        var soundFiles = new HashMap<String, String>();
         
         sounds.forEach((name, sound) -> {
-            soundFiles.put(name, new String[] {sound.filepath, sound.filename});
+            soundFiles.put(name, sound.filename);
             sound.delete();
         });
         
         if(speaker.use()) {
             Audio.speaker = speaker;
             
-            soundFiles.forEach((name, file) -> sounds.put(name, new Sound(file[0], file[1])));
-            Sound.fallback = new Sound(XJGE.ASSETS_FILEPATH, "xjge_sound_fallback.ogg");
+            soundFiles.forEach((name, filename) -> sounds.put(name, new Sound(filename, false)));
+            Sound.FALLBACK = new Sound("xjge_sound_fallback.ogg", true);
             
             for(int i = 0; i < Audio.speaker.getSoundSourceLimit(); i++) sourcePool[i].applyState();
             

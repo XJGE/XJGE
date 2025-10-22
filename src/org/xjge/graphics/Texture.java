@@ -1,5 +1,6 @@
 package org.xjge.graphics;
 
+import java.io.IOException;
 import java.io.InputStream;
 import java.nio.ByteBuffer;
 import java.nio.IntBuffer;
@@ -11,8 +12,8 @@ import static org.lwjgl.stb.STBImage.stbi_image_free;
 import static org.lwjgl.stb.STBImage.stbi_load_from_memory;
 import org.lwjgl.system.MemoryStack;
 import org.lwjgl.system.MemoryUtil;
+import org.xjge.core.AssetManager;
 import org.xjge.core.Logger;
-import org.xjge.core.XJGE;
 
 /**
  * Created: May 11, 2021
@@ -34,7 +35,15 @@ public final class Texture {
     public final int height;
     public final int channels;
     
-    public static final Texture fallback = new Texture(XJGE.ASSETS_FILEPATH, "xjge_texture_fallback.png", GL_TEXTURE_2D);
+    public static final Texture FALLBACK = new Texture("xjge_texture_fallback.png", GL_TEXTURE_2D, true);
+    
+    public Texture(String filename) {
+        this(filename, GL_TEXTURE_2D, false);
+    }
+    
+    public Texture(String filename, int target) {
+        this(filename, target, false); //TODO: this might not need to exist, or set to package private
+    }
     
     /**
      * Creates a new texture object from the image file specified. If the image 
@@ -55,8 +64,16 @@ public final class Texture {
      * <td>{@link org.lwjgl.opengl.GL13#GL_PROXY_TEXTURE_CUBE_MAP PROXY_TEXTURE_CUBE_MAP}</td>
      * </tr></table>
      */
-    public Texture(String filepath, String filename, int target) {
-        int[] info = loadTexture(filepath, filename, target);
+    private Texture(String filename, int target, boolean useFallback) {
+        int[] info;
+        
+        try(InputStream file = AssetManager.open(filename)) {
+            info = loadTexture(file, target);
+        } catch(IOException exception) {
+            if(useFallback) Logger.logError("Failed to load engine-provided fallback texture", exception);
+            Logger.logWarning("Failed to load texture \"" + filename + "\" a fallback will be used instead", exception);
+            info = new int[] {FALLBACK.handle, FALLBACK.width, FALLBACK.height, FALLBACK.channels};
+        }
         
         handle   = info[0];
         width    = info[1];
@@ -90,50 +107,38 @@ public final class Texture {
      * </tr></table>
      * @return an array of integers containing data parsed from the image file
      */
-    private int[] loadTexture(String filepath, String filename, int target) {
-        try(InputStream file = Texture.class.getResourceAsStream(filepath + filename)) {
-            int[] info = new int[4];
+    private static int[] loadTexture(InputStream file, int target) throws IOException {
+        int[] info = new int[4];
+        
+        info[0] = glGenTextures();
+        glBindTexture(target, info[0]);
+        
+        try(MemoryStack stack = MemoryStack.stackPush()) {
+            byte[] data = file.readAllBytes();
             
-            info[0] = glGenTextures();
-            glBindTexture(target, info[0]);
+            ByteBuffer imageBuffer  = MemoryUtil.memAlloc(data.length).put(data).flip();
+            IntBuffer widthBuffer   = stack.mallocInt(1);
+            IntBuffer heightBuffer  = stack.mallocInt(1);
+            IntBuffer channelBuffer = stack.mallocInt(1);
             
-            try(MemoryStack stack = MemoryStack.stackPush()) {
-                byte[] data = file.readAllBytes();
-                
-                ByteBuffer imageBuffer  = MemoryUtil.memAlloc(data.length).put(data).flip();
-                IntBuffer widthBuffer   = stack.mallocInt(1);
-                IntBuffer heightBuffer  = stack.mallocInt(1);
-                IntBuffer channelBuffer = stack.mallocInt(1);
-                
-                ByteBuffer texture = stbi_load_from_memory(imageBuffer, widthBuffer, heightBuffer, channelBuffer, STBI_rgb_alpha);
-                
-                if(texture == null) {
-                    MemoryUtil.memFree(imageBuffer);
-                    throw new RuntimeException("STBI failed to parse texture image data: " + stbi_failure_reason());
-                }
-                
-                info[1] = widthBuffer.get();
-                info[2] = heightBuffer.get();
-                info[3] = channelBuffer.get();
-                
-                glTexImage2D(target, 0, GL_RGBA, info[1], info[2], 0, GL_RGBA, GL_UNSIGNED_BYTE, texture);
-
-                stbi_image_free(texture);
+            ByteBuffer texture = stbi_load_from_memory(imageBuffer, widthBuffer, heightBuffer, channelBuffer, STBI_rgb_alpha);
+            
+            if(texture == null) {
                 MemoryUtil.memFree(imageBuffer);
+                throw new RuntimeException("STBI failed to parse texture data: " + stbi_failure_reason());
             }
             
-            return info;
+            info[1] = widthBuffer.get();
+            info[2] = heightBuffer.get();
+            info[3] = channelBuffer.get();
             
-        } catch(Exception exception) {
-            Logger.logWarning("Failed to load texture \"" + filename + "\" a fallback will be used instead", exception);
+            glTexImage2D(target, 0, GL_RGBA, info[1], info[2], 0, GL_RGBA, GL_UNSIGNED_BYTE, texture);
             
-            return new int[] {
-                fallback.handle,
-                fallback.width,
-                fallback.height,
-                fallback.channels
-            };
+            stbi_image_free(texture);
+            MemoryUtil.memFree(imageBuffer);
         }
+        
+        return info;
     }
     
     /**
@@ -163,7 +168,7 @@ public final class Texture {
      * @see org.lwjgl.opengl.GL11#glDeleteTextures(int)
      */
     public void delete() {
-        if(handle != fallback.handle) glDeleteTextures(handle);
+        if(handle != FALLBACK.handle) glDeleteTextures(handle);
     }
     
 }

@@ -7,7 +7,7 @@ import java.io.InputStream;
 /**
  * 
  * @author J Hoffman
- * @since  4.0.0
+ * @since 4.0.0
  */
 class AssetSourceInternal implements AssetSource {
 

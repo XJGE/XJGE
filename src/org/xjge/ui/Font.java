@@ -30,6 +30,7 @@ import org.xjge.core.ErrorUtils;
 import org.xjge.core.Logger;
 import org.xjge.core.XJGE;
 import static org.lwjgl.system.MemoryUtil.NULL;
+import org.xjge.core.AssetManager;
 import org.xjge.graphics.Color;
 
 /**
@@ -63,7 +64,7 @@ public final class Font {
     private final int colOffsetHandle;
     private int numGlyphsAllocated;
     
-    public static final Font fallback = new Font(XJGE.ASSETS_FILEPATH, "xjge_font_fallback.ttf", DEFAULT_FONT_SIZE);
+    public static final Font FALLBACK = new Font("xjge_font_fallback.ttf", DEFAULT_FONT_SIZE, true);
     
     private final String charset = " !\"#$%&\'()*+,-./" +
                                    "0123456789:;<=>?"   +
@@ -89,15 +90,42 @@ public final class Font {
         int bearingY
     ) {}
     
+    public Font(String filename, int size) {
+        this(filename, size, false);
+    }
+    
     /**
      * Creates a new font object using data from the provided file.
      * 
-     * @param filepath the file location relative to this applications executable jar
      * @param filename the name of the file to load (with extension)
      * @param size the size of the font in non-pixel units
      */
-    public Font(String filepath, String filename, int size) {
-        int[] info = loadFont(filepath, filename, size);
+    public Font(String filename, int size, boolean useFallback) {
+        int[] info;
+        
+        try(InputStream file = AssetManager.open(filename)) {
+            info = loadFont(file, filename, size);
+        } catch(Exception exception) {
+            if(useFallback) Logger.logError("Failed to load engine-provided fallback font", exception);
+            
+            Logger.logWarning("Failed to load font \"" + filename + "\" a fallback will be used instead", exception);
+            glyphMetrics.putAll(FALLBACK.glyphMetrics);
+            
+            info = new int[] {
+                0,
+                DEFAULT_FONT_SIZE,
+                FALLBACK.textureHandle,
+                FALLBACK.largestGlyphWidth,
+                FALLBACK.bitmapWidth,
+                FALLBACK.bitmapHeight,
+                FALLBACK.vaoHandle,
+                FALLBACK.vboHandle,
+                FALLBACK.iboHandle,
+                FALLBACK.posOffsetHandle,
+                FALLBACK.texOffsetHandle,
+                FALLBACK.colOffsetHandle
+            };
+        }
         
         isBitmapFont      = info[0] == 1;
         this.size         = info[1];
@@ -156,67 +184,44 @@ public final class Font {
      * @param size the size of the font in non-pixel units
      * @return an integer array containing the parsed font file data
      */
-    private int[] loadFont(String filepath, String filename, int size) {
-        try(InputStream file = Font.class.getResourceAsStream(filepath + filename)) {
-            if(size <= 0 || size > 128) {
-                throw new IllegalStateException("Invalid font size used. Font size must be between 1 and 128");
-            }
-            
-            String extension = filename.substring(filename.length() - 3, filename.length());
-            
-            int[] info = new int[12];
-            
-            info[0] = extension.equals("bmf") ? 1 : 0;
-            info[1] = size;
-            info[2] = glGenTextures();
-            
-            if(extension.equals("bmf")) {
-                loadBitmapFont(filepath, file, info);
-            } else {
-                loadVectorFont(file, info);
-            }
-            
-            //Add exception for \n newline character
-            glyphMetrics.put('\n', glyphMetrics.get(' '));
-            
-            //Initialize various OpenGL objects
-            info[6] = glGenVertexArrays();
-            for(int i = 7; i < 12; i++) info[i] = glGenBuffers();
-            
-            return info;
-            
-        } catch(Exception exception) {
-            Logger.logWarning("Failed to load font \"" + filename + "\" a fallback will be used instead", exception);
-            
-            glyphMetrics.putAll(fallback.glyphMetrics);
-            
-            return new int[] {
-                0,
-                DEFAULT_FONT_SIZE,
-                fallback.textureHandle,
-                fallback.largestGlyphWidth,
-                fallback.bitmapWidth,
-                fallback.bitmapHeight,
-                fallback.vaoHandle,
-                fallback.vboHandle,
-                fallback.iboHandle,
-                fallback.posOffsetHandle,
-                fallback.texOffsetHandle,
-                fallback.colOffsetHandle
-            };
+    private int[] loadFont(InputStream file, String filename, int size) throws Exception {
+        if(size <= 0 || size > 128) {
+            throw new IllegalStateException("Invalid font size used. Font size must be between 1 and 128");
         }
+        
+        String extension = filename.substring(filename.length() - 3, filename.length());
+        
+        int[] info = new int[12];
+        
+        info[0] = extension.equals("bmf") ? 1 : 0;
+        info[1] = size;
+        info[2] = glGenTextures();
+        
+        if(extension.equals("bmf")) {
+            loadBitmapFont(file, info);
+        } else {
+            loadVectorFont(file, info);
+        }
+        
+        //Add exception for \n newline character
+        glyphMetrics.put('\n', glyphMetrics.get(' '));
+        
+        //Initialize various OpenGL objects
+        info[6] = glGenVertexArrays();
+        for(int i = 7; i < 12; i++) info[i] = glGenBuffers();
+        
+        return info;
     }
     
     /**
      * Loads a font from a bitmap (.bmf) file.
      * 
-     * @param filepath the file location relative to this apps executable jar
      * @param file an object representation of the raw file data
      * @param info the array containing data parsed from the font file
      * @throws XMLStreamException 
      * @throws IOException 
      */
-    private void loadBitmapFont(String filepath, InputStream file, int[] info) throws XMLStreamException, IOException {
+    private void loadBitmapFont(InputStream file, int[] info) throws XMLStreamException, IOException {
         var xmlReader = XMLInputFactory.newInstance().createXMLStreamReader(file);
         
         float subImageWidth  = 0;
@@ -241,8 +246,7 @@ public final class Font {
                          * Create a new OpenGL texture object using the image 
                          * provided by the XML file.
                          */
-                        try(InputStream imageFile = Font.class.getResourceAsStream(filepath + imageFilename);
-                            MemoryStack stack = MemoryStack.stackPush()) {
+                        try(InputStream imageFile = AssetManager.open(imageFilename); MemoryStack stack = MemoryStack.stackPush()) {
                             byte[] data = imageFile.readAllBytes();
                             
                             ByteBuffer imageBuffer  = MemoryUtil.memAlloc(data.length).put(data).flip();
@@ -570,7 +574,7 @@ public final class Font {
      * and textures that were generated during initialization.
      */
     public void delete() {
-        if(textureHandle != fallback.textureHandle) {
+        if(textureHandle != FALLBACK.textureHandle) {
             glDeleteTextures(textureHandle);
             glDeleteVertexArrays(vaoHandle);
             glDeleteBuffers(vboHandle);

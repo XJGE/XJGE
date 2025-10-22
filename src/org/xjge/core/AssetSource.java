@@ -6,7 +6,7 @@ import java.io.InputStream;
 /**
  * 
  * @author J Hoffman
- * @since 
+ * @since 4.0.0
  */
 interface AssetSource {
 
