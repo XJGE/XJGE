@@ -152,7 +152,20 @@ public final class XJGE {
         }
         
         if(debugModeEnabled) {
-            AssetManager.addSource(new AssetSourceExternal(Paths.get(assetsFolderFilepath)));
+            AssetSourceExternal externalSource = null;
+            
+            try {
+                externalSource = new AssetSourceExternal(Paths.get(assetsFolderFilepath));
+                AssetManager.addSource(externalSource);
+            } catch(IOException exception) {
+                Logger.logError("Failed to add external asset source: \"" + assetsFolderFilepath + "\"", exception);
+            }
+            
+            if(externalSource != null) {
+                externalSource.addChangeListener(filepath -> {
+                    Logger.logInfo("Asset changed: " + filepath);
+                });
+            }
         }
         
         AssetManager.addSource(new AssetSourceInternal(XJGE.class.getClassLoader()));

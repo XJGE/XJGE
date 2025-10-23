@@ -18,6 +18,10 @@ public final class AssetManager {
         AssetManager.sources.add(source);
     }
     
+    public static <T extends Asset> T load(String filename, Class<T> type) {
+        return null;
+    }
+    
     public static boolean exists(String filename) {
         return sources.stream().anyMatch(source -> source.exists(filename));
     }
