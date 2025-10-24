@@ -45,19 +45,18 @@ public final class AssetManager {
     }
     
     static void processReloadRequests() {
-        while(reloadRequests.peek() != null) {
-            reloadRequests.poll().run();
-        }
+        while(reloadRequests.peek() != null) reloadRequests.poll().run();
     }
     
     public static boolean exists(String filename) {
         return sources.stream().anyMatch(source -> source.exists(filename));
     }
     
+    //TODO: effectively deprecated, load will do this in the future
     public static InputStream open(String filename) throws IOException {
         for(AssetSource source : sources) {
             if(source.exists(filename)) {
-                return source.open(filename);
+                return source.load(filename);
             }
         }
         
@@ -76,12 +75,12 @@ public final class AssetManager {
             
         } catch(IllegalAccessException | IllegalArgumentException | InstantiationException | 
                 NoSuchMethodException | SecurityException | InvocationTargetException | IOException exception) {
-            Logger.logError("Failed to load asset \"" + filename + "\" of type " + type.getSimpleName(), exception);
+            Logger.logError("Failed to load file: \"" + filename + "\" of type " + type.getSimpleName(), exception);
             return null;
         }
     }
     
-    static synchronized void reload(String filename) throws IOException {
+    public static synchronized void reload(String filename) throws IOException {
         if(assets.get(filename) != null) assets.get(filename).reload();
     }
     
@@ -98,7 +97,7 @@ public final class AssetManager {
         }
     }
 
-    public static synchronized void releaseAll() {
+    public static synchronized void clearAssets() {
         for(Asset asset : assets.values()) {
             try {
                 asset.release();

@@ -55,12 +55,10 @@ final class AssetSourceExternal implements AssetSource, AutoCloseable {
         watcherThread.start();
     }
     
-    /** Adds a listener that will be notified when any file under this source changes. */
     public void addChangeListener(Consumer<Path> listener) {
         listeners.add(listener);
     }
-
-    /** Removes a previously registered listener. */
+    
     public void removeChangeListener(Consumer<Path> listener) {
         listeners.remove(listener);
     }
@@ -125,7 +123,7 @@ final class AssetSourceExternal implements AssetSource, AutoCloseable {
     }
 
     @Override
-    public InputStream open(String filename) throws IOException {
+    public InputStream load(String filename) throws IOException {
         Path file = filepath.resolve(filename);
         if(!Files.exists(file)) throw new FileNotFoundException("Failed to locate external asset: \"" + file + "\"");
         return Files.newInputStream(file);

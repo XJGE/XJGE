@@ -35,7 +35,7 @@ public abstract class Asset {
         
         try {
             onRelease();
-        } catch(Exception exception) {
+        } catch(IOException exception) {
             Logger.logError("Error encountered while releasing asset: \"" + filename + "\"", exception);
         } finally {
             loaded = false;
