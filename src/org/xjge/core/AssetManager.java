@@ -45,7 +45,7 @@ public final class AssetManager {
     }
     
     static void processReloadRequests() {
-        while(reloadRequests.poll() != null) {
+        while(reloadRequests.peek() != null) {
             reloadRequests.poll().run();
         }
     }
