@@ -164,6 +164,7 @@ public final class XJGE {
             if(externalSource != null) {
                 externalSource.addChangeListener(filepath -> {
                     Logger.logInfo("Asset changed: " + filepath);
+                    if(AssetManager.exists(filepath.toString())) AssetManager.reload(filepath.toString());
                 });
             }
         }

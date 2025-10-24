@@ -1,7 +1,6 @@
 package org.xjge.test;
 
 import java.util.Map;
-import static javax.management.Query.value;
 import org.xjge.core.Camera;
 import org.xjge.core.Entity;
 import org.xjge.core.Scene;
@@ -17,7 +16,7 @@ class TestScene extends Scene {
     public TestScene() {
         super("test scene");
         
-        Entity testEntity = new Entity().addComponent(new TestComponent());
+        Entity testEntity = new Entity().addComponent(new TestComponent(1, 0, 0, -4));
         addEntity(testEntity);
     }
 
@@ -27,6 +26,9 @@ class TestScene extends Scene {
 
     @Override
     public void render(Map<String, GLProgram> glPrograms, int viewportID, Camera camera, int depthTexHandle) {
+        entities.values().forEach(entity -> {
+            if(entity.hasComponent(TestComponent.class)) entity.getComponent(TestComponent.class).render(glPrograms.get("test"));
+        });
     }
 
     @Override

@@ -1,18 +1,68 @@
 package org.xjge.core;
 
+import java.io.IOException;
+
 /**
  * 
  * @author J Hoffman
  * @since 
  */
 public abstract class Asset {
+    
+    private boolean loaded;
+    
+    protected final String filename;
+    
+    protected Asset(String filename) {
+        this.filename = filename;
+    }
 
-    /*
-    Texture texture = AssetManager.load("image.png");
+    public final void load() throws IOException {
+        if(loaded) return;
+        
+        try {
+            onLoad();
+            loaded = true;
+        } catch (IOException exception) {
+            Logger.logError("Failed to load asset \"" + filename + "\"", exception);
+            throw exception;
+        }
+    }
     
-    texture.bind();
+    public void reload() throws IOException {
+        if(!loaded) return;
+        
+        try {
+            onRelease();
+            onLoad();
+            Logger.logInfo("Reloaded asset: " + filename);
+        } catch (IOException exception) {
+            Logger.logError("Failed to reload asset \"" + filename + "\"", exception);
+            throw exception;
+        }
+    }
     
-    AssetManager.release
-    */
+    public final void release() {
+        if (!loaded) return;
+        try {
+            onRelease();
+        } catch (Exception exception) {
+            Logger.logError("Error while unloading asset \"" + filename + "\"", exception);
+        } finally {
+            loaded = false;
+        }
+    }
+    
+    public final boolean isLoaded() {
+        return loaded;
+    }
+    
+    public final String getFilename() {
+        return filename;
+    }
+    
+    protected abstract void onLoad() throws IOException;
+    
+    protected abstract void onRelease();
     
 }
