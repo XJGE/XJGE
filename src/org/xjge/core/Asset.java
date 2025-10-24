@@ -30,11 +30,14 @@ public abstract class Asset {
     }
     
     public void reload() throws IOException {
+        System.out.println(loaded);
+        
         if(!loaded) return;
         
         try {
             onRelease();
             onLoad();
+            onReload(); 
             Logger.logInfo("Reloaded asset: " + filename);
         } catch (IOException exception) {
             Logger.logError("Failed to reload asset \"" + filename + "\"", exception);
@@ -62,6 +65,8 @@ public abstract class Asset {
     }
     
     protected abstract void onLoad() throws IOException;
+    
+    protected void onReload() {}
     
     protected abstract void onRelease();
     

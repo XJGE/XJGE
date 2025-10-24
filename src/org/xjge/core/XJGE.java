@@ -73,6 +73,7 @@ public final class XJGE {
     //==== LEGACY FIELDS ABOVE =================================================
     
     private static boolean initialized;
+    private static boolean debugModeEnabled;
     private static boolean started;
     private static boolean ticked;
     public static boolean enableBloom;
@@ -151,7 +152,9 @@ public final class XJGE {
             return;
         }
         
-        if(debugModeEnabled) {
+        XJGE.debugModeEnabled = debugModeEnabled;
+        
+        if(XJGE.debugModeEnabled) {
             AssetSourceExternal externalSource = null;
             
             try {
@@ -163,8 +166,8 @@ public final class XJGE {
             
             if(externalSource != null) {
                 externalSource.addChangeListener(filepath -> {
-                    Logger.logInfo("Asset changed: " + filepath);
-                    if(AssetManager.exists(filepath.toString())) AssetManager.reload(filepath.toString());
+                    String filename = filepath.getFileName().toString();
+                    if(AssetManager.exists(filename)) AssetManager.queueReload(filename);
                 });
             }
         }
@@ -182,7 +185,7 @@ public final class XJGE {
         
         if(!glfwInit()) Logger.logError("Failed to initialize GLFW", null);
         
-        Window.create(debugModeEnabled);
+        Window.create();
         
         //Initialize the default shader program that will be provided to the implementation
         {
@@ -284,7 +287,7 @@ public final class XJGE {
         
         XJGE.scenesPackage = scenesPackage;
         
-        AudioSystem.init(debugModeEnabled);
+        AudioSystem.init();
         InputSystem.init();
         
         Logger.logSystemInfo();
@@ -335,8 +338,9 @@ public final class XJGE {
             prevTime = currTime;
             ticked   = false;
             
+            if(debugModeEnabled) AssetManager.processReloadRequests();
+            
             while(delta >= TARGET_DELTA) {
-                //Input.update(TARGET_DELTA, deltaMetric);
                 InputSystem.update(TARGET_DELTA, deltaMetric);
                 Window.update(deltaMetric, fps, entityCount);
                 
@@ -538,6 +542,10 @@ public final class XJGE {
         }
         
         sceneChangeRequests.add(scene);
+    }
+    
+    public static boolean debugModeEnabled() {
+        return debugModeEnabled;
     }
     
     /**

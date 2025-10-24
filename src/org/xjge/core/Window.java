@@ -40,7 +40,6 @@ import org.xjge.graphics.Texture;
  */
 public final class Window {
     
-    private static boolean debugModeEnabled;
     private static boolean fullscreen;
     private static boolean resizable;
     private static boolean minimized;
@@ -138,9 +137,7 @@ public final class Window {
      * 
      * @param debugModeEnabled if true, additional developer tools will be available for use
      */
-    static void create(boolean debugModeEnabled) {
-        Window.debugModeEnabled = debugModeEnabled;
-        
+    static void create() {
         glfwWindowHint(GLFW_VISIBLE, GLFW_FALSE);
         glfwWindowHint(GLFW_FOCUS_ON_SHOW, GLFW_TRUE);
         
@@ -230,7 +227,7 @@ public final class Window {
         });
         
         glfwWindowSizeReference = GLFWWindowSizeCallback.create((window, newWidth, newHeight) -> {
-            if(debugModeEnabled) terminal.relocate(newWidth, newHeight);
+            if(XJGE.debugModeEnabled()) terminal.relocate(newWidth, newHeight);
             width  = newWidth;
             height = newHeight;
             observable.notifyObservers("WINDOW_WIDTH_CHANGED",  width);
@@ -314,7 +311,7 @@ public final class Window {
         });
         
         glfwKeyReference = GLFWKeyCallback.create((window, key, scancode, action, mods) -> {
-            if(debugModeEnabled && action == GLFW_PRESS && mods == GLFW_MOD_SHIFT) {
+            if(XJGE.debugModeEnabled() && action == GLFW_PRESS && mods == GLFW_MOD_SHIFT) {
                 switch(key) {
                     case GLFW_KEY_F1 -> terminal.show = !terminal.show;
                     case GLFW_KEY_F2 -> metrics.show = !metrics.show;

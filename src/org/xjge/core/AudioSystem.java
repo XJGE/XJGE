@@ -76,10 +76,8 @@ public final class AudioSystem {
     /**
      * Called automatically by the engine during startup to initialize the audio system. During initialization, the engine will 
      * attempt to find any available audio devices and provide them to the user.
-     * 
-     * @param debugModeEnabled if true, additional developer tools will be available for use
      */
-    static void init(boolean debugModeEnabled) {        
+    static void init() {        
         for(int i = 0; i < MAX_SOURCES; i++) sourcePool[i] = new SoundSource(i);
         
         String primarySpeakerName = alcGetString(NULL, ALC_DEFAULT_DEVICE_SPECIFIER);
@@ -100,13 +98,13 @@ public final class AudioSystem {
         //Populate list of available speaker objects
         for(String name : deviceList) {
             Speaker device = new Speaker(speakers.size(), name);
-            if(device.open(debugModeEnabled)) speakers.put(device.index, device);
+            if(device.open(XJGE.debugModeEnabled())) speakers.put(device.index, device);
         }
         
         //Last ditch effort if OpenAL is being stubborn
         if(speakers.isEmpty()) {
             Speaker fallback = new Speaker(0, primarySpeakerName);
-            if(fallback.open(debugModeEnabled)) speakers.put(0, fallback);
+            if(fallback.open(XJGE.debugModeEnabled())) speakers.put(0, fallback);
             Logger.logWarning("Could not find any available audio devices, " + 
                               "attempting to use fallback \"" + fallback.name + "\"", null);
         }

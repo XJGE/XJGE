@@ -7,6 +7,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Queue;
+import java.util.concurrent.ConcurrentLinkedQueue;
 
 /**
  * 
@@ -18,8 +20,28 @@ public final class AssetManager {
     private static final List<AssetSource> sources = new ArrayList<>();
     private static final Map<String, Asset> assets = new HashMap<>();
     
+    private static final Queue<Runnable> reloadRequests = new ConcurrentLinkedQueue<>();
+    
     static void addSource(AssetSource source) {
         sources.add(source);
+    }
+    
+    static void queueReload(String filename) {
+        Logger.logInfo("Change detected for file: \"" + filename + "\"");
+        
+        reloadRequests.add(() -> {
+            try {
+                reload(filename);
+            } catch(IOException exception) {
+                Logger.logError("Failed to reload file: \"" + filename + "\"", exception);
+            }
+        });
+    }
+    
+    static void processReloadRequests() {
+        while(reloadRequests.poll() != null) {
+            reloadRequests.poll().run();
+        }
     }
     
     public static boolean exists(String filename) {
@@ -53,17 +75,8 @@ public final class AssetManager {
         }
     }
     
-    static synchronized void reload(String filename) {
-        Asset asset = assets.get(filename);
-        
-        if(asset != null) {
-            try {
-                asset.reload();
-                Logger.logInfo("Reloaded asset: " + filename);
-            } catch (IOException exception) {
-                Logger.logError("Failed to reload asset \"" + filename + "\"", exception);
-            }
-        }
+    static synchronized void reload(String filename) throws IOException {
+        if(assets.get(filename) != null) assets.get(filename).reload();
     }
     
     public static synchronized void release(String filename) {

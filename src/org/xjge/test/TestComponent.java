@@ -12,11 +12,13 @@ import static org.lwjgl.opengl.GL20.glEnableVertexAttribArray;
 import static org.lwjgl.opengl.GL20.glVertexAttribPointer;
 import static org.lwjgl.opengl.GL30.glBindVertexArray;
 import org.lwjgl.system.MemoryStack;
+import org.xjge.core.AssetManager;
 import org.xjge.core.EntityComponent;
 import org.xjge.core.ErrorUtils;
 import org.xjge.graphics.GLProgram;
 import org.xjge.graphics.Graphics;
 import org.xjge.graphics.Texture;
+import org.xjge.graphics.TextureReloadable;
 
 /**
  * 
@@ -28,8 +30,12 @@ class TestComponent extends EntityComponent {
     private final Vector3f position;
     private final Graphics g = new Graphics();
     
+    private final TextureReloadable texture;
+    
     TestComponent(int size, float x, float y, float z) {
         position = new Vector3f(x, y, z);
+        
+        texture = AssetManager.load("test_texture.png", TextureReloadable.class);
         
         try(MemoryStack stack = MemoryStack.stackPush()) {
             g.vertices = stack.mallocFloat(20);
@@ -63,7 +69,7 @@ class TestComponent extends EntityComponent {
         //glEnable(GL_DEPTH_TEST);
         
         glActiveTexture(GL_TEXTURE0);
-        Texture.FALLBACK.bind(GL_TEXTURE_2D);
+        texture.bind();
         glBindVertexArray(g.vao);
         
         shader.use();

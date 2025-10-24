@@ -21,9 +21,10 @@
     <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
         <group>
             <file>file:/C:/Users/jhoff/Projects/XJGE/src/org/xjge/core/Asset.java</file>
+            <file>file:/C:/Users/jhoff/Projects/XJGE/src/org/xjge/graphics/TextureReloadable.java</file>
             <file>file:/C:/Users/jhoff/Projects/XJGE/src/org/xjge/core/AssetManager.java</file>
             <file>file:/C:/Users/jhoff/Projects/XJGE/src/org/xjge/core/XJGE.java</file>
-            <file>file:/C:/Users/jhoff/Projects/XJGE/src/org/xjge/core/AssetSourceExternal.java</file>
+            <file>file:/C:/Users/jhoff/Projects/XJGE/src/org/xjge/test/TestComponent.java</file>
         </group>
     </open-files>
 </project-private>
