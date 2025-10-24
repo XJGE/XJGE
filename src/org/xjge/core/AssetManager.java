@@ -22,6 +22,12 @@ public final class AssetManager {
     
     private static final Queue<Runnable> reloadRequests = new ConcurrentLinkedQueue<>();
     
+    /**
+     * TODO: mention that the external source should point to the same /project/assets/ package that will be compiled into the jar
+     * when the project is built, I don't feel like implementing a feature to automatically pull these in elsewhere
+     * 
+     * @param source 
+     */
     static void addSource(AssetSource source) {
         sources.add(source);
     }

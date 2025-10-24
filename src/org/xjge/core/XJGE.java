@@ -18,6 +18,7 @@ import java.util.Map;
 import java.util.PriorityQueue;
 import java.util.Queue;
 import java.util.TreeMap;
+import java.util.regex.Pattern;
 import org.joml.Matrix4f;
 import org.joml.Vector2i;
 import static org.lwjgl.glfw.GLFW.*;
@@ -166,8 +167,12 @@ public final class XJGE {
             
             if(externalSource != null) {
                 externalSource.addChangeListener(filepath -> {
-                    String filename = filepath.getFileName().toString();
-                    if(AssetManager.exists(filename)) AssetManager.queueReload(filename);
+                    Pattern tempFile = Pattern.compile(".*(_tmp\\d+|~\\$).*");
+                    String filename  = filepath.getFileName().toString();
+                    
+                    if(AssetManager.exists(filename) && !tempFile.matcher(filename).matches()) {
+                        AssetManager.queueReload(filename);
+                    }
                 });
             }
         }
