@@ -1,0 +1,25 @@
+****************************************************************************************************
+ OS NAME:	Windows 11
+ JAVA VER:	22.0.2
+ XJGE VER:	4.0.0-beta3
+ GLFW VER:	3.5.0 Win32 WGL Null EGL OSMesa VisualC DLL
+ OPENAL VER:	1.1 ALSOFT 1.24.1
+ OPENGL VER:	4.6.0 NVIDIA 566.07
+****************************************************************************************************
+ CPU MODEL:	Intel(R) Core(TM) Ultra 7 155H
+ GPU MODEL:	NVIDIA GeForce RTX 3050 6GB Laptop GPU/PCIe/SSE2
+ MONITORS:	Found: 2, Primary: "Generic PnP Monitor" (1920x1080 16:9 60hz)
+ SPEAKERS:	Found: 3, Primary: "OpenAL Soft on Headphones (Jared’s AirPods)"
+ GAMEPADS:	Found: 1
+****************************************************************************************************
+
+Oct 24, 03:15:55pm, [INFO], [GLProgram.java]: Shader program "test" linked successfully
+Oct 24, 03:15:55pm, [ERROR], [TextureReloadable.java]: Failed to load texture "test_texture.png"
+java.io.IOException: Could not locate asset "test_texture.png" using any source
+	org.xjge.core.AssetManager.open(AssetManager.java:64)
+	org.xjge.graphics.TextureReloadable.onLoad(TextureReloadable.java:36)
+	org.xjge.core.Asset.load(Asset.java:22)
+	org.xjge.core.AssetManager.load(AssetManager.java:72)
+	org.xjge.test.TestComponent.<init>(TestComponent.java:38)
+	org.xjge.test.TestScene.<init>(TestScene.java:19)
+	org.xjge.test.Main.main(Main.java:39)

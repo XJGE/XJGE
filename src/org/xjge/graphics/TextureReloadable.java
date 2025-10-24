@@ -4,24 +4,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.nio.ByteBuffer;
 import java.nio.IntBuffer;
-import static org.lwjgl.opengl.GL11.GL_LINEAR;
-import static org.lwjgl.opengl.GL11.GL_LINEAR_MIPMAP_LINEAR;
-import static org.lwjgl.opengl.GL11.GL_REPEAT;
-import static org.lwjgl.opengl.GL11.GL_RGBA;
-import static org.lwjgl.opengl.GL11.GL_RGBA8;
-import static org.lwjgl.opengl.GL11.GL_TEXTURE_2D;
-import static org.lwjgl.opengl.GL11.GL_TEXTURE_MAG_FILTER;
-import static org.lwjgl.opengl.GL11.GL_TEXTURE_MIN_FILTER;
-import static org.lwjgl.opengl.GL11.GL_TEXTURE_WRAP_S;
-import static org.lwjgl.opengl.GL11.GL_TEXTURE_WRAP_T;
-import static org.lwjgl.opengl.GL11.GL_UNSIGNED_BYTE;
-import static org.lwjgl.opengl.GL11.glBindTexture;
-import static org.lwjgl.opengl.GL11.glDeleteTextures;
-import static org.lwjgl.opengl.GL11.glFinish;
-import static org.lwjgl.opengl.GL11.glGenTextures;
-import static org.lwjgl.opengl.GL11.glTexImage2D;
-import static org.lwjgl.opengl.GL11.glTexParameteri;
-import static org.lwjgl.opengl.GL30.glGenerateMipmap;
+import static org.lwjgl.opengl.GL30.*;
 import static org.lwjgl.stb.STBImage.STBI_rgb_alpha;
 import static org.lwjgl.stb.STBImage.stbi_failure_reason;
 import static org.lwjgl.stb.STBImage.stbi_image_free;
@@ -50,7 +33,7 @@ public final class TextureReloadable extends Asset {
 
     @Override
     protected void onLoad() throws IOException {
-        try (InputStream stream = AssetManager.open(filename)) {
+        try (InputStream stream = AssetManager.open(getFilename())) {
             TextureData data = TextureLoader.decode(stream);
 
             // Generate and bind new texture
@@ -90,9 +73,9 @@ public final class TextureReloadable extends Asset {
             height   = data.height;
             channels = data.channels;
 
-            Logger.logInfo("Loaded texture: " + filename + " (" + width + "x" + height + ")");
+            Logger.logInfo("Loaded texture: " + getFilename() + " (" + width + "x" + height + ")");
         } catch (IOException exception) {
-            Logger.logError("Failed to load texture \"" + filename + "\"", exception);
+            Logger.logError("Failed to load texture \"" + getFilename() + "\"", exception);
             throw exception;
         }
     }
@@ -100,10 +83,10 @@ public final class TextureReloadable extends Asset {
     @Override
     protected void onReload() {
         // Ensure OpenGL immediately uses the new texture data
-        Logger.logInfo("Reloaded texture \"" + filename + "\" (handle=" + handle + ")");
+        Logger.logInfo("Reloaded texture \"" + getFilename() + "\" (handle=" + handle + ")");
         bind();
         glFinish(); // Forces the driver to flush any pending texture operations
-        Logger.logInfo("Texture reload applied: " + filename);
+        Logger.logInfo("Texture reload applied: " + getFilename());
     }
 
     @Override
@@ -116,7 +99,7 @@ public final class TextureReloadable extends Asset {
         if (handle != 0) {
             glDeleteTextures(handle);
             handle = 0;
-            Logger.logInfo("Deleted texture: " + filename);
+            Logger.logInfo("Deleted texture: " + getFilename());
         }
     }
 

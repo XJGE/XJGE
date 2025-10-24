@@ -5,52 +5,38 @@ import java.io.IOException;
 /**
  * 
  * @author J Hoffman
- * @since 
+ * @since 4.0.0
  */
 public abstract class Asset {
     
     private boolean loaded;
     
-    protected final String filename;
+    private final String filename;
     
     protected Asset(String filename) {
         this.filename = filename;
     }
 
-    public final void load() throws IOException {
+    final void load() throws IOException {
         if(loaded) return;
-        
-        try {
-            onLoad();
-            loaded = true;
-        } catch (IOException exception) {
-            Logger.logError("Failed to load asset \"" + filename + "\"", exception);
-            throw exception;
-        }
+        onLoad();
+        loaded = true;
     }
     
-    public void reload() throws IOException {
-        System.out.println(loaded);
-        
+    final void reload() throws IOException {
+        if(!loaded) return;
+        onRelease();
+        onLoad();
+        onReload();
+    }
+    
+    final void release() {
         if(!loaded) return;
         
         try {
             onRelease();
-            onLoad();
-            onReload(); 
-            Logger.logInfo("Reloaded asset: " + filename);
-        } catch (IOException exception) {
-            Logger.logError("Failed to reload asset \"" + filename + "\"", exception);
-            throw exception;
-        }
-    }
-    
-    public final void release() {
-        if (!loaded) return;
-        try {
-            onRelease();
-        } catch (Exception exception) {
-            Logger.logError("Error while unloading asset \"" + filename + "\"", exception);
+        } catch(Exception exception) {
+            Logger.logError("Error encountered while releasing asset: \"" + filename + "\"", exception);
         } finally {
             loaded = false;
         }
@@ -66,8 +52,8 @@ public abstract class Asset {
     
     protected abstract void onLoad() throws IOException;
     
-    protected void onReload() {}
+    protected abstract void onReload() throws IOException;
     
-    protected abstract void onRelease();
+    protected abstract void onRelease() throws IOException;
     
 }
