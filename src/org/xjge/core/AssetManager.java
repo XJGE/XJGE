@@ -22,6 +22,16 @@ public final class AssetManager {
     
     private static final Queue<Runnable> reloadRequests = new ConcurrentLinkedQueue<>();
     
+    private static InputStream open(String filename) throws IOException {
+        for(AssetSource source : sources) {
+            if(source.exists(filename)) {
+                return source.open(filename);
+            }
+        }
+        
+        throw new IOException("Could not locate file: \"" + filename + "\" using any source");
+    }
+    
     /**
      * TODO: mention that the external source should point to the same /project/assets/ package that will be compiled into the jar
      * when the project is built, I don't feel like implementing a feature to automatically pull these in elsewhere
@@ -33,29 +43,15 @@ public final class AssetManager {
     }
     
     static void queueReload(String filename) {
-        Logger.logInfo("Change detected for file: \"" + filename + "\"");
+        Logger.logInfo("Change detected for asset file: \"" + filename + "\"");
         
         reloadRequests.add(() -> {
-            try {
-                reload(filename);
-            } catch(IOException exception) {
-                Logger.logError("Failed to reload file: \"" + filename + "\"", exception);
-            }
+            reload(filename);
         });
     }
     
     static void processReloadRequests() {
         while(reloadRequests.peek() != null) reloadRequests.poll().run();
-    }
-    
-    static InputStream open(String filename) throws IOException {
-        for(AssetSource source : sources) {
-            if(source.exists(filename)) {
-                return source.open(filename);
-            }
-        }
-        
-        throw new IOException("Could not locate asset \"" + filename + "\" using any source");
     }
     
     public static boolean exists(String filename) {
@@ -74,37 +70,26 @@ public final class AssetManager {
             
         } catch(IllegalAccessException | IllegalArgumentException | InstantiationException | 
                 NoSuchMethodException | SecurityException | InvocationTargetException | IOException exception) {
-            Logger.logError("Failed to load file: \"" + filename + "\" of type " + type.getSimpleName(), exception);
+            Logger.logWarning("Failed to load asset using file: \"" + filename + "\" of type " + type.getSimpleName(), exception);
             return null;
         }
     }
     
-    public static synchronized void reload(String filename) throws IOException {
-        if(assets.get(filename) != null) assets.get(filename).reload(open(filename));
+    public static synchronized void reload(String filename) {
+        try(InputStream stream = open(filename)) {
+            assets.get(filename).reload(stream);
+        } catch(IOException exception) {
+            Logger.logWarning("Failed to reload asset using file: \"" + filename + "\"", exception);
+        }
     }
     
     public static synchronized void release(String filename) {
         Asset asset = assets.remove(filename);
-        
-        if(asset != null) {
-            try {
-                asset.release();
-                Logger.logInfo("Released asset: " + filename);
-            } catch (Exception exception) {
-                Logger.logError("Failed to release asset \"" + filename + "\"", exception);
-            }
-        }
+        if(asset != null) asset.release();
     }
 
     public static synchronized void clearAssets() {
-        for(Asset asset : assets.values()) {
-            try {
-                asset.release();
-            } catch(Exception exception) {
-                Logger.logError("Failed to release asset during cleanup", exception);
-            }
-        }
-        
+        for(Asset asset : assets.values()) asset.release();
         assets.clear();
     }
     
