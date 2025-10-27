@@ -12,6 +12,6 @@ interface AssetSource {
 
     boolean exists(String filename);
     
-    InputStream load(String filename) throws IOException;
+    InputStream open(String filename) throws IOException;
     
 }

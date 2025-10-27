@@ -30,7 +30,7 @@ class AssetSourceInternal implements AssetSource {
     }
 
     @Override
-    public InputStream load(String filename) throws IOException {
+    public InputStream open(String filename) throws IOException {
         InputStream stream = classLoader.getResourceAsStream(assetsFolderFilepath + filename);
         if(stream == null) throw new FileNotFoundException("Failed to locate internal asset: \"" + assetsFolderFilepath + filename + "\"");
         return stream;

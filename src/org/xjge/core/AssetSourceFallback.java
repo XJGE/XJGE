@@ -24,7 +24,7 @@ class AssetSourceFallback implements AssetSource {
     }
 
     @Override
-    public InputStream load(String filename) throws IOException {
+    public InputStream open(String filename) throws IOException {
         InputStream stream = classLoader.getResourceAsStream(ENGINE_ASSETS_FILEPATH + filename);
         if(stream == null) throw new FileNotFoundException("Failed to locate engine asset: \"" + filename + "\"");
         return stream;

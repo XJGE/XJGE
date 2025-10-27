@@ -1,6 +1,6 @@
 package org.xjge.core;
 
-import java.io.IOException;
+import java.io.InputStream;
 
 /**
  * 
@@ -17,29 +17,23 @@ public abstract class Asset {
         this.filename = filename;
     }
 
-    final void load() throws IOException {
+    final void load(InputStream stream) {
         if(loaded) return;
-        onLoad();
+        onLoad(stream);
         loaded = true;
     }
     
-    final void reload() throws IOException {
+    final void reload(InputStream stream) {
         if(!loaded) return;
         onRelease();
-        onLoad();
+        onLoad(stream);
         onReload();
     }
     
     final void release() {
         if(!loaded) return;
-        
-        try {
-            onRelease();
-        } catch(IOException exception) {
-            Logger.logError("Error encountered while releasing asset: \"" + filename + "\"", exception);
-        } finally {
-            loaded = false;
-        }
+        onRelease();
+        loaded = false;
     }
     
     public final boolean isLoaded() {
@@ -50,10 +44,10 @@ public abstract class Asset {
         return filename;
     }
     
-    protected abstract void onLoad() throws IOException;
+    protected abstract void onLoad(InputStream file);
     
-    protected abstract void onReload() throws IOException;
+    protected abstract void onReload();
     
-    protected abstract void onRelease() throws IOException;
+    protected abstract void onRelease();
     
 }

@@ -123,7 +123,7 @@ final class AssetSourceExternal implements AssetSource, AutoCloseable {
     }
 
     @Override
-    public InputStream load(String filename) throws IOException {
+    public InputStream open(String filename) throws IOException {
         Path file = filepath.resolve(filename);
         if(!Files.exists(file)) throw new FileNotFoundException("Failed to locate external asset: \"" + file + "\"");
         return Files.newInputStream(file);

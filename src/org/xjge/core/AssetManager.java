@@ -48,27 +48,26 @@ public final class AssetManager {
         while(reloadRequests.peek() != null) reloadRequests.poll().run();
     }
     
-    public static boolean exists(String filename) {
-        return sources.stream().anyMatch(source -> source.exists(filename));
-    }
-    
-    //TODO: effectively deprecated, load will do this in the future
     public static InputStream open(String filename) throws IOException {
         for(AssetSource source : sources) {
             if(source.exists(filename)) {
-                return source.load(filename);
+                return source.open(filename);
             }
         }
         
         throw new IOException("Could not locate asset \"" + filename + "\" using any source");
     }
     
+    public static boolean exists(String filename) {
+        return sources.stream().anyMatch(source -> source.exists(filename));
+    }
+    
     public static synchronized <T extends Asset> T load(String filename, Class<T> type) {
         if(assets.containsKey(filename)) return (T) assets.get(filename);
         
-        try {
+        try(InputStream stream = open(filename)) {
             T asset = type.getDeclaredConstructor(String.class).newInstance(filename);
-            asset.load();
+            asset.load(stream);
             assets.put(filename, asset);
             
             return asset;
@@ -81,7 +80,7 @@ public final class AssetManager {
     }
     
     public static synchronized void reload(String filename) throws IOException {
-        if(assets.get(filename) != null) assets.get(filename).reload();
+        if(assets.get(filename) != null) assets.get(filename).reload(open(filename));
     }
     
     public static synchronized void release(String filename) {

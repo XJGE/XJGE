@@ -32,10 +32,10 @@ public final class TextureReloadable extends Asset {
     }
 
     @Override
-    protected void onLoad() throws IOException {
-        try (InputStream stream = AssetManager.open(getFilename())) {
+    protected void onLoad(InputStream stream) {
+        try {
             TextureData data = TextureLoader.decode(stream);
-
+            
             // Generate and bind new texture
             handle = glGenTextures();
             glBindTexture(GL_TEXTURE_2D, handle);
@@ -74,9 +74,8 @@ public final class TextureReloadable extends Asset {
             channels = data.channels;
 
             Logger.logInfo("Loaded texture: " + getFilename() + " (" + width + "x" + height + ")");
-        } catch (IOException exception) {
-            Logger.logError("Failed to load texture \"" + getFilename() + "\"", exception);
-            throw exception;
+        } catch(IOException exception) {
+            //TODO: use fallback
         }
     }
     
