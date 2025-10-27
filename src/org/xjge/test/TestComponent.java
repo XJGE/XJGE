@@ -18,7 +18,6 @@ import org.xjge.core.ErrorUtils;
 import org.xjge.graphics.GLProgram;
 import org.xjge.graphics.Graphics;
 import org.xjge.graphics.Texture;
-import org.xjge.graphics.TextureReloadable;
 
 /**
  * 
@@ -30,12 +29,12 @@ class TestComponent extends EntityComponent {
     private final Vector3f position;
     private final Graphics g = new Graphics();
     
-    private final TextureReloadable texture;
+    private final Texture texture;
     
     TestComponent(int size, float x, float y, float z) {
         position = new Vector3f(x, y, z);
         
-        texture = AssetManager.load("test_texture.png", TextureReloadable.class);
+        texture = AssetManager.load("test_texture.png", Texture.class);
         
         try(MemoryStack stack = MemoryStack.stackPush()) {
             g.vertices = stack.mallocFloat(20);
@@ -69,7 +68,7 @@ class TestComponent extends EntityComponent {
         //glEnable(GL_DEPTH_TEST);
         
         glActiveTexture(GL_TEXTURE0);
-        texture.bind();
+        texture.bind(GL_TEXTURE_2D);
         glBindVertexArray(g.vao);
         
         shader.use();

@@ -860,7 +860,7 @@ public class Model {
      * Frees the OpenGL texture objects used by this class.
      */
     public void freeTextures() {
-        for(Texture texture : textures) texture.delete();
+        //for(Texture texture : textures) texture.delete();
     }
     
 }

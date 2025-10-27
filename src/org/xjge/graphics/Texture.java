@@ -4,20 +4,18 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.nio.ByteBuffer;
 import java.nio.IntBuffer;
-import static org.lwjgl.opengl.GL11.*;
-import static org.lwjgl.opengl.GL12.GL_CLAMP_TO_EDGE;
+import static org.lwjgl.opengl.GL12.*;
 import static org.lwjgl.stb.STBImage.STBI_rgb_alpha;
 import static org.lwjgl.stb.STBImage.stbi_failure_reason;
 import static org.lwjgl.stb.STBImage.stbi_image_free;
 import static org.lwjgl.stb.STBImage.stbi_load_from_memory;
 import org.lwjgl.system.MemoryStack;
 import org.lwjgl.system.MemoryUtil;
+import org.xjge.core.Asset;
 import org.xjge.core.AssetManager;
 import org.xjge.core.Logger;
 
 /**
- * Created: May 11, 2021
- * <br><br>
  * Supplies the data parsed from an image file into a new two-dimensional 
  * texture object that can be used by the graphics pipeline. RBGA encoded .png 
  * is the preferred file format of this engine. OpenGL texture parameters are 
@@ -25,93 +23,33 @@ import org.xjge.core.Logger;
  * initialization.
  * 
  * @author J Hoffman
- * @since  2.0.0
+ * @since 2.0.0
  */
-public final class Texture {
+public final class Texture extends Asset {
 
-    private final int handle;
+    private boolean usingFallback;
     
-    public final int width;
-    public final int height;
-    public final int channels;
+    private int handle;
+    private int target;
+    private int width;
+    private int height;
+    private int channels;
     
-    public static final Texture FALLBACK = new Texture("xjge_texture_fallback.png", GL_TEXTURE_2D, true);
+    public static final Texture FALLBACK = AssetManager.load("xjge_texture_fallback.png", Texture.class);
     
     public Texture(String filename) {
-        this(filename, GL_TEXTURE_2D, false);
+        this(filename, GL_TEXTURE_2D);
     }
     
-    public Texture(String filename, int target) {
-        this(filename, target, false); //TODO: this might not need to exist, or set to package private
+    private Texture(String filename, int target) {
+        super(filename);
+        this.target = target;
     }
     
-    /**
-     * Creates a new texture object from the image file specified. If the image 
-     * file cannot be found, the engine will use a placeholder texture instead.
-     * 
-     * @param filepath the file location relative to this applications executable jar
-     * @param filename the name of the file to load (with extension)
-     * @param target the OpenGL texture target. One of:
-     * <table><caption></caption><tr>
-     * <td>{@link org.lwjgl.opengl.GL11C#GL_TEXTURE_2D TEXTURE_2D}</td>
-     * <td>{@link org.lwjgl.opengl.GL30#GL_TEXTURE_1D_ARRAY TEXTURE_1D_ARRAY}</td>
-     * <td>{@link org.lwjgl.opengl.GL31#GL_TEXTURE_RECTANGLE TEXTURE_RECTANGLE}</td>
-     * <td>{@link org.lwjgl.opengl.GL13#GL_TEXTURE_CUBE_MAP TEXTURE_CUBE_MAP}</td>
-     * </tr><tr>
-     * <td>{@link org.lwjgl.opengl.GL11C#GL_PROXY_TEXTURE_2D PROXY_TEXTURE_2D}</td>
-     * <td>{@link org.lwjgl.opengl.GL30#GL_PROXY_TEXTURE_1D_ARRAY PROXY_TEXTURE_1D_ARRAY}</td>
-     * <td>{@link org.lwjgl.opengl.GL31#GL_PROXY_TEXTURE_RECTANGLE PROXY_TEXTURE_RECTANGLE}</td>
-     * <td>{@link org.lwjgl.opengl.GL13#GL_PROXY_TEXTURE_CUBE_MAP PROXY_TEXTURE_CUBE_MAP}</td>
-     * </tr></table>
-     */
-    private Texture(String filename, int target, boolean useFallback) {
-        int[] info;
-        
-        try(InputStream file = AssetManager.open(filename)) {
-            info = loadTexture(file, target);
-        } catch(IOException exception) {
-            if(useFallback) Logger.logError("Failed to load engine-provided fallback texture", exception);
-            Logger.logWarning("Failed to load texture \"" + filename + "\" a fallback will be used instead", exception);
-            info = new int[] {FALLBACK.handle, FALLBACK.width, FALLBACK.height, FALLBACK.channels};
-        }
-        
-        handle   = info[0];
-        width    = info[1];
-        height   = info[2];
-        channels = info[3];
-        
-        bind(GL_TEXTURE_2D);
-            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
-            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
-            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
-            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
-        glBindTexture(GL_TEXTURE_2D, 0);
-    }
-    
-    /**
-     * Parses data from the specified image file and generates a new OpenGL 
-     * texture object.
-     * 
-     * @param filename the name of the file to load (with extension)
-     * @param target the OpenGL texture target. One of:
-     * <table><caption></caption><tr>
-     * <td>{@link org.lwjgl.opengl.GL11C#GL_TEXTURE_2D TEXTURE_2D}</td>
-     * <td>{@link org.lwjgl.opengl.GL30#GL_TEXTURE_1D_ARRAY TEXTURE_1D_ARRAY}</td>
-     * <td>{@link org.lwjgl.opengl.GL31#GL_TEXTURE_RECTANGLE TEXTURE_RECTANGLE}</td>
-     * <td>{@link org.lwjgl.opengl.GL13#GL_TEXTURE_CUBE_MAP TEXTURE_CUBE_MAP}</td>
-     * </tr><tr>
-     * <td>{@link org.lwjgl.opengl.GL11C#GL_PROXY_TEXTURE_2D PROXY_TEXTURE_2D}</td>
-     * <td>{@link org.lwjgl.opengl.GL30#GL_PROXY_TEXTURE_1D_ARRAY PROXY_TEXTURE_1D_ARRAY}</td>
-     * <td>{@link org.lwjgl.opengl.GL31#GL_PROXY_TEXTURE_RECTANGLE PROXY_TEXTURE_RECTANGLE}</td>
-     * <td>{@link org.lwjgl.opengl.GL13#GL_PROXY_TEXTURE_CUBE_MAP PROXY_TEXTURE_CUBE_MAP}</td>
-     * </tr></table>
-     * @return an array of integers containing data parsed from the image file
-     */
-    private static int[] loadTexture(InputStream file, int target) throws IOException {
-        int[] info = new int[4];
-        
-        info[0] = glGenTextures();
-        glBindTexture(target, info[0]);
+    @Override
+    protected void onLoad(InputStream file) {
+        if(handle == 0) handle = glGenTextures();
+        glBindTexture(target, handle);
         
         try(MemoryStack stack = MemoryStack.stackPush()) {
             byte[] data = file.readAllBytes();
@@ -128,19 +66,44 @@ public final class Texture {
                 throw new RuntimeException("STBI failed to parse texture data: " + stbi_failure_reason());
             }
             
-            info[1] = widthBuffer.get();
-            info[2] = heightBuffer.get();
-            info[3] = channelBuffer.get();
+            width    = widthBuffer.get();
+            height   = heightBuffer.get();
+            channels = channelBuffer.get();
             
-            glTexImage2D(target, 0, GL_RGBA, info[1], info[2], 0, GL_RGBA, GL_UNSIGNED_BYTE, texture);
+            glTexImage2D(target, 0, GL_RGBA, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, texture);
             
             stbi_image_free(texture);
             MemoryUtil.memFree(imageBuffer);
+            usingFallback = false;
+            
+        } catch(IOException exception) {
+            usingFallback = true;
+            Logger.logWarning("Failed to load texture \"" + getFilename() + "\" a fallback will be used instead", exception);
         }
         
-        return info;
+        bind(GL_TEXTURE_2D);
+            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+        glBindTexture(GL_TEXTURE_2D, 0);
     }
-    
+
+    @Override
+    protected void onReload() {
+        Logger.logInfo("Texture reloaded: \"" + getFilename() + "\"");
+    }
+
+    @Override
+    protected void onRelease() {
+        if(this == FALLBACK) return;
+        
+        if(handle != 0) {
+            glDeleteTextures(handle);
+            handle = 0;
+        }
+    }
+
     /**
      * Binds this texture to the specified target.
      * 
@@ -158,17 +121,14 @@ public final class Texture {
      * </tr></table>
      */
     public void bind(int target) {
-        glBindTexture(target, handle);
+        this.target = target;
+        glBindTexture(target, usingFallback ? FALLBACK.handle : handle);
     }
     
-    /**
-     * Frees the OpenGL texture associated with this object and removes it from 
-     * the systems VRAM.
-     * 
-     * @see org.lwjgl.opengl.GL11#glDeleteTextures(int)
-     */
-    public void delete() {
-        if(handle != FALLBACK.handle) glDeleteTextures(handle);
-    }
+    public int getWidth() { return width; }
+    
+    public int getHeight() { return height; }
+    
+    public int getChannels() { return channels; }
     
 }

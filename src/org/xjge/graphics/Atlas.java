@@ -62,10 +62,10 @@ public final class Atlas {
         this.cellWidth  = cellWidth;
         this.cellHeight = cellHeight;
         
-        subImageWidth  = (float) cellWidth / texture.width;
-        subImageHeight = (float) cellHeight / texture.height;
-        rows           = texture.width / cellWidth;
-        columns        = texture.height / cellHeight;
+        subImageWidth  = (float) cellWidth / texture.getWidth();
+        subImageHeight = (float) cellHeight / texture.getHeight();
+        rows           = texture.getWidth() / cellWidth;
+        columns        = texture.getHeight() / cellHeight;
         subImageCount  = rows * columns;
         
         subImageOffsets = new HashMap<>() {{
