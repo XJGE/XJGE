@@ -178,7 +178,7 @@ public final class XJGE {
         }
         
         AssetManager.addSource(new AssetSourceInternal(XJGE.class.getClassLoader()));
-        AssetManager.addSource(new AssetSourceFallback(XJGE.class.getClassLoader()));
+        AssetManager.addSource(new AssetSourceEngine(XJGE.class.getClassLoader()));
         
         observable.properties.put("XJGE_SCENE_CHANGED", scene);
         

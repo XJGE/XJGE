@@ -9,12 +9,12 @@ import java.io.InputStream;
  * @author J Hoffman
  * @since 4.0.0
  */
-class AssetSourceFallback implements AssetSource {
+class AssetSourceEngine implements AssetSource {
 
     private static final String ENGINE_ASSETS_FILEPATH = "org/xjge/assets/";
     private final ClassLoader classLoader;
     
-    AssetSourceFallback(ClassLoader classLoader) {
+    AssetSourceEngine(ClassLoader classLoader) {
         this.classLoader = classLoader;
     }
     

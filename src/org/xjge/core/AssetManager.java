@@ -48,7 +48,7 @@ public final class AssetManager {
         while(reloadRequests.peek() != null) reloadRequests.poll().run();
     }
     
-    public static InputStream open(String filename) throws IOException {
+    static InputStream open(String filename) throws IOException {
         for(AssetSource source : sources) {
             if(source.exists(filename)) {
                 return source.open(filename);
