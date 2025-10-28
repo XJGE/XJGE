@@ -1,8 +1,8 @@
 package org.xjge.core;
 
+import org.xjge.graphics.Texture;
 import static org.lwjgl.opengl.GL11.GL_RENDERER;
 import static org.lwjgl.opengl.GL11.glGetString;
-import org.xjge.graphics.Texture;
 import org.xjge.ui.Icon;
 
 /**

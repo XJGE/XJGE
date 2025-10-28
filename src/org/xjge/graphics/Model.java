@@ -302,7 +302,7 @@ public class Model {
             AIString aiFilename = AIString.calloc();
             Assimp.aiGetMaterialTexture(aiMaterial, aiTextureType_DIFFUSE, 0, aiFilename, (IntBuffer) null, null, null, null, null, null);
             
-            textures[i] = new Texture(aiFilename.dataString());
+            //textures[i] = new Texture(aiFilename.dataString());
             
             aiFilename.free();
             

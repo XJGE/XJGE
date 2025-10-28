@@ -35,10 +35,10 @@ public final class Texture extends Asset {
     private int height;
     private int channels;
     
-    public static final Texture FALLBACK = AssetManager.load("xjge_texture_fallback.png", Texture.class);
+    public static final Texture FALLBACK = Texture.load("xjge_texture_fallback.png");
     
-    public Texture(String filename) {
-        this(filename, GL_TEXTURE_2D);
+    public static Texture load(String filename) {
+        return AssetManager.load(filename, () -> new Texture(filename, GL_TEXTURE_2D));
     }
     
     private Texture(String filename, int target) {

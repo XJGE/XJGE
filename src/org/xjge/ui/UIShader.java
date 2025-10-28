@@ -28,8 +28,8 @@ class UIShader {
      */
     private UIShader() {
         var shaderSourceFiles = new LinkedList<GLShader>() {{
-            add(new GLShader("xjge_shader_ui_vertex.glsl", GL_VERTEX_SHADER));
-            add(new GLShader("xjge_shader_ui_fragment.glsl", GL_FRAGMENT_SHADER));
+            add(GLShader.load("xjge_shader_ui_vertex.glsl", GL_VERTEX_SHADER));
+            add(GLShader.load("xjge_shader_ui_fragment.glsl", GL_FRAGMENT_SHADER));
         }};
         
         shader = new GLProgram(shaderSourceFiles, "default");

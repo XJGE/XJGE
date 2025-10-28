@@ -21,8 +21,8 @@ public class Main {
         
         {
             var shaderSourceFiles = new LinkedList<GLShader>() {{
-                add(new GLShader("shader_test_vertex.glsl", GL_VERTEX_SHADER));
-                add(new GLShader("shader_test_fragment.glsl", GL_FRAGMENT_SHADER));
+                add(GLShader.load("shader_test_vertex.glsl", GL_VERTEX_SHADER));
+                add(GLShader.load("shader_test_fragment.glsl", GL_FRAGMENT_SHADER));
             }};
 
             GLProgram testProgram = new GLProgram(shaderSourceFiles, "test");

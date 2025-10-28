@@ -1,5 +1,6 @@
 package org.xjge.core;
 
+import org.xjge.graphics.Texture;
 import java.beans.PropertyChangeListener;
 import java.io.InputStream;
 import java.nio.ByteBuffer;
@@ -27,7 +28,6 @@ import static org.lwjgl.stb.STBImage.stbi_load_from_memory;
 import org.lwjgl.system.MemoryStack;
 import static org.lwjgl.system.MemoryUtil.NULL;
 import static org.xjge.core.SplitScreenType.*;
-import org.xjge.graphics.Texture;
 
 /**
  * Created: Apr 29, 2021

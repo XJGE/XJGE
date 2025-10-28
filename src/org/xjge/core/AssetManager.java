@@ -9,6 +9,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Queue;
 import java.util.concurrent.ConcurrentLinkedQueue;
+import java.util.function.Supplier;
 
 /**
  * 
@@ -58,19 +59,18 @@ public final class AssetManager {
         return sources.stream().anyMatch(source -> source.exists(filename));
     }
     
-    public static synchronized <T extends Asset> T load(String filename, Class<T> type) {
+    public static synchronized <T extends Asset> T load(String filename, Supplier<T> factory) {
         if(assets.containsKey(filename)) return (T) assets.get(filename);
         
         try(InputStream stream = open(filename)) {
-            T asset = type.getDeclaredConstructor(String.class).newInstance(filename);
+            T asset = factory.get();
             asset.load(stream);
             assets.put(filename, asset);
             
             return asset;
             
-        } catch(IllegalAccessException | IllegalArgumentException | InstantiationException | 
-                NoSuchMethodException | SecurityException | InvocationTargetException | IOException exception) {
-            Logger.logWarning("Failed to load asset using file: \"" + filename + "\" of type " + type.getSimpleName(), exception);
+        } catch(IllegalArgumentException | SecurityException | IOException exception) {
+            Logger.logWarning("Failed to load asset using file: \"" + filename + "\"", exception);
             return null;
         }
     }

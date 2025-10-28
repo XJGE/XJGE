@@ -1,7 +1,7 @@
 package org.xjge.core;
 
-import org.xjge.graphics.Graphics;
 import org.xjge.graphics.GLProgram;
+import org.xjge.graphics.Graphics;
 import java.util.Map;
 import org.joml.Matrix4f;
 import org.joml.Vector2i;

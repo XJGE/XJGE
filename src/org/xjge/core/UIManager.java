@@ -1,12 +1,12 @@
 package org.xjge.core;
 
+import org.xjge.graphics.GLProgram;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.Map;
 import java.util.Queue;
 import org.joml.Matrix4f;
 import org.joml.Matrix4fc;
-import org.xjge.graphics.GLProgram;
 import org.xjge.ui.Widget;
 
 /**

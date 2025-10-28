@@ -1,10 +1,10 @@
 package org.xjge.core;
 
+import org.xjge.graphics.GLProgram;
 import org.joml.Matrix4f;
 import org.joml.Vector3f;
 import static org.lwjgl.opengl.GL30.*;
 import static org.lwjgl.system.MemoryUtil.NULL;
-import org.xjge.graphics.GLProgram;
 
 /**
  * Created: Nov 9, 2021

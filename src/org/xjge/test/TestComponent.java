@@ -34,7 +34,7 @@ class TestComponent extends EntityComponent {
     TestComponent(int size, float x, float y, float z) {
         position = new Vector3f(x, y, z);
         
-        texture = AssetManager.load("test_texture.png", Texture.class);
+        texture = Texture.load("test_texture.png");
         
         try(MemoryStack stack = MemoryStack.stackPush()) {
             g.vertices = stack.mallocFloat(20);

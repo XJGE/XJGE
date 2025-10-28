@@ -6,8 +6,11 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.nio.charset.StandardCharsets;
+import org.xjge.core.Asset;
 import static org.lwjgl.opengl.GL20.*;
 import org.xjge.core.AssetManager;
+import org.xjge.core.AssetManager;
+import org.xjge.core.Logger;
 
 /**
  * Created: May 2, 2021
@@ -19,9 +22,12 @@ import org.xjge.core.AssetManager;
  * @author J Hoffman
  * @since  2.0.0
  */
-public final class GLShader {
+public final class GLShader extends Asset {
     
-    final int handle;
+    private boolean valid;
+    
+    private int handle;
+    private final int stage;
     
     /**
      * Parses a .glsl source file then utilizes the stage specified to produce 
@@ -39,23 +45,15 @@ public final class GLShader {
      * <td>{@link org.lwjgl.opengl.GL40#GL_TESS_EVALUATION_SHADER GL_TESS_EVALUATION_SHADER}</td>
      * <td>{@link org.lwjgl.opengl.GL43#GL_COMPUTE_SHADER GL_COMPUTE_SHADER}</td>
      * </tr></table>
+     * @return 
      */
-    public GLShader(String filename, int stage) {
-        String sourceCode = "";
-        
-        try(InputStream file = AssetManager.open(filename)) {
-            sourceCode = loadShader(file);
-        } catch(Exception exception) {
-            Logger.logError("Failed to load GLSL file \"" + filename + "\"", exception);
-        }
-        
-        handle = glCreateShader(stage);
-        glShaderSource(handle, sourceCode);
-        glCompileShader(handle);
-        
-        if(glGetShaderi(handle, GL_COMPILE_STATUS) != GL_TRUE) {
-            Logger.logError("Failed to parse GLSL file \"" + filename + "\" (" + glGetShaderInfoLog(handle) + ")", null);
-        }
+    public static GLShader load(String filename, int stage) {
+        return AssetManager.load(filename, () -> new GLShader(filename, stage));
+    }
+    
+    private GLShader(String filename, int stage) {
+        super(filename);
+        this.stage = stage;
     }
     
     private static String loadShader(InputStream file) throws IOException {
@@ -70,5 +68,49 @@ public final class GLShader {
             return builder.toString();
         }
     }
+
+    @Override
+    protected void onLoad(InputStream file) {
+        String sourceCode;
+        
+        try {
+            sourceCode = loadShader(file);
+        } catch(IOException exception) {
+            Logger.logWarning("Failed to load shader file: \"" + getFilename() + "\"", exception);
+            valid = false;
+            return;
+        }
+        
+        handle = glCreateShader(stage);
+        glShaderSource(handle, sourceCode);
+        glCompileShader(handle);
+        
+        if(glGetShaderi(handle, GL_COMPILE_STATUS) != GL_TRUE) {
+            Logger.logError("Failed to compile shader file: \"" + getFilename() + "\" (" + glGetShaderInfoLog(handle) + ")", null);
+            valid = false;
+            return;
+        }
+        
+        valid = true;
+    }
+
+    @Override
+    protected void onReload() {
+        if(valid) {
+            Logger.logInfo("Shader file: \"" + getFilename() + "\" reloaded successfully");
+        }
+    }
+
+    @Override
+    protected void onRelease() {
+        if(handle != 0) {
+            glDeleteShader(handle);
+            handle = 0;
+        }
+        
+        valid = false;
+    }
+    
+    int getHandle() { return handle; }
     
 }

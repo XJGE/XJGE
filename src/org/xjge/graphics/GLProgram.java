@@ -16,6 +16,7 @@ import org.joml.Vector3fc;
 import org.joml.Vector4fc;
 import static org.lwjgl.opengl.GL20.*;
 import org.lwjgl.system.MemoryStack;
+import org.xjge.core.Logger;
 
 /**
  * Created: May 2, 2021
@@ -46,7 +47,7 @@ public class GLProgram {
         this.name = name;
         
         handle = glCreateProgram();
-        shaders.forEach(shader -> glAttachShader(handle, shader.handle));
+        shaders.forEach(shader -> glAttachShader(handle, shader.getHandle()));
         glLinkProgram(handle);
         
         if(glGetProgrami(handle, GL_LINK_STATUS) != GL_TRUE) {

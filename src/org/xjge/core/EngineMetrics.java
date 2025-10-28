@@ -1,7 +1,7 @@
 package org.xjge.core;
 
-import static org.lwjgl.glfw.GLFW.GLFW_MOUSE_BUTTON_LEFT;
 import org.xjge.graphics.Texture;
+import static org.lwjgl.glfw.GLFW.GLFW_MOUSE_BUTTON_LEFT;
 
 /**
  * 

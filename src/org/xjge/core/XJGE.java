@@ -1,13 +1,13 @@
 package org.xjge.core;
 
 import org.xjge.graphics.Texture;
+import org.xjge.graphics.GLProgram;
+import org.xjge.graphics.GLDataType;
+import org.xjge.graphics.GLShader;
 import java.beans.PropertyChangeListener;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import org.xjge.graphics.GLDataType;
-import org.xjge.graphics.GLProgram;
-import org.xjge.graphics.GLShader;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Collections;
@@ -195,8 +195,8 @@ public final class XJGE {
         //Initialize the default shader program that will be provided to the implementation
         {
             var shaderSourceFiles = new LinkedList<GLShader>() {{
-                add(new GLShader("xjge_shader_default_vertex.glsl", GL_VERTEX_SHADER));
-                add(new GLShader("xjge_shader_default_fragment.glsl", GL_FRAGMENT_SHADER));
+                add(GLShader.load("xjge_shader_default_vertex.glsl", GL_VERTEX_SHADER));
+                add(GLShader.load("xjge_shader_default_fragment.glsl", GL_FRAGMENT_SHADER));
             }};
 
             GLProgram defaultProgram = new GLProgram(shaderSourceFiles, "default");
@@ -243,8 +243,8 @@ public final class XJGE {
         //Create shader program that will generate shadow map output
         {
             var shaderSourceFiles = new LinkedList<GLShader>() {{
-                add(new GLShader("xjge_shader_depth_vertex.glsl", GL_VERTEX_SHADER));
-                add(new GLShader("xjge_shader_depth_fragment.glsl", GL_FRAGMENT_SHADER));
+                add(GLShader.load("xjge_shader_depth_vertex.glsl", GL_VERTEX_SHADER));
+                add(GLShader.load("xjge_shader_depth_fragment.glsl", GL_FRAGMENT_SHADER));
             }};
 
             depthProgram = new GLProgram(shaderSourceFiles, "default");
@@ -258,8 +258,8 @@ public final class XJGE {
         //Create shader program for applying gaussian blur
         {
             var shaderSourceFiles = new LinkedList<GLShader>() {{
-                add(new GLShader("xjge_shader_blur_vertex.glsl", GL_VERTEX_SHADER));
-                add(new GLShader("xjge_shader_blur_fragment.glsl", GL_FRAGMENT_SHADER));
+                add(GLShader.load("xjge_shader_blur_vertex.glsl", GL_VERTEX_SHADER));
+                add(GLShader.load("xjge_shader_blur_fragment.glsl", GL_FRAGMENT_SHADER));
             }};
 
             blurProgram = new GLProgram(shaderSourceFiles, "default");
@@ -270,8 +270,8 @@ public final class XJGE {
             blurProgram.addUniform(GLDataType.FLOAT, "uWeight");
             blurProgram.addUniform(GLDataType.MAT4,  "uProjection");
         }
-
-        engineIcons = new Texture("xjge_texture_icons.png");
+        
+        engineIcons = Texture.load("xjge_texture_icons.png");
         Light.setIconTexture(engineIcons);
         
         engineCommands = new TreeMap<>() {{
