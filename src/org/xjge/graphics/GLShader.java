@@ -109,6 +109,11 @@ public final class GLShader extends Asset {
         valid = false;
     }
     
+    @Override
+    protected GLShader onLoadFailure() {
+        return null;
+    }
+    
     int getHandle() { return handle; }
     
 }

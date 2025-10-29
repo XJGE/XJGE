@@ -169,10 +169,7 @@ public final class XJGE {
                 externalSource.addChangeListener(filepath -> {
                     Pattern tempFile = Pattern.compile(".*(_tmp\\d+|~\\$).*");
                     String filename  = filepath.getFileName().toString();
-                    
-                    if(AssetManager.exists(filename) && !tempFile.matcher(filename).matches()) {
-                        AssetManager.queueReload(filename);
-                    }
+                    if(!tempFile.matcher(filename).matches()) AssetManager.queueReload(filename);
                 });
             }
         }

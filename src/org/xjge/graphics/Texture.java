@@ -26,8 +26,6 @@ import org.xjge.core.Logger;
  * @since 2.0.0
  */
 public final class Texture extends Asset {
-
-    private boolean usingFallback;
     
     private int handle;
     private int target;
@@ -74,10 +72,8 @@ public final class Texture extends Asset {
             
             stbi_image_free(texture);
             MemoryUtil.memFree(imageBuffer);
-            usingFallback = false;
             
         } catch(IOException exception) {
-            usingFallback = true;
             Logger.logWarning("Failed to load texture: \"" + getFilename() + "\" a fallback will be used instead", exception);
         }
         
@@ -103,6 +99,11 @@ public final class Texture extends Asset {
             handle = 0;
         }
     }
+    
+    @Override
+    protected Texture onLoadFailure() {
+        return FALLBACK;
+    }
 
     /**
      * Binds this texture to the specified target.
@@ -122,7 +123,7 @@ public final class Texture extends Asset {
      */
     public void bind(int target) {
         this.target = target;
-        glBindTexture(target, usingFallback ? FALLBACK.handle : handle);
+        glBindTexture(target, handle);
     }
     
     public int getWidth() { return width; }

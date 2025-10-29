@@ -82,6 +82,11 @@ public final class Sound extends Asset {
         }
     }
     
+    @Override
+    protected Sound onLoadFailure() {
+        return FALLBACK;
+    }
+    
     int getHandle() { return handle; }
     
     int getFrequency() { return frequency; }

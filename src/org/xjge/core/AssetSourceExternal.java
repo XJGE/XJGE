@@ -46,10 +46,10 @@ final class AssetSourceExternal implements AssetSource, AutoCloseable {
         if(!Files.isDirectory(this.filepath)) {
             throw new IllegalArgumentException("Assets folder must be an absolute filepath");
         }
-
+        
         this.watchService = FileSystems.getDefault().newWatchService();
         registerAll(this.filepath);
-
+        
         watcherThread = new Thread(this::processEvents, "AssetSourceExternal-Watcher");
         watcherThread.setDaemon(true);
         watcherThread.start();

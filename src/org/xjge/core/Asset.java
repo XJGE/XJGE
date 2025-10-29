@@ -50,4 +50,6 @@ public abstract class Asset {
     
     protected abstract void onRelease();
     
+    protected abstract <T extends Asset> T onLoadFailure();
+    
 }

@@ -44,10 +44,7 @@ public final class AssetManager {
     
     static void queueReload(String filename) {
         Logger.logInfo("Change detected for asset file: \"" + filename + "\"");
-        
-        reloadRequests.add(() -> {
-            reload(filename);
-        });
+        reloadRequests.add(() -> reload(filename));
     }
     
     static void processReloadRequests() {
@@ -61,16 +58,15 @@ public final class AssetManager {
     public static synchronized <T extends Asset> T load(String filename, Supplier<T> factory) {
         if(assets.containsKey(filename)) return (T) assets.get(filename);
         
+        T asset = factory.get();
+        
         try(InputStream stream = open(filename)) {
-            T asset = factory.get();
             asset.load(stream);
             assets.put(filename, asset);
-            
             return asset;
-            
         } catch(IllegalArgumentException | SecurityException | IOException exception) {
-            Logger.logWarning("Failed to load asset using file: \"" + filename + "\"", exception);
-            return null;
+            Logger.logWarning("Failed to load asset", exception);
+            return asset.onLoadFailure();
         }
     }
     

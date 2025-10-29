@@ -408,6 +408,11 @@ public final class Font extends Asset {
         glyphPool.clear();
     }
     
+    @Override
+    protected Font onLoadFailure() {
+        return FALLBACK;
+    }
+    
     /**
      * Uploads the current positions of each glyph in the string to the GPU.
      */
