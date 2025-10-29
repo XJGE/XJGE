@@ -30,6 +30,7 @@ import org.xjge.core.ErrorUtils;
 import org.xjge.core.Logger;
 import org.xjge.core.XJGE;
 import static org.lwjgl.system.MemoryUtil.NULL;
+import org.xjge.core.Asset;
 import org.xjge.core.AssetManager;
 import org.xjge.graphics.Color;
 
@@ -43,28 +44,28 @@ import org.xjge.graphics.Color;
  * 
  * @see Widget
  */
-public final class Font {
+public final class Font extends Asset {
 
-    private final boolean isBitmapFont;
+    private boolean isBitmapFont;
     
     private final float scale = 1.5f;
     
     public static final int DEFAULT_FONT_SIZE = 26;
     
-    public final int size;
-    private final int textureHandle;
-    private final int largestGlyphWidth;
-    private final int bitmapWidth;
-    private final int bitmapHeight;
-    private final int vaoHandle;
-    private final int vboHandle;
-    private final int iboHandle;
-    private final int posOffsetHandle;
-    private final int texOffsetHandle;
-    private final int colOffsetHandle;
+    private int size;
+    private int textureHandle;
+    private int largestGlyphWidth;
+    private int bitmapWidth;
+    private int bitmapHeight;
+    private int vaoHandle;
+    private int vboHandle;
+    private int iboHandle;
+    private int posOffsetHandle;
+    private int texOffsetHandle;
+    private int colOffsetHandle;
     private int numGlyphsAllocated;
     
-    public static final Font FALLBACK = new Font("xjge_font_fallback.ttf", DEFAULT_FONT_SIZE, true);
+    public static final Font FALLBACK = Font.load("xjge_font_fallback.ttf", DEFAULT_FONT_SIZE);
     
     private final String charset = " !\"#$%&\'()*+,-./" +
                                    "0123456789:;<=>?"   +
@@ -73,8 +74,8 @@ public final class Font {
                                    "`abcdefghijklmno"   +
                                    "pqrstuvwxyz{|}~";
     
-    private final FloatBuffer vertexBuffer;
-    private final IntBuffer indexBuffer;
+    private FloatBuffer vertexBuffer;
+    private IntBuffer indexBuffer;
     
     private final List<Glyph> glyphPool = new ArrayList<>();
     private final Map<Character, GlyphMetrics> glyphMetrics = new HashMap<>();
@@ -90,8 +91,8 @@ public final class Font {
         int bearingY
     ) {}
     
-    public Font(String filename, int size) {
-        this(filename, size, false);
+    public static Font load(String filename, int size) {
+        return AssetManager.load(filename, () -> new Font(filename, size));
     }
     
     /**
@@ -100,79 +101,9 @@ public final class Font {
      * @param filename the name of the file to load (with extension)
      * @param size the size of the font in non-pixel units
      */
-    public Font(String filename, int size, boolean useFallback) {
-        int[] info;
-        
-        try(InputStream file = AssetManager.open(filename)) {
-            info = loadFont(file, filename, size);
-        } catch(Exception exception) {
-            if(useFallback) Logger.logError("Failed to load engine-provided fallback font", exception);
-            
-            Logger.logWarning("Failed to load font \"" + filename + "\" a fallback will be used instead", exception);
-            glyphMetrics.putAll(FALLBACK.glyphMetrics);
-            
-            info = new int[] {
-                0,
-                DEFAULT_FONT_SIZE,
-                FALLBACK.textureHandle,
-                FALLBACK.largestGlyphWidth,
-                FALLBACK.bitmapWidth,
-                FALLBACK.bitmapHeight,
-                FALLBACK.vaoHandle,
-                FALLBACK.vboHandle,
-                FALLBACK.iboHandle,
-                FALLBACK.posOffsetHandle,
-                FALLBACK.texOffsetHandle,
-                FALLBACK.colOffsetHandle
-            };
-        }
-        
-        isBitmapFont      = info[0] == 1;
-        this.size         = info[1];
-        textureHandle     = info[2];
-        largestGlyphWidth = info[3];
-        bitmapWidth       = info[4];
-        bitmapHeight      = info[5];
-        vaoHandle         = info[6];
-        vboHandle         = info[7];
-        iboHandle         = info[8];
-        colOffsetHandle   = info[9];
-        posOffsetHandle   = info[10];
-        texOffsetHandle   = info[11];
-        
-        try(MemoryStack stack = MemoryStack.stackPush()) {
-            vertexBuffer = stack.mallocFloat(20);
-            indexBuffer  = stack.mallocInt(6);
-            
-            float subImageWidth  = (float) largestGlyphWidth / bitmapWidth;
-            float subImageHeight = (float) this.size / bitmapHeight;
-            
-            //(vec3 position), (vec2 texCoords)
-            vertexBuffer.put(0)                .put(this.size).put(0)   .put(0)            .put(0);
-            vertexBuffer.put(largestGlyphWidth).put(this.size).put(0)   .put(subImageWidth).put(0);
-            vertexBuffer.put(largestGlyphWidth).put(0)        .put(0)   .put(subImageWidth).put(subImageHeight);
-            vertexBuffer.put(0)                .put(0)        .put(0)   .put(0)            .put(subImageHeight);
-            
-            indexBuffer.put(0).put(1).put(2);
-            indexBuffer.put(2).put(3).put(0);
-            
-            vertexBuffer.flip();
-            indexBuffer.flip();
-        }
-        
-        glBindVertexArray(vaoHandle);
-        
-        glBindBuffer(GL_ARRAY_BUFFER, vboHandle);
-        glBufferData(GL_ARRAY_BUFFER, vertexBuffer, GL_STATIC_DRAW);
-        
-        glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, iboHandle);
-        glBufferData(GL_ELEMENT_ARRAY_BUFFER, indexBuffer, GL_STATIC_DRAW);
-        
-        glVertexAttribPointer(0, 3, GL_FLOAT, false, (5 * Float.BYTES), 0);
-        glVertexAttribPointer(1, 2, GL_FLOAT, false, (5 * Float.BYTES), (3 * Float.BYTES));
-        
-        glEnableVertexAttribArray(0);
-        glEnableVertexAttribArray(1);
+    private Font(String filename, int size) {
+        super(filename);
+        this.size = size;
     }
     
     /**
@@ -184,7 +115,7 @@ public final class Font {
      * @param size the size of the font in non-pixel units
      * @return an integer array containing the parsed font file data
      */
-    private int[] loadFont(InputStream file, String filename, int size) throws Exception {
+    private int[] loadFont(InputStream stream, String filename, int size) throws Exception {
         if(size <= 0 || size > 128) {
             throw new IllegalStateException("Invalid font size used. Font size must be between 1 and 128");
         }
@@ -198,9 +129,9 @@ public final class Font {
         info[2] = glGenTextures();
         
         if(extension.equals("bmf")) {
-            loadBitmapFont(file, info);
+            loadBitmapFont(stream, info);
         } else {
-            loadVectorFont(file, info);
+            loadVectorFont(stream, info);
         }
         
         //Add exception for \n newline character
@@ -221,8 +152,8 @@ public final class Font {
      * @throws XMLStreamException 
      * @throws IOException 
      */
-    private void loadBitmapFont(InputStream file, int[] info) throws XMLStreamException, IOException {
-        var xmlReader = XMLInputFactory.newInstance().createXMLStreamReader(file);
+    private void loadBitmapFont(InputStream stream, int[] info) throws XMLStreamException, IOException {
+        var xmlReader = XMLInputFactory.newInstance().createXMLStreamReader(stream);
         
         float subImageWidth  = 0;
         float subImageHeight = 0;
@@ -252,7 +183,7 @@ public final class Font {
                             ByteBuffer imageBuffer  = MemoryUtil.memAlloc(data.length).put(data).flip();
                             IntBuffer widthBuffer   = stack.mallocInt(1);
                             IntBuffer heightBuffer  = stack.mallocInt(1);
-
+                            
                             ByteBuffer image = stbi_load_from_memory(imageBuffer, widthBuffer, heightBuffer, stack.mallocInt(1), STBI_rgb_alpha);
                             
                             if(image == null) {
@@ -325,9 +256,9 @@ public final class Font {
      * @param info the array containing data parsed from the font file
      * @throws IOException 
      */
-    private void loadVectorFont(InputStream file, int[] info) throws IOException {
+    private void loadVectorFont(InputStream stream, int[] info) throws IOException {
         try(MemoryStack stack = MemoryStack.stackPush()) {
-            byte[] data = file.readAllBytes();
+            byte[] data = stream.readAllBytes();
 
             ByteBuffer fontBuffer  = MemoryUtil.memAlloc(data.length).put(data).flip();
             STBTTFontinfo fontInfo = STBTTFontinfo.malloc(stack);
@@ -398,6 +329,111 @@ public final class Font {
 
             MemoryUtil.memFree(packedCharBuffer);
         }
+    }
+    
+    @Override
+    protected void onLoad(InputStream stream) {
+        glyphMetrics.clear();
+
+        int[] info;
+        
+        try {
+            info = loadFont(stream, getFilename(), size);
+        } catch(Exception exception) {
+            Logger.logWarning("Failed to load font: \"" + getFilename() + "\" a fallback will be used instead", exception);
+            
+            glyphMetrics.putAll(FALLBACK.glyphMetrics);
+            
+            isBitmapFont      = FALLBACK.isBitmapFont;
+            size              = FALLBACK.size;
+            textureHandle     = FALLBACK.textureHandle;
+            largestGlyphWidth = FALLBACK.largestGlyphWidth;
+            bitmapWidth       = FALLBACK.bitmapWidth;
+            bitmapHeight      = FALLBACK.bitmapHeight;
+            vaoHandle         = FALLBACK.vaoHandle;
+            vboHandle         = FALLBACK.vboHandle;
+            iboHandle         = FALLBACK.iboHandle;
+            posOffsetHandle   = FALLBACK.posOffsetHandle;
+            texOffsetHandle   = FALLBACK.texOffsetHandle;
+            colOffsetHandle   = FALLBACK.colOffsetHandle;
+            
+            return;
+        }
+        
+        isBitmapFont      = info[0] == 1;
+        size              = info[1];
+        textureHandle     = info[2];
+        largestGlyphWidth = info[3];
+        bitmapWidth       = info[4];
+        bitmapHeight      = info[5];
+        vaoHandle         = info[6];
+        vboHandle         = info[7];
+        iboHandle         = info[8];
+        posOffsetHandle   = info[9];
+        texOffsetHandle   = info[10];
+        colOffsetHandle   = info[11];
+
+        try(MemoryStack stack = MemoryStack.stackPush()) {
+            vertexBuffer = stack.mallocFloat(20);
+            indexBuffer  = stack.mallocInt(6);
+            
+            float subImageWidth  = (float) largestGlyphWidth / bitmapWidth;
+            float subImageHeight = (float) this.size / bitmapHeight;
+            
+            //(vec3 position), (vec2 texCoords)
+            vertexBuffer.put(0)                .put(this.size).put(0)   .put(0)            .put(0);
+            vertexBuffer.put(largestGlyphWidth).put(this.size).put(0)   .put(subImageWidth).put(0);
+            vertexBuffer.put(largestGlyphWidth).put(0)        .put(0)   .put(subImageWidth).put(subImageHeight);
+            vertexBuffer.put(0)                .put(0)        .put(0)   .put(0)            .put(subImageHeight);
+            
+            indexBuffer.put(0).put(1).put(2);
+            indexBuffer.put(2).put(3).put(0);
+            
+            vertexBuffer.flip();
+            indexBuffer.flip();
+        }
+        
+        glBindVertexArray(vaoHandle);
+        
+        glBindBuffer(GL_ARRAY_BUFFER, vboHandle);
+        glBufferData(GL_ARRAY_BUFFER, vertexBuffer, GL_STATIC_DRAW);
+        
+        glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, iboHandle);
+        glBufferData(GL_ELEMENT_ARRAY_BUFFER, indexBuffer, GL_STATIC_DRAW);
+        
+        glVertexAttribPointer(0, 3, GL_FLOAT, false, (5 * Float.BYTES), 0);
+        glVertexAttribPointer(1, 2, GL_FLOAT, false, (5 * Float.BYTES), (3 * Float.BYTES));
+        
+        glEnableVertexAttribArray(0);
+        glEnableVertexAttribArray(1);
+        
+        numGlyphsAllocated = 0;
+        glyphPool.clear();
+    }
+
+    @Override
+    protected void onReload() {
+        Logger.logInfo("Font file: \"" + getFilename() + "\" reloaded successfully");
+    }
+
+    @Override
+    protected void onRelease() {
+        try {
+            if(textureHandle != 0) glDeleteTextures(textureHandle);
+        } catch (Exception ignored) {}
+
+        try { if(vaoHandle != 0) glDeleteVertexArrays(vaoHandle); } catch (Exception ignored) {}
+        try { if(vboHandle != 0) glDeleteBuffers(vboHandle); } catch (Exception ignored) {}
+        try { if(iboHandle != 0) glDeleteBuffers(iboHandle); } catch (Exception ignored) {}
+        try { if(posOffsetHandle != 0) glDeleteBuffers(posOffsetHandle); } catch (Exception ignored) {}
+        try { if(texOffsetHandle != 0) glDeleteBuffers(texOffsetHandle); } catch (Exception ignored) {}
+        try { if(colOffsetHandle != 0) glDeleteBuffers(colOffsetHandle); } catch (Exception ignored) {}
+        
+        textureHandle = 0;
+        vaoHandle = vboHandle = iboHandle = posOffsetHandle = texOffsetHandle = colOffsetHandle = 0;
+        largestGlyphWidth = bitmapWidth = bitmapHeight = 0;
+        numGlyphsAllocated = 0;
+        glyphPool.clear();
     }
     
     /**
@@ -570,19 +606,6 @@ public final class Font {
     }
     
     /**
-     * Frees any memory allocated by this object including any OpenGL buffers 
-     * and textures that were generated during initialization.
-     */
-    public void delete() {
-        if(textureHandle != FALLBACK.textureHandle) {
-            glDeleteTextures(textureHandle);
-            glDeleteVertexArrays(vaoHandle);
-            glDeleteBuffers(vboHandle);
-            glDeleteBuffers(iboHandle);
-        }
-    }
-    
-    /**
      * Obtains the horizontal texture coordinate for the left edge of the glyph
      * representing the character provided.
      * 
@@ -636,6 +659,10 @@ public final class Font {
      */
     public int getGlyphBearingY(char character) {
         return glyphMetrics.get((!glyphMetrics.containsKey(character) ? '?' : character)).bearingY;
+    }
+    
+    public int getSize() {
+        return size;
     }
     
     /**

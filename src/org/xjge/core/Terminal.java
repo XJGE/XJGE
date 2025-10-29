@@ -145,7 +145,7 @@ final class Terminal {
             
             for(int i = 0; i < newLines.size(); i++) {
                 commandOutput.lines.add((i == 0) ? newLines.get(i) : "  " + newLines.get(i));
-                outputLength += Font.FALLBACK.size;
+                outputLength += Font.FALLBACK.getSize();
             }
         }
         
@@ -288,7 +288,7 @@ final class Terminal {
     void render() {
         outputArea.render(0.5f, Color.BLACK);
         
-        int yOffset = ((outputArea.positionY + 6) - Font.FALLBACK.size) - scrollBar.getContentOffset();
+        int yOffset = ((outputArea.positionY + 6) - Font.FALLBACK.getSize()) - scrollBar.getContentOffset();
         
         glEnable(GL_SCISSOR_TEST);
         glScissor(outputArea.positionX, outputArea.positionY, outputArea.width, outputArea.height);
@@ -297,7 +297,7 @@ final class Terminal {
             var commandOutput = output.get(i);
             
             for(int j = commandOutput.lines.size() - 1; j >= 0; j--) {
-                yOffset += Font.FALLBACK.size;
+                yOffset += Font.FALLBACK.getSize();
                 Font.FALLBACK.drawString(commandOutput.lines.get(j), 12, yOffset, commandOutput.color, 1f);
             }
         }
@@ -320,7 +320,7 @@ final class Terminal {
     
     void relocate(int windowWidth, int windowHeight) {
         commandLine.width  = windowWidth;
-        commandLine.height = Font.FALLBACK.size + 2;
+        commandLine.height = Font.FALLBACK.getSize() + 2;
         
         outputArea.positionY = commandLine.height;
         outputArea.width     = windowWidth;

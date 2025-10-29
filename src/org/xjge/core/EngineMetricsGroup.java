@@ -67,7 +67,7 @@ abstract class EngineMetricsGroup {
         }
         
         if(expanded && contentAreaWidth < 328) contentAreaWidth = 328;
-        contentAreaHeight = (output.size() * Font.FALLBACK.size) + 10;
+        contentAreaHeight = (output.size() * Font.FALLBACK.getSize()) + 10;
         
         contentArea.width  = (expanded) ? contentAreaWidth  : 300;
         contentArea.height = (expanded) ? contentAreaHeight : 0;
@@ -105,7 +105,7 @@ abstract class EngineMetricsGroup {
             for(int i = 0; i < output.size(); i++) {
                 Font.FALLBACK.drawString(output.get(i), 
                                          contentArea.positionX + 10, 
-                                         titleBar.positionY - (Font.FALLBACK.size * (i + 1)), 
+                                         titleBar.positionY - (Font.FALLBACK.getSize() * (i + 1)), 
                                          highlight);
             }
             render();
