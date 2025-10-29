@@ -16,10 +16,6 @@ import javax.xml.stream.XMLInputFactory;
 import javax.xml.stream.XMLStreamConstants;
 import javax.xml.stream.XMLStreamException;
 import static org.lwjgl.opengl.GL33C.*;
-import static org.lwjgl.stb.STBImage.STBI_rgb_alpha;
-import static org.lwjgl.stb.STBImage.stbi_failure_reason;
-import static org.lwjgl.stb.STBImage.stbi_image_free;
-import static org.lwjgl.stb.STBImage.stbi_load_from_memory;
 import org.lwjgl.stb.STBTTFontinfo;
 import org.lwjgl.stb.STBTTPackContext;
 import org.lwjgl.stb.STBTTPackedchar;
@@ -33,6 +29,7 @@ import static org.lwjgl.system.MemoryUtil.NULL;
 import org.xjge.core.Asset;
 import org.xjge.core.AssetManager;
 import org.xjge.graphics.Color;
+import org.xjge.graphics.Texture;
 
 /**
  * Parses a font file and provides it as an object that can be used to render 
@@ -76,6 +73,7 @@ public final class Font extends Asset {
     
     private FloatBuffer vertexBuffer;
     private IntBuffer indexBuffer;
+    private Texture bitmapTexture;
     
     private final List<Glyph> glyphPool = new ArrayList<>();
     private final Map<Character, GlyphMetrics> glyphMetrics = new HashMap<>();
@@ -173,39 +171,13 @@ public final class Font extends Asset {
                         info[3] = Integer.parseInt(xmlReader.getAttributeValue(null, "width"));
                         info[1] = Integer.parseInt(xmlReader.getAttributeValue(null, "height"));
                         
-                        /**
-                         * Create a new OpenGL texture object using the image 
-                         * provided by the XML file.
-                         */
-                        try(InputStream imageFile = AssetManager.open(imageFilename); MemoryStack stack = MemoryStack.stackPush()) {
-                            byte[] data = imageFile.readAllBytes();
-                            
-                            ByteBuffer imageBuffer  = MemoryUtil.memAlloc(data.length).put(data).flip();
-                            IntBuffer widthBuffer   = stack.mallocInt(1);
-                            IntBuffer heightBuffer  = stack.mallocInt(1);
-                            
-                            ByteBuffer image = stbi_load_from_memory(imageBuffer, widthBuffer, heightBuffer, stack.mallocInt(1), STBI_rgb_alpha);
-                            
-                            if(image == null) {
-                                MemoryUtil.memFree(imageBuffer);
-                                throw new RuntimeException("STBI failed to parse image data for raster font: " + stbi_failure_reason());
-                            }
-                            
-                            info[4] = widthBuffer.get();
-                            info[5] = heightBuffer.get();
-                            
-                            subImageWidth  = (float) info[3] / info[4];
-                            subImageHeight = (float) info[1] / info[5];
-                            
-                            glBindTexture(GL_TEXTURE_2D, info[2]);
-                            glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, info[4], info[5], 0, GL_RGBA, GL_UNSIGNED_BYTE, image);
-                            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
-                            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
-                            glBindTexture(GL_TEXTURE_2D, 0);
-                            
-                            stbi_image_free(image);
-                            MemoryUtil.memFree(imageBuffer);
-                        }
+                        bitmapTexture = Texture.load(imageFilename); //TODO: test changing texture of bmf during runtime
+                        
+                        info[4] = bitmapTexture.getWidth();
+                        info[5] = bitmapTexture.getHeight();
+                        subImageWidth  = (float) info[3] / info[4];
+                        subImageHeight = (float) info[1] / info[5];
+                        
                     } else if(xmlReader.getName().getLocalPart().equals("group")) {
                         advance = Integer.parseInt(xmlReader.getAttributeValue(null, "advance"));
                         descent = Integer.parseInt(xmlReader.getAttributeValue(null, "descent"));
@@ -522,7 +494,13 @@ public final class Font extends Asset {
         glEnable(GL_BLEND);
         glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
         glActiveTexture(GL_TEXTURE0);
-        glBindTexture(GL_TEXTURE_2D, textureHandle);
+        
+        if(bitmapTexture != null) {
+            bitmapTexture.bind(GL_TEXTURE_2D);
+        } else {
+            glBindTexture(GL_TEXTURE_2D, textureHandle);
+        }
+        
         glBindVertexArray(vaoHandle);
         
         //Update object pool size to accommodate text requirements
