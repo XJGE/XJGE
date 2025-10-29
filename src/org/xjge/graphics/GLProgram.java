@@ -1,6 +1,5 @@
 package org.xjge.graphics;
 
-import org.xjge.core.Logger;
 import static org.xjge.graphics.GLDataType.*;
 import java.nio.Buffer;
 import java.nio.FloatBuffer;

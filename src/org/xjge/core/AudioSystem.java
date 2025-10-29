@@ -34,8 +34,6 @@ public final class AudioSystem {
     
     private static final SoundSource[] sourcePool = new SoundSource[MAX_SOURCES];
     
-    private static final Map<String, Sound> sounds = new HashMap<>();
-    
     private static final Map<Integer, Vector3f> cameraPositions  = new HashMap<>();
     private static final Map<Integer, Vector3f> cameraDirections = new HashMap<>();
     private static final Map<Integer, Double> distances = new HashMap<>();
@@ -143,22 +141,8 @@ public final class AudioSystem {
             source.delete();
         }
         
-        sounds.values().forEach(Sound::delete);
         alcMakeContextCurrent(NULL);
         speakers.values().forEach(Speaker::close);
-    }
-    
-    static Sound getSound(String name) {
-        return (sounds.containsKey(name)) ? sounds.get(name) : Sound.FALLBACK;
-    }
-    
-    public static void loadSound(String name, String filename) {
-        sounds.put(name, new Sound(filename, false));
-    }
-    
-    public static void deleteSound(String name) {
-        sounds.get(name).delete(); //TODO: check if this is still in use before deleting
-        sounds.remove(name);
     }
     
     public static void pauseAll() {
@@ -189,30 +173,14 @@ public final class AudioSystem {
             for(int i = 0; i < MAX_SOURCES; i++) sourcePool[i].cacheState();
         }
         
-        var soundFiles = new HashMap<String, String>();
-        
-        sounds.forEach((name, sound) -> {
-            soundFiles.put(name, sound.filename);
-            sound.delete();
-        });
-        
         if(speaker.use()) {
             AudioSystem.speaker = speaker;
-            
-            soundFiles.forEach((name, filename) -> sounds.put(name, new Sound(filename, false)));
-            Sound.FALLBACK = new Sound("xjge_sound_fallback.ogg", true);
-            
+            AssetManager.reloadAll(Sound.class);
             for(int i = 0; i < AudioSystem.speaker.getSoundSourceLimit(); i++) sourcePool[i].applyState();
-            
             return true;
-            
         } else {
             return false;
         }
-    }
-    
-    public static float getSoundDuration(String name) {
-        return (sounds.containsKey(name)) ? sounds.get(name).durationInSeconds : 0f;
     }
     
     public static int getSpeakerCount() {

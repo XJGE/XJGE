@@ -1,6 +1,5 @@
 package org.xjge.graphics;
 
-import org.xjge.core.Logger;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
@@ -8,7 +7,6 @@ import java.io.InputStreamReader;
 import java.nio.charset.StandardCharsets;
 import org.xjge.core.Asset;
 import static org.lwjgl.opengl.GL20.*;
-import org.xjge.core.AssetManager;
 import org.xjge.core.AssetManager;
 import org.xjge.core.Logger;
 

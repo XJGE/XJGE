@@ -2,7 +2,6 @@ package org.xjge.core;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -88,7 +87,15 @@ public final class AssetManager {
         if(asset != null) asset.release();
     }
 
-    public static synchronized void clearAssets() {
+    public static <T extends Asset> void reloadAll(Class<T> type) {
+        synchronized(assets) {
+            for(Asset asset : assets.values()) {
+                if(type.isInstance(asset) && asset.isLoaded()) queueReload(asset.getFilename());
+            }
+        }
+    }
+    
+    public static synchronized void releaseAll() {
         for(Asset asset : assets.values()) asset.release();
         assets.clear();
     }

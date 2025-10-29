@@ -31,7 +31,7 @@ public final class SoundSource {
     
     private final Queue<QueuedSound> soundQueue = new LinkedList<>();
     
-    private record QueuedSound(String name, boolean looping) {}
+    private record QueuedSound(Sound object, boolean looping) {}
     
     SoundSource(int index) {
         this.index = index;
@@ -55,16 +55,13 @@ public final class SoundSource {
         setVolume(volume);
         
         if(currentSound != null) {
-            Sound sound = AudioSystem.getSound(currentSound.name);
-            
-            alSourceQueueBuffers(handle, sound.handle);
+            alSourceQueueBuffers(handle, currentSound.object.getHandle());
             alSourcei(handle, AL_LOOPING, (currentSound.looping) ? AL_TRUE : AL_FALSE);
             alSourcei(handle, AL_SAMPLE_OFFSET, sampleOffset);
         }
         
         for(QueuedSound queuedSound : soundQueue) {
-            Sound sound = AudioSystem.getSound(queuedSound.name);
-            alSourceQueueBuffers(handle, sound.handle);
+            alSourceQueueBuffers(handle, queuedSound.object.getHandle());
         }
         
         switch(state) {
@@ -114,9 +111,8 @@ public final class SoundSource {
             alSourcei(handle, AL_BUFFER, 0);
             
             currentSound = soundQueue.poll();
-            Sound sound = AudioSystem.getSound(currentSound.name);
             
-            alSourceQueueBuffers(handle, sound.handle);
+            alSourceQueueBuffers(handle, currentSound.object.getHandle());
             alSourcei(handle, AL_LOOPING, (currentSound.looping) ? AL_TRUE : AL_FALSE);
             
             if(getState() != AL_PLAYING) alSourcePlay(handle);
@@ -149,13 +145,13 @@ public final class SoundSource {
         return alGetSourcei(handle, AL_SOURCE_STATE);
     }
     
-    public final String getCurrentSound() {
-        return (currentSound != null) ? currentSound.name : null;
+    public Sound getCurrentSound() {
+        return (currentSound != null) ? currentSound.object : null;
     }
     
     public SoundSource setLooping(boolean looping) {
         if(currentSound != null) {
-            currentSound = new QueuedSound(currentSound.name, looping);
+            currentSound = new QueuedSound(currentSound.object, looping);
             
             if(looping && !soundQueue.contains(currentSound)) {
                 soundQueue.add(currentSound);
@@ -187,14 +183,12 @@ public final class SoundSource {
     public SoundSource seek(float seconds) {
         if(currentSound == null) return this;
         
-        Sound sound = AudioSystem.getSound(currentSound.name);
-        alSourcei(handle, AL_SAMPLE_OFFSET, Math.round(seconds * sound.frequency));
-        
+        alSourcei(handle, AL_SAMPLE_OFFSET, Math.round(seconds * currentSound.object.getFrequency()));
         return this;
     }
     
-    public SoundSource queueSound(String name, boolean looping) {
-        soundQueue.add(new QueuedSound(name, looping));
+    public SoundSource queueSound(Sound sound, boolean looping) {
+        soundQueue.add(new QueuedSound(sound, looping));
         return this;
     }
     

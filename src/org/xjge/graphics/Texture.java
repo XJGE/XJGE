@@ -78,7 +78,7 @@ public final class Texture extends Asset {
             
         } catch(IOException exception) {
             usingFallback = true;
-            Logger.logWarning("Failed to load texture \"" + getFilename() + "\" a fallback will be used instead", exception);
+            Logger.logWarning("Failed to load texture: \"" + getFilename() + "\" a fallback will be used instead", exception);
         }
         
         bind(GL_TEXTURE_2D);
@@ -91,7 +91,7 @@ public final class Texture extends Asset {
 
     @Override
     protected void onReload() {
-        Logger.logInfo("Texture reloaded: \"" + getFilename() + "\"");
+        Logger.logInfo("Texture file: \"" + getFilename() + "\" reloaded successfully");
     }
 
     @Override

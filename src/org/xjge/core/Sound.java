@@ -6,6 +6,7 @@ import java.nio.ByteBuffer;
 import java.nio.IntBuffer;
 import java.nio.ShortBuffer;
 import static org.lwjgl.openal.AL10.*;
+import static org.lwjgl.stb.STBImage.stbi_failure_reason;
 import static org.lwjgl.stb.STBVorbis.stb_vorbis_decode_memory;
 import org.lwjgl.system.MemoryStack;
 import org.lwjgl.system.MemoryUtil;
@@ -15,42 +16,27 @@ import org.lwjgl.system.MemoryUtil;
  * @author J Hoffman
  * @since 2.0.0
  */
-final class Sound {
+public final class Sound extends Asset {
     
-    final float durationInSeconds;
+    private float durationInSeconds;
     
-    final int handle; 
-    final int channels;
-    final int frequency;
+    private int handle; 
+    private int channels;
+    private int frequency;
     
-    final String filename;
+    public static final Sound FALLBACK = Sound.load("xjge_sound_fallback.ogg");
     
-    static Sound FALLBACK = new Sound("xjge_sound_fallback.ogg", true);
-    
-    Sound(String filename, boolean useFallback) {
-        this.filename = filename;
-        
-        int[] info;
-        
-        try(InputStream file = AssetManager.open(filename)) {
-            info = loadSound(file);
-        } catch(Exception exception) {
-            if(useFallback) Logger.logError("Failed to load engine-provided fallback sound", exception);
-            Logger.logWarning("Failed to load sound \"" + filename + "\" a fallback will be used instead", exception);
-            info = new int[] {FALLBACK.handle, FALLBACK.channels, FALLBACK.frequency};
-        }
-        
-        handle    = info[0];
-        channels  = info[1];
-        frequency = info[2];
-        
-        durationInSeconds = info[3] / (float) frequency;
+    public static Sound load(String filename) {
+        return AssetManager.load(filename, () -> new Sound(filename));
     }
     
-    private static int[] loadSound(InputStream file) throws IOException {
-        int[] info = new int[4];
-        
-        info[0] = alGenBuffers();
+    private Sound(String filename) {
+        super(filename);
+    }
+    
+    @Override
+    protected void onLoad(InputStream file) {
+        if(handle == 0) handle = alGenBuffers();
         
         try(MemoryStack stack = MemoryStack.stackPush()) {
             byte[] data = file.readAllBytes();
@@ -61,21 +47,45 @@ final class Sound {
             
             ShortBuffer sound = stb_vorbis_decode_memory(soundBuffer, channelsBuffer, sampleBuffer);
             
-            info[1] = channelsBuffer.get();
-            info[2] = sampleBuffer.get();
-            info[3] = sound.capacity() / info[1];
+            if(sound == null) {
+                MemoryUtil.memFree(soundBuffer);
+                throw new IOException(stbi_failure_reason());
+            }
             
-            if(info[1] == 1) alBufferData(info[0], AL_FORMAT_MONO16, sound, info[2]);
-            else             alBufferData(info[0], AL_FORMAT_STEREO16, sound, info[2]);
+            channels  = channelsBuffer.get();
+            frequency = sampleBuffer.get();
             
+            durationInSeconds = (float) sound.capacity() / (channels * frequency);
+            
+            alBufferData(handle, (channels == 1) ? AL_FORMAT_MONO16 : AL_FORMAT_STEREO16, sound, frequency);
             MemoryUtil.memFree(soundBuffer);
+            
+        } catch(IOException exception) {
+            Logger.logWarning("Failed to load sound: \"" + getFilename() + "\" a fallback will be used instead", exception);
+            handle    = FALLBACK.handle;
+            channels  = FALLBACK.channels;
+            frequency = FALLBACK.frequency;
+            durationInSeconds = FALLBACK.durationInSeconds;
         }
-        
-        return info;
+    }
+
+    @Override
+    protected void onReload() {
+        Logger.logInfo("Sound file: \"" + getFilename() + "\" reloaded successfully");
+    }
+
+    @Override
+    protected void onRelease() {
+        if(handle != 0 && alIsBuffer(handle)) {
+            alDeleteBuffers(handle);
+            handle = 0;
+        }
     }
     
-    void delete() {
-        alDeleteBuffers(handle);
-    }
+    int getHandle() { return handle; }
+    
+    int getFrequency() { return frequency; }
+    
+    public float getDurationInSeconds() { return durationInSeconds; }
     
 }
