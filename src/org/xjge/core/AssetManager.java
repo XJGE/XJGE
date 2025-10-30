@@ -17,6 +17,8 @@ import java.util.function.Supplier;
  */
 public final class AssetManager {
     
+    private static final Timer reloadThrottle = new Timer();
+    
     private static final List<AssetSource> sources = new ArrayList<>();
     private static final Map<String, Asset> assets = new HashMap<>();
     
@@ -24,9 +26,7 @@ public final class AssetManager {
     
     private static InputStream open(String filename) throws IOException {
         for(AssetSource source : sources) {
-            if(source.exists(filename)) {
-                return source.open(filename);
-            }
+            if(source.exists(filename)) return source.open(filename);
         }
         
         throw new IOException("Could not locate file: \"" + filename + "\" using any source");
@@ -44,6 +44,7 @@ public final class AssetManager {
     
     static void queueReload(String filename) {
         Logger.logInfo("Change detected for asset file: \"" + filename + "\"");
+        reloadThrottle.reset();
         reloadRequests.add(() -> reload(filename));
     }
     
@@ -70,11 +71,22 @@ public final class AssetManager {
         }
     }
     
-    public static synchronized void reload(String filename) {
+    public static synchronized boolean reload(String filename) {
+        Asset asset = assets.get(filename);
+        
+        if(asset == null) {
+            Logger.logWarning("Failed to reload asset using file: \"" + filename + "\" no such asset exists", null); //TODO: change message
+            return false;
+        }
+        
         try(InputStream stream = open(filename)) {
             assets.get(filename).reload(stream);
+            asset.useFallback = false;
+            return true;
         } catch(IOException exception) {
             Logger.logWarning("Failed to reload asset using file: \"" + filename + "\"", exception);
+            asset.useFallback = true;
+            return false;
         }
     }
     

@@ -276,6 +276,7 @@ public final class XJGE {
             put("listCommands",         new TCListCommands());
             put("listMonitors",         new TCListMonitors());
             put("listSpeakers",         new TCListSpeakers());
+            put("reloadAsset",          new TCReloadAsset());
             put("runGarbageCollection", new TCRunGarbageCollection());
             put("setFullscreen",        new TCSetFullscreen());
             put("setMonitor",           new TCSetMonitor());

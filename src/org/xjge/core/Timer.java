@@ -11,10 +11,10 @@ package org.xjge.core;
  */
 public final class Timer {
 
-    int startTick;
-    int currentTime;
+    private int startTick;
+    private int currentTime;
     
-    boolean startTickSet;
+    private boolean startTickSet;
     
     /**
      * Simplified version of {@link tick(int, int, boolean)} that mimics the 

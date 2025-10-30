@@ -123,7 +123,7 @@ public final class Texture extends Asset {
      */
     public void bind(int target) {
         this.target = target;
-        glBindTexture(target, handle);
+        glBindTexture(target, useFallback ? FALLBACK.handle : handle);
     }
     
     public int getWidth() { return width; }
