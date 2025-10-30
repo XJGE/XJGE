@@ -11,7 +11,7 @@ import org.xjge.graphics.Color;
 final class TCReloadAsset extends TerminalCommand {
 
     TCReloadAsset() {
-        super("", 
+        super("", //TODO: add description for this command
               "", 
               "");
     }
