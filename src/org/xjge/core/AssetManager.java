@@ -49,16 +49,35 @@ public final class AssetManager {
         while(reloadRequests.peek() != null) reloadRequests.poll().run();
     }
     
-    static void reloadSounds() {
-        synchronized(assets) {
-            for(Asset asset : assets.values()) {
-                if(Sound.class.isInstance(asset) && asset.isLoaded()) asset.release();
-            }
-            
-            for(Asset asset : assets.values()) {
-                if(Sound.class.isInstance(asset) && asset.isLoaded()) Sound.load(asset.getFilename());
-            }
+    static void releaseSounds() {
+        for(Asset asset : assets.values()) {
+            if(asset instanceof Sound sound) sound.onRelease();
         }
+    }
+    
+    static void reloadSounds() {
+        var soundFiles = new ArrayList<String>();
+        
+        //Grab old sound filenames to prevent concurrent modification
+        for(Asset asset : assets.values()) {
+            if(asset instanceof Sound) soundFiles.add(asset.getFilename());
+        }
+        
+        soundFiles.forEach(filename -> {
+            Sound sound = new Sound(filename);
+            
+            try(InputStream stream = open(filename)) {
+                sound.load(stream);
+                assets.put(filename, sound);
+            } catch(IllegalArgumentException | SecurityException | IOException exception) {
+                Logger.logWarning("Failed to reload sound file: \"" + filename + "\" following speaker change", exception);
+                assets.put(filename, Sound.FALLBACK);
+            }
+        });
+    }
+    
+    static Sound getSound(String filename) {
+        return (assets.containsKey(filename) && assets.get(filename) instanceof Sound sound) ? sound : null;
     }
     
     public static boolean exists(String filename) {
@@ -66,7 +85,7 @@ public final class AssetManager {
     }
     
     public static synchronized <T extends Asset> T load(String filename, Supplier<T> factory) {
-        //if(assets.containsKey(filename)) return (T) assets.get(filename);
+        if(assets.containsKey(filename)) return (T) assets.get(filename);
         
         T asset = factory.get();
         

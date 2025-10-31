@@ -55,13 +55,19 @@ public final class SoundSource {
         setVolume(volume);
         
         if(currentSound != null) {
-            alSourceQueueBuffers(handle, currentSound.object.getHandle());
+            Sound sound = AssetManager.getSound(currentSound.object.getFilename());
+            if(sound == null) sound = Sound.FALLBACK;
+            
+            alSourceQueueBuffers(handle, sound.getHandle());
             alSourcei(handle, AL_LOOPING, (currentSound.looping) ? AL_TRUE : AL_FALSE);
             alSourcei(handle, AL_SAMPLE_OFFSET, sampleOffset);
         }
         
         for(QueuedSound queuedSound : soundQueue) {
-            alSourceQueueBuffers(handle, queuedSound.object.getHandle());
+            Sound sound = AssetManager.getSound(queuedSound.object.getFilename());
+            if(sound == null) sound = Sound.FALLBACK;
+            
+            alSourceQueueBuffers(handle, sound.getHandle());
         }
         
         switch(state) {

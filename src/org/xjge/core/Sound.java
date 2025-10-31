@@ -30,7 +30,7 @@ public final class Sound extends Asset {
         return AssetManager.load(filename, () -> new Sound(filename));
     }
     
-    private Sound(String filename) {
+    Sound(String filename) {
         super(filename);
     }
     
