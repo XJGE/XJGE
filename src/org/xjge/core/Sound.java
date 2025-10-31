@@ -38,8 +38,6 @@ public final class Sound extends Asset {
     protected void onLoad(InputStream file) {
         handle = alGenBuffers();
         
-        System.out.println(handle + " " + getFilename());
-        
         try(MemoryStack stack = MemoryStack.stackPush()) {
             byte[] data = file.readAllBytes();
             
