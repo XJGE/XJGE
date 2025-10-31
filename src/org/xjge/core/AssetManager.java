@@ -17,8 +17,6 @@ import java.util.function.Supplier;
  */
 public final class AssetManager {
     
-    private static final Timer reloadThrottle = new Timer();
-    
     private static final List<AssetSource> sources = new ArrayList<>();
     private static final Map<String, Asset> assets = new HashMap<>();
     
@@ -44,7 +42,6 @@ public final class AssetManager {
     
     static void queueReload(String filename) {
         Logger.logInfo("Change detected for asset file: \"" + filename + "\"");
-        reloadThrottle.reset();
         reloadRequests.add(() -> reload(filename));
     }
     
@@ -52,12 +49,24 @@ public final class AssetManager {
         while(reloadRequests.peek() != null) reloadRequests.poll().run();
     }
     
+    static void reloadSounds() {
+        synchronized(assets) {
+            for(Asset asset : assets.values()) {
+                if(Sound.class.isInstance(asset) && asset.isLoaded()) asset.release();
+            }
+            
+            for(Asset asset : assets.values()) {
+                if(Sound.class.isInstance(asset) && asset.isLoaded()) Sound.load(asset.getFilename());
+            }
+        }
+    }
+    
     public static boolean exists(String filename) {
         return sources.stream().anyMatch(source -> source.exists(filename));
     }
     
     public static synchronized <T extends Asset> T load(String filename, Supplier<T> factory) {
-        if(assets.containsKey(filename)) return (T) assets.get(filename);
+        //if(assets.containsKey(filename)) return (T) assets.get(filename);
         
         T asset = factory.get();
         
@@ -93,14 +102,6 @@ public final class AssetManager {
     public static synchronized void release(String filename) {
         Asset asset = assets.remove(filename);
         if(asset != null) asset.release();
-    }
-
-    public static <T extends Asset> void reloadAll(Class<T> type) {
-        synchronized(assets) {
-            for(Asset asset : assets.values()) {
-                if(type.isInstance(asset) && asset.isLoaded()) queueReload(asset.getFilename());
-            }
-        }
     }
     
     public static synchronized void releaseAll() {

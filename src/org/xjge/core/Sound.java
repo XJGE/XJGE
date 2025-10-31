@@ -36,7 +36,9 @@ public final class Sound extends Asset {
     
     @Override
     protected void onLoad(InputStream file) {
-        if(handle == 0) handle = alGenBuffers();
+        handle = alGenBuffers();
+        
+        System.out.println(handle + " " + getFilename());
         
         try(MemoryStack stack = MemoryStack.stackPush()) {
             byte[] data = file.readAllBytes();
@@ -62,10 +64,6 @@ public final class Sound extends Asset {
             
         } catch(IOException exception) {
             Logger.logWarning("Failed to load sound: \"" + getFilename() + "\" a fallback will be used instead", exception);
-            handle    = FALLBACK.handle;
-            channels  = FALLBACK.channels;
-            frequency = FALLBACK.frequency;
-            durationInSeconds = FALLBACK.durationInSeconds;
         }
     }
 
@@ -76,10 +74,7 @@ public final class Sound extends Asset {
 
     @Override
     protected void onRelease() {
-        if(handle != 0 && alIsBuffer(handle)) {
-            alDeleteBuffers(handle);
-            handle = 0;
-        }
+        alDeleteBuffers(handle);
     }
     
     @Override

@@ -12,9 +12,11 @@ import static org.lwjgl.opengl.GL20.glEnableVertexAttribArray;
 import static org.lwjgl.opengl.GL20.glVertexAttribPointer;
 import static org.lwjgl.opengl.GL30.glBindVertexArray;
 import org.lwjgl.system.MemoryStack;
-import org.xjge.core.AssetManager;
+import org.xjge.core.AudioSystem;
 import org.xjge.core.EntityComponent;
 import org.xjge.core.ErrorUtils;
+import org.xjge.core.Sound;
+import org.xjge.core.SoundSource;
 import org.xjge.graphics.GLProgram;
 import org.xjge.graphics.Graphics;
 import org.xjge.graphics.Texture;
@@ -30,11 +32,17 @@ class TestComponent extends EntityComponent {
     private final Graphics g = new Graphics();
     
     private final Texture texture;
+    private final Sound sound;
+    private final SoundSource source;
     
     TestComponent(int size, float x, float y, float z) {
         position = new Vector3f(x, y, z);
         
         texture = Texture.load("test_texture.png");
+        sound = Sound.load("test_sound.ogg");
+        
+        source = AudioSystem.findSoundSource(true).queueSound(sound, true);
+        source.play();
         
         try(MemoryStack stack = MemoryStack.stackPush()) {
             g.vertices = stack.mallocFloat(20);

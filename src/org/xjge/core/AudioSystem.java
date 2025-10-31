@@ -8,10 +8,13 @@ import java.util.Map;
 import java.util.NavigableMap;
 import java.util.TreeMap;
 import org.joml.Vector3f;
+import org.lwjgl.openal.AL;
 import static org.lwjgl.openal.AL10.AL_INITIAL;
 import static org.lwjgl.openal.AL10.AL_PLAYING;
 import static org.lwjgl.openal.AL10.AL_STOPPED;
+import org.lwjgl.openal.ALC;
 import static org.lwjgl.openal.ALC10.ALC_DEFAULT_DEVICE_SPECIFIER;
+import static org.lwjgl.openal.ALC10.alcGetCurrentContext;
 import static org.lwjgl.openal.ALC10.alcGetString;
 import static org.lwjgl.openal.ALC10.alcIsExtensionPresent;
 import static org.lwjgl.openal.ALC10.alcMakeContextCurrent;
@@ -171,11 +174,20 @@ public final class AudioSystem {
         
         if(AudioSystem.speaker != null) {
             for(int i = 0; i < MAX_SOURCES; i++) sourcePool[i].cacheState();
+            alcMakeContextCurrent(NULL);
+            AudioSystem.speaker.close();
         }
         
-        if(speaker.use()) {
+        if(speaker.open(XJGE.debugModeEnabled()) && speaker.use()) {
+            long currentCtx = alcGetCurrentContext();
+            
+            if(currentCtx == NULL || currentCtx != speaker.contextHandle) {
+                alcMakeContextCurrent(speaker.contextHandle);
+                AL.createCapabilities(ALC.createCapabilities(speaker.deviceHandle));
+            }
+            
             AudioSystem.speaker = speaker;
-            AssetManager.reloadAll(Sound.class);
+            AssetManager.reloadSounds();
             for(int i = 0; i < AudioSystem.speaker.getSoundSourceLimit(); i++) sourcePool[i].applyState();
             return true;
         } else {
