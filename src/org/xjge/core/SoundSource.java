@@ -54,18 +54,11 @@ public final class SoundSource {
         setPitch(pitch);
         setVolume(volume);
         recoverSounds();
-        
-        switch(state) {
-            case AL_PLAYING -> {
-                playRequested = true;
-                alSourcePlay(handle);
-            }
-            case AL_PAUSED  -> pause();
-            case AL_STOPPED -> stop();
-        }
     }
     
     void recoverSounds() {
+        
+        
         if(currentSound != null) {
             Sound sound = AssetManager.getSound(currentSound.object.getFilename());
             if(sound == null) sound = Sound.FALLBACK;
@@ -80,6 +73,15 @@ public final class SoundSource {
             if(sound == null) sound = Sound.FALLBACK;
             
             alSourceQueueBuffers(handle, sound.getHandle());
+        }
+        
+        switch(state) {
+            case AL_PLAYING -> {
+                playRequested = true;
+                alSourcePlay(handle);
+            }
+            case AL_PAUSED  -> pause();
+            case AL_STOPPED -> stop();
         }
     }
     

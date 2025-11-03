@@ -69,8 +69,9 @@ public final class Sound extends Asset {
     protected void onReload() {
         Logger.logInfo("Sound file: \"" + getFilename() + "\" reloaded successfully");
         
-        var source = AudioSystem.getSourceWithSound(getFilename());
-        if(source != null) source.recoverSounds();
+        for(SoundSource source : AudioSystem.getSourcesWithSound(getFilename())) {
+            source.recoverSounds();
+        }
     }
 
     @Override

@@ -1,5 +1,6 @@
 package org.xjge.core;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
@@ -145,14 +146,16 @@ public final class AudioSystem {
         speakers.values().forEach(Speaker::close);
     }
     
-    static SoundSource getSourceWithSound(String filename) {
+    static List<SoundSource> getSourcesWithSound(String filename) {
+        var sources = new ArrayList<SoundSource>();
+        
         for(SoundSource source : sourcePool) {
-            if(source.getCurrentSound().equals(AssetManager.getSound(filename))) {
-                return source;
+            if(source.getCurrentSound() != null && source.getCurrentSound().getFilename().equals(filename)) {
+                sources.add(source);
             }
         }
         
-        return null;
+        return sources;
     }
     
     public static void pauseAll() {
