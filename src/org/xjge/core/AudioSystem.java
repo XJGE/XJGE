@@ -145,6 +145,16 @@ public final class AudioSystem {
         speakers.values().forEach(Speaker::close);
     }
     
+    static SoundSource getSourceWithSound(String filename) {
+        for(SoundSource source : sourcePool) {
+            if(source.getCurrentSound().equals(AssetManager.getSound(filename))) {
+                return source;
+            }
+        }
+        
+        return null;
+    }
+    
     public static void pauseAll() {
         for(int i = 0; i < speaker.getSoundSourceLimit(); i++) {
             if(sourcePool[i].getState() == AL_PLAYING) {
