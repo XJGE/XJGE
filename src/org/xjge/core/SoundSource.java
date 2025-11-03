@@ -57,7 +57,7 @@ public final class SoundSource {
     }
     
     void recoverSounds() {
-        
+        //ErrorUtils.checkALError();
         
         if(currentSound != null) {
             Sound sound = AssetManager.getSound(currentSound.object.getFilename());
