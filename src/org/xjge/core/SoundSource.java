@@ -31,7 +31,7 @@ public final class SoundSource {
     
     private final Queue<QueuedSound> soundQueue = new LinkedList<>();
     
-    private record QueuedSound(Sound object, boolean looping) {}
+    private record QueuedSound(String filename, boolean looping) {}
     
     SoundSource(int index) {
         this.index = index;
@@ -50,17 +50,14 @@ public final class SoundSource {
     
     void applyState() {
         handle = alGenSources();
-        
         setPitch(pitch);
         setVolume(volume);
         recoverSounds();
     }
     
     void recoverSounds() {
-        //ErrorUtils.checkALError();
-        
         if(currentSound != null) {
-            Sound sound = AssetManager.getSound(currentSound.object.getFilename());
+            Sound sound = AssetManager.getSound(currentSound.filename);
             if(sound == null) sound = Sound.FALLBACK;
             
             alSourceQueueBuffers(handle, sound.getHandle());
@@ -69,7 +66,7 @@ public final class SoundSource {
         }
         
         for(QueuedSound queuedSound : soundQueue) {
-            Sound sound = AssetManager.getSound(queuedSound.object.getFilename());
+            Sound sound = AssetManager.getSound(queuedSound.filename);
             if(sound == null) sound = Sound.FALLBACK;
             
             alSourceQueueBuffers(handle, sound.getHandle());
@@ -123,7 +120,10 @@ public final class SoundSource {
             
             currentSound = soundQueue.poll();
             
-            alSourceQueueBuffers(handle, currentSound.object.getHandle());
+            Sound sound = AssetManager.getSound(currentSound.filename);
+            if(sound == null) sound = Sound.FALLBACK;
+            
+            alSourceQueueBuffers(handle, sound.getHandle());
             alSourcei(handle, AL_LOOPING, (currentSound.looping) ? AL_TRUE : AL_FALSE);
             
             if(getState() != AL_PLAYING) alSourcePlay(handle);
@@ -156,12 +156,12 @@ public final class SoundSource {
     }
     
     public Sound getCurrentSound() {
-        return (currentSound != null) ? currentSound.object : null;
+        return (currentSound != null) ? AssetManager.getSound(currentSound.filename) : null;
     }
     
     public SoundSource setLooping(boolean looping) {
         if(currentSound != null) {
-            currentSound = new QueuedSound(currentSound.object, looping);
+            currentSound = new QueuedSound(currentSound.filename, looping);
             
             if(looping && !soundQueue.contains(currentSound)) {
                 soundQueue.add(currentSound);
@@ -193,12 +193,15 @@ public final class SoundSource {
     public SoundSource seek(float seconds) {
         if(currentSound == null) return this;
         
-        alSourcei(handle, AL_SAMPLE_OFFSET, Math.round(seconds * currentSound.object.getFrequency()));
+        Sound sound = AssetManager.getSound(currentSound.filename);
+        if(sound == null) sound = Sound.FALLBACK;
+        
+        alSourcei(handle, AL_SAMPLE_OFFSET, Math.round(seconds * sound.getFrequency()));
         return this;
     }
     
     public SoundSource queueSound(Sound sound, boolean looping) {
-        soundQueue.add(new QueuedSound(sound, looping));
+        soundQueue.add(new QueuedSound(sound.getFilename(), looping));
         return this;
     }
     

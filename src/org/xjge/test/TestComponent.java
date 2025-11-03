@@ -32,17 +32,17 @@ class TestComponent extends EntityComponent {
     private final Graphics g = new Graphics();
     
     private final Texture texture;
-    private final Sound sound;
-    private final SoundSource source;
+    //private final Sound sound;
+    //private final SoundSource source;
     
     TestComponent(int size, float x, float y, float z) {
         position = new Vector3f(x, y, z);
         
         texture = Texture.load("test_texture.png");
-        sound = Sound.load("test_sound.ogg");
+        //sound = Sound.load("test_sound.ogg");
         
-        source = AudioSystem.findSoundSource(true).queueSound(sound, true);
-        source.play();
+        //source = AudioSystem.findSoundSource(true).queueSound(sound, true);
+        //source.play();
         
         try(MemoryStack stack = MemoryStack.stackPush()) {
             g.vertices = stack.mallocFloat(20);

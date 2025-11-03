@@ -76,12 +76,19 @@ public final class Sound extends Asset {
 
     @Override
     protected void onRelease() {
-        alDeleteBuffers(handle);
+        ErrorUtils.checkALError();
+        
+        delete();
+        ErrorUtils.checkALError(); //throws error if sound is reloaded with attached source
     }
     
     @Override
     protected Sound onLoadFailure() {
         return FALLBACK;
+    }
+    
+    void delete() {
+        alDeleteBuffers(handle);
     }
     
     int getHandle() { return handle; }

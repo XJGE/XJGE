@@ -1,9 +1,11 @@
 package org.xjge.test;
 
 import java.util.Map;
+import static org.lwjgl.glfw.GLFW.GLFW_JOYSTICK_1;
 import org.xjge.core.Camera;
 import org.xjge.core.Entity;
 import org.xjge.core.Scene;
+import org.xjge.core.UIManager;
 import org.xjge.graphics.GLProgram;
 
 /**

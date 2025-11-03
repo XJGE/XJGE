@@ -51,7 +51,7 @@ public final class AssetManager {
     
     static void releaseSounds() {
         for(Asset asset : assets.values()) {
-            if(asset instanceof Sound sound) sound.onRelease();
+            if(asset instanceof Sound sound) sound.delete();
         }
     }
     
