@@ -18,6 +18,8 @@ class TestScene extends Scene {
     public TestScene() {
         super("test scene");
         
+        UIManager.addWidget(GLFW_JOYSTICK_1, "test_widget", new TestWidget());
+        
         Entity testEntity = new Entity().addComponent(new TestComponent(1, 0, 0, -4));
         addEntity(testEntity);
     }

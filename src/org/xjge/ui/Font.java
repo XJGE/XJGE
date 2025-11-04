@@ -392,14 +392,14 @@ public final class Font extends Asset {
     protected void onRelease() {
         try {
             if(textureHandle != 0) glDeleteTextures(textureHandle);
-        } catch (Exception ignored) {}
+        } catch(Exception ignored) {}
 
-        try { if(vaoHandle != 0) glDeleteVertexArrays(vaoHandle); } catch (Exception ignored) {}
-        try { if(vboHandle != 0) glDeleteBuffers(vboHandle); } catch (Exception ignored) {}
-        try { if(iboHandle != 0) glDeleteBuffers(iboHandle); } catch (Exception ignored) {}
-        try { if(posOffsetHandle != 0) glDeleteBuffers(posOffsetHandle); } catch (Exception ignored) {}
-        try { if(texOffsetHandle != 0) glDeleteBuffers(texOffsetHandle); } catch (Exception ignored) {}
-        try { if(colOffsetHandle != 0) glDeleteBuffers(colOffsetHandle); } catch (Exception ignored) {}
+        try { if(vaoHandle != 0) glDeleteVertexArrays(vaoHandle); } catch(Exception ignored) {}
+        try { if(vboHandle != 0) glDeleteBuffers(vboHandle); } catch(Exception ignored) {}
+        try { if(iboHandle != 0) glDeleteBuffers(iboHandle); } catch(Exception ignored) {}
+        try { if(posOffsetHandle != 0) glDeleteBuffers(posOffsetHandle); } catch(Exception ignored) {}
+        try { if(texOffsetHandle != 0) glDeleteBuffers(texOffsetHandle); } catch(Exception ignored) {}
+        try { if(colOffsetHandle != 0) glDeleteBuffers(colOffsetHandle); } catch(Exception ignored) {}
         
         textureHandle = 0;
         vaoHandle = vboHandle = iboHandle = posOffsetHandle = texOffsetHandle = colOffsetHandle = 0;
