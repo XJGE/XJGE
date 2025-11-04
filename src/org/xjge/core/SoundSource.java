@@ -181,6 +181,10 @@ public final class SoundSource {
         return (currentSound != null) ? AssetManager.getSound(currentSound.filename) : null;
     }
     
+    /*
+    TODO: mention that this only works for whichever sound is at the top (playing) spot of the queue, the next queued sound wont
+    be played until this is set to false again
+    */
     public SoundSource setLooping(boolean looping) {
         if(currentSound != null) {
             currentSound = new QueuedSound(currentSound.filename, looping);

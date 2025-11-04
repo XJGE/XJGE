@@ -103,7 +103,12 @@ public final class AssetManager {
         Asset asset = assets.get(filename);
         
         if(asset == null) {
-            Logger.logWarning("Failed to reload asset using file: \"" + filename + "\" no such asset exists", null); //TODO: change message
+            if(exists(filename)) {
+                //TODO: load/register asset from new file, we run into this issue if the file doesn't exist during the first load call
+            } else {
+                Logger.logWarning("Failed to reload asset using file: \"" + filename + "\" no such asset exists", null);
+            }
+            
             return false;
         }
         

@@ -32,17 +32,22 @@ class TestComponent extends EntityComponent {
     private final Graphics g = new Graphics();
     
     private final Texture texture;
-    private final Sound sound;
-    private final SoundSource source;
+    //private final Sound sound1;
+    //private final Sound sound2;
+    //private final SoundSource source;
     
     TestComponent(int size, float x, float y, float z) {
         position = new Vector3f(x, y, z);
         
         texture = Texture.load("test_texture.png");
-        sound = Sound.load("test_sound.ogg");
-        
-        source = AudioSystem.findSoundSource(true).queueSound(sound, true);
-        source.play();
+        //sound1 = Sound.load("test_sound_1.ogg");
+        //sound2 = Sound.load("test_sound_2.ogg");
+        /*
+        source = AudioSystem.findSoundSource(true)
+                            .queueSound(sound1, false)
+                            .queueSound(sound2, false)
+                            .play();
+        */
         
         try(MemoryStack stack = MemoryStack.stackPush()) {
             g.vertices = stack.mallocFloat(20);
@@ -71,6 +76,8 @@ class TestComponent extends EntityComponent {
     }
 
     void render(GLProgram shader) {
+        //if(source.getCurrentSound().getFilename().equals("test_sound_2.ogg")) source.setLooping(true);
+        
         g.modelMatrix.translation(position);
         
         //glEnable(GL_DEPTH_TEST);
