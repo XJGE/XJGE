@@ -130,6 +130,28 @@ public final class SoundSource {
         }
     }
     
+    void clearBuffers() {
+        state = getState(); //Cache state so we can reapply it during recoverSounds.
+        alSourceStop(handle);
+
+        //Force update until buffers are marked processed
+        int processed;
+        int queued;
+        int safety = 0;
+        do {
+            processed = alGetSourcei(handle, AL_BUFFERS_PROCESSED);
+            queued    = alGetSourcei(handle, AL_BUFFERS_QUEUED);
+        } while(processed < queued && safety++ < 10);
+
+        //Only unqueue what's been processed
+        while((processed = alGetSourcei(handle, AL_BUFFERS_PROCESSED)) > 0) {
+            int[] temp = new int[processed];
+            alSourceUnqueueBuffers(handle, temp);
+        }
+
+        alSourcei(handle, AL_BUFFER, 0);
+    }
+    
     void delete() {
         alDeleteSources(handle);
     }

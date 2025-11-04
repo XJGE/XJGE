@@ -76,10 +76,9 @@ public final class Sound extends Asset {
 
     @Override
     protected void onRelease() {
-        ErrorUtils.checkALError();
-        
+        var sources = AudioSystem.getSourcesWithSound(getFilename());
+        for(SoundSource source : sources) source.clearBuffers();
         delete();
-        ErrorUtils.checkALError(); //throws error if sound is reloaded with attached source
     }
     
     @Override
