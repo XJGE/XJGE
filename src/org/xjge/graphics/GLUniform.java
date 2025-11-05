@@ -17,7 +17,7 @@ import java.nio.IntBuffer;
  */
 final class GLUniform {
 
-    final int location;
+    int location;
     
     private final Buffer buffer;
     

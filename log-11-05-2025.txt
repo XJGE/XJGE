@@ -1,0 +1,33 @@
+****************************************************************************************************
+ OS NAME:	Windows 11
+ JAVA VER:	22.0.2
+ XJGE VER:	4.0.0-beta3
+ GLFW VER:	3.5.0 Win32 WGL Null EGL OSMesa VisualC DLL
+ OPENAL VER:	1.1 ALSOFT 1.24.1
+ OPENGL VER:	4.6.0 NVIDIA 566.07
+****************************************************************************************************
+ CPU MODEL:	Intel(R) Core(TM) Ultra 7 155H
+ GPU MODEL:	NVIDIA GeForce RTX 3050 6GB Laptop GPU/PCIe/SSE2
+ MONITORS:	Found: 1, Primary: "Generic PnP Monitor" (1920x1080 16:9 60hz)
+ SPEAKERS:	Found: 1, Primary: "OpenAL Soft on Speakers (Realtek(R) Audio)"
+ GAMEPADS:	Found: 0
+****************************************************************************************************
+
+Nov 05, 12:21:58pm, [INFO], [GLProgram.java]: Shader program "test" linked successfully
+Nov 05, 12:21:58pm, [INFO], [XJGE.java]: Current scene changed to "test scene"
+Nov 05, 12:21:58pm, [INFO], [UIManager.java]: Added widget "test_widget" to viewport 0
+Nov 05, 12:22:10pm, [INFO], [AssetManager.java]: Change detected for asset file: "shader_test_fragment.glsl"
+Nov 05, 12:22:10pm, [ERROR], [GLShader.java]: Failed to compile shader file: "shader_test_fragment.glsl" (0(7) : warning C7022: unrecognized profile specifier "d"
+0(7) : error C7558: OpenGL does not allow profile specifiers on declarations
+0(9) : warning C7533: global variable gl_FragColor is deprecated after version 120
+)
+java.lang.RuntimeException
+	org.xjge.core.Logger.log(Logger.java:59)
+	org.xjge.core.Logger.logError(Logger.java:147)
+	org.xjge.graphics.GLShader.onLoad(GLShader.java:92)
+	org.xjge.core.Asset.reload(Asset.java:30)
+	org.xjge.core.AssetManager.reload(AssetManager.java:116)
+	org.xjge.core.AssetManager.lambda$queueReload$0(AssetManager.java:45)
+	org.xjge.core.AssetManager.processReloadRequests(AssetManager.java:49)
+	org.xjge.core.XJGE.start(XJGE.java:344)
+	org.xjge.test.Main.main(Main.java:41)

@@ -1,11 +1,14 @@
 package org.xjge.graphics;
 
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
 import static org.xjge.graphics.GLDataType.*;
 import java.nio.Buffer;
 import java.nio.FloatBuffer;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 import org.joml.Matrix2fc;
 import org.joml.Matrix3fc;
 import org.joml.Matrix4f;
@@ -29,10 +32,11 @@ import org.xjge.core.Logger;
  */
 public class GLProgram {
 
-    final int handle;
+    private int handle;
     
     public final String name;
     
+    private final List<GLShader> shaders;
     private final HashMap<String, GLUniform> uniforms = new HashMap<>();
     
     /**
@@ -43,8 +47,15 @@ public class GLProgram {
      * @param name the name used to identify the program should it fail to link properly
      */
     public GLProgram(LinkedList<GLShader> shaders, String name) {
-        this.name = name;
+        this.shaders = shaders;
+        this.name    = name;
         
+        link();
+        
+        shaders.forEach(shader -> shader.addReloadListener(this::reload));
+    }
+    
+    private void link() {
         handle = glCreateProgram();
         shaders.forEach(shader -> glAttachShader(handle, shader.getHandle()));
         glLinkProgram(handle);
@@ -56,6 +67,11 @@ public class GLProgram {
                 Logger.logInfo("Shader program \"" + name + "\" linked successfully");
             }
         }
+    }
+    
+    private void reload() {
+        glDeleteProgram(handle);
+        link();
     }
     
     /**

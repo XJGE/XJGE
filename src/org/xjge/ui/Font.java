@@ -393,7 +393,7 @@ public final class Font extends Asset {
         try {
             if(textureHandle != 0) glDeleteTextures(textureHandle);
         } catch(Exception ignored) {}
-
+        
         try { if(vaoHandle != 0) glDeleteVertexArrays(vaoHandle); } catch(Exception ignored) {}
         try { if(vboHandle != 0) glDeleteBuffers(vboHandle); } catch(Exception ignored) {}
         try { if(iboHandle != 0) glDeleteBuffers(iboHandle); } catch(Exception ignored) {}

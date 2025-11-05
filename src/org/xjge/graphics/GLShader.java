@@ -5,6 +5,8 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.nio.charset.StandardCharsets;
+import java.util.ArrayList;
+import java.util.List;
 import org.xjge.core.Asset;
 import static org.lwjgl.opengl.GL20.*;
 import org.xjge.core.AssetManager;
@@ -26,6 +28,8 @@ public final class GLShader extends Asset {
     
     private int handle;
     private final int stage;
+    
+    private final List<Runnable> reloadListeners = new ArrayList<>();
     
     /**
      * Parses a .glsl source file then utilizes the stage specified to produce 
@@ -84,7 +88,7 @@ public final class GLShader extends Asset {
         glCompileShader(handle);
         
         if(glGetShaderi(handle, GL_COMPILE_STATUS) != GL_TRUE) {
-            Logger.logError("Failed to compile shader file: \"" + getFilename() + "\" (" + glGetShaderInfoLog(handle) + ")", null);
+            Logger.logWarning("Failed to compile shader file: \"" + getFilename() + "\" (" + glGetShaderInfoLog(handle) + ")", null);
             valid = false;
             return;
         }
@@ -96,6 +100,7 @@ public final class GLShader extends Asset {
     protected void onReload() {
         if(valid) {
             Logger.logInfo("Shader file: \"" + getFilename() + "\" reloaded successfully");
+            reloadListeners.forEach(Runnable::run);
         }
     }
 
@@ -112,6 +117,10 @@ public final class GLShader extends Asset {
     @Override
     protected GLShader onLoadFailure() {
         return null;
+    }
+    
+    void addReloadListener(Runnable listener) {
+        reloadListeners.add(listener);
     }
     
     int getHandle() { return handle; }
