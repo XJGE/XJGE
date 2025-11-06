@@ -1,15 +1,11 @@
 package org.xjge.core;
 
-import java.io.BufferedInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
-import java.nio.channels.Channels;
-import java.nio.channels.SeekableByteChannel;
 import java.nio.file.FileSystems;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.nio.file.StandardOpenOption;
 import static java.nio.file.StandardWatchEventKinds.ENTRY_CREATE;
 import static java.nio.file.StandardWatchEventKinds.ENTRY_DELETE;
 import static java.nio.file.StandardWatchEventKinds.ENTRY_MODIFY;
@@ -77,7 +73,7 @@ final class AssetSourceExternal implements AssetSource, AutoCloseable {
         try {
             WatchKey key = directory.register(watchService, ENTRY_CREATE, ENTRY_MODIFY, ENTRY_DELETE);
             watchKeys.put(key, directory);
-        } catch(IOException exception) {
+        } catch (IOException exception) {
             Logger.logWarning("Failed to register directory for file watcher: " + directory, exception);
         }
     }
@@ -129,28 +125,8 @@ final class AssetSourceExternal implements AssetSource, AutoCloseable {
     @Override
     public InputStream open(String filename) throws IOException {
         Path file = filepath.resolve(filename);
-        
         if(!Files.exists(file)) throw new FileNotFoundException("Failed to locate external asset: \"" + file + "\"");
-        
-        // Wait briefly if a file was just rewritten (handles temp-file rename behavior)
-        long lastSize = -1;
-        int stableChecks = 0;
-
-        for(int i = 0; i < 5; i++) { // up to ~100ms wait total
-            long currentSize = Files.size(file);
-            if(currentSize == lastSize) {
-                stableChecks++;
-                if(stableChecks >= 2) break; // size stable for two checks
-            } else {
-                stableChecks = 0;
-            }
-
-            lastSize = currentSize;
-            try { Thread.sleep(50); } catch(InterruptedException ignored) {}
-        }
-        
-        SeekableByteChannel channel = Files.newByteChannel(file, StandardOpenOption.READ);
-        return new BufferedInputStream(Channels.newInputStream(channel));
+        return Files.newInputStream(file);
     }
 
     @Override

@@ -46,7 +46,7 @@ public final class Texture extends Asset {
     
     @Override
     protected void onLoad(InputStream file) {
-        handle = glGenTextures();
+        if(handle == 0) handle = glGenTextures();
         glBindTexture(target, handle);
         
         try(MemoryStack stack = MemoryStack.stackPush()) {
@@ -93,7 +93,11 @@ public final class Texture extends Asset {
     @Override
     protected void onRelease() {
         if(this == FALLBACK) return;
-        glDeleteTextures(handle);
+        
+        if(handle != 0) {
+            glDeleteTextures(handle);
+            handle = 0;
+        }
     }
     
     @Override

@@ -9,8 +9,6 @@ import java.util.Map;
 import java.util.Queue;
 import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.function.Supplier;
-import org.xjge.graphics.GLShader;
-import org.xjge.graphics.Texture;
 
 /**
  * 
@@ -104,36 +102,25 @@ public final class AssetManager {
     public static synchronized boolean reload(String filename) {
         Asset asset = assets.get(filename);
         
-        if(asset != null) {
-            try(InputStream stream = open(filename)) {
-                asset.useFallback = false;
-                asset.reload(stream);
-                return true;
-            } catch(IOException exception) {
-                Logger.logWarning("Failed to reload asset using file: \"" + filename + "\"", exception);
-                asset.useFallback = true;
-                return false;
+        if(asset == null) {
+            if(exists(filename)) {
+                //TODO: load/register asset from new file, we run into this issue if the file doesn't exist during the first load call
+            } else {
+                Logger.logWarning("Failed to reload asset using file: \"" + filename + "\" no such asset exists", null);
             }
-        }
-        
-        if(exists(filename)) {
-            String extension = filename.substring(filename.lastIndexOf('.') + 1).toLowerCase();
             
-            asset = switch(extension) {
-                case "png", "jpg", "jpeg" -> Texture.load(filename);
-                case "glsl" -> GLShader.load(filename, 0); //TODO: infer shader stage
-                case "ogg", "wav", "mp3" -> Sound.load(filename);
-                default -> null;
-            };
-
-            if(asset != null) return true;
-            
-            Logger.logWarning("Unsupported asset type for file: \"" + filename + "\"", null);
             return false;
         }
         
-        Logger.logWarning("Failed to reload asset using file: \"" + filename + "\" no such asset exists", null);
-        return false;
+        try(InputStream stream = open(filename)) {
+            assets.get(filename).reload(stream);
+            asset.useFallback = false;
+            return true;
+        } catch(IOException exception) {
+            Logger.logWarning("Failed to reload asset using file: \"" + filename + "\"", exception);
+            asset.useFallback = true;
+            return false;
+        }
     }
     
     public static synchronized void release(String filename) {

@@ -1,0 +1,43 @@
+package org.xjge.core;
+
+import java.util.HashMap;
+import java.util.Map;
+import java.util.UUID;
+
+/**
+ * 
+ * @author J Hoffman
+ * @since 
+ */
+public final class Controllable {
+    
+    private int deviceID = InputSystem.NO_DEVICE;
+    
+    final UUID uuid = UUID.randomUUID();
+    public final String name;
+    
+    public final Map<Control, ControllableAction> actions = new HashMap<>();
+    
+    public Controllable(String name) {
+        this.name = name;
+    }
+    
+    public void setInputDevice(int deviceID) {
+        if(deviceID == InputSystem.NO_DEVICE) {
+            this.deviceID = deviceID;
+        } else {
+            if(InputSystem.getDeviceConnectionStatus(deviceID)) {
+                this.deviceID = deviceID;
+                InputSystem.registerControllable(this);
+            } else {
+                Logger.logWarning("Failed to set the input device of controllable object \"" + name + 
+                                  "\". Could not locate an input device at index " + deviceID, null);
+            }
+        }
+    }
+    
+    public int getInputDeviceID() {
+        return deviceID;
+    }
+    
+}
