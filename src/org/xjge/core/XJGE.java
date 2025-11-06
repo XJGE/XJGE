@@ -172,9 +172,10 @@ public final class XJGE {
                     if(!tempFile.matcher(filename).matches()) AssetManager.queueReload(filename);
                 });
             }
+        } else {
+            AssetManager.addSource(new AssetSourceInternal(XJGE.class.getClassLoader()));
         }
         
-        AssetManager.addSource(new AssetSourceInternal(XJGE.class.getClassLoader()));
         AssetManager.addSource(new AssetSourceEngine(XJGE.class.getClassLoader()));
         
         observable.properties.put("XJGE_SCENE_CHANGED", scene);

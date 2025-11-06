@@ -10,7 +10,6 @@ import java.io.InputStream;
 public abstract class Asset {
     
     private boolean loaded;
-    protected boolean useFallback;
     
     private final String filename;
     

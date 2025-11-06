@@ -119,13 +119,13 @@ public final class Texture extends Asset {
      */
     public void bind(int target) {
         this.target = target;
-        glBindTexture(target, useFallback ? FALLBACK.handle : handle);
+        glBindTexture(target, handle);
     }
     
-    public int getWidth() { return useFallback ? FALLBACK.width : width; }
+    public int getWidth() { return width; }
     
-    public int getHeight() { return useFallback ? FALLBACK.height : height; }
+    public int getHeight() { return height; }
     
-    public int getChannels() { return useFallback ? FALLBACK.channels : channels; }
+    public int getChannels() { return channels; }
     
 }

@@ -17,7 +17,7 @@ public class Main {
 
     public static void main(String[] args) {
         
-        XJGE.init(true, "C:/Users/jhoff/Projects/XJGE/src/org/xjge/assets", "org.xjge.test.");
+        XJGE.init(true, "C:\\Users\\jhoff\\OneDrive\\Desktop\\assets", "org.xjge.test.");
         
         {
             var shaderSourceFiles = new LinkedList<GLShader>() {{

@@ -31,16 +31,18 @@ class TestComponent extends EntityComponent {
     private final Vector3f position;
     private final Graphics g = new Graphics();
     
-    private final Texture texture;
-    //private final Sound sound1;
-    //private final Sound sound2;
-    //private final SoundSource source;
+    private Texture texture;
+    private Sound sound1;
+    private Sound sound2;
+    private SoundSource source;
     
     TestComponent(int size, float x, float y, float z) {
         position = new Vector3f(x, y, z);
         
         texture = Texture.load("test_texture.png");
-        //sound1 = Sound.load("test_sound_1.ogg");
+        sound1 = Sound.load("test_sound_1.ogg");
+        source = AudioSystem.findSoundSource(true).queueSound(sound1, true).play();
+        
         //sound2 = Sound.load("test_sound_2.ogg");
         /*
         source = AudioSystem.findSoundSource(true)

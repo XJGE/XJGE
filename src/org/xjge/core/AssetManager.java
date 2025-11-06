@@ -94,11 +94,12 @@ public final class AssetManager {
         try(InputStream stream = open(filename)) {
             asset.load(stream);
             assets.put(filename, asset);
-            return asset;
         } catch(IllegalArgumentException | SecurityException | IOException exception) {
             Logger.logWarning("Failed to load asset", exception);
-            return asset.onLoadFailure();
+            assets.put(filename, asset.onLoadFailure());
         }
+        
+        return (T) assets.get(filename);
     }
     
     public static synchronized boolean reload(String filename) {
@@ -106,30 +107,16 @@ public final class AssetManager {
         
         if(asset != null) {
             try(InputStream stream = open(filename)) {
-                asset.useFallback = false;
                 asset.reload(stream);
                 return true;
             } catch(IOException exception) {
+                try(InputStream stream = open(asset.onLoadFailure().getFilename())) {
+                    asset.reload(stream);
+                } catch(IOException ignored) {}
+                
                 Logger.logWarning("Failed to reload asset using file: \"" + filename + "\"", exception);
-                asset.useFallback = true;
                 return false;
             }
-        }
-        
-        if(exists(filename)) {
-            String extension = filename.substring(filename.lastIndexOf('.') + 1).toLowerCase();
-            
-            asset = switch(extension) {
-                case "png", "jpg", "jpeg" -> Texture.load(filename);
-                case "glsl" -> GLShader.load(filename, 0); //TODO: infer shader stage
-                case "ogg", "wav", "mp3" -> Sound.load(filename);
-                default -> null; //TODO: add support for custom types?
-            };
-
-            if(asset != null) return true;
-            
-            Logger.logWarning("Unsupported asset type for file: \"" + filename + "\"", null);
-            return false;
         }
         
         Logger.logWarning("Failed to reload asset using file: \"" + filename + "\" no such asset exists", null);
