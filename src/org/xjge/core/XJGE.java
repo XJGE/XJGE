@@ -197,45 +197,6 @@ public final class XJGE {
             }};
 
             GLProgram defaultProgram = new GLProgram(shaderSourceFiles, "default");
-
-            /*
-            defaultProgram.use();
-            defaultProgram.addUniform(GLDataType.INT,   "uType");
-            defaultProgram.addUniform(GLDataType.INT,   "uPCFValue");
-            defaultProgram.addUniform(GLDataType.INT,   "uShine");
-            defaultProgram.addUniform(GLDataType.INT,   "uNumLights");
-            defaultProgram.addUniform(GLDataType.INT,   "uTexture");
-            defaultProgram.addUniform(GLDataType.INT,   "uDepthTexture");
-            defaultProgram.addUniform(GLDataType.INT,   "uSkyTexture");
-            defaultProgram.addUniform(GLDataType.INT,   "uBloomTexture");
-            defaultProgram.addUniform(GLDataType.INT,   "uShadowMapActive");
-            defaultProgram.addUniform(GLDataType.INT,   "uBloomOverride");
-            defaultProgram.addUniform(GLDataType.INT,   "uIsBitmapFont");
-            defaultProgram.addUniform(GLDataType.FLOAT, "uOpacity");
-            defaultProgram.addUniform(GLDataType.FLOAT, "uMinShadowBias");
-            defaultProgram.addUniform(GLDataType.FLOAT, "uMaxShadowBias");
-            defaultProgram.addUniform(GLDataType.FLOAT, "uBloomThreshold");
-            defaultProgram.addUniform(GLDataType.VEC2,  "uTexCoords");
-            defaultProgram.addUniform(GLDataType.VEC3,  "uColor");
-            defaultProgram.addUniform(GLDataType.VEC3,  "uCamPos");
-            defaultProgram.addUniform(GLDataType.MAT3,  "uNormal");
-            defaultProgram.addUniform(GLDataType.MAT4,  "uModel");
-            defaultProgram.addUniform(GLDataType.MAT4,  "uView");
-            defaultProgram.addUniform(GLDataType.MAT4,  "uProjection");
-            defaultProgram.addUniform(GLDataType.MAT4,  "uBoneTransforms");
-            defaultProgram.addUniform(GLDataType.MAT4,  "uLightSpace");
-
-            for(int i = 0; i < Scene.MAX_LIGHTS; i++) {
-                defaultProgram.addUniform(GLDataType.FLOAT, "uLights[" + i + "].brightness");
-                defaultProgram.addUniform(GLDataType.FLOAT, "uLights[" + i + "].contrast");
-                defaultProgram.addUniform(GLDataType.FLOAT, "uLights[" + i + "].distance");
-                defaultProgram.addUniform(GLDataType.VEC3,  "uLights[" + i + "].position");
-                defaultProgram.addUniform(GLDataType.VEC3,  "uLights[" + i + "].ambient");
-                defaultProgram.addUniform(GLDataType.VEC3,  "uLights[" + i + "].diffuse");
-                defaultProgram.addUniform(GLDataType.VEC3,  "uLights[" + i + "].specular");
-            }
-            */
-
             glPrograms.put("default", defaultProgram);
         }
 
@@ -247,13 +208,6 @@ public final class XJGE {
             }};
 
             depthProgram = new GLProgram(shaderSourceFiles, "default");
-
-            /*
-            depthProgram.use();
-            depthProgram.addUniform(GLDataType.INT,  "uTexture");
-            depthProgram.addUniform(GLDataType.MAT4, "uModel");
-            depthProgram.addUniform(GLDataType.MAT4, "uLightSpace");
-            */
         }
 
         //Create shader program for applying gaussian blur
@@ -264,14 +218,6 @@ public final class XJGE {
             }};
 
             blurProgram = new GLProgram(shaderSourceFiles, "default");
-            
-            /*
-            blurProgram.use();
-            blurProgram.addUniform(GLDataType.INT,   "uBloomTexture");
-            blurProgram.addUniform(GLDataType.INT,   "uHorizontal");
-            blurProgram.addUniform(GLDataType.FLOAT, "uWeight");
-            blurProgram.addUniform(GLDataType.MAT4,  "uProjection");
-            */
         }
         
         engineIcons = Texture.load("xjge_texture_icons.png");
