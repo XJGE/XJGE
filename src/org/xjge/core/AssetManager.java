@@ -123,7 +123,7 @@ public final class AssetManager {
                 case "png", "jpg", "jpeg" -> Texture.load(filename);
                 case "glsl" -> GLShader.load(filename, 0); //TODO: infer shader stage
                 case "ogg", "wav", "mp3" -> Sound.load(filename);
-                default -> null;
+                default -> null; //TODO: add support for custom types?
             };
 
             if(asset != null) return true;

@@ -132,23 +132,6 @@ final class AssetSourceExternal implements AssetSource, AutoCloseable {
         
         if(!Files.exists(file)) throw new FileNotFoundException("Failed to locate external asset: \"" + file + "\"");
         
-        // Wait briefly if a file was just rewritten (handles temp-file rename behavior)
-        long lastSize = -1;
-        int stableChecks = 0;
-
-        for(int i = 0; i < 5; i++) { // up to ~100ms wait total
-            long currentSize = Files.size(file);
-            if(currentSize == lastSize) {
-                stableChecks++;
-                if(stableChecks >= 2) break; // size stable for two checks
-            } else {
-                stableChecks = 0;
-            }
-
-            lastSize = currentSize;
-            try { Thread.sleep(50); } catch(InterruptedException ignored) {}
-        }
-        
         SeekableByteChannel channel = Files.newByteChannel(file, StandardOpenOption.READ);
         return new BufferedInputStream(Channels.newInputStream(channel));
     }
