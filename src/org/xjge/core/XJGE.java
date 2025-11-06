@@ -198,6 +198,7 @@ public final class XJGE {
 
             GLProgram defaultProgram = new GLProgram(shaderSourceFiles, "default");
 
+            /*
             defaultProgram.use();
             defaultProgram.addUniform(GLDataType.INT,   "uType");
             defaultProgram.addUniform(GLDataType.INT,   "uPCFValue");
@@ -233,6 +234,7 @@ public final class XJGE {
                 defaultProgram.addUniform(GLDataType.VEC3,  "uLights[" + i + "].diffuse");
                 defaultProgram.addUniform(GLDataType.VEC3,  "uLights[" + i + "].specular");
             }
+            */
 
             glPrograms.put("default", defaultProgram);
         }
@@ -246,10 +248,12 @@ public final class XJGE {
 
             depthProgram = new GLProgram(shaderSourceFiles, "default");
 
+            /*
             depthProgram.use();
             depthProgram.addUniform(GLDataType.INT,  "uTexture");
             depthProgram.addUniform(GLDataType.MAT4, "uModel");
             depthProgram.addUniform(GLDataType.MAT4, "uLightSpace");
+            */
         }
 
         //Create shader program for applying gaussian blur
@@ -260,12 +264,14 @@ public final class XJGE {
             }};
 
             blurProgram = new GLProgram(shaderSourceFiles, "default");
-
+            
+            /*
             blurProgram.use();
             blurProgram.addUniform(GLDataType.INT,   "uBloomTexture");
             blurProgram.addUniform(GLDataType.INT,   "uHorizontal");
             blurProgram.addUniform(GLDataType.FLOAT, "uWeight");
             blurProgram.addUniform(GLDataType.MAT4,  "uProjection");
+            */
         }
         
         engineIcons = Texture.load("xjge_texture_icons.png");

@@ -1,5 +1,7 @@
 package org.xjge.graphics;
 
+import static org.lwjgl.opengl.GL20.*;
+
 /**
  * Created: May 2, 2021
  * <br><br>
@@ -11,43 +13,23 @@ package org.xjge.graphics;
  */
 public enum GLDataType {
     
-    /**
-     * A signed, two's complement, 32-bit integer.
-     */
-    INT,
+    INT(GL_INT),
+    FLOAT(GL_FLOAT),
+    VEC2(GL_FLOAT_VEC2),
+    VEC3(GL_FLOAT_VEC3),
+    VEC4(GL_FLOAT_VEC4),
+    MAT2(GL_FLOAT_MAT2),
+    MAT3(GL_FLOAT_MAT3),
+    MAT4(GL_FLOAT_MAT4);
+
+    public final int glType;
+    GLDataType(int glType) { this.glType = glType; }
+
+    public static GLDataType fromGLConstant(int glType) {
+        for(GLDataType type : values()) {
+            if (type.glType == glType) return type;
+        }
+        return null;
+    }
     
-    /**
-     * An IEEE-754 single-precision floating point number.
-     */
-    FLOAT,
-    
-    /**
-     * A vector comprised of two single-precision floating-point numbers.
-     */
-    VEC2, 
-    
-    /**
-     * A vector comprised of three single-precision floating-point numbers.
-     */
-    VEC3, 
-    
-    /**
-     * A vector comprised of four single-precision floating-point numbers.
-     */
-    VEC4,
-    
-    /**
-     * A matrix comprised of 2x2 single-precision floating-point numbers.
-     */
-    MAT2, 
-    
-    /**
-     * A matrix comprised of 3x3 single-precision floating-point numbers.
-     */
-    MAT3, 
-    
-    /**
-     * A matrix comprised of 4x4 single-precision floating-point numbers.
-     */
-    MAT4;
 }

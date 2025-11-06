@@ -24,16 +24,8 @@ public class Main {
                 add(GLShader.load("shader_test_vertex.glsl", GL_VERTEX_SHADER));
                 add(GLShader.load("shader_test_fragment.glsl", GL_FRAGMENT_SHADER));
             }};
-
-            GLProgram testProgram = new GLProgram(shaderSourceFiles, "test");
-
-            testProgram.use();
-            testProgram.addUniform(GLDataType.INT,  "uTexture");
-            testProgram.addUniform(GLDataType.MAT4, "uModel");
-            testProgram.addUniform(GLDataType.MAT4, "uView");
-            testProgram.addUniform(GLDataType.MAT4, "uProjection");
             
-            XJGE.addGLProgram("test", testProgram);
+            XJGE.addGLProgram("test", new GLProgram(shaderSourceFiles, "test"));
         }
         
         XJGE.setScene(new TestScene());

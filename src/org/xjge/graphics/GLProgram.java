@@ -1,14 +1,13 @@
 package org.xjge.graphics;
 
-import java.beans.PropertyChangeEvent;
-import java.beans.PropertyChangeListener;
 import static org.xjge.graphics.GLDataType.*;
 import java.nio.Buffer;
+import java.nio.ByteBuffer;
 import java.nio.FloatBuffer;
+import java.nio.IntBuffer;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Map;
 import org.joml.Matrix2fc;
 import org.joml.Matrix3fc;
 import org.joml.Matrix4f;
@@ -16,8 +15,10 @@ import org.joml.Matrix4fc;
 import org.joml.Vector2fc;
 import org.joml.Vector3fc;
 import org.joml.Vector4fc;
+import org.lwjgl.opengl.GL20;
 import static org.lwjgl.opengl.GL20.*;
 import org.lwjgl.system.MemoryStack;
+import org.lwjgl.system.MemoryUtil;
 import org.xjge.core.Logger;
 
 /**
@@ -51,6 +52,7 @@ public class GLProgram {
         this.name    = name;
         
         link();
+        findUniforms();
         
         shaders.forEach(shader -> shader.addReloadListener(this::reload));
     }
@@ -69,9 +71,32 @@ public class GLProgram {
         }
     }
     
+    private void findUniforms() {
+        int uniformCount = glGetProgrami(handle, GL_ACTIVE_UNIFORMS);
+
+        try(MemoryStack stack = MemoryStack.stackPush()) {
+            IntBuffer sizeBuffer = stack.mallocInt(1);
+            IntBuffer typeBuffer = stack.mallocInt(1);
+
+            for(int i = 0; i < uniformCount; i++) {
+                String uniformName = glGetActiveUniform(handle, i, sizeBuffer, typeBuffer);
+                if(uniformName.endsWith("[0]")) uniformName = uniformName.substring(0, uniformName.length() - 3);
+                
+                int uniformType   = typeBuffer.get(0);
+                GLDataType glType = GLDataType.fromGLConstant(uniformType);
+                if(uniformType == GL_SAMPLER_2D || uniformType == GL_SAMPLER_CUBE) glType = GLDataType.INT;
+                
+                if(glType != null) addUniform(glType, uniformName);
+            }
+        }
+    }
+    
     private void reload() {
         glDeleteProgram(handle);
         link();
+        
+        uniforms.clear();
+        findUniforms();
     }
     
     /**
