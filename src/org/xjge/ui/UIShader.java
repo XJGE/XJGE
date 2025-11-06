@@ -33,16 +33,6 @@ class UIShader {
         }};
         
         shader = new GLProgram(shaderSourceFiles, "default");
-
-        shader.use();
-        shader.addUniform(GLDataType.INT,   "uType");
-        shader.addUniform(GLDataType.INT,   "uTexture");
-        shader.addUniform(GLDataType.INT,   "uIsBitmapFont");
-        shader.addUniform(GLDataType.FLOAT, "uOpacity");
-        shader.addUniform(GLDataType.VEC2,  "uTexCoords");
-        shader.addUniform(GLDataType.VEC3,  "uColor");
-        shader.addUniform(GLDataType.MAT4,  "uModel");
-        shader.addUniform(GLDataType.MAT4,  "uProjection");
     }
     
     /**

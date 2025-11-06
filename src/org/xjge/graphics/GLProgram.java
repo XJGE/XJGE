@@ -2,7 +2,6 @@ package org.xjge.graphics;
 
 import static org.xjge.graphics.GLDataType.*;
 import java.nio.Buffer;
-import java.nio.ByteBuffer;
 import java.nio.FloatBuffer;
 import java.nio.IntBuffer;
 import java.util.HashMap;
@@ -15,10 +14,8 @@ import org.joml.Matrix4fc;
 import org.joml.Vector2fc;
 import org.joml.Vector3fc;
 import org.joml.Vector4fc;
-import org.lwjgl.opengl.GL20;
 import static org.lwjgl.opengl.GL20.*;
 import org.lwjgl.system.MemoryStack;
-import org.lwjgl.system.MemoryUtil;
 import org.xjge.core.Logger;
 
 /**
@@ -128,7 +125,7 @@ public class GLProgram {
      * @param name the unique name used to identify the uniform variable as it 
      *             appears in the .glsl source file
      */
-    public void addUniform(GLDataType type, String name) {
+    private void addUniform(GLDataType type, String name) {
         if(glGetUniformLocation(handle, name) == -1) {
             Logger.logError("Failed to find uniform variable \"" + name + "\". Check " + 
                             "variable name or GLSL source file where it is declared", 
