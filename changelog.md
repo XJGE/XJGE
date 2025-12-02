@@ -16,6 +16,7 @@ All notable changes to this project will be documented in this file. The format 
 - New runGarbageCollection terminal command that can be used to reclaim heap memory at runtime.
 - New terminal commands listMonitors and listSpeakers for exposing available peripheral devices to developers.
 - targetDelta and trueDelta to Camera.update() method for smooth interpolation if needed.
+- New protected "buckets" collection inside the Scene class that automatically maintains sub-lists of entities by their components.
 
 ### Changed
 - Fixed bug that wouldn't update the value of virtual gamepads when Input.setVirtualGamepadInput() was called.

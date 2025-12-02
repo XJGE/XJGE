@@ -9,8 +9,6 @@ import java.util.Map;
 import java.util.Queue;
 import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.function.Supplier;
-import org.xjge.graphics.GLShader;
-import org.xjge.graphics.Texture;
 
 /**
  * 

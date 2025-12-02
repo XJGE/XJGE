@@ -2,13 +2,11 @@ package org.xjge.core;
 
 import org.xjge.graphics.Texture;
 import org.xjge.graphics.GLProgram;
-import org.xjge.graphics.GLDataType;
 import org.xjge.graphics.GLShader;
 import java.beans.PropertyChangeListener;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Collections;
 import java.util.Comparator;
@@ -88,9 +86,7 @@ public final class XJGE {
     private static int tickCount    = 0;
     final static int TICKS_PER_HOUR = 225000;
     
-    public static final Path PRESENT_WORKING_DIRECTORY = Path.of("").toAbsolutePath();
-    
-    public static final String VERSION = "4.0.0-beta3";
+    public static final String VERSION = "4.0.0-beta4";
     private static String scenesPackage;
     private static String cpuModel;
     
@@ -302,7 +298,9 @@ public final class XJGE {
                 
                 if(tick(20)) {
                     deltaMetric = delta;
-                    if(scene != null) entityCount = scene.entities.size();
+                    if(scene != null) {
+                        //entityCount = scene.entities.size();
+                    }
                 }
                 
                 delta     -= TARGET_DELTA;
@@ -323,10 +321,10 @@ public final class XJGE {
                     if(!event.resolved) event.resolve();
                     else                events.poll();
                 } else {
-                    scene.processEntityAddRequests();
+                    scene.processAddRequests();
                     scene.update(TARGET_DELTA, deltaMetric);
                     scene.updateLightSources();
-                    scene.processEntityRemoveRequests();
+                    scene.processRemoveRequests();
                 }
                 
                 //Add new widget to a viewport asynchronously
@@ -548,19 +546,6 @@ public final class XJGE {
      */
     public static String getSceneName() {
         return scene.name;
-    }
-    
-    /**
-     * Adds an entity to the current scene. Generally speaking you'll only want 
-     * to use this for debugging purposes. Otherwise entity objects should be 
-     * managed directly from within the scene subclass itself, or through a 
-     * call to a method like 
-     * {@linkplain Scene#addEntity(org.xjge.core.Entity) Scene.addEntity()}.
-     * 
-     * @param entity the new entity object that will be added to this scene
-     */
-    public static final void addEntity(Entity entity) {
-        scene.entities.put(entity.uuid, entity);
     }
     
     /**

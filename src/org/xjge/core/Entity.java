@@ -1,5 +1,7 @@
 package org.xjge.core;
 
+import java.util.Collection;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
@@ -18,10 +20,10 @@ import java.util.UUID;
  * @since  2.0.0
  */
 public final class Entity {
-
-    private boolean remove;
     
     public final UUID uuid;
+    
+    Scene currentScene;
     
     private final Map<Class<? extends EntityComponent>, EntityComponent> components = new HashMap<>();
     
@@ -41,12 +43,8 @@ public final class Entity {
         this.uuid = uuid;
     }
     
-    /**
-     * Called automatically by the engine to reset the value of the remove flag 
-     * in the case this entity was previously removed from the scene.
-     */
-    void resetRemovalRequest() {
-        remove = false;
+    Collection<EntityComponent> getAllComponents() {
+        return Collections.unmodifiableCollection(components.values());
     }
     
     /**
@@ -58,6 +56,7 @@ public final class Entity {
      */
     public final <C extends EntityComponent> Entity addComponent(C component) {
         components.put(component.getClass(), component);
+        if(currentScene != null) currentScene.queueComponentAddRequest(this, component.getClass());
         return this;
     }
     
@@ -65,10 +64,13 @@ public final class Entity {
      * Removes a component from this entity.
      * 
      * @param <C> any subclass type that extends {@link EntityComponent}
-     * @param component the subclass object representing the component to remove
+     * @param type the subclass object representing the component to remove
+     * @return the removed component instance, this is useful if you want to reattach it later
      */
-    public final <C extends EntityComponent> void removeComponent(C component) {
-        components.remove(component.getClass());
+    public final <C extends EntityComponent> C removeComponent(Class<C> type) {
+        C removed = (C) components.remove(type);
+        if(removed != null && currentScene != null) currentScene.queueComponentRemoveRequest(this, type);
+        return removed;
     }
     
     /**
@@ -76,7 +78,18 @@ public final class Entity {
      * will be processed during the next game tick following this method call.
      */
     public final void removeFromScene() {
-        remove = true;
+        if(currentScene != null) currentScene.queueEntityRemoveRequest(this);
+    }
+    
+    /**
+     * Used to indicate whether or not the entity has requested removal from the 
+     * scene. The value of this will be reset upon adding the entity to a scene 
+     * again.
+     * 
+     * @return true if the entity has requested to be removed from the scene
+     */
+    public final boolean removedFromScene() {
+        return currentScene == null;
     }
     
     /**
@@ -87,17 +100,6 @@ public final class Entity {
      */
     public final boolean hasComponent(Class<? extends EntityComponent> component) {
         return components.containsKey(component);
-    }
-    
-    /**
-     * Used to indicate whether or not the entity has requested removal from the 
-     * scene. The value of this will be reset upon adding the entity to a scene 
-     * again.
-     * 
-     * @return true if the entity has requested to be removed from the scene
-     */
-    public final boolean removalRequested() {
-        return remove;
     }
     
     /**

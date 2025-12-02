@@ -1,8 +1,10 @@
 package org.xjge.core;
 
+import java.util.ArrayList;
 import org.xjge.graphics.GLProgram;
 import java.util.HashMap;
 import java.util.LinkedList;
+import java.util.List;
 import java.util.Map;
 import java.util.Queue;
 import java.util.UUID;
@@ -41,33 +43,15 @@ public abstract class Scene {
     
     private static final Vector3f noValue = new Vector3f();
     
-    private final Queue<Entity> entityAddQueue = new LinkedList<>();
-    
-    /**
-     * A collection of every {@link Entity} object in the scene.
-     * <p>
-     * Because the engine actively makes use of this collection elsewhere you 
-     * should not attempt to supplant its functionality with your own. Instead 
-     * the collection should be used to iterate through the logic loop of each 
-     * entity like so:
-     * <blockquote><pre>
-     * <b>//In the scenes update() method...</b>
-     * entities.values().forEach(entity -&gt; {
-     *     entity.update();
-     * });
-     * 
-     * <b>//In the scenes render() method...</b>
-     * entities.values().foreach(entity -&gt; {
-     *     entity.render();
-     * });
-     * </pre></blockquote>
-     * <p>
-     * The details regarding how this is achieved are largely subject to the 
-     * needs of the implementation, though generally speaking for a large 
-     * volume of entity objects lambda expressions like those shown above are 
-     * usually sufficient for most cases.
-     */
     protected final Map<UUID, Entity> entities = new HashMap<>();
+    protected final Map<Class<? extends EntityComponent>, List<Entity>> buckets = new HashMap<>();
+    
+    private final Queue<Entity> entityAddQueue    = new LinkedList<>();
+    private final Queue<Entity> entityRemoveQueue = new LinkedList<>();
+    
+    private record ComponentRequest(Entity entity, Class<? extends EntityComponent> type) {}
+    private final Queue<ComponentRequest> componentAddQueue    = new LinkedList<>();
+    private final Queue<ComponentRequest> componentRemoveQueue = new LinkedList<>();
     
     /**
      * An array that contains every {@link Light} object currently present 
@@ -322,14 +306,31 @@ public abstract class Scene {
     }
     
     /**
-     * Safely adds entity objects to the scenes {@link entities} collection. 
-     * This method is called automatically by the engine.
+     * Safely handles requests to add entities to this scene and attach any components used by them. This method is called 
+     * automatically by the engine.
      */
-    void processEntityAddRequests() {
+    void processAddRequests() {
+        //Process requests to add an entity to this scene
         while(!entityAddQueue.isEmpty()) {
-            Entity entity = entityAddQueue.poll();
-            entity.resetRemovalRequest();
+            var entity = entityAddQueue.poll();
+            
+            //entity.resetRemovalRequest();
+            entity.currentScene = this;
             entities.put(entity.uuid, entity);
+            
+            for(EntityComponent component : entity.getAllComponents()) {
+                buckets.computeIfAbsent(component.getClass(), k -> new ArrayList<>()).add(entity);
+            }
+        }
+        
+        //Process requests made by entities to attach components
+        while(!componentAddQueue.isEmpty()) {
+            var request = componentAddQueue.poll();
+            
+            if(entities.containsKey(request.entity.uuid)) {
+                var bucket = buckets.computeIfAbsent(request.type, k -> new ArrayList<>());
+                if(!bucket.contains(request.entity)) bucket.add(request.entity);
+            }
         }
     }
     
@@ -337,8 +338,37 @@ public abstract class Scene {
      * Safely removes entity objects from the scenes {@link entities} 
      * collection. This method is called automatically by the engine.
      */
-    void processEntityRemoveRequests() {
-        entities.entrySet().removeIf(entry -> entry.getValue().removalRequested());
+    void processRemoveRequests() {
+        while(!componentRemoveQueue.isEmpty()) {
+            var request = componentRemoveQueue.poll();
+            
+            if(entities.containsKey(request.entity.uuid)) {
+                var bucket = buckets.get(request.type);
+                if(bucket != null) bucket.remove(request.entity);
+            }
+        }
+        
+        while(!entityRemoveQueue.isEmpty()) {
+            var entity = entityRemoveQueue.poll();
+            
+            for(var bucket : buckets.values()) bucket.remove(entity);
+            entities.remove(entity.uuid);
+            
+            entity.currentScene = null;
+        }
+    }
+    
+    void queueComponentAddRequest(Entity entity, Class<? extends EntityComponent> component) {
+        componentAddQueue.add(new ComponentRequest(entity, component));
+    }
+    
+    void queueComponentRemoveRequest(Entity entity, Class<? extends EntityComponent> component) {
+        componentRemoveQueue.add(new ComponentRequest(entity, component));
+    }
+    
+    //TODO: make this public as removeEntity(UUID)? effectively moves requests out of entity and into here
+    void queueEntityRemoveRequest(Entity entity) {
+        entityRemoveQueue.add(entity);
     }
     
     /**
