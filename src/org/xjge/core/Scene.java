@@ -46,12 +46,14 @@ public abstract class Scene {
     protected final Map<UUID, Entity> entities = new HashMap<>();
     protected final Map<Class<? extends EntityComponent>, List<Entity>> buckets = new HashMap<>();
     
+    enum RequestType { ADD, REMOVE };
+    
     private final Queue<Entity> entityAddQueue    = new LinkedList<>();
     private final Queue<Entity> entityRemoveQueue = new LinkedList<>();
     
-    private record ComponentRequest(Entity entity, Class<? extends EntityComponent> type) {}
-    private final Queue<ComponentRequest> componentAddQueue    = new LinkedList<>();
-    private final Queue<ComponentRequest> componentRemoveQueue = new LinkedList<>();
+    private record BucketUpdate(Entity entity, Class<? extends EntityComponent> subclass) {}
+    private final Queue<BucketUpdate> bucketAddQueue    = new LinkedList<>();
+    private final Queue<BucketUpdate> bucketRemoveQueue = new LinkedList<>();
     
     /**
      * An array that contains every {@link Light} object currently present 
@@ -307,14 +309,13 @@ public abstract class Scene {
     
     /**
      * Safely handles requests to add entities to this scene and attach any components used by them. This method is called 
-     * automatically by the engine.
+     * automatically by the engine for internal use only.
      */
     void processAddRequests() {
         //Process requests to add an entity to this scene
         while(!entityAddQueue.isEmpty()) {
             var entity = entityAddQueue.poll();
             
-            //entity.resetRemovalRequest();
             entity.currentScene = this;
             entities.put(entity.uuid, entity);
             
@@ -324,26 +325,26 @@ public abstract class Scene {
         }
         
         //Process requests made by entities to attach components
-        while(!componentAddQueue.isEmpty()) {
-            var request = componentAddQueue.poll();
+        while(!bucketAddQueue.isEmpty()) {
+            var request = bucketAddQueue.poll();
             
             if(entities.containsKey(request.entity.uuid)) {
-                var bucket = buckets.computeIfAbsent(request.type, k -> new ArrayList<>());
+                var bucket = buckets.computeIfAbsent(request.subclass, k -> new ArrayList<>());
                 if(!bucket.contains(request.entity)) bucket.add(request.entity);
             }
         }
     }
     
     /**
-     * Safely removes entity objects from the scenes {@link entities} 
-     * collection. This method is called automatically by the engine.
+     * Safely removes entity objects from the scenes {@link entities} collection. This method is called automatically by the 
+     * engine for internal use only.
      */
     void processRemoveRequests() {
-        while(!componentRemoveQueue.isEmpty()) {
-            var request = componentRemoveQueue.poll();
+        while(!bucketRemoveQueue.isEmpty()) {
+            var request = bucketRemoveQueue.poll();
             
             if(entities.containsKey(request.entity.uuid)) {
-                var bucket = buckets.get(request.type);
+                var bucket = buckets.get(request.subclass);
                 if(bucket != null) bucket.remove(request.entity);
             }
         }
@@ -358,17 +359,19 @@ public abstract class Scene {
         }
     }
     
-    void queueComponentAddRequest(Entity entity, Class<? extends EntityComponent> component) {
-        componentAddQueue.add(new ComponentRequest(entity, component));
-    }
-    
-    void queueComponentRemoveRequest(Entity entity, Class<? extends EntityComponent> component) {
-        componentRemoveQueue.add(new ComponentRequest(entity, component));
-    }
-    
-    //TODO: make this public as removeEntity(UUID)? effectively moves requests out of entity and into here
-    void queueEntityRemoveRequest(Entity entity) {
-        entityRemoveQueue.add(entity);
+    /**
+     * Queues a request to update this scenes bucket registry after an entity has been modified. This method is called 
+     * automatically by the engine for internal use only.
+     * 
+     * @param entity the entity that was modified
+     * @param subclass the component subclass being added or removed from the entity
+     * @param type the type of request to make, either ADD or REMOVE
+     */
+    void updateBuckets(Entity entity, Class<? extends EntityComponent> subclass, RequestType type) {
+        switch(type) {
+            case ADD    -> bucketAddQueue.add(new BucketUpdate(entity, subclass));
+            case REMOVE -> bucketAddQueue.add(new BucketUpdate(entity, subclass));
+        }
     }
     
     /**
@@ -421,13 +424,23 @@ public abstract class Scene {
     public abstract void exit();
     
     /**
-     * Safely adds an entity to this scene. More specifically this will queue a 
-     * request to add the specified entity during the next game tick.
+     * Safely adds an entity to this scene. More specifically this will queue a request to add the specified entity during the 
+     * next game tick.
      * 
-     * @param entity the new entity object that will be added to this scene
+     * @param entity the entity object that will be added to this scene
      */
     public void addEntity(Entity entity) {
         entityAddQueue.add(entity);
+    }
+    
+    /**
+     * Safely removes the entity with the specified UUID from this scene. More specifically this will queue a request to remove 
+     * the entity during the next game tick.
+     * 
+     * @param uuid the unique identifier of the entity object we want removed from this scene
+     */
+    public void removeEntity(UUID uuid) {
+        if(entities.containsKey(uuid)) entityRemoveQueue.add(entities.get(uuid));
     }
     
 }

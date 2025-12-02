@@ -43,6 +43,12 @@ public final class Entity {
         this.uuid = uuid;
     }
     
+    /**
+     * Obtains every component currently attached to this entity. This method is called automatically by the engine for internal 
+     * use only.
+     * 
+     * @return an unmodifiable collection of component objects currently attached to this entity
+     */
     Collection<EntityComponent> getAllComponents() {
         return Collections.unmodifiableCollection(components.values());
     }
@@ -56,7 +62,7 @@ public final class Entity {
      */
     public final <C extends EntityComponent> Entity addComponent(C component) {
         components.put(component.getClass(), component);
-        if(currentScene != null) currentScene.queueComponentAddRequest(this, component.getClass());
+        if(currentScene != null) currentScene.updateBuckets(this, component.getClass(), Scene.RequestType.ADD);
         return this;
     }
     
@@ -64,12 +70,12 @@ public final class Entity {
      * Removes a component from this entity.
      * 
      * @param <C> any subclass type that extends {@link EntityComponent}
-     * @param type the subclass object representing the component to remove
+     * @param subclass the subclass object representing the component to remove
      * @return the removed component instance, this is useful if you want to reattach it later
      */
-    public final <C extends EntityComponent> C removeComponent(Class<C> type) {
-        C removed = (C) components.remove(type);
-        if(removed != null && currentScene != null) currentScene.queueComponentRemoveRequest(this, type);
+    public final <C extends EntityComponent> C removeComponent(Class<C> subclass) {
+        C removed = (C) components.remove(subclass);
+        if(removed != null && currentScene != null) currentScene.updateBuckets(this, subclass, Scene.RequestType.REMOVE);
         return removed;
     }
     
@@ -77,14 +83,13 @@ public final class Entity {
      * Requests the removal of this entity from the current scene. This request
      * will be processed during the next game tick following this method call.
      */
-    public final void removeFromScene() {
-        if(currentScene != null) currentScene.queueEntityRemoveRequest(this);
+    public final void requestRemovalFromScene() {
+        if(currentScene != null) currentScene.removeEntity(uuid);
     }
     
     /**
-     * Used to indicate whether or not the entity has requested removal from the 
-     * scene. The value of this will be reset upon adding the entity to a scene 
-     * again.
+     * Used to indicate whether or not the entity has been removed from the current scene. The value of this will be reset upon 
+     * adding the entity to a scene again.
      * 
      * @return true if the entity has requested to be removed from the scene
      */
