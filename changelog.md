@@ -2,26 +2,28 @@
 
 All notable changes to this project will be documented in this file. The format of this file follows that specified by [Keep a Changelog](https://keepachangelog.com/en/1.0.0/). This project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [4.0.0] - 2025-
+## [4.0.0] - 2026-
 
 ### Added
-- New abstract Component class that can be used to define the behavior of Entity objects.
+- New abstract EntityComponent class that can be used to define the behavior of Entity objects.
 - The ability to query, add, and remove components from an Entity object.
 - Randomly assigned UUIDs to identify entities at runtime.
 - New bind() method to the Texture class which is used instead of directly referencing its handle.
 - New TextEffect class that can be used to create custom effects for Font.drawString() by altering the data of the Glyph objects it generates.
-- New UI static class that now encapsulates much of the Widget management features previously provided through the XJGE class.
+- New UIManager static class that now encapsulates Widget management features previously provided through the XJGE class.
 - New addObserver() and removeObserver() methods to Window class that allows users to listen for state changes made to the applications window.
-- New split() method to Font class which works like wrap() but provides a list of strings instead of a single formatted one.
+- New split() method to the Font class which works like wrap() but provides a list of strings instead of a single formatted one.
 - New runGarbageCollection terminal command that can be used to reclaim heap memory at runtime.
 - New terminal commands listMonitors and listSpeakers for exposing available peripheral devices to developers.
-- targetDelta and trueDelta to Camera.update() method for smooth interpolation if needed.
+- targetDelta and trueDelta parameters to the Camera.update() method for smooth interpolation if needed.
 - New protected "buckets" collection inside the Scene class that automatically maintains sub-lists of entities by their components.
+- New AssetManager class that's used to reload assets such as sounds, textures, shaders, and fonts during runtime.
+- New Asset abstract class so developers can create their own reloadable assets.
+- New reloadAsset terminal command that forces an asset to reload in case the event failed to trigger.
 
 ### Changed
 - Fixed bug that wouldn't update the value of virtual gamepads when Input.setVirtualGamepadInput() was called.
-- Entity class to final, they may no longer be subclassed.
-- Texture class now provides public access to fields like width/height which remain immutable after initialization.
+- Entity class to final, you should instead use EntityComponent objects to define behavior.
 - Texture handle is now hidden from the public API, you'll need to use Texture.bind() going forward.
 - Minimum required Java version updated to 22.0.2 (up from 15.0.2).
 - GLFW version to 3.5.0 (up from 3.4.0)
@@ -29,7 +31,7 @@ All notable changes to this project will be documented in this file. The format 
 - The Logger class to include the class from which the log message was generated instead of manually setting the domain.
 - Logger.logSevere() method name to logError() for consistency.
 - Font class now includes better fallback behavior and imposes minimum and maximum sizes.
-- Moved classes like Widget, Font, Icon, and Rectangle into the new UI package. Initialized new UI specific shader for internal use only.
+- Moved classes like Widget, Font, Icon, and Rectangle into the new UI package. Provided new UI specific shader for internal/engine use only.
 - Name of Split enum to SplitScreenType for clarity.
 - Window class, massive refactor including moving some features like viewport manipulation from XJGE into Window class.
 - Icon class to expose position, rotation, and scale fields for use by the public API.
@@ -38,16 +40,16 @@ All notable changes to this project will be documented in this file. The format 
 - Noclip camera controls, the scroll wheel now controls speed and the right mouse button must be held to change direction.
 - Fixed bug that caused terminal commands to fail validation after being recalled from memory.
 - Renamed StopWatch class to Timer.
-- numCharOccurances() to static then moved it out of the Font class and into UI.
+- numCharOccurances() to static then moved it out of the Font class and into UIManager.
 - TerminalCommand.execute() now requires users to return a TerminalOutput object or null if no output is desired.
 - Renamed showCommands to listCommands, setVSync to setVSyncEnabled, and setScreenSplit to setSplitScreenValue.
 - Renamed DebugInfo and associated classes to EngineMetrics.
+- The engine provided input devices for the keyboard and mouse now enter a special disabled state while the command terminal is active.
 
 ### Removed
 - Update/Render methods from the Entity class.
-- Getter methods from the Texture class.
 - setDomain() method from Logger class.
-- drawString() method from the Widget superclass. This is provided directly through the Font class now.
+- drawString() method from the Widget superclass. This is provided through the Font class now.
 - Methods like addUIWidget(), removeUIWidget(), and containsWidget() from XJGE class.
 - position, width, and height fields from the Widget class.
 - Game class, existing features like scene/state changes moved to XJGE class.
@@ -57,9 +59,10 @@ All notable changes to this project will be documented in this file. The format 
 - Legacy Timer class since the code in the new one (previously StopWatch) proved more useful during development.
 - Font.wrap() since Font.split() does it better.
 - getOutput() and setOutput() from the TerminalCommand class.
-- Sound objects are no longer available to the public API, you'll need to use the Audio class to load and delete them.
+- Sound objects are no longer available to the public API, you'll need to use the AudioSystem class to load and delete them.
 - setMusicMasterVolume and setSoundMasterVolume terminal commands since volume is now a source-level attribute.
 - getButtonID() from Command class since there was too much opportunity to misuse it.
+- KEY_MOUSE_COMBO input device. These are now their own seperate devices InputSystem.KEYBOARD and InputSystem.MOUSE.
 
 ## [3.1.0] - 2025-01-03
 

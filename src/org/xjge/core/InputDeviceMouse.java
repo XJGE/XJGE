@@ -1,5 +1,7 @@
 package org.xjge.core;
 
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
 import static org.lwjgl.glfw.GLFW.*;
 import static org.xjge.core.Control.*;
 
@@ -8,8 +10,10 @@ import static org.xjge.core.Control.*;
  * @author J Hoffman
  * @since  4.0.0
  */
-final class InputDeviceMouse extends InputDevice {
+final class InputDeviceMouse extends InputDevice implements PropertyChangeListener {
 
+    boolean disabledByTerminal;
+    
     private float deltaCursorX;
     private float deltaCursorY;
     
@@ -73,7 +77,7 @@ final class InputDeviceMouse extends InputDevice {
 
     @Override
     protected void captureControlState() {
-        if(Window.getMinimized()) return;
+        if(Window.getMinimized() || disabledByTerminal) return;
         
         double currentCursorX = mouse.getCursorPositionX();
         double currentCursorY = mouse.getCursorPositionY();
@@ -105,6 +109,13 @@ final class InputDeviceMouse extends InputDevice {
             }
             
             controlValues.put(control, value);
+        }
+    }
+
+    @Override
+    public void propertyChange(PropertyChangeEvent evt) {
+        switch(evt.getPropertyName()) {
+            case "ENABLED" -> disabledByTerminal = (boolean) evt.getNewValue();
         }
     }
 

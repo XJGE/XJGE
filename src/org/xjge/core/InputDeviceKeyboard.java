@@ -1,5 +1,7 @@
 package org.xjge.core;
 
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
 import static org.lwjgl.glfw.GLFW.*;
 import static org.xjge.core.Control.*;
 
@@ -8,8 +10,10 @@ import static org.xjge.core.Control.*;
  * @author J Hoffman
  * @since  4.0.0
  */
-final class InputDeviceKeyboard extends InputDevice {
+final class InputDeviceKeyboard extends InputDevice implements PropertyChangeListener {
 
+    boolean disabledByTerminal;
+    
     int[] leftAxisBindings  = new int[4];
     int[] rightAxisBindings = new int[4];
     
@@ -62,7 +66,7 @@ final class InputDeviceKeyboard extends InputDevice {
     
     @Override
     protected void captureControlState() {
-        if(Window.getMinimized()) return;
+        if(Window.getMinimized() || disabledByTerminal) return;
         
         for(var entry : controlBindings.entrySet()) {
             Control control = entry.getKey();
@@ -76,6 +80,13 @@ final class InputDeviceKeyboard extends InputDevice {
             };
             
             controlValues.put(control, value);
+        }
+    }
+
+    @Override
+    public void propertyChange(PropertyChangeEvent evt) {
+        switch(evt.getPropertyName()) {
+            case "ENABLED" -> disabledByTerminal = (boolean) evt.getNewValue();
         }
     }
 

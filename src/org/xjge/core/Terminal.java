@@ -55,6 +55,8 @@ final class Terminal {
     private final Rectangle outputArea      = new Rectangle();
     final TerminalScrollBar scrollBar       = new TerminalScrollBar(outputArea);
     
+    final Observable observable = new Observable(this);
+    
     private final TreeMap<String, TerminalCommand> commands;
     
     private final List<String> parsedCommandArgs = new ArrayList<>();
@@ -92,6 +94,8 @@ final class Terminal {
      */
     Terminal(TreeMap<String, TerminalCommand> commands) {
         this.commands = commands;
+        
+        observable.properties.put("ENABLED", show);
         
         glyphAdvance = Font.FALLBACK.getGlyphAdvance('>');
         cursorPosition.x  = glyphAdvance;

@@ -20,7 +20,7 @@ import static org.xjge.core.InputDevice.CONTROL_VIRTUAL;
  * @author J Hoffman
  * @since  2.0.0
  */
-public class InputSystem {
+public final class InputSystem {
     
     public static final int NO_DEVICE = -1;
     public static final int KEYBOARD  = 4;
@@ -28,10 +28,10 @@ public class InputSystem {
     
     private static final Observable observable = new Observable(InputSystem.class);
     
-    private static final AtomicInteger virtualDeviceCounter      = new AtomicInteger(100);
-    private static final Queue<Runnable> deviceConnectionEvents  = new ConcurrentLinkedQueue<>();
-    private static final Queue<Controllable> controllableQueue   = new LinkedList<>();
-    private static final Map<UUID, Controllable> controllables   = new HashMap<>();
+    private static final AtomicInteger virtualDeviceCounter     = new AtomicInteger(100);
+    private static final Queue<Runnable> deviceConnectionEvents = new ConcurrentLinkedQueue<>();
+    private static final Queue<Controllable> controllableQueue  = new LinkedList<>();
+    private static final Map<UUID, Controllable> controllables  = new HashMap<>();
     private static final Map<Integer, InputDevice> inputDevices = new HashMap<>();
     
     static void init() {
@@ -104,6 +104,11 @@ public class InputSystem {
             device.connected = false;
             if(device instanceof InputDeviceGamepad gamepad) gamepad.freeState();
         });
+    }
+    
+    static void addTerminalObservers(Terminal terminal) {
+        terminal.observable.addObserver((InputDeviceMouse) inputDevices.get(MOUSE));
+        terminal.observable.addObserver((InputDeviceKeyboard) inputDevices.get(KEYBOARD));
     }
     
     public static void addObserver(PropertyChangeListener observer) {

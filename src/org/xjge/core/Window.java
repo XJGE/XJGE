@@ -196,6 +196,8 @@ public final class Window {
         terminal = new Terminal(engineCommands);
         metrics  = new EngineMetrics(engineIcons);
         
+        InputSystem.addTerminalObservers(terminal);
+        
         glfwErrorReference = GLFWErrorCallback.create((error, description) -> {
             Logger.logWarning("GLFW Error: (" + error + ") " + GLFWErrorCallback.getDescription(description), null);
         });
@@ -313,7 +315,10 @@ public final class Window {
         glfwKeyReference = GLFWKeyCallback.create((window, key, scancode, action, mods) -> {
             if(XJGE.debugModeEnabled() && action == GLFW_PRESS && mods == GLFW_MOD_SHIFT) {
                 switch(key) {
-                    case GLFW_KEY_F1 -> terminal.show = !terminal.show;
+                    case GLFW_KEY_F1 -> {
+                        terminal.show = !terminal.show;
+                        terminal.observable.notifyObservers("ENABLED", terminal.show);
+                    }
                     case GLFW_KEY_F2 -> metrics.show = !metrics.show;
                     case GLFW_KEY_F3 -> {
                         noclip.enabled = !noclip.enabled;
