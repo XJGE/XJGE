@@ -1,15 +1,15 @@
-package org.xjge.core;
+package org.xjge.ui;
 
+import org.xjge.core.Mouse;
 import static org.lwjgl.glfw.GLFW.GLFW_MOUSE_BUTTON_LEFT;
 import org.xjge.graphics.Color;
-import org.xjge.ui.Rectangle;
 
 /**
  * 
  * @author J Hoffman
  * @since 4.0.0
  */
-final class TerminalScrollBar {
+public final class ScrollBar {
 
     private boolean thumbClicked;
     private boolean hidden;
@@ -27,7 +27,7 @@ final class TerminalScrollBar {
     
     private Color thumbColor = Color.GRAY;
     
-    TerminalScrollBar(Rectangle contentArea) {
+    public ScrollBar(Rectangle contentArea) {
         this.contentArea = contentArea;
         relocate();
     }
@@ -47,7 +47,7 @@ final class TerminalScrollBar {
         }
     }
     
-    void render() {
+    public void render() {
         float scaleFactor = ((currentContentLength / thumb.height) / contentScale);
         contentOffset = (thumb.positionY - trough.positionY) * scaleFactor;
 
@@ -57,14 +57,14 @@ final class TerminalScrollBar {
         }
     }
     
-    void relocate() {
+    public void relocate() {
         trough.positionX = contentArea.width - trough.width;
         trough.positionY = contentArea.positionY;
         trough.height    = contentArea.height;
         thumb.positionX  = trough.positionX;
     }
     
-    void processMouseInput(Mouse mouse) {
+    public void processMouseInput(Mouse mouse) {
         if(!hidden) {
             thumbColor = (mouse.hovered(thumb)) ? Color.SILVER : Color.GRAY;
             if(!thumbClicked) thumbClicked = mouse.clicked(thumb, GLFW_MOUSE_BUTTON_LEFT);
@@ -74,17 +74,17 @@ final class TerminalScrollBar {
                 change = -mouse.getScrollSpeedY() * 10.0;
                 scroll(change);
             } else if(thumbClicked) {
-                change = previousCursorPositionY - mouse.cursorPositionY;
+                change = previousCursorPositionY - mouse.getCursorPositionY();
                 scroll(change);
             }
             
-            previousCursorPositionY = (float) mouse.cursorPositionY;
+            previousCursorPositionY = (float) mouse.getCursorPositionY();
         }
         
         if(!mouse.clicked()) thumbClicked = false;
     }
     
-    void setContentAreaLength(float length) {
+    public void setContentAreaLength(float length) {
         float previousThumbHeight = thumb.height;
         
         previousContentLength = currentContentLength;
@@ -97,7 +97,7 @@ final class TerminalScrollBar {
         if(previousContentLength != currentContentLength) scroll(previousThumbHeight - thumb.height);
     }
     
-    int getContentOffset() {
+    public int getContentOffset() {
         return (int) contentOffset;
     }
     

@@ -21,6 +21,7 @@ final class EngineMetrics {
     EngineMetrics(Texture engineIcons) {
         groups = new EngineMetricsGroup[] {
             new EMGPerformance("Performance"),
+            new EMGLoadedAssets("Loaded Assets"),
             new EMGSystemInfo("System Info"),
             new EMGHardware("Hardware", engineIcons),
             new EMGNoclip("Noclip")

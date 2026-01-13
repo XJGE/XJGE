@@ -15,6 +15,7 @@ import static org.lwjgl.opengl.GL11.glScissor;
 import org.xjge.ui.Font;
 import static org.xjge.ui.Font.DEFAULT_FONT_SIZE;
 import org.xjge.ui.Glyph;
+import org.xjge.ui.ScrollBar;
 import org.xjge.ui.TextEffect;
 
 /**
@@ -53,8 +54,8 @@ final class Terminal {
     private final HighlightSyntax highlight = new HighlightSyntax();
     private final Rectangle commandLine     = new Rectangle();
     private final Rectangle outputArea      = new Rectangle();
-    final TerminalScrollBar scrollBar       = new TerminalScrollBar(outputArea);
     
+    final ScrollBar scrollBar   = new ScrollBar(outputArea);
     final Observable observable = new Observable(this);
     
     private final TreeMap<String, TerminalCommand> commands;
