@@ -55,7 +55,7 @@ final class Terminal {
     private final Rectangle commandLine     = new Rectangle();
     private final Rectangle outputArea      = new Rectangle();
     
-    final ScrollBar scrollBar   = new ScrollBar(outputArea);
+    final ScrollBar scrollBar   = new ScrollBar(outputArea, false);
     final Observable observable = new Observable(this);
     
     private final TreeMap<String, TerminalCommand> commands;

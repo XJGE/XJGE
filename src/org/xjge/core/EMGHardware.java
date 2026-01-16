@@ -66,4 +66,8 @@ class EMGHardware extends EngineMetricsGroup {
         }
     }
 
+    @Override
+    protected void processMouseInput(Mouse mouse) {
+    }
+
 }

@@ -25,6 +25,7 @@ abstract class EngineMetricsGroup {
     private int longestStringLength;
     private int contentAreaWidth;
     private int contentAreaHeight;
+    protected int contentOffset;
     
     Color buttonTextColor = Color.CYAN;
     
@@ -67,6 +68,8 @@ abstract class EngineMetricsGroup {
     protected abstract void update(double deltaMetric, int fps, int entityCount, Noclip noclip);
     
     protected abstract void render();
+    
+    protected abstract void processMouseInput(Mouse mouse);
     
     int update(double deltaMetric, int index, int contentOffset, int fps, int entityCount, Noclip noclip) {
         longestStringLength  = 0;
@@ -120,7 +123,7 @@ abstract class EngineMetricsGroup {
             for(int i = 0; i < output.size(); i++) {
                 Font.FALLBACK.drawString(output.get(i), 
                                          contentArea.positionX + 10, 
-                                         titleBar.positionY - (Font.FALLBACK.getSize() * (i + 1)), 
+                                         (titleBar.positionY - (Font.FALLBACK.getSize() * (i + 1))) - contentOffset, 
                                          highlight);
             }
             

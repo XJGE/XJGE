@@ -6,7 +6,7 @@ import static org.lwjgl.glfw.GLFW.GLFW_MOUSE_BUTTON_LEFT;
 /**
  * 
  * @author J Hoffman
- * @since  2.0.0
+ * @since  4.0.0
  */
 final class EngineMetrics {
     
@@ -48,6 +48,7 @@ final class EngineMetrics {
         
         for(EngineMetricsGroup group : groups) {
             if(mouse.clickedOnce(group.button, GLFW_MOUSE_BUTTON_LEFT)) group.toggleExpanded();
+            if(group.expanded) group.processMouseInput(mouse);
         }
     }
     

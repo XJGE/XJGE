@@ -39,4 +39,8 @@ class EMGPerformance extends EngineMetricsGroup {
     @Override
     protected void render() {}
 
+    @Override
+    protected void processMouseInput(Mouse mouse) {
+    }
+
 }

@@ -43,4 +43,8 @@ class EMGNoclip extends EngineMetricsGroup {
     protected void render() {
     }
 
+    @Override
+    protected void processMouseInput(Mouse mouse) {
+    }
+
 }

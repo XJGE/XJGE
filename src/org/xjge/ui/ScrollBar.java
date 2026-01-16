@@ -13,6 +13,7 @@ public final class ScrollBar {
 
     private boolean thumbClicked;
     private boolean hidden;
+    private final boolean startAtTop;
     
     private float contentScale;
     private float contentOffset;
@@ -27,8 +28,9 @@ public final class ScrollBar {
     
     private Color thumbColor = Color.GRAY;
     
-    public ScrollBar(Rectangle contentArea) {
+    public ScrollBar(Rectangle contentArea, boolean startAtTop) {
         this.contentArea = contentArea;
+        this.startAtTop  = startAtTop;
         relocate();
     }
     
@@ -49,8 +51,9 @@ public final class ScrollBar {
     
     public void render() {
         float scaleFactor = ((currentContentLength / thumb.height) / contentScale);
-        contentOffset = (thumb.positionY - trough.positionY) * scaleFactor;
-
+        contentOffset = (startAtTop) ? ((thumb.positionY + thumb.height) - (trough.positionY + trough.height)) * scaleFactor
+                                     : (thumb.positionY - trough.positionY) * scaleFactor;
+        
         if(!hidden) {
             trough.render(0.5f, Color.BLACK);
             thumb.render(1f, thumbColor);
