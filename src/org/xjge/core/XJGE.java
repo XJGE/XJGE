@@ -172,6 +172,10 @@ public final class XJGE {
             AssetManager.addSource(new AssetSourceInternal(XJGE.class.getClassLoader()));
         }
         
+        /*
+        NOTE: For engine testing the external asset source should NOT be set to org/xjge/assets otherwise the engine will mistake
+        those files for engine assets.
+        */
         AssetManager.addSource(new AssetSourceEngine(XJGE.class.getClassLoader()));
         
         observable.properties.put("XJGE_SCENE_CHANGED", scene);

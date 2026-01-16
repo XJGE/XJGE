@@ -1,8 +1,8 @@
 package org.xjge.core;
 
-import java.util.LinkedList;
-import java.util.List;
 import java.util.Map;
+import java.util.Set;
+import java.util.TreeSet;
 import org.xjge.ui.Font;
 import org.xjge.ui.ScrollBar;
 
@@ -15,7 +15,7 @@ final class EMGLoadedAssets extends EngineMetricsGroup {
 
     private static boolean updateOutput;
     private final ScrollBar scrollBar;
-    private static final List<String> loadedFiles = new LinkedList<>();
+    private static final Set<String> loadedFiles = new TreeSet<>();
     
     public EMGLoadedAssets(String title, int contentAreaHeight) {
         super(title, contentAreaHeight);
@@ -34,6 +34,8 @@ final class EMGLoadedAssets extends EngineMetricsGroup {
                 output.add(new StringBuilder(filename));
                 outputLength += Font.FALLBACK.getSize();
             }
+            
+            outputLength += 10; //Applies padding to bottom of list so text isn't partially cut off during the scissor test
             
             scrollBar.setContentAreaLength(outputLength);
             updateOutput = false;
@@ -54,7 +56,12 @@ final class EMGLoadedAssets extends EngineMetricsGroup {
     
     static void rebuildList(Map<String, Asset> assets) {
         loadedFiles.clear();
-        for(var asset : assets.values()) loadedFiles.add(asset.getFilename());
+        
+        for(var asset : assets.values()) {
+            if(AssetManager.isEngineAsset(asset.getFilename())) continue;
+            loadedFiles.add(asset.getFilename());
+        }
+        
         updateOutput = true;
     }
 

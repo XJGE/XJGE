@@ -80,6 +80,10 @@ public final class AssetManager {
         return (assets.containsKey(filename) && assets.get(filename) instanceof Sound sound) ? sound : null;
     }
     
+    static boolean isEngineAsset(String filename) {
+        return sources.stream().anyMatch(source -> source instanceof AssetSourceEngine && source.exists(filename));
+    }
+    
     public static boolean exists(String filename) {
         return sources.stream().anyMatch(source -> source.exists(filename));
     }
