@@ -1,9 +1,11 @@
 package org.xjge.test;
 
 import java.util.Map;
+import org.xjge.core.AssetManager;
 import org.xjge.core.Camera;
 import org.xjge.core.Scene;
 import org.xjge.graphics.GLProgram;
+import org.xjge.graphics.Texture;
 
 /**
  * 
@@ -14,6 +16,15 @@ public class TestScene extends Scene {
 
     public TestScene() {
         super("test");
+        
+        Texture tex1 = Texture.load("test_tex1.png");
+        Texture tex2 = Texture.load("test_tex2.png");
+        Texture tex3 = Texture.load("test_tex3.png");
+        Texture tex4 = Texture.load("test_tex4.png");
+        Texture tex5 = Texture.load("test_tex5.png");
+        Texture tex6 = Texture.load("test_tex6.png");
+        Texture tex7 = Texture.load("test_tex7.png");
+        Texture tex8 = Texture.load("test_tex8.png");
     }
 
     @Override

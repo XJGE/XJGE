@@ -97,6 +97,8 @@ public final class AssetManager {
             assets.put(filename, asset.onLoadFailure());
         }
         
+        EMGLoadedAssets.rebuildList(assets);
+        
         return (T) assets.get(filename);
     }
     
@@ -124,11 +126,13 @@ public final class AssetManager {
     public static synchronized void release(String filename) {
         Asset asset = assets.remove(filename);
         if(asset != null) asset.release();
+        EMGLoadedAssets.rebuildList(assets);
     }
     
     public static synchronized void releaseAll() {
         for(Asset asset : assets.values()) asset.release();
         assets.clear();
+        EMGLoadedAssets.rebuildList(assets);
     }
     
 }
