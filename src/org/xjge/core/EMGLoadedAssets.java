@@ -1,5 +1,7 @@
 package org.xjge.core;
 
+import org.xjge.ui.ScrollBar;
+
 /**
  * 
  * @author J Hoffman
@@ -7,16 +9,21 @@ package org.xjge.core;
  */
 final class EMGLoadedAssets extends EngineMetricsGroup {
 
-    public EMGLoadedAssets(String title) {
-        super(title);
+    private final ScrollBar scrollBar;
+    
+    public EMGLoadedAssets(String title, int contentAreaHeight) {
+        super(title, contentAreaHeight);
+        scrollBar = new ScrollBar(contentArea);
     }
 
     @Override
     protected void update(double deltaMetric, int fps, int entityCount, Noclip noclip) {
+        scrollBar.relocate();
     }
 
     @Override
     protected void render() {
+        scrollBar.render();
     }
 
 }

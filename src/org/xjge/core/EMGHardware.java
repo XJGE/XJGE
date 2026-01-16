@@ -56,7 +56,7 @@ class EMGHardware extends EngineMetricsGroup {
             if(i != icons.length - 1) {
                 if(InputSystem.getDeviceConnectionStatus(i)) {
                     if(InputSystem.getDeviceEnabled(i)) icons[i].setSubImage(2, 0);
-                    else                          icons[i].setSubImage(1, 0);
+                    else icons[i].setSubImage(1, 0);
                 } else {
                     icons[i].setSubImage(0, 0);
                 }

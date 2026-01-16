@@ -2,6 +2,10 @@ package org.xjge.core;
 
 import java.util.ArrayList;
 import java.util.List;
+import static org.lwjgl.opengl.GL11.GL_SCISSOR_TEST;
+import static org.lwjgl.opengl.GL11.glDisable;
+import static org.lwjgl.opengl.GL11.glEnable;
+import static org.lwjgl.opengl.GL11.glScissor;
 import org.xjge.graphics.Color;
 import org.xjge.ui.Font;
 import org.xjge.ui.Glyph;
@@ -16,6 +20,7 @@ import org.xjge.ui.TextEffect;
 abstract class EngineMetricsGroup {
     
     boolean expanded;
+    private final boolean contentHeightLocked;
     
     private int longestStringLength;
     private int contentAreaWidth;
@@ -50,6 +55,13 @@ abstract class EngineMetricsGroup {
     
     EngineMetricsGroup(String title) {
         this.title = title;
+        contentHeightLocked = false;
+    }
+    
+    EngineMetricsGroup(String title, int contentAreaHeight) {
+        this.title = title;
+        this.contentAreaHeight = contentAreaHeight;
+        contentHeightLocked = true;
     }
     
     protected abstract void update(double deltaMetric, int fps, int entityCount, Noclip noclip);
@@ -62,12 +74,12 @@ abstract class EngineMetricsGroup {
         for(CharSequence line : output) {
             if(line.length() > longestStringLength) {
                 longestStringLength = line.length();
-                contentAreaWidth    = Font.FALLBACK.lengthInPixels(line) + 20;
+                contentAreaWidth    = Font.FALLBACK.lengthInPixels(line) + (contentHeightLocked ? 48 : 20);
             }
         }
         
         if(expanded && contentAreaWidth < 328) contentAreaWidth = 328;
-        contentAreaHeight = (output.size() * Font.FALLBACK.getSize()) + 10;
+        if(!contentHeightLocked) contentAreaHeight = (output.size() * Font.FALLBACK.getSize()) + 10;
         
         contentArea.width  = (expanded) ? contentAreaWidth  : 300;
         contentArea.height = (expanded) ? contentAreaHeight : 0;
@@ -102,13 +114,18 @@ abstract class EngineMetricsGroup {
                                 buttonTextColor, 1f);
         
         if(expanded) {
+            glEnable(GL_SCISSOR_TEST);
+            glScissor(contentArea.positionX, contentArea.positionY, contentArea.width, contentArea.height);
+            
             for(int i = 0; i < output.size(); i++) {
                 Font.FALLBACK.drawString(output.get(i), 
                                          contentArea.positionX + 10, 
                                          titleBar.positionY - (Font.FALLBACK.getSize() * (i + 1)), 
                                          highlight);
             }
+            
             render();
+            glDisable(GL_SCISSOR_TEST);
         }
     }
     

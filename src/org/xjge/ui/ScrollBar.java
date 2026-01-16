@@ -58,7 +58,7 @@ public final class ScrollBar {
     }
     
     public void relocate() {
-        trough.positionX = contentArea.width - trough.width;
+        trough.positionX = (contentArea.positionX + contentArea.width) - trough.width;
         trough.positionY = contentArea.positionY;
         trough.height    = contentArea.height;
         thumb.positionX  = trough.positionX;
