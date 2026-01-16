@@ -97,7 +97,13 @@ public final class ScrollBar {
         hidden       = contentScale <= 1;
         thumb.height = (int) (trough.height / contentScale);
         
-        if(previousContentLength != currentContentLength) scroll(previousThumbHeight - thumb.height);
+        if(previousContentLength != currentContentLength) {
+            if(startAtTop) {
+                thumb.positionY = (trough.positionY + trough.height) - thumb.height;
+            }
+            
+            scroll(previousThumbHeight - thumb.height);
+        }
     }
     
     public int getContentOffset() {
