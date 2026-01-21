@@ -452,6 +452,11 @@ public abstract class Scene {
         return entities.size();
     }
     
+    /**
+     * 
+     * @param uuid
+     * @return the entity with the given UUID, or <code>null</code> if no such entity exists.
+     */
     public Entity getEntity(UUID uuid) {
         return entities.get(uuid);
     }
@@ -465,6 +470,12 @@ public abstract class Scene {
         return Collections.unmodifiableCollection(entities.values());
     }
     
+    /**
+     * Obtains a subset of entities according to which components they currently have assigned.
+     * 
+     * @param components
+     * @return 
+     */
     public Iterable<Entity> queryEntities(Class<? extends EntityComponent>... components) {
         var required = new EntitySignature();
         for(var c : components) required.add(c);

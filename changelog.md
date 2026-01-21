@@ -16,10 +16,10 @@ All notable changes to this project will be documented in this file. The format 
 - New runGarbageCollection terminal command that can be used to reclaim heap memory at runtime.
 - New terminal commands listMonitors and listSpeakers for exposing available peripheral devices to developers.
 - targetDelta and trueDelta parameters to the Camera.update() method for smooth interpolation if needed.
-- New protected "buckets" collection inside the Scene class that automatically maintains sub-lists of entities by their components.
 - New AssetManager class that's used to reload assets such as sounds, textures, shaders, and fonts during runtime.
 - New Asset abstract class so developers can create their own reloadable assets.
 - New reloadAsset terminal command that forces an asset to reload in case the event failed to trigger.
+- New Scene.queryEntities() method that can be used to find subsets of entities according to their currently assigned components.
 
 ### Changed
 - Fixed bug that wouldn't update the value of virtual gamepads when Input.setVirtualGamepadInput() was called.
@@ -45,6 +45,7 @@ All notable changes to this project will be documented in this file. The format 
 - Renamed showCommands to listCommands, setVSync to setVSyncEnabled, and setScreenSplit to setSplitScreenValue.
 - Renamed DebugInfo and associated classes to EngineMetrics.
 - The engine provided input devices for the keyboard and mouse now enter a special disabled state while the command terminal is active.
+- Entities collection in the Scene class is now private and no longer available directly to subclasses.
 
 ### Removed
 - Update/Render methods from the Entity class.
