@@ -95,7 +95,7 @@ public final class XJGE {
     private static TreeMap<String, TerminalCommand> engineCommands     = new TreeMap<>();
     private static final TreeMap<String, TerminalCommand> userCommands = new TreeMap<>();
     
-    private static Color clearColor = new Color(119, 136, 255);
+    private static Color clearColor = new Color(0.467f, 0.533f, 1f);
     private static Scene currentScene;
     
     private static final Observable observable = new Observable(XJGE.class);
