@@ -42,7 +42,7 @@ public abstract class Scene {
     
     private static final Vector3f noValue = new Vector3f();
     
-    protected final Map<UUID, Entity> entities = new HashMap<>();
+    private final Map<UUID, Entity> entities = new HashMap<>();
     
     private final Map<UUID, EntityChangeRequest> changeRequests       = new HashMap<>();
     private final Map<UUID, EntitySignature> entitySignatures         = new HashMap<>();
@@ -375,6 +375,10 @@ public abstract class Scene {
         }
         
         changeRequests.clear();
+    }
+    
+    int getEntityCount() {
+        return entities.size();
     }
     
     /**

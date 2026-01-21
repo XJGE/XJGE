@@ -96,7 +96,7 @@ public final class XJGE {
     private static final TreeMap<String, TerminalCommand> userCommands = new TreeMap<>();
     
     private static Color clearColor = new Color(119, 136, 255);
-    private static Scene scene;
+    private static Scene currentScene;
     
     private static final Observable observable = new Observable(XJGE.class);
     
@@ -178,7 +178,7 @@ public final class XJGE {
         */
         AssetManager.addSource(new AssetSourceEngine(XJGE.class.getClassLoader()));
         
-        observable.properties.put("XJGE_SCENE_CHANGED", scene);
+        observable.properties.put("XJGE_SCENE_CHANGED", currentScene);
         
         String javaVersion = System.getProperty("java.version");
         
@@ -302,9 +302,7 @@ public final class XJGE {
                 
                 if(tick(20)) {
                     deltaMetric = delta;
-                    if(scene != null) {
-                        //entityCount = scene.entities.size();
-                    }
+                    if(currentScene != null) entityCount = currentScene.getEntityCount();
                 }
                 
                 delta     -= TARGET_DELTA;
@@ -313,10 +311,10 @@ public final class XJGE {
                 
                 //Resolve scene change requests
                 if(!sceneChangeRequests.isEmpty()) {
-                    if(scene != null) scene.exit();
-                    scene = sceneChangeRequests.poll();
-                    Logger.logInfo("Current scene changed to \"" + scene.name + "\"");
-                    observable.notifyObservers("SCENE_CHANGED", scene);
+                    if(currentScene != null) currentScene.exit();
+                    currentScene = sceneChangeRequests.poll();
+                    Logger.logInfo("Current scene changed to \"" + currentScene.name + "\"");
+                    observable.notifyObservers("SCENE_CHANGED", currentScene);
                 }
                 
                 //Process any unresolved events otherwise update the scene normally
@@ -325,10 +323,12 @@ public final class XJGE {
                     if(!event.resolved) event.resolve();
                     else                events.poll();
                 } else {
-                    scene.update(TARGET_DELTA, deltaMetric);
-                    scene.processChangeRequests();
-                    scene.updateLightSources();
+                    currentScene.update(TARGET_DELTA, deltaMetric);
+                    currentScene.updateLightSources();
                 }
+                
+                //Process any change requests to add/remove entities or any of their components
+                currentScene.processChangeRequests();
                 
                 //Add new widget to a viewport asynchronously
                 UIManager.processWidgetAddRequests();
@@ -353,13 +353,13 @@ public final class XJGE {
             
             XJGE.getDefaultGLProgram().use();
             XJGE.getDefaultGLProgram().setUniform("uBloomThreshold", bloomThreshold);
-            scene.setShadowUniforms();
-            scene.setLightingUniforms();
+            currentScene.setShadowUniforms();
+            currentScene.setLightingUniforms();
             
             //Render scene from the perspective of each active viewport
             for(Viewport viewport : Window.getViewports()) {
                 if(viewport.active) {
-                    scene.renderShadowMap(viewport.currCamera.up, depthProgram);
+                    currentScene.renderShadowMap(viewport.currCamera.up, depthProgram);
                     
                     if(viewport.id == 0) {
                         glClearColor(0, 0, 0, 0);
@@ -375,9 +375,9 @@ public final class XJGE {
                         viewport.resetCamera(glPrograms);
                         
                         viewport.render(glPrograms, "camera", projMatrix);
-                        scene.renderSkybox(viewport.currCamera.viewMatrix);
-                        scene.render(glPrograms, viewport.id, viewport.currCamera);
-                        scene.renderLightSources(viewport.currCamera);
+                        currentScene.renderSkybox(viewport.currCamera.viewMatrix);
+                        currentScene.render(glPrograms, viewport.id, viewport.currCamera);
+                        currentScene.renderLightSources(viewport.currCamera);
                     glBindFramebuffer(GL_FRAMEBUFFER, 0);
                     
                     projMatrix.setOrtho(viewport.width, 0, 0, viewport.height, 0, 1);
@@ -548,7 +548,7 @@ public final class XJGE {
      * @return the name of the current scene
      */
     public static String getSceneName() {
-        return scene.name;
+        return currentScene.name;
     }
     
     /**
@@ -563,7 +563,7 @@ public final class XJGE {
      */
     public static void addLight(int index, Light light) {
         try {
-            scene.lights[index] = light;
+            currentScene.lights[index] = light;
         } catch(IndexOutOfBoundsException e) {
             Logger.logWarning("Failed to add light at index " + index, e);
         }

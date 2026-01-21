@@ -42,13 +42,7 @@ public class SceneAdd extends Scene {
     @Override
     public void update(double targetDelta, double trueDelta) {
         for(var entity : query(CompTestA.class)) {
-            if(entity.hasComponent(CompTestB.class)) {
-                System.out.println(entity.uuid + " has CompTestB");
-            } else {
-                System.out.println(entity.uuid + " missing CompTestB");
-            }
             
-            entity.addComponent(new CompTestB());
         }
     }
 
