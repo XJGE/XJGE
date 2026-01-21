@@ -1,6 +1,7 @@
 package org.xjge.core;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import org.xjge.graphics.GLProgram;
 import java.util.HashMap;
 import java.util.List;
@@ -44,7 +45,7 @@ public abstract class Scene {
     
     private final Map<UUID, Entity> entities = new HashMap<>();
     
-    private final Map<UUID, EntityChangeRequest> changeRequests       = new HashMap<>();
+    private final Map<UUID, EntityChangeRequest> entityChangeRequests = new HashMap<>();
     private final Map<UUID, EntitySignature> entitySignatures         = new HashMap<>();
     private final Map<EntitySignature, List<Entity>> entityArchetypes = new HashMap<>();
     
@@ -308,7 +309,7 @@ public abstract class Scene {
      * @param subclass 
      */
     void queueChangeRequest(Entity entity, EntityChangeType type, Class<? extends EntityComponent> subclass) {
-        var request    = changeRequests.computeIfAbsent(entity.uuid, id -> new EntityChangeRequest());
+        var request    = entityChangeRequests.computeIfAbsent(entity.uuid, id -> new EntityChangeRequest());
         request.entity = entity;
         
         switch(type) {
@@ -339,7 +340,7 @@ public abstract class Scene {
      * automatically by the engine for internal use only.
      */
     void processChangeRequests() {
-        for(var request : changeRequests.values()) {
+        for(var request : entityChangeRequests.values()) {
             if(request.removeEntity) {
                 entities.remove(request.entity.uuid);
                 var signature = entitySignatures.remove(request.entity.uuid);
@@ -374,11 +375,7 @@ public abstract class Scene {
             }
         }
         
-        changeRequests.clear();
-    }
-    
-    int getEntityCount() {
-        return entities.size();
+        entityChangeRequests.clear();
     }
     
     /**
@@ -451,7 +448,24 @@ public abstract class Scene {
         if(entity != null) queueChangeRequest(entity, REMOVE_ENTITY, null);
     }
     
-    public Iterable<Entity> query(Class<? extends EntityComponent>... components) {
+    public int entityCount() {
+        return entities.size();
+    }
+    
+    public Entity getEntity(UUID uuid) {
+        return entities.get(uuid);
+    }
+    
+    /**
+     * Read-only copy of the entities collection containing all Entity objects currently in the scene.
+     * 
+     * @return 
+     */
+    public Iterable<Entity> allEntities() {
+        return Collections.unmodifiableCollection(entities.values());
+    }
+    
+    public Iterable<Entity> queryEntities(Class<? extends EntityComponent>... components) {
         var required = new EntitySignature();
         for(var c : components) required.add(c);
 

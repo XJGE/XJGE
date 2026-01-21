@@ -302,7 +302,7 @@ public final class XJGE {
                 
                 if(tick(20)) {
                     deltaMetric = delta;
-                    if(currentScene != null) entityCount = currentScene.getEntityCount();
+                    if(currentScene != null) entityCount = currentScene.entityCount();
                 }
                 
                 delta     -= TARGET_DELTA;

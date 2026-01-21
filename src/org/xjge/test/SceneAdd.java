@@ -41,7 +41,7 @@ public class SceneAdd extends Scene {
 
     @Override
     public void update(double targetDelta, double trueDelta) {
-        for(var entity : query(CompTestA.class)) {
+        for(var entity : queryEntities(CompTestA.class)) {
             
         }
     }
