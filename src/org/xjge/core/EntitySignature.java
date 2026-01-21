@@ -39,7 +39,7 @@ final class EntitySignature {
     }
     
     EntitySignature freeze() {
-        return new EntitySignature(Collections.unmodifiableSet(components));
+        return new EntitySignature(Collections.unmodifiableSet(new HashSet<>(components)));
     }
     
     @Override

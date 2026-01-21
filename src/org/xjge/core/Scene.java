@@ -8,7 +8,7 @@ import java.util.Map;
 import java.util.UUID;
 import org.joml.Matrix4f;
 import org.joml.Vector3f;
-import static org.xjge.core.EntityChangeRequestType.*;
+import static org.xjge.core.EntityChangeType.*;
 
 /**
  * A 3D representation of the game world that contains entities, light sources, 
@@ -43,8 +43,9 @@ public abstract class Scene {
     private static final Vector3f noValue = new Vector3f();
     
     protected final Map<UUID, Entity> entities = new HashMap<>();
-    private final Map<UUID, EntityChangeRequest> changeRequests = new HashMap<>();
-    private final Map<UUID, EntitySignature> entitySignatures = new HashMap<>();
+    
+    private final Map<UUID, EntityChangeRequest> changeRequests       = new HashMap<>();
+    private final Map<UUID, EntitySignature> entitySignatures         = new HashMap<>();
     private final Map<EntitySignature, List<Entity>> entityArchetypes = new HashMap<>();
     
     /**
@@ -306,13 +307,20 @@ public abstract class Scene {
      * @param type
      * @param subclass 
      */
-    void queueChangeRequest(Entity entity, EntityChangeRequestType type, Class<? extends EntityComponent> subclass) {
+    void queueChangeRequest(Entity entity, EntityChangeType type, Class<? extends EntityComponent> subclass) {
         var request  = changeRequests.computeIfAbsent(entity.uuid, id -> new EntityChangeRequest());
         request.uuid = entity.uuid;
         
         switch(type) {
-            case ADD_ENTITY    -> request.addEntity = true;
-            case REMOVE_ENTITY -> request.removeEntity = true;
+            case ADD_ENTITY -> {
+                request.addEntity    = true;
+                request.removeEntity = false;
+            }
+            
+            case REMOVE_ENTITY -> {
+                request.addEntity    = false;
+                request.removeEntity = true;
+            }
             
             case ADD_COMPONENT -> {
                 request.removeComponents.remove(subclass);

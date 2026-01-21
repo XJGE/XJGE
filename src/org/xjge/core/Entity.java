@@ -5,8 +5,8 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
-import static org.xjge.core.EntityChangeRequestType.ADD_COMPONENT;
-import static org.xjge.core.EntityChangeRequestType.REMOVE_COMPONENT;
+import static org.xjge.core.EntityChangeType.ADD_COMPONENT;
+import static org.xjge.core.EntityChangeType.REMOVE_COMPONENT;
 
 /**
  * Created: May 7, 2021

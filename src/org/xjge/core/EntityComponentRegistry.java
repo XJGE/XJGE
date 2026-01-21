@@ -4,9 +4,10 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
+ * TODO: move this into the Scene class?
  * 
  * @author J Hoffman
- * @since 
+ * @since 4.0.0
  */
 final class EntityComponentRegistry {
 
