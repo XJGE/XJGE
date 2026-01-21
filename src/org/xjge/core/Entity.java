@@ -5,6 +5,8 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
+import static org.xjge.core.EntityChangeRequestType.ADD_COMPONENT;
+import static org.xjge.core.EntityChangeRequestType.REMOVE_COMPONENT;
 
 /**
  * Created: May 7, 2021
@@ -62,7 +64,11 @@ public final class Entity {
      */
     public final <C extends EntityComponent> Entity addComponent(C component) {
         components.put(component.getClass(), component);
-        if(currentScene != null) currentScene.updateBuckets(this, component.getClass(), Scene.RequestType.ADD);
+        
+        if(currentScene != null) {
+            currentScene.queueChangeRequest(this, ADD_COMPONENT, component.getClass());
+        }
+        
         return this;
     }
     
@@ -75,7 +81,11 @@ public final class Entity {
      */
     public final <C extends EntityComponent> C removeComponent(Class<C> subclass) {
         C removed = (C) components.remove(subclass);
-        if(removed != null && currentScene != null) currentScene.updateBuckets(this, subclass, Scene.RequestType.REMOVE);
+        
+        if(removed != null && currentScene != null) {
+            currentScene.queueChangeRequest(this, REMOVE_COMPONENT, subclass);
+        }
+        
         return removed;
     }
     

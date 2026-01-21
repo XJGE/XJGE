@@ -3,13 +3,12 @@ package org.xjge.core;
 import java.util.ArrayList;
 import org.xjge.graphics.GLProgram;
 import java.util.HashMap;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
-import java.util.Queue;
 import java.util.UUID;
 import org.joml.Matrix4f;
 import org.joml.Vector3f;
+import static org.xjge.core.EntityChangeRequestType.*;
 
 /**
  * A 3D representation of the game world that contains entities, light sources, 
@@ -44,16 +43,9 @@ public abstract class Scene {
     private static final Vector3f noValue = new Vector3f();
     
     protected final Map<UUID, Entity> entities = new HashMap<>();
-    protected final Map<Class<? extends EntityComponent>, List<Entity>> buckets = new HashMap<>();
-    
-    enum RequestType { ADD, REMOVE };
-    
-    private final Queue<Entity> entityAddQueue    = new LinkedList<>();
-    private final Queue<Entity> entityRemoveQueue = new LinkedList<>();
-    
-    private record BucketUpdate(Entity entity, Class<? extends EntityComponent> subclass) {}
-    private final Queue<BucketUpdate> bucketAddQueue    = new LinkedList<>();
-    private final Queue<BucketUpdate> bucketRemoveQueue = new LinkedList<>();
+    private final Map<UUID, EntityChangeRequest> changeRequests = new HashMap<>();
+    private final Map<UUID, EntitySignature> entitySignatures = new HashMap<>();
+    private final Map<EntitySignature, List<Entity>> entityArchetypes = new HashMap<>();
     
     /**
      * An array that contains every {@link Light} object currently present 
@@ -308,70 +300,75 @@ public abstract class Scene {
     }
     
     /**
+     * Changes requested during Scene.update() are always applied after the update cycle completes.
+     * 
+     * @param entity
+     * @param type
+     * @param subclass 
+     */
+    void queueChangeRequest(Entity entity, EntityChangeRequestType type, Class<? extends EntityComponent> subclass) {
+        var request  = changeRequests.computeIfAbsent(entity.uuid, id -> new EntityChangeRequest());
+        request.uuid = entity.uuid;
+        
+        switch(type) {
+            case ADD_ENTITY    -> request.addEntity = true;
+            case REMOVE_ENTITY -> request.removeEntity = true;
+            
+            case ADD_COMPONENT -> {
+                request.removeComponents.remove(subclass);
+                request.addComponents.add(subclass);
+            }
+            
+            case REMOVE_COMPONENT -> {
+                request.addComponents.remove(subclass);
+                request.removeComponents.add(subclass);
+            }
+        }
+    }
+    
+    /**
      * Safely handles requests to add entities to this scene and attach any components used by them. This method is called 
      * automatically by the engine for internal use only.
      */
-    void processAddRequests() {
-        //Process requests to add an entity to this scene
-        while(!entityAddQueue.isEmpty()) {
-            var entity = entityAddQueue.poll();
+    void processChangeRequests() {
+        for(var request : changeRequests.values()) {
+            var entity = entities.get(request.uuid);
             
-            entity.currentScene = this;
-            entities.put(entity.uuid, entity);
+            if(request.removeEntity) {
+                entities.remove(request.uuid);
+                var signature = entitySignatures.remove(entity.uuid);
+                
+                if(signature != null) {
+                    var list = entityArchetypes.get(signature);
+                    if(list != null) list.remove(entity);
+                }
+                
+                continue;
+            }
             
-            for(EntityComponent component : entity.getAllComponents()) {
-                buckets.computeIfAbsent(component.getClass(), k -> new ArrayList<>()).add(entity);
+            if(request.addEntity) {
+                entities.put(entity.uuid, entity);
+                entity.currentScene = this;
+                EntitySignature signature = new EntitySignature();
+                
+                for(EntityComponent c : entity.getAllComponents()) signature.add(c.getClass());
+
+                EntitySignature frozen = signature.freeze(); //Prevent changes from occuring during update()
+                entitySignatures.put(entity.uuid, frozen);
+
+                entityArchetypes.computeIfAbsent(frozen, k -> new ArrayList<>()).add(entity);
+            }
+            
+            for(Class<? extends EntityComponent> subclass : request.removeComponents) {
+                request.applyChanges(true, entity, entitySignatures, entityArchetypes, subclass);
+            }
+            
+            for(Class<? extends EntityComponent> subclass : request.addComponents) {
+                request.applyChanges(false, entity, entitySignatures, entityArchetypes, subclass);
             }
         }
         
-        //Process requests made by entities to attach components
-        while(!bucketAddQueue.isEmpty()) {
-            var request = bucketAddQueue.poll();
-            
-            if(entities.containsKey(request.entity.uuid)) {
-                var bucket = buckets.computeIfAbsent(request.subclass, k -> new ArrayList<>());
-                if(!bucket.contains(request.entity)) bucket.add(request.entity);
-            }
-        }
-    }
-    
-    /**
-     * Safely removes entity objects from the scenes {@link entities} collection. This method is called automatically by the 
-     * engine for internal use only.
-     */
-    void processRemoveRequests() {
-        while(!bucketRemoveQueue.isEmpty()) {
-            var request = bucketRemoveQueue.poll();
-            
-            if(entities.containsKey(request.entity.uuid)) {
-                var bucket = buckets.get(request.subclass);
-                if(bucket != null) bucket.remove(request.entity);
-            }
-        }
-        
-        while(!entityRemoveQueue.isEmpty()) {
-            var entity = entityRemoveQueue.poll();
-            
-            for(var bucket : buckets.values()) bucket.remove(entity);
-            entities.remove(entity.uuid);
-            
-            entity.currentScene = null;
-        }
-    }
-    
-    /**
-     * Queues a request to update this scenes bucket registry after an entity has been modified. This method is called 
-     * automatically by the engine for internal use only.
-     * 
-     * @param entity the entity that was modified
-     * @param subclass the component subclass being added or removed from the entity
-     * @param type the type of request to make, either ADD or REMOVE
-     */
-    void updateBuckets(Entity entity, Class<? extends EntityComponent> subclass, RequestType type) {
-        switch(type) {
-            case ADD    -> bucketAddQueue.add(new BucketUpdate(entity, subclass));
-            case REMOVE -> bucketAddQueue.add(new BucketUpdate(entity, subclass));
-        }
+        changeRequests.clear();
     }
     
     /**
@@ -430,7 +427,7 @@ public abstract class Scene {
      * @param entity the entity object that will be added to this scene
      */
     public void addEntity(Entity entity) {
-        entityAddQueue.add(entity);
+        queueChangeRequest(entity, ADD_ENTITY, null);
     }
     
     /**
@@ -440,7 +437,21 @@ public abstract class Scene {
      * @param uuid the unique identifier of the entity object we want removed from this scene
      */
     public void removeEntity(UUID uuid) {
-        if(entities.containsKey(uuid)) entityRemoveQueue.add(entities.get(uuid));
+        var entity = entities.get(uuid);
+        if(entity != null) queueChangeRequest(entity, REMOVE_ENTITY, null);
+    }
+    
+    public Iterable<Entity> query(Class<? extends EntityComponent>... components) {
+        var required = new EntitySignature();
+        for(var c : components) required.add(c);
+
+        List<Entity> result = new ArrayList<>();
+        
+        for(var entry : entityArchetypes.entrySet()) {
+            if(entry.getKey().containsAll(required)) result.addAll(entry.getValue());
+        }
+        
+        return result;
     }
     
 }
