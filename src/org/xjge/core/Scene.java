@@ -308,8 +308,8 @@ public abstract class Scene {
      * @param subclass 
      */
     void queueChangeRequest(Entity entity, EntityChangeType type, Class<? extends EntityComponent> subclass) {
-        var request  = changeRequests.computeIfAbsent(entity.uuid, id -> new EntityChangeRequest());
-        request.uuid = entity.uuid;
+        var request    = changeRequests.computeIfAbsent(entity.uuid, id -> new EntityChangeRequest());
+        request.entity = entity;
         
         switch(type) {
             case ADD_ENTITY -> {
@@ -340,39 +340,37 @@ public abstract class Scene {
      */
     void processChangeRequests() {
         for(var request : changeRequests.values()) {
-            var entity = entities.get(request.uuid);
-            
             if(request.removeEntity) {
-                entities.remove(request.uuid);
-                var signature = entitySignatures.remove(entity.uuid);
+                entities.remove(request.entity.uuid);
+                var signature = entitySignatures.remove(request.entity.uuid);
                 
                 if(signature != null) {
                     var list = entityArchetypes.get(signature);
-                    if(list != null) list.remove(entity);
+                    if(list != null) list.remove(request.entity);
                 }
                 
                 continue;
             }
             
             if(request.addEntity) {
-                entities.put(entity.uuid, entity);
-                entity.currentScene = this;
+                entities.put(request.entity.uuid, request.entity);
+                request.entity.currentScene = this;
                 EntitySignature signature = new EntitySignature();
                 
-                for(EntityComponent c : entity.getAllComponents()) signature.add(c.getClass());
+                for(EntityComponent c : request.entity.getAllComponents()) signature.add(c.getClass());
 
                 EntitySignature frozen = signature.freeze(); //Prevent changes from occuring during update()
-                entitySignatures.put(entity.uuid, frozen);
+                entitySignatures.put(request.entity.uuid, frozen);
 
-                entityArchetypes.computeIfAbsent(frozen, k -> new ArrayList<>()).add(entity);
+                entityArchetypes.computeIfAbsent(frozen, k -> new ArrayList<>()).add(request.entity);
             }
             
             for(Class<? extends EntityComponent> subclass : request.removeComponents) {
-                request.applyChanges(true, entity, entitySignatures, entityArchetypes, subclass);
+                request.changeComponent(false, entitySignatures, entityArchetypes, subclass);
             }
             
             for(Class<? extends EntityComponent> subclass : request.addComponents) {
-                request.applyChanges(false, entity, entitySignatures, entityArchetypes, subclass);
+                request.changeComponent(true, entitySignatures, entityArchetypes, subclass);
             }
         }
         

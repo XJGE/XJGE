@@ -1,8 +1,8 @@
 package org.xjge.test;
 
 import java.util.Map;
-import org.xjge.core.AssetManager;
 import org.xjge.core.Camera;
+import org.xjge.core.Entity;
 import org.xjge.core.Scene;
 import org.xjge.graphics.GLProgram;
 import org.xjge.graphics.Texture;
@@ -25,12 +25,30 @@ public class SceneAdd extends Scene {
         Texture tex6 = Texture.load("test_tex6.png");
         Texture tex7 = Texture.load("test_tex7.png");
         Texture tex8 = Texture.load("test_tex8.png");
+        
+        var entityA = new Entity();
+        var entityB = new Entity().addComponent(new CompTestA()).addComponent(new CompTestB());
+        var entityC = new Entity().addComponent(new CompTestA());
+        
+        System.out.println("EntityA: " + entityA.uuid);
+        System.out.println("EntityB: " + entityB.uuid);
+        System.out.println("EntityC: " + entityC.uuid);
+        
+        addEntity(entityA);
+        addEntity(entityB);
+        addEntity(entityC);
     }
 
     @Override
     public void update(double targetDelta, double trueDelta) {
-        for(var entity : query(CompTestA.class, CompTestB.class)) {
+        for(var entity : query(CompTestA.class)) {
+            if(entity.hasComponent(CompTestB.class)) {
+                System.out.println(entity.uuid + " has CompTestB");
+            } else {
+                System.out.println(entity.uuid + " missing CompTestB");
+            }
             
+            entity.addComponent(new CompTestB());
         }
     }
 

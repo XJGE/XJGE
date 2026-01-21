@@ -110,11 +110,11 @@ public final class Entity {
     /**
      * Checks to see if this entity has the specified component attached.
      * 
-     * @param component the subclass object representing the component to check for
+     * @param subclass the subclass object representing the component to check for
      * @return true, if the entity has a component of the specified type
      */
-    public final boolean hasComponent(Class<? extends EntityComponent> component) {
-        return components.containsKey(component);
+    public final boolean hasComponent(Class<? extends EntityComponent> subclass) {
+        return components.containsKey(subclass);
     }
     
     /**

@@ -17,16 +17,16 @@ final class EntityChangeRequest {
     boolean addEntity    = false;
     boolean removeEntity = false;
     
-    UUID uuid;
+    Entity entity;
     
     final Set<Class<? extends EntityComponent>> addComponents    = new HashSet<>();
     final Set<Class<? extends EntityComponent>> removeComponents = new HashSet<>();
     
-    void applyChanges(boolean add, Entity entity, Map<UUID, EntitySignature> entitySignatures, 
-                      Map<EntitySignature, List<Entity>> entityArchetypes, Class<? extends EntityComponent> subclass) {
+    void changeComponent(boolean add, Map<UUID, EntitySignature> entitySignatures, 
+                         Map<EntitySignature, List<Entity>> entityArchetypes, Class<? extends EntityComponent> subclass) {
         var oldSignature = entitySignatures.get(entity.uuid);
         if(oldSignature == null) return;
-
+        
         var oldList = entityArchetypes.get(oldSignature);
         if(oldList != null) oldList.remove(entity);
 

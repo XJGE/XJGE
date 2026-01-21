@@ -326,8 +326,8 @@ public final class XJGE {
                     else                events.poll();
                 } else {
                     scene.update(TARGET_DELTA, deltaMetric);
-                    scene.updateLightSources();
                     scene.processChangeRequests();
+                    scene.updateLightSources();
                 }
                 
                 //Add new widget to a viewport asynchronously
