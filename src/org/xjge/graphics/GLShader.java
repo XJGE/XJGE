@@ -29,8 +29,6 @@ public final class GLShader extends Asset {
     private int handle;
     private final int stage;
     
-    private final List<Runnable> reloadListeners = new ArrayList<>();
-    
     /**
      * Parses a .glsl source file then utilizes the stage specified to produce 
      * a new OpenGL shader object.
@@ -97,14 +95,6 @@ public final class GLShader extends Asset {
     }
 
     @Override
-    protected void onReload() {
-        if(valid) {
-            Logger.logInfo("Shader file: \"" + getFilename() + "\" reloaded successfully");
-            reloadListeners.forEach(Runnable::run);
-        }
-    }
-
-    @Override
     protected void onRelease() {
         if(handle != 0) {
             glDeleteShader(handle);
@@ -119,9 +109,7 @@ public final class GLShader extends Asset {
         return null;
     }
     
-    void addReloadListener(Runnable listener) {
-        reloadListeners.add(listener);
-    }
+    boolean isValid() { return valid; }
     
     int getHandle() { return handle; }
     

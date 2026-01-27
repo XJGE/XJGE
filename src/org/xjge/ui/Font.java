@@ -384,11 +384,6 @@ public final class Font extends Asset {
     }
 
     @Override
-    protected void onReload() {
-        Logger.logInfo("Font file: \"" + getFilename() + "\" reloaded successfully");
-    }
-
-    @Override
     protected void onRelease() {
         try {
             if(textureHandle != 0) glDeleteTextures(textureHandle);

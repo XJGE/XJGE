@@ -16,6 +16,8 @@ import org.joml.Vector3fc;
 import org.joml.Vector4fc;
 import static org.lwjgl.opengl.GL20.*;
 import org.lwjgl.system.MemoryStack;
+import org.xjge.core.Asset;
+import org.xjge.core.AssetReloadListener;
 import org.xjge.core.Logger;
 
 /**
@@ -28,7 +30,7 @@ import org.xjge.core.Logger;
  * @author J Hoffman
  * @since  2.0.0
  */
-public class GLProgram {
+public class GLProgram implements AssetReloadListener {
 
     private int handle;
     
@@ -51,7 +53,7 @@ public class GLProgram {
         link();
         findUniforms();
         
-        shaders.forEach(shader -> shader.addReloadListener(this::reload));
+        shaders.forEach(shader -> shader.addAssetListener(this));
     }
     
     private void link() {
@@ -285,6 +287,16 @@ public class GLProgram {
      */
     public boolean containsUniform(String name) {
         return uniforms.containsKey(name);
+    }
+
+    @Override
+    public void onAssetReload(Asset asset) {
+        if(asset instanceof GLShader && ((GLShader) asset).isValid()) {
+            glDeleteProgram(handle);
+            link();
+            uniforms.clear();
+            findUniforms();
+        }
     }
     
 }

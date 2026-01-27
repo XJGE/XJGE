@@ -1,6 +1,8 @@
 package org.xjge.core;
 
 import java.io.InputStream;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * 
@@ -12,6 +14,8 @@ public abstract class Asset {
     private boolean loaded;
     
     private final String filename;
+    
+    private final List<AssetReloadListener> reloadListeners = new ArrayList<>();
     
     protected Asset(String filename) {
         this.filename = filename;
@@ -25,15 +29,26 @@ public abstract class Asset {
     
     final void reload(InputStream stream) {
         if(!loaded) return;
+        
         onRelease();
         onLoad(stream);
-        onReload();
+        
+        Logger.logInfo(getClass().getSimpleName() + " file: " + "\"" + filename + "\" reloaded successfully");
+        for(var listener : reloadListeners) listener.onAssetReload(this);
     }
     
     final void release() {
         if(!loaded) return;
         onRelease();
         loaded = false;
+    }
+    
+    public void addAssetListener(AssetReloadListener listener) {
+        reloadListeners.add(listener);
+    }
+    
+    public void removeAssetListener(AssetReloadListener listener) {
+        reloadListeners.remove(listener);
     }
     
     public final boolean isLoaded() {
@@ -45,8 +60,6 @@ public abstract class Asset {
     }
     
     protected abstract void onLoad(InputStream file);
-    
-    protected abstract void onReload();
     
     protected abstract void onRelease();
     

@@ -38,7 +38,7 @@ public abstract class Scene {
     public static final int MAX_LIGHTS = 32;
     
     public final String name;
-    private Skybox skybox;
+    private Skybox2 skybox;
     private ShadowMap shadowMap;
     
     private static final Vector3f noValue = new Vector3f();
@@ -265,7 +265,7 @@ public abstract class Scene {
      * 
      * @param skybox the completed skybox object to render
      */
-    protected final void setSkybox(Skybox skybox) {
+    protected final void setSkybox(Skybox2 skybox) {
         this.skybox = skybox;
     }
     

@@ -37,6 +37,12 @@ public class SceneAdd extends Scene {
         addEntity(entityA);
         addEntity(entityB);
         addEntity(entityC);
+        
+        /*
+        Cubemap2 cubemap = Cubemap2.load("sky_right.png", "sky_left.png", 
+                                         "sky_top.png", "sky_bottom.png", 
+                                         "sky_back.png", "sky_front.png");
+        */
     }
 
     @Override

@@ -26,7 +26,7 @@ import static org.lwjgl.system.MemoryUtil.NULL;
  * @author J Hoffman
  * @since  2.0.0
  */
-public final class AudioSystem {
+public final class AudioSystem implements AssetReloadListener {
     
     static final int MIN_SOURCES = 64;
     static final int MAX_SOURCES = 256;
@@ -277,6 +277,17 @@ public final class AudioSystem {
             
             farthest.stop();
             return farthest;
+        }
+    }
+
+    @Override
+    public void onAssetReload(Asset asset) {
+        if(asset instanceof Sound) {
+            var sound = ((Sound) asset);
+            
+            for(SoundSource source : AudioSystem.getSourcesWithSound(sound.getFilename())) {
+                source.recoverSounds();
+            }
         }
     }
     
