@@ -177,6 +177,13 @@ final class Viewport {
                     glPrograms.get("default").setUniform("uBloomTexture", 3);
                     glPrograms.get("default").setUniform("uProjection", false, projMatrix);
                     
+                    if(glPrograms.containsKey("skybox")) {
+                        glPrograms.get("skybox").use();
+                        glPrograms.get("skybox").setUniform("uProjection", false, projMatrix);
+                    }
+                    
+                    glPrograms.get("default").use();
+                    
                     glDrawElements(GL_TRIANGLES, g.indices.capacity(), GL_UNSIGNED_INT, 0);
                     ErrorUtils.checkGLError();
                 }

@@ -375,7 +375,7 @@ public final class XJGE {
                         viewport.resetCamera(glPrograms);
                         
                         viewport.render(glPrograms, "camera", projMatrix);
-                        currentScene.renderSkybox(viewport.currCamera.viewMatrix);
+                        currentScene.renderSkybox(viewport.currCamera.viewMatrix, projMatrix);
                         currentScene.render(glPrograms, viewport.id, viewport.currCamera);
                         currentScene.renderLightSources(viewport.currCamera);
                     glBindFramebuffer(GL_FRAMEBUFFER, 0);

@@ -4,6 +4,7 @@ import java.util.Map;
 import org.xjge.core.Camera;
 import org.xjge.core.Entity;
 import org.xjge.core.Scene;
+import org.xjge.core.Skybox2;
 import org.xjge.graphics.GLProgram;
 import org.xjge.graphics.Texture;
 
@@ -38,11 +39,14 @@ public class SceneAdd extends Scene {
         addEntity(entityB);
         addEntity(entityC);
         
-        /*
-        Cubemap2 cubemap = Cubemap2.load("sky_right.png", "sky_left.png", 
-                                         "sky_top.png", "sky_bottom.png", 
-                                         "sky_back.png", "sky_front.png");
-        */
+        var right  = Texture.load("sky_right.png");
+        var left   = Texture.load("sky_left.png");
+        var top    = Texture.load("sky_top.png");
+        var bottom = Texture.load("sky_bottom.png");
+        var front  = Texture.load("sky_front.png");
+        var back   = Texture.load("sky_back.png");
+        
+        setSkybox(new Skybox2(right, left, top, bottom, front, back, false));
     }
 
     @Override

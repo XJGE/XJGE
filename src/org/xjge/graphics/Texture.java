@@ -33,6 +33,8 @@ public final class Texture extends Asset {
     private int height;
     private int channels;
     
+    private ByteBuffer pixelBuffer;
+    
     public static final Texture FALLBACK = Texture.load("xjge_texture_fallback.png");
     
     public static Texture load(String filename) {
@@ -57,9 +59,9 @@ public final class Texture extends Asset {
             IntBuffer heightBuffer  = stack.mallocInt(1);
             IntBuffer channelBuffer = stack.mallocInt(1);
             
-            ByteBuffer texture = stbi_load_from_memory(imageBuffer, widthBuffer, heightBuffer, channelBuffer, STBI_rgb_alpha);
+            pixelBuffer = stbi_load_from_memory(imageBuffer, widthBuffer, heightBuffer, channelBuffer, STBI_rgb_alpha);
             
-            if(texture == null) {
+            if(pixelBuffer == null) {
                 MemoryUtil.memFree(imageBuffer);
                 throw new RuntimeException("STBI failed to parse texture data: " + stbi_failure_reason());
             }
@@ -68,9 +70,9 @@ public final class Texture extends Asset {
             height   = heightBuffer.get();
             channels = channelBuffer.get();
             
-            glTexImage2D(target, 0, GL_RGBA, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, texture);
+            glTexImage2D(target, 0, GL_RGBA, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, pixelBuffer);
             
-            stbi_image_free(texture);
+            //stbi_image_free(pixelBuffer);
             MemoryUtil.memFree(imageBuffer);
             
         } catch(IOException exception) {
@@ -122,5 +124,7 @@ public final class Texture extends Asset {
     public int getHeight() { return height; }
     
     public int getChannels() { return channels; }
+    
+    public ByteBuffer getPixelBuffer() { return pixelBuffer; }
     
 }

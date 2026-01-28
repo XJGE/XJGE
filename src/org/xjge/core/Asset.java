@@ -1,8 +1,8 @@
 package org.xjge.core;
 
 import java.io.InputStream;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.LinkedHashSet;
+import java.util.Set;
 
 /**
  * 
@@ -15,7 +15,7 @@ public abstract class Asset {
     
     private final String filename;
     
-    private final List<AssetReloadListener> reloadListeners = new ArrayList<>();
+    private final Set<AssetReloadListener> reloadListeners = new LinkedHashSet<>();
     
     protected Asset(String filename) {
         this.filename = filename;
@@ -34,7 +34,11 @@ public abstract class Asset {
         onLoad(stream);
         
         Logger.logInfo(getClass().getSimpleName() + " file: " + "\"" + filename + "\" reloaded successfully");
-        for(var listener : reloadListeners) listener.onAssetReload(this);
+        
+        //Notify listeners, using a new set here to avoid concurrent modification
+        for(var listener : new LinkedHashSet<>(reloadListeners)) {
+            listener.onAssetReload(this);
+        }
     }
     
     final void release() {

@@ -1,10 +1,11 @@
 package org.xjge.core;
 
+import java.util.LinkedList;
+import org.joml.Matrix3f;
 import org.joml.Matrix4f;
-import static org.lwjgl.opengl.GL13.*;
-import static org.lwjgl.opengl.GL20.glEnableVertexAttribArray;
-import static org.lwjgl.opengl.GL20.glVertexAttribPointer;
+import static org.lwjgl.opengl.GL30.*;
 import org.lwjgl.system.MemoryUtil;
+import org.xjge.graphics.GLProgram;
 import org.xjge.graphics.GLShader;
 import org.xjge.graphics.Graphics;
 import org.xjge.graphics.Texture;
@@ -12,14 +13,18 @@ import org.xjge.graphics.Texture;
 /**
  * 
  * @author J Hoffman
- * @since 4.0.0
+ * @since 2.0.0
  */
-public final class Skybox2 {
+public final class Skybox2 implements AssetReloadListener {
     
     private final int cubemapHandle;
     
     private final Graphics graphics;
-    private GLShader skyboxShader;
+    private static final GLProgram skyboxShader;
+    
+    private final Matrix3f tempView = new Matrix3f();
+    private final Matrix4f newView  = new Matrix4f();
+    private final Matrix4f projMatrix2  = new Matrix4f();
     
     private static final int[] TARGETS = {
         GL_TEXTURE_CUBE_MAP_POSITIVE_X, GL_TEXTURE_CUBE_MAP_NEGATIVE_X,
@@ -30,10 +35,17 @@ public final class Skybox2 {
     private final Texture[] faces;
     
     static {
+        var shaderSourceFiles = new LinkedList<GLShader>() {{
+            add(GLShader.load("xjge_shader_skybox_vertex.glsl", GL_VERTEX_SHADER));
+            add(GLShader.load("xjge_shader_skybox_fragment.glsl", GL_FRAGMENT_SHADER));
+        }};
         
+        skyboxShader = new GLProgram(shaderSourceFiles, "default");
+        
+        XJGE.glPrograms.put("skybox", skyboxShader);
     }
     
-    public Skybox2(Texture right, Texture left, Texture top, Texture bottom, Texture back, Texture front, boolean useLinearFilter) {
+    public Skybox2(Texture right, Texture left, Texture top, Texture bottom, Texture front, Texture back, boolean useLinearFilter) {
         cubemapHandle = glGenTextures();
         glBindTexture(GL_TEXTURE_CUBE_MAP, cubemapHandle);
 
@@ -113,15 +125,45 @@ public final class Skybox2 {
         
         for(int i = 0; i < faces.length; i++) {
             var face = faces[i];
+            face.addAssetListener(this);
             face.bind(GL_TEXTURE_2D);
-            glCopyTexImage2D(TARGETS[i], 0, GL_RGBA, 0, 0, face.getWidth(), face.getHeight(), 0);
+            glTexImage2D(TARGETS[i], 0, GL_RGBA, face.getWidth(), face.getHeight(), 
+                         0, GL_RGBA,GL_UNSIGNED_BYTE, face.getPixelBuffer());
         }
         
         glBindTexture(GL_TEXTURE_CUBE_MAP, 0);
     }
     
-    void render(Matrix4f viewMatrix) {
+    void render(Matrix4f viewMatrix, Matrix4f projMatrix) {
+        skyboxShader.use();
         
+        glDisable(GL_CULL_FACE);
+        glDepthFunc(GL_LEQUAL);
+        glDepthMask(false);
+        glActiveTexture(GL_TEXTURE2);
+        glBindTexture(GL_TEXTURE_CUBE_MAP, cubemapHandle);
+        glBindVertexArray(graphics.vao);
+        
+        viewMatrix.get3x3(tempView);
+        newView.set(tempView);
+        
+        skyboxShader.setUniform("uModel", false, graphics.modelMatrix);
+        skyboxShader.setUniform("uView", false, newView);
+        //skyboxShader.setUniform("uProjection", false, projMatrix);
+        skyboxShader.setUniform("uSkyTexture", 2);
+        
+        glDrawElements(GL_TRIANGLES, graphics.indices.capacity(), GL_UNSIGNED_INT, 0);
+        glDepthMask(true);
+        glDepthFunc(GL_LESS);
+        
+        skyboxShader.setUniform("uView", false, viewMatrix);
+        
+        ErrorUtils.checkGLError();
+    }
+
+    @Override
+    public void onAssetReload(Asset asset) {
+        if(asset instanceof Texture) bindFaces();
     }
 
 }
