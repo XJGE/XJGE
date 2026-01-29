@@ -402,8 +402,8 @@ public final class XJGE {
             if(!ticked) {
                 try {
                     Thread.sleep(1);
-                } catch(InterruptedException e) {
-                    Logger.logError(e.getMessage(), e);
+                } catch(InterruptedException exception) {
+                    Logger.logError(exception.getMessage(), exception);
                 }
             } else {
                 cycles++;

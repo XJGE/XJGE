@@ -126,7 +126,7 @@ public final class Skybox implements AssetReloadListener {
         skyboxShader.use();
         
         glDepthMask(false);
-        glActiveTexture(GL_TEXTURE2); //TODO: why does using 0 cause an invalid op?
+        glActiveTexture(GL_TEXTURE2);
         glBindTexture(GL_TEXTURE_CUBE_MAP, cubemapHandle);
         glBindVertexArray(graphics.vao);
         

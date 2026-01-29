@@ -64,6 +64,7 @@ All notable changes to this project will be documented in this file. The format 
 - setMusicMasterVolume and setSoundMasterVolume terminal commands since volume is now a source-level attribute.
 - getButtonID() from Command class since there was too much opportunity to misuse it.
 - KEY_MOUSE_COMBO input device. These are now their own seperate devices InputSystem.KEYBOARD and InputSystem.MOUSE.
+- Instance2D class, it's better to just let the public API provide their own implementation of this.
 
 ## [3.1.0] - 2025-01-03
 
