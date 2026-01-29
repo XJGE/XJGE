@@ -4,7 +4,7 @@ import java.util.Map;
 import org.xjge.core.Camera;
 import org.xjge.core.Entity;
 import org.xjge.core.Scene;
-import org.xjge.core.Skybox2;
+import org.xjge.core.Skybox;
 import org.xjge.graphics.GLProgram;
 import org.xjge.graphics.Texture;
 
@@ -16,7 +16,7 @@ import org.xjge.graphics.Texture;
 public class SceneAdd extends Scene {
 
     private float angle;
-    private Skybox2 skybox;
+    private Skybox skybox;
     
     public SceneAdd() {
         super("test");
@@ -49,7 +49,7 @@ public class SceneAdd extends Scene {
         var front  = Texture.load("sky_front.png");
         var back   = Texture.load("sky_back.png");
         
-        skybox = new Skybox2(right, left, top, bottom, front, back, false);
+        skybox = new Skybox(right, left, top, bottom, front, back, false);
         
         setSkybox(skybox);
     }
@@ -59,9 +59,6 @@ public class SceneAdd extends Scene {
         for(var entity : queryEntities(CompTestA.class)) {
             
         }
-        
-        angle += 0.00001f;
-        skybox.getModelMatrix().rotateY(angle);
     }
 
     @Override

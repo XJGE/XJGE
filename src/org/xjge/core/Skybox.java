@@ -1,118 +1,138 @@
 package org.xjge.core;
 
-import org.xjge.graphics.Graphics;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.LinkedList;
 import org.joml.Matrix3f;
 import org.joml.Matrix4f;
 import static org.lwjgl.opengl.GL30.*;
 import org.lwjgl.system.MemoryUtil;
+import org.xjge.graphics.GLProgram;
+import org.xjge.graphics.GLShader;
+import org.xjge.graphics.Graphics;
+import org.xjge.graphics.Texture;
 
 /**
- * Created: Jun 13, 2021
- * <p>
- * Enables a {@link Scene} to exhibit a greater level of detail in its 
- * environment by projecting a 3D texture onto the corresponding faces of a 
- * cuboid mesh, creating the illusion of an infinitely distant sky.
  * 
  * @author J Hoffman
- * @since  2.0.0
+ * @since 2.0.0
  */
-public final class Skybox {
+public final class Skybox implements AssetReloadListener {
     
-    private final Cubemap cubemap;
-    private final Graphics g;
+    private final int cubemapHandle;
+    
+    private final Graphics graphics;
+    private static final GLProgram skyboxShader;
     
     private final Matrix3f tempView = new Matrix3f();
     private final Matrix4f newView  = new Matrix4f();
     
-    /**
-     * Overloaded version of {@link Skybox(String, String, String, boolean)}. This 
-     * variant permits more variation between faces of the skybox.
-     * 
-     * @param rightFilename the filename of the image to use for the right side of the skybox
-     * @param leftFilename the filename of the image to use for the left side of the skybox
-     * @param topFilename the filename of the image to use for the top of the skybox
-     * @param bottomFilename the filename of the image to use for the bottom of the skybox
-     * @param frontFilename the filename of the image to use for the front of the skybox
-     * @param backFilename the filename of the image to use for the back of the skybox
-     * @param useLinearFilter if true, the textures will be filtered without hard edges
-     */
-    public Skybox(String filepath, String rightFilename, String leftFilename, String topFilename, String bottomFilename, 
-                  String frontFilename, String backFilename, boolean useLinearFilter) {
+    private static final int[] TARGETS = {
+        GL_TEXTURE_CUBE_MAP_POSITIVE_X, GL_TEXTURE_CUBE_MAP_NEGATIVE_X,
+        GL_TEXTURE_CUBE_MAP_POSITIVE_Y, GL_TEXTURE_CUBE_MAP_NEGATIVE_Y,
+        GL_TEXTURE_CUBE_MAP_POSITIVE_Z, GL_TEXTURE_CUBE_MAP_NEGATIVE_Z
+    };
+    
+    private final Texture[] faces;
+    
+    static {
+        var shaderSourceFiles = new LinkedList<GLShader>() {{
+            add(GLShader.load("xjge_shader_skybox_vertex.glsl", GL_VERTEX_SHADER));
+            add(GLShader.load("xjge_shader_skybox_fragment.glsl", GL_FRAGMENT_SHADER));
+        }};
         
-        Map<Integer, String> images = new HashMap<>();
+        skyboxShader = new GLProgram(shaderSourceFiles, "default");
         
-        for(int i = 0; i < 6; i++) {
-            switch(i) {
-                case 0 -> images.put(GL_TEXTURE_CUBE_MAP_POSITIVE_X, rightFilename);
-                case 1 -> images.put(GL_TEXTURE_CUBE_MAP_NEGATIVE_X, leftFilename);
-                case 2 -> images.put(GL_TEXTURE_CUBE_MAP_POSITIVE_Y, topFilename);
-                case 3 -> images.put(GL_TEXTURE_CUBE_MAP_NEGATIVE_Y, bottomFilename);
-                case 4 -> images.put(GL_TEXTURE_CUBE_MAP_NEGATIVE_Z, frontFilename);
-                case 5 -> images.put(GL_TEXTURE_CUBE_MAP_POSITIVE_Z, backFilename);
-            }
-        }
+        XJGE.glPrograms.put("skybox", skyboxShader);
+    }
+    
+    public Skybox(Texture right, Texture left, Texture top, Texture bottom, Texture front, Texture back, boolean useLinearFilter) {
+        cubemapHandle = glGenTextures();
+        glBindTexture(GL_TEXTURE_CUBE_MAP, cubemapHandle);
+
+        glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MIN_FILTER, (useLinearFilter) ? GL_LINEAR : GL_NEAREST);
+        glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MAG_FILTER, (useLinearFilter) ? GL_LINEAR : GL_NEAREST);
+        glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+        glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+        glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_R, GL_CLAMP_TO_EDGE);
         
-        cubemap = new Cubemap(filepath, images, useLinearFilter);
-        g       = new Graphics();
+        glBindTexture(GL_TEXTURE_CUBE_MAP, 0);
         
-        g.vertices = MemoryUtil.memAllocFloat(192);
-        g.indices  = MemoryUtil.memAllocInt(36);
+        faces = new Texture[] {right, left, top, bottom, front, back};
+        bindFaces();
+        
+        graphics = new Graphics();
+        
+        graphics.vertices = MemoryUtil.memAllocFloat(192);
+        graphics.indices  = MemoryUtil.memAllocInt(36);
         
         //Front
-        g.vertices.put(-1) .put(1).put(-1); //0
-        g.vertices .put(1) .put(1).put(-1); //1
-        g.vertices .put(1).put(-1).put(-1); //2
-        g.vertices.put(-1).put(-1).put(-1); //3
+        graphics.vertices.put(-1) .put(1).put(-1); //0
+        graphics.vertices .put(1) .put(1).put(-1); //1
+        graphics.vertices .put(1).put(-1).put(-1); //2
+        graphics.vertices.put(-1).put(-1).put(-1); //3
         
         //Back
-        g.vertices .put(1) .put(1).put(1);  //4
-        g.vertices.put(-1) .put(1).put(1);  //5
-        g.vertices.put(-1).put(-1).put(1);  //6
-        g.vertices .put(1).put(-1).put(1);  //7
+        graphics.vertices .put(1) .put(1).put(1);  //4
+        graphics.vertices.put(-1) .put(1).put(1);  //5
+        graphics.vertices.put(-1).put(-1).put(1);  //6
+        graphics.vertices .put(1).put(-1).put(1);  //7
         
         //Top
-        g.vertices.put(-1).put(1) .put(1);  //8
-        g.vertices .put(1).put(1) .put(1);  //9
-        g.vertices .put(1).put(1).put(-1);  //10
-        g.vertices.put(-1).put(1).put(-1);  //11
+        graphics.vertices.put(-1).put(1) .put(1);  //8
+        graphics.vertices .put(1).put(1) .put(1);  //9
+        graphics.vertices .put(1).put(1).put(-1);  //10
+        graphics.vertices.put(-1).put(1).put(-1);  //11
         
         //Bottom
-        g.vertices.put(-1).put(-1).put(-1); //12
-        g.vertices .put(1).put(-1).put(-1); //13
-        g.vertices .put(1).put(-1) .put(1); //14
-        g.vertices.put(-1).put(-1) .put(1); //15
+        graphics.vertices.put(-1).put(-1).put(-1); //12
+        graphics.vertices .put(1).put(-1).put(-1); //13
+        graphics.vertices .put(1).put(-1) .put(1); //14
+        graphics.vertices.put(-1).put(-1) .put(1); //15
         
         //Left
-        g.vertices.put(-1) .put(1) .put(1); //16
-        g.vertices.put(-1) .put(1).put(-1); //17
-        g.vertices.put(-1).put(-1).put(-1); //18
-        g.vertices.put(-1).put(-1) .put(1); //19
+        graphics.vertices.put(-1) .put(1) .put(1); //16
+        graphics.vertices.put(-1) .put(1).put(-1); //17
+        graphics.vertices.put(-1).put(-1).put(-1); //18
+        graphics.vertices.put(-1).put(-1) .put(1); //19
         
         //Right
-        g.vertices.put(1) .put(1).put(-1);  //20
-        g.vertices.put(1) .put(1) .put(1);  //21
-        g.vertices.put(1).put(-1) .put(1);  //22
-        g.vertices.put(1).put(-1).put(-1);  //23
+        graphics.vertices.put(1) .put(1).put(-1);  //20
+        graphics.vertices.put(1) .put(1) .put(1);  //21
+        graphics.vertices.put(1).put(-1) .put(1);  //22
+        graphics.vertices.put(1).put(-1).put(-1);  //23
         
-        g.indices.put(0).put(1).put(2).put(2).put(3).put(0);       //Front
-        g.indices.put(4).put(5).put(6).put(6).put(7).put(4);       //Back
-        g.indices.put(8).put(9).put(10).put(10).put(11).put(8);    //Top
-        g.indices.put(12).put(13).put(14).put(14).put(15).put(12); //Bottom
-        g.indices.put(16).put(17).put(18).put(18).put(19).put(16); //Left
-        g.indices.put(20).put(21).put(22).put(22).put(23).put(20); //Right
+        graphics.indices.put(0).put(1).put(2).put(2).put(3).put(0);       //Front
+        graphics.indices.put(4).put(5).put(6).put(6).put(7).put(4);       //Back
+        graphics.indices.put(8).put(9).put(10).put(10).put(11).put(8);    //Top
+        graphics.indices.put(12).put(13).put(14).put(14).put(15).put(12); //Bottom
+        graphics.indices.put(16).put(17).put(18).put(18).put(19).put(16); //Left
+        graphics.indices.put(20).put(21).put(22).put(22).put(23).put(20); //Right
         
-        g.vertices.flip();
-        g.indices.flip();
+        graphics.vertices.flip();
+        graphics.indices.flip();
         
-        g.bindBuffers();
+        graphics.bindBuffers();
         
         glVertexAttribPointer(0, 3, GL_FLOAT, false, (3 * Float.BYTES), 0);
         glEnableVertexAttribArray(0);
         
-        MemoryUtil.memFree(g.vertices);
-        MemoryUtil.memFree(g.indices);
+        MemoryUtil.memFree(graphics.vertices);
+        MemoryUtil.memFree(graphics.indices);
+    }
+    
+    private void bindFaces() {
+        glBindTexture(GL_TEXTURE_CUBE_MAP, cubemapHandle);
+        
+        for(int i = 0; i < faces.length; i++) {
+            var face = faces[i];
+            
+            face.addAssetListener(this);
+            face.bind(GL_TEXTURE_2D);
+            
+            glTexImage2D(TARGETS[i], 0, GL_RGBA, face.getWidth(), face.getHeight(), 0, 
+                         GL_RGBA, GL_UNSIGNED_BYTE, face.getImageData());
+        }
+        
+        glBindTexture(GL_TEXTURE_CUBE_MAP, 0);
     }
     
     /**
@@ -121,29 +141,27 @@ public final class Skybox {
      * here to create the illusion of distance.
      * 
      * @param viewMatrix the view matrix of the viewport camera currently 
-     *                   rendering the level
+     *                   rendering the scene
      */
     void render(Matrix4f viewMatrix) {
-        XJGE.getDefaultGLProgram().use();
+        skyboxShader.use();
         
         glDepthMask(false);
         glActiveTexture(GL_TEXTURE2);
-        glBindTexture(GL_TEXTURE_CUBE_MAP, cubemap.handle);
-        glBindVertexArray(g.vao);
+        glBindTexture(GL_TEXTURE_CUBE_MAP, cubemapHandle);
+        glBindVertexArray(graphics.vao);
         
         viewMatrix.get3x3(tempView);
         newView.set(tempView);
         
-        XJGE.getDefaultGLProgram().setUniform("uType", 8);
-        XJGE.getDefaultGLProgram().setUniform("uModel", false, g.modelMatrix);
-        XJGE.getDefaultGLProgram().setUniform("uView", false, newView);
-        XJGE.getDefaultGLProgram().setUniform("uSkyTexture", 2);
+        skyboxShader.setUniform("uModel", false, graphics.modelMatrix);
+        skyboxShader.setUniform("uView", false, newView);
+        skyboxShader.setUniform("uSkyTexture", 2);
         
-        glDrawElements(GL_TRIANGLES, g.indices.capacity(), GL_UNSIGNED_INT, 0);
-        
+        glDrawElements(GL_TRIANGLES, graphics.indices.capacity(), GL_UNSIGNED_INT, 0);
         glDepthMask(true);
         
-        XJGE.getDefaultGLProgram().setUniform("uView", false, viewMatrix);
+        skyboxShader.setUniform("uView", false, viewMatrix);
         
         ErrorUtils.checkGLError();
     }
@@ -155,15 +173,17 @@ public final class Skybox {
      * @return the model matrix of the skybox 
      */
     public Matrix4f getModelMatrix() {
-        return g.modelMatrix;
+        return graphics.modelMatrix;
     }
     
-    /**
-     * Frees the texture objects and data buffers used by the skybox.
-     */
-    public void freeResources() {
-        cubemap.freeTexture();
-        g.freeBuffers();
+    public void delete() {
+        glDeleteTextures(cubemapHandle);
+        graphics.freeBuffers();
     }
-    
+
+    @Override
+    public void onAssetReload(Asset asset) {
+        if(asset instanceof Texture) bindFaces();
+    }
+
 }
