@@ -33,7 +33,7 @@ public final class Texture extends Asset {
     private int height;
     private int channels;
     
-    private ByteBuffer pixelBuffer;
+    private ByteBuffer imageData;
     
     public static final Texture FALLBACK = Texture.load("xjge_texture_fallback.png");
     
@@ -59,9 +59,9 @@ public final class Texture extends Asset {
             IntBuffer heightBuffer  = stack.mallocInt(1);
             IntBuffer channelBuffer = stack.mallocInt(1);
             
-            pixelBuffer = stbi_load_from_memory(imageBuffer, widthBuffer, heightBuffer, channelBuffer, STBI_rgb_alpha);
+            imageData = stbi_load_from_memory(imageBuffer, widthBuffer, heightBuffer, channelBuffer, STBI_rgb_alpha);
             
-            if(pixelBuffer == null) {
+            if(imageData == null) {
                 MemoryUtil.memFree(imageBuffer);
                 throw new RuntimeException("STBI failed to parse texture data: " + stbi_failure_reason());
             }
@@ -70,9 +70,7 @@ public final class Texture extends Asset {
             height   = heightBuffer.get();
             channels = channelBuffer.get();
             
-            glTexImage2D(target, 0, GL_RGBA, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, pixelBuffer);
-            
-            //stbi_image_free(pixelBuffer);
+            glTexImage2D(target, 0, GL_RGBA, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, imageData);
             MemoryUtil.memFree(imageBuffer);
             
         } catch(IOException exception) {
@@ -91,6 +89,8 @@ public final class Texture extends Asset {
     protected void onRelease() {
         if(this == FALLBACK) return;
         glDeleteTextures(handle);
+        stbi_image_free(imageData);
+        imageData = null;
     }
     
     @Override
@@ -125,6 +125,6 @@ public final class Texture extends Asset {
     
     public int getChannels() { return channels; }
     
-    public ByteBuffer getPixelBuffer() { return pixelBuffer; }
+    public ByteBuffer getImageData() { return imageData.asReadOnlyBuffer(); }
     
 }

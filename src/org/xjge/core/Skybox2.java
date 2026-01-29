@@ -125,16 +125,18 @@ public final class Skybox2 implements AssetReloadListener {
         
         for(int i = 0; i < faces.length; i++) {
             var face = faces[i];
+            
             face.addAssetListener(this);
             face.bind(GL_TEXTURE_2D);
-            glTexImage2D(TARGETS[i], 0, GL_RGBA, face.getWidth(), face.getHeight(), 
-                         0, GL_RGBA,GL_UNSIGNED_BYTE, face.getPixelBuffer());
+            
+            glTexImage2D(TARGETS[i], 0, GL_RGBA, face.getWidth(), face.getHeight(), 0, 
+                         GL_RGBA, GL_UNSIGNED_BYTE, face.getImageData());
         }
         
         glBindTexture(GL_TEXTURE_CUBE_MAP, 0);
     }
     
-    void render(Matrix4f viewMatrix, Matrix4f projMatrix) {
+    void render(Matrix4f viewMatrix) {
         skyboxShader.use();
         
         glDisable(GL_CULL_FACE);
@@ -149,7 +151,6 @@ public final class Skybox2 implements AssetReloadListener {
         
         skyboxShader.setUniform("uModel", false, graphics.modelMatrix);
         skyboxShader.setUniform("uView", false, newView);
-        //skyboxShader.setUniform("uProjection", false, projMatrix);
         skyboxShader.setUniform("uSkyTexture", 2);
         
         glDrawElements(GL_TRIANGLES, graphics.indices.capacity(), GL_UNSIGNED_INT, 0);
@@ -159,6 +160,10 @@ public final class Skybox2 implements AssetReloadListener {
         skyboxShader.setUniform("uView", false, viewMatrix);
         
         ErrorUtils.checkGLError();
+    }
+    
+    public Matrix4f getModelMatrix() {
+        return graphics.modelMatrix;
     }
 
     @Override

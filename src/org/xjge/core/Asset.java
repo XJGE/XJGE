@@ -35,9 +35,9 @@ public abstract class Asset {
         
         Logger.logInfo(getClass().getSimpleName() + " file: " + "\"" + filename + "\" reloaded successfully");
         
-        //Notify listeners, using a new set here to avoid concurrent modification
-        for(var listener : new LinkedHashSet<>(reloadListeners)) {
-            listener.onAssetReload(this);
+        //Notify listeners in debug mode only, using a new set here to avoid concurrent modification
+        if(XJGE.debugModeEnabled()) {
+            for(var listener : new LinkedHashSet<>(reloadListeners)) listener.onAssetReload(this);
         }
     }
     
@@ -48,6 +48,7 @@ public abstract class Asset {
     }
     
     public void addAssetListener(AssetReloadListener listener) {
+        if(!XJGE.debugModeEnabled()) return;
         reloadListeners.add(listener);
     }
     
