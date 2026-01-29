@@ -8,5 +8,5 @@ layout (location = 0) out vec4 ioFragColor;
 
 void main() {
     if(texture(uSkyTexture, ioTexCoords).a == 0) discard;
-    ioFragColor = texture(uSkyTexture, ioTexCoords);
+    ioFragColor = texture(uSkyTexture, vec3(-ioTexCoords.x, ioTexCoords.yz));
 }

@@ -61,52 +61,31 @@ public final class Skybox implements AssetReloadListener {
         
         graphics = new Graphics();
         
-        graphics.vertices = MemoryUtil.memAllocFloat(192);
-        graphics.indices  = MemoryUtil.memAllocInt(36);
+        float[] vertexData = new float[] {
+            -1,  1, -1, //0
+             1,  1, -1, //1
+             1, -1, -1, //2
+            -1, -1, -1, //3
+            -1,  1,  1, //4
+             1,  1,  1, //5
+             1, -1,  1, //6
+            -1, -1,  1  //7
+        };
         
-        //Front
-        graphics.vertices.put(-1) .put(1).put(-1); //0
-        graphics.vertices .put(1) .put(1).put(-1); //1
-        graphics.vertices .put(1).put(-1).put(-1); //2
-        graphics.vertices.put(-1).put(-1).put(-1); //3
+        int[] indexData = new int[] {
+            1, 5, 6, 6, 2, 1, //Right (+X)
+            4, 0, 3, 3, 7, 4, //Left (-X)
+            4, 5, 1, 1, 0, 4, //Top (+Y)
+            3, 2, 6, 6, 7, 3, //Bottom (-Y)
+            5, 4, 7, 7, 6, 5, //Front (+Z)
+            0, 1, 2, 2, 3, 0  //Back (-Z)
+        };
         
-        //Back
-        graphics.vertices .put(1) .put(1).put(1);  //4
-        graphics.vertices.put(-1) .put(1).put(1);  //5
-        graphics.vertices.put(-1).put(-1).put(1);  //6
-        graphics.vertices .put(1).put(-1).put(1);  //7
+        graphics.vertices = MemoryUtil.memAllocFloat(vertexData.length);
+        graphics.indices  = MemoryUtil.memAllocInt(indexData.length);
         
-        //Top
-        graphics.vertices.put(-1).put(1) .put(1);  //8
-        graphics.vertices .put(1).put(1) .put(1);  //9
-        graphics.vertices .put(1).put(1).put(-1);  //10
-        graphics.vertices.put(-1).put(1).put(-1);  //11
-        
-        //Bottom
-        graphics.vertices.put(-1).put(-1).put(-1); //12
-        graphics.vertices .put(1).put(-1).put(-1); //13
-        graphics.vertices .put(1).put(-1) .put(1); //14
-        graphics.vertices.put(-1).put(-1) .put(1); //15
-        
-        //Left
-        graphics.vertices.put(-1) .put(1) .put(1); //16
-        graphics.vertices.put(-1) .put(1).put(-1); //17
-        graphics.vertices.put(-1).put(-1).put(-1); //18
-        graphics.vertices.put(-1).put(-1) .put(1); //19
-        
-        //Right
-        graphics.vertices.put(1) .put(1).put(-1);  //20
-        graphics.vertices.put(1) .put(1) .put(1);  //21
-        graphics.vertices.put(1).put(-1) .put(1);  //22
-        graphics.vertices.put(1).put(-1).put(-1);  //23
-        
-        graphics.indices.put(0).put(1).put(2).put(2).put(3).put(0);       //Front
-        graphics.indices.put(4).put(5).put(6).put(6).put(7).put(4);       //Back
-        graphics.indices.put(8).put(9).put(10).put(10).put(11).put(8);    //Top
-        graphics.indices.put(12).put(13).put(14).put(14).put(15).put(12); //Bottom
-        graphics.indices.put(16).put(17).put(18).put(18).put(19).put(16); //Left
-        graphics.indices.put(20).put(21).put(22).put(22).put(23).put(20); //Right
-        
+        graphics.vertices.put(vertexData);
+        graphics.indices.put(indexData);
         graphics.vertices.flip();
         graphics.indices.flip();
         
@@ -147,7 +126,7 @@ public final class Skybox implements AssetReloadListener {
         skyboxShader.use();
         
         glDepthMask(false);
-        glActiveTexture(GL_TEXTURE2);
+        glActiveTexture(GL_TEXTURE2); //TODO: why does using 0 cause an invalid op?
         glBindTexture(GL_TEXTURE_CUBE_MAP, cubemapHandle);
         glBindVertexArray(graphics.vao);
         
@@ -160,8 +139,6 @@ public final class Skybox implements AssetReloadListener {
         
         glDrawElements(GL_TRIANGLES, graphics.indices.capacity(), GL_UNSIGNED_INT, 0);
         glDepthMask(true);
-        
-        skyboxShader.setUniform("uView", false, viewMatrix);
         
         ErrorUtils.checkGLError();
     }
