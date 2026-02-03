@@ -276,8 +276,8 @@ public abstract class Scene {
      * @param viewMatrix the view matrix of the viewport whos camera is currently 
      *                   rendering the scene
      */
-    void renderSkybox(Matrix4f viewMatrix) {
-        if(skybox != null) skybox.render(viewMatrix);
+    void renderSkybox(Camera camera) {
+        if(skybox != null) skybox.render(camera.viewMatrix, camera.projMatrix);
     }
     
     /**

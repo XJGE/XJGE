@@ -106,8 +106,10 @@ public final class Skybox implements AssetReloadListener {
      * 
      * @param viewMatrix the view matrix of the viewport camera currently 
      *                   rendering the scene
+     * @param projMatrix the projection matrix of the viewport camera currently 
+     *                   rendering the scene
      */
-    void render(Matrix4f viewMatrix) {
+    void render(Matrix4f viewMatrix, Matrix4f projMatrix) {
         ShaderSkybox.getInstance().use();
         
         glDepthMask(false);
@@ -120,6 +122,7 @@ public final class Skybox implements AssetReloadListener {
         
         ShaderSkybox.getInstance().setUniform("uModel", graphics.modelMatrix);
         ShaderSkybox.getInstance().setUniform("uView", newView);
+        ShaderSkybox.getInstance().setUniform("uProjection", projMatrix);
         ShaderSkybox.getInstance().setUniform("uSkyTexture", 2);
         
         glDrawElements(GL_TRIANGLES, graphics.indices.capacity(), GL_UNSIGNED_INT, 0);
