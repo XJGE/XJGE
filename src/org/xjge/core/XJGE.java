@@ -66,8 +66,8 @@ public final class XJGE {
     
     static GLProgram depthProgram;
     static GLProgram blurProgram;
-    static Map<String, GLProgram> glPrograms = new HashMap<>();
     
+    static Map<String, GLProgram> glPrograms = new HashMap<>();
     
     //==== LEGACY FIELDS ABOVE =================================================
     
@@ -94,6 +94,9 @@ public final class XJGE {
     
     private static TreeMap<String, TerminalCommand> engineCommands     = new TreeMap<>();
     private static final TreeMap<String, TerminalCommand> userCommands = new TreeMap<>();
+    
+    private static final Map<String, GLProgram> userShaders     = new HashMap<>();
+    private static final Map<String, GLProgram> userShadersView = Collections.unmodifiableMap(userShaders);
     
     private static Color clearColor = new Color(0.467f, 0.533f, 1f);
     private static Scene currentScene;
@@ -269,11 +272,11 @@ public final class XJGE {
             return;
         }
         
-        engineCommands.putAll(userCommands);
-        engineCommands.values().forEach(command -> command.setCommands(engineCommands));
-        
         started    = true;
         glPrograms = Collections.unmodifiableMap(glPrograms);
+        
+        engineCommands.putAll(userCommands);
+        engineCommands.values().forEach(command -> command.setCommands(engineCommands));
         
         Window.registerCallbacks(engineCommands, engineIcons);
         Window.show();
@@ -296,11 +299,12 @@ public final class XJGE {
             
             if(debugModeEnabled) AssetManager.processReloadRequests();
             
+            //Update time-sensitive engine components
             while(delta >= TARGET_DELTA) {
                 InputSystem.update(TARGET_DELTA, deltaMetric);
                 Window.update(deltaMetric, fps, entityCount);
                 
-                if(tick(20)) {
+                if(debugModeEnabled && tick(20)) {
                     deltaMetric = delta;
                     if(currentScene != null) entityCount = currentScene.entityCount();
                 }

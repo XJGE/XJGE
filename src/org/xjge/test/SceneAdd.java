@@ -1,10 +1,13 @@
 package org.xjge.test;
 
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
 import java.util.Map;
 import org.xjge.core.Camera;
 import org.xjge.core.Entity;
 import org.xjge.core.Scene;
 import org.xjge.core.Skybox;
+import org.xjge.core.Window;
 import org.xjge.graphics.GLProgram;
 import org.xjge.graphics.Texture;
 
@@ -13,8 +16,9 @@ import org.xjge.graphics.Texture;
  * @author J Hoffman
  * @since 
  */
-public class SceneAdd extends Scene {
+public class SceneAdd extends Scene implements PropertyChangeListener {
 
+    private boolean subscribed;
     private float angle;
     private Skybox skybox;
     
@@ -56,6 +60,11 @@ public class SceneAdd extends Scene {
 
     @Override
     public void update(double targetDelta, double trueDelta) {
+        if(!subscribed) {
+            Window.addObserver(this);
+            subscribed = true;
+        }
+        
         for(var entity : queryEntities(CompTestA.class)) {
             
         }
@@ -71,6 +80,15 @@ public class SceneAdd extends Scene {
 
     @Override
     public void exit() {
+    }
+
+    @Override
+    public void propertyChange(PropertyChangeEvent evt) {
+        switch(evt.getPropertyName()) {
+            case "WINDOW_WIDTH_CHANGED", "WINDOW_HEIGHT_CHANGED" -> {
+                Window.setResolution(Window.getWidth(), Window.getHeight());
+            }
+        }
     }
 
 }

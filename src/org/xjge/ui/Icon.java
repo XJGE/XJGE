@@ -203,7 +203,7 @@ public final class Icon {
         graphics.modelMatrix.rotateXYZ(rotationX, rotationY, rotationZ);
         graphics.modelMatrix.scaleXY(scale.x, scale.y);
         
-        UIShader.getInstance().use();
+        ShaderUI.getInstance().use();
         
         glEnable(GL_BLEND);
         glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
@@ -211,13 +211,13 @@ public final class Icon {
         texture.bind(GL_TEXTURE_2D);
         glBindVertexArray(graphics.vao);
         
-        UIShader.getInstance().setUniform("uType", 3);
-        UIShader.getInstance().setUniform("uOpacity", opacity);
-        UIShader.getInstance().setUniform("uColor", color.asVector3f());
-        UIShader.getInstance().setUniform("uModel", graphics.modelMatrix);
-        UIShader.getInstance().setUniform("uProjection", UIManager.getProjectionMatrix());
-        UIShader.getInstance().setUniform("uTexCoords", texCoords);
-        UIShader.getInstance().setUniform("uTexture", 0);
+        ShaderUI.getInstance().setUniform("uType", 3);
+        ShaderUI.getInstance().setUniform("uOpacity", opacity);
+        ShaderUI.getInstance().setUniform("uColor", color.asVector3f());
+        ShaderUI.getInstance().setUniform("uModel", graphics.modelMatrix);
+        ShaderUI.getInstance().setUniform("uProjection", UIManager.getProjectionMatrix());
+        ShaderUI.getInstance().setUniform("uTexCoords", texCoords);
+        ShaderUI.getInstance().setUniform("uTexture", 0);
         
         glDrawElements(GL_TRIANGLES, graphics.indices.limit(), GL_UNSIGNED_INT, 0);
         glDisable(GL_BLEND);

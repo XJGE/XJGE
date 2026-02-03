@@ -16,22 +16,22 @@ import org.xjge.graphics.GLShader;
  * @author J Hoffman
  * @since 4.0.0
  */
-class UIShader {
+final class ShaderUI {
 
-    private static UIShader instance;
+    private static ShaderUI instance;
     private final GLProgram shader;
     
     /**
      * Compiles and links the associated vertex/fragment shader stages used by 
      * the UI for rendering.
      */
-    private UIShader() {
+    private ShaderUI() {
         var shaderSourceFiles = new LinkedList<GLShader>() {{
             add(GLShader.load("xjge_shader_ui_vertex.glsl", GL_VERTEX_SHADER));
             add(GLShader.load("xjge_shader_ui_fragment.glsl", GL_FRAGMENT_SHADER));
         }};
         
-        shader = new GLProgram(shaderSourceFiles, "default");
+        shader = new GLProgram(shaderSourceFiles, "xjge_ui");
     }
     
     /**
@@ -39,8 +39,8 @@ class UIShader {
      * 
      * @return the object that represents the UI shader program
      */
-    static UIShader getInstance() {
-        if(instance == null) instance = new UIShader();
+    static ShaderUI getInstance() {
+        if(instance == null) instance = new ShaderUI();
         return instance;
     }
     

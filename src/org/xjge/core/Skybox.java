@@ -1,12 +1,9 @@
 package org.xjge.core;
 
-import java.util.LinkedList;
 import org.joml.Matrix3f;
 import org.joml.Matrix4f;
 import static org.lwjgl.opengl.GL30.*;
 import org.lwjgl.system.MemoryUtil;
-import org.xjge.graphics.GLProgram;
-import org.xjge.graphics.GLShader;
 import org.xjge.graphics.Graphics;
 import org.xjge.graphics.Texture;
 
@@ -20,7 +17,6 @@ public final class Skybox implements AssetReloadListener {
     private final int cubemapHandle;
     
     private final Graphics graphics;
-    private static final GLProgram skyboxShader;
     
     private final Matrix3f tempView = new Matrix3f();
     private final Matrix4f newView  = new Matrix4f();
@@ -32,17 +28,6 @@ public final class Skybox implements AssetReloadListener {
     };
     
     private final Texture[] faces;
-    
-    static {
-        var shaderSourceFiles = new LinkedList<GLShader>() {{
-            add(GLShader.load("xjge_shader_skybox_vertex.glsl", GL_VERTEX_SHADER));
-            add(GLShader.load("xjge_shader_skybox_fragment.glsl", GL_FRAGMENT_SHADER));
-        }};
-        
-        skyboxShader = new GLProgram(shaderSourceFiles, "default");
-        
-        XJGE.glPrograms.put("skybox", skyboxShader);
-    }
     
     public Skybox(Texture right, Texture left, Texture top, Texture bottom, Texture front, Texture back, boolean useLinearFilter) {
         cubemapHandle = glGenTextures();
@@ -123,7 +108,7 @@ public final class Skybox implements AssetReloadListener {
      *                   rendering the scene
      */
     void render(Matrix4f viewMatrix) {
-        skyboxShader.use();
+        ShaderSkybox.getInstance().use();
         
         glDepthMask(false);
         glActiveTexture(GL_TEXTURE2);
@@ -133,9 +118,9 @@ public final class Skybox implements AssetReloadListener {
         viewMatrix.get3x3(tempView);
         newView.set(tempView);
         
-        skyboxShader.setUniform("uModel", false, graphics.modelMatrix);
-        skyboxShader.setUniform("uView", false, newView);
-        skyboxShader.setUniform("uSkyTexture", 2);
+        ShaderSkybox.getInstance().setUniform("uModel", graphics.modelMatrix);
+        ShaderSkybox.getInstance().setUniform("uView", newView);
+        ShaderSkybox.getInstance().setUniform("uSkyTexture", 2);
         
         glDrawElements(GL_TRIANGLES, graphics.indices.capacity(), GL_UNSIGNED_INT, 0);
         glDepthMask(true);
@@ -156,6 +141,7 @@ public final class Skybox implements AssetReloadListener {
     public void delete() {
         glDeleteTextures(cubemapHandle);
         graphics.freeBuffers();
+        //TODO: unload shader?
     }
 
     @Override

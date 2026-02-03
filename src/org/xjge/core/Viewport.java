@@ -124,6 +124,13 @@ final class Viewport {
         glEnableVertexAttribArray(2);
     }
     
+    private void attachColorTargets() {
+         glBindFramebuffer(GL_FRAMEBUFFER, Window.getFBOHandle());
+            glFramebufferTexture2D(GL_FRAMEBUFFER, colorAttachments[0], GL_TEXTURE_2D, viewTexHandle, 0);
+            glFramebufferTexture2D(GL_FRAMEBUFFER, colorAttachments[1], GL_TEXTURE_2D, bloomTexHandle, 0);
+        glBindFramebuffer(GL_FRAMEBUFFER, 0);
+    }
+    
     /**
      * Renders a scene from the perspective of this viewport. Viewport 
      * rendering is done in three stages: 
@@ -177,10 +184,9 @@ final class Viewport {
                     glPrograms.get("default").setUniform("uBloomTexture", 3);
                     glPrograms.get("default").setUniform("uProjection", false, projMatrix);
                     
-                    if(glPrograms.containsKey("skybox")) {
-                        glPrograms.get("skybox").use();
-                        glPrograms.get("skybox").setUniform("uProjection", false, projMatrix);
-                    }
+                    //TODO: only use while skybox is active
+                    ShaderSkybox.getInstance().use();
+                    ShaderSkybox.getInstance().setUniform("uProjection", currCamera.projMatrix); //What if Camera is null?
                     
                     glPrograms.get("default").use();
                     
@@ -224,6 +230,7 @@ final class Viewport {
         
         createTextureAttachment();
         bloom.createTextureAttachments(width, height);
+        attachColorTargets();
         
         UIManager.relocateWidgets(id, width, height);
     }

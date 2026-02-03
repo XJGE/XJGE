@@ -57,7 +57,7 @@ public final class RectangleBatch {
      * Renders every rectangle provided to the batch.
      */
     private void render() {
-        UIShader.getInstance().use();
+        ShaderUI.getInstance().use();
         
         glEnable(GL_BLEND);
         glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
@@ -69,8 +69,8 @@ public final class RectangleBatch {
         glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, graphics.ibo);
         glBufferSubData(GL_ELEMENT_ARRAY_BUFFER, 0, graphics.indices);
         
-        UIShader.getInstance().setUniform("uType", 1);
-        UIShader.getInstance().setUniform("uProjection", UIManager.getProjectionMatrix());
+        ShaderUI.getInstance().setUniform("uType", 1);
+        ShaderUI.getInstance().setUniform("uProjection", UIManager.getProjectionMatrix());
         
         glDrawElements(GL_TRIANGLES, graphics.indices.capacity(), GL_UNSIGNED_INT, 0);
         glDisable(GL_BLEND);

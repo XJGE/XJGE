@@ -64,9 +64,7 @@ public class GLProgram implements AssetReloadListener {
         if(glGetProgrami(handle, GL_LINK_STATUS) != GL_TRUE) {
             Logger.logError("Failed to link shader program \"" + name + "\" (" + glGetProgramInfoLog(handle) + ")", null);
         } else {
-            if(!name.equals("default")) {
-                Logger.logInfo("Shader program \"" + name + "\" linked successfully");
-            }
+            Logger.logInfo("Shader program \"" + name + "\" linked successfully");
         }
     }
     
