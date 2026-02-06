@@ -1,6 +1,5 @@
 package org.xjge.core;
 
-import org.joml.Matrix3f;
 import org.joml.Matrix4f;
 import static org.lwjgl.opengl.GL30.*;
 import org.lwjgl.system.MemoryUtil;
@@ -18,8 +17,7 @@ public final class Skybox implements AssetReloadListener {
     
     private final Graphics graphics;
     
-    private final Matrix3f tempView = new Matrix3f();
-    private final Matrix4f newView  = new Matrix4f();
+    private final Matrix4f newView = new Matrix4f();
     
     private static final int[] TARGETS = {
         GL_TEXTURE_CUBE_MAP_POSITIVE_X, GL_TEXTURE_CUBE_MAP_NEGATIVE_X,
@@ -117,8 +115,10 @@ public final class Skybox implements AssetReloadListener {
         glBindTexture(GL_TEXTURE_CUBE_MAP, cubemapHandle);
         glBindVertexArray(graphics.vao);
         
-        viewMatrix.get3x3(tempView);
-        newView.set(tempView);
+        newView.set(viewMatrix);
+        newView.m30(0);
+        newView.m31(0);
+        newView.m32(0);
         
         ShaderSkybox.getInstance().setUniform("uModel", graphics.modelMatrix);
         ShaderSkybox.getInstance().setUniform("uView", newView);
