@@ -1,8 +1,11 @@
 package org.xjge.core;
 
+import java.util.LinkedList;
 import org.joml.Matrix4f;
 import static org.lwjgl.opengl.GL30.*;
 import org.lwjgl.system.MemoryUtil;
+import org.xjge.graphics.GLProgram;
+import org.xjge.graphics.GLShader;
 import org.xjge.graphics.Graphics;
 import org.xjge.graphics.Texture;
 
@@ -16,6 +19,7 @@ public final class Skybox implements AssetReloadListener {
     private final int cubemapHandle;
     
     private final Graphics graphics;
+    private final GLProgram shader;
     
     private final Matrix4f newView = new Matrix4f();
     
@@ -28,6 +32,13 @@ public final class Skybox implements AssetReloadListener {
     private final Texture[] faces;
     
     public Skybox(Texture right, Texture left, Texture top, Texture bottom, Texture front, Texture back, boolean useLinearFilter) {
+        var shaderSourceFiles = new LinkedList<GLShader>() {{
+            add(GLShader.load("xjge_shader_skybox_vertex.glsl", GL_VERTEX_SHADER));
+            add(GLShader.load("xjge_shader_skybox_fragment.glsl", GL_FRAGMENT_SHADER));
+        }};
+        
+        shader = new GLProgram(shaderSourceFiles, "xjge_skybox");
+        
         cubemapHandle = glGenTextures();
         glBindTexture(GL_TEXTURE_CUBE_MAP, cubemapHandle);
 
@@ -108,8 +119,6 @@ public final class Skybox implements AssetReloadListener {
      *                   rendering the scene
      */
     void render(Matrix4f viewMatrix, Matrix4f projMatrix) {
-        ShaderSkybox.getInstance().use();
-        
         glDepthMask(false);
         glActiveTexture(GL_TEXTURE2);
         glBindTexture(GL_TEXTURE_CUBE_MAP, cubemapHandle);
@@ -120,10 +129,11 @@ public final class Skybox implements AssetReloadListener {
         newView.m31(0);
         newView.m32(0);
         
-        ShaderSkybox.getInstance().setUniform("uModel", graphics.modelMatrix);
-        ShaderSkybox.getInstance().setUniform("uView", newView);
-        ShaderSkybox.getInstance().setUniform("uProjection", projMatrix);
-        ShaderSkybox.getInstance().setUniform("uSkyTexture", 2);
+        shader.use();
+        shader.setUniform("uModel", false, graphics.modelMatrix);
+        shader.setUniform("uView", false, newView);
+        shader.setUniform("uProjection", false, projMatrix);
+        shader.setUniform("uSkyTexture", 2);
         
         glDrawElements(GL_TRIANGLES, graphics.indices.capacity(), GL_UNSIGNED_INT, 0);
         glDepthMask(true);
