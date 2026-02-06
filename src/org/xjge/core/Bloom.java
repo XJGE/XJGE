@@ -23,7 +23,7 @@ final class Bloom {
     final int[] fbos     = new int[2];
     final int[] textures = new int[3];
     
-    private final Graphics g = new Graphics();
+    private final Graphics graphics = new Graphics();
     
     /**
      * Creates a new bloom object that will be used to produce a "glowing" 
@@ -66,29 +66,29 @@ final class Bloom {
         }
         
         try(MemoryStack stack = MemoryStack.stackPush()) {
-            g.vertices = stack.mallocFloat(20);
-            g.indices  = stack.mallocInt(6);
+            graphics.vertices = stack.mallocFloat(20);
+            graphics.indices  = stack.mallocInt(6);
             
             //(vec3 position), (vec2 texCoords)
-            g.vertices.put(0)    .put(height).put(0)    .put(1).put(1);
-            g.vertices.put(width).put(height).put(0)    .put(0).put(1);
-            g.vertices.put(width).put(0)     .put(0)    .put(0).put(0);
-            g.vertices.put(0)    .put(0)     .put(0)    .put(1).put(0);
+            graphics.vertices.put(0)    .put(height).put(0)    .put(1).put(1);
+            graphics.vertices.put(width).put(height).put(0)    .put(0).put(1);
+            graphics.vertices.put(width).put(0)     .put(0)    .put(0).put(0);
+            graphics.vertices.put(0)    .put(0)     .put(0)    .put(1).put(0);
             
-            g.indices.put(0).put(1).put(2);
-            g.indices.put(3).put(2).put(0);
+            graphics.indices.put(0).put(1).put(2);
+            graphics.indices.put(3).put(2).put(0);
             
-            g.vertices.flip();
-            g.indices.flip();
+            graphics.vertices.flip();
+            graphics.indices.flip();
         }
         
-        g.bindBuffers();
+        graphics.bindBuffers();
         
         glVertexAttribPointer(0, 3, GL_FLOAT, false, (5 * Float.BYTES), 0);
-        glVertexAttribPointer(2, 2, GL_FLOAT, false, (5 * Float.BYTES), (3 * Float.BYTES));
+        glVertexAttribPointer(1, 2, GL_FLOAT, false, (5 * Float.BYTES), (3 * Float.BYTES));
         
         glEnableVertexAttribArray(0);
-        glEnableVertexAttribArray(2);
+        glEnableVertexAttribArray(1);
     }
     
     /**
@@ -101,15 +101,15 @@ final class Bloom {
      * @param horizontal  if true, the blur will be applied horizontally otherwise 
      *                    it will be applied vertically
      */
-    void applyBlur(GLProgram blurProgram, int texHandle, boolean horizontal) {
+    void applyBlur(int texHandle, boolean horizontal) {
         glActiveTexture(GL_TEXTURE0);
         glBindTexture(GL_TEXTURE_2D, texHandle);
-        glBindVertexArray(g.vao);
+        glBindVertexArray(graphics.vao);
         
-        blurProgram.setUniform("uHorizontal", (horizontal) ? 1 : 0);
-        blurProgram.setUniform("uBloomTexture", 0);
+        ShaderBloom.getInstance().setUniform("uHorizontal", (horizontal) ? 1 : 0);
+        ShaderBloom.getInstance().setUniform("uBloomTexture", 0);
 
-        glDrawElements(GL_TRIANGLES, g.indices.capacity(), GL_UNSIGNED_INT, 0);
+        glDrawElements(GL_TRIANGLES, graphics.indices.capacity(), GL_UNSIGNED_INT, 0);
         
         ErrorUtils.checkGLError();
     }

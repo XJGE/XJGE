@@ -247,7 +247,7 @@ final class Viewport {
      * @param blurProgram the shader program used to apply a Gaussian blur to
      *                    the bloom framebuffer texture 
      */
-    void applyBloom(GLProgram blurProgram) {
+    void applyBloom() {
         boolean firstPass  = true;
         boolean horizontal = true;
         int blurWeight = 10;
@@ -258,7 +258,7 @@ final class Viewport {
             int texHandle = bloomTexHandle;
 
             glBindFramebuffer(GL_FRAMEBUFFER, bloom.fbos[invValue]);
-            bloom.applyBlur(blurProgram, (firstPass) ? texHandle : bloom.textures[value], horizontal);
+            bloom.applyBlur((firstPass) ? texHandle : bloom.textures[value], horizontal);
 
             horizontal = !horizontal;
             if(firstPass) firstPass = false;

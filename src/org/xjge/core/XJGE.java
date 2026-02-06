@@ -65,7 +65,6 @@ public final class XJGE {
     private static boolean showLightSources;
     
     static GLProgram depthProgram;
-    static GLProgram blurProgram;
     
     static Map<String, GLProgram> glPrograms = new HashMap<>();
     
@@ -212,16 +211,6 @@ public final class XJGE {
             }};
 
             depthProgram = new GLProgram(shaderSourceFiles, "default");
-        }
-
-        //Create shader program for applying gaussian blur
-        {
-            var shaderSourceFiles = new LinkedList<GLShader>() {{
-                add(GLShader.load("xjge_shader_blur_vertex.glsl", GL_VERTEX_SHADER));
-                add(GLShader.load("xjge_shader_blur_fragment.glsl", GL_FRAGMENT_SHADER));
-            }};
-
-            blurProgram = new GLProgram(shaderSourceFiles, "default");
         }
         
         engineIcons = Texture.load("xjge_texture_icons.png");
@@ -387,9 +376,9 @@ public final class XJGE {
                     projMatrix.setOrtho(viewport.width, 0, 0, viewport.height, 0, 1);
                     
                     if(enableBloom) {
-                        blurProgram.use();
-                        blurProgram.setUniform("uProjection", false, projMatrix);
-                        viewport.applyBloom(blurProgram);
+                        ShaderBloom.getInstance().use();
+                        ShaderBloom.getInstance().setUniform("uProjection", projMatrix);
+                        viewport.applyBloom();
                     }
                     
                     glViewport(viewport.botLeft.x, viewport.botLeft.y, viewport.topRight.x, viewport.topRight.y);
@@ -474,6 +463,18 @@ public final class XJGE {
     
     public static void removeObserver(PropertyChangeListener observer) {
         observable.removeObserver(observer);
+    }
+    
+    /**
+     * Specifies the value which will be used to indicate how bright the surface 
+     * of objects must be before the bloom effect is applied to it. The lower 
+     * the brightness threshold, the more abundant bloom will be.
+     * 
+     * @param value a number between 0 and 10 that the brightness of a surface
+     *              will need to exceed
+     */
+    public static void setBloomThreshold(float value) {
+        bloomThreshold = XJGE.clampValue(0f, 10f, value);
     }
     
     /**
@@ -571,18 +572,6 @@ public final class XJGE {
         } catch(IndexOutOfBoundsException e) {
             Logger.logWarning("Failed to add light at index " + index, e);
         }
-    }
-    
-    /**
-     * Specifies the value which will be used to indicate how bright the surface 
-     * of objects must be before the bloom effect is applied to it. The lower 
-     * the brightness threshold, the more abundant bloom will be.
-     * 
-     * @param value a number between 0 and 10 that the brightness of a surface
-     *              will need to exceed
-     */
-    public static void setBloomThreshold(float value) {
-        bloomThreshold = XJGE.clampValue(0f, 10f, value);
     }
     
     /**

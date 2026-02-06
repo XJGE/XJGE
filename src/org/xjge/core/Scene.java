@@ -273,8 +273,7 @@ public abstract class Scene {
      * Renders the scenes current {@link Skybox} (if one exists). This method 
      * is called automatically by the engine. 
      * 
-     * @param viewMatrix the view matrix of the viewport whos camera is currently 
-     *                   rendering the scene
+     * @param camera the camera object of the viewport the scene is currently being rendered from
      */
     void renderSkybox(Camera camera) {
         if(skybox != null) skybox.render(camera.viewMatrix, camera.projMatrix);

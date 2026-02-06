@@ -13,6 +13,8 @@ public class Main {
         
         XJGE.init(true, "C:/Users/jhoff/Projects/XJGE/art", "org.xjge.test.");
         XJGE.setScene(new SceneAdd());
+        XJGE.enableBloom = true;
+        //XJGE.setBloomThreshold(10);
         XJGE.start();
         
     }
