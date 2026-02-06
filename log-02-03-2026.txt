@@ -1,9 +1,0 @@
-Feb 03, 08:10:23am, [ERROR], [ErrorUtils.java]: OpenGL Error: (1280) invalid enum
-java.lang.RuntimeException
-	org.xjge.core.Logger.log(Logger.java:59)
-	org.xjge.core.Logger.logError(Logger.java:147)
-	org.xjge.core.ErrorUtils.checkGLError(ErrorUtils.java:85)
-	org.xjge.core.Window.createRenderbuffer(Window.java:108)
-	org.xjge.core.Window.create(Window.java:182)
-	org.xjge.core.XJGE.init(XJGE.java:191)
-	org.xjge.test.Main.main(Main.java:14)
