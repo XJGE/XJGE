@@ -7,7 +7,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
-import org.joml.Matrix4f;
 import org.joml.Vector3f;
 import static org.xjge.core.EntityChangeType.*;
 
@@ -132,6 +131,7 @@ public abstract class Scene {
      * This method is called automatically by the engine.
      */
     void setLightingUniforms() {
+        /*
         XJGE.glPrograms.values().forEach(glProgram -> {
             for(int i = 0; i < Scene.MAX_LIGHTS; i++) {                
                 if(lights[i] != null) {
@@ -155,6 +155,7 @@ public abstract class Scene {
                 }
             }
         });
+        */
     }
     
     /**
@@ -205,6 +206,7 @@ public abstract class Scene {
      * This method is called automatically by the engine.
      */
     void setShadowUniforms() {
+        /*
         if(shadowMap != null) {
             XJGE.glPrograms.values().forEach(glProgram -> {
                 for(int i = 0; i < 5; i++) {
@@ -234,6 +236,7 @@ public abstract class Scene {
                 if(glProgram.containsUniform("uShadowMapActive")) glProgram.setUniform("uShadowMapActive", 0);
             });
         }
+        */
     }
     
     /**

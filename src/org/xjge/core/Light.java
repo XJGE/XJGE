@@ -161,7 +161,7 @@ public final class Light {
         g.modelMatrix.billboardSpherical(position, camPos, camUp);
         g.modelMatrix.scale(camPos.distance(position) / 10);
 
-        XJGE.getDefaultGLProgram().use();
+        ShaderDefault.getInstance().use();
         
         glEnable(GL_BLEND);
         glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
@@ -171,10 +171,10 @@ public final class Light {
         iconTexture.bind(GL_TEXTURE_2D);
         glBindVertexArray(g.vao);
         
-        XJGE.getDefaultGLProgram().setUniform("uType", 6);
-        XJGE.getDefaultGLProgram().setUniform("uModel", false, g.modelMatrix);
-        XJGE.getDefaultGLProgram().setUniform("uColor", diffuseColor.asVector3f());
-        XJGE.getDefaultGLProgram().setUniform("uTexCoords", texCoords);
+        ShaderDefault.getInstance().setUniform("uType", 6);
+        ShaderDefault.getInstance().setUniform("uModel", false, g.modelMatrix);
+        ShaderDefault.getInstance().setUniform("uColor", diffuseColor.asVector3f());
+        ShaderDefault.getInstance().setUniform("uTexCoords", texCoords);
         
         glDrawElements(GL_TRIANGLES, g.indices.capacity(), GL_UNSIGNED_INT, 0);
         glDisable(GL_ALPHA_TEST);

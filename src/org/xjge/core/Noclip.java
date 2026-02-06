@@ -48,10 +48,14 @@ final class Noclip extends Camera {
 
     @Override
     public void render(Map<String, GLProgram> glPrograms) {
+        viewMatrix.setLookAt(position, position.add(direction, tempFront), up);
+        
+        ShaderSkybox.getInstance().use(); //TODO: should this be moved elsewhere?
+        ShaderSkybox.getInstance().setUniform("uView", viewMatrix);
+        
         glPrograms.values().forEach(glProgram -> {
             if(glProgram.containsUniform("uView")) {
                 glProgram.use();
-                viewMatrix.setLookAt(position, position.add(direction, tempFront), up);
                 glProgram.setUniform("uView", false, viewMatrix);
             }
         });

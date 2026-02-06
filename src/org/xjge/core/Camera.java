@@ -46,10 +46,12 @@ public abstract class Camera {
     protected Camera(boolean isOrtho) {
         this.isOrtho = isOrtho;
         
+        /*
         XJGE.glPrograms.values().forEach(glProgram -> {
             if(isOrtho) setOrtho(glProgram, Window.getWidth(), Window.getHeight());
             else        setPerspective(glProgram, Window.getWidth(), Window.getHeight());
         });
+        */
     }
     
     /**

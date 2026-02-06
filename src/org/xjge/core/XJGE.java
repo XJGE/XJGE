@@ -66,8 +66,6 @@ public final class XJGE {
     
     static GLProgram depthProgram;
     
-    static Map<String, GLProgram> glPrograms = new HashMap<>();
-    
     //==== LEGACY FIELDS ABOVE =================================================
     
     private static boolean initialized;
@@ -191,17 +189,6 @@ public final class XJGE {
         if(!glfwInit()) Logger.logError("Failed to initialize GLFW", null);
         
         Window.create();
-        
-        //Initialize the default shader program that will be provided to the implementation
-        {
-            var shaderSourceFiles = new LinkedList<GLShader>() {{
-                add(GLShader.load("xjge_shader_default_vertex.glsl", GL_VERTEX_SHADER));
-                add(GLShader.load("xjge_shader_default_fragment.glsl", GL_FRAGMENT_SHADER));
-            }};
-
-            GLProgram defaultProgram = new GLProgram(shaderSourceFiles, "default");
-            glPrograms.put("default", defaultProgram);
-        }
 
         //Create shader program that will generate shadow map output
         {
@@ -210,7 +197,7 @@ public final class XJGE {
                 add(GLShader.load("xjge_shader_depth_fragment.glsl", GL_FRAGMENT_SHADER));
             }};
 
-            depthProgram = new GLProgram(shaderSourceFiles, "default");
+            depthProgram = new GLProgram(shaderSourceFiles, "depth");
         }
         
         engineIcons = Texture.load("xjge_texture_icons.png");
@@ -261,8 +248,7 @@ public final class XJGE {
             return;
         }
         
-        started    = true;
-        glPrograms = Collections.unmodifiableMap(glPrograms);
+        started = true;
         
         engineCommands.putAll(userCommands);
         engineCommands.values().forEach(command -> command.setCommands(engineCommands));
@@ -344,8 +330,8 @@ public final class XJGE {
                 }
             }
             
-            XJGE.getDefaultGLProgram().use();
-            XJGE.getDefaultGLProgram().setUniform("uBloomThreshold", bloomThreshold);
+            ShaderViewport.getInstance().use();
+            ShaderViewport.getInstance().setUniform("uBloomThreshold", bloomThreshold);
             currentScene.setShadowUniforms();
             currentScene.setLightingUniforms();
             
@@ -365,11 +351,11 @@ public final class XJGE {
                         viewport.bindDrawBuffers(enableBloom);
                         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
                         
-                        viewport.resetCamera(glPrograms);
+                        viewport.resetCamera(userShadersView);
                         
-                        viewport.render(glPrograms, "camera", projMatrix);
+                        viewport.render(userShadersView, "camera", projMatrix);
                         currentScene.renderSkybox(viewport.currCamera);
-                        currentScene.render(glPrograms, viewport.id, viewport.currCamera);
+                        currentScene.render(userShadersView, viewport.id, viewport.currCamera);
                         currentScene.renderLightSources(viewport.currCamera);
                     glBindFramebuffer(GL_FRAMEBUFFER, 0);
                     
@@ -383,10 +369,10 @@ public final class XJGE {
                     
                     glViewport(viewport.botLeft.x, viewport.botLeft.y, viewport.topRight.x, viewport.topRight.y);
                     
-                    viewport.resetCamera(glPrograms);
+                    viewport.resetCamera(userShadersView);
                     
-                    viewport.render(glPrograms, "texture", projMatrix);
-                    viewport.render(glPrograms, "ui", projMatrix);
+                    viewport.render(userShadersView, "texture", projMatrix);
+                    viewport.render(userShadersView, "ui", projMatrix);
                 }
             }
             
@@ -419,13 +405,7 @@ public final class XJGE {
      * @param glProgram the object representing the compiled shader program
      */
     public static void addGLProgram(String name, GLProgram glProgram) {
-        if(!name.equals("default")) {
-            glPrograms.put(name, glProgram);
-        } else {
-            Logger.logWarning("Failed to add program \"" + name + "\". This " + 
-                              " name is reserved for engine use, please choose another", 
-                              null);
-        }
+        userShaders.put(name, glProgram);
     }
     
     /**
@@ -700,15 +680,6 @@ public final class XJGE {
      */
     public static String getScenesPackage() {
         return scenesPackage;
-    }
-    
-    /**
-     * Provides convenient access to the engines default shader program.
-     * 
-     * @return a shader program that can be used to render most objects
-     */
-    public static GLProgram getDefaultGLProgram() {
-        return glPrograms.get("default");
     }
     
 }

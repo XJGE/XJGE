@@ -177,12 +177,11 @@ final class Viewport {
                     glBindTexture(GL_TEXTURE_2D, bloom.textures[1]);
                     glBindVertexArray(g.vao);
                     
-                    glPrograms.get("default").use();
+                    ShaderViewport.getInstance().use();
                     
-                    glPrograms.get("default").setUniform("uType", 0);
-                    glPrograms.get("default").setUniform("uTexture", 0);
-                    glPrograms.get("default").setUniform("uBloomTexture", 3);
-                    glPrograms.get("default").setUniform("uProjection", false, projMatrix);
+                    ShaderViewport.getInstance().setUniform("uTexture", 0);
+                    ShaderViewport.getInstance().setUniform("uBloomTexture", 3);
+                    ShaderViewport.getInstance().setUniform("uProjection", projMatrix);
                     
                     glDrawElements(GL_TRIANGLES, g.indices.capacity(), GL_UNSIGNED_INT, 0);
                     ErrorUtils.checkGLError();
@@ -200,10 +199,19 @@ final class Viewport {
      *                   compiled during startup
      */
     void resetCamera(Map<String, GLProgram> glPrograms) {
-        XJGE.glPrograms.values().forEach(glProgram -> {
+        glPrograms.values().forEach(glProgram -> {
             if(currCamera.isOrtho) currCamera.setOrtho(glProgram, width, height);
             else                   currCamera.setPerspective(glProgram, width, height);
         });
+        
+        if(currCamera.isOrtho) {
+            
+        } else {
+            ShaderViewport.getInstance().use();
+            currCamera.projMatrix.setPerspective((float) Math.toRadians(currCamera.fov), 
+                                                 (float) width / height, 0.1f, Float.POSITIVE_INFINITY);
+            ShaderViewport.getInstance().setUniform("uProjection", currCamera.projMatrix);
+        }
     }
     
     /**

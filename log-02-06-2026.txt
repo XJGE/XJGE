@@ -1,0 +1,37 @@
+Feb 06, 09:00:43am, [INFO], [GLProgram.java]: Shader program "depth" linked successfully
+****************************************************************************************************
+ OS NAME:	Windows 11
+ JAVA VER:	22.0.2
+ XJGE VER:	4.0.0-beta5
+ GLFW VER:	3.5.0 Win32 WGL Null EGL OSMesa VisualC DLL
+ OPENAL VER:	1.1 ALSOFT 1.24.1
+ OPENGL VER:	4.6.0 NVIDIA 566.07
+****************************************************************************************************
+ CPU MODEL:	Intel(R) Core(TM) Ultra 7 155H
+ GPU MODEL:	NVIDIA GeForce RTX 3050 6GB Laptop GPU/PCIe/SSE2
+ MONITORS:	Found: 1, Primary: "Generic PnP Monitor" (1920x1080 16:9 60hz)
+ SPEAKERS:	Found: 2, Primary: "OpenAL Soft on Headphones (Jared’s AirPods)"
+ GAMEPADS:	Found: 0
+****************************************************************************************************
+
+Feb 06, 09:00:44am, [INFO], [XJGE.java]: Current scene changed to "test"
+Feb 06, 09:00:44am, [WARNING], [GLShader.java]: Failed to compile shader file: "xjge_shader_viewport_fragment.glsl" (0(16) : error C1503: undefined variable "sharpen"
+0(17) : error C1503: undefined variable "sharpen"
+0(24) : error C1503: undefined variable "uBloomOverride"
+)
+Feb 06, 09:00:44am, [ERROR], [GLProgram.java]: Failed to link shader program "xjge_viewport" (Fragment info
+-------------
+0(16) : error C1503: undefined variable "sharpen"
+0(17) : error C1503: undefined variable "sharpen"
+0(24) : error C1503: undefined variable "uBloomOverride"
+(0) : error C2003: incompatible options for link
+)
+java.lang.RuntimeException
+	org.xjge.core.Logger.log(Logger.java:59)
+	org.xjge.core.Logger.logError(Logger.java:147)
+	org.xjge.graphics.GLProgram.link(GLProgram.java:65)
+	org.xjge.graphics.GLProgram.<init>(GLProgram.java:53)
+	org.xjge.core.ShaderViewport.<init>(ShaderViewport.java:26)
+	org.xjge.core.ShaderViewport.getInstance(ShaderViewport.java:30)
+	org.xjge.core.XJGE.start(XJGE.java:333)
+	org.xjge.test.Main.main(Main.java:18)

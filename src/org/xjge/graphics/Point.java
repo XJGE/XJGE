@@ -5,6 +5,7 @@ import org.joml.Vector3f;
 import static org.lwjgl.opengl.GL30.*;
 import org.lwjgl.system.MemoryStack;
 import org.xjge.core.ErrorUtils;
+import org.xjge.core.ShaderDefault;
 import org.xjge.core.XJGE;
 
 /**
@@ -65,9 +66,9 @@ public class Point {
         
         glBindVertexArray(vao);
         
-        XJGE.getDefaultGLProgram().use();
-        XJGE.getDefaultGLProgram().setUniform("uType", 3);
-        XJGE.getDefaultGLProgram().setUniform("uOpacity", 1.0f);
+        ShaderDefault.getInstance().use();
+        ShaderDefault.getInstance().setUniform("uType", 3);
+        ShaderDefault.getInstance().setUniform("uOpacity", 1.0f);
         
         glDrawArrays(GL_POINTS, 0, 1);
         
