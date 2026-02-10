@@ -39,8 +39,8 @@ final class Viewport {
     
     Vector2i botLeft  = new Vector2i();
     Vector2i topRight = new Vector2i();
-    Camera prevCamera = new Noclip();
-    Camera currCamera = new Noclip();
+    Camera prevCamera = new Noclip(this);
+    Camera currCamera = new Noclip(this);
     
     PostProcessShader postProcessShader;
     
@@ -118,10 +118,10 @@ final class Viewport {
         g.bindBuffers();
         
         glVertexAttribPointer(0, 3, GL_FLOAT, false, (5 * Float.BYTES), 0);
-        glVertexAttribPointer(2, 2, GL_FLOAT, false, (5 * Float.BYTES), (3 * Float.BYTES));
+        glVertexAttribPointer(1, 2, GL_FLOAT, false, (5 * Float.BYTES), (3 * Float.BYTES));
         
         glEnableVertexAttribArray(0);
-        glEnableVertexAttribArray(2);
+        glEnableVertexAttribArray(1);
     }
     
     private void attachColorTargets() {
@@ -153,18 +153,8 @@ final class Viewport {
         switch(stage) {
             case "camera" -> {
                 currCamera.render(glPrograms);
-                glPrograms.values().forEach(glProgram -> {
-                    if(glProgram.containsUniform("uCamPos")) {
-                        glProgram.use();
-                        glProgram.setUniform("uCamPos", currCamera.position);
-                    }
-                });
-            }
-            
-            case "ui" -> {
-                UIManager.updateProjectionMatrix(width, height, Short.MIN_VALUE, Short.MAX_VALUE);
-                UIManager.renderWidgets(id, glPrograms);
-                resetCamera(glPrograms); //TODO: is this even necessary now since the projection matrix is handled by UIManager?
+                ShaderViewport.getInstance().use();
+                ShaderViewport.getInstance().setUniform("uProjection", currCamera.projMatrix);
             }
             
             case "texture" -> {
@@ -178,7 +168,6 @@ final class Viewport {
                     glBindVertexArray(g.vao);
                     
                     ShaderViewport.getInstance().use();
-                    
                     ShaderViewport.getInstance().setUniform("uTexture", 0);
                     ShaderViewport.getInstance().setUniform("uBloomTexture", 3);
                     ShaderViewport.getInstance().setUniform("uProjection", projMatrix);
@@ -186,6 +175,12 @@ final class Viewport {
                     glDrawElements(GL_TRIANGLES, g.indices.capacity(), GL_UNSIGNED_INT, 0);
                     ErrorUtils.checkGLError();
                 }
+            }
+            
+            case "ui" -> {
+                UIManager.updateProjectionMatrix(width, height, Short.MIN_VALUE, Short.MAX_VALUE);
+                UIManager.renderWidgets(id, glPrograms);
+                resetCamera(glPrograms); //TODO: is this even necessary now since the projection matrix is handled by UIManager?
             }
         }
     }
@@ -203,15 +198,6 @@ final class Viewport {
             if(currCamera.isOrtho) currCamera.setOrtho(glProgram, width, height);
             else                   currCamera.setPerspective(glProgram, width, height);
         });
-        
-        if(currCamera.isOrtho) {
-            
-        } else {
-            ShaderViewport.getInstance().use();
-            currCamera.projMatrix.setPerspective((float) Math.toRadians(currCamera.fov), 
-                                                 (float) width / height, 0.1f, Float.POSITIVE_INFINITY);
-            ShaderViewport.getInstance().setUniform("uProjection", currCamera.projMatrix);
-        }
     }
     
     /**

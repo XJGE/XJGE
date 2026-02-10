@@ -7,7 +7,6 @@ layout (location = 1) out vec4 ioBrightColor;
 
 uniform float uBloomThreshold;
 uniform sampler2D uTexture;
-uniform sampler2D uBloomTexture;
 
 /**
  * Allows the framebuffer texture attachments to better suit unconventional screen resolutions while maintaining a consistent pixelated look. This is 
@@ -30,7 +29,7 @@ void main() {
     
     ioFragColor = vec4(sceneColor, 1);
 
-    float brightness = dot(texture(uBloomTexture, ioTexCoords).rgb, vec3(0.2126, 0.7152, 0.0722));
+    float brightness = dot(ioFragColor.rgb, vec3(0.2126, 0.7152, 0.0722));
     ioBrightColor    = (brightness > uBloomThreshold) ? vec4(ioFragColor.rgb, 1) : vec4(0, 0, 0, 1);
 
 }

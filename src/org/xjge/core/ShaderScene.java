@@ -12,27 +12,31 @@ import org.xjge.graphics.GLShader;
  * @author J Hoffman
  * @since 4.0.0
  */
-final class ShaderBloom {
+final class ShaderScene {
 
-    private static ShaderBloom instance;
+    private static ShaderScene instance;
     private final GLProgram shader;
     
-    private ShaderBloom() {
+    private ShaderScene() {
         var shaderSourceFiles = new LinkedList<GLShader>() {{
             add(GLShader.load("xjge_shader_viewport_vertex.glsl", GL_VERTEX_SHADER));
-            add(GLShader.load("xjge_shader_blur_fragment.glsl", GL_FRAGMENT_SHADER));
+            add(GLShader.load("xjge_shader_scene_fragment.glsl", GL_FRAGMENT_SHADER));
         }};
         
-        shader = new GLProgram(shaderSourceFiles, "xjge_bloom");
+        shader = new GLProgram(shaderSourceFiles, "xjge_viewport");
     }
     
-    static ShaderBloom getInstance() {
-        if(instance == null) instance = new ShaderBloom();
+    static ShaderScene getInstance() {
+        if(instance == null) instance = new ShaderScene();
         return instance;
     }
     
     void use() {
         shader.use();
+    }
+    
+    void setUniform(String name, float value) {
+        shader.setUniform(name, value);
     }
     
     void setUniform(String name, int value) {

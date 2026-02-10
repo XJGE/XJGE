@@ -108,7 +108,7 @@ final class Bloom {
         
         ShaderBloom.getInstance().setUniform("uHorizontal", (horizontal) ? 1 : 0);
         ShaderBloom.getInstance().setUniform("uBloomTexture", 0);
-
+        
         glDrawElements(GL_TRIANGLES, graphics.indices.capacity(), GL_UNSIGNED_INT, 0);
         
         ErrorUtils.checkGLError();

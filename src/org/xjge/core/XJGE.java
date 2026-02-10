@@ -330,8 +330,9 @@ public final class XJGE {
                 }
             }
             
-            ShaderViewport.getInstance().use();
-            ShaderViewport.getInstance().setUniform("uBloomThreshold", bloomThreshold);
+            //ShaderViewport.getInstance().use();
+            //ShaderViewport.getInstance().setUniform("uBloomOverride", enableBloom ? 1 : 0);
+            //ShaderViewport.getInstance().setUniform("uBloomThreshold", bloomThreshold);
             currentScene.setShadowUniforms();
             currentScene.setLightingUniforms();
             
@@ -348,12 +349,11 @@ public final class XJGE {
                     glBindFramebuffer(GL_FRAMEBUFFER, Window.getFBOHandle());
                         glViewport(0, 0, viewport.width, viewport.height);
                         glClearColor(clearColor.getRed(), clearColor.getGreen(), clearColor.getBlue(), 0);
-                        viewport.bindDrawBuffers(enableBloom);
                         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
                         
-                        viewport.resetCamera(userShadersView);
-                        
+                        viewport.bindDrawBuffers(enableBloom);
                         viewport.render(userShadersView, "camera", projMatrix);
+                        
                         currentScene.renderSkybox(viewport.currCamera);
                         currentScene.render(userShadersView, viewport.id, viewport.currCamera);
                         currentScene.renderLightSources(viewport.currCamera);
@@ -454,7 +454,7 @@ public final class XJGE {
      *              will need to exceed
      */
     public static void setBloomThreshold(float value) {
-        bloomThreshold = XJGE.clampValue(0f, 10f, value);
+        bloomThreshold = XJGE.clampValue(0f, 1000f, value);
     }
     
     /**

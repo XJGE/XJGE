@@ -86,6 +86,7 @@ public class SceneAdd extends Scene implements PropertyChangeListener {
     public void propertyChange(PropertyChangeEvent evt) {
         switch(evt.getPropertyName()) {
             case "WINDOW_WIDTH_CHANGED", "WINDOW_HEIGHT_CHANGED" -> {
+                //Window.setResolution(384, 216);
                 Window.setResolution(Window.getWidth(), Window.getHeight());
             }
         }

@@ -5,14 +5,13 @@ in vec2 ioTexCoords;
 layout (location = 0) out vec4 ioFragColor;
 layout (location = 1) out vec4 ioBrightColor;
 
-uniform int uBloomOverride;
 uniform float uBloomThreshold;
 uniform sampler2D uTexture;
 uniform sampler2D uBloomTexture;
 
 /**
- * Enables the framebuffer texture attachments to better suit unconventional 
- * screen resolutions while maintaining a consistent pixelated look.
+ * Allows the framebuffer texture attachments to better suit unconventional screen resolutions while maintaining a consistent pixelated look. This is 
+ * only apparent when the engines internal resolution is smaller than the screen resolution (retro-look).
  */
 float sharpen(float pixArray) {
     float normal  = (fract(pixArray) - 0.5) * 2.0;
@@ -29,14 +28,9 @@ void main() {
         sharpen(ioTexCoords.y * vRes.y) / vRes.y
     )).rgb;
     
-    sceneColor += texture(uBloomTexture, ioTexCoords).rgb;
-    
     ioFragColor = vec4(sceneColor, 1);
 
-    if(uBloomOverride == 0) {
-        float brightness = dot(ioFragColor.rgb, vec3(0.2126, 0.7152, 0.0722));
-        ioBrightColor    = (brightness > uBloomThreshold) ? vec4(ioFragColor.rgb, 1) : vec4(0, 0, 0, 1);
-    } else {
-        ioBrightColor = ioFragColor;
-    }
+    float brightness = dot(texture(uBloomTexture, ioTexCoords).rgb, vec3(0.2126, 0.7152, 0.0722));
+    ioBrightColor    = (brightness > uBloomThreshold) ? vec4(ioFragColor.rgb, 1) : vec4(0, 0, 0, 1);
+
 }
