@@ -8,6 +8,7 @@ import org.xjge.core.Entity;
 import org.xjge.core.Scene;
 import org.xjge.core.Skybox;
 import org.xjge.core.Window;
+import org.xjge.core.XJGE;
 import org.xjge.graphics.GLProgram;
 import org.xjge.graphics.Texture;
 
@@ -55,6 +56,9 @@ public class SceneAdd extends Scene implements PropertyChangeListener {
         
         skybox = new Skybox(right, left, top, bottom, front, back, false);
         
+        XJGE.enableBloom = true;
+        skybox.setBloomThreshold(0.9f);
+        
         setSkybox(skybox);
     }
 
@@ -86,7 +90,6 @@ public class SceneAdd extends Scene implements PropertyChangeListener {
     public void propertyChange(PropertyChangeEvent evt) {
         switch(evt.getPropertyName()) {
             case "WINDOW_WIDTH_CHANGED", "WINDOW_HEIGHT_CHANGED" -> {
-                //Window.setResolution(384, 216);
                 Window.setResolution(Window.getWidth(), Window.getHeight());
             }
         }

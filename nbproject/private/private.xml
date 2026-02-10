@@ -2,26 +2,18 @@
 <project-private xmlns="http://www.netbeans.org/ns/project-private/1">
     <editor-bookmarks xmlns="http://www.netbeans.org/ns/editor-bookmarks/2" lastBookmarkId="25">
         <file>
-            <url>src/org/xjge/ui/UI.java</url>
-            <bookmark id="9">
-                <name/>
-                <line>52</line>
-                <key/>
-            </bookmark>
-        </file>
-        <file>
-            <url>src/org/xjge/core/Viewport.java</url>
-            <bookmark id="12">
-                <name/>
-                <line>166</line>
-                <key/>
-            </bookmark>
-        </file>
-        <file>
             <url>src/org/xjge/graphics/Cubemap2.java</url>
             <bookmark id="25">
                 <name/>
                 <line>32</line>
+                <key/>
+            </bookmark>
+        </file>
+        <file>
+            <url>src/org/xjge/ui/UI.java</url>
+            <bookmark id="9">
+                <name/>
+                <line>52</line>
                 <key/>
             </bookmark>
         </file>
@@ -32,6 +24,7 @@
             <file>file:/C:/Users/jhoff/Projects/XJGE/src/org/xjge/core/Viewport.java</file>
             <file>file:/C:/Users/jhoff/Projects/XJGE/src/org/xjge/core/XJGE.java</file>
             <file>file:/C:/Users/jhoff/Projects/XJGE/src/org/xjge/test/Main.java</file>
+            <file>file:/C:/Users/jhoff/Projects/XJGE/src/org/xjge/test/SceneAdd.java</file>
         </group>
     </open-files>
 </project-private>

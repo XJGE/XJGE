@@ -163,13 +163,13 @@ final class Viewport {
                 } else {
                     glActiveTexture(GL_TEXTURE0);
                     glBindTexture(GL_TEXTURE_2D, viewTexHandle);
-                    glActiveTexture(GL_TEXTURE3);
+                    glActiveTexture(GL_TEXTURE1);
                     glBindTexture(GL_TEXTURE_2D, bloom.textures[1]);
                     glBindVertexArray(g.vao);
                     
                     ShaderViewport.getInstance().use();
                     ShaderViewport.getInstance().setUniform("uTexture", 0);
-                    ShaderViewport.getInstance().setUniform("uBloomTexture", 3);
+                    ShaderViewport.getInstance().setUniform("uBloomTexture", 1);
                     ShaderViewport.getInstance().setUniform("uProjection", projMatrix);
                     
                     glDrawElements(GL_TRIANGLES, g.indices.capacity(), GL_UNSIGNED_INT, 0);

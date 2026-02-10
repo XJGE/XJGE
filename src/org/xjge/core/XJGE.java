@@ -328,9 +328,6 @@ public final class XJGE {
                 }
             }
             
-            //ShaderViewport.getInstance().use();
-            //ShaderViewport.getInstance().setUniform("uBloomOverride", enableBloom ? 1 : 0);
-            //ShaderViewport.getInstance().setUniform("uBloomThreshold", bloomThreshold);
             currentScene.setShadowUniforms();
             currentScene.setLightingUniforms();
             
