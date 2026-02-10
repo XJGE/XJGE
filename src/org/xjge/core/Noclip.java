@@ -52,7 +52,6 @@ final class Noclip extends Camera {
     @Override
     public void render(Map<String, GLProgram> glPrograms) {
         viewMatrix.setLookAt(position, tempFront.set(direction).add(position), up);
-        
         projMatrix.setPerspective((float) Math.toRadians(fov), 
                                   (float) viewport.width / viewport.height, 0.1f, Float.POSITIVE_INFINITY);
     }

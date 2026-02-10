@@ -3,9 +3,7 @@
 in vec2 ioTexCoords;
 
 layout (location = 0) out vec4 ioFragColor;
-layout (location = 1) out vec4 ioBrightColor;
 
-uniform float uBloomThreshold;
 uniform sampler2D uTexture;
 uniform sampler2D uBloomTexture;
 
@@ -28,9 +26,8 @@ void main() {
         sharpen(ioTexCoords.y * vRes.y) / vRes.y
     )).rgb;
     
-    ioFragColor = vec4(sceneColor, 1);
+    sceneColor += texture(uBloomTexture, ioTexCoords).rgb;
 
-    float brightness = dot(texture(uBloomTexture, ioTexCoords).rgb, vec3(0.2126, 0.7152, 0.0722));
-    ioBrightColor    = (brightness > uBloomThreshold) ? vec4(ioFragColor.rgb, 1) : vec4(0, 0, 0, 1);
+    ioFragColor = vec4(sceneColor, 1);
 
 }

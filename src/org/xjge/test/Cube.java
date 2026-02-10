@@ -10,7 +10,8 @@ import org.xjge.graphics.GLProgram;
 public class Cube {
 
     Cube() {
-        
+        //TODO: use this class to test individial object bloom
+        //TODO: skybox bloom?
     }
     
     void render(GLProgram cubeShader) {

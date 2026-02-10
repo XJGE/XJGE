@@ -18,6 +18,8 @@ public final class Skybox implements AssetReloadListener {
     
     private final int cubemapHandle;
     
+    private float bloomThreshold;
+    
     private final Graphics graphics;
     private final GLProgram shader;
     
@@ -120,7 +122,7 @@ public final class Skybox implements AssetReloadListener {
      */
     void render(Matrix4f viewMatrix, Matrix4f projMatrix) {
         glDepthMask(false);
-        glActiveTexture(GL_TEXTURE2);
+        glActiveTexture(GL_TEXTURE0);
         glBindTexture(GL_TEXTURE_CUBE_MAP, cubemapHandle);
         glBindVertexArray(graphics.vao);
         
@@ -133,7 +135,8 @@ public final class Skybox implements AssetReloadListener {
         shader.setUniform("uModel", false, graphics.modelMatrix);
         shader.setUniform("uView", false, newView);
         shader.setUniform("uProjection", false, projMatrix);
-        shader.setUniform("uSkyTexture", 2);
+        shader.setUniform("uSkyTexture", 0);
+        shader.setUniform("uBloomThreshold", XJGE.enableBloom ? bloomThreshold : 0f);
         
         glDrawElements(GL_TRIANGLES, graphics.indices.capacity(), GL_UNSIGNED_INT, 0);
         glDepthMask(true);
@@ -155,6 +158,17 @@ public final class Skybox implements AssetReloadListener {
         glDeleteTextures(cubemapHandle);
         graphics.freeBuffers();
         //TODO: unload shader?
+    }
+    
+    /**
+     * Specifies the value which will be used to indicate how bright the surface 
+     * of objects must be before the bloom effect is applied to it. The lower 
+     * the brightness threshold, the more abundant bloom will be.
+     * 
+     * @param bloomThreshold a number between 0 and 1 that the brightness of a surface will need to exceed
+     */
+    public void setBloomThreshold(float bloomThreshold) {
+        this.bloomThreshold = XJGE.clampValue(0f, 1f, bloomThreshold);
     }
 
     @Override

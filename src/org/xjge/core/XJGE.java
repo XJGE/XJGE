@@ -74,8 +74,6 @@ public final class XJGE {
     private static boolean ticked;
     public static boolean enableBloom;
     
-    private static float bloomThreshold = 1.0f;
-    
     private static double deltaMetric = 0;
     
     private static int fps;
@@ -443,18 +441,6 @@ public final class XJGE {
     
     public static void removeObserver(PropertyChangeListener observer) {
         observable.removeObserver(observer);
-    }
-    
-    /**
-     * Specifies the value which will be used to indicate how bright the surface 
-     * of objects must be before the bloom effect is applied to it. The lower 
-     * the brightness threshold, the more abundant bloom will be.
-     * 
-     * @param value a number between 0 and 10 that the brightness of a surface
-     *              will need to exceed
-     */
-    public static void setBloomThreshold(float value) {
-        bloomThreshold = XJGE.clampValue(0f, 1000f, value);
     }
     
     /**

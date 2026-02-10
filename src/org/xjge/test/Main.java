@@ -16,7 +16,6 @@ public class Main {
         //Window.setResolution(384, 216);
         XJGE.setScene(new SceneAdd());
         XJGE.enableBloom = true;
-        //XJGE.setBloomThreshold(1000f);
         XJGE.start();
         
     }
