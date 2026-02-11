@@ -3,6 +3,7 @@ package org.xjge.core;
 import org.xjge.graphics.GLProgram;
 import java.util.Map;
 import org.joml.Matrix4f;
+import org.joml.Matrix4fc;
 import org.joml.Vector3f;
 
 /**
@@ -134,6 +135,14 @@ public abstract class Camera {
     public static void setOrthoDepthRange(float near, float far) {
         orthoNear = Math.abs(near);
         orthoFar  = Math.abs(far);
+    }
+    
+    public Matrix4fc getViewMatrix() {
+        return viewMatrix;
+    }
+    
+    public Matrix4fc getProjectionMatrix() {
+        return projMatrix;
     }
     
 }

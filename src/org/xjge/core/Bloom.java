@@ -1,6 +1,5 @@
 package org.xjge.core;
 
-import org.xjge.graphics.GLProgram;
 import static org.lwjgl.opengl.GL30.*;
 import org.lwjgl.system.MemoryStack;
 import org.xjge.graphics.Graphics;

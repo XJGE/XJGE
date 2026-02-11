@@ -37,7 +37,7 @@ public class SceneAdd extends Scene implements PropertyChangeListener {
         
         var entityA = new Entity();
         var entityB = new Entity().addComponent(new CompTestA()).addComponent(new CompTestB());
-        var entityC = new Entity().addComponent(new CompTestA());
+        var entityC = new Entity().addComponent(new CompTestA()).addComponent(new Cube());
         
         System.out.println("EntityA: " + entityA.uuid);
         System.out.println("EntityB: " + entityB.uuid);
@@ -54,12 +54,10 @@ public class SceneAdd extends Scene implements PropertyChangeListener {
         var front  = Texture.load("sky_front.png");
         var back   = Texture.load("sky_back.png");
         
-        skybox = new Skybox(right, left, top, bottom, front, back, false);
-        
-        XJGE.enableBloom = true;
-        skybox.setBloomThreshold(0.9f);
-        
-        setSkybox(skybox);
+        //skybox = new Skybox(right, left, top, bottom, front, back, false);
+        //setSkybox(skybox);
+        //XJGE.enableBloom = true;
+        //skybox.setBloomThreshold(0.9f);
     }
 
     @Override
@@ -76,6 +74,9 @@ public class SceneAdd extends Scene implements PropertyChangeListener {
 
     @Override
     public void render(Map<String, GLProgram> glPrograms, int viewportID, Camera camera, int depthTexHandle) {
+        for(var entity : queryEntities(Cube.class)) {
+            entity.getComponent(Cube.class).render(camera);
+        }
     }
 
     @Override
