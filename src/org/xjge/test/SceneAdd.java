@@ -3,12 +3,12 @@ package org.xjge.test;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.util.Map;
+import static org.lwjgl.glfw.GLFW.GLFW_JOYSTICK_2;
 import org.xjge.core.Camera;
 import org.xjge.core.Entity;
 import org.xjge.core.Scene;
 import org.xjge.core.Skybox;
 import org.xjge.core.Window;
-import org.xjge.core.XJGE;
 import org.xjge.graphics.GLProgram;
 import org.xjge.graphics.Texture;
 
@@ -37,7 +37,7 @@ public class SceneAdd extends Scene implements PropertyChangeListener {
         
         var entityA = new Entity();
         var entityB = new Entity().addComponent(new CompTestA()).addComponent(new CompTestB());
-        var entityC = new Entity().addComponent(new CompTestA()).addComponent(new Cube());
+        var entityC = new Entity().addComponent(new CompTestA()).addComponent(new Cube(0, 0, 10));
         
         System.out.println("EntityA: " + entityA.uuid);
         System.out.println("EntityB: " + entityB.uuid);
@@ -54,9 +54,12 @@ public class SceneAdd extends Scene implements PropertyChangeListener {
         var front  = Texture.load("sky_front.png");
         var back   = Texture.load("sky_back.png");
         
+        Window.setViewportCamera(GLFW_JOYSTICK_2, new OrthoCam());
+        
         //skybox = new Skybox(right, left, top, bottom, front, back, false);
         //setSkybox(skybox);
         //XJGE.enableBloom = true;
+        //XJGE.setClearColor(Color.BLACK);
         //skybox.setBloomThreshold(0.9f);
     }
 

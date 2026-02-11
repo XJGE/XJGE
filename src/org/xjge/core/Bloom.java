@@ -13,6 +13,12 @@ import org.xjge.graphics.Graphics;
  * <p>
  * More specifically, the Bloom class manages the framebuffer objects and 
  * textures that make the post-processing effect possible.
+ * <p>
+ * 2026 - When bloom is enabled an additional color attachment will be activated, its expected that fragment shaders will write to
+ * this target for the extraction stage:
+ * 
+ * layout(location = 0) out vec4 ioScene;  // final scene color
+ * layout(location = 1) out vec4 ioBloom;  // bloom extraction target
  * 
  * @author J Hoffman
  * @since  2.0.0

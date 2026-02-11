@@ -37,7 +37,6 @@ final class Noclip extends Camera {
      * Creates a new camera that may be used to freely traverse the game world.
      */
     Noclip(Viewport viewport) {
-        super(false);
         this.viewport = viewport;
     }
 
@@ -50,10 +49,9 @@ final class Noclip extends Camera {
     }
 
     @Override
-    public void render(Map<String, GLProgram> glPrograms) {
+    public void render(Map<String, GLProgram> glPrograms, int width, int height) {
         viewMatrix.setLookAt(position, tempFront.set(direction).add(position), up);
-        projMatrix.setPerspective((float) Math.toRadians(fov), 
-                                  (float) viewport.width / viewport.height, 0.1f, Float.POSITIVE_INFINITY);
+        projMatrix.setPerspective((float) Math.toRadians(fov), (float) width / height, 0.1f, Float.POSITIVE_INFINITY);
     }
 
     /**

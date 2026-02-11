@@ -364,8 +364,6 @@ public final class XJGE {
                     
                     glViewport(viewport.botLeft.x, viewport.botLeft.y, viewport.topRight.x, viewport.topRight.y);
                     
-                    //viewport.resetCamera(userShadersView);
-                    
                     viewport.render(userShadersView, "texture", projMatrix);
                     viewport.render(userShadersView, "ui", projMatrix);
                 }

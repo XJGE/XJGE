@@ -1,6 +1,8 @@
 package org.xjge.test;
 
+import static java.time.InstantSource.offset;
 import java.util.LinkedList;
+import org.joml.Vector3f;
 import static org.lwjgl.opengl.GL30.*;
 import org.lwjgl.system.MemoryUtil;
 import org.xjge.core.Camera;
@@ -19,11 +21,14 @@ import org.xjge.graphics.Graphics;
 class Cube extends EntityComponent {
 
     Color color = new Color(1, 1, 1);
+    Vector3f position;
     
     private final Graphics graphics;
     private final GLProgram shader;
     
-    Cube() {
+    Cube(float x, float y, float z) {
+        position = new Vector3f(x, y, z);
+        
         var shaderSourceFiles = new LinkedList<GLShader>() {{
             add(GLShader.load("shader_cube_vertex.glsl", GL_VERTEX_SHADER));
             add(GLShader.load("shader_cube_fragment.glsl", GL_FRAGMENT_SHADER));
@@ -71,6 +76,8 @@ class Cube extends EntityComponent {
     }
     
     void render(Camera camera) {
+        graphics.modelMatrix.translation(position);
+        
         glBindVertexArray(graphics.vao);
         
         shader.use();

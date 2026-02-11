@@ -152,7 +152,7 @@ final class Viewport {
     void render(Map<String, GLProgram> glPrograms, String stage, Matrix4f projMatrix) {
         switch(stage) {
             case "camera" -> {
-                currCamera.render(glPrograms);
+                currCamera.render(glPrograms, width, height);
                 ShaderViewport.getInstance().use();
                 ShaderViewport.getInstance().setUniform("uProjection", currCamera.projMatrix);
             }
@@ -180,24 +180,8 @@ final class Viewport {
             case "ui" -> {
                 UIManager.updateProjectionMatrix(width, height, Short.MIN_VALUE, Short.MAX_VALUE);
                 UIManager.renderWidgets(id, glPrograms);
-                resetCamera(glPrograms); //TODO: is this even necessary now since the projection matrix is handled by UIManager?
             }
         }
-    }
-    
-    /**
-     * Convenience method used to revert the viewports camera projection matrix 
-     * back to whatever projection type (orthogonal or perspective) it was 
-     * using before.
-     * 
-     * @param glPrograms an immutable collection containing the shader programs 
-     *                   compiled during startup
-     */
-    void resetCamera(Map<String, GLProgram> glPrograms) {
-        glPrograms.values().forEach(glProgram -> {
-            if(currCamera.isOrtho) currCamera.setOrtho(glProgram, width, height);
-            else                   currCamera.setPerspective(glProgram, width, height);
-        });
     }
     
     /**
