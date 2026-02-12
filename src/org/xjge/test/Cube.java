@@ -26,7 +26,7 @@ class Cube extends EntityComponent {
     private final Graphics graphics;
     private final Shader shader;
     
-    Cube(float x, float y, float z) {
+    Cube(float x, float y, float z, float size) {
         position = new Vector3f(x, y, z);
         
         var shaderSourceFiles = new LinkedList<ShaderStage>() {{
@@ -41,14 +41,14 @@ class Cube extends EntityComponent {
         graphics = new Graphics();
         
         float[] vertexData = new float[] {
-            -10,  10, -10, //0
-             10,  10, -10, //1
-             10, -10, -10, //2
-            -10, -10, -10, //3
-            -10,  10,  10, //4
-             10,  10,  10, //5
-             10, -10,  10, //6
-            -10, -10,  10  //7
+            -size,  size, -size, //0
+             size,  size, -size, //1
+             size, -size, -size, //2
+            -size, -size, -size, //3
+            -size,  size,  size, //4
+             size,  size,  size, //5
+             size, -size,  size, //6
+            -size, -size,  size  //7
         };
         
         int[] indexData = new int[] {

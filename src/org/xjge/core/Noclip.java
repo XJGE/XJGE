@@ -23,6 +23,7 @@ final class Noclip extends Camera {
     private float pitch;
     private float yaw = 90f;
     private final float sensitivity = 0.10f;
+    private final float speedModifier = 5f;
     
     double prevX;
     double prevY;
@@ -33,10 +34,10 @@ final class Noclip extends Camera {
 
     @Override
     public void update(double targetDelta, double trueDelta) {
-        if(pressed[0]) position.add(direction.mul(speed, tempDirec));
-        if(pressed[1]) position.sub(direction.cross(up, tempRight).normalize().mul(speed));
-        if(pressed[2]) position.sub(direction.mul(speed, tempDirec));
-        if(pressed[3]) position.add(direction.cross(up, tempRight).normalize().mul(speed));
+        if(pressed[0]) position.add(direction.mul(speed * speedModifier, tempDirec));
+        if(pressed[1]) position.sub(direction.cross(up, tempRight).normalize().mul(speed * speedModifier));
+        if(pressed[2]) position.sub(direction.mul(speed * speedModifier, tempDirec));
+        if(pressed[3]) position.add(direction.cross(up, tempRight).normalize().mul(speed * speedModifier));
     }
 
     @Override

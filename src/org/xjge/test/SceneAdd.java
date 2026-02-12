@@ -37,7 +37,7 @@ public class SceneAdd extends Scene implements PropertyChangeListener {
         
         var entityA = new Entity();
         var entityB = new Entity().addComponent(new CompTestA()).addComponent(new CompTestB());
-        var entityC = new Entity().addComponent(new CompTestA()).addComponent(new Cube(0, 0, 10));
+        var entityC = new Entity().addComponent(new CompTestA()).addComponent(new Cube(0, 0, 10, 1));
         
         System.out.println("EntityA: " + entityA.uuid);
         System.out.println("EntityB: " + entityB.uuid);
