@@ -611,18 +611,6 @@ public final class XJGE {
     }
     
     /**
-     * Applies post-processing effects to the desired viewport by changing 
-     * which shader program its framebuffer object will use during rendering.
-     * 
-     * @param viewportID the ID number of the viewport to apply the filter to
-     * @param postProcessShader an object containing the custom shader program 
-     *                          to use or null to use the engines default shaders
-     */
-    public static final void usePostProcessShader(int viewportID, PostProcessEffect postProcessShader) {
-        //viewports[viewportID].postProcessShader = postProcessShader;
-    }
-    
-    /**
      * Changes the filter type applied to the framebuffer texture of a viewport.
      * 
      * @param viewportID the ID number of the viewport who's framebuffer texture 

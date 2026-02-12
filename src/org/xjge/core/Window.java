@@ -28,6 +28,7 @@ import static org.lwjgl.stb.STBImage.stbi_load_from_memory;
 import org.lwjgl.system.MemoryStack;
 import static org.lwjgl.system.MemoryUtil.NULL;
 import static org.xjge.core.SplitScreenType.*;
+import org.xjge.graphics.PostProcessEffect;
 
 /**
  * Created: Apr 29, 2021
@@ -882,6 +883,18 @@ public final class Window {
                 viewports[viewportID].currCamera = camera;
             }
         }
+    }
+    
+    /**
+     * Applies post-processing effects to the desired viewport by changing 
+     * which shader program its framebuffer object will use during rendering.
+     * 
+     * @param viewportID the ID number of the viewport to apply the filter to
+     * @param postProcessEffect an object containing the custom shader program 
+     *                          to use or null to use the engines default shaders
+     */
+    public static final void setPostProcessEffect(int viewportID, PostProcessEffect postProcessEffect) {
+        viewports[viewportID].postProcessEffect = postProcessEffect;
     }
     
     /**
