@@ -26,6 +26,8 @@ import org.xjge.graphics.ShaderStage;
  */
 final class Viewport {
 
+    boolean active;
+    
     final int id;
     final int viewTexHandle;
     final int bloomTexHandle;
@@ -33,8 +35,6 @@ final class Viewport {
     int height;
     
     private final int[] colorAttachments = new int[2];
-    
-    boolean active;
     
     private Graphics graphics = new Graphics();
     private Bloom bloom;

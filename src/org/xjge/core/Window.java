@@ -165,7 +165,9 @@ public final class Window {
         glfwMakeContextCurrent(handle);
         GL.createCapabilities();
         reconfigure();
-        
+    }
+    
+    static void initViewports() {
         for(int i = 0; i < viewports.length; i++) viewports[i] = new Viewport(i, resolution);
         
         fboHandle = glGenFramebuffers();

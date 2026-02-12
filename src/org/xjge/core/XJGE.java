@@ -222,8 +222,8 @@ public final class XJGE {
         
         AudioSystem.init();
         InputSystem.init();
-        
         Logger.logSystemInfo();
+        Window.initViewports();
         
         initialized = true;
     }
