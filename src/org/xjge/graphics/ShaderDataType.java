@@ -11,7 +11,7 @@ import static org.lwjgl.opengl.GL20.*;
  * @author J Hoffman
  * @since  2.0.0
  */
-public enum GLDataType {
+public enum ShaderDataType {
     
     INT(GL_INT),
     FLOAT(GL_FLOAT),
@@ -23,10 +23,10 @@ public enum GLDataType {
     MAT4(GL_FLOAT_MAT4);
 
     public final int glType;
-    GLDataType(int glType) { this.glType = glType; }
+    ShaderDataType(int glType) { this.glType = glType; }
 
-    public static GLDataType fromGLConstant(int glType) {
-        for(GLDataType type : values()) {
+    public static ShaderDataType fromGLConstant(int glType) {
+        for(ShaderDataType type : values()) {
             if (type.glType == glType) return type;
         }
         return null;

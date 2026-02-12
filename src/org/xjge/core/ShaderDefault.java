@@ -6,8 +6,8 @@ import org.joml.Vector2f;
 import org.joml.Vector3f;
 import static org.lwjgl.opengl.GL20.GL_FRAGMENT_SHADER;
 import static org.lwjgl.opengl.GL20.GL_VERTEX_SHADER;
-import org.xjge.graphics.GLProgram;
-import org.xjge.graphics.GLShader;
+import org.xjge.graphics.Shader;
+import org.xjge.graphics.ShaderStage;
 
 /**
  * TODO: temp file until we get everything moved out of the default shader
@@ -17,15 +17,15 @@ import org.xjge.graphics.GLShader;
 public final class ShaderDefault {
 
     private static ShaderDefault instance;
-    private final GLProgram shader;
+    private final Shader shader;
     
     private ShaderDefault() {
-        var shaderSourceFiles = new LinkedList<GLShader>() {{
-            add(GLShader.load("xjge_shader_viewport_vertex.glsl", GL_VERTEX_SHADER));
-            add(GLShader.load("xjge_shader_viewport_fragment.glsl", GL_FRAGMENT_SHADER));
+        var shaderSourceFiles = new LinkedList<ShaderStage>() {{
+            add(ShaderStage.load("xjge_shader_viewport_vertex.glsl", GL_VERTEX_SHADER));
+            add(ShaderStage.load("xjge_shader_viewport_fragment.glsl", GL_FRAGMENT_SHADER));
         }};
         
-        shader = new GLProgram(shaderSourceFiles, "xjge_default");
+        shader = new Shader(shaderSourceFiles, "xjge_default");
     }
     
     public static ShaderDefault getInstance() {

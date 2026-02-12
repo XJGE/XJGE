@@ -1,8 +1,8 @@
 package org.xjge.core;
 
 import org.xjge.graphics.Texture;
-import org.xjge.graphics.GLProgram;
-import org.xjge.graphics.GLShader;
+import org.xjge.graphics.Shader;
+import org.xjge.graphics.ShaderStage;
 import java.beans.PropertyChangeListener;
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -23,7 +23,7 @@ import static org.lwjgl.glfw.GLFW.*;
 import org.lwjgl.opengl.GL;
 import static org.lwjgl.opengl.GL32.*;
 import org.xjge.graphics.Color;
-import org.xjge.graphics.PostProcessShader;
+import org.xjge.graphics.PostProcessEffect;
 
 /**
  * Created: Apr 28, 2021
@@ -64,7 +64,7 @@ public final class XJGE {
     
     private static boolean showLightSources;
     
-    static GLProgram depthProgram;
+    static Shader depthProgram;
     
     //==== LEGACY FIELDS ABOVE =================================================
     
@@ -90,8 +90,8 @@ public final class XJGE {
     private static TreeMap<String, TerminalCommand> engineCommands     = new TreeMap<>();
     private static final TreeMap<String, TerminalCommand> userCommands = new TreeMap<>();
     
-    private static final Map<String, GLProgram> userShaders     = new HashMap<>();
-    private static final Map<String, GLProgram> userShadersView = Collections.unmodifiableMap(userShaders);
+    private static final Map<String, Shader> userShaders     = new HashMap<>();
+    private static final Map<String, Shader> userShadersView = Collections.unmodifiableMap(userShaders);
     
     private static Color clearColor = new Color(0.467f, 0.533f, 1f);
     private static Scene currentScene;
@@ -190,12 +190,12 @@ public final class XJGE {
 
         //Create shader program that will generate shadow map output
         {
-            var shaderSourceFiles = new LinkedList<GLShader>() {{
-                add(GLShader.load("xjge_shader_depth_vertex.glsl", GL_VERTEX_SHADER));
-                add(GLShader.load("xjge_shader_depth_fragment.glsl", GL_FRAGMENT_SHADER));
+            var shaderSourceFiles = new LinkedList<ShaderStage>() {{
+                add(ShaderStage.load("xjge_shader_depth_vertex.glsl", GL_VERTEX_SHADER));
+                add(ShaderStage.load("xjge_shader_depth_fragment.glsl", GL_FRAGMENT_SHADER));
             }};
 
-            depthProgram = new GLProgram(shaderSourceFiles, "depth");
+            depthProgram = new Shader(shaderSourceFiles, "depth");
         }
         
         engineIcons = Texture.load("xjge_texture_icons.png");
@@ -234,7 +234,7 @@ public final class XJGE {
      * <p>
      * NOTE: This should be called <i>after</i> setting the initial scene with 
      * {@link XJGE#setScene(Scene)} and supplying whatever additional 
-     * {@link org.xjge.graphics.GLProgram shader programs} 
+     * {@link org.xjge.graphics.Shader shader programs} 
      * and {@linkplain addCommand terminal commands} the implementation 
      * requires.
      * 
@@ -356,11 +356,7 @@ public final class XJGE {
                     
                     projMatrix.setOrtho(viewport.width, 0, 0, viewport.height, 0, 1);
                     
-                    if(enableBloom) {
-                        ShaderBloom.getInstance().use();
-                        ShaderBloom.getInstance().setUniform("uProjection", projMatrix);
-                        viewport.applyBloom();
-                    }
+                    if(enableBloom) viewport.applyBloom(projMatrix);
                     
                     glViewport(viewport.botLeft.x, viewport.botLeft.y, viewport.topRight.x, viewport.topRight.y);
                     
@@ -390,14 +386,14 @@ public final class XJGE {
     }
     
     /**
-     * Adds a custom {@link GLProgram} to an immutable collection which can be 
+     * Adds a custom {@link Shader} to an immutable collection which can be 
      * accessed through a scenes {@linkplain Scene#render render()} method to 
      * draw the various objects and entities within it.
      * 
      * @param name the name that will be used to refer to the program
      * @param glProgram the object representing the compiled shader program
      */
-    public static void addGLProgram(String name, GLProgram glProgram) {
+    public static void addGLProgram(String name, Shader glProgram) {
         userShaders.put(name, glProgram);
     }
     
@@ -622,7 +618,7 @@ public final class XJGE {
      * @param postProcessShader an object containing the custom shader program 
      *                          to use or null to use the engines default shaders
      */
-    public static final void usePostProcessShader(int viewportID, PostProcessShader postProcessShader) {
+    public static final void usePostProcessShader(int viewportID, PostProcessEffect postProcessShader) {
         //viewports[viewportID].postProcessShader = postProcessShader;
     }
     

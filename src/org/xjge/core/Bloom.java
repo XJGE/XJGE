@@ -1,8 +1,12 @@
 package org.xjge.core;
 
+import java.util.LinkedList;
+import org.joml.Matrix4f;
 import static org.lwjgl.opengl.GL30.*;
 import org.lwjgl.system.MemoryStack;
 import org.xjge.graphics.Graphics;
+import org.xjge.graphics.Shader;
+import org.xjge.graphics.ShaderStage;
 
 /**
  * Created: Dec 13, 2021
@@ -29,6 +33,17 @@ final class Bloom {
     final int[] textures = new int[3];
     
     private final Graphics graphics = new Graphics();
+    
+    private static final Shader shader;
+    
+    static {
+        var shaderSourceFiles = new LinkedList<ShaderStage>() {{
+            add(ShaderStage.load("xjge_shader_viewport_vertex.glsl", GL_VERTEX_SHADER));
+            add(ShaderStage.load("xjge_shader_blur_fragment.glsl", GL_FRAGMENT_SHADER));
+        }};
+        
+        shader = new Shader(shaderSourceFiles, "xjge_bloom");
+    }
     
     /**
      * Creates a new bloom object that will be used to produce a "glowing" 
@@ -106,13 +121,15 @@ final class Bloom {
      * @param horizontal  if true, the blur will be applied horizontally otherwise 
      *                    it will be applied vertically
      */
-    void applyBlur(int texHandle, boolean horizontal) {
+    void applyBlur(int texHandle, boolean horizontal, Matrix4f projMatrix) {
         glActiveTexture(GL_TEXTURE0);
         glBindTexture(GL_TEXTURE_2D, texHandle);
         glBindVertexArray(graphics.vao);
         
-        ShaderBloom.getInstance().setUniform("uHorizontal", (horizontal) ? 1 : 0);
-        ShaderBloom.getInstance().setUniform("uBloomTexture", 0);
+        shader.use();
+        shader.setUniform("uProjection", false, projMatrix);
+        shader.setUniform("uHorizontal", (horizontal) ? 1 : 0);
+        shader.setUniform("uBloomTexture", 0);
         
         glDrawElements(GL_TRIANGLES, graphics.indices.capacity(), GL_UNSIGNED_INT, 0);
         

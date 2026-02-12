@@ -19,9 +19,9 @@ import org.joml.Matrix4f;
  * @author J Hoffman
  * @since  2.1.9
  */
-public abstract class PostProcessShader {
+public abstract class PostProcessEffect {
 
-    public final GLProgram glProgram;
+    protected final Shader glProgram;
     
     /**
      * Creates an object that can be used to manipulate the output of a 
@@ -30,7 +30,7 @@ public abstract class PostProcessShader {
      * @param glProgram the shader program that will be used to render the 
      *                  framebuffer texture
      */
-    public PostProcessShader(GLProgram glProgram) {
+    public PostProcessEffect(Shader glProgram) {
         this.glProgram = glProgram;
     }
     
@@ -42,11 +42,11 @@ public abstract class PostProcessShader {
      *                      color information
      * @param bloomTexHandle the handle of another framebuffer texture generated
      *                       by the engine when bloom effects are enabled
-     * @param projMatrix A temporary projection matrix used by the engine,  you'll 
+     * @param projMatrix A temporary projection matrix used by the engine, you'll 
      *                   want to pass this to your custom post-process shader 
      *                   during the vertex stage
-     * @param g the graphics object used by the viewport
+     * @param graphics the graphics object used by the viewport
      */
-    public abstract void render(int viewTexHandle, int bloomTexHandle, Matrix4f projMatrix, Graphics g);
+    public abstract void render(int viewTexHandle, int bloomTexHandle, Matrix4f projMatrix, Graphics graphics);
     
 }

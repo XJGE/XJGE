@@ -138,17 +138,17 @@ public class Polygon {
         graphics.modelMatrix.rotateXYZ(rotationX, rotationY, rotationZ);
         graphics.modelMatrix.scaleXY(scale.x, scale.y);
         
-        ShaderUI.getInstance().use();
+        UIShader.getInstance().use();
         
         glEnable(GL_BLEND);
         glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
         glBindVertexArray(graphics.vao);
         
-        ShaderUI.getInstance().setUniform("uType", 2);
-        ShaderUI.getInstance().setUniform("uModel", graphics.modelMatrix);
-        ShaderUI.getInstance().setUniform("uProjection", UIManager.getProjectionMatrix());
-        ShaderUI.getInstance().setUniform("uColor", color.asVector3f());
-        ShaderUI.getInstance().setUniform("uOpacity", opacity);
+        UIShader.getInstance().setUniform("uType", 2);
+        UIShader.getInstance().setUniform("uModel", graphics.modelMatrix);
+        UIShader.getInstance().setUniform("uProjection", UIManager.getProjectionMatrix());
+        UIShader.getInstance().setUniform("uColor", color.asVector3f());
+        UIShader.getInstance().setUniform("uOpacity", opacity);
         
         glDrawArrays((fill) ? GL_TRIANGLE_FAN : GL_LINE_LOOP, 0, sides);
         glDisable(GL_BLEND);

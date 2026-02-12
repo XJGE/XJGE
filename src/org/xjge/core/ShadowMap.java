@@ -1,6 +1,6 @@
 package org.xjge.core;
 
-import org.xjge.graphics.GLProgram;
+import org.xjge.graphics.Shader;
 import org.joml.Matrix4f;
 import org.joml.Vector3f;
 import static org.lwjgl.opengl.GL30.*;
@@ -17,11 +17,11 @@ import static org.lwjgl.system.MemoryUtil.NULL;
  * the scene an extra time. The texture created by this process is then 
  * formatted as a depth attachment within a framebuffer object.
  * <p>
- * NOTE: Entities that wish to produce shadows can do so by supplying their 
- * model matrix (and texture if necessary) to the depth shader program made 
- * accessible through their 
- * {Entity#renderShadow(org.xjge.graphics.GLProgram) renderShadow()} 
- * methods.
+ NOTE: Entities that wish to produce shadows can do so by supplying their 
+ model matrix (and texture if necessary) to the depth shader program made 
+ accessible through their 
+ {Entity#renderShadow(org.xjge.graphics.Shader) renderShadow()} 
+ methods.
  * 
  * @author J Hoffman
  * @since  2.0.0
@@ -108,7 +108,7 @@ public final class ShadowMap {
      *                     be used to generate the shadow map texture
      * @param worldLightPos the current position of the global light source
      */
-    void generate(Vector3f camUp, GLProgram depthProgram, Scene scene) {
+    void generate(Vector3f camUp, Shader depthProgram, Scene scene) {
         lightProj.setOrtho(-frustumSize, frustumSize, -frustumSize, frustumSize, 0f, range);
         lightView.setLookAt(scene.lights[0].position, lightDir, camUp);
         lightProj.mul(lightView, lightSpace);

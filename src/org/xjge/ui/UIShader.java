@@ -6,8 +6,8 @@ import org.joml.Vector2fc;
 import org.joml.Vector3fc;
 import static org.lwjgl.opengl.GL20.GL_FRAGMENT_SHADER;
 import static org.lwjgl.opengl.GL20.GL_VERTEX_SHADER;
-import org.xjge.graphics.GLProgram;
-import org.xjge.graphics.GLShader;
+import org.xjge.graphics.Shader;
+import org.xjge.graphics.ShaderStage;
 
 /**
  * Encapsulates a shader program used exclusively for rendering the engines 
@@ -16,22 +16,22 @@ import org.xjge.graphics.GLShader;
  * @author J Hoffman
  * @since 4.0.0
  */
-final class ShaderUI {
+final class UIShader {
 
-    private static ShaderUI instance;
-    private final GLProgram shader;
+    private static UIShader instance;
+    private final Shader shader;
     
     /**
      * Compiles and links the associated vertex/fragment shader stages used by 
      * the UI for rendering.
      */
-    private ShaderUI() {
-        var shaderSourceFiles = new LinkedList<GLShader>() {{
-            add(GLShader.load("xjge_shader_ui_vertex.glsl", GL_VERTEX_SHADER));
-            add(GLShader.load("xjge_shader_ui_fragment.glsl", GL_FRAGMENT_SHADER));
+    private UIShader() {
+        var shaderSourceFiles = new LinkedList<ShaderStage>() {{
+            add(ShaderStage.load("xjge_shader_ui_vertex.glsl", GL_VERTEX_SHADER));
+            add(ShaderStage.load("xjge_shader_ui_fragment.glsl", GL_FRAGMENT_SHADER));
         }};
         
-        shader = new GLProgram(shaderSourceFiles, "xjge_ui");
+        shader = new Shader(shaderSourceFiles, "xjge_ui");
     }
     
     /**
@@ -39,8 +39,8 @@ final class ShaderUI {
      * 
      * @return the object that represents the UI shader program
      */
-    static ShaderUI getInstance() {
-        if(instance == null) instance = new ShaderUI();
+    static UIShader getInstance() {
+        if(instance == null) instance = new UIShader();
         return instance;
     }
     

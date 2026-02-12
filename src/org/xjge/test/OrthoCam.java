@@ -3,7 +3,7 @@ package org.xjge.test;
 import java.util.Map;
 import org.joml.Vector3f;
 import org.xjge.core.Camera;
-import org.xjge.graphics.GLProgram;
+import org.xjge.graphics.Shader;
 
 /**
  * 
@@ -22,7 +22,7 @@ public class OrthoCam extends Camera {
     }
 
     @Override
-    protected void render(Map<String, GLProgram> glPrograms, int width, int height) {
+    protected void render(Map<String, Shader> glPrograms, int width, int height) {
         viewMatrix.setLookAt(position, tempFront.set(direction).add(position), up);
         projMatrix.setOrtho(0, width, 0, height, orthoNear, orthoFar);
     }

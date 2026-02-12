@@ -1,6 +1,6 @@
 package org.xjge.core;
 
-import org.xjge.graphics.GLProgram;
+import org.xjge.graphics.Shader;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.Map;
@@ -42,7 +42,7 @@ public final class UIManager {
         for(Widget widget : widgets.get(viewportID).values()) widget.update(targetDelta, trueDelta);
     }
     
-    static void renderWidgets(int viewportID, Map<String, GLProgram> glPrograms) {
+    static void renderWidgets(int viewportID, Map<String, Shader> glPrograms) {
         for(Widget widget : widgets.get(viewportID).values()) widget.render(glPrograms);
     }
     

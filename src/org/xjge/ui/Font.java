@@ -489,7 +489,7 @@ public final class Font extends Asset {
      *               glyph data with a greater degree of control
      */
     private void drawString(CharSequence text, int positionX, int positionY, Color color, float opacity, TextEffect effect) {
-        ShaderUI.getInstance().use();
+        UIShader.getInstance().use();
         
         glEnable(GL_BLEND);
         glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
@@ -544,10 +544,10 @@ public final class Font extends Asset {
         uploadTexCoords();
         uploadColors();
         
-        ShaderUI.getInstance().setUniform("uType", 0);
-        ShaderUI.getInstance().setUniform("uTexture", 0);
-        ShaderUI.getInstance().setUniform("uIsBitmapFont", (isBitmapFont) ? 1 : 0);
-        ShaderUI.getInstance().setUniform("uProjection", UIManager.getProjectionMatrix());
+        UIShader.getInstance().setUniform("uType", 0);
+        UIShader.getInstance().setUniform("uTexture", 0);
+        UIShader.getInstance().setUniform("uIsBitmapFont", (isBitmapFont) ? 1 : 0);
+        UIShader.getInstance().setUniform("uProjection", UIManager.getProjectionMatrix());
         
         glDrawElementsInstanced(GL_TRIANGLES, indexBuffer.capacity(), GL_UNSIGNED_INT, 0, glyphPool.size());
         glDisable(GL_BLEND);

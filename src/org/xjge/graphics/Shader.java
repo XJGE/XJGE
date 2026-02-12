@@ -1,6 +1,6 @@
 package org.xjge.graphics;
 
-import static org.xjge.graphics.GLDataType.*;
+import static org.xjge.graphics.ShaderDataType.*;
 import java.nio.Buffer;
 import java.nio.FloatBuffer;
 import java.nio.IntBuffer;
@@ -23,21 +23,21 @@ import org.xjge.core.Logger;
 /**
  * Created: May 2, 2021
  * <br><br>
- * Represents a completed shader program comprised of multiple {@link GLShader} 
+ * Represents a completed shader program comprised of multiple {@link ShaderStage} 
  * objects that specify how data sent to the GPU will be processed at different 
  * rendering stages while the program is active.
  * 
  * @author J Hoffman
  * @since  2.0.0
  */
-public class GLProgram implements AssetReloadListener {
+public class Shader implements AssetReloadListener {
 
     private int handle;
     
     public final String name;
     
-    private final List<GLShader> shaders;
-    private final HashMap<String, GLUniform> uniforms = new HashMap<>();
+    private final List<ShaderStage> shaders;
+    private final HashMap<String, ShaderUniform> uniforms = new HashMap<>();
     
     /**
      * Creates a new shader program with the code supplied from the compiled 
@@ -46,7 +46,7 @@ public class GLProgram implements AssetReloadListener {
      * @param shaders the objects representing various stages of the rendering pipeline
      * @param name the name used to identify the program should it fail to link properly
      */
-    public GLProgram(LinkedList<GLShader> shaders, String name) {
+    public Shader(LinkedList<ShaderStage> shaders, String name) {
         this.shaders = shaders;
         this.name    = name;
         
@@ -80,8 +80,8 @@ public class GLProgram implements AssetReloadListener {
                 if(uniformName.endsWith("[0]")) uniformName = uniformName.substring(0, uniformName.length() - 3);
                 
                 int uniformType   = typeBuffer.get(0);
-                GLDataType glType = GLDataType.fromGLConstant(uniformType);
-                if(uniformType == GL_SAMPLER_2D || uniformType == GL_SAMPLER_CUBE) glType = GLDataType.INT;
+                ShaderDataType glType = ShaderDataType.fromGLConstant(uniformType);
+                if(uniformType == GL_SAMPLER_2D || uniformType == GL_SAMPLER_CUBE) glType = ShaderDataType.INT;
                 
                 if(glType != null) addUniform(glType, uniformName);
             }
@@ -97,7 +97,7 @@ public class GLProgram implements AssetReloadListener {
     }
     
     /**
-     * Generates a new {@link GLUniform} object.
+     * Generates a new {@link ShaderUniform} object.
      * 
      * @param name the unique name used to identify the uniform variable as it 
      *             appears in the .glsl source file
@@ -106,13 +106,13 @@ public class GLProgram implements AssetReloadListener {
      * 
      * @return a new uniform object
      */
-    private GLUniform createUniform(String name, Buffer buffer) {
-        return new GLUniform(glGetUniformLocation(handle, name), buffer);
+    private ShaderUniform createUniform(String name, Buffer buffer) {
+        return new ShaderUniform(glGetUniformLocation(handle, name), buffer);
     }
     
     /**
      * Creates an association between a CPU-stored data buffer holding the 
-     * value of a {@link GLUniform uniform variable} and its corresponding 
+     * value of a {@link ShaderUniform uniform variable} and its corresponding 
      * memory location on the GPU.
      * <p>
      * More specifically, this method allocates a new data buffer on the CPU 
@@ -125,7 +125,7 @@ public class GLProgram implements AssetReloadListener {
      * @param name the unique name used to identify the uniform variable as it 
      *             appears in the .glsl source file
      */
-    private void addUniform(GLDataType type, String name) {
+    private void addUniform(ShaderDataType type, String name) {
         if(glGetUniformLocation(handle, name) == -1) {
             Logger.logError("Failed to find uniform variable \"" + name + "\". Check " + 
                             "variable name or GLSL source file where it is declared", 
@@ -289,7 +289,7 @@ public class GLProgram implements AssetReloadListener {
 
     @Override
     public void onAssetReload(Asset asset) {
-        if(asset instanceof GLShader && ((GLShader) asset).isValid()) {
+        if(asset instanceof ShaderStage && ((ShaderStage) asset).isValid()) {
             glDeleteProgram(handle);
             link();
             uniforms.clear();

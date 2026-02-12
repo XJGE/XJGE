@@ -1,6 +1,7 @@
 package org.xjge.core;
 
-import org.xjge.graphics.GLProgram;
+import java.util.LinkedList;
+import org.xjge.graphics.Shader;
 import org.xjge.graphics.Graphics;
 import java.util.Map;
 import org.joml.Matrix4f;
@@ -11,7 +12,8 @@ import static org.lwjgl.glfw.GLFW.GLFW_JOYSTICK_3;
 import static org.lwjgl.glfw.GLFW.GLFW_JOYSTICK_4;
 import static org.lwjgl.opengl.GL30.*;
 import org.lwjgl.system.MemoryStack;
-import org.xjge.graphics.PostProcessShader;
+import org.xjge.graphics.PostProcessEffect;
+import org.xjge.graphics.ShaderStage;
 
 /**
  * Created: May 11, 2021
@@ -34,15 +36,25 @@ final class Viewport {
     
     boolean active;
     
-    private Graphics g = new Graphics();
+    private Graphics graphics = new Graphics();
     private Bloom bloom;
     
     Vector2i botLeft  = new Vector2i();
     Vector2i topRight = new Vector2i();
     Camera prevCamera = new Noclip();
     Camera currCamera = new Noclip();
+    PostProcessEffect postProcessEffect;
     
-    PostProcessShader postProcessShader;
+    private static final Shader shader;
+    
+    static {
+        var shaderSourceFiles = new LinkedList<ShaderStage>() {{
+            add(ShaderStage.load("xjge_shader_viewport_vertex.glsl", GL_VERTEX_SHADER));
+            add(ShaderStage.load("xjge_shader_viewport_fragment.glsl", GL_FRAGMENT_SHADER));
+        }};
+        
+        shader = new Shader(shaderSourceFiles, "xjge_viewport");
+    }
     
     /**
      * Creates a new viewport object.
@@ -99,23 +111,23 @@ final class Viewport {
         glBindTexture(GL_TEXTURE_2D, 0);
         
         try(MemoryStack stack = MemoryStack.stackPush()) {
-            g.vertices = stack.mallocFloat(20);
-            g.indices  = stack.mallocInt(6);
+            graphics.vertices = stack.mallocFloat(20);
+            graphics.indices  = stack.mallocInt(6);
             
             //(vec3 position), (vec2 texCoords)
-            g.vertices.put(0)    .put(height).put(0)    .put(1).put(1);
-            g.vertices.put(width).put(height).put(0)    .put(0).put(1);
-            g.vertices.put(width).put(0)     .put(0)    .put(0).put(0);
-            g.vertices.put(0)    .put(0)     .put(0)    .put(1).put(0);
+            graphics.vertices.put(0)    .put(height).put(0)    .put(1).put(1);
+            graphics.vertices.put(width).put(height).put(0)    .put(0).put(1);
+            graphics.vertices.put(width).put(0)     .put(0)    .put(0).put(0);
+            graphics.vertices.put(0)    .put(0)     .put(0)    .put(1).put(0);
             
-            g.indices.put(0).put(1).put(2);
-            g.indices.put(3).put(2).put(0);
+            graphics.indices.put(0).put(1).put(2);
+            graphics.indices.put(3).put(2).put(0);
             
-            g.vertices.flip();
-            g.indices.flip();
+            graphics.vertices.flip();
+            graphics.indices.flip();
         }
         
-        g.bindBuffers();
+        graphics.bindBuffers();
         
         glVertexAttribPointer(0, 3, GL_FLOAT, false, (5 * Float.BYTES), 0);
         glVertexAttribPointer(1, 2, GL_FLOAT, false, (5 * Float.BYTES), (3 * Float.BYTES));
@@ -149,30 +161,30 @@ final class Viewport {
      * @param stage the stage denoting the viewports current render pass
      * @param projMatrix the projection matrix managed internally by the engine
      */
-    void render(Map<String, GLProgram> glPrograms, String stage, Matrix4f projMatrix) {
+    void render(Map<String, Shader> glPrograms, String stage, Matrix4f projMatrix) {
         switch(stage) {
             case "camera" -> {
                 currCamera.render(glPrograms, width, height);
-                ShaderViewport.getInstance().use();
-                ShaderViewport.getInstance().setUniform("uProjection", currCamera.projMatrix);
+                shader.use();
+                shader.setUniform("uProjection", false, currCamera.projMatrix);
             }
             
             case "texture" -> {
-                if(postProcessShader != null) {
-                    postProcessShader.render(viewTexHandle, bloomTexHandle, projMatrix, g);
+                if(postProcessEffect != null) {
+                    postProcessEffect.render(viewTexHandle, bloomTexHandle, projMatrix, graphics);
                 } else {
                     glActiveTexture(GL_TEXTURE0);
                     glBindTexture(GL_TEXTURE_2D, viewTexHandle);
                     glActiveTexture(GL_TEXTURE1);
                     glBindTexture(GL_TEXTURE_2D, bloom.textures[1]);
-                    glBindVertexArray(g.vao);
+                    glBindVertexArray(graphics.vao);
                     
-                    ShaderViewport.getInstance().use();
-                    ShaderViewport.getInstance().setUniform("uTexture", 0);
-                    ShaderViewport.getInstance().setUniform("uBloomTexture", 1);
-                    ShaderViewport.getInstance().setUniform("uProjection", projMatrix);
+                    shader.use();
+                    shader.setUniform("uTexture", 0);
+                    shader.setUniform("uBloomTexture", 1);
+                    shader.setUniform("uProjection", false, projMatrix);
                     
-                    glDrawElements(GL_TRIANGLES, g.indices.capacity(), GL_UNSIGNED_INT, 0);
+                    glDrawElements(GL_TRIANGLES, graphics.indices.capacity(), GL_UNSIGNED_INT, 0);
                     ErrorUtils.checkGLError();
                 }
             }
@@ -225,7 +237,7 @@ final class Viewport {
      * @param blurProgram the shader program used to apply a Gaussian blur to
      *                    the bloom framebuffer texture 
      */
-    void applyBloom() {
+    void applyBloom(Matrix4f projMatrix) {
         boolean firstPass  = true;
         boolean horizontal = true;
         int blurWeight = 10;
@@ -236,7 +248,7 @@ final class Viewport {
             int texHandle = bloomTexHandle;
 
             glBindFramebuffer(GL_FRAMEBUFFER, bloom.fbos[invValue]);
-            bloom.applyBlur((firstPass) ? texHandle : bloom.textures[value], horizontal);
+            bloom.applyBlur((firstPass) ? texHandle : bloom.textures[value], horizontal, projMatrix);
 
             horizontal = !horizontal;
             if(firstPass) firstPass = false;

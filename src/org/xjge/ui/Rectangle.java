@@ -121,14 +121,14 @@ public class Rectangle {
     public void render(float opacity, Color color) {
         if(vaoHandle == -1) genBuffers();
         
-        ShaderUI.getInstance().use();
+        UIShader.getInstance().use();
         
         glEnable(GL_BLEND);
         glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
         glBindVertexArray(vaoHandle);
         
-        ShaderUI.getInstance().setUniform("uType", 1);
-        ShaderUI.getInstance().setUniform("uProjection", UIManager.getProjectionMatrix());
+        UIShader.getInstance().setUniform("uType", 1);
+        UIShader.getInstance().setUniform("uProjection", UIManager.getProjectionMatrix());
         
         try(MemoryStack stack = MemoryStack.stackPush()) {
             FloatBuffer vertices = stack.mallocFloat(28);

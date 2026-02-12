@@ -15,7 +15,7 @@ import java.nio.IntBuffer;
  * @author J Hoffman
  * @since  2.0.0
  */
-final class GLUniform {
+final class ShaderUniform {
 
     int location;
     
@@ -29,7 +29,7 @@ final class GLUniform {
      * @param buffer a type-neutral data buffer used to store the value of the 
      *               uniform variable
      */
-    GLUniform(int location, Buffer buffer) {
+    ShaderUniform(int location, Buffer buffer) {
         this.location = location;
         this.buffer   = buffer;
     }

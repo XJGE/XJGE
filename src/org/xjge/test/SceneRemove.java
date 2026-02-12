@@ -4,7 +4,7 @@ import java.util.Map;
 import org.xjge.core.AssetManager;
 import org.xjge.core.Camera;
 import org.xjge.core.Scene;
-import org.xjge.graphics.GLProgram;
+import org.xjge.graphics.Shader;
 
 /**
  * 
@@ -31,11 +31,11 @@ public class SceneRemove extends Scene {
     }
 
     @Override
-    public void render(Map<String, GLProgram> glPrograms, int viewportID, Camera camera, int depthTexHandle) {
+    public void render(Map<String, Shader> glPrograms, int viewportID, Camera camera, int depthTexHandle) {
     }
 
     @Override
-    public void renderShadows(GLProgram depthProgram) {
+    public void renderShadows(Shader depthProgram) {
     }
 
     @Override

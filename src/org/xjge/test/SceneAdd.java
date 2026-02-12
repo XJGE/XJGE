@@ -9,7 +9,7 @@ import org.xjge.core.Entity;
 import org.xjge.core.Scene;
 import org.xjge.core.Skybox;
 import org.xjge.core.Window;
-import org.xjge.graphics.GLProgram;
+import org.xjge.graphics.Shader;
 import org.xjge.graphics.Texture;
 
 /**
@@ -76,14 +76,14 @@ public class SceneAdd extends Scene implements PropertyChangeListener {
     }
 
     @Override
-    public void render(Map<String, GLProgram> glPrograms, int viewportID, Camera camera, int depthTexHandle) {
+    public void render(Map<String, Shader> glPrograms, int viewportID, Camera camera, int depthTexHandle) {
         for(var entity : queryEntities(Cube.class)) {
             entity.getComponent(Cube.class).render(camera);
         }
     }
 
     @Override
-    public void renderShadows(GLProgram depthProgram) {
+    public void renderShadows(Shader depthProgram) {
     }
 
     @Override

@@ -1,6 +1,6 @@
 package org.xjge.core;
 
-import org.xjge.graphics.GLProgram;
+import org.xjge.graphics.Shader;
 import java.util.Map;
 import org.joml.Matrix4f;
 import org.joml.Matrix4fc;
@@ -14,7 +14,7 @@ import org.joml.Vector3f;
  * <p>
  * NOTE: Subclasses of this object use a combination of matrices to alter how 
  * the game world is perceived. Game implementations that specify custom 
- * {@linkplain GLProgram shader programs} are required to supply a 4x4 
+ * {@link Shader shader programs} are required to supply a 4x4 
  * projection matrix through a uniform variable if they wish to utilize camera 
  * objects correctly.
  * 
@@ -53,7 +53,7 @@ public abstract class Camera {
      * @param width the width (in pixels) of the viewport that's currently using this camera
      * @param height the heigth (in pixels) of the viewport that's currently using this camera
      */
-    protected abstract void render(Map<String, GLProgram> glPrograms, int width, int height);
+    protected abstract void render(Map<String, Shader> glPrograms, int width, int height);
     
     public Matrix4fc getViewMatrix() {
         return viewMatrix;

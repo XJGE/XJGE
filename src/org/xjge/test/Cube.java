@@ -9,8 +9,8 @@ import org.xjge.core.EntityComponent;
 import org.xjge.core.ErrorUtils;
 import org.xjge.core.XJGE;
 import org.xjge.graphics.Color;
-import org.xjge.graphics.GLProgram;
-import org.xjge.graphics.GLShader;
+import org.xjge.graphics.Shader;
+import org.xjge.graphics.ShaderStage;
 import org.xjge.graphics.Graphics;
 
 /**
@@ -24,17 +24,17 @@ class Cube extends EntityComponent {
     Vector3f position;
     
     private final Graphics graphics;
-    private final GLProgram shader;
+    private final Shader shader;
     
     Cube(float x, float y, float z) {
         position = new Vector3f(x, y, z);
         
-        var shaderSourceFiles = new LinkedList<GLShader>() {{
-            add(GLShader.load("shader_cube_vertex.glsl", GL_VERTEX_SHADER));
-            add(GLShader.load("shader_cube_fragment.glsl", GL_FRAGMENT_SHADER));
+        var shaderSourceFiles = new LinkedList<ShaderStage>() {{
+            add(ShaderStage.load("shader_cube_vertex.glsl", GL_VERTEX_SHADER));
+            add(ShaderStage.load("shader_cube_fragment.glsl", GL_FRAGMENT_SHADER));
         }};
         
-        shader = new GLProgram(shaderSourceFiles, "cube");
+        shader = new Shader(shaderSourceFiles, "cube");
         
         XJGE.addGLProgram("test_cube", shader);
         

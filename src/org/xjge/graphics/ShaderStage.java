@@ -20,7 +20,7 @@ import org.xjge.core.Logger;
  * @author J Hoffman
  * @since  2.0.0
  */
-public final class GLShader extends Asset {
+public final class ShaderStage extends Asset {
     
     private boolean valid;
     
@@ -45,11 +45,11 @@ public final class GLShader extends Asset {
      * </tr></table>
      * @return 
      */
-    public static GLShader load(String filename, int stage) {
-        return AssetManager.load(filename, () -> new GLShader(filename, stage));
+    public static ShaderStage load(String filename, int stage) {
+        return AssetManager.load(filename, () -> new ShaderStage(filename, stage));
     }
     
-    private GLShader(String filename, int stage) {
+    private ShaderStage(String filename, int stage) {
         super(filename);
         this.stage = stage;
     }
@@ -103,7 +103,7 @@ public final class GLShader extends Asset {
     }
     
     @Override
-    protected GLShader onLoadFailure() {
+    protected ShaderStage onLoadFailure() {
         return null;
     }
     

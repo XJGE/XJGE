@@ -1,6 +1,6 @@
 package org.xjge.core;
 
-import org.xjge.graphics.GLProgram;
+import org.xjge.graphics.Shader;
 import java.util.Map;
 import org.joml.Vector3f;
 
@@ -40,7 +40,7 @@ final class Noclip extends Camera {
     }
 
     @Override
-    public void render(Map<String, GLProgram> glPrograms, int width, int height) {
+    public void render(Map<String, Shader> glPrograms, int width, int height) {
         viewMatrix.setLookAt(position, tempFront.set(direction).add(position), up);
         projMatrix.setPerspective((float) Math.toRadians(fov), (float) width / height, 0.1f, Float.POSITIVE_INFINITY);
     }
