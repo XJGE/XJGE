@@ -30,15 +30,6 @@ final class Noclip extends Camera {
     private final Vector3f tempFront = new Vector3f();
     private final Vector3f tempRight = new Vector3f();
     private final Vector3f tempDirec = new Vector3f();
-    
-    private final Viewport viewport;
-    
-    /**
-     * Creates a new camera that may be used to freely traverse the game world.
-     */
-    Noclip(Viewport viewport) {
-        this.viewport = viewport;
-    }
 
     @Override
     public void update(double targetDelta, double trueDelta) {

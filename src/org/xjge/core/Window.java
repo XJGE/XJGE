@@ -192,7 +192,7 @@ public final class Window {
      * @param metrics a series of collapsible menus containing debug information
      */
     static void registerCallbacks(TreeMap<String, TerminalCommand> engineCommands, Texture engineIcons) {
-        noclip   = new Noclip(viewports[0]);
+        noclip   = new Noclip();
         terminal = new Terminal(engineCommands);
         metrics  = new EngineMetrics(engineIcons);
         

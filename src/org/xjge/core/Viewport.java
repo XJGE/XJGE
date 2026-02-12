@@ -39,8 +39,8 @@ final class Viewport {
     
     Vector2i botLeft  = new Vector2i();
     Vector2i topRight = new Vector2i();
-    Camera prevCamera = new Noclip(this);
-    Camera currCamera = new Noclip(this);
+    Camera prevCamera = new Noclip();
+    Camera currCamera = new Noclip();
     
     PostProcessShader postProcessShader;
     

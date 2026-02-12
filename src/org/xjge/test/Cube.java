@@ -1,6 +1,5 @@
 package org.xjge.test;
 
-import static java.time.InstantSource.offset;
 import java.util.LinkedList;
 import org.joml.Vector3f;
 import static org.lwjgl.opengl.GL30.*;
@@ -8,6 +7,7 @@ import org.lwjgl.system.MemoryUtil;
 import org.xjge.core.Camera;
 import org.xjge.core.EntityComponent;
 import org.xjge.core.ErrorUtils;
+import org.xjge.core.XJGE;
 import org.xjge.graphics.Color;
 import org.xjge.graphics.GLProgram;
 import org.xjge.graphics.GLShader;
@@ -36,17 +36,19 @@ class Cube extends EntityComponent {
         
         shader = new GLProgram(shaderSourceFiles, "cube");
         
+        XJGE.addGLProgram("test_cube", shader);
+        
         graphics = new Graphics();
         
         float[] vertexData = new float[] {
-            -1,  1, -1, //0
-             1,  1, -1, //1
-             1, -1, -1, //2
-            -1, -1, -1, //3
-            -1,  1,  1, //4
-             1,  1,  1, //5
-             1, -1,  1, //6
-            -1, -1,  1  //7
+            -10,  10, -10, //0
+             10,  10, -10, //1
+             10, -10, -10, //2
+            -10, -10, -10, //3
+            -10,  10,  10, //4
+             10,  10,  10, //5
+             10, -10,  10, //6
+            -10, -10,  10  //7
         };
         
         int[] indexData = new int[] {
