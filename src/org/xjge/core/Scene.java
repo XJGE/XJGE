@@ -40,8 +40,6 @@ public abstract class Scene {
     private Skybox skybox;
     private ShadowMap shadowMap;
     
-    private static final Vector3f noValue = new Vector3f();
-    
     private final Map<UUID, Entity> entities = new HashMap<>();
     
     private final Map<UUID, EntityChangeRequest> entityChangeRequests = new HashMap<>();

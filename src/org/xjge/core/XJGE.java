@@ -23,7 +23,6 @@ import static org.lwjgl.glfw.GLFW.*;
 import org.lwjgl.opengl.GL;
 import static org.lwjgl.opengl.GL32.*;
 import org.xjge.graphics.Color;
-import org.xjge.graphics.PostProcessEffect;
 
 /**
  * Created: Apr 28, 2021
@@ -81,7 +80,7 @@ public final class XJGE {
     private static int tickCount    = 0;
     final static int TICKS_PER_HOUR = 225000;
     
-    public static final String VERSION = "4.0.0-beta5";
+    public static final String VERSION = "4.0.0-beta6";
     private static String scenesPackage;
     private static String cpuModel;
     
