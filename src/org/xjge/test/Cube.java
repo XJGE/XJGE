@@ -1,6 +1,7 @@
 package org.xjge.test;
 
 import java.util.LinkedList;
+import org.joml.Matrix3f;
 import org.joml.Vector3f;
 import static org.lwjgl.opengl.GL30.*;
 import org.lwjgl.system.MemoryUtil;
@@ -25,6 +26,7 @@ class Cube extends EntityComponent {
     
     private final Graphics graphics;
     private final Shader shader;
+    private final Matrix3f normal = new Matrix3f();
     
     Cube(float x, float y, float z, float size) {
         position = new Vector3f(x, y, z);
@@ -40,24 +42,47 @@ class Cube extends EntityComponent {
         
         graphics = new Graphics();
         
+        //(vec3 position), (vec3 normal)
         float[] vertexData = new float[] {
-            -size,  size, -size, //0
-             size,  size, -size, //1
-             size, -size, -size, //2
-            -size, -size, -size, //3
-            -size,  size,  size, //4
-             size,  size,  size, //5
-             size, -size,  size, //6
-            -size, -size,  size  //7
+            //Front
+            -size,  size, -size,  0,  0, -1,
+             size,  size, -size,  0,  0, -1,
+             size, -size, -size,  0,  0, -1,
+            -size, -size, -size,  0,  0, -1,
+            //Back
+             size,  size,  size,  0,  0,  1,
+            -size,  size,  size,  0,  0,  1,
+            -size, -size,  size,  0,  0,  1,
+             size, -size,  size,  0,  0,  1,
+            //Top
+            -size,  size,  size,  0,  1,  0,
+             size,  size,  size,  0,  1,  0,
+             size,  size, -size,  0,  1,  0,
+            -size,  size, -size,  0,  1,  0,
+            //Bottom
+            -size, -size, -size,  0, -1,  0,
+             size, -size, -size,  0, -1,  0,
+             size, -size,  size,  0, -1,  0,
+            -size, -size,  size,  0, -1,  0,
+            //Left
+            -size,  size,  size, -1,  0,  0,
+            -size,  size, -size, -1,  0,  0,
+            -size, -size, -size, -1,  0,  0,
+            -size, -size,  size, -1,  0,  0,
+            //Right
+             size,  size, -size,  1,  0,  0,
+             size,  size,  size,  1,  0,  0,
+             size, -size,  size,  1,  0,  0,
+             size, -size, -size,  1,  0,  0,
         };
         
         int[] indexData = new int[] {
-            1, 5, 6, 6, 2, 1, //Right (+X)
-            4, 0, 3, 3, 7, 4, //Left (-X)
-            4, 5, 1, 1, 0, 4, //Top (+Y)
-            3, 2, 6, 6, 7, 3, //Bottom (-Y)
-            5, 4, 7, 7, 6, 5, //Front (+Z)
-            0, 1, 2, 2, 3, 0  //Back (-Z)
+             0,  1,  2,  2,  3,  0, //Front
+             4,  5,  6,  6,  7,  4, //Back
+             8,  9, 10, 10, 11,  8, //Top
+            12, 13, 14, 14, 15, 12, //Bottom
+            16, 17, 18, 18, 19, 16, //Left
+            20, 21, 22, 22, 23, 20, //Right
         };
         
         graphics.vertices = MemoryUtil.memAllocFloat(vertexData.length);
@@ -70,8 +95,11 @@ class Cube extends EntityComponent {
         
         graphics.bindBuffers();
         
-        glVertexAttribPointer(0, 3, GL_FLOAT, false, (3 * Float.BYTES), 0);
+        glVertexAttribPointer(0, 3, GL_FLOAT, false, (6 * Float.BYTES), 0);
+        glVertexAttribPointer(1, 3, GL_FLOAT, false, (6 * Float.BYTES), (3 * Float.BYTES));
+        
         glEnableVertexAttribArray(0);
+        glEnableVertexAttribArray(1);
         
         MemoryUtil.memFree(graphics.vertices);
         MemoryUtil.memFree(graphics.indices);
@@ -80,15 +108,20 @@ class Cube extends EntityComponent {
     void render(Camera camera) {
         graphics.modelMatrix.translation(position);
         
+        glEnable(GL_DEPTH_TEST);
+        glEnable(GL_CULL_FACE);
         glBindVertexArray(graphics.vao);
         
         shader.use();
-        shader.setUniform("uModel", false, graphics.modelMatrix);
         shader.setUniform("uColor", color.asVector3f());
+        shader.setUniform("uNormal", true, normal);
+        shader.setUniform("uModel", false, graphics.modelMatrix);
         shader.setUniform("uView", false, camera.getViewMatrix());
         shader.setUniform("uProjection", false, camera.getProjectionMatrix());
         
         glDrawElements(GL_TRIANGLES, graphics.indices.capacity(), GL_UNSIGNED_INT, 0);
+        glDisable(GL_CULL_FACE);
+        glDisable(GL_DEPTH_TEST);
         
         ErrorUtils.checkGLError();
     }

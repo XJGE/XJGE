@@ -26,15 +26,6 @@ public class SceneAdd extends Scene implements PropertyChangeListener {
     public SceneAdd() {
         super("test");
         
-        Texture tex1 = Texture.load("test_tex1.png");
-        Texture tex2 = Texture.load("test_tex2.png");
-        Texture tex3 = Texture.load("test_tex3.png");
-        Texture tex4 = Texture.load("test_tex4.png");
-        Texture tex5 = Texture.load("test_tex5.png");
-        Texture tex6 = Texture.load("test_tex6.png");
-        Texture tex7 = Texture.load("test_tex7.png");
-        Texture tex8 = Texture.load("test_tex8.png");
-        
         var entityA = new Entity();
         var entityB = new Entity().addComponent(new CompTestA()).addComponent(new CompTestB());
         var entityC = new Entity().addComponent(new CompTestA()).addComponent(new Cube(0, 0, 10, 1));
