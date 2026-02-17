@@ -1,9 +1,11 @@
 package org.xjge.test;
 
+import java.beans.PropertyChangeEvent;
 import java.util.Map;
 import org.xjge.core.Camera;
 import org.xjge.core.Entity;
 import org.xjge.core.Scene;
+import org.xjge.core.Window;
 import org.xjge.core.XJGE;
 import org.xjge.graphics.Color;
 import org.xjge.graphics.Shader;

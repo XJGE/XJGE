@@ -8,10 +8,11 @@ import org.xjge.core.XJGE;
  * @since 
  */
 public class Main {
-
+    
     public static void main(String[] args) {
         
         XJGE.init(true, "C:/Users/jhoff/Projects/XJGE/art", "org.xjge.test.");
+        new WindowObserver().subscribe();
         XJGE.setScene(new SceneLight());
         XJGE.start();
         

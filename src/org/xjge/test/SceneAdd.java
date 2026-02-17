@@ -1,7 +1,5 @@
 package org.xjge.test;
 
-import java.beans.PropertyChangeEvent;
-import java.beans.PropertyChangeListener;
 import java.util.Map;
 import static org.lwjgl.glfw.GLFW.GLFW_JOYSTICK_2;
 import org.xjge.core.Camera;
@@ -17,7 +15,7 @@ import org.xjge.graphics.Texture;
  * @author J Hoffman
  * @since 
  */
-public class SceneAdd extends Scene implements PropertyChangeListener {
+public class SceneAdd extends Scene {
 
     private boolean subscribed;
     private float angle;
@@ -56,11 +54,6 @@ public class SceneAdd extends Scene implements PropertyChangeListener {
 
     @Override
     public void update(double targetDelta, double trueDelta) {
-        if(!subscribed) {
-            Window.addObserver(this);
-            subscribed = true;
-        }
-        
         for(var entity : queryEntities(CompTestA.class)) {
             
         }
@@ -79,15 +72,6 @@ public class SceneAdd extends Scene implements PropertyChangeListener {
 
     @Override
     public void exit() {
-    }
-
-    @Override
-    public void propertyChange(PropertyChangeEvent evt) {
-        switch(evt.getPropertyName()) {
-            case "WINDOW_WIDTH_CHANGED", "WINDOW_HEIGHT_CHANGED" -> {
-                Window.setResolution(Window.getWidth(), Window.getHeight());
-            }
-        }
     }
 
 }

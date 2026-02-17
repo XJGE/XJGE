@@ -2,6 +2,12 @@
 
 in vec3 ioNormal;
 
+struct Light {
+    vec4 position_type;    // xyz = position/direction, w = type (0=POINT, 1=SPOT, 2=WORLD)
+    vec4 color_brightness; // xyz = color, w = brightness
+    vec4 parameters;       // x = range, y = falloff, zw = unused
+};
+
 uniform vec3 uColor;
 
 out vec4 ioFragColor;

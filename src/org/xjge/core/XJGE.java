@@ -221,6 +221,7 @@ public final class XJGE {
         
         AudioSystem.init();
         InputSystem.init();
+        LightingSystem.init();
         Logger.logSystemInfo();
         Window.initViewports();
         
