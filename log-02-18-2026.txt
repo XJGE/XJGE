@@ -1,0 +1,35 @@
+Feb 18, 01:40:33pm, [INFO], [Shader.java]: Shader program "depth" linked successfully
+****************************************************************************************************
+ OS NAME:	Windows 11
+ JAVA VER:	22.0.2
+ XJGE VER:	4.0.0-beta6
+ GLFW VER:	3.5.0 Win32 WGL Null EGL OSMesa VisualC DLL
+ OPENAL VER:	1.1 ALSOFT 1.24.1
+ OPENGL VER:	4.6.0 NVIDIA 566.07
+****************************************************************************************************
+ CPU MODEL:	Intel(R) Core(TM) Ultra 7 155H
+ GPU MODEL:	NVIDIA GeForce RTX 3050 6GB Laptop GPU/PCIe/SSE2
+ MONITORS:	Found: 1, Primary: "Generic PnP Monitor" (1920x1080 16:9 60hz)
+ SPEAKERS:	Found: 2, Primary: "OpenAL Soft on Headphones (Jared’s AirPods)"
+ GAMEPADS:	Found: 0
+****************************************************************************************************
+
+Feb 18, 01:40:34pm, [INFO], [Shader.java]: Shader program "xjge_viewport" linked successfully
+Feb 18, 01:40:34pm, [INFO], [Shader.java]: Shader program "xjge_bloom" linked successfully
+Feb 18, 01:40:34pm, [WARNING], [ShaderStage.java]: Failed to compile shader file: "shader_cube_fragment.glsl" (0(13) : error C7532: layout qualifier 'binding' requires "#version 420" or later
+0(13) : error C0000: ... or #extension GL_ARB_shading_language_420pack : enable
+)
+Feb 18, 01:40:34pm, [ERROR], [Shader.java]: Failed to link shader program "cube" (Fragment info
+-------------
+0(13) : error C7532: layout qualifier 'binding' requires "#version 420" or later
+0(13) : error C0000: ... or #extension GL_ARB_shading_language_420pack : enable
+(0) : error C2003: incompatible options for link
+)
+java.lang.RuntimeException
+	org.xjge.core.Logger.log(Logger.java:59)
+	org.xjge.core.Logger.logError(Logger.java:147)
+	org.xjge.graphics.Shader.link(Shader.java:65)
+	org.xjge.graphics.Shader.<init>(Shader.java:53)
+	org.xjge.test.Cube.<init>(Cube.java:39)
+	org.xjge.test.SceneLight.<init>(SceneLight.java:25)
+	org.xjge.test.Main.main(Main.java:16)

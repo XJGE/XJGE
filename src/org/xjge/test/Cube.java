@@ -8,6 +8,7 @@ import org.lwjgl.system.MemoryUtil;
 import org.xjge.core.Camera;
 import org.xjge.core.EntityComponent;
 import org.xjge.core.ErrorUtils;
+import org.xjge.core.LightingSystem;
 import org.xjge.core.XJGE;
 import org.xjge.graphics.Color;
 import org.xjge.graphics.Shader;
@@ -113,6 +114,7 @@ class Cube extends EntityComponent {
         glBindVertexArray(graphics.vao);
         
         shader.use();
+        shader.setUniform("uNumLights", LightingSystem.getActiveCount());
         shader.setUniform("uColor", color.asVector3f());
         shader.setUniform("uNormal", true, normal);
         shader.setUniform("uModel", false, graphics.modelMatrix);

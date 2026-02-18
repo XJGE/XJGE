@@ -346,12 +346,13 @@ public final class XJGE {
                         glClearColor(clearColor.getRed(), clearColor.getGreen(), clearColor.getBlue(), 0);
                         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
                         
+                        LightingSystem.render();
+                        
                         viewport.bindDrawBuffers(enableBloom);
                         viewport.render(userShadersView, "camera", projMatrix);
                         
                         currentScene.renderSkybox(viewport.currCamera);
                         currentScene.render(userShadersView, viewport.id, viewport.currCamera);
-                        currentScene.renderLightSources(viewport.currCamera);
                     glBindFramebuffer(GL_FRAMEBUFFER, 0);
                     
                     projMatrix.setOrtho(viewport.width, 0, 0, viewport.height, 0, 1);

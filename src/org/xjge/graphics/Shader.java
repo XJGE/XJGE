@@ -126,11 +126,7 @@ public class Shader implements AssetReloadListener {
      *             appears in the .glsl source file
      */
     private void addUniform(ShaderDataType type, String name) {
-        if(glGetUniformLocation(handle, name) == -1) {
-            Logger.logError("Failed to find uniform variable \"" + name + "\". Check " + 
-                            "variable name or GLSL source file where it is declared", 
-                            null);
-        }
+        if(glGetUniformLocation(handle, name) == -1) return;
         
         try(MemoryStack stack = MemoryStack.stackPush()) {
             switch(type) {
