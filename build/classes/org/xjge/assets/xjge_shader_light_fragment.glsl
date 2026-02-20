@@ -11,5 +11,10 @@ void main() {
     vec4 texColor = texture(uTexture, ioTexCoords);
     if(texColor.a == 0) discard;
     
-    ioFragColor = vec4(ioColor, 1.0) * texColor;
+    if(texColor.g == 1f && texColor.b == 0f) {
+        ioFragColor = vec4(ioColor, 1f);
+    } else {
+        ioFragColor = texColor;
+    }
+    
 }

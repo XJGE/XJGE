@@ -22,14 +22,15 @@ public class SceneLight extends Scene {
         
         //XJGE.setClearColor(Color.WHITE);
         
-        var cubeA = new Entity().addComponent(new Cube(2, 0, 5, 0.5f));
-        var cubeB = new Entity().addComponent(new Cube(-2, 0, 5, 0.5f));
+        var cubeA = new Entity().addComponent(new Cube(2, 0, 7, 0.5f));
+        var cubeB = new Entity().addComponent(new Cube(-2, 0, 7, 0.5f));
         
         addEntity(cubeA);
         addEntity(cubeB);
         
         light = LightingSystem.request();
         light.range = 20f;
+        light.position.z = 2f;
     }
 
     @Override

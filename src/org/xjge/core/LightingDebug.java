@@ -53,10 +53,10 @@ final class LightingDebug {
 
             //(vec2 position), (vec2 texCoords)
             float[] vertexData = {
-                -0.5f, -0.5f,   0f, 0f,
-                 0.5f, -0.5f,   atlas.subImageWidth, 0f,
-                 0.5f,  0.5f,   atlas.subImageWidth, atlas.subImageHeight,
-                -0.5f,  0.5f,   0f, atlas.subImageHeight
+                -0.5f, -0.5f,   0f, atlas.subImageHeight,
+                 0.5f, -0.5f,   atlas.subImageWidth, atlas.subImageHeight,
+                 0.5f,  0.5f,   atlas.subImageWidth, 0f,
+                -0.5f,  0.5f,   0f, 0f
             };
 
             graphics.vertices.put(vertexData).flip();
