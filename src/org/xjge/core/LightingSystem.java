@@ -53,8 +53,8 @@ public final class LightingSystem {
             
             //color_brightness
             buffer.put(light.color.getRed());
-            buffer.put(light.color.getBlue());
             buffer.put(light.color.getGreen());
+            buffer.put(light.color.getBlue());
             buffer.put(light.brightness);
             
             //parameters
