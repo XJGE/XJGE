@@ -22,8 +22,8 @@ public class SceneLight extends Scene {
         
         //XJGE.setClearColor(Color.WHITE);
         
-        var cubeA = new Entity().addComponent(new Cube(2, 0, 5, 1));
-        var cubeB = new Entity().addComponent(new Cube(-2, 0, 5, 1));
+        var cubeA = new Entity().addComponent(new Cube(2, 0, 5, 0.5f));
+        var cubeB = new Entity().addComponent(new Cube(-2, 0, 5, 0.5f));
         
         addEntity(cubeA);
         addEntity(cubeB);

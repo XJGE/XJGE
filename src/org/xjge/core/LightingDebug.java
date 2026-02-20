@@ -143,7 +143,7 @@ final class LightingDebug {
         shader.setUniform("uTexture", 0);
         shader.setUniform("uView", false, camera.getViewMatrix());
         shader.setUniform("uProjection", false, camera.getProjectionMatrix());
-        shader.setUniform("uIconScale", 0.5f);
+        shader.setUniform("uIconScale", 1f);
         
         glDrawElementsInstanced(GL_TRIANGLES, graphics.indices.capacity(), GL_UNSIGNED_INT, 0, instanceCount);
         glBindVertexArray(0);

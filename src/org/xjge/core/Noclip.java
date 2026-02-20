@@ -19,11 +19,11 @@ final class Noclip extends Camera {
     
     boolean[] pressed = new boolean[4];
     
-    float speed = 0.25f;
+    float speed = 0.2f;
     private float pitch;
     private float yaw = 90f;
+    private float speedModifier = 3f;
     private final float sensitivity = 0.10f;
-    private final float speedModifier = 5f;
     
     double prevX;
     double prevY;
@@ -80,6 +80,10 @@ final class Noclip extends Camera {
             prevX = xPos;
             prevY = yPos;
         }
+    }
+    
+    void setSpeedModifier(float value) {
+        speedModifier = (value < 1f) ? 1f : value; //TODO: let users modify this, move noclip/terminal/metrics out of Window class
     }
     
 }
