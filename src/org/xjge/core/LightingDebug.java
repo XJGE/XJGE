@@ -24,7 +24,7 @@ import org.xjge.graphics.Texture;
  */
 final class LightingDebug {
 
-    private static final int INSTANCE_FLOATS = 8;
+    private static final int INSTANCE_FLOATS = 9;
     private final int vboInstance = glGenBuffers();
 
     private final Texture engineIcons;
@@ -79,17 +79,22 @@ final class LightingDebug {
         int stride = INSTANCE_FLOATS * Float.BYTES;
 
         //(vec3 position)
-        glVertexAttribPointer(3, 3, GL_FLOAT, false, stride, 0);
+        glVertexAttribPointer(2, 3, GL_FLOAT, false, stride, 0);
+        glEnableVertexAttribArray(2);
+        glVertexAttribDivisor(2, 1);
+
+        //(vec2 texCoord offset)
+        glVertexAttribPointer(3, 2, GL_FLOAT, false, stride, 3 * Float.BYTES);
         glEnableVertexAttribArray(3);
         glVertexAttribDivisor(3, 1);
 
-        //(vec2 texCoord offset)
-        glVertexAttribPointer(4, 2, GL_FLOAT, false, stride, 3 * Float.BYTES);
+        //(vec3 color)
+        glVertexAttribPointer(4, 3, GL_FLOAT, false, stride, 5 * Float.BYTES);
         glEnableVertexAttribArray(4);
         glVertexAttribDivisor(4, 1);
-
-        //(vec3 color)
-        glVertexAttribPointer(5, 3, GL_FLOAT, false, stride, 5 * Float.BYTES);
+        
+        //(float scale)
+        glVertexAttribPointer(5, 1, GL_FLOAT, false, stride, 8 * Float.BYTES);
         glEnableVertexAttribArray(5);
         glVertexAttribDivisor(5, 1);
 
@@ -97,7 +102,7 @@ final class LightingDebug {
         glBindVertexArray(0);
     }
     
-    private int uploadInstanceData(int activeCount, Light2[] lights) {
+    private int uploadInstanceData(int activeCount, Light2[] lights, Camera camera) {
         instanceBuffer.clear();
 
         int count = 0;
@@ -111,10 +116,13 @@ final class LightingDebug {
                 case WORLD -> atlas.subImageOffsets.get(atlasKey.set(0, 3));
             };
             
+            float distance = camera.position.distance(light.position);
+            
             instanceBuffer.put(light.position.x).put(light.position.y).put(light.position.z);
             instanceBuffer.put(texCoords.x).put(texCoords.y);
             instanceBuffer.put(light.color.getRed()).put(light.color.getGreen()).put(light.color.getBlue());
-
+            instanceBuffer.put((distance > 10) ? distance / 10f : 1f);
+            
             count++;
 
             if(count >= activeCount) break;
@@ -132,7 +140,7 @@ final class LightingDebug {
     void draw(int activeCount, Light2[] lights, Camera camera) {
         if(activeCount == 0) return;
         
-        int instanceCount = uploadInstanceData(activeCount, lights);
+        int instanceCount = uploadInstanceData(activeCount, lights, camera);
         
         glDisable(GL_DEPTH_TEST);
         glBindVertexArray(graphics.vao);
@@ -143,7 +151,6 @@ final class LightingDebug {
         shader.setUniform("uTexture", 0);
         shader.setUniform("uView", false, camera.getViewMatrix());
         shader.setUniform("uProjection", false, camera.getProjectionMatrix());
-        shader.setUniform("uIconScale", 1f);
         
         glDrawElementsInstanced(GL_TRIANGLES, graphics.indices.capacity(), GL_UNSIGNED_INT, 0, instanceCount);
         glBindVertexArray(0);

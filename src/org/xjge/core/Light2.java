@@ -12,6 +12,7 @@ public final class Light2 {
 
     boolean enabled;
     
+    float iconScale         = 1f;
     public float brightness = 1f;
     public float range      = 10f;
     public float falloff    = 1f;
