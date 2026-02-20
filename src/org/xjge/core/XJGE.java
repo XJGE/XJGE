@@ -61,8 +61,6 @@ import org.xjge.graphics.Color;
  */
 public final class XJGE {
     
-    private static boolean showLightSources;
-    
     static Shader depthProgram;
     
     //==== LEGACY FIELDS ABOVE =================================================
@@ -198,7 +196,6 @@ public final class XJGE {
         }
         
         engineIcons = Texture.load("xjge_texture_icons.png");
-        Light.setIconTexture(engineIcons);
         
         engineCommands = new TreeMap<>() {{
             put("help",                 new TCHelp());
@@ -221,7 +218,7 @@ public final class XJGE {
         
         AudioSystem.init();
         InputSystem.init();
-        LightingSystem.init();
+        LightingSystem.init(engineIcons);
         Logger.logSystemInfo();
         Window.initViewports();
         
@@ -351,6 +348,7 @@ public final class XJGE {
                         
                         currentScene.renderSkybox(viewport.currCamera);
                         currentScene.render(userShadersView, viewport.id, viewport.currCamera);
+                        if(debugModeEnabled) LightingSystem.debug(viewport.currCamera);
                     glBindFramebuffer(GL_FRAMEBUFFER, 0);
                     
                     projMatrix.setOrtho(viewport.width, 0, 0, viewport.height, 0, 1);
@@ -605,17 +603,6 @@ public final class XJGE {
             glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, (useLinearFilter) ? GL_LINEAR : GL_NEAREST);
         glBindTexture(GL_TEXTURE_2D, 0);
         */
-    }
-    
-    /**
-     * Obtains a value that determines if the positions of sources of light 
-     * should be exposed.
-     * 
-     * @return if true, icons indicating the color and locations of the light 
-     *         sources will be rendered
-     */
-    static boolean getLightSourcesVisible() {
-        return showLightSources;
     }
     
     /**

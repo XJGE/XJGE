@@ -3,6 +3,7 @@ package org.xjge.core;
 import java.nio.FloatBuffer;
 import org.lwjgl.BufferUtils;
 import static org.lwjgl.opengl.GL31C.*;
+import org.xjge.graphics.Texture;
 
 /**
  * 
@@ -10,13 +11,13 @@ import static org.lwjgl.opengl.GL31C.*;
  * @since 4.0.0
  */
 public final class LightingSystem {
-
+    
     public static final int MAX_LIGHTS = 128;
     private static int ubo;
     private static int activeCount;
     
     private static FloatBuffer buffer;
-    private static final LightingDebug debug = new LightingDebug();
+    private static LightingDebug debug;
     
     private static final Light2[] lights = new Light2[MAX_LIGHTS];
     
@@ -24,7 +25,8 @@ public final class LightingSystem {
         for(int i = 0; i < MAX_LIGHTS; i++) lights[i] = new Light2();
     }
     
-    static void init() {
+    static void init(Texture engineIcons) {
+        debug  = new LightingDebug(engineIcons);
         ubo    = glGenBuffers();
         buffer = BufferUtils.createFloatBuffer(MAX_LIGHTS * 12);
         
@@ -69,6 +71,12 @@ public final class LightingSystem {
         glBindBuffer(GL_UNIFORM_BUFFER, ubo);
         glBufferSubData(GL_UNIFORM_BUFFER, 0, buffer);
         glBindBuffer(GL_UNIFORM_BUFFER, 0);
+        
+        ErrorUtils.checkGLError();
+    }
+    
+    static void debug(Camera camera) {
+        debug.draw(activeCount, lights, camera); //TODO: if showLightSources
     }
     
     public static void release(Light2 light) {
