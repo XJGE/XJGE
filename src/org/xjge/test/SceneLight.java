@@ -39,13 +39,13 @@ public class SceneLight extends Scene {
         lightB = LightingSystem.request();
         lightB.position.set(-4, 2, 8);
         lightB.color.copy(Color.RED);
-        lightB.type = LightType.WORLD;
+        //lightB.type = LightType.WORLD;
         
         //LightB = LightingSystem.request();
         lightC = LightingSystem.request(); //TODO: you can assign this to A or B and it will still work
         lightC.position.set(6, 3, 9);
         lightC.color.copy(Color.BLUE);
-        lightC.type = LightType.SPOT;
+        //lightC.type = LightType.SPOT;
     }
 
     @Override
