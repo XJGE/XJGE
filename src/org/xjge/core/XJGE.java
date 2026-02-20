@@ -301,7 +301,6 @@ public final class XJGE {
                     else                events.poll();
                 } else {
                     currentScene.update(TARGET_DELTA, deltaMetric);
-                    currentScene.updateLightSources();
                 }
                 
                 //Process any change requests to add/remove entities or any of their components
@@ -329,7 +328,6 @@ public final class XJGE {
             }
             
             currentScene.setShadowUniforms();
-            currentScene.setLightingUniforms();
             
             //Render scene from the perspective of each active viewport
             for(Viewport viewport : Window.getViewports()) {
@@ -512,24 +510,6 @@ public final class XJGE {
      */
     public static String getSceneName() {
         return currentScene.name;
-    }
-    
-    /**
-     * Inserts a light object into the current scenes 
-     * {@linkplain Scene#lights lights array} at the specified index. This 
-     * method is particularly useful in instances where lighting effects need 
-     * to exhibit some level of dynamic behavior- such as an explosion in a 
-     * dark tunnel emitting light for a brief period of time, etc.
-     * 
-     * @param index the index in the array to place the light object at
-     * @param light the light object to add
-     */
-    public static void addLight(int index, Light light) {
-        try {
-            currentScene.lights[index] = light;
-        } catch(IndexOutOfBoundsException e) {
-            Logger.logWarning("Failed to add light at index " + index, e);
-        }
     }
     
     /**

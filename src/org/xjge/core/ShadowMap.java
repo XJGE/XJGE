@@ -110,7 +110,7 @@ public final class ShadowMap {
      */
     void generate(Vector3f camUp, Shader depthProgram, Scene scene) {
         lightProj.setOrtho(-frustumSize, frustumSize, -frustumSize, frustumSize, 0f, range);
-        lightView.setLookAt(scene.lights[0].position, lightDir, camUp);
+        //lightView.setLookAt(scene.lights[0].position, lightDir, camUp);
         lightProj.mul(lightView, lightSpace);
         
         depthProgram.use();

@@ -29,12 +29,6 @@ import static org.xjge.core.EntityChangeType.*;
  * @see ShadowMap
  */
 public abstract class Scene {
-
-    /**
-     * The maximum number of light source objects that may be simultaneously 
-     * present in the scene at any given time.
-     */
-    public static final int MAX_LIGHTS = 32;
     
     public final String name;
     private Skybox skybox;
@@ -47,26 +41,6 @@ public abstract class Scene {
     private final Map<EntitySignature, List<Entity>> entityArchetypes = new HashMap<>();
     
     /**
-     * An array that contains every {@link Light} object currently present 
-     * within the scene.
-     * <p>
-     * Like the {@linkplain entities entities collection} the engine makes use
-     * of this array in other places- however it permits a greater degree of 
-     * freedom as the values contained by the light objects are generic and can 
-     * be used for custom lighting solutions should the implementing application 
-     * decide not to utilize the engines built-in lighting utilities.
-     * <p>
-     * NOTE: When using the engines built-in lighting utilities the index of 
-     * zero is reserved for the scenes global light source. This light source 
-     * will illuminate all entities within the scene regardless of their  
-     * physical location or proximity to the light. Additionally, if a shadow 
-     * map is present, it will project its frustum in the direction of the 
-     * origin from the global light source. Any light object placed at the index 
-     * of zero will instantly assume the role of the global light source.
-     */
-    protected final Light[] lights = new Light[MAX_LIGHTS];
-    
-    /**
      * Creates a new 3D scene that will contain entities, light sources, and 
      * camera objects.
      * 
@@ -74,114 +48,6 @@ public abstract class Scene {
      */
     public Scene(String name) {
         this.name = name;
-    }
-    
-    /**
-     * Used to validate whether a shader program has defined a uniform variable
-     * that can be used to store light data provided by the engine.
-     * 
-     * @param glProgram the program to query
-     * @param name the name of the uniform variable to check for
-     * @param value the value to pass to the uniform variable
-     */
-    private void setLightUniform(Shader glProgram, String name, float value) {
-        if(glProgram.containsUniform(name)) {
-            glProgram.use();
-            glProgram.setUniform(name, value);
-        }
-    }
-    
-    /**
-     * Variant of {@link setLightUniform(GLProgram, String, float) setLightProgram()} 
-     * that accepts a 3-component floating point vector.
-     * 
-     * @param glProgram the program to query
-     * @param name the name of the uniform variable to check for
-     * @param value the value to pass to the uniform variable
-     */
-    private void setLightUniform(Shader glProgram, String name, Vector3f value) {
-        if(glProgram.containsUniform(name)) {
-            glProgram.use();
-            glProgram.setUniform(name, value);
-        }
-    }
-    
-    /**
-     * Supplies every light struct in the default fragment shader with uniform 
-     * values from their corresponding {@link Light} objects. Custom shaders 
-     * may also utilize this data provided they include a light struct and 
-     * corresponding uniform array that exhibits the following structure;
-     * <blockquote><pre>
-     * struct Light {
-     *     float brightness;
-     *     float contrast;
-     *     float distance;
-     *     vec3 position;
-     *     vec3 ambient;
-     *     vec3 diffuse;
-     *     vec3 specular;
-     * };
-     * 
-     * ...
-     * 
-     * uniform Light uLights[32]; //Must be no larger than 32!
-     * </pre></blockquote>
-     * This method is called automatically by the engine.
-     */
-    void setLightingUniforms() {
-        /*
-        XJGE.glPrograms.values().forEach(glProgram -> {
-            for(int i = 0; i < Scene.MAX_LIGHTS; i++) {                
-                if(lights[i] != null) {
-                    if(lights[i].enabled) {
-                        setLightUniform(glProgram, "uLights[" + i + "].brightness", lights[i].brightness);
-                        setLightUniform(glProgram, "uLights[" + i + "].contrast",   lights[i].contrast);
-                        setLightUniform(glProgram, "uLights[" + i + "].distance",   lights[i].distance);
-                        setLightUniform(glProgram, "uLights[" + i + "].position",   lights[i].position);
-                        setLightUniform(glProgram, "uLights[" + i + "].ambient",    lights[i].ambientColor.asVector3f());
-                        setLightUniform(glProgram, "uLights[" + i + "].diffuse",    lights[i].diffuseColor.asVector3f());
-                        setLightUniform(glProgram, "uLights[" + i + "].specular",   lights[i].specularColor.asVector3f());
-                    } else {
-                        setLightUniform(glProgram, "uLights[" + i + "].brightness", 0);
-                        setLightUniform(glProgram, "uLights[" + i + "].contrast",   0);
-                        setLightUniform(glProgram, "uLights[" + i + "].distance",   0);
-                        setLightUniform(glProgram, "uLights[" + i + "].position",   noValue);
-                        setLightUniform(glProgram, "uLights[" + i + "].ambient",    noValue);
-                        setLightUniform(glProgram, "uLights[" + i + "].diffuse",    noValue);
-                        setLightUniform(glProgram, "uLights[" + i + "].specular",   noValue);
-                    }
-                }
-            }
-        });
-        */
-    }
-    
-    /**
-     * Updates the current position and icon of every initialized light object.
-     * This method is called automatically by the engine.
-     */
-    void updateLightSources() {
-        if(XJGE.getLightSourcesVisible()) {
-            for(int i = 0; i < MAX_LIGHTS; i++) {
-                if(lights[i] != null) lights[i].update(i);
-            }
-        }
-    }
-    
-    /**
-     * Renders the icons indicating the positions of every initialized light 
-     * object in the scene while debug mode is enabled. This method is called 
-     * automatically by the engine.
-     * 
-     * @param camera the {@link Camera} object of the current {@link Viewport} 
-     *               being rendered
-     */
-    void renderLightSources(Camera camera) {
-        if(XJGE.getLightSourcesVisible()) {
-            for(Light light : lights) {
-                if(light != null) light.render(camera.position, camera.direction, camera.up);
-            }
-        }
     }
     
     /**
@@ -256,9 +122,9 @@ public abstract class Scene {
      *                     be used to generate the shadow map texture
      */
     void renderShadowMap(Vector3f camUp, Shader depthProgram) {
-        if(shadowMap != null && lights[0] != null) {
-            shadowMap.generate(camUp, depthProgram, this);
-        }
+        //if(shadowMap != null && lights[0] != null) {
+            //shadowMap.generate(camUp, depthProgram, this);
+        //}
     }
     
     /**

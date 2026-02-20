@@ -15,7 +15,6 @@ public final class Light2 {
     public float brightness = 1f;
     public float range      = 10f;
     public float falloff    = 1f;
-    public float lifetime   = -1f;
     
     public LightType type = LightType.POINT;
     
@@ -27,7 +26,6 @@ public final class Light2 {
         brightness = 1f;
         range      = 10f;
         falloff    = 1f;
-        lifetime   = -1f;
         type       = LightType.POINT;
         position.zero();
         color.set(1f, 1f, 1f);

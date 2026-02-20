@@ -16,6 +16,7 @@ public final class LightingSystem {
     private static int activeCount;
     
     private static FloatBuffer buffer;
+    private static final LightingDebug debug = new LightingDebug();
     
     private static final Light2[] lights = new Light2[MAX_LIGHTS];
     
