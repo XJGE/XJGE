@@ -10,6 +10,7 @@ import org.xjge.core.ErrorUtils;
 import org.xjge.core.LightingSystem;
 import org.xjge.graphics.Color;
 import org.xjge.graphics.Graphics;
+import org.xjge.graphics.Material;
 
 /**
  * 
@@ -21,6 +22,7 @@ class Prism extends EntityComponent {
     Color color = new Color(1, 1, 1);
     Vector3f position;
     
+    private final Material material = new Material();
     private final Graphics graphics;
     private final Matrix3f normal = new Matrix3f();
     
@@ -105,7 +107,13 @@ class Prism extends EntityComponent {
         ObjectShader.getInstance().use();
         ObjectShader.getInstance().setUniform("uNumLights", LightingSystem.getActiveCount());
         ObjectShader.getInstance().setUniform("uColor", color.asVector3f());
+        ObjectShader.getInstance().setUniform("uCamPos", camera.position);
         ObjectShader.getInstance().setUniform("uNormal", true, normal);
+        ObjectShader.getInstance().setUniform("uMaterial.roughness", material.roughness);
+        //ObjectShader.getInstance().setUniform("uMaterial.metallic", material.metallic);
+        ObjectShader.getInstance().setUniform("uMaterial.ambientFactor", material.ambientFactor);
+        ObjectShader.getInstance().setUniform("uMaterial.albedo", material.albedo);
+        ObjectShader.getInstance().setUniform("uMaterial.specular", material.specular);
         ObjectShader.getInstance().setUniform("uModel", false, graphics.modelMatrix);
         ObjectShader.getInstance().setUniform("uView", false, camera.getViewMatrix());
         ObjectShader.getInstance().setUniform("uProjection", false, camera.getProjectionMatrix());

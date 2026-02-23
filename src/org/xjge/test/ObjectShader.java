@@ -39,6 +39,10 @@ final class ObjectShader {
         shader.use();
     }
     
+    void setUniform(String name, float value) {
+        shader.setUniform(name, value);
+    }
+    
     void setUniform(String name, int value) {
         shader.setUniform(name, value);
     }

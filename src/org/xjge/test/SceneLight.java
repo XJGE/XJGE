@@ -7,6 +7,7 @@ import org.xjge.core.Light;
 import org.xjge.core.LightType;
 import org.xjge.core.LightingSystem;
 import org.xjge.core.Scene;
+import org.xjge.core.XJGE;
 import org.xjge.graphics.Color;
 import org.xjge.graphics.Shader;
 
@@ -24,7 +25,7 @@ public class SceneLight extends Scene {
     public SceneLight() {
         super("test_light");
         
-        //XJGE.setClearColor(Color.WHITE);
+        XJGE.setClearColor(Color.BLACK);
         
         var cubeA = new Entity().addComponent(new Prism(2, 0, 7, 1f, 1f, 1f));
         var cubeB = new Entity().addComponent(new Prism(-2, 0, 7, 1f, 1f, 1f));
@@ -35,7 +36,9 @@ public class SceneLight extends Scene {
         addEntity(plane);
         
         lightA = LightingSystem.request();
-        lightA.position.set(2, 1.5f, 7);
+        lightA.position.set(2, 1.5f, -7);
+        lightA.brightness = 0.5f;
+        lightA.color.copy(Color.PURPLE);
         
         lightB = LightingSystem.request();
         lightB.position.set(-2, 1.5f, 7);
