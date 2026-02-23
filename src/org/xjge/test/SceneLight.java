@@ -3,7 +3,7 @@ package org.xjge.test;
 import java.util.Map;
 import org.xjge.core.Camera;
 import org.xjge.core.Entity;
-import org.xjge.core.Light2;
+import org.xjge.core.Light;
 import org.xjge.core.LightType;
 import org.xjge.core.LightingSystem;
 import org.xjge.core.Scene;
@@ -17,9 +17,9 @@ import org.xjge.graphics.Shader;
  */
 public class SceneLight extends Scene {
 
-    Light2 lightA;
-    Light2 lightB;
-    Light2 lightC;
+    Light lightA;
+    Light lightB;
+    Light lightC;
     
     public SceneLight() {
         super("test_light");
@@ -32,19 +32,18 @@ public class SceneLight extends Scene {
         addEntity(cubeA);
         addEntity(cubeB);
         
-        lightA = LightingSystem.request();
-        lightA.range = 20f;
-        lightA.position.z = 2f;
+        //lightA = LightingSystem.request();
+        //lightA.range = 20f;
+        //lightA.position.z = 2f;
         
         lightB = LightingSystem.request();
         lightB.position.set(-4, 2, 8);
-        lightB.color.copy(Color.RED);
-        //lightB.type = LightType.WORLD;
+        lightB.type = LightType.WORLD;
         
         //LightB = LightingSystem.request();
-        lightC = LightingSystem.request(); //TODO: you can assign this to A or B and it will still work
-        lightC.position.set(6, 3, 9);
-        lightC.color.copy(Color.BLUE);
+        //lightC = LightingSystem.request(); //TODO: you can assign this to A or B and it will still work
+        //lightC.position.set(6, 3, 9);
+        //lightC.color.copy(Color.BLUE);
         //lightC.type = LightType.SPOT;
     }
 

@@ -19,10 +19,10 @@ public final class LightingSystem {
     private static FloatBuffer buffer;
     private static LightingDebug debug;
     
-    private static final Light2[] lights = new Light2[MAX_LIGHTS];
+    private static final Light[] lights = new Light[MAX_LIGHTS];
     
     static {
-        for(int i = 0; i < MAX_LIGHTS; i++) lights[i] = new Light2();
+        for(int i = 0; i < MAX_LIGHTS; i++) lights[i] = new Light();
     }
     
     static void init(Texture engineIcons) {
@@ -79,7 +79,7 @@ public final class LightingSystem {
         debug.draw(activeCount, lights, camera); //TODO: if showLightSources
     }
     
-    public static void release(Light2 light) {
+    public static void release(Light light) {
         light.reset();
     }
     
@@ -87,7 +87,7 @@ public final class LightingSystem {
         return activeCount;
     }
     
-    public static Light2 request() {
+    public static Light request() {
         for(int i = 0; i < MAX_LIGHTS; i++) {
             if(!lights[i].enabled) {
                 lights[i].enabled = true;

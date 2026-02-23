@@ -102,12 +102,12 @@ final class LightingDebug {
         glBindVertexArray(0);
     }
     
-    private int uploadInstanceData(int activeCount, Light2[] lights, Camera camera) {
+    private int uploadInstanceData(int activeCount, Light[] lights, Camera camera) {
         instanceBuffer.clear();
 
         int count = 0;
 
-        for(Light2 light : lights) {
+        for(Light light : lights) {
             if(!light.enabled)continue;
             
             Vector2f texCoords = switch (light.type) {
@@ -137,7 +137,7 @@ final class LightingDebug {
         return count;
     }
     
-    void draw(int activeCount, Light2[] lights, Camera camera) {
+    void draw(int activeCount, Light[] lights, Camera camera) {
         if(activeCount == 0) return;
         
         int instanceCount = uploadInstanceData(activeCount, lights, camera);

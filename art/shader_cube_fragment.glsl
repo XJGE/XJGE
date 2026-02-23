@@ -30,7 +30,7 @@ void main() {
 
         if(light.position_type.w == 2.0) {
             //WORLD (directional)
-            lightDir = normalize(-light.position_type.xyz);
+            lightDir = normalize(light.position_type.xyz);
         } else {
             //POINT
             vec3 lightPos = light.position_type.xyz;
@@ -40,7 +40,7 @@ void main() {
         float diff = max(dot(norm, lightDir), 0.0);
         vec3 color = light.color_brightness.rgb;
         float brightness = light.color_brightness.w;
-
+        
         result += diff * color * brightness;
     }
 
