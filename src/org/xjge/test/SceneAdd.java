@@ -26,7 +26,7 @@ public class SceneAdd extends Scene {
         
         var entityA = new Entity();
         var entityB = new Entity().addComponent(new CompTestA()).addComponent(new CompTestB());
-        var entityC = new Entity().addComponent(new CompTestA()).addComponent(new Cube(0, 0, 10, 1));
+        var entityC = new Entity().addComponent(new CompTestA()).addComponent(new Prism(0, 0, 10, 1, 1, 1));
         
         System.out.println("EntityA: " + entityA.uuid);
         System.out.println("EntityB: " + entityB.uuid);
@@ -61,8 +61,8 @@ public class SceneAdd extends Scene {
 
     @Override
     public void render(Map<String, Shader> glPrograms, int viewportID, Camera camera, int depthTexHandle) {
-        for(var entity : queryEntities(Cube.class)) {
-            entity.getComponent(Cube.class).render(camera);
+        for(var entity : queryEntities(Prism.class)) {
+            entity.getComponent(Prism.class).render(camera);
         }
     }
 

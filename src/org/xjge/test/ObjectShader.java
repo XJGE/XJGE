@@ -22,8 +22,8 @@ final class ObjectShader {
     
     private ObjectShader() {
         var shaderSourceFiles = new LinkedList<ShaderStage>() {{
-            add(ShaderStage.load("shader_cube_vertex.glsl", GL_VERTEX_SHADER));
-            add(ShaderStage.load("shader_cube_fragment.glsl", GL_FRAGMENT_SHADER));
+            add(ShaderStage.load("shader_object_vertex.glsl", GL_VERTEX_SHADER));
+            add(ShaderStage.load("shader_object_fragment.glsl", GL_FRAGMENT_SHADER));
         }};
         
         shader = new Shader(shaderSourceFiles, "test_object");

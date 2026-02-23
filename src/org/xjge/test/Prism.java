@@ -16,7 +16,7 @@ import org.xjge.graphics.Graphics;
  * @author J Hoffman
  * @since 
  */
-class Cube extends EntityComponent {
+class Prism extends EntityComponent {
 
     Color color = new Color(1, 1, 1);
     Vector3f position;
@@ -24,42 +24,46 @@ class Cube extends EntityComponent {
     private final Graphics graphics;
     private final Matrix3f normal = new Matrix3f();
     
-    Cube(float x, float y, float z, float size) {
+    Prism(float x, float y, float z, float width, float height, float length) {
         position = new Vector3f(x, y, z);
         graphics = new Graphics();
+        
+        float halfWidth  = width / 2f;
+        float halfHeight = height / 2f;
+        float halfLength = length / 2f;
         
         //(vec3 position), (vec3 normal)
         float[] vertexData = new float[] {
             //Front
-            -size,  size, -size,  0,  0, -1,
-             size,  size, -size,  0,  0, -1,
-             size, -size, -size,  0,  0, -1,
-            -size, -size, -size,  0,  0, -1,
+            -halfWidth,  halfHeight, -halfLength,  0,  0, -1,
+             halfWidth,  halfHeight, -halfLength,  0,  0, -1,
+             halfWidth, -halfHeight, -halfLength,  0,  0, -1,
+            -halfWidth, -halfHeight, -halfLength,  0,  0, -1,
             //Back
-             size,  size,  size,  0,  0,  1,
-            -size,  size,  size,  0,  0,  1,
-            -size, -size,  size,  0,  0,  1,
-             size, -size,  size,  0,  0,  1,
+             halfWidth,  halfHeight,  halfLength,  0,  0,  1,
+            -halfWidth,  halfHeight,  halfLength,  0,  0,  1,
+            -halfWidth, -halfHeight,  halfLength,  0,  0,  1,
+             halfWidth, -halfHeight,  halfLength,  0,  0,  1,
             //Top
-            -size,  size,  size,  0,  1,  0,
-             size,  size,  size,  0,  1,  0,
-             size,  size, -size,  0,  1,  0,
-            -size,  size, -size,  0,  1,  0,
+            -halfWidth,  halfHeight,  halfLength,  0,  1,  0,
+             halfWidth,  halfHeight,  halfLength,  0,  1,  0,
+             halfWidth,  halfHeight, -halfLength,  0,  1,  0,
+            -halfWidth,  halfHeight, -halfLength,  0,  1,  0,
             //Bottom
-            -size, -size, -size,  0, -1,  0,
-             size, -size, -size,  0, -1,  0,
-             size, -size,  size,  0, -1,  0,
-            -size, -size,  size,  0, -1,  0,
+            -halfWidth, -halfHeight, -halfLength,  0, -1,  0,
+             halfWidth, -halfHeight, -halfLength,  0, -1,  0,
+             halfWidth, -halfHeight,  halfLength,  0, -1,  0,
+            -halfWidth, -halfHeight,  halfLength,  0, -1,  0,
             //Left
-            -size,  size,  size, -1,  0,  0,
-            -size,  size, -size, -1,  0,  0,
-            -size, -size, -size, -1,  0,  0,
-            -size, -size,  size, -1,  0,  0,
+            -halfWidth,  halfHeight,  halfLength, -1,  0,  0,
+            -halfWidth,  halfHeight, -halfLength, -1,  0,  0,
+            -halfWidth, -halfHeight, -halfLength, -1,  0,  0,
+            -halfWidth, -halfHeight,  halfLength, -1,  0,  0,
             //Right
-             size,  size, -size,  1,  0,  0,
-             size,  size,  size,  1,  0,  0,
-             size, -size,  size,  1,  0,  0,
-             size, -size, -size,  1,  0,  0,
+             halfWidth,  halfHeight, -halfLength,  1,  0,  0,
+             halfWidth,  halfHeight,  halfLength,  1,  0,  0,
+             halfWidth, -halfHeight,  halfLength,  1,  0,  0,
+             halfWidth, -halfHeight, -halfLength,  1,  0,  0,
         };
         
         int[] indexData = new int[] {

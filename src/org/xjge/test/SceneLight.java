@@ -26,11 +26,13 @@ public class SceneLight extends Scene {
         
         //XJGE.setClearColor(Color.WHITE);
         
-        var cubeA = new Entity().addComponent(new Cube(2, 0, 7, 0.5f));
-        var cubeB = new Entity().addComponent(new Cube(-2, 0, 7, 0.5f));
+        var cubeA = new Entity().addComponent(new Prism(2, 0, 7, 1f, 1f, 1f));
+        var cubeB = new Entity().addComponent(new Prism(-2, 0, 7, 1f, 1f, 1f));
+        var plane = new Entity().addComponent(new Prism(0, -1f, 0, 20f, 0.25f, 20f));
         
         addEntity(cubeA);
         addEntity(cubeB);
+        addEntity(plane);
         
         lightA = LightingSystem.request();
         lightA.position.set(2, 1.5f, 7);
@@ -52,8 +54,8 @@ public class SceneLight extends Scene {
 
     @Override
     public void render(Map<String, Shader> glPrograms, int viewportID, Camera camera, int depthTexHandle) {
-        for(var cube : queryEntities(Cube.class)) {
-            cube.getComponent(Cube.class).render(camera);
+        for(var cube : queryEntities(Prism.class)) {
+            cube.getComponent(Prism.class).render(camera);
         }
     }
 
