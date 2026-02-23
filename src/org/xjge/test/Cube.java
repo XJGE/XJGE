@@ -1,6 +1,5 @@
 package org.xjge.test;
 
-import java.util.LinkedList;
 import org.joml.Matrix3f;
 import org.joml.Vector3f;
 import static org.lwjgl.opengl.GL30.*;
@@ -9,10 +8,7 @@ import org.xjge.core.Camera;
 import org.xjge.core.EntityComponent;
 import org.xjge.core.ErrorUtils;
 import org.xjge.core.LightingSystem;
-import org.xjge.core.XJGE;
 import org.xjge.graphics.Color;
-import org.xjge.graphics.Shader;
-import org.xjge.graphics.ShaderStage;
 import org.xjge.graphics.Graphics;
 
 /**
@@ -26,21 +22,10 @@ class Cube extends EntityComponent {
     Vector3f position;
     
     private final Graphics graphics;
-    private final Shader shader;
     private final Matrix3f normal = new Matrix3f();
     
     Cube(float x, float y, float z, float size) {
         position = new Vector3f(x, y, z);
-        
-        var shaderSourceFiles = new LinkedList<ShaderStage>() {{
-            add(ShaderStage.load("shader_cube_vertex.glsl", GL_VERTEX_SHADER));
-            add(ShaderStage.load("shader_cube_fragment.glsl", GL_FRAGMENT_SHADER));
-        }};
-        
-        shader = new Shader(shaderSourceFiles, "cube");
-        
-        XJGE.addGLProgram("test_cube", shader);
-        
         graphics = new Graphics();
         
         //(vec3 position), (vec3 normal)
@@ -113,13 +98,13 @@ class Cube extends EntityComponent {
         glEnable(GL_CULL_FACE);
         glBindVertexArray(graphics.vao);
         
-        shader.use();
-        shader.setUniform("uNumLights", LightingSystem.getActiveCount());
-        shader.setUniform("uColor", color.asVector3f());
-        shader.setUniform("uNormal", true, normal);
-        shader.setUniform("uModel", false, graphics.modelMatrix);
-        shader.setUniform("uView", false, camera.getViewMatrix());
-        shader.setUniform("uProjection", false, camera.getProjectionMatrix());
+        ObjectShader.getInstance().use();
+        ObjectShader.getInstance().setUniform("uNumLights", LightingSystem.getActiveCount());
+        ObjectShader.getInstance().setUniform("uColor", color.asVector3f());
+        ObjectShader.getInstance().setUniform("uNormal", true, normal);
+        ObjectShader.getInstance().setUniform("uModel", false, graphics.modelMatrix);
+        ObjectShader.getInstance().setUniform("uView", false, camera.getViewMatrix());
+        ObjectShader.getInstance().setUniform("uProjection", false, camera.getProjectionMatrix());
         
         glDrawElements(GL_TRIANGLES, graphics.indices.capacity(), GL_UNSIGNED_INT, 0);
         glDisable(GL_CULL_FACE);
