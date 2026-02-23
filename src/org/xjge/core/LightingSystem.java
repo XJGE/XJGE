@@ -28,10 +28,10 @@ public final class LightingSystem {
     static void init(Texture engineIcons) {
         debug  = new LightingDebug(engineIcons);
         ubo    = glGenBuffers();
-        buffer = BufferUtils.createFloatBuffer(MAX_LIGHTS * 12);
+        buffer = BufferUtils.createFloatBuffer(MAX_LIGHTS * 16);
         
         glBindBuffer(GL_UNIFORM_BUFFER, ubo);
-        glBufferData(GL_UNIFORM_BUFFER, MAX_LIGHTS * 48L, GL_DYNAMIC_DRAW);
+        glBufferData(GL_UNIFORM_BUFFER, MAX_LIGHTS * 64L, GL_DYNAMIC_DRAW);
         glBindBufferBase(GL_UNIFORM_BUFFER, 0, ubo);
         glBindBuffer(GL_UNIFORM_BUFFER, 0);
     }
@@ -51,6 +51,12 @@ public final class LightingSystem {
             buffer.put(light.position.z);
             buffer.put((float) light.type.ordinal());
             
+            //direction
+            buffer.put(light.direction.x);
+            buffer.put(light.direction.y);
+            buffer.put(light.direction.z);
+            buffer.put(0f);
+            
             //color_brightness
             buffer.put(light.color.getRed());
             buffer.put(light.color.getGreen());
@@ -60,8 +66,8 @@ public final class LightingSystem {
             //parameters
             buffer.put(light.range);
             buffer.put(light.falloff);
-            buffer.put(0f);
-            buffer.put(0f);
+            buffer.put((float) Math.cos(Math.toRadians(light.innerCone)));
+            buffer.put((float) Math.cos(Math.toRadians(light.outerCone)));
             
             activeCount++;
         }

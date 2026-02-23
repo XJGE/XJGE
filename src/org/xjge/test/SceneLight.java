@@ -32,19 +32,18 @@ public class SceneLight extends Scene {
         addEntity(cubeA);
         addEntity(cubeB);
         
-        //lightA = LightingSystem.request();
-        //lightA.range = 20f;
-        //lightA.position.z = 2f;
+        lightA = LightingSystem.request();
+        lightA.position.set(2, 1.5f, 7);
         
         lightB = LightingSystem.request();
-        lightB.position.set(-4, 2, 8);
-        lightB.type = LightType.WORLD;
+        lightB.position.set(-2, 1.5f, 7);
+        lightB.type = LightType.SPOT;
+        lightB.color.copy(Color.RED);
         
         //LightB = LightingSystem.request();
-        //lightC = LightingSystem.request(); //TODO: you can assign this to A or B and it will still work
-        //lightC.position.set(6, 3, 9);
-        //lightC.color.copy(Color.BLUE);
-        //lightC.type = LightType.SPOT;
+        lightC = LightingSystem.request(); //TODO: you can assign this to A or B and it will still work
+        lightC.position.set(4, 5, 5);
+        lightC.type = LightType.WORLD;
     }
 
     @Override

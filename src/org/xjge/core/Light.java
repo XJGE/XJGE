@@ -15,11 +15,14 @@ public final class Light {
     public float brightness = 1f;
     public float range      = 10f;
     public float falloff    = 1f;
+    public float innerCone  = 20f;
+    public float outerCone  = 30f;
     
     public LightType type = LightType.POINT;
     
-    public final Vector3f position = new Vector3f();
-    public final Color color       = new Color(1f, 1f, 1f);
+    public final Vector3f position  = new Vector3f();
+    public final Vector3f direction = new Vector3f(0f, -1f, 0f);
+    public final Color color        = new Color(1f, 1f, 1f);
     
     void reset() {
         enabled    = false;
