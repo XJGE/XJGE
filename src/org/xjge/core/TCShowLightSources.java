@@ -11,7 +11,7 @@ import org.xjge.graphics.Color;
 final class TCShowLightSources extends TerminalCommand {
 
     TCShowLightSources() {
-        super("Changes whether or not vertical sync is enabled.",
+        super("Changes whether or not light sourc icons are visible.",
 
               useGenericShowing("light source visibility"),
 
