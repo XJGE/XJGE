@@ -211,6 +211,7 @@ public final class XJGE {
             put("setSpeaker",           new TCSetSpeaker());
             put("setVSyncEnabled",      new TCSetVSyncEnabled());
             put("setVideoMode",         new TCSetVideoMode());
+            put("showLightSources",     new TCShowLightSources());
             put("terminate",            new TCTerminate());
         }};
         

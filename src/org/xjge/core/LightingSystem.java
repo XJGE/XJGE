@@ -12,6 +12,8 @@ import org.xjge.graphics.Texture;
  */
 public final class LightingSystem {
     
+    static boolean showLightSources;
+    
     public static final int MAX_LIGHTS = 128;
     private static int ubo;
     private static int activeCount;
@@ -82,7 +84,7 @@ public final class LightingSystem {
     }
     
     static void debug(Camera camera) {
-        debug.draw(activeCount, lights, camera); //TODO: if showLightSources
+        if(showLightSources) debug.draw(activeCount, lights, camera);
     }
     
     public static void release(Light light) {
