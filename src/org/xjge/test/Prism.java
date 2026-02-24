@@ -19,6 +19,8 @@ import org.xjge.graphics.Material;
  */
 class Prism extends EntityComponent {
 
+    float bloomThreshold = 1f;
+    
     Vector3f position;
     Color color = new Color(1, 1, 1);
     Material material = new Material();
@@ -105,12 +107,13 @@ class Prism extends EntityComponent {
         glBindVertexArray(graphics.vao);
         
         ObjectShader.getInstance().use();
+        ObjectShader.getInstance().setUniform("uBloomThreshold", bloomThreshold);
         ObjectShader.getInstance().setUniform("uNumLights", LightingSystem.getActiveCount());
         ObjectShader.getInstance().setUniform("uColor", color.asVector3f());
         ObjectShader.getInstance().setUniform("uCamPos", camera.position);
         ObjectShader.getInstance().setUniform("uNormal", true, normal);
         ObjectShader.getInstance().setUniform("uMaterial.roughness", material.roughness);
-        //ObjectShader.getInstance().setUniform("uMaterial.metallic", material.metallic);
+        ObjectShader.getInstance().setUniform("uMaterial.metallic", material.metallic);
         ObjectShader.getInstance().setUniform("uMaterial.ambientFactor", material.ambientFactor);
         ObjectShader.getInstance().setUniform("uMaterial.albedo", material.albedo);
         ObjectShader.getInstance().setUniform("uMaterial.specular", material.specular);

@@ -1,28 +1,9 @@
-Feb 23, 05:30:40pm, [INFO], [Shader.java]: Shader program "depth" linked successfully
-Feb 23, 05:30:41pm, [INFO], [Shader.java]: Shader program "xjge_lighting_debug" linked successfully
-****************************************************************************************************
- OS NAME:	Windows 11
- JAVA VER:	22.0.2
- XJGE VER:	4.0.0-beta6
- GLFW VER:	3.5.0 Win32 WGL Null EGL OSMesa VisualC DLL
- OPENAL VER:	1.1 ALSOFT 1.24.1
- OPENGL VER:	4.6.0 NVIDIA 566.07
-****************************************************************************************************
- CPU MODEL:	Intel(R) Core(TM) Ultra 7 155H
- GPU MODEL:	NVIDIA GeForce RTX 3050 6GB Laptop GPU/PCIe/SSE2
- MONITORS:	Found: 2, Primary: "Generic PnP Monitor" (1920x1080 16:9 60hz)
- SPEAKERS:	Found: 2, Primary: "OpenAL Soft on Headphones (Jared’s AirPods)"
- GAMEPADS:	Found: 0
-****************************************************************************************************
-
-Feb 23, 05:30:41pm, [INFO], [Shader.java]: Shader program "xjge_viewport" linked successfully
-Feb 23, 05:30:41pm, [INFO], [Shader.java]: Shader program "xjge_bloom" linked successfully
-Feb 23, 05:30:41pm, [INFO], [XJGE.java]: Current scene changed to "test_light"
-Feb 23, 05:30:41pm, [WARNING], [ShaderStage.java]: Failed to compile shader file: "shader_object_fragment.glsl" (0(83) : error C1115: unable to find compatible overloaded function "mix(vec3, float)"
+Feb 23, 06:04:58pm, [INFO], [Shader.java]: Shader program "depth" linked successfully
+Feb 23, 06:04:59pm, [WARNING], [ShaderStage.java]: Failed to compile shader file: "xjge_shader_light_fragment.glsl" (0(21) : error C7011: implicit cast from "int" to "vec4"
 )
-Feb 23, 05:30:41pm, [ERROR], [Shader.java]: Failed to link shader program "test_object" (Fragment info
+Feb 23, 06:04:59pm, [ERROR], [Shader.java]: Failed to link shader program "xjge_lighting_debug" (Fragment info
 -------------
-0(83) : error C1115: unable to find compatible overloaded function "mix(vec3, float)"
+0(21) : error C7011: implicit cast from "int" to "vec4"
 (0) : error C2003: incompatible options for link
 )
 java.lang.RuntimeException
@@ -30,10 +11,7 @@ java.lang.RuntimeException
 	org.xjge.core.Logger.logError(Logger.java:147)
 	org.xjge.graphics.Shader.link(Shader.java:65)
 	org.xjge.graphics.Shader.<init>(Shader.java:53)
-	org.xjge.test.ObjectShader.<init>(ObjectShader.java:29)
-	org.xjge.test.ObjectShader.getInstance(ObjectShader.java:34)
-	org.xjge.test.Prism.render(Prism.java:107)
-	org.xjge.test.SceneLight.render(SceneLight.java:61)
-	org.xjge.core.Scene.render(Scene.java:167)
-	org.xjge.core.XJGE.start(XJGE.java:350)
-	org.xjge.test.Main.main(Main.java:17)
+	org.xjge.core.LightingDebug.<init>(LightingDebug.java:46)
+	org.xjge.core.LightingSystem.init(LightingSystem.java:29)
+	org.xjge.core.XJGE.init(XJGE.java:221)
+	org.xjge.test.Main.main(Main.java:14)

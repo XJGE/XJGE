@@ -17,13 +17,16 @@ struct Material {
     vec3 specular;
 };
 
-layout (std140) uniform LightBlock {
+layout(std140) uniform LightBlock {
     Light lights[MAX_LIGHTS];
 };
+
+layout(location = 1) out vec4 ioBrightColor;
 
 in vec3 ioNormal;
 in vec3 ioFragPos;
 
+uniform float uBloomThreshold;
 uniform int uNumLights;
 uniform vec3 uColor;
 uniform vec3 uCamPos;
@@ -87,5 +90,9 @@ void main() {
         result += (ambient + diffuse + specular) * attenuation;
     }
 
-    ioFragColor = vec4(uColor * result, 1.0);
+    ioFragColor   = vec4(uColor * result, 1.0);
+
+    float bloomBrightness = dot(ioFragColor.rgb, vec3(0.2126, 0.7152, 0.0722));
+    ioBrightColor = (bloomBrightness > uBloomThreshold) ? vec4(ioFragColor.rgb, 1) : vec4(0, 0, 0, 1);
+
 }

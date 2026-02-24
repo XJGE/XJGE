@@ -1,9 +1,9 @@
 #version 330 core
 
-in vec3 ioTexCoords;
-
 layout (location = 0) out vec4 ioFragColor;
 layout (location = 1) out vec4 ioBrightColor;
+
+in vec3 ioTexCoords;
 
 uniform samplerCube uSkyTexture;
 uniform float uBloomThreshold;

@@ -26,7 +26,7 @@ public class SceneLight extends Scene {
         super("test_light");
         
         XJGE.setClearColor(Color.BLACK);
-        //XJGE.enableBloom = true;
+        XJGE.enableBloom = true;
         
         var cubeA = new Entity().addComponent(new Prism(2, 0, 5, 1f, 1f, 1f));
         var cubeB = new Entity().addComponent(new Prism(-2, 0, 6.25f, 1.5f, 1.5f, 1.5f));

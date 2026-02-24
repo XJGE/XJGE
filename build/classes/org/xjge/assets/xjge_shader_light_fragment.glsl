@@ -1,5 +1,7 @@
 #version 330 core
 
+layout(location = 1) out vec4 ioBrightColor;
+
 in vec2 ioTexCoords;
 in vec3 ioColor;
 
@@ -16,5 +18,7 @@ void main() {
     } else {
         ioFragColor = texColor;
     }
+
+    ioBrightColor = vec4(0);
     
 }
