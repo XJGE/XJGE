@@ -26,13 +26,27 @@ public class SceneLight extends Scene {
         super("test_light");
         
         XJGE.setClearColor(Color.BLACK);
+        //XJGE.enableBloom = true;
         
-        var cubeA = new Entity().addComponent(new Prism(2, 0, 7, 1f, 1f, 1f));
-        var cubeB = new Entity().addComponent(new Prism(-2, 0, 7, 1f, 1f, 1f));
+        var cubeA = new Entity().addComponent(new Prism(2, 0, 5, 1f, 1f, 1f));
+        var cubeB = new Entity().addComponent(new Prism(-2, 0, 6.25f, 1.5f, 1.5f, 1.5f));
+        var cubeC = new Entity().addComponent(new Prism(-4, 0, -7, 2f, 6f, 2f));
         var plane = new Entity().addComponent(new Prism(0, -1f, 0, 20f, 0.25f, 20f));
+        
+        cubeA.getComponent(Prism.class).material.roughness = 0.7f;
+        cubeA.getComponent(Prism.class).material.ambientFactor = 0.3f;
+        cubeA.getComponent(Prism.class).material.specular.set(0.04f);
+        
+        cubeC.getComponent(Prism.class).material.roughness = 0.1f;
+        cubeC.getComponent(Prism.class).material.ambientFactor = 0.05f;
+        cubeC.getComponent(Prism.class).material.metallic = 1f;
+        
+        plane.getComponent(Prism.class).material.roughness = 0.7f;
+        plane.getComponent(Prism.class).material.specular.set(0.5f);
         
         addEntity(cubeA);
         addEntity(cubeB);
+        addEntity(cubeC);
         addEntity(plane);
         
         lightA = LightingSystem.request();

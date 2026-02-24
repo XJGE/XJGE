@@ -19,10 +19,10 @@ import org.xjge.graphics.Material;
  */
 class Prism extends EntityComponent {
 
-    Color color = new Color(1, 1, 1);
     Vector3f position;
+    Color color = new Color(1, 1, 1);
+    Material material = new Material();
     
-    private final Material material = new Material();
     private final Graphics graphics;
     private final Matrix3f normal = new Matrix3f();
     

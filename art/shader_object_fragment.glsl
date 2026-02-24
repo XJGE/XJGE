@@ -11,7 +11,7 @@ struct Light {
 
 struct Material {
     float roughness;
-    //float metallic;
+    float metallic;
     float ambientFactor;
     vec3 albedo;
     vec3 specular;
@@ -76,9 +76,13 @@ void main() {
         float shininess = mix(4.0, 128.0, 1.0 - uMaterial.roughness);
         float spec      = pow(max(dot(viewDir, reflectDir), 0.0), shininess);
 
-        vec3 ambient  = uMaterial.ambientFactor * uMaterial.albedo * lightColor;
-        vec3 diffuse  = diff * uMaterial.albedo * lightColor * brightness;
-        vec3 specular = spec * uMaterial.specular * lightColor;
+        float metal   = uMaterial.metallic;
+        float fresnel = pow(1.0 - max(dot(viewDir, norm), 0), 5.0);
+
+        vec3 ambient  = uMaterial.ambientFactor * uMaterial.albedo * lightColor * (1.0 - metal);
+        vec3 diffuse  = diff * uMaterial.albedo * lightColor * brightness * (1.0 - metal);
+        vec3 specular = spec * mix(uMaterial.specular, uMaterial.albedo, metal) * lightColor * brightness;
+        specular *= mix(1, 2.5, fresnel);
 
         result += (ambient + diffuse + specular) * attenuation;
     }
