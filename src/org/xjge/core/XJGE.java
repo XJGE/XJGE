@@ -2,7 +2,6 @@ package org.xjge.core;
 
 import org.xjge.graphics.Texture;
 import org.xjge.graphics.Shader;
-import org.xjge.graphics.ShaderStage;
 import java.beans.PropertyChangeListener;
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -61,15 +60,12 @@ import org.xjge.graphics.Color;
  */
 public final class XJGE {
     
-    static Shader depthProgram;
-    
-    //==== LEGACY FIELDS ABOVE =================================================
-    
     private static boolean initialized;
     private static boolean debugModeEnabled;
     private static boolean started;
     private static boolean ticked;
     public static boolean enableBloom;
+    public static boolean enableShadows;
     
     private static double deltaMetric = 0;
     
@@ -78,7 +74,7 @@ public final class XJGE {
     private static int tickCount    = 0;
     final static int TICKS_PER_HOUR = 225000;
     
-    public static final String VERSION = "4.0.0-beta6";
+    public static final String VERSION = "4.0.0-beta7";
     private static String scenesPackage;
     private static String cpuModel;
     
@@ -184,19 +180,8 @@ public final class XJGE {
         if(!glfwInit()) Logger.logError("Failed to initialize GLFW", null);
         
         Window.create();
-
-        //Create shader program that will generate shadow map output
-        {
-            var shaderSourceFiles = new LinkedList<ShaderStage>() {{
-                add(ShaderStage.load("xjge_shader_depth_vertex.glsl", GL_VERTEX_SHADER));
-                add(ShaderStage.load("xjge_shader_depth_fragment.glsl", GL_FRAGMENT_SHADER));
-            }};
-
-            depthProgram = new Shader(shaderSourceFiles, "depth");
-        }
         
-        engineIcons = Texture.load("xjge_texture_icons.png");
-        
+        engineIcons    = Texture.load("xjge_texture_icons.png");
         engineCommands = new TreeMap<>() {{
             put("help",                 new TCHelp());
             put("listCommands",         new TCListCommands());
@@ -219,8 +204,8 @@ public final class XJGE {
         
         AudioSystem.init();
         InputSystem.init();
-        LightingSystem.init(engineIcons);
         Logger.logSystemInfo();
+        LightingSystem.init(engineIcons);
         Window.initViewports();
         
         initialized = true;
@@ -325,12 +310,12 @@ public final class XJGE {
                 }
             }
             
-            currentScene.setShadowUniforms();
+            //currentScene.setShadowUniforms();
             
             //Render scene from the perspective of each active viewport
             for(Viewport viewport : Window.getViewports()) {
                 if(viewport.active) {
-                    currentScene.renderShadowMap(viewport.currCamera.up, depthProgram);
+                    //currentScene.renderShadowMap(viewport.currCamera.up, depthProgram);
                     
                     if(viewport.id == 0) {
                         glClearColor(0, 0, 0, 0);

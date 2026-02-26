@@ -5,8 +5,6 @@ import java.util.LinkedList;
 import org.joml.Vector2f;
 import org.joml.Vector2i;
 import org.lwjgl.BufferUtils;
-import static org.lwjgl.opengl.GL20.GL_FRAGMENT_SHADER;
-import static org.lwjgl.opengl.GL20.GL_VERTEX_SHADER;
 import static org.lwjgl.opengl.GL33C.*;
 import org.lwjgl.system.MemoryStack;
 import static org.xjge.core.LightingSystem.MAX_LIGHTS;
