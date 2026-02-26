@@ -26,7 +26,7 @@ public abstract class Camera {
     public float fov = 45.0f;
     
     public Vector3f position  = new Vector3f();
-    public Vector3f direction = new Vector3f(0, 0, 1);
+    public Vector3f direction = new Vector3f(0, 0,-1);
     public Vector3f up        = new Vector3f(0, 1, 0);
     
     protected Matrix4f viewMatrix = new Matrix4f();

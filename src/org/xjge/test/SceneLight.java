@@ -18,6 +18,11 @@ import org.xjge.graphics.Shader;
  */
 public class SceneLight extends Scene {
 
+    Entity cubeA;
+    Entity cubeB;
+    Entity cubeC;
+    Entity plane;
+    
     Light lightA;
     Light lightB;
     Light lightC;
@@ -28,10 +33,10 @@ public class SceneLight extends Scene {
         XJGE.setClearColor(Color.BLACK);
         //XJGE.enableBloom = true;
         
-        var cubeA = new Entity().addComponent(new Prism(2, 0, 5, 1f, 1f, 1f));
-        var cubeB = new Entity().addComponent(new Prism(-2, 0, 8f, 1.5f, 1.5f, 1.5f));
-        var cubeC = new Entity().addComponent(new Prism(-4, 0, -7, 2f, 6f, 2f));
-        var plane = new Entity().addComponent(new Prism(0, -1f, 0, 20f, 0.25f, 20f));
+        cubeA = new Entity().addComponent(new Prism(2, 0, 5, 1f, 1f, 1f));
+        cubeB = new Entity().addComponent(new Prism(-2, 0, 8f, 1.5f, 1.5f, 1.5f));
+        cubeC = new Entity().addComponent(new Prism(-4, 0, -7, 2f, 6f, 2f));
+        plane = new Entity().addComponent(new Prism(0, -1f, 0, 20f, 0.25f, 20f));
         
         cubeA.getComponent(Prism.class).material.roughness = 0.7f;
         cubeA.getComponent(Prism.class).material.ambientFactor = 0.3f;
@@ -82,6 +87,14 @@ public class SceneLight extends Scene {
 
     @Override
     public void exit() {
+        removeEntity(cubeA.uuid);
+        removeEntity(cubeB.uuid);
+        removeEntity(cubeC.uuid);
+        removeEntity(plane.uuid);
+        
+        LightingSystem.release(lightA);
+        LightingSystem.release(lightB);
+        LightingSystem.release(lightC);
     }
 
 }

@@ -19,10 +19,10 @@ final class Noclip extends Camera {
     
     boolean[] pressed = new boolean[4];
     
-    float speed = 0.2f;
+    float speed = 0.25f;
     private float pitch;
-    private float yaw = 90f;
-    private float speedModifier = 3f;
+    private float yaw = -90f;
+    private float speedModifier = 1f;
     private final float sensitivity = 0.10f;
     
     double prevX;
@@ -38,6 +38,7 @@ final class Noclip extends Camera {
         if(pressed[1]) position.sub(direction.cross(up, tempRight).normalize().mul(speed * speedModifier));
         if(pressed[2]) position.sub(direction.mul(speed * speedModifier, tempDirec));
         if(pressed[3]) position.add(direction.cross(up, tempRight).normalize().mul(speed * speedModifier));
+        //TODO: Add Q/E or DPAD_UP/DPAD_DOWN to move up and down
     }
 
     @Override

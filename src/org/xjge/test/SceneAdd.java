@@ -42,11 +42,12 @@ public class SceneAdd extends Scene {
         var bottom = Texture.load("sky_bottom.png");
         var front  = Texture.load("sky_front.png");
         var back   = Texture.load("sky_back.png");
+        var back2  = Texture.load("sky_back.png");
         
         Window.setViewportCamera(GLFW_JOYSTICK_2, new OrthoCam());
         
-        //skybox = new Skybox(right, left, top, bottom, front, back, false);
-        //setSkybox(skybox);
+        skybox = new Skybox(right, left, top, bottom, front, back, false);
+        setSkybox(skybox);
         //XJGE.enableBloom = true;
         //XJGE.setClearColor(Color.BLACK);
         //skybox.setBloomThreshold(0.9f);
