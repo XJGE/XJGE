@@ -33,11 +33,16 @@ public class SceneModel extends Scene {
         worldLight.type = LightType.WORLD;
         worldLight.position.set(3, 10, 3);
         
+        var pointLight = LightingSystem.request();
+        pointLight.position.set(0, 2, -3f);
+        pointLight.color.copy(Color.RED);
+        pointLight.type = LightType.POINT;
+        
         floor = new Entity().addComponent(new Prism(0, -1f, 0, 10, 0.5f, 10));
         addEntity(floor);
         
         Model2 model = Model2.load("yshtola.fbx");
-        modelEntity = new Entity().addComponent(new ModelRenderer(model, 0, 0, -5));
+        modelEntity = new Entity().addComponent(new ModelRenderer(model, 0, 0, -3));
         addEntity(modelEntity);
         
         System.out.println("Meshes:");
