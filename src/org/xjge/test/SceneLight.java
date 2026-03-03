@@ -33,9 +33,9 @@ public class SceneLight extends Scene {
         XJGE.setClearColor(Color.BLACK);
         //XJGE.enableBloom = true;
         
-        cubeA = new Entity().addComponent(new Prism(2, 0, 5, 1f, 1f, 1f));
-        cubeB = new Entity().addComponent(new Prism(-2, 0, 8f, 1.5f, 1.5f, 1.5f));
-        cubeC = new Entity().addComponent(new Prism(-4, 0, -7, 2f, 6f, 2f));
+        cubeA = new Entity().addComponent(new Prism(2, 0, -5, 1f, 1f, 1f));
+        cubeB = new Entity().addComponent(new Prism(-2, 0, -8f, 1.5f, 1.5f, 1.5f));
+        cubeC = new Entity().addComponent(new Prism(-4, 0, 7, 2f, 6f, 2f));
         plane = new Entity().addComponent(new Prism(0, -1f, 0, 20f, 0.25f, 20f));
         
         cubeA.getComponent(Prism.class).material.roughness = 0.7f;
@@ -55,18 +55,18 @@ public class SceneLight extends Scene {
         addEntity(plane);
         
         lightA = LightingSystem.request();
-        lightA.position.set(2, 1.5f, -7);
+        lightA.position.set(2, 1.5f, 7);
         lightA.brightness = 0.5f;
         lightA.color.copy(Color.PURPLE);
         
         lightB = LightingSystem.request();
-        lightB.position.set(-2, 1.5f, 7);
+        lightB.position.set(-2, 1.5f, -7);
         lightB.type = LightType.SPOT;
         lightB.color.copy(Color.RED);
         
         //LightB = LightingSystem.request();
         lightC = LightingSystem.request(); //TODO: you can assign this to A or B and it will still work
-        lightC.position.set(4, 5, 5);
+        lightC.position.set(4, 5, -5);
         lightC.type = LightType.WORLD;
     }
 

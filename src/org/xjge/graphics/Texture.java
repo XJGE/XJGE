@@ -125,6 +125,6 @@ public final class Texture extends Asset {
     
     public int getChannels() { return channels; }
     
-    public ByteBuffer getImageData() { return imageData.asReadOnlyBuffer(); } //Used for skyboxes
+    public ByteBuffer getImageData() { return imageData.asReadOnlyBuffer(); } //TODO: Used for skyboxes, make copy optional
     
 }
