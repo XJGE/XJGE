@@ -15,6 +15,7 @@ import org.lwjgl.assimp.AIScene;
 import org.lwjgl.assimp.AIString;
 import org.lwjgl.assimp.AIVector3D;
 import org.lwjgl.assimp.Assimp;
+import static org.lwjgl.opengl.GL14.GL_MIRRORED_REPEAT;
 import org.lwjgl.system.MemoryStack;
 import org.lwjgl.system.MemoryUtil;
 import org.xjge.graphics.Texture;
@@ -124,7 +125,7 @@ final class AssimpLoader {
         int result = Assimp.aiGetMaterialTexture(aiMaterial, type, 0, path, (IntBuffer) null, null, null, null, null, null);
         if(result != Assimp.aiReturn_SUCCESS) return null;
 
-        return Texture.load(path.dataString());
+        return Texture.load(path.dataString(), GL_MIRRORED_REPEAT, GL_MIRRORED_REPEAT);
     }
     
     private static Mesh2 parseMesh(AIMesh aiMesh) {

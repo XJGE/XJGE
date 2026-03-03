@@ -94,20 +94,15 @@ public class ModelRenderer extends EntityComponent {
         shader.setUniform("uMaterial.albedo", material.albedo);
         shader.setUniform("uMaterial.metallic", material.metallic);
         shader.setUniform("uMaterial.roughness", material.roughness);
-        
-        ErrorUtils.checkGLError();
 
         int unit = 0;
 
         if(material.albedoMap != null) {
             glActiveTexture(GL_TEXTURE0 + unit);
             material.albedoMap.bind(GL_TEXTURE_2D);
-            ErrorUtils.checkGLError(); //Invalid enum here
             shader.setUniform("uAlbedoMap", unit);
-            ErrorUtils.checkGLError();
             shader.setUniform("uHasAlbedoMap", 1);
             unit++;
-            ErrorUtils.checkGLError();
         } else shader.setUniform("uHasAlbedoMap", 0);
         
         ErrorUtils.checkGLError();

@@ -32,18 +32,26 @@ public final class Texture extends Asset {
     private int width;
     private int height;
     private int channels;
+    private int wrapS;
+    private int wrapT;
     
     private ByteBuffer imageData;
     
     public static final Texture FALLBACK = Texture.load("xjge_texture_fallback.png");
     
     public static Texture load(String filename) {
-        return AssetManager.load(filename, () -> new Texture(filename, GL_TEXTURE_2D));
+        return AssetManager.load(filename, () -> new Texture(filename, GL_TEXTURE_2D, GL_CLAMP_TO_EDGE, GL_CLAMP_TO_EDGE));
     }
     
-    private Texture(String filename, int target) {
+    public static Texture load(String filename, int wrapS, int wrapT) {
+        return AssetManager.load(filename, () -> new Texture(filename, GL_TEXTURE_2D, wrapS, wrapT));
+    }
+    
+    private Texture(String filename, int target, int wrapS, int wrapT) {
         super(filename);
         this.target = target;
+        this.wrapS  = wrapS;
+        this.wrapT  = wrapT;
     }
     
     @Override
@@ -77,8 +85,8 @@ public final class Texture extends Asset {
             Logger.logWarning("Failed to load texture: \"" + getFilename() + "\" a fallback will be used instead", exception);
         }
         
-        glTexParameteri(target, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
-        glTexParameteri(target, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+        glTexParameteri(target, GL_TEXTURE_WRAP_S, wrapS);
+        glTexParameteri(target, GL_TEXTURE_WRAP_T, wrapT);
         glTexParameteri(target, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
         glTexParameteri(target, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
         
