@@ -10,9 +10,8 @@ import org.xjge.graphics.Texture;
  */
 public final class Material2 {
 
-    public float roughness     = 0.5f;
-    public float metallic      = 0f;
-    public float ambientFactor = 0.1f;
+    public float roughness = 0.5f;
+    public float metallic  = 0f;
     
     public final Vector3f albedo = new Vector3f(1f);
     

@@ -44,6 +44,7 @@ final class AssimpLoader {
         List<Integer> meshMaterialIndices = parseMeshMaterialIndices(aiScene);
         
         Assimp.aiReleaseImport(aiScene);
+        MemoryUtil.memFree(buffer);
         
         return new AssimpSceneData(meshes, materials, meshMaterialIndices);
     }
@@ -70,10 +71,8 @@ final class AssimpLoader {
                 Material2 material     = new Material2();
                 
                 material.albedo.set(parseVector3f(aiMaterial, Assimp.AI_MATKEY_COLOR_DIFFUSE));
-                material.metallic      = parseFloat(aiMaterial, Assimp.AI_MATKEY_METALLIC_FACTOR);
-                material.roughness     = parseFloat(aiMaterial, Assimp.AI_MATKEY_ROUGHNESS_FACTOR);
-                material.ambientFactor = parseFloat(aiMaterial, Assimp.AI_MATKEY_COLOR_AMBIENT);
-                
+                material.metallic  = parseFloat(aiMaterial, Assimp.AI_MATKEY_METALLIC_FACTOR);
+                material.roughness = parseFloat(aiMaterial, Assimp.AI_MATKEY_ROUGHNESS_FACTOR);
                 material.albedoMap = parseTexture(aiMaterial, Assimp.aiTextureType_DIFFUSE);
                 material.normalMap = parseTexture(aiMaterial, Assimp.aiTextureType_NORMALS);
                 material.metallicRoughnessMap = parseTexture(aiMaterial, Assimp.aiTextureType_METALNESS);

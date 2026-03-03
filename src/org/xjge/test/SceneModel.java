@@ -2,10 +2,16 @@ package org.xjge.test;
 
 import java.util.Map;
 import org.xjge.core.Camera;
+import org.xjge.core.Entity;
+import org.xjge.core.Light;
+import org.xjge.core.LightType;
+import org.xjge.core.LightingSystem;
 import org.xjge.core.Scene;
 import org.xjge.core.XJGE;
 import org.xjge.graphics.Color;
 import org.xjge.graphics.Shader;
+import org.xjge.modeling.Material2;
+import org.xjge.modeling.Mesh2;
 import org.xjge.modeling.Model2;
 
 /**
@@ -15,14 +21,51 @@ import org.xjge.modeling.Model2;
  */
 public class SceneModel extends Scene {
 
+    Entity floor;
+    Entity modelEntity;
+    Light worldLight;
+    
     public SceneModel() {
         super("test_model");
         
         XJGE.setClearColor(new Color(0.467f, 0.533f, 1f));
+        worldLight = LightingSystem.request();
+        worldLight.type = LightType.WORLD;
+        worldLight.position.set(3, 10, 3);
+        
+        floor = new Entity().addComponent(new Prism(0, -1f, 0, 10, 0.5f, 10));
+        addEntity(floor);
         
         Model2 model = Model2.load("yshtola.fbx");
+        modelEntity = new Entity().addComponent(new ModelRenderer(model, 0, 0, -5));
+        addEntity(modelEntity);
         
+        System.out.println("Meshes:");
+        for(Mesh2 mesh : model.meshes) {
+            System.out.println(" position count: " + mesh.positions.length);
+            System.out.println(" normals count: " + mesh.normals.length);
+            System.out.println(" texCoord count: " + mesh.texCoords.length);
+            System.out.println(" tangent count: " + mesh.tangents.length);
+            System.out.println(" index count: " + mesh.indices.length);
+            System.out.println();
+        }
         
+        System.out.println("Materials:");
+        for(Material2 material : model.materials) {
+            System.out.println(" roughness: " + material.roughness);
+            System.out.println(" metallic: " + material.metallic);
+            System.out.println(" albedoMap: " + (material.albedoMap == null ? null : material.albedoMap.getFilename()));
+            System.out.println(" normalMap: " + (material.normalMap == null ? null : material.normalMap.getFilename()));
+            System.out.println(" metallicRoughnessMap: " + 
+                    (material.metallicRoughnessMap == null ? null : material.metallicRoughnessMap.getFilename()));
+            System.out.println();
+        }
+        
+        System.out.println("MeshMaterialIndices:");
+        for(int index : model.meshMaterialIndices) {
+            System.out.println(" " + index);
+        }
+        System.out.println();
     }
 
     @Override
@@ -31,6 +74,13 @@ public class SceneModel extends Scene {
 
     @Override
     public void render(Map<String, Shader> glPrograms, int viewportID, Camera camera, int depthTexHandle) {
+        for(var shape : queryEntities(Prism.class)) {
+            shape.getComponent(Prism.class).render(camera);
+        }
+        
+        for(var model : queryEntities(ModelRenderer.class)) {
+            model.getComponent(ModelRenderer.class).render(camera);
+        }
     }
 
     @Override
@@ -39,6 +89,8 @@ public class SceneModel extends Scene {
 
     @Override
     public void exit() {
+        removeEntity(floor.uuid);
+        LightingSystem.release(worldLight);
     }
 
 }
