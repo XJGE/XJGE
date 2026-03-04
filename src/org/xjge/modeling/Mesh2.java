@@ -9,27 +9,21 @@ public class Mesh2 {
 
     public float[] positions;
     public float[] normals;
-    public float[] texCoords;
+    public float[] uvs;
     public float[] tangents;
+    public float[] boneWeights;
     
+    public int[] boneIDs;
     public int[] indices;
     
-    Mesh2(float[] positions, float[] normals, float[] texCoords, float[] tangents, int[] indices) {
+    Mesh2(float[] positions, float[] normals, float[] uvs, float[] tangents, int[] indices) {
         this.positions = positions;
-        this.normals = normals;
-        this.texCoords = texCoords;
-        this.tangents = tangents;
-        this.indices = indices;
+        this.normals   = normals;
+        this.uvs       = uvs;
+        this.tangents  = tangents;
+        this.indices   = indices;
     }
     
-    void release() {
-        positions = null;
-        normals = null;
-        texCoords = null;
-        tangents = null;
-        indices = null;
-    }
-    
-    //TODO: bone weights
+    //TODO: provide read-only access to data, the asset manager should update this behind the scenes
     
 }

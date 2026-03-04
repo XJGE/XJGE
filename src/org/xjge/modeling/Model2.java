@@ -1,6 +1,5 @@
 package org.xjge.modeling;
 
-import org.xjge.graphics.Material;
 import java.io.InputStream;
 import java.util.List;
 import org.xjge.core.Asset;
@@ -14,6 +13,9 @@ import org.xjge.core.Logger;
  */
 public final class Model2 extends Asset {
 
+    private boolean reloaded;
+    private boolean released;
+    
     public List<Mesh2> meshes;
     public List<Material2> materials;
     public List<Integer> meshMaterialIndices;
@@ -42,7 +44,7 @@ public final class Model2 extends Asset {
 
     @Override
     protected void onRelease() {
-        meshes.forEach(Mesh2::release);
+        //meshes.forEach(Mesh2::release);
         meshes = null;
         materials = null;
         meshMaterialIndices = null;

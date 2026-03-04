@@ -7,6 +7,8 @@ import org.joml.Matrix3f;
 import org.joml.Matrix4f;
 import org.joml.Vector3f;
 import static org.lwjgl.opengl.GL30.*;
+import org.xjge.core.Asset;
+import org.xjge.core.AssetReloadListener;
 import org.xjge.core.Camera;
 import org.xjge.core.EntityComponent;
 import org.xjge.core.ErrorUtils;
@@ -23,7 +25,7 @@ import org.xjge.modeling.Model2;
  * @author J Hoffman
  * @since 
  */
-public class ModelRenderer extends EntityComponent {
+public class ModelRenderer extends EntityComponent implements AssetReloadListener {
     
     private final Model2 model;
     private final Vector3f position;
@@ -148,9 +150,9 @@ public class ModelRenderer extends EntityComponent {
             data[d + 5] = mesh.normals != null ? mesh.normals[p + 2] : 1f;
 
             //TexCoords
-            if(mesh.texCoords != null) {
-                data[d + 6] = mesh.texCoords[u];
-                data[d + 7] = mesh.texCoords[u + 1];
+            if(mesh.uvs != null) {
+                data[d + 6] = mesh.uvs[u];
+                data[d + 7] = mesh.uvs[u + 1];
             }
 
             //Tangent
@@ -193,6 +195,11 @@ public class ModelRenderer extends EntityComponent {
         glDisable(GL_DEPTH_TEST);
         
         ErrorUtils.checkGLError();
+    }
+
+    @Override
+    public void onAssetReload(Asset asset) {
+        
     }
     
 }

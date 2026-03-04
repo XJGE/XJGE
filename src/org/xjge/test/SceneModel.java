@@ -52,7 +52,7 @@ public class SceneModel extends Scene {
         for(Mesh2 mesh : model.meshes) {
             System.out.println(" position count: " + mesh.positions.length);
             System.out.println(" normals count: " + mesh.normals.length);
-            System.out.println(" texCoord count: " + mesh.texCoords.length);
+            System.out.println(" texCoord count: " + mesh.uvs.length);
             System.out.println(" tangent count: " + mesh.tangents.length);
             System.out.println(" index count: " + mesh.indices.length);
             System.out.println();

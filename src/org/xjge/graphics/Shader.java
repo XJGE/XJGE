@@ -53,7 +53,7 @@ public class Shader implements AssetReloadListener {
         link();
         findUniforms();
         
-        shaders.forEach(shader -> shader.addAssetListener(this));
+        shaders.forEach(shader -> shader.addReloadListener(this));
     }
     
     private void link() {

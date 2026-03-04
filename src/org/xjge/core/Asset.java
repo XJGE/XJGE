@@ -47,12 +47,12 @@ public abstract class Asset {
         loaded = false;
     }
     
-    public void addAssetListener(AssetReloadListener listener) {
+    public void addReloadListener(AssetReloadListener listener) {
         if(!XJGE.debugModeEnabled()) return;
         reloadListeners.add(listener);
     }
     
-    public void removeAssetListener(AssetReloadListener listener) {
+    public void removeReloadListener(AssetReloadListener listener) {
         reloadListeners.remove(listener);
     }
     

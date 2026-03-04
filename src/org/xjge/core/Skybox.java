@@ -100,7 +100,7 @@ public final class Skybox implements AssetReloadListener {
         for(int i = 0; i < faces.length; i++) {
             var face = faces[i];
             
-            face.addAssetListener(this);
+            face.addReloadListener(this);
             face.bind(GL_TEXTURE_2D);
             
             glTexImage2D(TARGETS[i], 0, GL_RGBA, face.getWidth(), face.getHeight(), 0, 

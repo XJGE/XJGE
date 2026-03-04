@@ -342,10 +342,8 @@ public final class XJGE {
                     
                     glViewport(viewport.botLeft.x, viewport.botLeft.y, viewport.topRight.x, viewport.topRight.y);
                     
-                    //glEnable(GL_FRAMEBUFFER_SRGB);
                     viewport.render(userShadersView, "texture", projMatrix);
                     viewport.render(userShadersView, "ui", projMatrix);
-                    //glDisable(GL_FRAMEBUFFER_SRGB);
                 }
             }
             
