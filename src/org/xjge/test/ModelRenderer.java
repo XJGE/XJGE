@@ -49,6 +49,7 @@ public class ModelRenderer extends EntityComponent {
         
         position = new Vector3f(x, y, z);
         
+        //TODO: hot reload on vertex data wont work until new values are uploaded to the GPU
         for(Mesh2 mesh : model.meshes) {
             float[] interleaved = buildInterleaved(mesh);
             int stride = 11 * Float.BYTES;

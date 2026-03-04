@@ -15,7 +15,10 @@ import org.lwjgl.assimp.AIScene;
 import org.lwjgl.assimp.AIString;
 import org.lwjgl.assimp.AIVector3D;
 import org.lwjgl.assimp.Assimp;
+import static org.lwjgl.opengl.GL11.GL_LINEAR;
+import static org.lwjgl.opengl.GL11.GL_RGBA;
 import static org.lwjgl.opengl.GL14.GL_MIRRORED_REPEAT;
+import static org.lwjgl.opengl.GL21.GL_SRGB_ALPHA;
 import org.lwjgl.system.MemoryStack;
 import org.lwjgl.system.MemoryUtil;
 import org.xjge.graphics.Texture;
@@ -74,9 +77,9 @@ final class AssimpLoader {
                 material.albedo.set(parseVector3f(aiMaterial, Assimp.AI_MATKEY_COLOR_DIFFUSE));
                 material.metallic  = parseFloat(aiMaterial, Assimp.AI_MATKEY_METALLIC_FACTOR);
                 material.roughness = parseFloat(aiMaterial, Assimp.AI_MATKEY_ROUGHNESS_FACTOR);
-                material.albedoMap = parseTexture(aiMaterial, Assimp.aiTextureType_DIFFUSE);
-                material.normalMap = parseTexture(aiMaterial, Assimp.aiTextureType_NORMALS);
-                material.metallicRoughnessMap = parseTexture(aiMaterial, Assimp.aiTextureType_METALNESS);
+                material.albedoMap = parseTexture(aiMaterial, Assimp.aiTextureType_DIFFUSE, GL_SRGB_ALPHA);
+                material.normalMap = parseTexture(aiMaterial, Assimp.aiTextureType_NORMALS, GL_RGBA);
+                material.metallicRoughnessMap = parseTexture(aiMaterial, Assimp.aiTextureType_METALNESS, GL_RGBA);
                 
                 materials.add(material);
         }
@@ -119,13 +122,13 @@ final class AssimpLoader {
         return new Vector3f(aiColor.r(), aiColor.g(), aiColor.b());
     }
     
-    private static Texture parseTexture(AIMaterial aiMaterial, int type) {
+    private static Texture parseTexture(AIMaterial aiMaterial, int type, int format) {
         AIString path = AIString.calloc();
 
         int result = Assimp.aiGetMaterialTexture(aiMaterial, type, 0, path, (IntBuffer) null, null, null, null, null, null);
         if(result != Assimp.aiReturn_SUCCESS) return null;
 
-        return Texture.load(path.dataString(), GL_MIRRORED_REPEAT, GL_MIRRORED_REPEAT);
+        return Texture.load(path.dataString(), GL_MIRRORED_REPEAT, GL_MIRRORED_REPEAT, format, GL_LINEAR);
     }
     
     private static Mesh2 parseMesh(AIMesh aiMesh) {

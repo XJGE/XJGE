@@ -338,13 +338,14 @@ public final class XJGE {
                     glBindFramebuffer(GL_FRAMEBUFFER, 0);
                     
                     projMatrix.setOrtho(viewport.width, 0, 0, viewport.height, 0, 1);
-                    
                     if(enableBloom) viewport.applyBloom(projMatrix);
                     
                     glViewport(viewport.botLeft.x, viewport.botLeft.y, viewport.topRight.x, viewport.topRight.y);
                     
+                    //glEnable(GL_FRAMEBUFFER_SRGB);
                     viewport.render(userShadersView, "texture", projMatrix);
                     viewport.render(userShadersView, "ui", projMatrix);
+                    //glDisable(GL_FRAMEBUFFER_SRGB);
                 }
             }
             

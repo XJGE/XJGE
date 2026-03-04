@@ -22,6 +22,14 @@ public class Mesh2 {
         this.indices = indices;
     }
     
+    void release() {
+        positions = null;
+        normals = null;
+        texCoords = null;
+        tangents = null;
+        indices = null;
+    }
+    
     //TODO: bone weights
     
 }

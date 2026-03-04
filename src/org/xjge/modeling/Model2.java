@@ -42,6 +42,10 @@ public final class Model2 extends Asset {
 
     @Override
     protected void onRelease() {
+        meshes.forEach(Mesh2::release);
+        meshes = null;
+        materials = null;
+        meshMaterialIndices = null;
     }
 
     @Override

@@ -34,24 +34,30 @@ public final class Texture extends Asset {
     private int channels;
     private int wrapS;
     private int wrapT;
+    private int format;
+    private int filter;
     
     private ByteBuffer imageData;
     
     public static final Texture FALLBACK = Texture.load("xjge_texture_fallback.png");
     
     public static Texture load(String filename) {
-        return AssetManager.load(filename, () -> new Texture(filename, GL_TEXTURE_2D, GL_CLAMP_TO_EDGE, GL_CLAMP_TO_EDGE));
+        return AssetManager.load(filename, () -> 
+                new Texture(filename, GL_TEXTURE_2D, GL_CLAMP_TO_EDGE, GL_CLAMP_TO_EDGE, GL_RGBA, GL_NEAREST));
     }
     
-    public static Texture load(String filename, int wrapS, int wrapT) {
-        return AssetManager.load(filename, () -> new Texture(filename, GL_TEXTURE_2D, wrapS, wrapT));
+    public static Texture load(String filename, int wrapS, int wrapT, int format, int filter) {
+        return AssetManager.load(filename, () -> 
+                new Texture(filename, GL_TEXTURE_2D, wrapS, wrapT, format, filter));
     }
     
-    private Texture(String filename, int target, int wrapS, int wrapT) {
+    private Texture(String filename, int target, int wrapS, int wrapT, int format, int filter) {
         super(filename);
         this.target = target;
         this.wrapS  = wrapS;
         this.wrapT  = wrapT;
+        this.format = format;
+        this.filter = filter;
     }
     
     @Override
@@ -78,7 +84,7 @@ public final class Texture extends Asset {
             height   = heightBuffer.get();
             channels = channelBuffer.get();
             
-            glTexImage2D(target, 0, GL_RGBA, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, imageData);
+            glTexImage2D(target, 0, format, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, imageData);
             MemoryUtil.memFree(imageBuffer);
             
         } catch(IOException exception) {
@@ -87,8 +93,8 @@ public final class Texture extends Asset {
         
         glTexParameteri(target, GL_TEXTURE_WRAP_S, wrapS);
         glTexParameteri(target, GL_TEXTURE_WRAP_T, wrapT);
-        glTexParameteri(target, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
-        glTexParameteri(target, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+        glTexParameteri(target, GL_TEXTURE_MIN_FILTER, filter);
+        glTexParameteri(target, GL_TEXTURE_MAG_FILTER, filter);
         
         glBindTexture(target, 0);
     }

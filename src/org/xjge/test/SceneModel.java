@@ -32,11 +32,14 @@ public class SceneModel extends Scene {
         worldLight = LightingSystem.request();
         worldLight.type = LightType.WORLD;
         worldLight.position.set(3, 10, 3);
+        worldLight.brightness = 6f;
+        
         
         var pointLight = LightingSystem.request();
-        pointLight.position.set(0, 2, -3f);
+        pointLight.position.set(-4, 2, -3f);
         pointLight.color.copy(Color.RED);
         pointLight.type = LightType.POINT;
+        
         
         floor = new Entity().addComponent(new Prism(0, -1f, 0, 10, 0.5f, 10));
         addEntity(floor);
