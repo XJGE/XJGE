@@ -1,6 +1,7 @@
 package org.xjge.modeling;
 
 import org.joml.Vector3f;
+import org.xjge.core.AssetManager;
 import org.xjge.graphics.Texture;
 
 /**
@@ -10,13 +11,17 @@ import org.xjge.graphics.Texture;
  */
 public final class Material2 {
 
-    public float roughness = 0.5f;
-    public float metallic  = 0f;
+    public float metallic;
+    public float roughness;
+    public float opacity = 1f;
     
-    public final Vector3f albedo = new Vector3f(1f);
+    public TransparencyMode transparencyMode = TransparencyMode.OPAQUE;
     
-    public Texture albedoMap;
-    public Texture normalMap;
-    public Texture metallicRoughnessMap;
+    public final Vector3f albedoColor = new Vector3f(1f);
+    
+    public String albedoMapFilename;
+    public String normalMapFilename;
+    public String metallicMapFilename;
+    public String roughnessMapFilename;
     
 }

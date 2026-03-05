@@ -62,10 +62,10 @@ public class SceneModel extends Scene {
         for(Material2 material : model.materials) {
             System.out.println(" roughness: " + material.roughness);
             System.out.println(" metallic: " + material.metallic);
-            System.out.println(" albedoMap: " + (material.albedoMap == null ? null : material.albedoMap.getFilename()));
-            System.out.println(" normalMap: " + (material.normalMap == null ? null : material.normalMap.getFilename()));
-            System.out.println(" metallicRoughnessMap: " + 
-                    (material.metallicRoughnessMap == null ? null : material.metallicRoughnessMap.getFilename()));
+            System.out.println(" albedoMap: " + material.albedoMapFilename);
+            System.out.println(" normalMap: " + material.normalMapFilename);
+            System.out.println(" roughnessMap: " + material.roughnessMapFilename);
+            System.out.println(" metallicMap: " + material.metallicMapFilename);
             System.out.println();
         }
         

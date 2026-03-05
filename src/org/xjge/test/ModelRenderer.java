@@ -13,9 +13,9 @@ import org.xjge.core.Camera;
 import org.xjge.core.EntityComponent;
 import org.xjge.core.ErrorUtils;
 import org.xjge.core.LightingSystem;
-import org.xjge.core.XJGE;
 import org.xjge.graphics.Shader;
 import org.xjge.graphics.ShaderStage;
+import org.xjge.graphics.Texture;
 import org.xjge.modeling.Material2;
 import org.xjge.modeling.Mesh2;
 import org.xjge.modeling.Model2;
@@ -31,6 +31,11 @@ public class ModelRenderer extends EntityComponent implements AssetReloadListene
     private final Vector3f position;
     private final Matrix3f normalMatrix = new Matrix3f();
     private final Matrix4f modelMatrix = new Matrix4f();
+    
+    private Texture albedoMap;
+    private Texture normalMap;
+    private Texture metallicMap;
+    private Texture roughnessMap;
     
     private final List<Integer> vaos = new ArrayList<>();
     private final List<Integer> indexCounts = new ArrayList<>();
@@ -52,6 +57,12 @@ public class ModelRenderer extends EntityComponent implements AssetReloadListene
         position = new Vector3f(x, y, z);
         
         //TODO: hot reload on vertex data wont work until new values are uploaded to the GPU
+        bindVertexData();
+    }
+    
+    private void bindVertexData() {
+        model.addReloadListener(this);
+        
         for(Mesh2 mesh : model.meshes) {
             float[] interleaved = buildInterleaved(mesh);
             int stride = 11 * Float.BYTES;
@@ -89,45 +100,28 @@ public class ModelRenderer extends EntityComponent implements AssetReloadListene
             vaos.add(vao);
             indexCounts.add(mesh.indices.length);
         }
-    }
-    
-    private void bindMaterial(Material2 material) {
-        ErrorUtils.checkGLError();
         
-        shader.setUniform("uMaterial.albedo", material.albedo);
-        shader.setUniform("uMaterial.metallic", material.metallic);
-        shader.setUniform("uMaterial.roughness", material.roughness);
-
-        int unit = 0;
-
-        if(material.albedoMap != null) {
-            glActiveTexture(GL_TEXTURE0 + unit);
-            material.albedoMap.bind(GL_TEXTURE_2D);
-            shader.setUniform("uAlbedoMap", unit);
-            shader.setUniform("uHasAlbedoMap", 1);
-            unit++;
-        } else shader.setUniform("uHasAlbedoMap", 0);
-        
-        ErrorUtils.checkGLError();
-
-        if(material.normalMap != null) {
-            glActiveTexture(GL_TEXTURE0 + unit);
-            material.normalMap.bind(GL_TEXTURE_2D);
-            shader.setUniform("uNormalMap", unit);
-            shader.setUniform("uHasNormalMap", 1);
-            unit++;
-        } else shader.setUniform("uHasNormalMap", 0);
-        
-        ErrorUtils.checkGLError();
-        
-        if(material.metallicRoughnessMap != null) {
-            glActiveTexture(GL_TEXTURE0 + unit);
-            material.metallicRoughnessMap.bind(GL_TEXTURE_2D);
-            shader.setUniform("uMetallicRoughnessMap", unit);
-            shader.setUniform("uHasMetallicRoughnessMap", 1);
-        } else shader.setUniform("uHasMetallicRoughnessMap", 0);
-        
-        ErrorUtils.checkGLError();
+        for(var material : model.materials) {
+            if(material.albedoMapFilename != null) {
+                albedoMap = Texture.load(material.albedoMapFilename, 
+                        GL_MIRRORED_REPEAT, GL_MIRRORED_REPEAT, GL_SRGB_ALPHA, GL_LINEAR);
+            }
+            
+            if(material.normalMapFilename != null) {
+                normalMap = Texture.load(material.normalMapFilename, 
+                        GL_MIRRORED_REPEAT, GL_MIRRORED_REPEAT, GL_RGBA, GL_LINEAR);
+            }
+            
+            if(material.roughnessMapFilename != null) {
+                roughnessMap = Texture.load(material.roughnessMapFilename, 
+                        GL_MIRRORED_REPEAT, GL_MIRRORED_REPEAT, GL_RGBA, GL_LINEAR);
+            }
+            
+            if(material.metallicMapFilename != null) {
+                metallicMap = Texture.load(material.metallicMapFilename, 
+                        GL_MIRRORED_REPEAT, GL_MIRRORED_REPEAT, GL_RGBA, GL_LINEAR);
+            }
+        }
     }
     
     private float[] buildInterleaved(Mesh2 mesh) {
@@ -166,6 +160,45 @@ public class ModelRenderer extends EntityComponent implements AssetReloadListene
         return data;
     }
     
+    private void bindMaterial(Material2 material) {
+        ErrorUtils.checkGLError();
+        
+        shader.setUniform("uMaterial.albedo", material.albedoColor);
+        shader.setUniform("uMaterial.metallic", material.metallic);
+        shader.setUniform("uMaterial.roughness", material.roughness);
+
+        int unit = 0;
+
+        if(material.albedoMapFilename != null) {
+            glActiveTexture(GL_TEXTURE0 + unit);
+            albedoMap.bind(GL_TEXTURE_2D);
+            shader.setUniform("uAlbedoMap", unit);
+            shader.setUniform("uHasAlbedoMap", 1);
+            unit++;
+        } else shader.setUniform("uHasAlbedoMap", 0);
+        
+        ErrorUtils.checkGLError();
+
+        if(material.normalMapFilename != null) {
+            glActiveTexture(GL_TEXTURE0 + unit);
+            normalMap.bind(GL_TEXTURE_2D);
+            shader.setUniform("uNormalMap", unit);
+            shader.setUniform("uHasNormalMap", 1);
+            unit++;
+        } else shader.setUniform("uHasNormalMap", 0);
+        
+        ErrorUtils.checkGLError();
+        
+        if(material.roughnessMapFilename != null) {
+            glActiveTexture(GL_TEXTURE0 + unit);
+            roughnessMap.bind(GL_TEXTURE_2D);
+            shader.setUniform("uMetallicRoughnessMap", unit);
+            shader.setUniform("uHasMetallicRoughnessMap", 1);
+        } else shader.setUniform("uHasMetallicRoughnessMap", 0);
+        
+        ErrorUtils.checkGLError();
+    }
+    
     void render(Camera camera) {
         modelMatrix.identity().translation(position);
         normalMatrix.set(modelMatrix).invert().transpose();
@@ -199,7 +232,8 @@ public class ModelRenderer extends EntityComponent implements AssetReloadListene
 
     @Override
     public void onAssetReload(Asset asset) {
-        
+        System.out.println("Change detected in model data");
+        //TODO: bindVertexData(); //upload new data
     }
     
 }

@@ -74,12 +74,13 @@ final class AssimpLoader {
                 AIMaterial aiMaterial = AIMaterial.create(aiMaterials.get(i));
                 Material2 material     = new Material2();
                 
-                material.albedo.set(parseVector3f(aiMaterial, Assimp.AI_MATKEY_COLOR_DIFFUSE));
+                material.albedoColor.set(parseVector3f(aiMaterial, Assimp.AI_MATKEY_COLOR_DIFFUSE));
                 material.metallic  = parseFloat(aiMaterial, Assimp.AI_MATKEY_METALLIC_FACTOR);
                 material.roughness = parseFloat(aiMaterial, Assimp.AI_MATKEY_ROUGHNESS_FACTOR);
-                material.albedoMap = parseTexture(aiMaterial, Assimp.aiTextureType_DIFFUSE, GL_SRGB_ALPHA);
-                material.normalMap = parseTexture(aiMaterial, Assimp.aiTextureType_NORMALS, GL_RGBA);
-                material.metallicRoughnessMap = parseTexture(aiMaterial, Assimp.aiTextureType_METALNESS, GL_RGBA);
+                material.albedoMapFilename    = parseTextureFilename(aiMaterial, Assimp.aiTextureType_DIFFUSE);
+                material.normalMapFilename    = parseTextureFilename(aiMaterial, Assimp.aiTextureType_NORMALS);
+                material.metallicMapFilename  = parseTextureFilename(aiMaterial, Assimp.aiTextureType_METALNESS);
+                material.roughnessMapFilename = parseTextureFilename(aiMaterial, Assimp.aiTextureType_DIFFUSE_ROUGHNESS);
                 
                 materials.add(material);
         }
@@ -129,6 +130,15 @@ final class AssimpLoader {
         if(result != Assimp.aiReturn_SUCCESS) return null;
 
         return Texture.load(path.dataString(), GL_MIRRORED_REPEAT, GL_MIRRORED_REPEAT, format, GL_LINEAR);
+    }
+    
+    private static String parseTextureFilename(AIMaterial aiMaterial, int type) {
+        AIString filepath = AIString.calloc();
+        
+        int result = Assimp.aiGetMaterialTexture(aiMaterial, type, 0, filepath, (IntBuffer) null, null, null, null, null, null);
+        if(result != Assimp.aiReturn_SUCCESS) return null;
+        
+        return filepath.dataString();
     }
     
     private static Mesh2 parseMesh(AIMesh aiMesh) {
