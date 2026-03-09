@@ -4,24 +4,25 @@ import java.io.InputStream;
 import java.nio.FloatBuffer;
 import java.nio.IntBuffer;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
+import org.joml.Matrix4f;
 import org.joml.Vector3f;
 import org.lwjgl.PointerBuffer;
+import org.lwjgl.assimp.AIBone;
 import org.lwjgl.assimp.AIColor4D;
 import org.lwjgl.assimp.AIFace;
 import org.lwjgl.assimp.AIMaterial;
+import org.lwjgl.assimp.AIMatrix4x4;
 import org.lwjgl.assimp.AIMesh;
+import org.lwjgl.assimp.AINode;
 import org.lwjgl.assimp.AIScene;
 import org.lwjgl.assimp.AIString;
 import org.lwjgl.assimp.AIVector3D;
 import org.lwjgl.assimp.Assimp;
-import static org.lwjgl.opengl.GL11.GL_LINEAR;
-import static org.lwjgl.opengl.GL11.GL_RGBA;
-import static org.lwjgl.opengl.GL14.GL_MIRRORED_REPEAT;
-import static org.lwjgl.opengl.GL21.GL_SRGB_ALPHA;
 import org.lwjgl.system.MemoryStack;
 import org.lwjgl.system.MemoryUtil;
-import org.xjge.graphics.Texture;
 
 /**
  * 
@@ -46,11 +47,12 @@ final class AssimpLoader {
         List<Mesh2> meshes                = parseMeshes(aiScene);
         List<Material2> materials         = parseMaterials(aiScene);
         List<Integer> meshMaterialIndices = parseMeshMaterialIndices(aiScene);
+        Skeleton skeleton                 = parseSkeleton(aiScene);
         
         Assimp.aiReleaseImport(aiScene);
         MemoryUtil.memFree(buffer);
         
-        return new AssimpSceneData(meshes, materials, meshMaterialIndices);
+        return new AssimpSceneData(skeleton, meshes, materials, meshMaterialIndices);
     }
     
     static List<Mesh2> parseMeshes(AIScene aiScene) {
@@ -101,6 +103,18 @@ final class AssimpLoader {
         return indices;
     }
     
+    static Skeleton parseSkeleton(AIScene aiScene) {
+        Set<String> boneNames = collectBoneNames(aiScene);
+        Skeleton skeleton     = new Skeleton();
+        AINode rootNode       = aiScene.mRootNode();
+
+        processNode(rootNode, -1, boneNames, skeleton);
+
+        applyBoneOffsets(aiScene, skeleton);
+
+        return skeleton;
+    }
+    
     private static Float parseFloat(AIMaterial aiMaterial, CharSequence key) {
         try(MemoryStack stack = MemoryStack.stackPush()) {
             FloatBuffer value = stack.mallocFloat(1);
@@ -121,15 +135,6 @@ final class AssimpLoader {
         if(result != Assimp.aiReturn_SUCCESS) return null;
         
         return new Vector3f(aiColor.r(), aiColor.g(), aiColor.b());
-    }
-    
-    private static Texture parseTexture(AIMaterial aiMaterial, int type, int format) {
-        AIString path = AIString.calloc();
-
-        int result = Assimp.aiGetMaterialTexture(aiMaterial, type, 0, path, (IntBuffer) null, null, null, null, null, null);
-        if(result != Assimp.aiReturn_SUCCESS) return null;
-
-        return Texture.load(path.dataString(), GL_MIRRORED_REPEAT, GL_MIRRORED_REPEAT, format, GL_LINEAR);
     }
     
     private static String parseTextureFilename(AIMaterial aiMaterial, int type) {
@@ -235,6 +240,100 @@ final class AssimpLoader {
         }
 
         return indices;
+    }
+    
+    private static Set<String> collectBoneNames(AIScene aiScene) {
+        Set<String> boneNames = new HashSet<>();
+        PointerBuffer meshes  = aiScene.mMeshes();
+
+        for(int i = 0; i < aiScene.mNumMeshes(); i++) {
+            AIMesh mesh = AIMesh.create(meshes.get(i));
+            
+            PointerBuffer bones = mesh.mBones();
+            if(bones == null) continue;
+
+            for(int j = 0; j < mesh.mNumBones(); j++) {
+                AIBone bone = AIBone.create(bones.get(j));
+                boneNames.add(bone.mName().dataString());
+            }
+        }
+
+        return boneNames;
+    }
+    
+    private static void processNode(
+        AINode node,
+        int parentIndex,
+        Set<String> boneNames,
+        Skeleton skeleton) {
+        
+        String nodeName = node.mName().dataString();
+
+        int boneIndex = parentIndex;
+
+        if(boneNames.contains(nodeName)) {
+            Bone2 bone = new Bone2();
+            bone.name = nodeName;
+            bone.parentIndex = parentIndex;
+
+            convertMatrix(node.mTransformation(), bone.bindTransform);
+
+            skeleton.bones.add(bone);
+
+            boneIndex = skeleton.bones.size() - 1;
+
+            skeleton.boneIndices.put(nodeName, boneIndex);
+
+            if(parentIndex != -1)
+                skeleton.bones.get(parentIndex).children.add(boneIndex);
+            else
+                skeleton.rootBoneIndex = boneIndex;
+        }
+
+        PointerBuffer children = node.mChildren();
+
+        for(int i = 0; i < node.mNumChildren(); i++) {
+
+            processNode(
+                AINode.create(children.get(i)),
+                boneIndex,
+                boneNames,
+                skeleton
+            );
+
+        }
+    }
+    
+    private static void applyBoneOffsets(AIScene aiScene, Skeleton skeleton) {
+        PointerBuffer meshes = aiScene.mMeshes();
+
+        for(int i = 0; i < aiScene.mNumMeshes(); i++) {
+            AIMesh mesh = AIMesh.create(meshes.get(i));
+
+            PointerBuffer bones = mesh.mBones();
+            if(bones == null) continue;
+
+            for(int j = 0; j < mesh.mNumBones(); j++) {
+                AIBone aiBone = AIBone.create(bones.get(j));
+                String name   = aiBone.mName().dataString();
+                Integer index = skeleton.boneIndices.get(name);
+                
+                if(index == null) continue;
+                
+                Bone2 bone = skeleton.bones.get(index);
+                
+                convertMatrix(aiBone.mOffsetMatrix(), bone.inverseBindTransform);
+            }
+        }
+    }
+    
+    private static void convertMatrix(AIMatrix4x4 aiMatrix, Matrix4f dest) {
+        dest.set(
+            aiMatrix.a1(), aiMatrix.a2(), aiMatrix.a3(), aiMatrix.a4(),
+            aiMatrix.b1(), aiMatrix.b2(), aiMatrix.b3(), aiMatrix.b4(),
+            aiMatrix.c1(), aiMatrix.c2(), aiMatrix.c3(), aiMatrix.c4(),
+            aiMatrix.d1(), aiMatrix.d2(), aiMatrix.d3(), aiMatrix.d4()
+        );
     }
     
 }

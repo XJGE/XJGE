@@ -12,15 +12,12 @@ import org.xjge.core.Logger;
  * @since 2.0.0
  */
 public final class Model2 extends Asset {
-
-    private boolean reloaded;
-    private boolean released;
+    
+    public Skeleton skeleton;
     
     public List<Mesh2> meshes;
     public List<Material2> materials;
     public List<Integer> meshMaterialIndices;
-    
-    //TODO: Skeleton/Animations, etc.
     
     public static Model2 load(String filename) {
         return AssetManager.load(filename, () -> new Model2(filename));
@@ -34,6 +31,7 @@ public final class Model2 extends Asset {
     protected void onLoad(InputStream file) {
         try {
             var assimpSceneData = AssimpLoader.parse(file);
+            skeleton            = assimpSceneData.skeleton;
             meshes              = assimpSceneData.meshes;
             materials           = assimpSceneData.materials;
             meshMaterialIndices = assimpSceneData.meshMaterialIndices;

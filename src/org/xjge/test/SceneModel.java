@@ -32,7 +32,7 @@ public class SceneModel extends Scene {
         worldLight = LightingSystem.request();
         worldLight.type = LightType.WORLD;
         worldLight.position.set(3, 10, 3);
-        worldLight.brightness = 6f;
+        worldLight.brightness = 7f;
         
         
         var pointLight = LightingSystem.request();
@@ -45,7 +45,7 @@ public class SceneModel extends Scene {
         addEntity(floor);
         
         Model2 model = Model2.load("yshtola.fbx");
-        modelEntity = new Entity().addComponent(new ModelRenderer(model, 0, 0, -3));
+        modelEntity = new Entity().addComponent(new ModelRenderer(model, 0, 0, -2));
         addEntity(modelEntity);
         
         System.out.println("Meshes:");
