@@ -18,6 +18,7 @@ public final class Model2 extends Asset {
     public List<Mesh2> meshes;
     public List<Material2> materials;
     public List<Integer> meshMaterialIndices;
+    public List<SkeletalAnimation2> animations;
     
     public static Model2 load(String filename) {
         return AssetManager.load(filename, () -> new Model2(filename));
@@ -35,6 +36,7 @@ public final class Model2 extends Asset {
             meshes              = assimpSceneData.meshes;
             materials           = assimpSceneData.materials;
             meshMaterialIndices = assimpSceneData.meshMaterialIndices;
+            animations          = assimpSceneData.animations;
         } catch(Exception exception) {
             Logger.logWarning("Failed to load model: \"" + getFilename() + "\"", exception);
         }

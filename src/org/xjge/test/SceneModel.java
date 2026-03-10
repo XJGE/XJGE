@@ -31,15 +31,15 @@ public class SceneModel extends Scene {
         XJGE.setClearColor(new Color(0.467f, 0.533f, 1f));
         worldLight = LightingSystem.request();
         worldLight.type = LightType.WORLD;
-        worldLight.position.set(3, 10, 3);
+        worldLight.position.set(0, 4.5f, 3);
         worldLight.brightness = 7f;
         
-        
+        /*
         var pointLight = LightingSystem.request();
         pointLight.position.set(-4, 2, -3f);
         pointLight.color.copy(Color.RED);
         pointLight.type = LightType.POINT;
-        
+        */
         
         floor = new Entity().addComponent(new Prism(0, -1f, 0, 10, 0.5f, 10));
         addEntity(floor);
@@ -74,6 +74,16 @@ public class SceneModel extends Scene {
             System.out.println(" " + index);
         }
         System.out.println();
+        
+        System.out.println("Animations:");
+        for(var animation : model.animations) {
+            System.out.println(" name: " + animation.name);
+            System.out.println(" duration: " + animation.duration);
+            System.out.println(" keyframes: " + animation.keyframes.size());
+        }
+        System.out.println();
+        
+        
     }
 
     @Override

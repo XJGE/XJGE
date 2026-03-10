@@ -7,10 +7,10 @@ import java.util.Map;
  * @author J Hoffman
  * @since 2.0.0
  */
-final class SkeletalAnimation2 {
+public final class SkeletalAnimation2 {
 
-    float duration;
-    String name;
-    Map<String, Keyframe2> keyframes;
+    public float duration;
+    public String name;
+    public Map<String, Keyframe2> keyframes;
     
 }

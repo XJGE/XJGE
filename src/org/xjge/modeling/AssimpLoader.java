@@ -4,12 +4,15 @@ import java.io.InputStream;
 import java.nio.FloatBuffer;
 import java.nio.IntBuffer;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import org.joml.Matrix4f;
+import org.joml.Quaternionf;
 import org.joml.Vector3f;
 import org.lwjgl.PointerBuffer;
+import org.lwjgl.assimp.AIAnimation;
 import org.lwjgl.assimp.AIBone;
 import org.lwjgl.assimp.AIColor4D;
 import org.lwjgl.assimp.AIFace;
@@ -17,9 +20,13 @@ import org.lwjgl.assimp.AIMaterial;
 import org.lwjgl.assimp.AIMatrix4x4;
 import org.lwjgl.assimp.AIMesh;
 import org.lwjgl.assimp.AINode;
+import org.lwjgl.assimp.AINodeAnim;
+import org.lwjgl.assimp.AIQuatKey;
 import org.lwjgl.assimp.AIScene;
 import org.lwjgl.assimp.AIString;
 import org.lwjgl.assimp.AIVector3D;
+import org.lwjgl.assimp.AIVectorKey;
+import org.lwjgl.assimp.AIVertexWeight;
 import org.lwjgl.assimp.Assimp;
 import org.lwjgl.system.MemoryStack;
 import org.lwjgl.system.MemoryUtil;
@@ -49,10 +56,13 @@ final class AssimpLoader {
         List<Integer> meshMaterialIndices = parseMeshMaterialIndices(aiScene);
         Skeleton skeleton                 = parseSkeleton(aiScene);
         
+        applyBoneWeights(aiScene, meshes, skeleton);
+        List<SkeletalAnimation2> animations = parseAnimations(aiScene);
+        
         Assimp.aiReleaseImport(aiScene);
         MemoryUtil.memFree(buffer);
         
-        return new AssimpSceneData(skeleton, meshes, materials, meshMaterialIndices);
+        return new AssimpSceneData(skeleton, meshes, materials, meshMaterialIndices, animations);
     }
     
     static List<Mesh2> parseMeshes(AIScene aiScene) {
@@ -154,6 +164,81 @@ final class AssimpLoader {
         int[] indices     = extractIndices(aiMesh);
 
         return new Mesh2(positions, normals, texCoords, tangents, indices);
+    }
+    
+    private static List<SkeletalAnimation2> parseAnimations(AIScene aiScene) {
+        List<SkeletalAnimation2> animations = new ArrayList<>();
+        PointerBuffer aiAnimations = aiScene.mAnimations();
+
+        if(aiAnimations == null) return animations;
+
+        for(int i = 0; i < aiScene.mNumAnimations(); i++) {
+            var aiAnimation     = AIAnimation.create(aiAnimations.get(i));
+            var animation       = new SkeletalAnimation2();
+            animation.name      = aiAnimation.mName().dataString();
+            animation.duration  = (float) aiAnimation.mDuration();
+            animation.keyframes = new HashMap<>();
+            var channels        = aiAnimation.mChannels();
+
+            for(int j = 0; j < aiAnimation.mNumChannels(); j++) {
+                AINodeAnim channel = AINodeAnim.create(channels.get(j));
+                String boneName    = channel.mNodeName().dataString();
+                Keyframe2 keyframe = parseChannel(channel);
+                animation.keyframes.put(boneName, keyframe);
+            }
+
+            animations.add(animation);
+        }
+
+        return animations;
+    }
+    
+    private static Keyframe2 parseChannel(AINodeAnim channel) {
+        Keyframe2 keyframe = new Keyframe2();
+
+        int posCount = channel.mNumPositionKeys();
+        int rotCount = channel.mNumRotationKeys();
+        int scaleCount = channel.mNumScalingKeys();
+
+        keyframe.positions = new Vector3f[posCount];
+        keyframe.rotations = new Quaternionf[rotCount];
+        keyframe.scales = new Vector3f[scaleCount];
+
+        AIVectorKey.Buffer posKeys = channel.mPositionKeys();
+
+        for(int i = 0; i < posCount; i++) {
+            AIVectorKey key = posKeys.get(i);
+            keyframe.positions[i] = new Vector3f(
+                key.mValue().x(),
+                key.mValue().y(),
+                key.mValue().z()
+            );
+        }
+
+        AIQuatKey.Buffer rotKeys = channel.mRotationKeys();
+
+        for(int i = 0; i < rotCount; i++) {
+            AIQuatKey key = rotKeys.get(i);
+            keyframe.rotations[i] = new Quaternionf(
+                key.mValue().x(),
+                key.mValue().y(),
+                key.mValue().z(),
+                key.mValue().w()
+            );
+        }
+
+        AIVectorKey.Buffer scaleKeys = channel.mScalingKeys();
+
+        for(int i = 0; i < scaleCount; i++) {
+            AIVectorKey key = scaleKeys.get(i);
+            keyframe.scales[i] = new Vector3f(
+                key.mValue().x(),
+                key.mValue().y(),
+                key.mValue().z()
+            );
+        }
+
+        return keyframe;
     }
     
     private static float[] extractPositions(AIMesh aiMesh) {
@@ -261,46 +346,31 @@ final class AssimpLoader {
         return boneNames;
     }
     
-    private static void processNode(
-        AINode node,
-        int parentIndex,
-        Set<String> boneNames,
-        Skeleton skeleton) {
-        
+    private static void processNode(AINode node, int parentIndex, Set<String> boneNames, Skeleton skeleton) {
         String nodeName = node.mName().dataString();
-
-        int boneIndex = parentIndex;
+        int boneIndex   = parentIndex;
 
         if(boneNames.contains(nodeName)) {
-            Bone2 bone = new Bone2();
-            bone.name = nodeName;
+            Bone2 bone       = new Bone2();
+            bone.name        = nodeName;
             bone.parentIndex = parentIndex;
 
             convertMatrix(node.mTransformation(), bone.bindTransform);
-
             skeleton.bones.add(bone);
-
             boneIndex = skeleton.bones.size() - 1;
-
             skeleton.boneIndices.put(nodeName, boneIndex);
 
-            if(parentIndex != -1)
+            if(parentIndex != -1) { 
                 skeleton.bones.get(parentIndex).children.add(boneIndex);
-            else
+            } else {
                 skeleton.rootBoneIndex = boneIndex;
+            }
         }
 
         PointerBuffer children = node.mChildren();
 
         for(int i = 0; i < node.mNumChildren(); i++) {
-
-            processNode(
-                AINode.create(children.get(i)),
-                boneIndex,
-                boneNames,
-                skeleton
-            );
-
+            processNode(AINode.create(children.get(i)), boneIndex, boneNames, skeleton);
         }
     }
     
@@ -323,6 +393,52 @@ final class AssimpLoader {
                 Bone2 bone = skeleton.bones.get(index);
                 
                 convertMatrix(aiBone.mOffsetMatrix(), bone.inverseBindTransform);
+            }
+        }
+    }
+    
+    private static void applyBoneWeights(AIScene aiScene, List<Mesh2> meshes, Skeleton skeleton) {
+        PointerBuffer aiMeshes = aiScene.mMeshes();
+
+        for(int meshIndex = 0; meshIndex < aiScene.mNumMeshes(); meshIndex++) {
+            AIMesh aiMesh       = AIMesh.create(aiMeshes.get(meshIndex));
+            Mesh2 mesh          = meshes.get(meshIndex);
+            int vertexCount     = aiMesh.mNumVertices();
+            mesh.boneIDs        = new int[vertexCount * 4];
+            mesh.boneWeights    = new float[vertexCount * 4];
+            PointerBuffer bones = aiMesh.mBones();
+            
+            if(bones == null) continue;
+
+            for(int i = 0; i < aiMesh.mNumBones(); i++) {
+                AIBone aiBone     = AIBone.create(bones.get(i));
+                String name       = aiBone.mName().dataString();
+                Integer boneIndex = skeleton.boneIndices.get(name);
+                
+                if(boneIndex == null) continue;
+
+                AIVertexWeight.Buffer weights = aiBone.mWeights();
+                
+                for(int j = 0; j < aiBone.mNumWeights(); j++) {
+                    AIVertexWeight weight = weights.get(j);
+
+                    int vertexId = weight.mVertexId();
+                    float value  = weight.mWeight();
+
+                    addBoneWeight(mesh, vertexId, boneIndex, value);
+                }
+            }
+        }
+    }
+    
+    private static void addBoneWeight(Mesh2 mesh, int vertex, int bone, float weight) {
+        int base = vertex * 4;
+
+        for(int i = 0; i < 4; i++) {
+            if(mesh.boneWeights[base + i] == 0f) {
+                mesh.boneIDs[base + i] = bone;
+                mesh.boneWeights[base + i] = weight;
+                return;
             }
         }
     }
