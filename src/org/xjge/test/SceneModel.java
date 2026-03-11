@@ -55,6 +55,8 @@ public class SceneModel extends Scene {
             System.out.println(" texCoord count: " + mesh.uvs.length);
             System.out.println(" tangent count: " + mesh.tangents.length);
             System.out.println(" index count: " + mesh.indices.length);
+            System.out.println(" bone IDs: " + mesh.boneIDs.length);
+            System.out.println(" bone weights: " + mesh.boneWeights.length);
             System.out.println();
         }
         
@@ -79,11 +81,19 @@ public class SceneModel extends Scene {
         for(var animation : model.animations) {
             System.out.println(" name: " + animation.name);
             System.out.println(" duration: " + animation.duration);
+            System.out.println(" ticks per second: " + animation.ticksPerSecond);
             System.out.println(" keyframes: " + animation.keyframes.size());
+            if(!animation.keyframes.isEmpty()) {
+                animation.keyframes.forEach((k,v) -> {
+                    System.out.println("  bone name: " + k);
+                    System.out.println("   positions: " + v.positions.length);
+                    System.out.println("   rotations: " + v.rotations.length);
+                    System.out.println("   scales: " + v.scales.length);
+                });
+                System.out.println();
+            }
         }
         System.out.println();
-        
-        
     }
 
     @Override

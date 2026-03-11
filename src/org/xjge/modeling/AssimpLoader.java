@@ -177,6 +177,7 @@ final class AssimpLoader {
             var animation       = new SkeletalAnimation2();
             animation.name      = aiAnimation.mName().dataString();
             animation.duration  = (float) aiAnimation.mDuration();
+            animation.ticksPerSecond = (float) aiAnimation.mTicksPerSecond();
             animation.keyframes = new HashMap<>();
             var channels        = aiAnimation.mChannels();
 

@@ -10,7 +10,10 @@ import java.util.Map;
 public final class SkeletalAnimation2 {
 
     public float duration;
+    public float ticksPerSecond;
+    
     public String name;
+    
     public Map<String, Keyframe2> keyframes;
     
 }
