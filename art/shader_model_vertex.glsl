@@ -19,11 +19,16 @@ out mat3 ioTBN;
 
 void main() {
     //Build skinning matrix from bone weights
-    mat4 skinMatrix = 
-        aBoneWeights.x * uBones[aBoneIDs.x] +
-        aBoneWeights.y * uBones[aBoneIDs.y] +
-        aBoneWeights.z * uBones[aBoneIDs.z] +
-        aBoneWeights.w * uBones[aBoneIDs.w];
+    mat4 skinMatrix;
+    if(false) { //Quick override for testing
+        skinMatrix = mat4(1.0);
+    } else {
+        skinMatrix = 
+            aBoneWeights.x * uBones[int(aBoneIDs.x)] +
+            aBoneWeights.y * uBones[int(aBoneIDs.y)] +
+            aBoneWeights.z * uBones[int(aBoneIDs.z)] +
+            aBoneWeights.w * uBones[int(aBoneIDs.w)];
+    }
 
     //Apply skinning to position, normal, and tangent
     vec4 skinnedPosition = skinMatrix * vec4(aPosition, 1.0);

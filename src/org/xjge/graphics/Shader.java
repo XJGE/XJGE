@@ -177,6 +177,10 @@ public class Shader implements AssetReloadListener {
         glUniform1f(uniforms.get(name).location, value);
     }
     
+    public void setUniform(String name, boolean transpose, float[] values) {
+        glUniformMatrix4fv(uniforms.get(name).location, transpose, values);
+    }
+    
     /**
      * Supplies the specified uniform variable with a new value.
      * 
