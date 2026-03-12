@@ -98,7 +98,7 @@ public class ModelRenderer extends EntityComponent implements AssetReloadListene
             glEnableVertexAttribArray(3);
             
             //Bone IDs
-            glVertexAttribPointer(4, 4, GL_FLOAT, false, stride, 11L * Float.BYTES);
+            glVertexAttribIPointer(4, 4, GL_INT, stride, 11L * Integer.BYTES);
             glEnableVertexAttribArray(4);
             
             //Bone Weights

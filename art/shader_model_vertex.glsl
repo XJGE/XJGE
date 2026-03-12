@@ -4,7 +4,7 @@ layout(location = 0) in vec3 aPosition;
 layout(location = 1) in vec3 aNormal;
 layout(location = 2) in vec2 aUV;
 layout(location = 3) in vec3 aTangent;
-layout(location = 4) in vec4 aBoneIDs;
+layout(location = 4) in ivec4 aBoneIDs;
 layout(location = 5) in vec4 aBoneWeights;
 
 uniform mat3 uNormalMatrix;
@@ -20,10 +20,10 @@ out mat3 ioTBN;
 void main() {
     //Build skinning matrix from bone weights
     mat4 skinMatrix = 
-        aBoneWeights.x * uBones[int(aBoneIDs.x)] +
-        aBoneWeights.y * uBones[int(aBoneIDs.y)] +
-        aBoneWeights.z * uBones[int(aBoneIDs.z)] +
-        aBoneWeights.w * uBones[int(aBoneIDs.w)];
+        aBoneWeights.x * uBones[aBoneIDs.x] +
+        aBoneWeights.y * uBones[aBoneIDs.y] +
+        aBoneWeights.z * uBones[aBoneIDs.z] +
+        aBoneWeights.w * uBones[aBoneIDs.w];
 
     //Apply skinning to position, normal, and tangent
     vec4 skinnedPosition = skinMatrix * vec4(aPosition, 1.0);
