@@ -4,26 +4,45 @@ layout(location = 0) in vec3 aPosition;
 layout(location = 1) in vec3 aNormal;
 layout(location = 2) in vec2 aUV;
 layout(location = 3) in vec3 aTangent;
+layout(location = 4) in vec4 aBoneIDs;
+layout(location = 5) in vec4 aBoneWeights;
 
+uniform mat3 uNormalMatrix;
 uniform mat4 uModel;
 uniform mat4 uView;
 uniform mat4 uProjection;
-uniform mat3 uNormalMatrix;
+uniform mat4 uBones[128];
 
-out vec3 ioFragPos;
 out vec2 ioUV;
+out vec3 ioFragPos;
 out mat3 ioTBN;
 
 void main() {
+    //Build skinning matrix from bone weights
+    mat4 skinMatrix = mat4(1.0);
+    skinMatrix += aBoneWeights.x * uBones[int(aBoneIDs.x)];
+    skinMatrix += aBoneWeights.y * uBones[int(aBoneIDs.y)];
+    skinMatrix += aBoneWeights.z * uBones[int(aBoneIDs.z)];
+    skinMatrix += aBoneWeights.w * uBones[int(aBoneIDs.w)];
 
-    vec3 N = normalize(uNormalMatrix * aNormal);
-    vec3 T = normalize(uNormalMatrix * aTangent);
-    vec3 B = cross(N, T);
+    //Apply skinning to position, normal, and tangent
+    vec4 skinnedPosition = skinMatrix * vec4(aPosition, 1.0);
+    vec3 skinnedNormal   = mat3(skinMatrix) * aNormal;
+    vec3 skinnedTangent  = mat3(skinMatrix) * aTangent;
 
+    //Transform to world space
+    vec4 worldPos = uModel * skinnedPosition;
+    ioFragPos = worldPos.xyz;
+
+    //Transform normals to world space
+    vec3 N = normalize(uNormalMatrix * skinnedNormal);
+    vec3 T = normalize(uNormalMatrix * skinnedTangent);
+    vec3 B = normalize(cross(N, T));
     ioTBN = mat3(T, B, N);
 
-    ioFragPos = vec3(uModel * vec4(aPosition, 1.0));
+    //Pass UVs
     ioUV = aUV;
 
-    gl_Position = uProjection * uView * vec4(ioFragPos, 1.0);
+    //Final clip space position
+    gl_Position = uProjection * uView * worldPos;
 }

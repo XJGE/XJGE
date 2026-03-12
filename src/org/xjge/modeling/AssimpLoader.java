@@ -175,7 +175,10 @@ final class AssimpLoader {
         for(int i = 0; i < aiScene.mNumAnimations(); i++) {
             var aiAnimation     = AIAnimation.create(aiAnimations.get(i));
             var animation       = new SkeletalAnimation2();
-            animation.name      = aiAnimation.mName().dataString();
+            
+            animation.name = aiAnimation.mName().dataString();
+            if(animation.name.contains("|")) animation.name = animation.name.split("\\|")[1];
+            
             animation.duration  = (float) aiAnimation.mDuration();
             animation.ticksPerSecond = (float) aiAnimation.mTicksPerSecond();
             animation.keyframes = new HashMap<>();

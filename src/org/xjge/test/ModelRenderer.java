@@ -31,6 +31,8 @@ public class ModelRenderer extends EntityComponent implements AssetReloadListene
     private final Vector3f position;
     private final Matrix3f normalMatrix = new Matrix3f();
     private final Matrix4f modelMatrix = new Matrix4f();
+    private final Matrix4f identityMatrix = new Matrix4f().identity();
+    private ModelAnimator animator;
     
     private Texture albedoMap;
     private Texture normalMap;
@@ -65,7 +67,7 @@ public class ModelRenderer extends EntityComponent implements AssetReloadListene
         
         for(Mesh2 mesh : model.meshes) {
             float[] interleaved = buildInterleaved(mesh);
-            int stride = 11 * Float.BYTES;
+            int stride = 19 * Float.BYTES;
 
             int vao = glGenVertexArrays();
             int vbo = glGenBuffers();
@@ -94,7 +96,15 @@ public class ModelRenderer extends EntityComponent implements AssetReloadListene
             //Tangent
             glVertexAttribPointer(3, 3, GL_FLOAT, false, stride, 8L * Float.BYTES);
             glEnableVertexAttribArray(3);
-
+            
+            //Bone IDs
+            glVertexAttribPointer(4, 4, GL_FLOAT, false, stride, 11L * Float.BYTES);
+            glEnableVertexAttribArray(4);
+            
+            //Bone Weights
+            glVertexAttribPointer(5, 4, GL_FLOAT, false, stride, 15L * Float.BYTES);
+            glEnableVertexAttribArray(5);
+            
             glBindVertexArray(0);
 
             vaos.add(vao);
@@ -126,12 +136,12 @@ public class ModelRenderer extends EntityComponent implements AssetReloadListene
     
     private float[] buildInterleaved(Mesh2 mesh) {
         int vertexCount = mesh.positions.length / 3;
-        float[] data = new float[vertexCount * 11];
+        float[] data = new float[vertexCount * 19];
 
         for(int i = 0; i < vertexCount; i++) {
             int p = i * 3;
             int u = i * 2;
-            int d = i * 11;
+            int d = i * 19;
             
             //Position
             data[d]     = mesh.positions[p];
@@ -148,12 +158,28 @@ public class ModelRenderer extends EntityComponent implements AssetReloadListene
                 data[d + 6] = mesh.uvs[u];
                 data[d + 7] = mesh.uvs[u + 1];
             }
-
+            
             //Tangent
             if(mesh.tangents != null) {
                 data[d + 8]  = mesh.tangents[p];
                 data[d + 9]  = mesh.tangents[p + 1];
                 data[d + 10] = mesh.tangents[p + 2];
+            }
+            
+            //Bone IDs
+            if(mesh.boneIDs != null) {
+                data[d + 11] = mesh.boneIDs[i * 4];
+                data[d + 12] = mesh.boneIDs[i * 4 + 1];
+                data[d + 13] = mesh.boneIDs[i * 4 + 2];
+                data[d + 14] = mesh.boneIDs[i * 4 + 3];
+            }
+
+            //Bone Weights
+            if(mesh.boneWeights != null) {
+                data[d + 15] = mesh.boneWeights[i * 4];
+                data[d + 16] = mesh.boneWeights[i * 4 + 1];
+                data[d + 17] = mesh.boneWeights[i * 4 + 2];
+                data[d + 18] = mesh.boneWeights[i * 4 + 3];
             }
         }
 
@@ -207,6 +233,22 @@ public class ModelRenderer extends EntityComponent implements AssetReloadListene
         glEnable(GL_CULL_FACE);
         
         shader.use();
+        
+        if(animator != null) {
+            var animatedBones = animator.getSkinningMatrices();
+            var uploadedBones = new Matrix4f[128]; //Object churn city
+            
+            for(int i = 0; i < 128; i++) {
+                if(i < animatedBones.length && animatedBones[i] != null) {
+                    uploadedBones[i] = animatedBones[i];
+                } else {
+                    uploadedBones[i] = identityMatrix;
+                }
+            }
+            
+            shader.setUniform("uBones", false, uploadedBones);
+        }
+        
         shader.setUniform("uModel", false, modelMatrix);
         shader.setUniform("uView", false, camera.getViewMatrix());
         shader.setUniform("uProjection", false, camera.getProjectionMatrix());
@@ -229,7 +271,11 @@ public class ModelRenderer extends EntityComponent implements AssetReloadListene
         
         ErrorUtils.checkGLError();
     }
-
+    
+    public void setAnimator(ModelAnimator animator) {
+        this.animator = animator;
+    }
+    
     @Override
     public void onAssetReload(Asset asset) {
         System.out.println("Change detected in model data");

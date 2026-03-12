@@ -44,8 +44,12 @@ public class SceneModel extends Scene {
         floor = new Entity().addComponent(new Prism(0, -1f, 0, 10, 0.5f, 10));
         addEntity(floor);
         
-        Model2 model = Model2.load("yshtola.fbx");
-        modelEntity = new Entity().addComponent(new ModelRenderer(model, 0, 0, -2));
+        var model = Model2.load("yshtola.fbx");
+        var modelAnimator = new ModelAnimator(model);
+        var modelRenderer = new ModelRenderer(model, 0, 0, -2);
+        modelAnimator.setCurrentAnimation("wave");
+        modelRenderer.setAnimator(modelAnimator);
+        modelEntity = new Entity().addComponent(modelAnimator).addComponent(modelRenderer);
         addEntity(modelEntity);
         
         System.out.println("Meshes:");
@@ -98,6 +102,9 @@ public class SceneModel extends Scene {
 
     @Override
     public void update(double targetDelta, double trueDelta) {
+        for(var model : queryEntities(ModelAnimator.class)) {
+            model.getComponent(ModelAnimator.class).update(targetDelta);
+        }
     }
 
     @Override

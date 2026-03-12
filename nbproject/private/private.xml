@@ -2,14 +2,6 @@
 <project-private xmlns="http://www.netbeans.org/ns/project-private/1">
     <editor-bookmarks xmlns="http://www.netbeans.org/ns/editor-bookmarks/2" lastBookmarkId="26">
         <file>
-            <url>src/org/xjge/graphics/Cubemap2.java</url>
-            <bookmark id="25">
-                <name/>
-                <line>32</line>
-                <key/>
-            </bookmark>
-        </file>
-        <file>
             <url>src/org/xjge/ui/UI.java</url>
             <bookmark id="9">
                 <name/>
@@ -17,13 +9,25 @@
                 <key/>
             </bookmark>
         </file>
+        <file>
+            <url>src/org/xjge/graphics/Cubemap2.java</url>
+            <bookmark id="25">
+                <name/>
+                <line>32</line>
+                <key/>
+            </bookmark>
+        </file>
     </editor-bookmarks>
     <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
         <group>
+            <file>file:/C:/Users/jhoff/Projects/XJGE/src/org/xjge/test/SceneModel.java</file>
+            <file>file:/C:/Users/jhoff/Projects/XJGE/src/org/xjge/test/ModelAnimator.java</file>
             <file>file:/C:/Users/jhoff/Projects/XJGE/src/org/xjge/modeling/AssimpLoader.java</file>
-            <file>file:/C:/Users/jhoff/Projects/XJGE/src/org/xjge/modeling/AssimpSceneData.java</file>
+            <file>file:/C:/Users/jhoff/Projects/XJGE/src/org/xjge/modeling/Keyframe2.java</file>
+            <file>file:/C:/Users/jhoff/Projects/XJGE/src/org/xjge/modeling/SkeletonRuntime.java</file>
             <file>file:/C:/Users/jhoff/Projects/XJGE/src/org/xjge/test/ModelRenderer.java</file>
             <file>file:/C:/Users/jhoff/Projects/XJGE/src/org/xjge/modeling/Model2.java</file>
+            <file>file:/C:/Users/jhoff/Projects/XJGE/src/org/xjge/modeling/SkeletalAnimation2.java</file>
             <file>file:/C:/Users/jhoff/Projects/XJGE/src/org/xjge/modeling/Mesh2.java</file>
         </group>
     </open-files>

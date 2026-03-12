@@ -63,14 +63,14 @@ public class ModelAnimator extends EntityComponent {
     
     private void buildGlobalPose() {
         Skeleton skeleton = model.skeleton;
-
+        
         for(int i = 0; i < skeleton.bones.size(); i++) {
             int parent = skeleton.bones.get(i).parentIndex;
             if(parent >= 0) {
-                runtime.currentPose[parent].mul(runtime.currentPose[i], runtime.currentPose[i]);
+                // global = parentGlobal * local
+                runtime.currentPose[i].set(runtime.currentPose[parent]).mul(runtime.currentPose[i]);
             }
         }
-
     }
     
     private void computeSkinningMatrices() {
@@ -83,15 +83,25 @@ public class ModelAnimator extends EntityComponent {
         }
     }
     
-    public void update(float dt) {
+    public void update(double dt) {
         if(currentAnimation == null) return;
 
         time += dt * currentAnimation.ticksPerSecond;
         float animationTime = time % currentAnimation.duration;
-
+        
         sampleAnimation(animationTime);
         buildGlobalPose();
         computeSkinningMatrices();
+    }
+    
+    public void setCurrentAnimation(String name) {
+        model.animations.forEach(animation -> {
+            if(animation.name.equals(name)) currentAnimation = animation;
+        });
+    }
+    
+    public Matrix4f[] getSkinningMatrices() {
+        return runtime.skinningMatrices;
     }
     
 }

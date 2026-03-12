@@ -16,6 +16,7 @@ import org.joml.Vector3fc;
 import org.joml.Vector4fc;
 import static org.lwjgl.opengl.GL20.*;
 import org.lwjgl.system.MemoryStack;
+import org.lwjgl.system.MemoryUtil;
 import org.xjge.core.Asset;
 import org.xjge.core.AssetReloadListener;
 import org.xjge.core.Logger;
@@ -257,7 +258,6 @@ public class Shader implements AssetReloadListener {
      * @param values    a collection of values of the uniform variable array
      */
     public void setUniform(String name, boolean transpose, List<Matrix4f> values) { 
-        //TODO: this will need to change when we overhaul 3D animation
         try(MemoryStack stack = MemoryStack.stackPush()) {
             FloatBuffer matBuf = stack.mallocFloat(16 * values.size() - 1);
             
@@ -268,6 +268,17 @@ public class Shader implements AssetReloadListener {
                     transpose,
                     matBuf);
         }
+    }
+    
+    public void setUniform(String name, boolean transpose, Matrix4f[] values) { 
+        int location     = glGetUniformLocation(handle, name);
+        var matrixBuffer = MemoryUtil.memAllocFloat(values.length * 16);
+
+        for(Matrix4f matrix : values) matrix.get(matrixBuffer);
+
+        matrixBuffer.flip();
+        glUniformMatrix4fv(location, transpose, matrixBuffer);
+        MemoryUtil.memFree(matrixBuffer);
     }
     
     /**
