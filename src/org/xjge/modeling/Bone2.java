@@ -17,6 +17,7 @@ public final class Bone2 {
     
     public List<Integer> children = new ArrayList<>();
     
+    public final Matrix4f localBindTransform   = new Matrix4f();
     public final Matrix4f bindTransform        = new Matrix4f();
     public final Matrix4f inverseBindTransform = new Matrix4f();
     

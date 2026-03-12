@@ -269,7 +269,7 @@ public class ModelRenderer extends EntityComponent implements AssetReloadListene
             
             for(int i = 0; i < 128; i++) {
                 if(i < animatedBones.length && animatedBones[i] != null) {
-                    uploadedBones[i] = animatedBones[i];
+                    uploadedBones[i] = animatedBones[i]; //even if we set this to the indentity the model does not render
                 } else {
                     uploadedBones[i] = identityMatrix;
                 }

@@ -30,78 +30,54 @@ public class ModelAnimator extends EntityComponent {
         runtime = new SkeletonRuntime();
         runtime.currentPose = new Matrix4f[boneCount];
         runtime.skinningMatrices = new Matrix4f[boneCount];
-
-        for(int i = 0; i < boneCount; i++) {
+        for (int i = 0; i < boneCount; i++) {
             runtime.currentPose[i] = new Matrix4f();
             runtime.skinningMatrices[i] = new Matrix4f();
         }
     }
-    
-    private void sampleAnimation(float time) {
-        Skeleton skeleton = model.skeleton;
 
-        for(int i = 0; i < skeleton.bones.size(); i++) {
-            Bone2 bone = skeleton.bones.get(i);
-            Keyframe2 keys = currentAnimation.keyframes.get(bone.name);
-
-            if(keys == null) {
-                runtime.currentPose[i].set(bone.bindTransform);
-                continue;
-            }
-
-            Vector3f position = keys.positions[0];
-            Quaternionf rotation = keys.rotations[0];
-            Vector3f scale = keys.scales[0];
-
-            runtime.currentPose[i]
-                .identity()
-                .translate(position)
-                .rotate(rotation)
-                .scale(scale);
+    private void sampleAnimation(float t) {
+        for (int i = 0; i < model.skeleton.bones.size(); i++) {
+            Bone2 bone = model.skeleton.bones.get(i);
+            Keyframe2 keys = currentAnimation != null ? currentAnimation.keyframes.get(bone.name) : null;
+            if (keys == null) runtime.currentPose[i].set(bone.localBindTransform);
+            else runtime.currentPose[i]
+                    .identity()
+                    .translate(keys.positions[0])
+                    .rotate(keys.rotations[0])
+                    .scale(keys.scales[0]);
         }
     }
-    
+
     private void buildGlobalPose() {
-        Skeleton skeleton = model.skeleton;
-        
-        for(int i = 0; i < skeleton.bones.size(); i++) {
-            int parent = skeleton.bones.get(i).parentIndex;
-            if(parent >= 0) {
-                // global = parentGlobal * local
-                runtime.currentPose[i].set(runtime.currentPose[parent]).mul(runtime.currentPose[i]);
-            }
+        Skeleton skel = model.skeleton;
+        for (int i = 0; i < skel.bones.size(); i++) {
+            int parent = skel.bones.get(i).parentIndex;
+            if (parent >= 0) runtime.currentPose[i].set(runtime.currentPose[parent]).mul(runtime.currentPose[i]);
         }
     }
-    
+
     private void computeSkinningMatrices() {
-        Skeleton skeleton = model.skeleton;
-
-        for(int i = 0; i < skeleton.bones.size(); i++) {
-            runtime.skinningMatrices[i]
-                .set(runtime.currentPose[i])
-                .mul(skeleton.bones.get(i).inverseBindTransform);
-        }
+        Skeleton skel = model.skeleton;
+        for (int i = 0; i < skel.bones.size(); i++)
+            runtime.skinningMatrices[i].set(runtime.currentPose[i]).mul(skel.bones.get(i).inverseBindTransform);
     }
-    
-    public void update(double dt) {
-        if(currentAnimation == null) return;
 
+    public void update(double dt) {
+        if (currentAnimation == null) return;
         time += dt * currentAnimation.ticksPerSecond;
-        float animationTime = time % currentAnimation.duration;
-        
-        sampleAnimation(animationTime);
+        sampleAnimation(time % currentAnimation.duration);
         buildGlobalPose();
         computeSkinningMatrices();
     }
-    
+
     public void setCurrentAnimation(String name) {
-        model.animations.forEach(animation -> {
-            if(animation.name.equals(name)) currentAnimation = animation;
-        });
+        currentAnimation = model.animations.stream()
+                .filter(a -> a.name.equals(name))
+                .findFirst()
+                .orElse(null);
     }
-    
-    public Matrix4f[] getSkinningMatrices() {
-        return runtime.skinningMatrices;
-    }
+
+    public Matrix4f[] getSkinningMatrices() { return runtime.skinningMatrices; }
     
 }

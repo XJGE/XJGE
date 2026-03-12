@@ -127,7 +127,11 @@ public class Shader implements AssetReloadListener {
      *             appears in the .glsl source file
      */
     private void addUniform(ShaderDataType type, String name) {
-        if(glGetUniformLocation(handle, name) == -1) return;
+        if(glGetUniformLocation(handle, name) == -1) {
+            //System.out.println(name);
+            //TODO: lights array filtered out here
+            return;
+        }
         
         try(MemoryStack stack = MemoryStack.stackPush()) {
             switch(type) {
@@ -292,6 +296,10 @@ public class Shader implements AssetReloadListener {
      */
     public boolean containsUniform(String name) {
         return uniforms.containsKey(name);
+    }
+    
+    public int getUniformLocation(String name) {
+        return glGetUniformLocation(handle, name);
     }
 
     @Override

@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import org.joml.Matrix4f;
 
 /**
  * 
@@ -13,6 +14,8 @@ import java.util.Map;
 public final class Skeleton {
 
     public int rootBoneIndex;
+    
+    public Matrix4f globalInverseTransform;
     
     public List<Bone2> bones = new ArrayList<>();
     public Map<String, Integer> boneIndices = new HashMap<>();

@@ -115,13 +115,10 @@ final class AssimpLoader {
     
     static Skeleton parseSkeleton(AIScene aiScene) {
         Set<String> boneNames = collectBoneNames(aiScene);
-        Skeleton skeleton     = new Skeleton();
-        AINode rootNode       = aiScene.mRootNode();
-
-        processNode(rootNode, -1, boneNames, skeleton);
-
+        Skeleton skeleton = new Skeleton();
+        AINode rootNode = aiScene.mRootNode();
+        processNode(rootNode, -1, new Matrix4f().identity(), boneNames, skeleton);
         applyBoneOffsets(aiScene, skeleton);
-
         return skeleton;
     }
     
@@ -350,86 +347,69 @@ final class AssimpLoader {
         return boneNames;
     }
     
-    private static void processNode(AINode node, int parentIndex, Set<String> boneNames, Skeleton skeleton) {
+    private static void processNode(AINode node, int parentIndex, Matrix4f parentTransform, Set<String> boneNames, Skeleton skeleton) {
         String nodeName = node.mName().dataString();
-        int boneIndex   = parentIndex;
+        int boneIndex = parentIndex;
 
-        if(boneNames.contains(nodeName)) {
-            Bone2 bone       = new Bone2();
-            bone.name        = nodeName;
+        Matrix4f localTransform = new Matrix4f();
+        convertMatrix(node.mTransformation(), localTransform);
+        Matrix4f globalTransform = new Matrix4f(parentTransform).mul(localTransform);
+
+        if (boneNames.contains(nodeName)) {
+            Bone2 bone = new Bone2();
+            bone.name = nodeName;
             bone.parentIndex = parentIndex;
-
-            convertMatrix(node.mTransformation(), bone.bindTransform);
+            bone.localBindTransform.set(localTransform); // store local transform
             skeleton.bones.add(bone);
+
             boneIndex = skeleton.bones.size() - 1;
             skeleton.boneIndices.put(nodeName, boneIndex);
 
-            if(parentIndex != -1) { 
-                skeleton.bones.get(parentIndex).children.add(boneIndex);
-            } else {
-                skeleton.rootBoneIndex = boneIndex;
-            }
+            if (parentIndex != -1) skeleton.bones.get(parentIndex).children.add(boneIndex);
+            else skeleton.rootBoneIndex = boneIndex;
         }
 
         PointerBuffer children = node.mChildren();
-
-        for(int i = 0; i < node.mNumChildren(); i++) {
-            processNode(AINode.create(children.get(i)), boneIndex, boneNames, skeleton);
-        }
+        for (int i = 0; i < node.mNumChildren(); i++)
+            processNode(AINode.create(children.get(i)), boneIndex, globalTransform, boneNames, skeleton);
     }
     
     private static void applyBoneOffsets(AIScene aiScene, Skeleton skeleton) {
         PointerBuffer meshes = aiScene.mMeshes();
-
-        for(int i = 0; i < aiScene.mNumMeshes(); i++) {
+        for (int i = 0; i < aiScene.mNumMeshes(); i++) {
             AIMesh mesh = AIMesh.create(meshes.get(i));
-
             PointerBuffer bones = mesh.mBones();
-            if(bones == null) continue;
+            if (bones == null) continue;
 
-            for(int j = 0; j < mesh.mNumBones(); j++) {
+            for (int j = 0; j < mesh.mNumBones(); j++) {
                 AIBone aiBone = AIBone.create(bones.get(j));
-                String name   = aiBone.mName().dataString();
-                Integer index = skeleton.boneIndices.get(name);
-                
-                if(index == null) continue;
-                
-                Bone2 bone = skeleton.bones.get(index);
-                
-                convertMatrix(aiBone.mOffsetMatrix(), bone.inverseBindTransform);
+                Integer index = skeleton.boneIndices.get(aiBone.mName().dataString());
+                if (index == null) continue;
+                convertMatrix(aiBone.mOffsetMatrix(), skeleton.bones.get(index).inverseBindTransform);
             }
         }
     }
     
     private static void applyBoneWeights(AIScene aiScene, List<Mesh2> meshes, Skeleton skeleton) {
         PointerBuffer aiMeshes = aiScene.mMeshes();
-
-        for(int meshIndex = 0; meshIndex < aiScene.mNumMeshes(); meshIndex++) {
-            AIMesh aiMesh       = AIMesh.create(aiMeshes.get(meshIndex));
-            Mesh2 mesh          = meshes.get(meshIndex);
-            int vertexCount     = aiMesh.mNumVertices();
-            mesh.boneIDs        = new int[vertexCount * 4];
-            mesh.boneWeights    = new float[vertexCount * 4];
+        for (int meshIndex = 0; meshIndex < aiScene.mNumMeshes(); meshIndex++) {
+            AIMesh aiMesh = AIMesh.create(aiMeshes.get(meshIndex));
+            Mesh2 mesh = meshes.get(meshIndex);
+            int vertexCount = aiMesh.mNumVertices();
+            mesh.boneIDs = new int[vertexCount * 4];
+            mesh.boneWeights = new float[vertexCount * 4];
             PointerBuffer bones = aiMesh.mBones();
-            
-            if(bones == null) continue;
+            if (bones == null) continue;
 
-            for(int i = 0; i < aiMesh.mNumBones(); i++) {
-                AIBone aiBone     = AIBone.create(bones.get(i));
-                String name       = aiBone.mName().dataString();
-                Integer boneIndex = skeleton.boneIndices.get(name);
-                
-                if(boneIndex == null) continue;
+            for (int i = 0; i < aiMesh.mNumBones(); i++) {
+                AIBone aiBone = AIBone.create(bones.get(i));
+                Integer boneIndex = skeleton.boneIndices.get(aiBone.mName().dataString());
+                if (boneIndex == null) continue;
 
                 AIVertexWeight.Buffer weights = aiBone.mWeights();
-                
-                for(int j = 0; j < aiBone.mNumWeights(); j++) {
+                for (int j = 0; j < aiBone.mNumWeights(); j++) {
                     AIVertexWeight weight = weights.get(j);
-
-                    int vertexId = weight.mVertexId();
-                    float value  = weight.mWeight();
-
-                    addBoneWeight(mesh, vertexId, boneIndex, value);
+                    addBoneWeight(mesh, weight.mVertexId(), boneIndex, weight.mWeight());
                 }
             }
         }
@@ -437,9 +417,8 @@ final class AssimpLoader {
     
     private static void addBoneWeight(Mesh2 mesh, int vertex, int bone, float weight) {
         int base = vertex * 4;
-
-        for(int i = 0; i < 4; i++) {
-            if(mesh.boneWeights[base + i] == 0f) {
+        for (int i = 0; i < 4; i++) {
+            if (mesh.boneWeights[base + i] == 0f) {
                 mesh.boneIDs[base + i] = bone;
                 mesh.boneWeights[base + i] = weight;
                 return;

@@ -29,7 +29,7 @@ void main() {
     vec4 skinnedPosition = skinMatrix * vec4(aPosition, 1.0);
     vec3 skinnedNormal   = mat3(skinMatrix) * aNormal;
     vec3 skinnedTangent  = mat3(skinMatrix) * aTangent;
-
+    
     //Transform to world space
     vec4 worldPos = uModel * skinnedPosition;
     ioFragPos = worldPos.xyz;
@@ -44,5 +44,5 @@ void main() {
     ioUV = aUV;
 
     //Final clip space position
-    gl_Position = uProjection * uView * worldPos;
+    gl_Position = uProjection * uView * worldPos; //uProjection * uView * uModel * vec4(aPosition, 1.0);
 }
