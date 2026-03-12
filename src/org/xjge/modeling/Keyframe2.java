@@ -10,6 +10,10 @@ import org.joml.Vector3f;
  */
 public final class Keyframe2 {
 
+    public float[] positionTimes;
+    public float[] rotationTimes;
+    public float[] scaleTimes;
+    
     public Vector3f[] positions;
     public Vector3f[] scales;
     public Quaternionf[] rotations;

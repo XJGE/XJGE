@@ -18,36 +18,41 @@ out vec3 ioFragPos;
 out mat3 ioTBN;
 
 void main() {
-    //Build skinning matrix from bone weights
-    mat4 skinMatrix;
-    if(false) { //Quick override for testing
-        skinMatrix = mat4(1.0);
-    } else {
-        skinMatrix = 
-            aBoneWeights.x * uBones[int(aBoneIDs.x)] +
-            aBoneWeights.y * uBones[int(aBoneIDs.y)] +
-            aBoneWeights.z * uBones[int(aBoneIDs.z)] +
-            aBoneWeights.w * uBones[int(aBoneIDs.w)];
+    // --- Build weighted skinning matrices ---
+    mat4 skinMatrix = mat4(0.0);
+    mat3 skinRot = mat3(0.0);
+
+    // Accumulate weighted transforms
+    for(int i = 0; i < 4; i++) {
+        int bone = aBoneIDs[i];
+        float weight = aBoneWeights[i];
+        if(weight > 0.0) {
+            mat4 boneMat = uBones[bone];
+            skinMatrix += weight * boneMat;
+
+            // Extract rotation part for normal/tangent
+            mat3 boneRot = mat3(boneMat);
+            skinRot += weight * boneRot;
+        }
     }
 
-    //Apply skinning to position, normal, and tangent
+    // --- Apply skinning ---
     vec4 skinnedPosition = skinMatrix * vec4(aPosition, 1.0);
-    vec3 skinnedNormal   = mat3(skinMatrix) * aNormal;
-    vec3 skinnedTangent  = mat3(skinMatrix) * aTangent;
-    
-    //Transform to world space
+    vec3 skinnedNormal   = normalize(skinRot * aNormal);
+    vec3 skinnedTangent  = normalize(skinRot * aTangent);
+
+    // --- Transform to world space ---
     vec4 worldPos = uModel * skinnedPosition;
     ioFragPos = worldPos.xyz;
 
-    //Transform normals to world space
     vec3 N = normalize(uNormalMatrix * skinnedNormal);
     vec3 T = normalize(uNormalMatrix * skinnedTangent);
     vec3 B = normalize(cross(N, T));
     ioTBN = mat3(T, B, N);
 
-    //Pass UVs
+    // --- UVs ---
     ioUV = aUV;
 
-    //Final clip space position
-    gl_Position = uProjection * uView * worldPos; //uProjection * uView * uModel * vec4(aPosition, 1.0);
+    // --- Final clip-space position ---
+    gl_Position = uProjection * uView * worldPos;
 }

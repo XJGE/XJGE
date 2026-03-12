@@ -51,6 +51,13 @@ final class AssimpLoader {
         var aiScene = Assimp.aiImportFileFromMemory(buffer, FLAGS, "");
         if(aiScene == null) throw new RuntimeException(Assimp.aiGetErrorString());
         
+        AINode root = aiScene.mRootNode();
+        
+        Matrix4f rootTransform = new Matrix4f();
+        convertMatrix(root.mTransformation(), rootTransform);
+        
+        System.out.println(rootTransform);
+        
         List<Mesh2> meshes                = parseMeshes(aiScene);
         List<Material2> materials         = parseMaterials(aiScene);
         List<Integer> meshMaterialIndices = parseMeshMaterialIndices(aiScene);
@@ -201,6 +208,9 @@ final class AssimpLoader {
         int rotCount = channel.mNumRotationKeys();
         int scaleCount = channel.mNumScalingKeys();
 
+        keyframe.positionTimes = new float[posCount];
+        keyframe.rotationTimes = new float[rotCount];
+        keyframe.scaleTimes = new float[scaleCount];
         keyframe.positions = new Vector3f[posCount];
         keyframe.rotations = new Quaternionf[rotCount];
         keyframe.scales = new Vector3f[scaleCount];
@@ -209,6 +219,7 @@ final class AssimpLoader {
 
         for(int i = 0; i < posCount; i++) {
             AIVectorKey key = posKeys.get(i);
+            keyframe.positionTimes[i] = (float) key.mTime();
             keyframe.positions[i] = new Vector3f(
                 key.mValue().x(),
                 key.mValue().y(),
@@ -220,6 +231,7 @@ final class AssimpLoader {
 
         for(int i = 0; i < rotCount; i++) {
             AIQuatKey key = rotKeys.get(i);
+            keyframe.rotationTimes[i] = (float) key.mTime();
             keyframe.rotations[i] = new Quaternionf(
                 key.mValue().x(),
                 key.mValue().y(),
@@ -232,6 +244,7 @@ final class AssimpLoader {
 
         for(int i = 0; i < scaleCount; i++) {
             AIVectorKey key = scaleKeys.get(i);
+            keyframe.scaleTimes[i] = (float) key.mTime();
             keyframe.scales[i] = new Vector3f(
                 key.mValue().x(),
                 key.mValue().y(),
@@ -412,6 +425,23 @@ final class AssimpLoader {
                     addBoneWeight(mesh, weight.mVertexId(), boneIndex, weight.mWeight());
                 }
             }
+            
+            for (int v = 0; v < vertexCount; v++) {
+                int base = v * 4;
+
+                float sum =
+                    mesh.boneWeights[base] +
+                    mesh.boneWeights[base+1] +
+                    mesh.boneWeights[base+2] +
+                    mesh.boneWeights[base+3];
+
+                if (sum > 0f) {
+                    mesh.boneWeights[base]   /= sum;
+                    mesh.boneWeights[base+1] /= sum;
+                    mesh.boneWeights[base+2] /= sum;
+                    mesh.boneWeights[base+3] /= sum;
+                }
+            }
         }
     }
     
@@ -428,10 +458,10 @@ final class AssimpLoader {
     
     private static void convertMatrix(AIMatrix4x4 aiMatrix, Matrix4f dest) {
         dest.set(
-            aiMatrix.a1(), aiMatrix.a2(), aiMatrix.a3(), aiMatrix.a4(),
-            aiMatrix.b1(), aiMatrix.b2(), aiMatrix.b3(), aiMatrix.b4(),
-            aiMatrix.c1(), aiMatrix.c2(), aiMatrix.c3(), aiMatrix.c4(),
-            aiMatrix.d1(), aiMatrix.d2(), aiMatrix.d3(), aiMatrix.d4()
+            aiMatrix.a1(), aiMatrix.b1(), aiMatrix.c1(), aiMatrix.d1(),
+            aiMatrix.a2(), aiMatrix.b2(), aiMatrix.c2(), aiMatrix.d2(),
+            aiMatrix.a3(), aiMatrix.b3(), aiMatrix.c3(), aiMatrix.d3(),
+            aiMatrix.a4(), aiMatrix.b4(), aiMatrix.c4(), aiMatrix.d4()
         );
     }
     

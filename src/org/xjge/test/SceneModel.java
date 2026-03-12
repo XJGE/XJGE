@@ -9,6 +9,7 @@ import org.xjge.core.LightingSystem;
 import org.xjge.core.Scene;
 import org.xjge.core.XJGE;
 import org.xjge.graphics.Color;
+import org.xjge.graphics.Model;
 import org.xjge.graphics.Shader;
 import org.xjge.modeling.Material2;
 import org.xjge.modeling.Mesh2;
@@ -44,10 +45,12 @@ public class SceneModel extends Scene {
         floor = new Entity().addComponent(new Prism(0, -1f, 0, 10, 0.5f, 10));
         addEntity(floor);
         
-        var model = Model2.load("yshtola.fbx");
+        var model = Model2.load("mod_test.fbx"); //mod_test yshtola
         var modelAnimator = new ModelAnimator(model);
         var modelRenderer = new ModelRenderer(model, 0, 0, -2);
-        modelAnimator.setCurrentAnimation("wave");
+        modelAnimator.setCurrentAnimation("Wiggle");
+        //modelAnimator.setCurrentAnimation("Swoosh");
+        //modelAnimator.setCurrentAnimation("wave");
         modelRenderer.setAnimator(modelAnimator);
         modelEntity = new Entity().addComponent(modelAnimator).addComponent(modelRenderer);
         addEntity(modelEntity);
