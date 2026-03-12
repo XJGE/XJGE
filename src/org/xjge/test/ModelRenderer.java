@@ -136,50 +136,79 @@ public class ModelRenderer extends EntityComponent implements AssetReloadListene
     
     private float[] buildInterleaved(Mesh2 mesh) {
         int vertexCount = mesh.positions.length / 3;
-        float[] data = new float[vertexCount * 19];
-
-        for(int i = 0; i < vertexCount; i++) {
+        float[] data = new float[vertexCount * 19]; // 3+3+2+3+4+4 = 19 floats per vertex
+        
+        for (int i = 0; i < vertexCount; i++) {
             int p = i * 3;
             int u = i * 2;
             int d = i * 19;
-            
-            //Position
+
+            // --- Position ---
             data[d]     = mesh.positions[p];
             data[d + 1] = mesh.positions[p + 1];
             data[d + 2] = mesh.positions[p + 2];
 
-            //Normal
-            data[d + 3] = mesh.normals != null ? mesh.normals[p]     : 0f;
-            data[d + 4] = mesh.normals != null ? mesh.normals[p + 1] : 0f;
-            data[d + 5] = mesh.normals != null ? mesh.normals[p + 2] : 1f;
+            // --- Normal ---
+            if (mesh.normals != null && mesh.normals.length >= p + 3) {
+                data[d + 3] = mesh.normals[p];
+                data[d + 4] = mesh.normals[p + 1];
+                data[d + 5] = mesh.normals[p + 2];
+            } else {
+                data[d + 3] = 0f;
+                data[d + 4] = 0f;
+                data[d + 5] = 1f;
+            }
 
-            //TexCoords
-            if(mesh.uvs != null) {
+            // --- TexCoords ---
+            if (mesh.uvs != null && mesh.uvs.length >= u + 2) {
                 data[d + 6] = mesh.uvs[u];
                 data[d + 7] = mesh.uvs[u + 1];
+            } else {
+                data[d + 6] = 0f;
+                data[d + 7] = 0f;
             }
-            
-            //Tangent
-            if(mesh.tangents != null) {
+
+            // --- Tangent ---
+            if (mesh.tangents != null && mesh.tangents.length >= p + 3) {
                 data[d + 8]  = mesh.tangents[p];
                 data[d + 9]  = mesh.tangents[p + 1];
                 data[d + 10] = mesh.tangents[p + 2];
-            }
-            
-            //Bone IDs
-            if(mesh.boneIDs != null) {
-                data[d + 11] = mesh.boneIDs[i * 4];
-                data[d + 12] = mesh.boneIDs[i * 4 + 1];
-                data[d + 13] = mesh.boneIDs[i * 4 + 2];
-                data[d + 14] = mesh.boneIDs[i * 4 + 3];
+            } else {
+                data[d + 8]  = 1f;
+                data[d + 9]  = 0f;
+                data[d + 10] = 0f;
             }
 
-            //Bone Weights
-            if(mesh.boneWeights != null) {
-                data[d + 15] = mesh.boneWeights[i * 4];
-                data[d + 16] = mesh.boneWeights[i * 4 + 1];
-                data[d + 17] = mesh.boneWeights[i * 4 + 2];
-                data[d + 18] = mesh.boneWeights[i * 4 + 3];
+            // --- Bone IDs & Weights ---
+            for (int j = 0; j < 4; j++) {
+                int idx = i * 4 + j;
+
+                // Bone IDs
+                if (mesh.boneIDs != null && idx < mesh.boneIDs.length)
+                    data[d + 11 + j] = mesh.boneIDs[idx];
+                else
+                    data[d + 11 + j] = 0;
+
+                // Bone Weights
+                if (mesh.boneWeights != null && idx < mesh.boneWeights.length)
+                    data[d + 15 + j] = mesh.boneWeights[idx];
+                else
+                    data[d + 15 + j] = 0f;
+            }
+
+            // Normalize weights so they sum to 1
+            float wSum = data[d + 15] + data[d + 16] + data[d + 17] + data[d + 18];
+            if (wSum > 0f) {
+                data[d + 15] /= wSum;
+                data[d + 16] /= wSum;
+                data[d + 17] /= wSum;
+                data[d + 18] /= wSum;
+            } else {
+                // fallback: single bone influence if no weights
+                data[d + 15] = 1f;
+                data[d + 16] = 0f;
+                data[d + 17] = 0f;
+                data[d + 18] = 0f;
             }
         }
 
