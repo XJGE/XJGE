@@ -56,8 +56,6 @@ final class AssimpLoader {
         Matrix4f rootTransform = new Matrix4f();
         convertMatrix(root.mTransformation(), rootTransform);
         
-        System.out.println(rootTransform);
-        
         List<Mesh2> meshes                = parseMeshes(aiScene);
         List<Material2> materials         = parseMaterials(aiScene);
         List<Integer> meshMaterialIndices = parseMeshMaterialIndices(aiScene);

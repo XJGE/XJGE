@@ -1,17 +1,14 @@
-package org.xjge.modeling;
+package org.xjge.modeling3;
 
-import org.xjge.modeling3.TransparencyMode;
 import org.joml.Vector3f;
-import org.xjge.core.AssetManager;
-import org.xjge.graphics.Texture;
 
 /**
  * 
  * @author J Hoffman
  * @since 4.0.0
  */
-public final class Material2 {
-
+public class Material3 {
+    
     public float metallic;
     public float roughness;
     public float opacity = 1f;
