@@ -37,23 +37,34 @@ public class ModelAnimator extends EntityComponent {
     }
 
     private void sampleAnimation(float t) {
-        for (int i = 0; i < model.skeleton.bones.size(); i++) {
-            
-            Bone2 bone = model.skeleton.bones.get(i);
+        Skeleton skel = model.skeleton;
+
+        for (int i = 0; i < skel.bones.size(); i++) {
+            Bone2 bone = skel.bones.get(i);
             Keyframe2 keys = currentAnimation.keyframes.get(bone.name);
 
+            Matrix4f localAnim = new Matrix4f();
+
             if (keys == null) {
-                runtime.currentPose[i].set(bone.localBindTransform);
-                continue;
+                // No animation for this bone, identity local
+                localAnim.identity();
+            } else {
+                Vector3f pos = samplePosition(keys, t);
+                Quaternionf rot = sampleRotation(keys, t);
+                Vector3f scale = sampleScale(keys, t);
+                localAnim.translationRotateScale(pos, rot, scale);
             }
 
-            Vector3f pos = samplePosition(keys, t);
-            Quaternionf rot = sampleRotation(keys, t);
-            Vector3f scale = sampleScale(keys, t);
+            runtime.currentPose[i].set(localAnim);
+        }
 
-            runtime.currentPose[i]
-                .identity()
-                .translationRotateScale(pos, rot, scale);
+        // Build global pose and skinning matrices
+        for (int i = 0; i < skel.bones.size(); i++) {
+            int parent = skel.bones.get(i).parentIndex;
+            if (parent >= 0)
+                runtime.currentPose[i].set(runtime.currentPose[parent]).mul(runtime.currentPose[i]);
+
+            runtime.skinningMatrices[i].set(runtime.currentPose[i]).mul(skel.bones.get(i).inverseBindTransform);
         }
     }
     
@@ -110,22 +121,10 @@ public class ModelAnimator extends EntityComponent {
         return new Vector3f(k.scales[i]).lerp(k.scales[j], f);
     }
 
-    private void buildGlobalPose() {
-        Skeleton skel = model.skeleton;
-        for (int i = 0; i < skel.bones.size(); i++) {
-            int parent = skel.bones.get(i).parentIndex;
-            if (parent >= 0) runtime.currentPose[i].set(runtime.currentPose[parent]).mul(runtime.currentPose[i]);
-
-            // Precompute final skinning matrix
-            runtime.skinningMatrices[i].set(runtime.currentPose[i]).mul(skel.bones.get(i).inverseBindTransform);
-        }
-    }
-
     public void update(double dt) {
         if (currentAnimation == null) return;
         time += dt * currentAnimation.ticksPerSecond;
         sampleAnimation(time % currentAnimation.duration);
-        buildGlobalPose();
     }
 
     public void setCurrentAnimation(String name) {

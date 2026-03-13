@@ -362,29 +362,28 @@ final class AssimpLoader {
     
     private static void processNode(AINode node, int parentIndex, Matrix4f parentTransform, Set<String> boneNames, Skeleton skeleton) {
         String nodeName = node.mName().dataString();
-        int boneIndex = parentIndex;
 
         Matrix4f localTransform = new Matrix4f();
         convertMatrix(node.mTransformation(), localTransform);
-        Matrix4f globalTransform = new Matrix4f(parentTransform).mul(localTransform);
 
-        if (boneNames.contains(nodeName)) {
-            Bone2 bone = new Bone2();
-            bone.name = nodeName;
-            bone.parentIndex = parentIndex;
-            bone.localBindTransform.set(localTransform); // store local transform
-            skeleton.bones.add(bone);
+        Bone2 bone = new Bone2();
+        bone.name = nodeName;
+        bone.parentIndex = parentIndex;
+        bone.localBindTransform.set(localTransform);
 
-            boneIndex = skeleton.bones.size() - 1;
-            skeleton.boneIndices.put(nodeName, boneIndex);
+        skeleton.bones.add(bone);
+        
+        int boneIndex = skeleton.bones.size() - 1;
+        skeleton.boneIndices.put(nodeName, boneIndex);
 
-            if (parentIndex != -1) skeleton.bones.get(parentIndex).children.add(boneIndex);
-            else skeleton.rootBoneIndex = boneIndex;
-        }
+        if (parentIndex != -1)
+            skeleton.bones.get(parentIndex).children.add(boneIndex);
+        else
+            skeleton.rootBoneIndex = boneIndex;
 
         PointerBuffer children = node.mChildren();
         for (int i = 0; i < node.mNumChildren(); i++)
-            processNode(AINode.create(children.get(i)), boneIndex, globalTransform, boneNames, skeleton);
+            processNode(AINode.create(children.get(i)), boneIndex, parentTransform, boneNames, skeleton);
     }
     
     private static void applyBoneOffsets(AIScene aiScene, Skeleton skeleton) {
