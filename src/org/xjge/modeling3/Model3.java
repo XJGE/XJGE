@@ -9,12 +9,14 @@ import org.joml.Matrix4f;
 import org.joml.Vector3f;
 import org.lwjgl.PointerBuffer;
 import org.lwjgl.assimp.AIColor4D;
+import org.lwjgl.assimp.AIFace;
 import org.lwjgl.assimp.AIMaterial;
 import org.lwjgl.assimp.AIMatrix4x4;
 import org.lwjgl.assimp.AIMesh;
 import org.lwjgl.assimp.AINode;
 import org.lwjgl.assimp.AIScene;
 import org.lwjgl.assimp.AIString;
+import org.lwjgl.assimp.AIVector3D;
 import org.lwjgl.assimp.Assimp;
 import org.lwjgl.system.MemoryStack;
 import org.lwjgl.system.MemoryUtil;
@@ -34,6 +36,19 @@ public final class Model3 extends Asset {
     private List<Mesh3> meshes;
     private List<Material3> materials;
     private List<SkeletalAnimation3> animations;
+    
+    private enum VertexAttribute {
+        
+        POSITIONS(3),
+        NORMALS(3),
+        TANGENTS(3),
+        UVS(2);
+        
+        final int stride;
+        
+        VertexAttribute(int stride) { this.stride = stride; }
+        
+    }
     
     public static final Model3 load(String filename) {
         var defaultFlags = Assimp.aiProcess_Triangulate | Assimp.aiProcess_GenSmoothNormals |
@@ -83,7 +98,7 @@ public final class Model3 extends Asset {
         return null;
     }
     
-    private float extractFloat(AIMaterial aiMaterial, CharSequence aiKey) {
+    private float extractMaterialValue(AIMaterial aiMaterial, CharSequence aiKey) {
         try(var stack = MemoryStack.stackPush()) {
             var value = stack.mallocFloat(1);
             var max   = stack.mallocInt(1);
@@ -96,22 +111,67 @@ public final class Model3 extends Asset {
         }
     }
     
-    private Vector3f extractVector3f(AIMaterial aiMaterial, CharSequence aiKey) {
-        var aiColor = AIColor4D.create();
-        
-        int result = Assimp.aiGetMaterialColor(aiMaterial, aiKey, Assimp.aiTextureType_NONE, 0, aiColor);
-        if(result != Assimp.aiReturn_SUCCESS) return new Vector3f(1f);
-        
-        return new Vector3f(aiColor.r(), aiColor.g(), aiColor.b());
+    private float[] extractVertexAttribute(AIMesh aiMesh, VertexAttribute attribute) {
+        AIVector3D.Buffer buffer;
+
+        switch(attribute) {
+            case POSITIONS -> buffer = aiMesh.mVertices();
+            case NORMALS   -> buffer = aiMesh.mNormals();
+            case TANGENTS  -> buffer = aiMesh.mTangents();
+            case UVS       -> buffer = aiMesh.mTextureCoords(0);
+            //TODO: extract bone weights
+            default        -> throw new IllegalArgumentException("Unsupported vertex attribute found: \"" + attribute + "\"");
+        }
+
+        if(buffer == null) return null;
+
+        int vertexCount = aiMesh.mNumVertices();
+        float[] result  = new float[vertexCount * attribute.stride];
+
+        for(int i = 0; i < vertexCount; i++) {
+            var vec = buffer.get(i);
+
+            result[i * attribute.stride]     = vec.x();
+            result[i * attribute.stride + 1] = vec.y();
+
+            if(attribute.stride == 3) result[i * attribute.stride + 2] = vec.z();
+        }
+
+        return result;
     }
     
-    private String extractString(AIMaterial aiMaterial, int textureType) {
+    private int[] extractIndices(AIMesh aiMesh) {
+        int faceCount       = aiMesh.mNumFaces();
+        int[] indices       = new int[faceCount * 3];
+        AIFace.Buffer faces = aiMesh.mFaces();
+        
+        for(int i = 0; i < faceCount; i++) {
+            AIFace aiFace      = faces.get(i);
+            IntBuffer idx      = aiFace.mIndices();
+            indices[i * 3]     = idx.get(0);
+            indices[i * 3 + 1] = idx.get(1);
+            indices[i * 3 + 2] = idx.get(2);
+        }
+
+        return indices;
+    }
+    
+    private String extractTextureFilename(AIMaterial aiMaterial, int textureType) {
         AIString filepath = AIString.calloc();
         
         int result = Assimp.aiGetMaterialTexture(aiMaterial, textureType, 0, filepath, (IntBuffer) null, null, null, null, null, null);
         if(result != Assimp.aiReturn_SUCCESS) return null;
         
         return filepath.dataString();
+    }
+    
+    private Vector3f extractAlbedoColor(AIMaterial aiMaterial, CharSequence aiKey) {
+        var aiColor = AIColor4D.create();
+        
+        int result = Assimp.aiGetMaterialColor(aiMaterial, aiKey, Assimp.aiTextureType_NONE, 0, aiColor);
+        if(result != Assimp.aiReturn_SUCCESS) return new Vector3f(1f);
+        
+        return new Vector3f(aiColor.r(), aiColor.g(), aiColor.b());
     }
     
     private Matrix4f convertMatrix(AIMatrix4x4 aiMatrix) {
@@ -131,6 +191,11 @@ public final class Model3 extends Asset {
             var aiMesh = AIMesh.create(aiMeshes.get(i));
             var mesh   = new Mesh3();
             
+            mesh.positions = extractVertexAttribute(aiMesh, VertexAttribute.POSITIONS);
+            mesh.normals   = extractVertexAttribute(aiMesh, VertexAttribute.NORMALS);
+            mesh.tangents  = extractVertexAttribute(aiMesh, VertexAttribute.TANGENTS);
+            mesh.uvs       = extractVertexAttribute(aiMesh, VertexAttribute.UVS);
+            
             result.add(mesh);
         }
         
@@ -145,14 +210,14 @@ public final class Model3 extends Asset {
             var aiMaterial = AIMaterial.create(aiMaterials.get(i));
             var material   = new Material3();
             
-            material.metallic  = extractFloat(aiMaterial, Assimp.AI_MATKEY_METALLIC_FACTOR);
-            material.roughness = extractFloat(aiMaterial, Assimp.AI_MATKEY_ROUGHNESS_FACTOR);
-            material.opacity   = extractFloat(aiMaterial, Assimp.AI_MATKEY_OPACITY);
-            material.albedoColor.set(extractVector3f(aiMaterial, Assimp.AI_MATKEY_COLOR_DIFFUSE));
-            material.albedoMapFilename    = extractString(aiMaterial, Assimp.aiTextureType_DIFFUSE);
-            material.normalMapFilename    = extractString(aiMaterial, Assimp.aiTextureType_NORMALS);
-            material.metallicMapFilename  = extractString(aiMaterial, Assimp.aiTextureType_METALNESS);
-            material.roughnessMapFilename = extractString(aiMaterial, Assimp.aiTextureType_DIFFUSE_ROUGHNESS);
+            material.metallic  = extractMaterialValue(aiMaterial, Assimp.AI_MATKEY_METALLIC_FACTOR);
+            material.roughness = extractMaterialValue(aiMaterial, Assimp.AI_MATKEY_ROUGHNESS_FACTOR);
+            material.opacity   = extractMaterialValue(aiMaterial, Assimp.AI_MATKEY_OPACITY);
+            material.albedoColor.set(extractAlbedoColor(aiMaterial, Assimp.AI_MATKEY_COLOR_DIFFUSE));
+            material.albedoMapFilename    = extractTextureFilename(aiMaterial, Assimp.aiTextureType_DIFFUSE);
+            material.normalMapFilename    = extractTextureFilename(aiMaterial, Assimp.aiTextureType_NORMALS);
+            material.metallicMapFilename  = extractTextureFilename(aiMaterial, Assimp.aiTextureType_METALNESS);
+            material.roughnessMapFilename = extractTextureFilename(aiMaterial, Assimp.aiTextureType_DIFFUSE_ROUGHNESS);
             
             result.add(material);
         }

@@ -9,8 +9,8 @@ public class Mesh3 {
     
     public float[] positions;
     public float[] normals;
-    public float[] uvs;
     public float[] tangents;
+    public float[] uvs;
     public float[] boneWeights;
     
     public int materialIndex;
