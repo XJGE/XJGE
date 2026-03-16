@@ -148,29 +148,7 @@ public final class Model3 extends Asset {
         
         for(int i = 0; i < aiScene.mNumAnimations(); i++) {
             var aiAnimation = AIAnimation.create(aiAnimations.get(i));
-            var animation   = new SkeletalAnimation3();
-            var aiChannels  = aiAnimation.mChannels();
-            
-            animation.duration       = (float) aiAnimation.mDuration();
-            animation.ticksPerSecond = (float) (aiAnimation.mTicksPerSecond());
-            animation.name           = aiAnimation.mName().dataString();
-            
-            int pipe = animation.name.indexOf("|");
-            if(pipe != -1) animation.name = animation.name.substring(pipe + 1);
-            
-            if(animation.ticksPerSecond == 0f) animation.ticksPerSecond = 25f;
-            
-            for(int c = 0; c < aiAnimation.mNumChannels(); c++) {
-                var aiChannel = AINodeAnim.create(aiChannels.get(c));
-                var boneName  = aiChannel.mNodeName().dataString();
-                var boneIndex = skeleton.boneMap.get(boneName);
-                
-                if(boneIndex == null) continue;
-                
-                animation.keyframes.add(new Keyframe3(aiChannel, boneIndex));
-            }
-            
-            result.add(animation);
+            result.add(new SkeletalAnimation3(aiAnimation, skeleton));
         }
         
         return result;

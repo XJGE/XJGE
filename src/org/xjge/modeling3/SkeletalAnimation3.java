@@ -2,6 +2,8 @@ package org.xjge.modeling3;
 
 import java.util.ArrayList;
 import java.util.List;
+import org.lwjgl.assimp.AIAnimation;
+import org.lwjgl.assimp.AINodeAnim;
 
 /**
  * 
@@ -16,5 +18,29 @@ public final class SkeletalAnimation3 {
     public String name;
     
     public List<Keyframe3> keyframes = new ArrayList<>();
+    
+    SkeletalAnimation3(AIAnimation aiAnimation, Skeleton3 skeleton) {
+        var aiChannels  = aiAnimation.mChannels();
+        
+        duration       = (float) aiAnimation.mDuration();
+        ticksPerSecond = (float) (aiAnimation.mTicksPerSecond());
+        name           = aiAnimation.mName().dataString();
+
+        int pipe = name.indexOf("|");
+        if(pipe != -1) name = name.substring(pipe + 1);
+
+        if(ticksPerSecond == 0f) ticksPerSecond = 25f;
+        
+        //Extract keyframes
+        for(int c = 0; c < aiAnimation.mNumChannels(); c++) {
+            var aiChannel = AINodeAnim.create(aiChannels.get(c));
+            var boneName  = aiChannel.mNodeName().dataString();
+            var boneIndex = skeleton.boneMap.get(boneName);
+
+            if(boneIndex == null) continue;
+
+            keyframes.add(new Keyframe3(aiChannel, boneIndex));
+        }
+    }
     
 }

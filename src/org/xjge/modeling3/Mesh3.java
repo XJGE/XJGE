@@ -79,21 +79,6 @@ public final class Mesh3 {
         return result;
     }
     
-    private void extractIndices(AIMesh aiMesh) {
-        int faceCount = aiMesh.mNumFaces();
-        var faces     = aiMesh.mFaces();
-        
-        indices = new int[faceCount * 3];
-        
-        for(int i = 0; i < faceCount; i++) {
-            AIFace aiFace      = faces.get(i);
-            IntBuffer idx      = aiFace.mIndices();
-            indices[i * 3]     = idx.get(0);
-            indices[i * 3 + 1] = idx.get(1);
-            indices[i * 3 + 2] = idx.get(2);
-        }
-    }
-    
     private void extractBoneWeights(AIMesh aiMesh, Skeleton3 skeleton) {
         int vertexCount = aiMesh.mNumVertices();
         int boneCount   = aiMesh.mNumBones();
@@ -137,6 +122,21 @@ public final class Mesh3 {
                     }
                 }
             }
+        }
+    }
+    
+    private void extractIndices(AIMesh aiMesh) {
+        int faceCount = aiMesh.mNumFaces();
+        var faces     = aiMesh.mFaces();
+        
+        indices = new int[faceCount * 3];
+        
+        for(int i = 0; i < faceCount; i++) {
+            AIFace aiFace      = faces.get(i);
+            IntBuffer idx      = aiFace.mIndices();
+            indices[i * 3]     = idx.get(0);
+            indices[i * 3 + 1] = idx.get(1);
+            indices[i * 3 + 2] = idx.get(2);
         }
     }
     

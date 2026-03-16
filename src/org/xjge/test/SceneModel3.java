@@ -73,7 +73,7 @@ public class SceneModel3 extends Scene {
             System.out.println("   " + bone.offsetMatrix);
         }
         System.out.println(" Bone Map:");
-        testModel.getSkeleton().boneMap.forEach((boneName, index) -> System.out.println(boneName + ", " + index));
+        testModel.getSkeleton().boneMap.forEach((boneName, index) -> System.out.println("  " + boneName + ", " + index));
         System.out.println();
         
         testEntity = new Entity().addComponent(new ModelRenderer3(testModel));
