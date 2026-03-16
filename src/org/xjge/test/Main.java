@@ -13,7 +13,7 @@ public class Main {
         
         XJGE.init(true, "C:/Users/jhoff/Projects/XJGE/art", "org.xjge.test.");
         new WindowObserver().subscribe();
-        XJGE.setScene(new SceneModel());
+        XJGE.setScene(new SceneModel3());
         XJGE.start();
         
     }

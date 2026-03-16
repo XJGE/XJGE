@@ -8,6 +8,7 @@ import java.util.List;
 import org.joml.Matrix4f;
 import org.joml.Vector3f;
 import org.lwjgl.PointerBuffer;
+import org.lwjgl.assimp.AIAnimation;
 import org.lwjgl.assimp.AIBone;
 import org.lwjgl.assimp.AIColor4D;
 import org.lwjgl.assimp.AIFace;
@@ -15,6 +16,7 @@ import org.lwjgl.assimp.AIMaterial;
 import org.lwjgl.assimp.AIMatrix4x4;
 import org.lwjgl.assimp.AIMesh;
 import org.lwjgl.assimp.AINode;
+import org.lwjgl.assimp.AINodeAnim;
 import org.lwjgl.assimp.AIScene;
 import org.lwjgl.assimp.AIString;
 import org.lwjgl.assimp.AIVector3D;
@@ -90,6 +92,7 @@ public final class Model3 extends Asset {
             materials = parseMaterials(aiScene);
             meshes    = parseMeshes(aiScene);
             buildBoneHierarchy(aiRootNode, -1);
+            animations = parseAnimations(aiScene);
             
             Assimp.aiReleaseImport(aiScene);
             MemoryUtil.memFree(buffer);
@@ -142,6 +145,7 @@ public final class Model3 extends Asset {
             var weights  = aiBone.mWeights();
             var boneName = aiBone.mName().dataString();
             
+            //Blender likes to add pipes for some reason so we'll discard that if we see it
             int pipe = boneName.indexOf("|");
             if(pipe != -1) boneName = boneName.substring(pipe + 1);
             
@@ -262,6 +266,8 @@ public final class Model3 extends Asset {
         List<Material3> result    = new ArrayList<>();
         PointerBuffer aiMaterials = aiScene.mMaterials();
         
+        if(aiMaterials == null) return result;
+        
         for(int i = 0; i < aiScene.mNumMaterials(); i++) {
             var aiMaterial = AIMaterial.create(aiMaterials.get(i));
             var material   = new Material3();
@@ -285,6 +291,8 @@ public final class Model3 extends Asset {
         List<Mesh3> result     = new ArrayList<>();
         PointerBuffer aiMeshes = aiScene.mMeshes();
         
+        if(aiMeshes == null) return result;
+        
         for(int i = 0; i < aiScene.mNumMeshes(); i++) {
             var aiMesh = AIMesh.create(aiMeshes.get(i));
             var mesh   = new Mesh3();
@@ -298,6 +306,42 @@ public final class Model3 extends Asset {
             mesh.indices       = extractIndices(aiMesh);
             
             result.add(mesh);
+        }
+        
+        return result;
+    }
+    
+    private List<SkeletalAnimation3> parseAnimations(AIScene aiScene) {
+        List<SkeletalAnimation3> result = new ArrayList<>();
+        PointerBuffer aiAnimations      = aiScene.mAnimations();
+        
+        if(aiAnimations == null) return result;
+        
+        for(int i = 0; i < aiScene.mNumAnimations(); i++) {
+            var aiAnimation = AIAnimation.create(aiAnimations.get(i));
+            var animation   = new SkeletalAnimation3();
+            var aiChannels  = aiAnimation.mChannels();
+            
+            animation.duration       = (float) aiAnimation.mDuration();
+            animation.ticksPerSecond = (float) (aiAnimation.mTicksPerSecond());
+            animation.name           = aiAnimation.mName().dataString();
+            
+            int pipe = animation.name.indexOf("|");
+            if(pipe != -1) animation.name = animation.name.substring(pipe + 1);
+            
+            if(animation.ticksPerSecond == 0f) animation.ticksPerSecond = 25f;
+            
+            for(int c = 0; c < aiAnimation.mNumChannels(); c++) {
+                var aiChannel = AINodeAnim.create(aiChannels.get(c));
+                var boneName  = aiChannel.mNodeName().dataString();
+                var boneIndex = skeleton.boneMap.get(boneName);
+                
+                if(boneIndex == null) continue;
+                
+                animation.keyframes.add(new Keyframe3(aiChannel, boneIndex));
+            }
+            
+            result.add(animation);
         }
         
         return result;

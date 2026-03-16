@@ -22,12 +22,13 @@
         <group>
             <file>file:/C:/Users/jhoff/Projects/XJGE/src/org/xjge/graphics/Node.java</file>
             <file>file:/C:/Users/jhoff/Projects/XJGE/src/org/xjge/graphics/Graphics.java</file>
-            <file>file:/C:/Users/jhoff/Projects/XJGE/src/org/xjge/modeling3/Material3.java</file>
             <file>file:/C:/Users/jhoff/Projects/XJGE/src/org/xjge/modeling/Model2.java</file>
             <file>file:/C:/Users/jhoff/Projects/XJGE/src/org/xjge/modeling3/Mesh3.java</file>
             <file>file:/C:/Users/jhoff/Projects/XJGE/src/org/xjge/graphics/VertexWeight.java</file>
+            <file>file:/C:/Users/jhoff/Projects/XJGE/src/org/xjge/modeling3/Bone3.java</file>
             <file>file:/C:/Users/jhoff/Projects/XJGE/src/org/xjge/graphics/Model.java</file>
             <file>file:/C:/Users/jhoff/Projects/XJGE/src/org/xjge/graphics/Bone.java</file>
+            <file>file:/C:/Users/jhoff/Projects/XJGE/src/org/xjge/modeling3/Skeleton3.java</file>
             <file>file:/C:/Users/jhoff/Projects/XJGE/src/org/xjge/modeling/AssimpLoader.java</file>
             <file>file:/C:/Users/jhoff/Projects/XJGE/src/org/xjge/modeling3/Model3.java</file>
             <file>file:/C:/Users/jhoff/Projects/XJGE/src/org/xjge/graphics/Mesh.java</file>
