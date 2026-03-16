@@ -11,7 +11,6 @@ import org.lwjgl.assimp.AIMaterial;
 import org.lwjgl.assimp.AIMatrix4x4;
 import org.lwjgl.assimp.AIMesh;
 import org.lwjgl.assimp.AINode;
-import org.lwjgl.assimp.AINodeAnim;
 import org.lwjgl.assimp.AIScene;
 import org.lwjgl.assimp.Assimp;
 import org.lwjgl.system.MemoryUtil;
@@ -70,7 +69,7 @@ public final class Model3 extends Asset {
             
             materials = parseMaterials(aiScene);
             meshes    = parseMeshes(aiScene);
-            buildBoneHierarchy(aiRootNode, -1);
+            skeleton.buildBoneHierarchy(aiRootNode, -1);
             animations = parseAnimations(aiScene);
             
             Assimp.aiReleaseImport(aiScene);
@@ -90,26 +89,10 @@ public final class Model3 extends Asset {
         skeleton.bones.clear();
         skeleton.boneMap.clear();
     }
-
+    
     @Override
     protected <T extends Asset> T onLoadFailure() {
         return null;
-    }
-    
-    private void buildBoneHierarchy(AINode node, int parentIndex) {
-        var nodeName  = node.mName().dataString();
-        var boneIndex = skeleton.boneMap.get(nodeName);
-
-        if(boneIndex != null) {
-            skeleton.bones.get(boneIndex).parentIndex = parentIndex;
-            parentIndex = boneIndex;
-        }
-
-        PointerBuffer children = node.mChildren();
-
-        for(int i = 0; i < node.mNumChildren(); i++) {
-            buildBoneHierarchy(AINode.create(children.get(i)), parentIndex);
-        }
     }
     
     private List<Material3> parseMaterials(AIScene aiScene) {
