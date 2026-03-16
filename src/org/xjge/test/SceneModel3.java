@@ -1,7 +1,12 @@
 package org.xjge.test;
 
+import org.xjge.modeling3.ModelRenderer3;
 import java.util.Map;
 import org.xjge.core.Camera;
+import org.xjge.core.Entity;
+import org.xjge.core.Light;
+import org.xjge.core.LightType;
+import org.xjge.core.LightingSystem;
 import org.xjge.core.Scene;
 import org.xjge.graphics.Shader;
 import org.xjge.modeling3.Model3;
@@ -13,13 +18,17 @@ import org.xjge.modeling3.Model3;
  */
 public class SceneModel3 extends Scene {
 
+    private Model3 testModel;
+    private Entity testEntity;
+    private Light worldLight;
+    
     public SceneModel3() {
         super("test_model3");
         
-        var model = Model3.load("mod_test.fbx");
+        testModel = Model3.load("mod_test.fbx");
         
         System.out.println("Materials:");
-        for(var material : model.getMaterials()) {
+        for(var material : testModel.getMaterials()) {
             System.out.println(" Metallic: " + material.metallic);
             System.out.println(" Roughness: " + material.roughness);
             System.out.println(" Opacity: " + material.opacity);
@@ -33,7 +42,7 @@ public class SceneModel3 extends Scene {
         System.out.println();
         
         System.out.println("Meshes:");
-        for(var mesh : model.getMeshes()) {
+        for(var mesh : testModel.getMeshes()) {
             System.out.println(" Vertex Data:");
             System.out.println("  Positions: " + mesh.positions.length);
             System.out.println("  Normals: " + mesh.normals.length);
@@ -47,24 +56,33 @@ public class SceneModel3 extends Scene {
         System.out.println();
         
         System.out.println("Animations:");
-        for(var animation : model.getAnimations()) {
+        for(var animation : testModel.getAnimations()) {
             System.out.println(" Name: " + animation.name);
-            System.out.println(" Duration: " + animation.duration);
-            System.out.println(" Ticks Per Second: " + animation.duration);
+            System.out.println("  Duration: " + animation.duration);
+            System.out.println("  Ticks Per Second: " + animation.ticksPerSecond);
+            System.out.println("  Num Keyframes: " + animation.keyframes.size());
         }
         System.out.println();
         
         System.out.println("Skeleton:");
         System.out.println(" Bones: ");
-        for(var bone : model.getSkeleton().bones) {
+        for(var bone : testModel.getSkeleton().bones) {
             System.out.println("  Name: " + bone.name);
             System.out.println("  Parent Index: " + bone.parentIndex);
             System.out.println("  Offset Matrix: ");
             System.out.println("   " + bone.offsetMatrix);
         }
         System.out.println(" Bone Map:");
-        model.getSkeleton().boneMap.forEach((boneName, index) -> System.out.println(boneName + ", " + index));
+        testModel.getSkeleton().boneMap.forEach((boneName, index) -> System.out.println(boneName + ", " + index));
         System.out.println();
+        
+        testEntity = new Entity().addComponent(new ModelRenderer3(testModel));
+        addEntity(testEntity);
+        
+        worldLight = LightingSystem.request();
+        worldLight.type = LightType.WORLD;
+        worldLight.position.set(0, 4.5f, 3);
+        worldLight.brightness = 7f;
     }
 
     @Override
@@ -73,6 +91,9 @@ public class SceneModel3 extends Scene {
 
     @Override
     public void render(Map<String, Shader> glPrograms, int viewportID, Camera camera, int depthTexHandle) {
+        for(var entity : queryEntities(ModelRenderer3.class)) {
+            entity.getComponent(ModelRenderer3.class).render(camera);
+        }
     }
 
     @Override

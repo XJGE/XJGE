@@ -15,6 +15,6 @@ public final class SkeletalAnimation3 {
     
     public String name;
     
-    List<Keyframe3> keyframes = new ArrayList<>();
+    public List<Keyframe3> keyframes = new ArrayList<>();
     
 }

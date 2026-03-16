@@ -1,4 +1,4 @@
-package org.xjge.test;
+package org.xjge.modeling3;
 
 import org.xjge.core.EntityComponent;
 
