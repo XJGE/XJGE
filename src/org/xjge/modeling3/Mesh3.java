@@ -5,6 +5,9 @@ import org.lwjgl.assimp.AIBone;
 import org.lwjgl.assimp.AIFace;
 import org.lwjgl.assimp.AIMesh;
 import org.lwjgl.assimp.AIVector3D;
+import static org.lwjgl.opengl.GL30.*;
+import org.lwjgl.system.MemoryUtil;
+import org.xjge.core.ErrorUtils;
 import static org.xjge.modeling3.Model3.MAX_BONES_PER_VERTEX;
 
 /**
@@ -21,8 +24,9 @@ public final class Mesh3 {
     public float[] boneWeights;
     
     public int vao;
-    public int vbo;
-    public int ebo;
+    public int vbo1;
+    public int vbo2;
+    public int ibo;
     public int materialIndex;
     
     public int[] boneIDs;
@@ -123,6 +127,18 @@ public final class Mesh3 {
                 }
             }
         }
+        
+        //Normalize bone weights (all four combined should not exceed 1.0f otherwise we'll have visual bugs)
+        for(int v = 0; v < getVertexCount(); v++) {
+            int base  = v * MAX_BONES_PER_VERTEX;
+            float sum = 0f;
+
+            for(int i = 0; i < MAX_BONES_PER_VERTEX; i++) sum += boneWeights[base + i];
+
+            if(sum > 0f) {
+                for(int i = 0; i < MAX_BONES_PER_VERTEX; i++) boneWeights[base + i] /= sum;
+            }
+        }
     }
     
     private void extractIndices(AIMesh aiMesh) {
@@ -138,6 +154,88 @@ public final class Mesh3 {
             indices[i * 3 + 1] = idx.get(1);
             indices[i * 3 + 2] = idx.get(2);
         }
+    }
+    
+    void upload() {
+        //Interleaved data: positions(3), normals(3), tangents(3), uvs(2), boneWeights(4)
+        var vertexBuffer = MemoryUtil.memAllocFloat(getVertexCount() * 15);
+        var boneIDBuffer = MemoryUtil.memAllocInt(getVertexCount() * 4);
+        
+        try {
+            for(int i = 0; i < getVertexCount(); i++) {
+                int io2 = i * 2; //Index offset for vec2
+                int io3 = i * 3; //Index offset for vec3
+                int io4 = i * 4; //Index offset for vec4
+
+                vertexBuffer.put(positions[io3]).put(positions[io3 + 1]).put(positions[io3 + 2]);
+                vertexBuffer.put(normals[io3]).put(normals[io3 + 1]).put(normals[io3 + 2]);
+                vertexBuffer.put(tangents[io3]).put(tangents[io3 + 1]).put(tangents[io3 + 2]);
+                vertexBuffer.put(uvs[io2]).put(uvs[io2 + 1]);
+                vertexBuffer.put(boneWeights[io4]).put(boneWeights[io4 + 1]).put(boneWeights[io4 + 2]).put(boneWeights[io4 + 3]);
+
+                boneIDBuffer.put(boneIDs[io4]).put(boneIDs[io4 + 1]).put(boneIDs[io4 + 2]).put(boneIDs[io4+ 3]);
+            }
+
+            vertexBuffer.flip();
+            boneIDBuffer.flip();
+
+            vao  = glGenVertexArrays();
+            vbo1 = glGenBuffers();
+            vbo2 = glGenBuffers();
+            ibo  = glGenBuffers();
+
+            int stride = 15 * Float.BYTES;
+
+            glBindVertexArray(vao);
+
+            glBindBuffer(GL_ARRAY_BUFFER, vbo1);
+            glBufferData(GL_ARRAY_BUFFER, vertexBuffer, GL_STATIC_DRAW);
+
+            //Positions
+            glVertexAttribPointer(0, 3, GL_FLOAT, false, stride, 0);
+            glEnableVertexAttribArray(0);
+
+            //Normals
+            glVertexAttribPointer(1, 3, GL_FLOAT, false, stride, 3 * Float.BYTES);
+            glEnableVertexAttribArray(1);
+
+            //Tangents
+            glVertexAttribPointer(2, 3, GL_FLOAT, false, stride, 6 * Float.BYTES);
+            glEnableVertexAttribArray(2);
+
+            //UVs
+            glVertexAttribPointer(3, 2, GL_FLOAT, false, stride, 9 * Float.BYTES);
+            glEnableVertexAttribArray(3);
+
+            //Bone Weights
+            glVertexAttribPointer(4, 4, GL_FLOAT, false, stride, 11 * Float.BYTES);
+            glEnableVertexAttribArray(4);
+
+            glBindBuffer(GL_ARRAY_BUFFER, vbo2);
+            glBufferData(GL_ARRAY_BUFFER, boneIDBuffer, GL_STATIC_DRAW);
+
+            //Bone IDs
+            glVertexAttribIPointer(5, 4, GL_INT, 4 * Integer.BYTES, 0);
+            glEnableVertexAttribArray(5);
+
+            glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ibo);
+            glBufferData(GL_ELEMENT_ARRAY_BUFFER, indices, GL_STATIC_DRAW);
+
+            glBindVertexArray(0);
+            ErrorUtils.checkGLError();
+            
+        } finally {
+            MemoryUtil.memFree(vertexBuffer);
+            MemoryUtil.memFree(boneIDBuffer);
+        }
+    }
+    
+    void delete() {
+        //TODO: free OpenGL objects, call from model.onRelease();
+    }
+    
+    int getVertexCount() {
+        return positions.length / 3;
     }
     
 }

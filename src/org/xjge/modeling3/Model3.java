@@ -72,6 +72,8 @@ public final class Model3 extends Asset {
             skeleton.buildBoneHierarchy(aiRootNode, -1);
             animations = parseAnimations(aiScene);
             
+            meshes.forEach(mesh -> mesh.upload()); //Transfer vertex data to the GPU
+            
             Assimp.aiReleaseImport(aiScene);
             MemoryUtil.memFree(buffer);
             
