@@ -6,7 +6,11 @@ import org.lwjgl.assimp.AIColor4D;
 import org.lwjgl.assimp.AIMaterial;
 import org.lwjgl.assimp.AIString;
 import org.lwjgl.assimp.Assimp;
+import static org.lwjgl.opengl.GL11.GL_LINEAR;
+import static org.lwjgl.opengl.GL14.GL_MIRRORED_REPEAT;
+import static org.lwjgl.opengl.GL21.GL_SRGB_ALPHA;
 import org.lwjgl.system.MemoryStack;
+import org.xjge.graphics.Texture;
 
 /**
  * 
@@ -28,6 +32,8 @@ public class Material3 {
     public String metallicMapFilename;
     public String roughnessMapFilename;
     
+    public Texture albedoMap;
+    
     Material3(AIMaterial aiMaterial) {
         metallic  = extractMaterialValue(aiMaterial, Assimp.AI_MATKEY_METALLIC_FACTOR);
         roughness = extractMaterialValue(aiMaterial, Assimp.AI_MATKEY_ROUGHNESS_FACTOR);
@@ -37,6 +43,8 @@ public class Material3 {
         normalMapFilename    = extractTextureFilename(aiMaterial, Assimp.aiTextureType_NORMALS);
         metallicMapFilename  = extractTextureFilename(aiMaterial, Assimp.aiTextureType_METALNESS);
         roughnessMapFilename = extractTextureFilename(aiMaterial, Assimp.aiTextureType_DIFFUSE_ROUGHNESS);
+        
+        if(albedoMapFilename != null) albedoMap = Texture.load(albedoMapFilename, GL_MIRRORED_REPEAT, GL_MIRRORED_REPEAT, GL_SRGB_ALPHA, GL_LINEAR);
     }
     
     private float extractMaterialValue(AIMaterial aiMaterial, CharSequence aiKey) {
