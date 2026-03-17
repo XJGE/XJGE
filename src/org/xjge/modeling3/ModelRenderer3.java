@@ -74,8 +74,39 @@ public class ModelRenderer3 extends EntityComponent {
                 material.albedoMap.bind(GL_TEXTURE_2D);
                 shader.setUniform("uMaterial.albedoMap", unit);
                 shader.setUniform("uHasAlbedoMap", 1);
+                unit++;
             } else {
                 shader.setUniform("uHasAlbedoMap", 0);
+            }
+            
+            if(material.normalMapFilename != null) {
+                glActiveTexture(GL_TEXTURE0 + unit);
+                material.normalMap.bind(GL_TEXTURE_2D);
+                shader.setUniform("uMaterial.normalMap", unit);
+                shader.setUniform("uHasNormalMap", 1);
+                unit++;
+            } else {
+                shader.setUniform("uHasNormalMap", 0);
+            }
+            
+            if(material.metallicMapFilename != null) {
+                glActiveTexture(GL_TEXTURE0 + unit);
+                material.metallicMap.bind(GL_TEXTURE_2D);
+                shader.setUniform("uMaterial.metallicMap", unit);
+                shader.setUniform("uHasMetallicMap", 1);
+                unit++;
+            } else {
+                shader.setUniform("uHasMetallicMap", 0);
+            }
+            
+            if(material.roughnessMapFilename != null) {
+                glActiveTexture(GL_TEXTURE0 + unit);
+                material.roughnessMap.bind(GL_TEXTURE_2D);
+                shader.setUniform("uMaterial.roughnessMap", unit);
+                shader.setUniform("uHasRoughnessMap", 1);
+                unit++;
+            } else {
+                shader.setUniform("uHasRoughnessMap", 0);
             }
             
             glBindVertexArray(mesh.vao);

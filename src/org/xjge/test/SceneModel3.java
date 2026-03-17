@@ -25,7 +25,7 @@ public class SceneModel3 extends Scene {
     public SceneModel3() {
         super("test_model3");
         
-        testModel = Model3.load("mod_test.fbx");
+        testModel = Model3.load("yshtola.fbx");
         
         System.out.println("Materials:");
         for(var material : testModel.getMaterials()) {
