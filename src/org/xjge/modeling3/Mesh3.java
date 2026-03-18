@@ -132,9 +132,9 @@ public final class Mesh3 {
         for(int v = 0; v < getVertexCount(); v++) {
             int base  = v * MAX_BONES_PER_VERTEX;
             float sum = 0f;
-
+            
             for(int i = 0; i < MAX_BONES_PER_VERTEX; i++) sum += boneWeights[base + i];
-
+            
             if(sum > 0f) {
                 for(int i = 0; i < MAX_BONES_PER_VERTEX; i++) boneWeights[base + i] /= sum;
             }
@@ -172,13 +172,13 @@ public final class Mesh3 {
                 vertexBuffer.put(tangents[io3]).put(tangents[io3 + 1]).put(tangents[io3 + 2]);
                 vertexBuffer.put(uvs[io2]).put(uvs[io2 + 1]);
                 vertexBuffer.put(boneWeights[io4]).put(boneWeights[io4 + 1]).put(boneWeights[io4 + 2]).put(boneWeights[io4 + 3]);
-
-                boneIDBuffer.put(boneIDs[io4]).put(boneIDs[io4 + 1]).put(boneIDs[io4 + 2]).put(boneIDs[io4+ 3]);
+                
+                boneIDBuffer.put(boneIDs[io4]).put(boneIDs[io4 + 1]).put(boneIDs[io4 + 2]).put(boneIDs[io4 + 3]);
             }
-
+            
             vertexBuffer.flip();
             boneIDBuffer.flip();
-
+            
             vao  = glGenVertexArrays();
             vbo1 = glGenBuffers();
             vbo2 = glGenBuffers();
@@ -215,7 +215,7 @@ public final class Mesh3 {
             glBufferData(GL_ARRAY_BUFFER, boneIDBuffer, GL_STATIC_DRAW);
 
             //Bone IDs
-            glVertexAttribIPointer(5, 4, GL_INT, 4 * Integer.BYTES, 0);
+            glVertexAttribIPointer(5, 4, GL_INT, 0, 0);
             glEnableVertexAttribArray(5);
 
             glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ibo);

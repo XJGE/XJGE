@@ -12,7 +12,7 @@ import org.xjge.core.EntityComponent;
 public final class Transform extends EntityComponent {
 
     public final Vector3f position    = new Vector3f();
-    public final Vector3f scale       = new Vector3f();
+    public final Vector3f scale       = new Vector3f(1f);
     public final Quaternionf rotation = new Quaternionf();
     
 }

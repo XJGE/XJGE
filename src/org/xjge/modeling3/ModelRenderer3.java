@@ -17,8 +17,6 @@ import org.xjge.graphics.ShaderStage;
  * @since 4.0.0
  */
 public class ModelRenderer3 extends EntityComponent {
-
-    private Model3 model;
     
     private final Matrix3f normalMatrix = new Matrix3f();
     private final Matrix4f modelMatrix  = new Matrix4f();
@@ -33,19 +31,14 @@ public class ModelRenderer3 extends EntityComponent {
         shader = new Shader(shaderSourceFiles, "xjge_model");
     }
     
-    public ModelRenderer3(Model3 model) {
-        setModel(model);
-    }
-    
-    public final void setModel(Model3 model) {
-        this.model = model;
-    }
-    
-    public void render(Camera camera) {
-        normalMatrix.set(modelMatrix).invert().transpose();
+    public void render(Model3 model, Transform transform, ModelAnimator3 animator, Camera camera) {
+        //TODO: might be worthwhile to have transform store a matrix derived from this for performance
+        modelMatrix.identity()
+                   .translate(transform.position)
+                   .rotate(transform.rotation)
+                   .scale(transform.scale);
         
-        glEnable(GL_DEPTH_TEST);
-        glEnable(GL_CULL_FACE);
+        normalMatrix.set(modelMatrix).invert().transpose();
         
         shader.use();
         
@@ -56,7 +49,14 @@ public class ModelRenderer3 extends EntityComponent {
         shader.setUniform("uCamPos", camera.position);
         shader.setUniform("uNumLights", LightingSystem.getActiveCount());
         
-        //TODO: upload bone transform data
+        if(animator != null) {
+            shader.setUniform("uBones", false, animator.getFinalBoneMatrices());
+            
+            for(Matrix4f finalBoneMatrice : animator.getFinalBoneMatrices()) {
+                //System.out.println(finalBoneMatrice);
+            }
+        }
+        //System.out.println("");
         
         for(var mesh : model.getMeshes()) {
             var material = model.getMaterials().get(mesh.materialIndex);
@@ -114,9 +114,6 @@ public class ModelRenderer3 extends EntityComponent {
         }
         
         glBindVertexArray(0);
-        glDisable(GL_CULL_FACE);
-        glDisable(GL_DEPTH_TEST);
-        
         ErrorUtils.checkGLError();
     }
     

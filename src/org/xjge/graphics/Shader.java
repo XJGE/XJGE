@@ -278,14 +278,11 @@ public class Shader implements AssetReloadListener {
         }
     }
     
-    public void setUniform(String name, boolean transpose, Matrix4f[] values) { 
-        int location     = glGetUniformLocation(handle, name);
+    public void setUniform(String name, boolean transpose, Matrix4f[] values) {
         var matrixBuffer = MemoryUtil.memAllocFloat(values.length * 16);
-
-        for(Matrix4f matrix : values) matrix.get(matrixBuffer);
-
+        for(int i = 0; i < values.length; i++) values[i].get(i * 16, matrixBuffer);
         matrixBuffer.flip();
-        glUniformMatrix4fv(location, transpose, matrixBuffer);
+        glUniformMatrix4fv(uniforms.get(name).location, transpose, matrixBuffer);
         MemoryUtil.memFree(matrixBuffer);
     }
     
