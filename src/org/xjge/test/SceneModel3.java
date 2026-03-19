@@ -13,6 +13,7 @@ import org.xjge.core.LightType;
 import org.xjge.core.LightingSystem;
 import org.xjge.core.Scene;
 import org.xjge.core.Skybox;
+import org.xjge.graphics.Color;
 import org.xjge.graphics.Shader;
 import org.xjge.graphics.Texture;
 import org.xjge.modeling3.Model3;
@@ -28,6 +29,7 @@ import org.xjge.modeling3.Transform;
 public class SceneModel3 extends Scene {
 
     private Model3 testModel;
+    private Entity floor;
     private Entity testEntity;
     private Light worldLight;
     private Skybox skybox;
@@ -44,6 +46,11 @@ public class SceneModel3 extends Scene {
         
         skybox = new Skybox(right, left, top, bottom, front, back, false);
         setSkybox(skybox);
+        
+        var prism = new Prism(0, -1f, 0, 10, 0.5f, 10);
+        //prism.color.copy(Color.BLUE);
+        floor = new Entity().addComponent(prism);
+        addEntity(floor);
         
         testModel = Model3.load("yshtola.fbx");
         
@@ -97,7 +104,7 @@ public class SceneModel3 extends Scene {
         System.out.println();
         
         var transform = new Transform();
-        transform.position.z = -5f;
+        transform.position.z = -2f;
         
         testEntity = new Entity().addComponent(new ModelRenderer3())
                                  .addComponent(transform)
@@ -129,6 +136,10 @@ public class SceneModel3 extends Scene {
 
     @Override
     public void render(Map<String, Shader> glPrograms, int viewportID, Camera camera, int depthTexHandle) {
+        for(var entity : queryEntities(Prism.class)) {
+            entity.getComponent(Prism.class).render(camera);
+        }
+        
         glEnable(GL_DEPTH_TEST);
         //glEnable(GL_CULL_FACE);
         for(var entity : queryEntities(ModelRenderer3.class, Transform.class, ModelAnimator3.class)) {
