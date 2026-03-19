@@ -50,13 +50,8 @@ public class ModelRenderer3 extends EntityComponent {
         shader.setUniform("uNumLights", LightingSystem.getActiveCount());
         
         if(animator != null) {
-            shader.setUniform("uBones", false, animator.getFinalBoneMatrices());
-            
-            for(Matrix4f finalBoneMatrice : animator.getFinalBoneMatrices()) {
-                //System.out.println(finalBoneMatrice);
-            }
+            shader.setUniform("uBoneTransforms", false, animator.getFinalBoneMatrices());
         }
-        //System.out.println("");
         
         for(var mesh : model.getMeshes()) {
             var material = model.getMaterials().get(mesh.materialIndex);

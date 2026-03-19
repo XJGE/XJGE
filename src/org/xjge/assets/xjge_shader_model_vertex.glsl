@@ -14,7 +14,7 @@ uniform mat3 uNormalMatrix;
 uniform mat4 uModel;
 uniform mat4 uView;
 uniform mat4 uProjection;
-uniform mat4 uBones[MAX_BONES];
+uniform mat4 uBoneTransforms[MAX_BONES];
 
 out vec3 ioFragPos;
 out vec2 ioUV;
@@ -28,12 +28,12 @@ void main() {
 
     for(int i = 0; i < MAX_WEIGHTS; i++) {
         if(weights[i] > 0.0) {
-            skinMatrix += weights[i] * uBones[boneIDs[i]];
+            skinMatrix += weights[i] * uBoneTransforms[aBoneIDs[i]];
         }
     }
 
     //Fallback if there are no valid weights
-    if(skinMatrix == mat4(0.0)) skinMatrix = mat4(1.0);
+    //if(skinMatrix == mat4(0.0)) skinMatrix = mat4(1.0);
 
     mat3 skinMat3       = mat3(skinMatrix);
     vec3 skinnedNormal  = normalize(skinMat3 * aNormal);
