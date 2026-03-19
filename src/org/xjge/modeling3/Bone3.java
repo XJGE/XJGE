@@ -14,5 +14,6 @@ public final class Bone3 {
     public String name;
     
     public Matrix4f offsetMatrix; //Inverse bind pose matrix
+    public Matrix4f localBindTransform;
     
 }

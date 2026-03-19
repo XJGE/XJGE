@@ -45,45 +45,58 @@ public class ModelAnimator3 extends EntityComponent {
 
         float timeInTicks   = currentTime * ticksPerSecond;
         float animationTime = timeInTicks % duration;
-
-        calculateBoneTransforms(animationTime);
+        
+        
+        
+        //calculateBoneTransforms(animationTime);
     }
 
     private void calculateBoneTransforms(float animationTime) {
         var skeleton = model.getSkeleton();
         int boneCount = skeleton.bones.size();
-        
+
+        // Prepare arrays
         Matrix4f[] globalTransforms = new Matrix4f[boneCount];
         for (int i = 0; i < boneCount; i++) globalTransforms[i] = new Matrix4f();
-        
-        for (Keyframe3 keyframe : currentAnimation.keyframes) {
-            int boneIndex = keyframe.boneIndex; // this comes from boneMap resolution
-            Bone3 bone = skeleton.bones.get(boneIndex);
 
-            Vector3f pos   = sampleVector3(keyframe.positionTimes, keyframe.positions, animationTime);
-            Quaternionf rot   = sampleQuaternion(keyframe.rotationTimes, keyframe.rotations, animationTime);
-            Vector3f scale = sampleVector3(keyframe.scaleTimes, keyframe.scales, animationTime);
-
-            Matrix4f localTransform = new Matrix4f()
-                    .translate(pos)
-                    .rotate(rot)
-                    .scale(scale);
-
-            if (bone.parentIndex >= 0) {
-                globalTransforms[boneIndex].set(globalTransforms[bone.parentIndex]).mul(localTransform);
-            } else {
-                globalTransforms[boneIndex].set(localTransform);
-            }
-
-            finalBoneMatrices[boneIndex].set(globalTransforms[boneIndex]).mul(bone.offsetMatrix);
-        }
-
-        // Optional: handle bones that have no keyframes in this animation
+        // Step 1: build transforms for every bone
         for (int i = 0; i < boneCount; i++) {
-            if (finalBoneMatrices[i] == null) {
-                finalBoneMatrices[i] = new Matrix4f(skeleton.bones.get(i).offsetMatrix);
+            Bone3 bone = skeleton.bones.get(i);
+
+            // Find keyframe for this bone
+            Keyframe3 keyframe = findKeyframe(i);
+
+            Matrix4f localTransform;
+            if (keyframe != null) {
+                Vector3f pos   = sampleVector3(keyframe.positionTimes, keyframe.positions, animationTime);
+                Quaternionf rot = sampleQuaternion(keyframe.rotationTimes, keyframe.rotations, animationTime);
+                Vector3f scale = sampleVector3(keyframe.scaleTimes, keyframe.scales, animationTime);
+
+                localTransform = new Matrix4f().translate(pos).rotate(rot).scale(scale);
+            } else {
+                // No keyframe: use identity (bind pose already in localBindTransform)
+                localTransform = new Matrix4f(bone.localBindTransform);
+            }
+
+            // Step 2: accumulate along hierarchy
+            if (bone.parentIndex >= 0) {
+                globalTransforms[i].set(globalTransforms[bone.parentIndex]).mul(localTransform);
+            } else {
+                globalTransforms[i].set(localTransform);
+            }
+
+            // Step 3: apply offset matrix for skinning
+            finalBoneMatrices[i].set(globalTransforms[i]).mul(bone.offsetMatrix);
+        }
+    }
+    
+    private Keyframe3 findKeyframe(int boneIndex) {
+        for (Keyframe3 keyframe : currentAnimation.keyframes) {
+            if (keyframe.boneIndex == boneIndex) {
+                return keyframe;
             }
         }
+        return null;
     }
     
     // Linear interpolation for Vector3f

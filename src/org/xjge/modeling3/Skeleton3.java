@@ -26,7 +26,11 @@ public final class Skeleton3 {
         var boneIndex = boneMap.get(nodeName);
 
         if(boneIndex != null) {
-            bones.get(boneIndex).parentIndex = parentIndex;
+            var bone = bones.get(boneIndex);
+            
+            bone.parentIndex = parentIndex;
+            bone.localBindTransform = Model3.convertMatrix(node.mTransformation());
+            
             parentIndex = boneIndex;
         }
 
