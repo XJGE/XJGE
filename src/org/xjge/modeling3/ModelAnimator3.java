@@ -24,7 +24,7 @@ public class ModelAnimator3 extends EntityComponent {
     public ModelAnimator3(Model3 model) {
         this.model = model;
 
-        int boneCount     = model.getSkeleton().bones.size();
+        int boneCount     = 128; //model.getSkeleton().bones.size();
         finalBoneMatrices = new Matrix4f[boneCount];
 
         for(int i = 0; i < boneCount; i++) finalBoneMatrices[i] = new Matrix4f().identity();
@@ -49,11 +49,34 @@ public class ModelAnimator3 extends EntityComponent {
         float animationTime = timeInTicks % duration;
 
         // All other bones identity
-        //for(int i = 0; i < finalBoneMatrices.length; i++) {
-            //finalBoneMatrices[i].identity();
-        //}
+        for(int i = 0; i < finalBoneMatrices.length; i++) {
+            finalBoneMatrices[i].identity();
+        }
         
-        //finalBoneMatrices[1].identity().translate(0, 1, 0);
+        /*
+        int boneID = 1;
+        var bone = model.getSkeleton().bones.get(1);
+        
+        System.out.println(bone.name);
+        System.out.println(bone.localBindTransform);
+        System.out.println(bone.offsetMatrix);
+        
+        for(var mesh : model.getMeshes()) {
+            for(int v = 0; v < mesh.getVertexCount(); v++) {
+                int base = v * 4;
+                
+                for(int i = 0; i < 4; i++) {
+                    System.out.println("VertexID: " + v + " BoneID: " + 
+                            mesh.boneIDs[base + i] + " BoneWeight: " + mesh.boneWeights[base + i]);
+                }
+            }
+        }
+        
+        System.out.println();
+        System.out.println("end frame\n");
+        */
+        
+        //finalBoneMatrices[1].translate(0, 10, 0);
         
         calculateBoneTransforms(animationTime);
     }
@@ -105,6 +128,9 @@ public class ModelAnimator3 extends EntityComponent {
 
             // Step 3: apply offset matrix for skinning
             finalBoneMatrices[i].set(globalTransforms[i]).mul(bone.offsetMatrix);
+            
+            //globalTransforms[i].mul(bone.offsetMatrix);
+            //finalBoneMatrices[i].set(model.rootTransform.mul(globalTransforms[i]));
         }
     }
     
@@ -149,6 +175,10 @@ public class ModelAnimator3 extends EntityComponent {
     }
     
     public Matrix4f[] getFinalBoneMatrices() {
+        for(int i = 0; i < finalBoneMatrices.length; i++) {
+            //finalBoneMatrices[i] = new Matrix4f(model.rootTransform).mul(finalBoneMatrices[i]);
+        }
+        
         return finalBoneMatrices;
     }
     

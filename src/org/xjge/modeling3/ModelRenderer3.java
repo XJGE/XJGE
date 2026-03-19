@@ -42,7 +42,7 @@ public class ModelRenderer3 extends EntityComponent {
         
         shader.use();
         
-        shader.setUniform("uModel", false, modelMatrix); //should this be the models rootTransform?
+        shader.setUniform("uModel", false, modelMatrix);
         shader.setUniform("uView", false, camera.getViewMatrix());
         shader.setUniform("uProjection", false, camera.getProjectionMatrix());
         shader.setUniform("uNormalMatrix", true, normalMatrix);
@@ -50,10 +50,7 @@ public class ModelRenderer3 extends EntityComponent {
         shader.setUniform("uNumLights", LightingSystem.getActiveCount());
         
         if(animator != null) {
-            Matrix4f[] bones = animator.getFinalBoneMatrices();
-            bones[1].translate(0, 2, 0); // modify the *animated transform* for TopBone
-            shader.setUniform("uBoneTransforms", false, bones);
-            System.out.println(bones[1]);
+            shader.setUniform("uBoneTransforms", false, animator.getFinalBoneMatrices());
         }
         
         for(var mesh : model.getMeshes()) {
@@ -64,8 +61,6 @@ public class ModelRenderer3 extends EntityComponent {
             shader.setUniform("uMaterial.albedoColor", material.albedoColor);
             
             int unit = 0;
-            
-            ErrorUtils.checkGLError();
             
             if(material.albedoMapFilename != null) {
                 glActiveTexture(GL_TEXTURE0 + unit);

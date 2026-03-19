@@ -128,6 +128,7 @@ public final class Mesh3 {
             }
         }
         
+        /*
         //Normalize bone weights (all four combined should not exceed 1.0f otherwise we'll have visual bugs)
         for(int v = 0; v < getVertexCount(); v++) {
             int base  = v * MAX_BONES_PER_VERTEX;
@@ -138,11 +139,8 @@ public final class Mesh3 {
             if(sum > 0f) {
                 for(int i = 0; i < MAX_BONES_PER_VERTEX; i++) boneWeights[base + i] /= sum;
             }
-            
-            for(int i = 0; i < MAX_BONES_PER_VERTEX; i++) {
-                System.out.println("VertexID: " + v + " BoneID: " + boneIDs[base + i] + " BoneWeight: " + boneWeights[base + i]);
-            }
         }
+        */
     }
     
     private void extractIndices(AIMesh aiMesh) {

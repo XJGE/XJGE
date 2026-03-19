@@ -29,7 +29,7 @@ public final class Model3 extends Asset {
     
     private final int flags;
     
-    private Matrix4f rootTransform;
+    public Matrix4f rootTransform;
     private final Skeleton3 skeleton = new Skeleton3();
     
     private List<Material3> materials;
