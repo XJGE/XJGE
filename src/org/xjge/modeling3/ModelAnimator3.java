@@ -25,7 +25,7 @@ public class ModelAnimator3 extends EntityComponent {
         int boneCount     = model.getSkeleton().bones.size();
         finalBoneMatrices = new Matrix4f[boneCount];
 
-        for(int i = 0; i < boneCount; i++) finalBoneMatrices[i] = new Matrix4f();
+        for(int i = 0; i < boneCount; i++) finalBoneMatrices[i] = new Matrix4f().identity();
     }
 
     public void play(SkeletalAnimation3 animation) {
