@@ -281,6 +281,14 @@ public class Shader implements AssetReloadListener {
     public void setUniform(String name, boolean transpose, Matrix4f[] values) {
         var matrixBuffer = MemoryUtil.memAllocFloat(values.length * 16);
         for(int i = 0; i < values.length; i++) values[i].get(i * 16, matrixBuffer);
+        
+        for(int i = 0; i < values.length; i++) {
+            System.out.println("index: " + i);
+            System.out.println(values[i]);
+        }
+        System.out.println("frame end");
+        System.out.println("");
+        
         matrixBuffer.flip();
         glUniformMatrix4fv(uniforms.get(name).location, transpose, matrixBuffer);
         MemoryUtil.memFree(matrixBuffer);

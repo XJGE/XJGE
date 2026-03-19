@@ -51,6 +51,15 @@ public class ModelRenderer3 extends EntityComponent {
         
         if(animator != null) {
             shader.setUniform("uBoneTransforms", false, animator.getFinalBoneMatrices());
+            
+            /*
+            for(int i = 0; i < animator.getFinalBoneMatrices().length; i++) {
+                System.out.println("index: " + i);
+                System.out.println(animator.getFinalBoneMatrices()[i]);
+            }
+            System.out.println("frame end");
+            System.out.println("");
+            */
         }
         
         for(var mesh : model.getMeshes()) {

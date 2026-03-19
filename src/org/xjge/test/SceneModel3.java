@@ -130,7 +130,7 @@ public class SceneModel3 extends Scene {
     @Override
     public void render(Map<String, Shader> glPrograms, int viewportID, Camera camera, int depthTexHandle) {
         glEnable(GL_DEPTH_TEST);
-        glEnable(GL_CULL_FACE);
+        //glEnable(GL_CULL_FACE);
         for(var entity : queryEntities(ModelRenderer3.class, Transform.class, ModelAnimator3.class)) {
             entity.getComponent(ModelRenderer3.class).render(
                     testModel, 
@@ -138,7 +138,7 @@ public class SceneModel3 extends Scene {
                     entity.getComponent(ModelAnimator3.class),
                     camera);
         }
-        glDisable(GL_CULL_FACE);
+        //glDisable(GL_CULL_FACE);
         glDisable(GL_DEPTH_TEST);
     }
 

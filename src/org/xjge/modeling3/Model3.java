@@ -140,12 +140,29 @@ public final class Model3 extends Asset {
     }
     
     static Matrix4f convertMatrix(AIMatrix4x4 aiMatrix) {
-        return new Matrix4f().set(
-            aiMatrix.a1(), aiMatrix.a2(), aiMatrix.a3(), aiMatrix.a4(),
-            aiMatrix.b1(), aiMatrix.b2(), aiMatrix.b3(), aiMatrix.b4(),
-            aiMatrix.c1(), aiMatrix.c2(), aiMatrix.c3(), aiMatrix.c4(),
-            aiMatrix.d1(), aiMatrix.d2(), aiMatrix.d3(), aiMatrix.d4()
-        );
+        Matrix4f conversion = new Matrix4f();
+        
+        conversion.m00(aiMatrix.a1());
+        conversion.m10(aiMatrix.a2());
+        conversion.m20(aiMatrix.a3());
+        conversion.m30(aiMatrix.a4());
+        
+        conversion.m01(aiMatrix.b1());
+        conversion.m11(aiMatrix.b2());
+        conversion.m21(aiMatrix.b3());
+        conversion.m31(aiMatrix.b4());
+        
+        conversion.m02(aiMatrix.c1());
+        conversion.m12(aiMatrix.c2());
+        conversion.m22(aiMatrix.c3());
+        conversion.m32(aiMatrix.c4());
+        
+        conversion.m03(aiMatrix.d1());
+        conversion.m13(aiMatrix.d2());
+        conversion.m23(aiMatrix.d3());
+        conversion.m33(aiMatrix.d4());
+        
+        return conversion;
     }
     
     public final Skeleton3 getSkeleton() {

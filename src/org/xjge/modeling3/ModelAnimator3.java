@@ -42,30 +42,24 @@ public class ModelAnimator3 extends EntityComponent {
         float ticksPerSecond = currentAnimation.ticksPerSecond != 0
                 ? currentAnimation.ticksPerSecond
                 : 25.0f;
-
+        
         float timeInTicks   = currentTime * ticksPerSecond;
         float animationTime = timeInTicks % duration;
-        
-        var skeleton = model.getSkeleton();
-        int boneCount = skeleton.bones.size();
 
-        // Force identity for all bones first
-        for (int i = 0; i < boneCount; i++) {
-            finalBoneMatrices[i].identity();
-        }
-
-        // Pick a bone to deform, e.g., the first one
-        int testBoneIndex = 1;
-        Matrix4f deform = new Matrix4f().translate(0, 10.0f, 0); // move it up 1 unit
-        finalBoneMatrices[testBoneIndex].set(deform);
+        // All other bones identity
+        //for(int i = 0; i < finalBoneMatrices.length; i++) {
+            //finalBoneMatrices[i].identity();
+        //}
         
-        //calculateBoneTransforms(animationTime);
+        //finalBoneMatrices[1].identity().translate(0, 1, 0);
+        
+        calculateBoneTransforms(animationTime);
     }
 
     private void calculateBoneTransforms(float animationTime) {
         var skeleton = model.getSkeleton();
         int boneCount = skeleton.bones.size();
-
+        
         // Prepare arrays
         Matrix4f[] globalTransforms = new Matrix4f[boneCount];
         for (int i = 0; i < boneCount; i++) globalTransforms[i] = new Matrix4f();
@@ -84,9 +78,20 @@ public class ModelAnimator3 extends EntityComponent {
                 Vector3f scale = sampleVector3(keyframe.scaleTimes, keyframe.scales, animationTime);
 
                 localTransform = new Matrix4f().translate(pos).rotate(rot).scale(scale);
+                
+                /*
+                System.out.println("bone name: " + bone.name + " animationTime: " + animationTime + 
+                        " posTimesCount: " + keyframe.positionTimes.length +
+                        " rotTimesCount: " + keyframe.positionTimes.length);
+                */
             } else {
                 // No keyframe: use identity (bind pose already in localBindTransform)
                 localTransform = new Matrix4f(bone.localBindTransform);
+                
+                /*
+                System.out.println("bone name: " + bone.name + "animationTime: " + animationTime + 
+                        " no keyframe");
+                */
             }
 
             // Step 2: accumulate along hierarchy

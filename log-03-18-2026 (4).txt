@@ -13,21 +13,15 @@
  GAMEPADS:	Found: 0
 ****************************************************************************************************
 
-Mar 18, 09:58:08pm, [INFO], [Shader.java]: Shader program "xjge_lighting_debug" linked successfully
-Mar 18, 09:58:08pm, [INFO], [Shader.java]: Shader program "xjge_viewport" linked successfully
-Mar 18, 09:58:08pm, [INFO], [Shader.java]: Shader program "xjge_bloom" linked successfully
-Mar 18, 09:58:08pm, [INFO], [Shader.java]: Shader program "xjge_skybox" linked successfully
-Mar 18, 09:58:08pm, [WARNING], [ShaderStage.java]: Failed to compile shader file: "xjge_shader_model_vertex.glsl" (0(24) : error C0000: syntax error, unexpected '/' at token "/"
-0(33) : error C1503: undefined variable "uBonesTransforms"
-0(34) : error C1503: undefined variable "skinMatrix"
-0(43) : error C1503: undefined variable "skinMatrix"
+Mar 18, 09:58:33pm, [INFO], [Shader.java]: Shader program "xjge_lighting_debug" linked successfully
+Mar 18, 09:58:33pm, [INFO], [Shader.java]: Shader program "xjge_viewport" linked successfully
+Mar 18, 09:58:33pm, [INFO], [Shader.java]: Shader program "xjge_bloom" linked successfully
+Mar 18, 09:58:33pm, [INFO], [Shader.java]: Shader program "xjge_skybox" linked successfully
+Mar 18, 09:58:33pm, [WARNING], [ShaderStage.java]: Failed to compile shader file: "xjge_shader_model_vertex.glsl" (0(33) : error C1503: undefined variable "uBonesTransforms"
 )
-Mar 18, 09:58:08pm, [ERROR], [Shader.java]: Failed to link shader program "xjge_model" (Vertex info
+Mar 18, 09:58:33pm, [ERROR], [Shader.java]: Failed to link shader program "xjge_model" (Vertex info
 -----------
-0(24) : error C0000: syntax error, unexpected '/' at token "/"
 0(33) : error C1503: undefined variable "uBonesTransforms"
-0(34) : error C1503: undefined variable "skinMatrix"
-0(43) : error C1503: undefined variable "skinMatrix"
 (0) : error C2003: incompatible options for link
 )
 java.lang.RuntimeException
