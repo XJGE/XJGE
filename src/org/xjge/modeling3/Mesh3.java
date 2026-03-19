@@ -138,6 +138,10 @@ public final class Mesh3 {
             if(sum > 0f) {
                 for(int i = 0; i < MAX_BONES_PER_VERTEX; i++) boneWeights[base + i] /= sum;
             }
+            
+            for(int i = 0; i < MAX_BONES_PER_VERTEX; i++) {
+                System.out.println("VertexID: " + v + " BoneID: " + boneIDs[base + i] + " BoneWeight: " + boneWeights[base + i]);
+            }
         }
     }
     

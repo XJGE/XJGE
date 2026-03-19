@@ -50,16 +50,10 @@ public class ModelRenderer3 extends EntityComponent {
         shader.setUniform("uNumLights", LightingSystem.getActiveCount());
         
         if(animator != null) {
-            shader.setUniform("uBoneTransforms", false, animator.getFinalBoneMatrices());
-            
-            /*
-            for(int i = 0; i < animator.getFinalBoneMatrices().length; i++) {
-                System.out.println("index: " + i);
-                System.out.println(animator.getFinalBoneMatrices()[i]);
-            }
-            System.out.println("frame end");
-            System.out.println("");
-            */
+            Matrix4f[] bones = animator.getFinalBoneMatrices();
+            bones[1].translate(0, 2, 0); // modify the *animated transform* for TopBone
+            shader.setUniform("uBoneTransforms", false, bones);
+            System.out.println(bones[1]);
         }
         
         for(var mesh : model.getMeshes()) {
