@@ -33,7 +33,8 @@ void main() {
     }
 
     //Fallback if there are no valid weights
-    if(skinMatrix == mat4(0.0)) skinMatrix = mat4(1.0);
+    float weightSum = weights.x + weights.y + weights.z + weights.w;
+    if(weightSum == 0.0) skinMatrix = mat4(1.0);
 
     mat3 skinMat3       = mat3(skinMatrix);
     vec3 skinnedNormal  = normalize(skinMat3 * aNormal);

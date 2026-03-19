@@ -104,7 +104,7 @@ public class SceneModel3 extends Scene {
         System.out.println();
         
         var transform = new Transform();
-        transform.position.z = -2f;
+        transform.position.z = -1.5f;
         
         testEntity = new Entity().addComponent(new ModelRenderer3())
                                  .addComponent(transform)
