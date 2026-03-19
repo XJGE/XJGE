@@ -46,7 +46,18 @@ public class ModelAnimator3 extends EntityComponent {
         float timeInTicks   = currentTime * ticksPerSecond;
         float animationTime = timeInTicks % duration;
         
-        
+        var skeleton = model.getSkeleton();
+        int boneCount = skeleton.bones.size();
+
+        // Force identity for all bones first
+        for (int i = 0; i < boneCount; i++) {
+            finalBoneMatrices[i].identity();
+        }
+
+        // Pick a bone to deform, e.g., the first one
+        int testBoneIndex = 1;
+        Matrix4f deform = new Matrix4f().translate(0, 10.0f, 0); // move it up 1 unit
+        finalBoneMatrices[testBoneIndex].set(deform);
         
         //calculateBoneTransforms(animationTime);
     }

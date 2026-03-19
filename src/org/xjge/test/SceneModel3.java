@@ -12,7 +12,9 @@ import org.xjge.core.Light;
 import org.xjge.core.LightType;
 import org.xjge.core.LightingSystem;
 import org.xjge.core.Scene;
+import org.xjge.core.Skybox;
 import org.xjge.graphics.Shader;
+import org.xjge.graphics.Texture;
 import org.xjge.modeling3.Model3;
 import org.xjge.modeling3.ModelAnimator3;
 import org.xjge.modeling3.SkeletalAnimation3;
@@ -28,9 +30,20 @@ public class SceneModel3 extends Scene {
     private Model3 testModel;
     private Entity testEntity;
     private Light worldLight;
+    private Skybox skybox;
     
     public SceneModel3() {
         super("test_model3");
+        
+        var right  = Texture.load("sky_right.png");
+        var left   = Texture.load("sky_left.png");
+        var top    = Texture.load("sky_top.png");
+        var bottom = Texture.load("sky_bottom.png");
+        var front  = Texture.load("sky_front.png");
+        var back   = Texture.load("sky_back.png");
+        
+        skybox = new Skybox(right, left, top, bottom, front, back, false);
+        setSkybox(skybox);
         
         testModel = Model3.load("mod_test.fbx");
         
