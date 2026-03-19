@@ -45,7 +45,7 @@ public class SceneModel3 extends Scene {
         skybox = new Skybox(right, left, top, bottom, front, back, false);
         setSkybox(skybox);
         
-        testModel = Model3.load("mod_test.fbx");
+        testModel = Model3.load("yshtola.fbx");
         
         System.out.println("Materials:");
         for(var material : testModel.getMaterials()) {
@@ -107,7 +107,7 @@ public class SceneModel3 extends Scene {
         SkeletalAnimation3 testAnimation = null;
         
         for(var animation : testModel.getAnimations()) {
-            if(animation.name.equals("Wiggle")) testAnimation = animation;
+            if(animation.name.equals("wave")) testAnimation = animation;
         }
         
         if(testAnimation != null) {
