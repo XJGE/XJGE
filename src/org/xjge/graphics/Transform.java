@@ -1,4 +1,4 @@
-package org.xjge.modeling3;
+package org.xjge.graphics;
 
 import org.joml.Quaternionf;
 import org.joml.Vector3f;

@@ -1,4 +1,4 @@
-package org.xjge.modeling3;
+package org.xjge.graphics;
 
 import org.joml.Quaternionf;
 import org.joml.Vector3f;
@@ -9,7 +9,7 @@ import org.lwjgl.assimp.AINodeAnim;
  * @author J Hoffman
  * @since 2.0.0
  */
-public final class Keyframe3 {
+public final class Keyframe {
 
     public int boneIndex;
     
@@ -21,7 +21,7 @@ public final class Keyframe3 {
     public Vector3f[] scales;
     public Quaternionf[] rotations;
     
-    Keyframe3(AINodeAnim aiChannel, int boneIndex) {
+    Keyframe(AINodeAnim aiChannel, int boneIndex) {
         this.boneIndex = boneIndex;
         extractPositionFrames(aiChannel);
         extractRotationFrames(aiChannel);

@@ -38,16 +38,16 @@ public class SceneLight extends Scene {
         cubeC = new Entity().addComponent(new Prism(-4, 0, 7, 2f, 6f, 2f));
         plane = new Entity().addComponent(new Prism(0, -1f, 0, 20f, 0.25f, 20f));
         
-        cubeA.getComponent(Prism.class).material.roughness = 0.7f;
-        cubeA.getComponent(Prism.class).material.ambientFactor = 0.3f;
-        cubeA.getComponent(Prism.class).material.specular.set(0.04f);
+        cubeA.getComponent(Prism.class).roughness = 0.7f;
+        cubeA.getComponent(Prism.class).ambientFactor = 0.3f;
+        cubeA.getComponent(Prism.class).specularColor.set(0.04f);
         
-        cubeC.getComponent(Prism.class).material.roughness = 0.1f;
-        cubeC.getComponent(Prism.class).material.ambientFactor = 0.05f;
-        cubeC.getComponent(Prism.class).material.metallic = 0.5f;
+        cubeC.getComponent(Prism.class).roughness = 0.1f;
+        cubeC.getComponent(Prism.class).ambientFactor = 0.05f;
+        cubeC.getComponent(Prism.class).metallic = 0.5f;
         
-        plane.getComponent(Prism.class).material.roughness = 0.7f;
-        plane.getComponent(Prism.class).material.specular.set(0.5f);
+        plane.getComponent(Prism.class).roughness = 0.7f;
+        plane.getComponent(Prism.class).specularColor.set(0.5f);
         
         addEntity(cubeA);
         addEntity(cubeB);

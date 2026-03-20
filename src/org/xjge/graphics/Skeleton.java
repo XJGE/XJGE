@@ -1,4 +1,4 @@
-package org.xjge.modeling3;
+package org.xjge.graphics;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -13,11 +13,11 @@ import org.lwjgl.assimp.AINode;
  * @author J Hoffman
  * @since 4.0.0
  */
-public final class Skeleton3 {
+public final class Skeleton {
 
     public Matrix4f[] inverseBindPose;
     
-    public List<Bone3> bones = new ArrayList<>();
+    public List<Bone> bones = new ArrayList<>();
     
     public Map<String, Integer> boneMap = new HashMap<>();
     
@@ -29,7 +29,7 @@ public final class Skeleton3 {
             var bone = bones.get(boneIndex);
             
             bone.parentIndex = parentIndex;
-            bone.localBindTransform = Model3.convertMatrix(node.mTransformation());
+            bone.localBindTransform = Model.convertMatrix(node.mTransformation());
             
             parentIndex = boneIndex;
         }

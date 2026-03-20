@@ -1,4 +1,4 @@
-package org.xjge.modeling3;
+package org.xjge.graphics;
 
 import org.joml.Matrix4f;
 import org.joml.Quaternionf;
@@ -12,16 +12,16 @@ import org.xjge.core.EntityComponent;
  * @author J Hoffman
  * @since 4.0.0
  */
-public class ModelAnimator3 extends EntityComponent {
+public class ModelAnimator extends EntityComponent {
     
     private float currentTime = 0f;
     
-    private Model3 model;
-    private SkeletalAnimation3 currentAnimation;
+    private Model model;
+    private SkeletalAnimation currentAnimation;
 
     private Matrix4f[] finalBoneMatrices;
 
-    public ModelAnimator3(Model3 model) {
+    public ModelAnimator(Model model) {
         this.model = model;
 
         int boneCount     = 128; //model.getSkeleton().bones.size();
@@ -30,7 +30,7 @@ public class ModelAnimator3 extends EntityComponent {
         for(int i = 0; i < boneCount; i++) finalBoneMatrices[i] = new Matrix4f().identity();
     }
 
-    public void play(SkeletalAnimation3 animation) {
+    public void play(SkeletalAnimation animation) {
         this.currentAnimation = animation;
         this.currentTime = 0f;
     }
@@ -91,10 +91,10 @@ public class ModelAnimator3 extends EntityComponent {
 
         // Step 1: build transforms for every bone
         for (int i = 0; i < boneCount; i++) {
-            Bone3 bone = skeleton.bones.get(i);
+            Bone bone = skeleton.bones.get(i);
 
             // Find keyframe for this bone
-            Keyframe3 keyframe = findKeyframe(i);
+            Keyframe keyframe = findKeyframe(i);
 
             Matrix4f localTransform;
             if (keyframe != null) {
@@ -134,8 +134,8 @@ public class ModelAnimator3 extends EntityComponent {
         }
     }
     
-    private Keyframe3 findKeyframe(int boneIndex) {
-        for (Keyframe3 keyframe : currentAnimation.keyframes) {
+    private Keyframe findKeyframe(int boneIndex) {
+        for (Keyframe keyframe : currentAnimation.keyframes) {
             if (keyframe.boneIndex == boneIndex) {
                 return keyframe;
             }

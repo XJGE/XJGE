@@ -1,6 +1,6 @@
 package org.xjge.test;
 
-import org.xjge.modeling3.ModelRenderer3;
+import org.xjge.graphics.ModelRenderer;
 import java.util.Map;
 import static org.lwjgl.opengl.GL11.GL_CULL_FACE;
 import static org.lwjgl.opengl.GL11.GL_DEPTH_TEST;
@@ -16,25 +16,25 @@ import org.xjge.core.Skybox;
 import org.xjge.graphics.Color;
 import org.xjge.graphics.Shader;
 import org.xjge.graphics.Texture;
-import org.xjge.modeling3.Model3;
-import org.xjge.modeling3.ModelAnimator3;
-import org.xjge.modeling3.SkeletalAnimation3;
-import org.xjge.modeling3.Transform;
+import org.xjge.graphics.Model;
+import org.xjge.graphics.ModelAnimator;
+import org.xjge.graphics.SkeletalAnimation;
+import org.xjge.graphics.Transform;
 
 /**
  * 
  * @author J Hoffman
  * @since 
  */
-public class SceneModel3 extends Scene {
+public class SceneModel extends Scene {
 
-    private Model3 testModel;
+    private Model testModel;
     private Entity floor;
     private Entity testEntity;
     private Light worldLight;
     private Skybox skybox;
     
-    public SceneModel3() {
+    public SceneModel() {
         super("test_model3");
         
         var right  = Texture.load("sky_right.png");
@@ -52,7 +52,7 @@ public class SceneModel3 extends Scene {
         floor = new Entity().addComponent(prism);
         addEntity(floor);
         
-        testModel = Model3.load("yshtola.fbx");
+        testModel = Model.load("yshtola.fbx");
         
         System.out.println("Materials:");
         for(var material : testModel.getMaterials()) {
@@ -106,19 +106,19 @@ public class SceneModel3 extends Scene {
         var transform = new Transform();
         transform.position.z = -1.5f;
         
-        testEntity = new Entity().addComponent(new ModelRenderer3())
+        testEntity = new Entity().addComponent(new ModelRenderer())
                                  .addComponent(transform)
-                                 .addComponent(new ModelAnimator3(testModel));
+                                 .addComponent(new ModelAnimator(testModel));
         addEntity(testEntity);
         
-        SkeletalAnimation3 testAnimation = null;
+        SkeletalAnimation testAnimation = null;
         
         for(var animation : testModel.getAnimations()) {
             if(animation.name.equals("wave")) testAnimation = animation;
         }
         
         if(testAnimation != null) {
-            testEntity.getComponent(ModelAnimator3.class).play(testAnimation);
+            testEntity.getComponent(ModelAnimator.class).play(testAnimation);
         }
         
         worldLight = LightingSystem.request();
@@ -129,8 +129,8 @@ public class SceneModel3 extends Scene {
 
     @Override
     public void update(double targetDelta, double trueDelta) {
-        for(var entity : queryEntities(ModelAnimator3.class)) {
-            entity.getComponent(ModelAnimator3.class).update((float) targetDelta);
+        for(var entity : queryEntities(ModelAnimator.class)) {
+            entity.getComponent(ModelAnimator.class).update((float) targetDelta);
         }
     }
 
@@ -142,11 +142,10 @@ public class SceneModel3 extends Scene {
         
         glEnable(GL_DEPTH_TEST);
         //glEnable(GL_CULL_FACE);
-        for(var entity : queryEntities(ModelRenderer3.class, Transform.class, ModelAnimator3.class)) {
-            entity.getComponent(ModelRenderer3.class).render(
-                    testModel, 
+        for(var entity : queryEntities(ModelRenderer.class, Transform.class, ModelAnimator.class)) {
+            entity.getComponent(ModelRenderer.class).render(testModel, 
                     entity.getComponent(Transform.class), 
-                    entity.getComponent(ModelAnimator3.class),
+                    entity.getComponent(ModelAnimator.class),
                     camera);
         }
         //glDisable(GL_CULL_FACE);

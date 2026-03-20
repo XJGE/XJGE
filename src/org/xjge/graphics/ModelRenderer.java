@@ -1,4 +1,4 @@
-package org.xjge.modeling3;
+package org.xjge.graphics;
 
 import java.util.LinkedList;
 import org.joml.Matrix3f;
@@ -16,7 +16,7 @@ import org.xjge.graphics.ShaderStage;
  * @author J Hoffman
  * @since 4.0.0
  */
-public class ModelRenderer3 extends EntityComponent {
+public class ModelRenderer extends EntityComponent {
     
     private final Matrix3f normalMatrix = new Matrix3f();
     private final Matrix4f modelMatrix  = new Matrix4f();
@@ -31,7 +31,7 @@ public class ModelRenderer3 extends EntityComponent {
         shader = new Shader(shaderSourceFiles, "xjge_model");
     }
     
-    public void render(Model3 model, Transform transform, ModelAnimator3 animator, Camera camera) {
+    public void render(Model model, Transform transform, ModelAnimator animator, Camera camera) {
         //TODO: might be worthwhile to have transform store a matrix derived from this for performance
         modelMatrix.identity()
                    .translate(transform.position)

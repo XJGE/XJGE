@@ -20,10 +20,14 @@ import org.xjge.graphics.Material;
 class Prism extends EntityComponent {
 
     float bloomThreshold = 1f;
+    float metallic;
+    float roughness;
+    float ambientFactor;
     
     Vector3f position;
+    Vector3f albedoColor   = new Vector3f(1);
+    Vector3f specularColor = new Vector3f(1);
     Color color = new Color(1, 1, 1);
-    Material material = new Material();
     
     private final Graphics graphics;
     private final Matrix3f normal = new Matrix3f();
@@ -112,11 +116,11 @@ class Prism extends EntityComponent {
         ObjectShader.getInstance().setUniform("uColor", color.asVector3f());
         ObjectShader.getInstance().setUniform("uCamPos", camera.position);
         ObjectShader.getInstance().setUniform("uNormal", true, normal);
-        ObjectShader.getInstance().setUniform("uMaterial.roughness", material.roughness);
-        ObjectShader.getInstance().setUniform("uMaterial.metallic", material.metallic);
-        ObjectShader.getInstance().setUniform("uMaterial.ambientFactor", material.ambientFactor);
-        ObjectShader.getInstance().setUniform("uMaterial.albedo", material.albedo);
-        ObjectShader.getInstance().setUniform("uMaterial.specular", material.specular);
+        ObjectShader.getInstance().setUniform("uMaterial.roughness", roughness);
+        ObjectShader.getInstance().setUniform("uMaterial.metallic", metallic);
+        ObjectShader.getInstance().setUniform("uMaterial.ambientFactor", ambientFactor);
+        ObjectShader.getInstance().setUniform("uMaterial.albedo", albedoColor);
+        ObjectShader.getInstance().setUniform("uMaterial.specular", specularColor);
         ObjectShader.getInstance().setUniform("uModel", false, graphics.modelMatrix);
         ObjectShader.getInstance().setUniform("uView", false, camera.getViewMatrix());
         ObjectShader.getInstance().setUniform("uProjection", false, camera.getProjectionMatrix());

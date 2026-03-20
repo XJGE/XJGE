@@ -1,271 +1,241 @@
 package org.xjge.graphics;
 
-import org.xjge.core.ErrorUtils;
-import org.xjge.core.Logger;
-import java.nio.FloatBuffer;
 import java.nio.IntBuffer;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.TreeMap;
-import org.joml.Matrix4f;
-import org.lwjgl.PointerBuffer;
 import org.lwjgl.assimp.AIBone;
 import org.lwjgl.assimp.AIFace;
 import org.lwjgl.assimp.AIMesh;
 import org.lwjgl.assimp.AIVector3D;
-import org.lwjgl.assimp.AIVertexWeight;
 import static org.lwjgl.opengl.GL30.*;
 import org.lwjgl.system.MemoryUtil;
+import org.xjge.core.ErrorUtils;
+import static org.xjge.graphics.Model.MAX_BONES_PER_VERTEX;
 
 /**
- * Created: Jun 16, 2021
- * <br><br>
- * Represents a 3D polygonal collection of vertices, edges, and faces that will 
- * define the shape of a {@link Model}. Contains a single 4x4 matrix that can 
- * be used by the implementation to change the orientation of the mesh in world 
- * space.
  * 
  * @author J Hoffman
- * @since  2.0.0
+ * @since 2.0.0
  */
 public final class Mesh {
+    
+    public float[] positions;
+    public float[] normals;
+    public float[] tangents;
+    public float[] uvs;
+    public float[] boneWeights;
+    
+    public int vao;
+    public int vbo1;
+    public int vbo2;
+    public int ibo;
+    public int materialIndex;
+    
+    public int[] boneIDs;
+    public int[] indices;
+    
+    private enum VertexAttribute {
+        
+        POSITION(3),
+        NORMAL(3),
+        TANGENT(3),
+        UV(2);
+        
+        final int stride;
+        
+        VertexAttribute(int stride) { this.stride = stride; }
+        
+    }
+    
+    Mesh(AIMesh aiMesh, Skeleton skeleton) {
+        positions = extractVertexAttribute(aiMesh, VertexAttribute.POSITION);
+        normals   = extractVertexAttribute(aiMesh, VertexAttribute.NORMAL);
+        tangents  = extractVertexAttribute(aiMesh, VertexAttribute.TANGENT);
+        uvs       = extractVertexAttribute(aiMesh, VertexAttribute.UV);
+        extractBoneWeights(aiMesh, skeleton);
+        materialIndex = aiMesh.mMaterialIndex();
+        extractIndices(aiMesh);
+    }
+    
+    private float[] extractVertexAttribute(AIMesh aiMesh, VertexAttribute attribute) {
+        AIVector3D.Buffer buffer;
+        
+        switch(attribute) {
+            case POSITION -> buffer = aiMesh.mVertices();
+            case NORMAL   -> buffer = aiMesh.mNormals();
+            case TANGENT  -> buffer = aiMesh.mTangents();
+            case UV       -> buffer = aiMesh.mTextureCoords(0);
+            default       -> throw new IllegalArgumentException("Unsupported vertex attribute found: \"" + attribute + "\"");
+        }
+        
+        if(buffer == null) return null;
+        
+        int vertexCount = aiMesh.mNumVertices();
+        float[] result  = new float[vertexCount * attribute.stride];
+        
+        for(int i = 0; i < vertexCount; i++) {
+            var vec = buffer.get(i);
+            
+            result[i * attribute.stride]     = vec.x();
+            result[i * attribute.stride + 1] = vec.y();
+            
+            if(attribute.stride == 3) result[i * attribute.stride + 2] = vec.z();
+        }
+        
+        return result;
+    }
+    
+    private void extractBoneWeights(AIMesh aiMesh, Skeleton skeleton) {
+        int vertexCount = aiMesh.mNumVertices();
+        int boneCount   = aiMesh.mNumBones();
+        var aiBones     = aiMesh.mBones();
+        
+        boneIDs     = new int[vertexCount * MAX_BONES_PER_VERTEX];
+        boneWeights = new float[vertexCount * MAX_BONES_PER_VERTEX];
+        
+        for(int boneIndex = 0; boneIndex < boneCount; boneIndex++) {
+            var aiBone   = AIBone.create(aiBones.get(boneIndex));
+            var weights  = aiBone.mWeights();
+            var boneName = aiBone.mName().dataString();
+            
+            //Blender likes to add pipes for some reason so we'll discard that if we see it
+            int pipe = boneName.indexOf("|");
+            if(pipe != -1) boneName = boneName.substring(pipe + 1);
+            
+            var mapIndex = skeleton.boneMap.get(boneName);
+            
+            //Build resolver list, this helps us convert local mesh space to global space during rendering
+            if(mapIndex == null) {
+                mapIndex          = skeleton.bones.size();
+                var bone          = new Bone();
+                bone.name         = boneName;
+                bone.offsetMatrix = Model.convertMatrix(aiBone.mOffsetMatrix());
+                skeleton.bones.add(bone);
+                skeleton.boneMap.put(boneName, mapIndex);
+            }
+            
+            for(int w = 0; w < aiBone.mNumWeights(); w++) {
+                var vw       = weights.get(w);
+                int vertexID = vw.mVertexId();
+                float weight = vw.mWeight();
+                int base     = vertexID * MAX_BONES_PER_VERTEX;
+                
+                for(int i = 0; i < MAX_BONES_PER_VERTEX; i++) {
+                    if(boneWeights[base + i] == 0f) {
+                        boneIDs[base + i]     = mapIndex;
+                        boneWeights[base + i] = weight;
+                        break;
+                    }
+                }
+            }
+        }
+        
+        //Normalize bone weights (all four combined should not exceed 1.0f otherwise we'll have visual bugs)
+        for(int v = 0; v < getVertexCount(); v++) {
+            int base  = v * MAX_BONES_PER_VERTEX;
+            float sum = 0f;
+            
+            for(int i = 0; i < MAX_BONES_PER_VERTEX; i++) sum += boneWeights[base + i];
+            
+            if(sum > 0f) {
+                for(int i = 0; i < MAX_BONES_PER_VERTEX; i++) boneWeights[base + i] /= sum;
+            }
+        }
+    }
+    
+    private void extractIndices(AIMesh aiMesh) {
+        int faceCount = aiMesh.mNumFaces();
+        var faces     = aiMesh.mFaces();
+        
+        indices = new int[faceCount * 3];
+        
+        for(int i = 0; i < faceCount; i++) {
+            AIFace aiFace      = faces.get(i);
+            IntBuffer idx      = aiFace.mIndices();
+            indices[i * 3]     = idx.get(0);
+            indices[i * 3 + 1] = idx.get(1);
+            indices[i * 3 + 2] = idx.get(2);
+        }
+    }
+    
+    void upload() {
+        //Interleaved data: positions(3), normals(3), tangents(3), uvs(2), boneWeights(4)
+        var vertexBuffer = MemoryUtil.memAllocFloat(getVertexCount() * 15);
+        var boneIDBuffer = MemoryUtil.memAllocInt(getVertexCount() * 4);
+        
+        try {
+            for(int i = 0; i < getVertexCount(); i++) {
+                int io2 = i * 2; //Index offset for vec2
+                int io3 = i * 3; //Index offset for vec3
+                int io4 = i * 4; //Index offset for vec4
 
-    final int vao   = glGenVertexArrays();
-    private int vbo = glGenBuffers();
-    final int ibo   = glGenBuffers();
-    
-    final int textureID;
-    
-    public final String name;
-    
-    IntBuffer indices;
-    public Matrix4f modelMatrix = new Matrix4f();
-    
-    /**
-     * Creates a mesh object that will be used by the engine to render part of 
-     * a {@link Model}.
-     * 
-     * @param aiMesh the mesh object provided by the Assimp library with which 
-     *               vertex data will be parsed
-     * @param bones a collection of the bones located within the mesh
-     */
-    Mesh(AIMesh aiMesh, ArrayList<Bone> bones) {
-        glBindVertexArray(vao);
-        
-        textureID = aiMesh.mMaterialIndex(); //Determines which texture this mesh should use.
-        name      = aiMesh.mName().dataString();
-        
-        parsePositionData(aiMesh);
-        parseTexCoordData(aiMesh);
-        parseNormalData(aiMesh);
-        parseBoneData(aiMesh, bones);
-        parseFaceData(aiMesh);
-        
-        glEnableVertexAttribArray(0); //position
-        glEnableVertexAttribArray(2); //texture coordinates
-        glEnableVertexAttribArray(3); //normal
-        
-        if(!bones.isEmpty()) {
-            glEnableVertexAttribArray(7); //boneIDs
-            glEnableVertexAttribArray(8); //weights
-        }
-    }
-    
-    /**
-     * Extracts the vertex positions of the mesh object and provides them to 
-     * the graphics pipeline.
-     * 
-     * @param aiMesh the mesh object provided by the Assimp library with which 
-     *               vertex data will be parsed
-     */
-    private void parsePositionData(AIMesh aiMesh) {
-        FloatBuffer positionBuf    = MemoryUtil.memAllocFloat(aiMesh.mNumVertices() * 3);
-        AIVector3D.Buffer aiVecBuf = aiMesh.mVertices();
-        
-        while(positionBuf.hasRemaining()) {
-            AIVector3D aiVec = aiVecBuf.get();
-            
-            positionBuf.put(aiVec.x())
-                       .put(aiVec.y())
-                       .put(aiVec.z());
-        }
-        
-        glBindBuffer(GL_ARRAY_BUFFER, vbo);
-        glBufferData(GL_ARRAY_BUFFER, positionBuf.flip(), GL_STATIC_DRAW);
-        glVertexAttribPointer(0, 3, GL_FLOAT, false, 0, 0);
-        
-        MemoryUtil.memFree(positionBuf);
-        
-        ErrorUtils.checkGLError();
-    }
-    
-    /**
-     * Extracts the texture coordinates of the mesh object and provides them to 
-     * the graphics pipeline. If a model contains no textures, the values will 
-     * be initialized to zero by default.
-     * 
-     * @param aiMesh the mesh object provided by the Assimp library with which 
-     *               vertex data will be parsed
-     */
-    private void parseTexCoordData(AIMesh aiMesh) {
-        FloatBuffer texCoordBuf    = MemoryUtil.memAllocFloat(aiMesh.mNumVertices() * 2);
-        AIVector3D.Buffer aiVecBuf = aiMesh.mTextureCoords(0);
-        
-        if(aiVecBuf != null) {
-            for(int i = 0; i < aiVecBuf.remaining(); i++) {
-                AIVector3D aiVec = aiVecBuf.get(i);
-                                
-                texCoordBuf.put(aiVec.x())
-                           .put(aiVec.y());
-            }
-        }
-        
-        vbo = glGenBuffers();
-        glBindBuffer(GL_ARRAY_BUFFER, vbo);
-        glBufferData(GL_ARRAY_BUFFER, texCoordBuf.flip(), GL_STATIC_DRAW);
-        glVertexAttribPointer(2, 2, GL_FLOAT, false, 0, 0);
-        
-        MemoryUtil.memFree(texCoordBuf);
-        
-        ErrorUtils.checkGLError();
-    }
-    
-    /**
-     * Extracts the vertex normals of the mesh object and provides them to the 
-     * graphics pipeline. If a model doesn't refactor light, the values will be 
-     * initialized to zero by default.
-     * 
-     * @param aiMesh the mesh object provided by the Assimp library with which 
-     *               vertex data will be parsed
-     */
-    private void parseNormalData(AIMesh aiMesh) {
-        FloatBuffer normalBuf      = MemoryUtil.memAllocFloat(aiMesh.mNumVertices() * 3);
-        AIVector3D.Buffer aiVecBuf = aiMesh.mNormals();
-        
-        if(aiVecBuf != null) {
-            for(int i = 0; i < aiVecBuf.remaining(); i++) {
-                AIVector3D aiVec = aiVecBuf.get(i);
+                vertexBuffer.put(positions[io3]).put(positions[io3 + 1]).put(positions[io3 + 2]);
+                vertexBuffer.put(normals[io3]).put(normals[io3 + 1]).put(normals[io3 + 2]);
+                vertexBuffer.put(tangents[io3]).put(tangents[io3 + 1]).put(tangents[io3 + 2]);
+                vertexBuffer.put(uvs[io2]).put(uvs[io2 + 1]);
+                vertexBuffer.put(boneWeights[io4]).put(boneWeights[io4 + 1]).put(boneWeights[io4 + 2]).put(boneWeights[io4 + 3]);
                 
-                normalBuf.put(aiVec.x())
-                         .put(aiVec.y())
-                         .put(aiVec.z());
-            }
-        }
-        
-        vbo = glGenBuffers();
-        glBindBuffer(GL_ARRAY_BUFFER, vbo);
-        glBufferData(GL_ARRAY_BUFFER, normalBuf.flip(), GL_STATIC_DRAW);
-        glVertexAttribPointer(3, 3, GL_FLOAT, false, 0, 0);
-        
-        MemoryUtil.memFree(normalBuf);
-        
-        ErrorUtils.checkGLError();
-    }
-    
-    /**
-     * Extracts vertex data necessary for use during skeletal animation. If no 
-     * animation data is present, this step is skipped.
-     * 
-     * @param aiMesh the mesh object provided by the Assimp library with which 
-     *               vertex data will be parsed
-     */
-    private void parseBoneData(AIMesh aiMesh, List<Bone> bones) {
-        PointerBuffer boneBuf = aiMesh.mBones();
-        
-        if(boneBuf != null) {
-            Map<Integer, List<VertexWeight>> weights = new TreeMap<>();
-            
-            for(int b = 0; b < aiMesh.mNumBones(); b++) {
-                AIBone aiBone = AIBone.create(boneBuf.get(b));
-                Bone bone     = new Bone(bones.size(), aiBone.mName().dataString(), aiBone.mOffsetMatrix());
-                
-                bones.add(bone);
-                
-                for(int w = 0; w < aiBone.mNumWeights(); w++) {
-                    AIVertexWeight aiWeight = aiBone.mWeights().get(w);
-                    VertexWeight weight     = new VertexWeight(bone.id, aiWeight.mVertexId(), aiWeight.mWeight());
-                    
-                    List<VertexWeight> vwList = weights.get(weight.vertexID);
-                    
-                    if(vwList == null) {
-                        vwList = new ArrayList<>();
-                        weights.put(weight.vertexID, vwList);
-                    }
-                    
-                    vwList.add(weight);
-                }
+                boneIDBuffer.put(boneIDs[io4]).put(boneIDs[io4 + 1]).put(boneIDs[io4 + 2]).put(boneIDs[io4 + 3]);
             }
             
-            IntBuffer boneIDBuf   = MemoryUtil.memAllocInt(Integer.BYTES * aiMesh.mNumVertices());
-            FloatBuffer weightBuf = MemoryUtil.memAllocFloat(Float.BYTES * aiMesh.mNumVertices());
+            vertexBuffer.flip();
+            boneIDBuffer.flip();
             
-            for(int i = 0; i < aiMesh.mNumVertices(); i++) {
-                List<VertexWeight> vwList = weights.get(i);
-                int listSize = (vwList != null) ? vwList.size() : 0;
-                
-                for(int k = 0; k < Model.MAX_WEIGHTS; k++) {
-                    if(k < listSize) {
-                        if(vwList != null) {
-                            VertexWeight weight = vwList.get(k);
-                            
-                            boneIDBuf.put(weight.boneID);
-                            weightBuf.put(weight.weight);
-                        } else {
-                            Logger.logError("Unable to find any vertex weight data", null);
-                        }
-                    } else {
-                        boneIDBuf.put(0);
-                        weightBuf.put(0.0f);
-                    }
-                }
-            }
+            vao  = glGenVertexArrays();
+            vbo1 = glGenBuffers();
+            vbo2 = glGenBuffers();
+            ibo  = glGenBuffers();
+
+            int stride = 15 * Float.BYTES;
+
+            glBindVertexArray(vao);
+
+            glBindBuffer(GL_ARRAY_BUFFER, vbo1);
+            glBufferData(GL_ARRAY_BUFFER, vertexBuffer, GL_STATIC_DRAW);
+
+            //Positions
+            glVertexAttribPointer(0, 3, GL_FLOAT, false, stride, 0);
+            glEnableVertexAttribArray(0);
+
+            //Normals
+            glVertexAttribPointer(1, 3, GL_FLOAT, false, stride, 3 * Float.BYTES);
+            glEnableVertexAttribArray(1);
+
+            //Tangents
+            glVertexAttribPointer(2, 3, GL_FLOAT, false, stride, 6 * Float.BYTES);
+            glEnableVertexAttribArray(2);
+
+            //UVs
+            glVertexAttribPointer(3, 2, GL_FLOAT, false, stride, 9 * Float.BYTES);
+            glEnableVertexAttribArray(3);
+
+            //Bone Weights
+            glVertexAttribPointer(4, 4, GL_FLOAT, false, stride, 11 * Float.BYTES);
+            glEnableVertexAttribArray(4);
+
+            glBindBuffer(GL_ARRAY_BUFFER, vbo2);
+            glBufferData(GL_ARRAY_BUFFER, boneIDBuffer, GL_STATIC_DRAW);
+
+            //Bone IDs
+            glVertexAttribIPointer(5, 4, GL_INT, 0, 0);
+            glEnableVertexAttribArray(5);
+
+            glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ibo);
+            glBufferData(GL_ELEMENT_ARRAY_BUFFER, indices, GL_STATIC_DRAW);
+
+            glBindVertexArray(0);
+            ErrorUtils.checkGLError();
             
-            vbo = glGenBuffers();
-            glBindBuffer(GL_ARRAY_BUFFER, vbo);
-            glBufferData(GL_ARRAY_BUFFER, boneIDBuf.flip(), GL_STATIC_DRAW);
-            glVertexAttribPointer(7, 4, GL_FLOAT, false, 0, 0);
-            MemoryUtil.memFree(boneIDBuf);
-            
-            vbo = glGenBuffers();
-            glBindBuffer(GL_ARRAY_BUFFER, vbo);
-            glBufferData(GL_ARRAY_BUFFER, weightBuf.flip(), GL_STATIC_DRAW);
-            glVertexAttribPointer(8, 4, GL_FLOAT, false, 0, 0);
-            MemoryUtil.memFree(weightBuf);
-            
-            ErrorUtils.checkGLError();   
+        } finally {
+            MemoryUtil.memFree(vertexBuffer);
+            MemoryUtil.memFree(boneIDBuffer);
         }
     }
     
-    /**
-     * Uses the number of faces in the mesh to generate indices that can be 
-     * used by the graphics pipeline to optimize rendering.
-     * 
-     * @param aiMesh the mesh object provided by the Assimp library with which 
-     *               vertex data will be parsed
-     */
-    private void parseFaceData(AIMesh aiMesh) {
-        indices = MemoryUtil.memAllocInt(aiMesh.mNumFaces() * 3);
-        AIFace.Buffer aiFaceBuf = aiMesh.mFaces();
-        
-        for(int i = 0; i < aiMesh.mNumFaces(); i++) {
-            AIFace aiFace = aiFaceBuf.get(i);
-            indices.put(aiFace.mIndices());
-        }
-        
-        glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ibo);
-        glBufferData(GL_ELEMENT_ARRAY_BUFFER, indices.flip(), GL_STATIC_DRAW);
-        
-        ErrorUtils.checkGLError();
+    void delete() {
+        //TODO: free OpenGL objects, call from model.onRelease();
     }
     
-    /**
-     * Frees the OpenGL buffer objects associated with this mesh.
-     */
-    void freeBuffers() {
-        glDeleteVertexArrays(vao);
-        glDeleteBuffers(vbo);
-        glDeleteBuffers(ibo);
+    int getVertexCount() {
+        return positions.length / 3;
     }
     
 }
