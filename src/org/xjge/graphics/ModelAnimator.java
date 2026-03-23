@@ -3,8 +3,6 @@ package org.xjge.graphics;
 import org.joml.Matrix4f;
 import org.joml.Quaternionf;
 import org.joml.Vector3f;
-import static org.lwjgl.opengl.GL11.glGetInteger;
-import static org.lwjgl.opengl.GL20.GL_MAX_VERTEX_UNIFORM_COMPONENTS;
 import org.xjge.core.EntityComponent;
 
 /**
@@ -47,36 +45,6 @@ public class ModelAnimator extends EntityComponent {
         
         float timeInTicks   = currentTime * ticksPerSecond;
         float animationTime = timeInTicks % duration;
-
-        // All other bones identity
-        for(int i = 0; i < finalBoneMatrices.length; i++) {
-            finalBoneMatrices[i].identity();
-        }
-        
-        /*
-        int boneID = 1;
-        var bone = model.getSkeleton().bones.get(1);
-        
-        System.out.println(bone.name);
-        System.out.println(bone.localBindTransform);
-        System.out.println(bone.offsetMatrix);
-        
-        for(var mesh : model.getMeshes()) {
-            for(int v = 0; v < mesh.getVertexCount(); v++) {
-                int base = v * 4;
-                
-                for(int i = 0; i < 4; i++) {
-                    System.out.println("VertexID: " + v + " BoneID: " + 
-                            mesh.boneIDs[base + i] + " BoneWeight: " + mesh.boneWeights[base + i]);
-                }
-            }
-        }
-        
-        System.out.println();
-        System.out.println("end frame\n");
-        */
-        
-        //finalBoneMatrices[1].translate(0, 10, 0);
         
         calculateBoneTransforms(animationTime);
     }
@@ -103,20 +71,9 @@ public class ModelAnimator extends EntityComponent {
                 Vector3f scale = sampleVector3(keyframe.scaleTimes, keyframe.scales, animationTime);
 
                 localTransform = new Matrix4f().translate(pos).rotate(rot).scale(scale);
-                
-                /*
-                System.out.println("bone name: " + bone.name + " animationTime: " + animationTime + 
-                        " posTimesCount: " + keyframe.positionTimes.length +
-                        " rotTimesCount: " + keyframe.positionTimes.length);
-                */
             } else {
                 // No keyframe: use identity (bind pose already in localBindTransform)
                 localTransform = new Matrix4f(bone.localBindTransform);
-                
-                /*
-                System.out.println("bone name: " + bone.name + "animationTime: " + animationTime + 
-                        " no keyframe");
-                */
             }
 
             // Step 2: accumulate along hierarchy
@@ -128,9 +85,6 @@ public class ModelAnimator extends EntityComponent {
 
             // Step 3: apply offset matrix for skinning
             finalBoneMatrices[i].set(globalTransforms[i]).mul(bone.offsetMatrix);
-            
-            //globalTransforms[i].mul(bone.offsetMatrix);
-            //finalBoneMatrices[i].set(model.rootTransform.mul(globalTransforms[i]));
         }
     }
     
@@ -175,10 +129,6 @@ public class ModelAnimator extends EntityComponent {
     }
     
     public Matrix4f[] getFinalBoneMatrices() {
-        for(int i = 0; i < finalBoneMatrices.length; i++) {
-            //finalBoneMatrices[i] = new Matrix4f(model.rootTransform).mul(finalBoneMatrices[i]);
-        }
-        
         return finalBoneMatrices;
     }
     

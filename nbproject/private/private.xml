@@ -20,8 +20,10 @@
     </editor-bookmarks>
     <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
         <group>
-            <file>file:/C:/Users/jhoff/Projects/XJGE/src/org/xjge/test/SceneModel3.java</file>
-            <file>file:/C:/Users/jhoff/Projects/XJGE/src/org/xjge/modeling3/Mesh3.java</file>
+            <file>file:/C:/Users/jhoff/Projects/XJGE/src/org/xjge/graphics/Bone.java</file>
+            <file>file:/C:/Users/jhoff/Projects/XJGE/src/org/xjge/test/SceneModel.java</file>
+            <file>file:/C:/Users/jhoff/Projects/XJGE/src/org/xjge/graphics/Mesh.java</file>
+            <file>file:/C:/Users/jhoff/Projects/XJGE/src/org/xjge/test/Prism.java</file>
             <file>file:/C:/Users/jhoff/Projects/XJGE/src/org/xjge/graphics/Shader.java</file>
         </group>
     </open-files>
