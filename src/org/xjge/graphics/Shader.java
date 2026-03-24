@@ -253,31 +253,6 @@ public class Shader implements AssetReloadListener {
         glUniformMatrix4fv(uniforms.get(name).location, transpose, value.get(uniforms.get(name).asFloatBuffer()));
     }
     
-    /**
-     * Supplies the specified uniform variable with a new values. This variant 
-     * of {@code setUniform} is modified so multiple values can be sent under a 
-     * single name- specifically for instances where the uniform variable in 
-     * question is actually a collection such as an array.
-     * 
-     * @param name the unique name used to identify the uniform variable array 
-     *             as it appears in the .glsl source file
-     * @param transpose if true, the matrix data provided in the value parameter 
-     *                  will be transposed before it is read
-     * @param values    a collection of values of the uniform variable array
-     */
-    public void setUniform(String name, boolean transpose, List<Matrix4f> values) { 
-        try(MemoryStack stack = MemoryStack.stackPush()) {
-            FloatBuffer matBuf = stack.mallocFloat(16 * values.size() - 1);
-            
-            for(int i = 0; i < values.size() - 1; i++) values.get(i).get(16 * i, matBuf);
-            
-            glUniformMatrix4fv(
-                    uniforms.get(name).location,
-                    transpose,
-                    matBuf);
-        }
-    }
-    
     public void setUniform(String name, boolean transpose, Matrix4fc[] values) {
         var matrixBuffer = MemoryUtil.memAllocFloat(values.length * 16);
         

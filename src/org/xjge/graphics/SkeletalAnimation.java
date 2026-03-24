@@ -12,10 +12,10 @@ import org.lwjgl.assimp.AINodeAnim;
  */
 public final class SkeletalAnimation {
 
-    public float duration;
+    public final float duration;
     public float ticksPerSecond;
     
-    public String name;
+    public final String name;
     
     public List<Keyframe> keyframes = new ArrayList<>();
     
@@ -24,10 +24,10 @@ public final class SkeletalAnimation {
         
         duration       = (float) aiAnimation.mDuration();
         ticksPerSecond = (float) (aiAnimation.mTicksPerSecond());
-        name           = aiAnimation.mName().dataString();
+        var tempName   = aiAnimation.mName().dataString();
 
-        int pipe = name.indexOf("|");
-        if(pipe != -1) name = name.substring(pipe + 1);
+        int pipe = tempName.indexOf("|");
+        name = (pipe != -1) ? tempName.substring(pipe + 1) : tempName;
 
         if(ticksPerSecond == 0f) ticksPerSecond = 25f;
         

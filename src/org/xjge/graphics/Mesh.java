@@ -8,7 +8,6 @@ import org.lwjgl.assimp.AIVector3D;
 import static org.lwjgl.opengl.GL30.*;
 import org.lwjgl.system.MemoryUtil;
 import org.xjge.core.ErrorUtils;
-import static org.xjge.graphics.Model.MAX_BONES_PER_VERTEX;
 
 /**
  * 
@@ -16,6 +15,9 @@ import static org.xjge.graphics.Model.MAX_BONES_PER_VERTEX;
  * @since 2.0.0
  */
 public final class Mesh {
+    
+    public static final int MAX_WEIGHTS = 4;
+    public static final int MAX_BONES   = 128;
     
     public float[] positions;
     public float[] normals;
@@ -88,8 +90,8 @@ public final class Mesh {
         int boneCount   = aiMesh.mNumBones();
         var aiBones     = aiMesh.mBones();
         
-        boneIDs     = new int[vertexCount * MAX_BONES_PER_VERTEX];
-        boneWeights = new float[vertexCount * MAX_BONES_PER_VERTEX];
+        boneIDs     = new int[vertexCount * MAX_WEIGHTS];
+        boneWeights = new float[vertexCount * MAX_WEIGHTS];
         
         for(int boneIndex = 0; boneIndex < boneCount; boneIndex++) {
             var aiBone   = AIBone.create(aiBones.get(boneIndex));
@@ -116,9 +118,9 @@ public final class Mesh {
                 var vw       = weights.get(w);
                 int vertexID = vw.mVertexId();
                 float weight = vw.mWeight();
-                int base     = vertexID * MAX_BONES_PER_VERTEX;
+                int base     = vertexID * MAX_WEIGHTS;
                 
-                for(int i = 0; i < MAX_BONES_PER_VERTEX; i++) {
+                for(int i = 0; i < MAX_WEIGHTS; i++) {
                     if(boneWeights[base + i] == 0f) {
                         boneIDs[base + i]     = mapIndex;
                         boneWeights[base + i] = weight;
@@ -130,13 +132,13 @@ public final class Mesh {
         
         //Normalize bone weights (all four combined should not exceed 1.0f otherwise we'll have visual bugs)
         for(int v = 0; v < getVertexCount(); v++) {
-            int base  = v * MAX_BONES_PER_VERTEX;
+            int base  = v * MAX_WEIGHTS;
             float sum = 0f;
             
-            for(int i = 0; i < MAX_BONES_PER_VERTEX; i++) sum += boneWeights[base + i];
+            for(int i = 0; i < MAX_WEIGHTS; i++) sum += boneWeights[base + i];
             
             if(sum > 0f) {
-                for(int i = 0; i < MAX_BONES_PER_VERTEX; i++) boneWeights[base + i] /= sum;
+                for(int i = 0; i < MAX_WEIGHTS; i++) boneWeights[base + i] /= sum;
             }
         }
     }

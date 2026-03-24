@@ -72,7 +72,7 @@ public final class Window {
     private static final Resolution resolution = new Resolution(DEFAULT_WIDTH, DEFAULT_HEIGHT);
     private static final Observable observable = new Observable(Window.class);
     
-    //These fields were added to prevent issues with GC invalidating callbacks
+    //These fields were added to prevent GC from invalidating callbacks
     private static GLFWErrorCallback         glfwErrorReference;
     private static GLFWMonitorCallback       glfwMonitorReference;
     private static GLFWWindowIconifyCallback glfwWindowIconifyReference;

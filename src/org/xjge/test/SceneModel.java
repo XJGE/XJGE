@@ -62,11 +62,7 @@ public class SceneModel extends Scene {
                                  .addComponent(new ModelAnimator(testModel));
         addEntity(testEntity);
         
-        SkeletalAnimation testAnimation = null;
-        
-        for(var animation : testModel.getAnimations()) {
-            if(animation.name.equals("wave")) testAnimation = animation;
-        }
+        var testAnimation = testModel.getAnimation("wave");
         
         if(testAnimation != null) {
             testEntity.getComponent(ModelAnimator.class).play(testAnimation);
@@ -141,8 +137,9 @@ public class SceneModel extends Scene {
         System.out.println();
         
         System.out.println("Animations:");
-        for(var animation : testModel.getAnimations()) {
-            System.out.println(" Name: " + animation.name);
+        for(var animName : testModel.getAnimaitonNames()) {
+            var animation = testModel.getAnimation(animName);
+            System.out.println(" Name: " + animName);
             System.out.println("  Duration: " + animation.duration);
             System.out.println("  Ticks Per Second: " + animation.ticksPerSecond);
             System.out.println("  Num Keyframes: " + animation.keyframes.size());

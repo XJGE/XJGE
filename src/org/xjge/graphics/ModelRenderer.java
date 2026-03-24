@@ -8,8 +8,6 @@ import org.xjge.core.Camera;
 import org.xjge.core.EntityComponent;
 import org.xjge.core.ErrorUtils;
 import org.xjge.core.LightingSystem;
-import org.xjge.graphics.Shader;
-import org.xjge.graphics.ShaderStage;
 
 /**
  * 
@@ -49,9 +47,7 @@ public class ModelRenderer extends EntityComponent {
         shader.setUniform("uCamPos", camera.position);
         shader.setUniform("uNumLights", LightingSystem.getActiveCount());
         
-        if(animator != null) {
-            shader.setUniform("uBoneTransforms", false, animator.getFinalBoneMatrices());
-        }
+        if(animator != null) shader.setUniform("uBoneTransforms", false, animator.getFinalBoneMatrices());
         
         for(var mesh : model.getMeshes()) {
             var material = model.getMaterials().get(mesh.materialIndex);

@@ -3,7 +3,11 @@ package org.xjge.graphics;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
 import org.joml.Matrix4f;
 import org.lwjgl.PointerBuffer;
 import org.lwjgl.assimp.AIAnimation;
@@ -24,8 +28,6 @@ import org.xjge.core.Logger;
  * @since 2.0.0
  */
 public final class Model extends Asset {
-
-    public static final int MAX_BONES_PER_VERTEX = 4;
     
     private final int flags;
     
@@ -34,7 +36,7 @@ public final class Model extends Asset {
     
     private List<Material> materials;
     private List<Mesh> meshes;
-    private List<SkeletalAnimation> animations;
+    private Map<String, SkeletalAnimation> animations;
     
     public static final Model load(String filename) {
         var defaultFlags = Assimp.aiProcess_Triangulate | Assimp.aiProcess_GenSmoothNormals |
@@ -125,15 +127,16 @@ public final class Model extends Asset {
         return result;
     }
     
-    private List<SkeletalAnimation> parseAnimations(AIScene aiScene) {
-        List<SkeletalAnimation> result = new ArrayList<>();
-        PointerBuffer aiAnimations      = aiScene.mAnimations();
+    private Map<String, SkeletalAnimation> parseAnimations(AIScene aiScene) {
+        var result       = new HashMap<String, SkeletalAnimation>();
+        var aiAnimations = aiScene.mAnimations();
         
         if(aiAnimations == null) return result;
         
         for(int i = 0; i < aiScene.mNumAnimations(); i++) {
             var aiAnimation = AIAnimation.create(aiAnimations.get(i));
-            result.add(new SkeletalAnimation(aiAnimation, skeleton));
+            var animation   = new SkeletalAnimation(aiAnimation, skeleton);
+            result.put(animation.name, animation);
         }
         
         return result;
@@ -152,16 +155,20 @@ public final class Model extends Asset {
         return skeleton;
     }
     
+    public final SkeletalAnimation getAnimation(String name) {
+        return animations.get(name);
+    }
+    
+    public final Set<String> getAnimaitonNames() {
+        return animations.keySet();
+    }
+    
     public final List<Material> getMaterials() {
         return materials;
     }
     
     public final List<Mesh> getMeshes() {
         return meshes;
-    }
-    
-    public final List<SkeletalAnimation> getAnimations() {
-        return animations;
     }
 
 }
