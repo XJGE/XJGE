@@ -12,11 +12,14 @@ import org.xjge.core.EntityComponent;
  */
 public class ModelAnimator extends EntityComponent {
     
-    private float currentTime = 0f;
+    private float blendTime     = 0f;
+    private float blendDuration = 0f;
+    
+    private AnimationInstance current;
+    private AnimationInstance next;
     
     private final Model model;
-    private SkeletalAnimation currentAnimation;
-
+    
     private final Matrix4f[] finalBoneMatrices = new Matrix4f[Mesh.MAX_BONES];
 
     public ModelAnimator(Model model) {
@@ -24,120 +27,216 @@ public class ModelAnimator extends EntityComponent {
         for(int i = 0; i < Mesh.MAX_BONES; i++) finalBoneMatrices[i] = new Matrix4f().identity();
     }
     
-    // Linear interpolation for Vector3f
-    private Vector3f sampleVector3(float[] times, Vector3f[] values, float t) {
-        if (times.length == 0) return new Vector3f();
-        if (times.length == 1) return new Vector3f(values[0]);
+    public void play(String animationName) {
+        var animation = model.getAnimation(animationName);
+        if(animation == null) return;
 
-        // find two surrounding keyframes
-        int i = 0;
-        while (i < times.length - 1 && t > times[i+1]) i++;
-
-        int next = Math.min(i + 1, times.length - 1);
-        float factor = (t - times[i]) / (times[next] - times[i]);
-        factor = Math.min(Math.max(factor, 0f), 1f);
-
-        return new Vector3f(values[i]).lerp(values[next], factor);
-    }
-
-    // Spherical linear interpolation for Quaternionf
-    private Quaternionf sampleQuaternion(float[] times, Quaternionf[] values, float t) {
-        if (times.length == 0) return new Quaternionf().identity();
-        if (times.length == 1) return new Quaternionf(values[0]);
-
-        int i = 0;
-        while (i < times.length - 1 && t > times[i+1]) i++;
-
-        int next = Math.min(i + 1, times.length - 1);
-        float factor = (t - times[i]) / (times[next] - times[i]);
-        factor = Math.min(Math.max(factor, 0f), 1f);
-
-        return new Quaternionf(values[i]).slerp(values[next], factor);
+        current   = new AnimationInstance(animation);
+        next      = null;
+        blendTime = 0f;
     }
     
-    private Keyframe findKeyframe(int boneIndex) {
-        for (Keyframe keyframe : currentAnimation.keyframes) {
-            if (keyframe.boneIndex == boneIndex) {
-                return keyframe;
-            }
+    public void crossfade(String animationName, float duration) {
+        var animation = model.getAnimation(animationName);
+        if(animation == null) return;
+
+        if(current == null) {
+            play(animationName);
+            return;
         }
-        return null;
+
+        next          = new AnimationInstance(animation);
+        blendDuration = Math.max(duration, 0.0001f);
+        blendTime     = 0f;
+    }
+    
+    public void stop() {
+        current = null;
+        next    = null;
+    }
+    
+    public void setLooping(boolean looping) {
+        if(current != null) current.looping = looping;
+    }
+    
+    public void setTime(float time) {
+        if(current != null) current.time = time;
+    }
+    
+    public void setNormalizedTime(float time) {
+        if(current != null) {
+            current.time = time * current.animation.duration;
+        }
+    }
+    
+    public void setSpeed(float speed) {
+        if(current != null) current.speed = speed;
+    }
+    
+    public boolean isPlaying() {
+        return current != null;
+    }
+    
+    public String getCurrentAnimation() {
+        return current != null ? current.animation.name : null;
+    }
+    
+    public Matrix4f[] getFinalBoneMatrices() {
+        return finalBoneMatrices;
     }
 
-    private void calculateBoneTransforms(float animationTime) {
+    public void update(float deltaTime) { //TODO: use double instead otherwise we might have floating point drift over time
+        if(current == null) return;
+
+        current.update(deltaTime);
+
+        if(next != null) {
+            next.update(deltaTime);
+
+            blendTime += deltaTime;
+            float alpha = Math.min(blendTime / blendDuration, 1f);
+
+            calculateBlendedPose(alpha);
+
+            if(alpha >= 1f) {
+                current = next;
+                next = null;
+            }
+        } else {
+            calculatePose(current, finalBoneMatrices);
+        }
+    }
+    
+    private void calculateBlendedPose(float alpha) {
+        int boneCount = model.getSkeleton().bones.size();
+
+        Matrix4f[] poseA = new Matrix4f[boneCount];
+        Matrix4f[] poseB = new Matrix4f[boneCount];
+
+        for(int i = 0; i < boneCount; i++) {
+            poseA[i] = new Matrix4f();
+            poseB[i] = new Matrix4f();
+        }
+
+        calculatePose(current, poseA);
+        calculatePose(next, poseB);
+
+        for(int i = 0; i < boneCount; i++) {
+            finalBoneMatrices[i].set(poseA[i]).lerp(poseB[i], alpha);
+        }
+    }
+
+    private void calculatePose(AnimationInstance instance, Matrix4f[] output) {
         var skeleton = model.getSkeleton();
         int boneCount = skeleton.bones.size();
-        
-        // Prepare arrays
+
         Matrix4f[] globalTransforms = new Matrix4f[boneCount];
-        for (int i = 0; i < boneCount; i++) globalTransforms[i] = new Matrix4f();
+        for(int i = 0; i < boneCount; i++) {
+            globalTransforms[i] = new Matrix4f();
+        }
 
-        // Step 1: build transforms for every bone
-        for (int i = 0; i < boneCount; i++) {
-            Bone bone = skeleton.bones.get(i);
+        float animationTime = instance.getAnimationTime();
 
-            // Find keyframe for this bone
-            Keyframe keyframe = findKeyframe(i);
-
+        for(int i = 0; i < boneCount; i++) {
+            Bone bone         = skeleton.bones.get(i);
+            Keyframe keyframe = instance.getKeyframe(i);
             Matrix4f localTransform;
-            if (keyframe != null) {
+
+            if(keyframe != null) {
                 Vector3f pos   = sampleVector3(keyframe.positionTimes, keyframe.positions, animationTime);
                 Quaternionf rot = sampleQuaternion(keyframe.rotationTimes, keyframe.rotations, animationTime);
                 Vector3f scale = sampleVector3(keyframe.scaleTimes, keyframe.scales, animationTime);
 
-                localTransform = new Matrix4f().translate(pos).rotate(rot).scale(scale);
+                localTransform = new Matrix4f()
+                        .translate(pos)
+                        .rotate(rot)
+                        .scale(scale);
             } else {
-                // No keyframe: use identity (bind pose already in localBindTransform)
                 localTransform = new Matrix4f(bone.localBindTransform);
             }
 
-            // Step 2: accumulate along hierarchy
-            if (bone.parentIndex >= 0) {
+            if(bone.parentIndex >= 0) {
                 globalTransforms[i].set(globalTransforms[bone.parentIndex]).mul(localTransform);
             } else {
                 globalTransforms[i].set(localTransform);
             }
 
-            // Step 3: apply offset matrix for skinning
-            finalBoneMatrices[i].set(globalTransforms[i]).mul(bone.offsetMatrix);
+            output[i].set(globalTransforms[i]).mul(bone.offsetMatrix);
         }
     }
+    
+    private Vector3f sampleVector3(float[] times, Vector3f[] values, float t) {
+        if(times.length == 0) return new Vector3f();
+        if(times.length == 1) return new Vector3f(values[0]);
 
-    public void update(float deltaTime) {
-        if(currentAnimation == null) return;
+        int i = 0;
+        while(i < times.length - 1 && t > times[i + 1]) i++;
 
-        currentTime += deltaTime;
+        int nextTime = Math.min(i + 1, times.length - 1);
 
-        float duration = currentAnimation.duration;
-        float ticksPerSecond = currentAnimation.ticksPerSecond != 0
-                ? currentAnimation.ticksPerSecond
-                : 25.0f;
-        
-        float timeInTicks   = currentTime * ticksPerSecond;
-        float animationTime = timeInTicks % duration;
-        
-        calculateBoneTransforms(animationTime);
+        float factor = (t - times[i]) / (times[nextTime] - times[i]);
+        factor = Math.min(Math.max(factor, 0f), 1f);
+
+        return new Vector3f(values[i]).lerp(values[nextTime], factor);
+    }
+
+    private Quaternionf sampleQuaternion(float[] times, Quaternionf[] values, float t) {
+        if(times.length == 0) return new Quaternionf().identity();
+        if(times.length == 1) return new Quaternionf(values[0]);
+
+        int i = 0;
+        while(i < times.length - 1 && t > times[i + 1]) i++;
+
+        int nextTime = Math.min(i + 1, times.length - 1);
+
+        float factor = (t - times[i]) / (times[nextTime] - times[i]);
+        factor = Math.min(Math.max(factor, 0f), 1f);
+
+        return new Quaternionf(values[i]).slerp(values[nextTime], factor);
     }
     
-    public void play(SkeletalAnimation animation) {
-        this.currentAnimation = animation;
-        this.currentTime = 0f;
-    }
-    
-    public void crossfade(String animationName, float duration) {
+    private class AnimationInstance {
         
-    }
-    
-    public void stop() {
+        boolean looping = true;
         
-    }
-    
-    public void setSeekTime(float seek) {
+        float time  = 0f;
+        float speed = 1f;
         
-    }
-    
-    public Matrix4f[] getFinalBoneMatrices() {
-        return finalBoneMatrices;
+        SkeletalAnimation animation;
+        
+        Keyframe[] keyframesByBone;
+        
+        AnimationInstance(SkeletalAnimation animation) {
+            this.animation  = animation;
+            keyframesByBone = new Keyframe[Mesh.MAX_BONES];
+
+            for(var keyframe : animation.keyframes) keyframesByBone[keyframe.boneIndex] = keyframe;
+        }
+        
+        void update(float deltaTime) {
+            time += deltaTime * speed;
+
+            if(looping) {
+                float duration = animation.duration;
+                float ticks = getTimeInTicks();
+                ticks %= duration;
+                time = ticks / animation.ticksPerSecond;
+            }
+        }
+        
+        float getTimeInTicks() {
+            return time * animation.ticksPerSecond;
+        }
+        
+        float getAnimationTime() {
+            float ticks = getTimeInTicks();
+            return ticks % animation.duration;
+        }
+
+        Keyframe getKeyframe(int boneIndex) {
+            return keyframesByBone[boneIndex];
+        }
+        
     }
     
 }

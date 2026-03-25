@@ -62,11 +62,12 @@ public class SceneModel extends Scene {
                                  .addComponent(new ModelAnimator(testModel));
         addEntity(testEntity);
         
-        var testAnimation = testModel.getAnimation("wave");
+        //var testAnimation = testModel.getAnimation("wave");
         
-        if(testAnimation != null) {
-            testEntity.getComponent(ModelAnimator.class).play(testAnimation);
-        }
+        testEntity.getComponent(ModelAnimator.class).play("wave");
+        //testEntity.getComponent(ModelAnimator.class).setLooping(false);
+        testEntity.getComponent(ModelAnimator.class).setSpeed(0.5f);
+        
         
         worldLight = LightingSystem.request();
         worldLight.type = LightType.WORLD;
