@@ -12,8 +12,8 @@ import org.xjge.core.EntityComponent;
  */
 public class ModelAnimator extends EntityComponent {
     
-    private float blendTime     = 0f;
-    private float blendDuration = 0f;
+    private double blendTime     = 0f;
+    private double blendDuration = 0f;
     
     private AnimationInstance current;
     private AnimationInstance next;
@@ -65,7 +65,8 @@ public class ModelAnimator extends EntityComponent {
     
     public void setNormalizedTime(float time) {
         if(current != null) {
-            current.time = time * current.animation.duration;
+            double durationSeconds = current.animation.duration / current.animation.ticksPerSecond;
+            current.time = time * durationSeconds;
         }
     }
     
@@ -85,7 +86,7 @@ public class ModelAnimator extends EntityComponent {
         return finalBoneMatrices;
     }
 
-    public void update(float deltaTime) { //TODO: use double instead otherwise we might have floating point drift over time
+    public void update(double deltaTime) {
         if(current == null) return;
 
         current.update(deltaTime);
@@ -94,7 +95,7 @@ public class ModelAnimator extends EntityComponent {
             next.update(deltaTime);
 
             blendTime += deltaTime;
-            float alpha = Math.min(blendTime / blendDuration, 1f);
+            float alpha = (float) Math.min(blendTime / blendDuration, 1.0);
 
             calculateBlendedPose(alpha);
 
@@ -199,8 +200,8 @@ public class ModelAnimator extends EntityComponent {
         
         boolean looping = true;
         
-        float time  = 0f;
-        float speed = 1f;
+        double time  = 0.0;
+        double speed = 1.0;
         
         SkeletalAnimation animation;
         
@@ -213,24 +214,34 @@ public class ModelAnimator extends EntityComponent {
             for(var keyframe : animation.keyframes) keyframesByBone[keyframe.boneIndex] = keyframe;
         }
         
-        void update(float deltaTime) {
+        void update(double deltaTime) {
             time += deltaTime * speed;
-
+            
+            double durationSeconds = animation.duration / animation.ticksPerSecond;
+            
             if(looping) {
-                float duration = animation.duration;
-                float ticks = getTimeInTicks();
-                ticks %= duration;
-                time = ticks / animation.ticksPerSecond;
+                time %= durationSeconds;
+            } else {
+                if(time > durationSeconds) time = durationSeconds;
             }
         }
         
-        float getTimeInTicks() {
+        double getTimeInTicks() {
             return time * animation.ticksPerSecond;
         }
         
         float getAnimationTime() {
-            float ticks = getTimeInTicks();
-            return ticks % animation.duration;
+            double ticks = getTimeInTicks();
+            
+            if (looping) {
+                ticks %= animation.duration;
+            } else {
+                if (ticks > animation.duration) {
+                    ticks = animation.duration;
+                }
+            }
+
+            return (float) ticks;
         }
 
         Keyframe getKeyframe(int boneIndex) {
