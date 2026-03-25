@@ -78,6 +78,18 @@ public class ModelAnimator extends EntityComponent {
         return current != null;
     }
     
+    public boolean isFinished() {
+        if(current == null) return true;
+        if(next != null) return false;
+        return current.isFinished();
+    }
+    
+    public boolean justFinished() { //Only fired once upon initial finish, similar to buttonPressedOnce()
+        if(current == null) return false;
+        if(next != null) return false;
+        return current.justFinished();
+    }
+    
     public String getCurrentAnimation() {
         return current != null ? current.animation.name : null;
     }
@@ -198,7 +210,8 @@ public class ModelAnimator extends EntityComponent {
     
     private class AnimationInstance {
         
-        boolean looping = true;
+        boolean looping     = true;
+        boolean wasFinished = false;
         
         double time  = 0.0;
         double speed = 1.0;
@@ -209,7 +222,7 @@ public class ModelAnimator extends EntityComponent {
         
         AnimationInstance(SkeletalAnimation animation) {
             this.animation  = animation;
-            keyframesByBone = new Keyframe[Mesh.MAX_BONES];
+            keyframesByBone = new Keyframe[model.getSkeleton().bones.size()];
 
             for(var keyframe : animation.keyframes) keyframesByBone[keyframe.boneIndex] = keyframe;
         }
@@ -226,14 +239,23 @@ public class ModelAnimator extends EntityComponent {
             }
         }
         
-        double getTimeInTicks() {
-            return time * animation.ticksPerSecond;
+        boolean isFinished() {
+            if(looping) return false;
+            double durationSeconds = animation.duration / animation.ticksPerSecond;
+            return time >= durationSeconds;
+        }
+        
+        boolean justFinished() {
+            boolean nowFinished = isFinished();
+            boolean result      = nowFinished && !wasFinished;
+            wasFinished         = nowFinished;
+            return result;
         }
         
         float getAnimationTime() {
             double ticks = getTimeInTicks();
             
-            if (looping) {
+            if(looping) {
                 ticks %= animation.duration;
             } else {
                 if (ticks > animation.duration) {
@@ -242,6 +264,10 @@ public class ModelAnimator extends EntityComponent {
             }
 
             return (float) ticks;
+        }
+        
+        double getTimeInTicks() {
+            return time * animation.ticksPerSecond;
         }
 
         Keyframe getKeyframe(int boneIndex) {
