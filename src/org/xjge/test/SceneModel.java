@@ -2,6 +2,7 @@ package org.xjge.test;
 
 import org.xjge.graphics.ModelRenderer;
 import java.util.Map;
+import static org.lwjgl.glfw.GLFW.GLFW_JOYSTICK_1;
 import static org.lwjgl.opengl.GL11.GL_DEPTH_TEST;
 import static org.lwjgl.opengl.GL11.glDisable;
 import static org.lwjgl.opengl.GL11.glEnable;
@@ -12,11 +13,11 @@ import org.xjge.core.LightType;
 import org.xjge.core.LightingSystem;
 import org.xjge.core.Scene;
 import org.xjge.core.Skybox;
+import org.xjge.core.UIManager;
 import org.xjge.graphics.Shader;
 import org.xjge.graphics.Texture;
 import org.xjge.graphics.Model;
 import org.xjge.graphics.ModelAnimator;
-import org.xjge.graphics.SkeletalAnimation;
 import org.xjge.graphics.Transform;
 
 /**
@@ -68,11 +69,12 @@ public class SceneModel extends Scene {
         //testEntity.getComponent(ModelAnimator.class).setLooping(false);
         testEntity.getComponent(ModelAnimator.class).setSpeed(0.5f);
         
-        
         worldLight = LightingSystem.request();
         worldLight.type = LightType.WORLD;
         worldLight.position.set(0, 4.5f, 3);
         worldLight.brightness = 7f;
+        
+        UIManager.addWidget(GLFW_JOYSTICK_1, "animation_control", new UIAnimationWidget());
     }
 
     @Override

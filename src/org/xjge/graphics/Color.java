@@ -48,6 +48,10 @@ public final class Color {
         this(false, red, green, blue);
     }
     
+    public Color(float shade) {
+        this(false, shade, shade, shade);
+    }
+    
     @Override
     public boolean equals(Object obj) {
         if(this == obj) return true;
