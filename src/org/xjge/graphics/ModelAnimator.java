@@ -78,6 +78,10 @@ public class ModelAnimator extends EntityComponent {
         return current != null;
     }
     
+    public boolean isLooping() {
+        return (current != null) ? current.looping : false; 
+    }
+    
     public boolean isFinished() {
         if(current == null) return true;
         if(next != null) return false;

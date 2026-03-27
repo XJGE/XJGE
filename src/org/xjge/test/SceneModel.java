@@ -30,6 +30,7 @@ public class SceneModel extends Scene {
     private Model testModel;
     private Entity floor;
     private Entity testEntity;
+    private ModelAnimator animator;
     private Light worldLight;
     private Skybox skybox;
     
@@ -58,9 +59,11 @@ public class SceneModel extends Scene {
         var transform = new Transform();
         transform.position.z = -1.5f;
         
+        animator = new ModelAnimator(testModel);
+        
         testEntity = new Entity().addComponent(new ModelRenderer())
                                  .addComponent(transform)
-                                 .addComponent(new ModelAnimator(testModel));
+                                 .addComponent(animator);
         addEntity(testEntity);
         
         //var testAnimation = testModel.getAnimation("wave");
@@ -74,7 +77,7 @@ public class SceneModel extends Scene {
         worldLight.position.set(0, 4.5f, 3);
         worldLight.brightness = 7f;
         
-        UIManager.addWidget(GLFW_JOYSTICK_1, "animation_control", new UIAnimationWidget());
+        UIManager.addWidget(GLFW_JOYSTICK_1, "animation_control", new UIAnimationWidget(animator));
     }
 
     @Override

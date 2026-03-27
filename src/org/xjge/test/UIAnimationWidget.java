@@ -1,11 +1,14 @@
 package org.xjge.test;
 
+import java.awt.Checkbox;
 import java.util.Map;
 import org.xjge.core.Mouse;
 import org.xjge.core.SplitScreenType;
 import org.xjge.core.Window;
 import org.xjge.graphics.Color;
+import org.xjge.graphics.ModelAnimator;
 import org.xjge.graphics.Shader;
+import org.xjge.graphics.Texture;
 import org.xjge.ui.Rectangle;
 import org.xjge.ui.Widget;
 
@@ -16,12 +19,17 @@ import org.xjge.ui.Widget;
  */
 public class UIAnimationWidget extends Widget {
 
-    private Color slateGray = new Color(0.25f);
+    private final Color slateGray = new Color(0.25f);
     
-    private Rectangle[] backgrounds = new Rectangle[3];
+    private final Texture iconsTexture    = Texture.load("icons_animator.png");
+    private final Rectangle[] backgrounds = new Rectangle[3];
     
-    UIAnimationWidget() {
+    private final UICheckbox loopingControl;
+    
+    UIAnimationWidget(ModelAnimator animator) {
         for(int i = 0; i < backgrounds.length; i++) backgrounds[i] = new Rectangle();
+        
+        loopingControl = new UICheckbox(animator, iconsTexture);
         
         relocate(Window.getSplitScreenType(), Window.getWidth(), Window.getHeight());
     }
@@ -42,6 +50,8 @@ public class UIAnimationWidget extends Widget {
             
             background.render(1f, color);
         }
+        
+        loopingControl.render();
     }
 
     @Override
@@ -61,6 +71,7 @@ public class UIAnimationWidget extends Widget {
         backgrounds[2].positionX = backgrounds[0].positionX + 5;
         backgrounds[2].positionY = backgrounds[0].positionY + 5;
         
+        loopingControl.relocate(backgrounds[1]);
     }
 
     @Override
@@ -69,6 +80,7 @@ public class UIAnimationWidget extends Widget {
 
     @Override
     public void processMouseInput(Mouse mouse) {
+        loopingControl.onClick(mouse);
     }
 
     @Override

@@ -11,7 +11,6 @@ import static org.lwjgl.opengl.GL11.GL_RGBA;
 import static org.lwjgl.opengl.GL14.GL_MIRRORED_REPEAT;
 import static org.lwjgl.opengl.GL21.GL_SRGB_ALPHA;
 import org.lwjgl.system.MemoryStack;
-import org.xjge.graphics.Texture;
 
 /**
  * 
