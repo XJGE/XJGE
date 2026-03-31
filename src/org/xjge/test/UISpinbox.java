@@ -40,7 +40,6 @@ class UISpinbox extends UITextInput {
     private int clickCount;
     private int previousCursorX;
     
-    private final Vector2i textPos = new Vector2i();
     private final String type;
     private final ModelAnimator animator;
     
@@ -55,8 +54,8 @@ class UISpinbox extends UITextInput {
     private final Icon downArrow;
     private Color upArrowColor    = new Color(0.25f);
     private Color downArrowColor  = new Color(0.25f);
-    private Color upButtonColor   = new Color(0.5f);
-    private Color downButtonColor = new Color(0.5f);
+    private Color upButtonColor   = new Color(0.75f);
+    private Color downButtonColor = new Color(0.75f);
     
     public UISpinbox(ModelAnimator animator, int width, Texture iconsTexture, String type) {
         super(width, iconsTexture);
@@ -121,8 +120,6 @@ class UISpinbox extends UITextInput {
 
     @Override
     void render() {
-        Font.FALLBACK.drawString(type, textPos.x, textPos.y, Color.WHITE, 1f);
-        
         bounds.render(1f, Color.GRAY);
         
         glEnable(GL_SCISSOR_TEST);
@@ -148,12 +145,9 @@ class UISpinbox extends UITextInput {
     }
 
     @Override
-    void relocate(Rectangle parent) {
-        textPos.x = parent.positionX + 128;
-        textPos.y = parent.positionY + parent.height - 32;
-        
-        bounds.positionX = parent.positionX + 196;
-        bounds.positionY = parent.positionY + parent.height - 38;
+    void relocate(Rectangle parent, int offsetX, int offsetY) {
+        bounds.positionX = parent.positionX + offsetX;
+        bounds.positionY = parent.positionY + parent.height - offsetY;
         
         textPositionX = bounds.positionX + PADDING;
         textPositionY = bounds.positionY + PADDING + 2;

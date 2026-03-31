@@ -444,7 +444,7 @@ public abstract class UITextInput {
      * @param offsetY a supplemental value to offset this components vertical 
      *                position by (in pixels)
      */
-    abstract void relocate(Rectangle parent);
+    abstract void relocate(Rectangle parent, int offsetX, int offsetY);
     
     /**
      * Called anytime input is performed using the keyboard.

@@ -1,7 +1,7 @@
 package org.xjge.test;
 
-import java.awt.Checkbox;
 import java.util.Map;
+import org.joml.Vector2i;
 import org.xjge.core.Mouse;
 import org.xjge.core.SplitScreenType;
 import org.xjge.core.Window;
@@ -9,6 +9,7 @@ import org.xjge.graphics.Color;
 import org.xjge.graphics.ModelAnimator;
 import org.xjge.graphics.Shader;
 import org.xjge.graphics.Texture;
+import org.xjge.ui.Font;
 import org.xjge.ui.Rectangle;
 import org.xjge.ui.Widget;
 
@@ -19,6 +20,8 @@ import org.xjge.ui.Widget;
  */
 public class UIAnimationWidget extends Widget {
 
+    private final Vector2i textPos = new Vector2i();
+    
     private final Color slateGray = new Color(0.25f);
     
     private final Texture iconsTexture    = Texture.load("icons_animator.png");
@@ -26,12 +29,14 @@ public class UIAnimationWidget extends Widget {
     
     private final UICheckbox loopingControl;
     private final UISpinbox speedControl;
+    private final UISpinbox timeControl;
     
     UIAnimationWidget(ModelAnimator animator) {
         for(int i = 0; i < backgrounds.length; i++) backgrounds[i] = new Rectangle();
         
         loopingControl = new UICheckbox(animator, iconsTexture);
         speedControl   = new UISpinbox(animator, 90, iconsTexture, "Speed");
+        timeControl    = new UISpinbox(animator, 90, iconsTexture, "Animation Time");
         
         relocate(Window.getSplitScreenType(), Window.getWidth(), Window.getHeight());
     }
@@ -39,6 +44,7 @@ public class UIAnimationWidget extends Widget {
     @Override
     public void update(double targetDelta, double trueDelta) {
         speedControl.update();
+        timeControl.update();
     }
 
     @Override
@@ -54,8 +60,17 @@ public class UIAnimationWidget extends Widget {
             background.render(1f, color);
         }
         
+        textPos.x = backgrounds[2].positionX + 128;
+        textPos.y = backgrounds[2].positionY + backgrounds[2].height - 32;
+        Font.FALLBACK.drawString("Speed", textPos.x, textPos.y, Color.WHITE, 1f);
+        
+        textPos.x = backgrounds[2].positionX + 10;
+        textPos.y = backgrounds[2].positionY + backgrounds[2].height - 78;
+        Font.FALLBACK.drawString("Animation Time", textPos.x, textPos.y, Color.WHITE, 1f);
+        
         loopingControl.render();
         speedControl.render();
+        timeControl.render();
     }
 
     @Override
@@ -76,18 +91,21 @@ public class UIAnimationWidget extends Widget {
         backgrounds[2].positionY = backgrounds[0].positionY + 5;
         
         loopingControl.relocate(backgrounds[1]);
-        speedControl.relocate(backgrounds[2]);
+        speedControl.relocate(backgrounds[2], 196, 38);
+        timeControl.relocate(backgrounds[2], 196, 86);
     }
 
     @Override
     public void processKeyboardInput(int key, int action, int mods, Character character) {
         speedControl.processKeyInput(key, action, mods);
+        timeControl.processKeyInput(key, action, mods);
     }
 
     @Override
     public void processMouseInput(Mouse mouse) {
         loopingControl.onClick(mouse);
         speedControl.processMouseInput(mouse);
+        timeControl.processMouseInput(mouse);
     }
 
     @Override
