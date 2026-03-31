@@ -1,5 +1,6 @@
 package org.xjge.test;
 
+import org.xjge.core.Mouse;
 import org.xjge.graphics.Color;
 import org.xjge.graphics.ModelAnimator;
 import org.xjge.ui.Rectangle;
@@ -12,7 +13,7 @@ import org.xjge.ui.Rectangle;
 final class UISlider {
 
     public Rectangle track = new Rectangle(0, 0, 300, 6);
-    public Rectangle thumb = new Rectangle();
+    public Rectangle thumb = new Rectangle(0, 0, 10, 24);
     
     private ModelAnimator animator;
     
@@ -31,6 +32,10 @@ final class UISlider {
     void relocate(Rectangle parent) {
         track.positionX = parent.positionX + 10;
         track.positionY = parent.positionY + parent.height - 120;
+    }
+    
+    void processMouseInput(Mouse mouse) {
+        
     }
     
 }

@@ -1,6 +1,5 @@
 package org.xjge.test;
 
-import org.joml.Vector2i;
 import static org.lwjgl.glfw.GLFW.GLFW_KEY_A;
 import static org.lwjgl.glfw.GLFW.GLFW_KEY_BACKSPACE;
 import static org.lwjgl.glfw.GLFW.GLFW_KEY_DOWN;
