@@ -70,7 +70,7 @@ public class ModelAnimator extends EntityComponent {
         }
     }
     
-    public void setSpeed(float speed) {
+    public void setSpeed(double speed) {
         if(current != null) current.speed = speed;
     }
     
@@ -92,6 +92,12 @@ public class ModelAnimator extends EntityComponent {
         if(current == null) return false;
         if(next != null) return false;
         return current.justFinished();
+    }
+    
+    public double getSpeed() {
+        if(current == null) return 0;
+        if(next != null) return next.speed;
+        return current.speed;
     }
     
     public String getCurrentAnimation() {

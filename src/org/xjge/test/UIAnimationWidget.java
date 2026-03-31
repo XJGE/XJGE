@@ -25,17 +25,20 @@ public class UIAnimationWidget extends Widget {
     private final Rectangle[] backgrounds = new Rectangle[3];
     
     private final UICheckbox loopingControl;
+    private final UISpinbox speedControl;
     
     UIAnimationWidget(ModelAnimator animator) {
         for(int i = 0; i < backgrounds.length; i++) backgrounds[i] = new Rectangle();
         
         loopingControl = new UICheckbox(animator, iconsTexture);
+        speedControl   = new UISpinbox(animator, 90, iconsTexture, "Speed");
         
         relocate(Window.getSplitScreenType(), Window.getWidth(), Window.getHeight());
     }
     
     @Override
     public void update(double targetDelta, double trueDelta) {
+        speedControl.update();
     }
 
     @Override
@@ -52,6 +55,7 @@ public class UIAnimationWidget extends Widget {
         }
         
         loopingControl.render();
+        speedControl.render();
     }
 
     @Override
@@ -72,15 +76,18 @@ public class UIAnimationWidget extends Widget {
         backgrounds[2].positionY = backgrounds[0].positionY + 5;
         
         loopingControl.relocate(backgrounds[1]);
+        speedControl.relocate(backgrounds[2]);
     }
 
     @Override
     public void processKeyboardInput(int key, int action, int mods, Character character) {
+        speedControl.processKeyInput(key, action, mods);
     }
 
     @Override
     public void processMouseInput(Mouse mouse) {
         loopingControl.onClick(mouse);
+        speedControl.processMouseInput(mouse);
     }
 
     @Override

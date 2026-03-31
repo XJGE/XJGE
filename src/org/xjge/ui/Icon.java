@@ -115,6 +115,11 @@ public final class Icon {
         glEnableVertexAttribArray(1);
     }
     
+    public Icon(Texture texture, int cellWidth, int cellHeight, boolean fromCenter, int cellX, int cellY) {
+        this(texture, cellWidth, cellHeight, fromCenter);
+        setSubImage(cellX, cellY);
+    }
+    
     /**
      * Changes the opacity (or transparency) of the icon.
      * 
