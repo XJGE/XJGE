@@ -70,7 +70,7 @@ public class SceneModel extends Scene {
         
         testEntity.getComponent(ModelAnimator.class).play("wave");
         //testEntity.getComponent(ModelAnimator.class).setLooping(false);
-        testEntity.getComponent(ModelAnimator.class).setSpeed(0.5f);
+        //testEntity.getComponent(ModelAnimator.class).setSpeed(0.5f);
         
         worldLight = LightingSystem.request();
         worldLight.type = LightType.WORLD;

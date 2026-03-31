@@ -35,7 +35,6 @@ class UISpinbox extends UITextInput {
     
     private boolean startClickTimer;
     
-    private final double step = 1.0;
     private double value;
     
     private int clickCount;
@@ -54,8 +53,8 @@ class UISpinbox extends UITextInput {
     
     private final Icon upArrow;
     private final Icon downArrow;
-    private Color upArrowColor    = new Color(0.75f);
-    private Color downArrowColor  = new Color(0.75f);
+    private Color upArrowColor    = new Color(0.25f);
+    private Color downArrowColor  = new Color(0.25f);
     private Color upButtonColor   = new Color(1f);
     private Color downButtonColor = new Color(1f);
     
@@ -71,15 +70,13 @@ class UISpinbox extends UITextInput {
     }
     
     private void setTextToValue() {
-        double display = value * step;
-        setText(String.format("%.1f", display));
-        animator.setSpeed(value);
+        setText(String.format("%.1f", value));
     }
     
     private void commitText() {
         try {
-            var d = Double.parseDouble(typed.toString());
-            value = Math.round(d / step);
+            value = Double.parseDouble(typed.toString());
+            animator.setSpeed(value);
         } catch(NumberFormatException ignored) {
             setTextToValue();
         }
@@ -133,8 +130,11 @@ class UISpinbox extends UITextInput {
             if(showCarat && !disabled) carat.render();
         glDisable(GL_SCISSOR_TEST);
         
-        buttonUp.render(1f, Color.SILVER);
-        buttonDown.render(1f, Color.SILVER);
+        buttonUp.render(1f, upButtonColor);
+        buttonDown.render(1f, downButtonColor);
+        
+        upArrow.setColor(upArrowColor);
+        downArrow.setColor(downArrowColor);
         
         upArrow.render();
         downArrow.render();
@@ -158,10 +158,10 @@ class UISpinbox extends UITextInput {
         buttonDown.positionX = bounds.positionX + bounds.width;
         buttonDown.positionY = bounds.positionY;
         
-        upArrow.position.x   = buttonUp.positionX;
+        upArrow.position.x   = buttonUp.positionX - 2;
         upArrow.position.y   = buttonUp.positionY - 4;
-        downArrow.position.x = buttonDown.positionX;
-        downArrow.position.y = buttonDown.positionY - 2;
+        downArrow.position.x = buttonDown.positionX - 2;
+        downArrow.position.y = buttonDown.positionY - 4;
         
         unfocus();
     }
@@ -274,8 +274,21 @@ class UISpinbox extends UITextInput {
     String processMouseInput(Mouse mouse) {
         if(disabled) return null;
         
-        upArrowColor   = (mouse.hovered(buttonUp)) ? Color.WHITE : Color.SILVER;
-        downArrowColor = (mouse.hovered(buttonDown)) ? Color.WHITE : Color.SILVER;
+        if(mouse.hovered(buttonUp)) {
+            upButtonColor.set(1f);
+            upArrowColor.set(0.5f);
+        } else {
+            upButtonColor.set(0.75f);
+            upArrowColor.set(0.25f);
+        }
+        
+        if(mouse.hovered(buttonDown)) {
+            downButtonColor.set(1f);
+            downArrowColor.set(0.5f);
+        } else {
+            downButtonColor.set(0.75f);
+            downArrowColor.set(0.25f);
+        }
         
         if(mouse.clickedOnce(buttonUp, GLFW_MOUSE_BUTTON_LEFT)) {
             value++;
@@ -352,6 +365,8 @@ class UISpinbox extends UITextInput {
 
     @Override
     void validate() {
+        setTextToValue();
+        commitText();
     }
 
     @Override
@@ -359,12 +374,13 @@ class UISpinbox extends UITextInput {
     }
     
     public final void setValue(double val) {
-        value = Math.round(val / step);
+        value = val;
         setTextToValue();
+        commitText();
     }
     
     public double getValue() {
-        return value * step;
+        return value;
     }
     
 }

@@ -96,6 +96,12 @@ public final class Color {
         components.z = XJGE.clampValue(0f, 1f, value);
     }
     
+    public void set(float shade) {
+        setRed(shade);
+        setGreen(shade);
+        setBlue(shade);
+    }
+    
     public void set(float red, float green, float blue) {
         setRed(red);
         setGreen(green);
