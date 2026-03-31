@@ -40,6 +40,7 @@ class UISpinbox extends UITextInput {
     private int clickCount;
     private int previousCursorX;
     
+    private final String format = "%.2f";
     private final String type;
     private final ModelAnimator animator;
     
@@ -72,7 +73,7 @@ class UISpinbox extends UITextInput {
     }
     
     private void setTextToValue() {
-        setText(String.format("%.1f", value));
+        setText(String.format(format, value));
     }
     
     private void commitText() {
@@ -90,6 +91,23 @@ class UISpinbox extends UITextInput {
 
     @Override
     void update() {
+        switch(type) {
+            case "Speed" -> {
+                if(!hasFocus()) {
+                    value = animator.getSpeed();
+                    setText(String.format(format, value));
+                }
+            }
+            case "Animation Time" -> {
+                if(hasFocus()) {
+                    if(animator.getSpeed() != 0) animator.setSpeed(0);
+                } else {
+                    value = animator.getTime();
+                    setText(String.format(format, value));
+                }
+            }
+        }
+        
         if(startClickTimer) {
             clickTimer.tick(18, 1, false);
             
@@ -251,12 +269,12 @@ class UISpinbox extends UITextInput {
                 }
                 
                 case GLFW_KEY_UP -> {
-                    value += 0.1;
+                    value += 0.01;
                     validate();
                 }
                 
                 case GLFW_KEY_DOWN -> {
-                    value -= 0.1;
+                    value -= 0.01;
                     validate();
                 }
                 
@@ -292,10 +310,10 @@ class UISpinbox extends UITextInput {
         }
         
         if(mouse.clickedOnce(buttonUp, GLFW_MOUSE_BUTTON_LEFT)) {
-            value++;
+            value += 0.1;
             validate();
         } else if(mouse.clickedOnce(buttonDown, GLFW_MOUSE_BUTTON_LEFT)) {
-            value--;
+            value -= 0.1;
             validate();
         }
         

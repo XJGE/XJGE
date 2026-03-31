@@ -30,6 +30,7 @@ public class UIAnimationWidget extends Widget {
     private final UICheckbox loopingControl;
     private final UISpinbox speedControl;
     private final UISpinbox timeControl;
+    private final UISlider timeSlider;
     
     UIAnimationWidget(ModelAnimator animator) {
         for(int i = 0; i < backgrounds.length; i++) backgrounds[i] = new Rectangle();
@@ -37,6 +38,7 @@ public class UIAnimationWidget extends Widget {
         loopingControl = new UICheckbox(animator, iconsTexture);
         speedControl   = new UISpinbox(animator, 90, iconsTexture, "Speed");
         timeControl    = new UISpinbox(animator, 90, iconsTexture, "Animation Time");
+        timeSlider     = new UISlider(animator);
         
         relocate(Window.getSplitScreenType(), Window.getWidth(), Window.getHeight());
     }
@@ -45,6 +47,7 @@ public class UIAnimationWidget extends Widget {
     public void update(double targetDelta, double trueDelta) {
         speedControl.update();
         timeControl.update();
+        timeSlider.update();
     }
 
     @Override
@@ -60,7 +63,7 @@ public class UIAnimationWidget extends Widget {
             background.render(1f, color);
         }
         
-        textPos.x = backgrounds[2].positionX + 128;
+        textPos.x = backgrounds[2].positionX + 132;
         textPos.y = backgrounds[2].positionY + backgrounds[2].height - 32;
         Font.FALLBACK.drawString("Speed", textPos.x, textPos.y, Color.WHITE, 1f);
         
@@ -71,6 +74,7 @@ public class UIAnimationWidget extends Widget {
         loopingControl.render();
         speedControl.render();
         timeControl.render();
+        timeSlider.render();
     }
 
     @Override
@@ -91,8 +95,9 @@ public class UIAnimationWidget extends Widget {
         backgrounds[2].positionY = backgrounds[0].positionY + 5;
         
         loopingControl.relocate(backgrounds[1]);
-        speedControl.relocate(backgrounds[2], 196, 38);
-        timeControl.relocate(backgrounds[2], 196, 86);
+        speedControl.relocate(backgrounds[2], 200, 38);
+        timeControl.relocate(backgrounds[2], 200, 86);
+        timeSlider.relocate(backgrounds[2]);
     }
 
     @Override
