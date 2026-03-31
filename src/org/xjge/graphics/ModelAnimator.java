@@ -59,7 +59,7 @@ public class ModelAnimator extends EntityComponent {
         if(current != null) current.looping = looping;
     }
     
-    public void setTime(float time) {
+    public void setTime(double time) {
         if(current != null) current.time = time;
     }
     
@@ -92,6 +92,12 @@ public class ModelAnimator extends EntityComponent {
         if(current == null) return false;
         if(next != null) return false;
         return current.justFinished();
+    }
+    
+    public double getTime() {
+        if(current == null) return 0;
+        if(next != null) return next.time;
+        return current.time;
     }
     
     public double getSpeed() {

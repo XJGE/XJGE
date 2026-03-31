@@ -55,8 +55,8 @@ class UISpinbox extends UITextInput {
     private final Icon downArrow;
     private Color upArrowColor    = new Color(0.25f);
     private Color downArrowColor  = new Color(0.25f);
-    private Color upButtonColor   = new Color(1f);
-    private Color downButtonColor = new Color(1f);
+    private Color upButtonColor   = new Color(0.5f);
+    private Color downButtonColor = new Color(0.5f);
     
     public UISpinbox(ModelAnimator animator, int width, Texture iconsTexture, String type) {
         super(width, iconsTexture);
@@ -66,7 +66,10 @@ class UISpinbox extends UITextInput {
         upArrow   = new Icon(iconsTexture, 24, 24, false, 4, 0);
         downArrow = new Icon(iconsTexture, 24, 24, false, 5, 0);
         
-        setValue(animator.getSpeed());
+        switch(type) {
+            case "Speed"          -> setValue(animator.getSpeed());
+            case "Animation Time" -> setValue(animator.getTime());
+        }
     }
     
     private void setTextToValue() {
@@ -76,7 +79,11 @@ class UISpinbox extends UITextInput {
     private void commitText() {
         try {
             value = Double.parseDouble(typed.toString());
-            animator.setSpeed(value);
+            
+            switch(type) {
+                case "Speed"          -> animator.setSpeed(value);
+                case "Animation Time" -> animator.setTime(value);
+            }
         } catch(NumberFormatException ignored) {
             setTextToValue();
         }
@@ -114,7 +121,7 @@ class UISpinbox extends UITextInput {
 
     @Override
     void render() {
-        Font.FALLBACK.drawString("Speed", textPos.x, textPos.y, Color.WHITE, 1f);
+        Font.FALLBACK.drawString(type, textPos.x, textPos.y, Color.WHITE, 1f);
         
         bounds.render(1f, Color.GRAY);
         
@@ -250,13 +257,13 @@ class UISpinbox extends UITextInput {
                 }
                 
                 case GLFW_KEY_UP -> {
-                    value++;
-                    setTextToValue();
+                    value += 0.1;
+                    validate();
                 }
                 
                 case GLFW_KEY_DOWN -> {
-                    value--;
-                    setTextToValue();
+                    value -= 0.1;
+                    validate();
                 }
                 
                 case GLFW_KEY_ENTER -> {
