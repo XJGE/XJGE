@@ -71,6 +71,12 @@ class UISpinbox extends UITextInput {
         }
     }
     
+    private void setValue(double val) {
+        value = val;
+        setTextToValue();
+        commitText();
+    }
+    
     private void setTextToValue() {
         setText(String.format(format, value));
     }
@@ -389,16 +395,6 @@ class UISpinbox extends UITextInput {
 
     @Override
     void destroy() {
-    }
-    
-    public final void setValue(double val) {
-        value = val;
-        setTextToValue();
-        commitText();
-    }
-    
-    public double getValue() {
-        return value;
     }
     
 }

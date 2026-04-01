@@ -31,14 +31,18 @@ public class UIAnimationWidget extends Widget {
     private final UISpinbox speedControl;
     private final UISpinbox timeControl;
     private final UISlider timeSlider;
+    private final UILabelButton pausePlayButton;
+    private final UILabelButton resetSpeedButton;
     
     UIAnimationWidget(ModelAnimator animator) {
         for(int i = 0; i < backgrounds.length; i++) backgrounds[i] = new Rectangle();
         
-        loopingControl = new UICheckbox(animator, iconsTexture);
-        speedControl   = new UISpinbox(animator, 90, iconsTexture, "Speed");
-        timeControl    = new UISpinbox(animator, 90, iconsTexture, "Animation Time");
-        timeSlider     = new UISlider(animator);
+        loopingControl   = new UICheckbox(animator, iconsTexture);
+        speedControl     = new UISpinbox(animator, 90, iconsTexture, "Speed");
+        timeControl      = new UISpinbox(animator, 90, iconsTexture, "Animation Time");
+        timeSlider       = new UISlider(animator);
+        pausePlayButton  = new UILabelButton(animator, "Pause", 300);
+        resetSpeedButton = new UILabelButton(animator, "Reset Speed", 300);
         
         relocate(Window.getSplitScreenType(), Window.getWidth(), Window.getHeight());
     }
@@ -75,12 +79,14 @@ public class UIAnimationWidget extends Widget {
         speedControl.render();
         timeControl.render();
         timeSlider.render();
+        pausePlayButton.render();
+        resetSpeedButton.render();
     }
 
     @Override
     public final void relocate(SplitScreenType splitType, int viewportWidth, int viewportHeight) {
         backgrounds[0].width     = 330;
-        backgrounds[0].height    = 390;
+        backgrounds[0].height    = 370;
         backgrounds[0].positionX = viewportWidth - backgrounds[0].width - 5;
         backgrounds[0].positionY = viewportHeight - backgrounds[0].height - 5;
         
@@ -90,7 +96,7 @@ public class UIAnimationWidget extends Widget {
         backgrounds[1].positionY = (backgrounds[0].positionY + backgrounds[0].height) - (backgrounds[1].height + 5);
         
         backgrounds[2].width     = 320;
-        backgrounds[2].height    = 255;
+        backgrounds[2].height    = 235;
         backgrounds[2].positionX = backgrounds[0].positionX + 5;
         backgrounds[2].positionY = backgrounds[0].positionY + 5;
         
@@ -98,6 +104,8 @@ public class UIAnimationWidget extends Widget {
         speedControl.relocate(backgrounds[2], 200, 38);
         timeControl.relocate(backgrounds[2], 200, 86);
         timeSlider.relocate(backgrounds[2]);
+        pausePlayButton.relocate(backgrounds[2], 10, 55);
+        resetSpeedButton.relocate(backgrounds[2], 10, 10);
     }
 
     @Override
@@ -111,6 +119,8 @@ public class UIAnimationWidget extends Widget {
         loopingControl.onClick(mouse);
         speedControl.processMouseInput(mouse);
         timeControl.processMouseInput(mouse);
+        pausePlayButton.processMouseInput(mouse, speedControl);
+        resetSpeedButton.processMouseInput(mouse, speedControl);
     }
 
     @Override
