@@ -119,6 +119,7 @@ public class UIAnimationWidget extends Widget {
         loopingControl.onClick(mouse);
         speedControl.processMouseInput(mouse);
         timeControl.processMouseInput(mouse);
+        timeSlider.processMouseInput(mouse);
         pausePlayButton.processMouseInput(mouse, speedControl);
         resetSpeedButton.processMouseInput(mouse, speedControl);
     }

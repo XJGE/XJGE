@@ -106,6 +106,15 @@ public class ModelAnimator extends EntityComponent {
         return current.speed;
     }
     
+    public double getNormalizedTime() {
+        if(current == null) return 0f;
+
+        double durationSeconds = current.animation.duration / current.animation.ticksPerSecond;
+        if(durationSeconds == 0) return 0f;
+
+        return current.time / durationSeconds; //TODO: clamp for saftey? Values can be negative (when speed is negative)
+    }
+    
     public String getCurrentAnimation() {
         return current != null ? current.animation.name : null;
     }
