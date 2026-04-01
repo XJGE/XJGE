@@ -105,7 +105,7 @@ class UISpinbox extends UITextInput {
             }
             case "Animation Time" -> {
                 if(hasFocus()) {
-                    if(animator.getSpeed() != 0) animator.setSpeed(0);
+                    if(animator.isPlaying()) animator.pause();
                 } else {
                     value = animator.getTime();
                     setText(String.format(format, value));

@@ -50,6 +50,14 @@ public class ModelAnimator extends EntityComponent {
         blendTime     = 0f;
     }
     
+    public void play() {
+        if(current != null) current.playing = true;
+    }
+    
+    public void pause() {
+        if(current != null) current.playing = false;
+    }
+    
     public void stop() {
         current = null;
         next    = null;
@@ -75,7 +83,7 @@ public class ModelAnimator extends EntityComponent {
     }
     
     public boolean isPlaying() {
-        return current != null;
+        return current != null && current.playing;
     }
     
     public boolean isLooping() {
@@ -235,6 +243,7 @@ public class ModelAnimator extends EntityComponent {
     
     private class AnimationInstance {
         
+        boolean playing     = true;
         boolean looping     = true;
         boolean wasFinished = false;
         
@@ -253,14 +262,18 @@ public class ModelAnimator extends EntityComponent {
         }
         
         void update(double deltaTime) {
+            if(!playing) return;
+            
             time += deltaTime * speed;
             
             double durationSeconds = animation.duration / animation.ticksPerSecond;
             
             if(looping) {
                 time %= durationSeconds;
+                if(time < 0.0) time += durationSeconds;
             } else {
-                if(time > durationSeconds) time = durationSeconds;
+                if(time < 0.0) time = 0.0;
+                else if(time > durationSeconds) time = durationSeconds;
             }
         }
         
@@ -280,14 +293,10 @@ public class ModelAnimator extends EntityComponent {
         float getAnimationTime() {
             double ticks = getTimeInTicks();
             
-            if(looping) {
-                ticks %= animation.duration;
-            } else {
-                if (ticks > animation.duration) {
-                    ticks = animation.duration;
-                }
+            if(!looping) {
+                ticks = Math.max(0.0, Math.min(ticks, animation.duration));
             }
-
+            
             return (float) ticks;
         }
         

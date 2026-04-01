@@ -14,8 +14,6 @@ import org.xjge.ui.Rectangle;
  * @since 
  */
 class UILabelButton {
-
-    private double previousSpeed;
     
     private final ModelAnimator animator;
     private final Rectangle bounds;
@@ -36,7 +34,7 @@ class UILabelButton {
     void render() {
         switch(type) {
             case "Pause" -> {
-                label = animator.getSpeed() == 0 ? "Play" : "Pause";
+                label = animator.isPlaying() ? "Pause" : "Play";
             }
         }
         
@@ -58,12 +56,8 @@ class UILabelButton {
         if(mouse.clickedOnce(bounds, GLFW_MOUSE_BUTTON_LEFT)) {
             switch(type) {
                 case "Pause" -> {
-                    if(animator.getSpeed() == 0) {
-                        animator.setSpeed(previousSpeed);
-                    } else {
-                        previousSpeed = animator.getSpeed();
-                        animator.setSpeed(0);
-                    }
+                    if(animator.isPlaying()) animator.pause();
+                    else animator.play();
                 }
                 case "Reset Speed" -> {
                     animator.setSpeed(1.0);

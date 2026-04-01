@@ -32,8 +32,6 @@ final class UISlider {
         if(!dragging) {
             double time = animator.getNormalizedTime();
             thumb.positionX = (int) (track.positionX + time * track.width) - 5;
-        } else {
-            //animator.setSpeed(0);
         }
     }
     
@@ -68,6 +66,8 @@ final class UISlider {
                 
                 animator.setNormalizedTime(time);
                 thumb.positionX = (int) (track.positionX + time * track.width) - 5;
+                
+                animator.pause();
             }
         } else {
             dragging = false;
