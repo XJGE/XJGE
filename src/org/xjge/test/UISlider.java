@@ -14,8 +14,6 @@ import org.xjge.ui.Rectangle;
 final class UISlider {
     
     private boolean dragging = false;
-
-    private double previousSpeed;
     
     public Rectangle track = new Rectangle(0, 0, 300, 6);
     public Rectangle thumb = new Rectangle(0, 0, 10, 24);
