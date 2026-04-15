@@ -49,15 +49,17 @@ public class SceneModel extends Scene {
         skybox = new Skybox(right, left, top, bottom, front, back, false);
         setSkybox(skybox);
         
-        var prism = new Prism(0, -1f, 0, 1, 1, 1);
+        var prism = new Prism(1, -0.5f, 0, 10, 1, 10);
         //prism.color.copy(Color.BLUE);
         floor = new Entity().addComponent(prism);
         addEntity(floor);
         
+        var transform2 = new Transform();
         testModel2  = Model.load("person.fbx");
         testEntity2 = new Entity().addComponent(new ModelRenderer(testModel2))
                                   .addComponent(new ModelAnimator(testModel2))
-                                  .addComponent(new Transform(0, 0, 0));
+                                  .addComponent(transform2);
+        transform2.rotation.rotateX((float) Math.toRadians(-90));
         addEntity(testEntity2);
         
         testModel = Model.load("yshtola.fbx");
