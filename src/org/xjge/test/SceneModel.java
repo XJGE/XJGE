@@ -28,8 +28,10 @@ import org.xjge.graphics.Transform;
 public class SceneModel extends Scene {
 
     private Model testModel;
+    private Model testModel2;
     private Entity floor;
     private Entity testEntity;
+    private Entity testEntity2;
     private ModelAnimator animator;
     private Light worldLight;
     private Skybox skybox;
@@ -47,24 +49,27 @@ public class SceneModel extends Scene {
         skybox = new Skybox(right, left, top, bottom, front, back, false);
         setSkybox(skybox);
         
-        var prism = new Prism(0, -1f, 0, 10, 0.5f, 10);
+        var prism = new Prism(0, -1f, 0, 1, 1, 1);
         //prism.color.copy(Color.BLUE);
         floor = new Entity().addComponent(prism);
         addEntity(floor);
         
+        testModel2  = Model.load("person.fbx");
+        testEntity2 = new Entity().addComponent(new ModelRenderer(testModel2))
+                                  .addComponent(new ModelAnimator(testModel2))
+                                  .addComponent(new Transform(0, 0, 0));
+        addEntity(testEntity2);
+        
         testModel = Model.load("yshtola.fbx");
-        
-        //outputModelData();
-        
         var transform = new Transform();
         transform.position.z = -1.5f;
-        
         animator = new ModelAnimator(testModel);
-        
-        testEntity = new Entity().addComponent(new ModelRenderer())
+        testEntity = new Entity().addComponent(new ModelRenderer(testModel))
                                  .addComponent(transform)
                                  .addComponent(animator);
         addEntity(testEntity);
+        
+        outputModelData(testModel2);
         
         //var testAnimation = testModel.getAnimation("wave");
         
@@ -96,7 +101,7 @@ public class SceneModel extends Scene {
         glEnable(GL_DEPTH_TEST);
         //glEnable(GL_CULL_FACE);
         for(var entity : queryEntities(ModelRenderer.class, Transform.class, ModelAnimator.class)) {
-            entity.getComponent(ModelRenderer.class).render(testModel, 
+            entity.getComponent(ModelRenderer.class).render( 
                     entity.getComponent(Transform.class), 
                     entity.getComponent(ModelAnimator.class),
                     camera);
@@ -113,9 +118,9 @@ public class SceneModel extends Scene {
     public void exit() {
     }
 
-    private void outputModelData() {
+    private void outputModelData(Model model) {
         System.out.println("Materials:");
-        for(var material : testModel.getMaterials()) {
+        for(var material : model.getMaterials()) {
             System.out.println(" Metallic: " + material.metallic);
             System.out.println(" Roughness: " + material.roughness);
             System.out.println(" Opacity: " + material.opacity);
@@ -129,7 +134,7 @@ public class SceneModel extends Scene {
         System.out.println();
         
         System.out.println("Meshes:");
-        for(var mesh : testModel.getMeshes()) {
+        for(var mesh : model.getMeshes()) {
             System.out.println(" Vertex Data:");
             System.out.println("  Positions: " + mesh.positions.length);
             System.out.println("  Normals: " + mesh.normals.length);
@@ -143,8 +148,8 @@ public class SceneModel extends Scene {
         System.out.println();
         
         System.out.println("Animations:");
-        for(var animName : testModel.getAnimaitonNames()) {
-            var animation = testModel.getAnimation(animName);
+        for(var animName : model.getAnimaitonNames()) {
+            var animation = model.getAnimation(animName);
             System.out.println(" Name: " + animName);
             System.out.println("  Duration: " + animation.duration);
             System.out.println("  Ticks Per Second: " + animation.ticksPerSecond);
@@ -154,14 +159,14 @@ public class SceneModel extends Scene {
         
         System.out.println("Skeleton:");
         System.out.println(" Bones: ");
-        for(var bone : testModel.getSkeleton().bones) {
+        for(var bone : model.getSkeleton().bones) {
             System.out.println("  Name: " + bone.name);
             System.out.println("  Parent Index: " + bone.parentIndex);
             System.out.println("  Offset Matrix: ");
             System.out.println("   " + bone.offsetMatrix);
         }
         System.out.println(" Bone Map:");
-        testModel.getSkeleton().boneMap.forEach((boneName, index) -> System.out.println("  " + boneName + ", " + index));
+        model.getSkeleton().boneMap.forEach((boneName, index) -> System.out.println("  " + boneName + ", " + index));
         System.out.println();
     }
     

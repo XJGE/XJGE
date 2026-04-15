@@ -15,4 +15,10 @@ public final class Transform extends EntityComponent {
     public final Vector3f scale       = new Vector3f(1f);
     public final Quaternionf rotation = new Quaternionf();
     
+    public Transform() {}
+    
+    public Transform(float positionX, float positionY, float positionZ) {
+        position.set(positionX, positionY, positionZ);
+    }
+    
 }

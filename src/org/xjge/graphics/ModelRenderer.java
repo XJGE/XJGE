@@ -18,6 +18,7 @@ public class ModelRenderer extends EntityComponent {
     
     private final Matrix3f normalMatrix = new Matrix3f();
     private final Matrix4f modelMatrix  = new Matrix4f();
+    private Model model;
     
     private static final Shader shader;
     
@@ -29,7 +30,15 @@ public class ModelRenderer extends EntityComponent {
         shader = new Shader(shaderSourceFiles, "xjge_model");
     }
     
-    public void render(Model model, Transform transform, ModelAnimator animator, Camera camera) {
+    public ModelRenderer(Model model) {
+        setModel(model);
+    }
+    
+    public final void setModel(Model model) {
+        this.model = model;
+    }
+    
+    public void render(Transform transform, ModelAnimator animator, Camera camera) {
         //TODO: might be worthwhile to have transform store a matrix derived from this for performance
         modelMatrix.identity()
                    .translate(transform.position)
