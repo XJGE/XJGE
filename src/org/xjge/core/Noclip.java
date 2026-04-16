@@ -33,18 +33,17 @@ final class Noclip extends Camera {
     private final Vector3f tempDirec = new Vector3f();
 
     @Override
-    public void update(double targetDelta, double trueDelta) {
+    public void update(double targetDelta, double trueDelta, int viewportWidth, int viewportHeight) {
         if(pressed[0]) position.add(direction.mul(speed * speedModifier, tempDirec));
         if(pressed[1]) position.sub(direction.cross(up, tempRight).normalize().mul(speed * speedModifier));
         if(pressed[2]) position.sub(direction.mul(speed * speedModifier, tempDirec));
         if(pressed[3]) position.add(direction.cross(up, tempRight).normalize().mul(speed * speedModifier));
         //TODO: Add Q/E or DPAD_UP/DPAD_DOWN to move up and down
-    }
-
-    @Override
-    public void render(Map<String, Shader> glPrograms, int width, int height) {
+        
         viewMatrix.setLookAt(position, tempFront.set(direction).add(position), up);
-        projMatrix.setPerspective((float) Math.toRadians(fov), (float) width / height, 0.1f, Float.POSITIVE_INFINITY);
+        
+        projMatrix.setPerspective((float) Math.toRadians(fov), 
+                                  (float) viewportWidth / viewportHeight, 0.1f, Float.POSITIVE_INFINITY);
     }
 
     /**

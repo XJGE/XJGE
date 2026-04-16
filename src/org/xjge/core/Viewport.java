@@ -164,7 +164,6 @@ final class Viewport {
     void render(Map<String, Shader> glPrograms, String stage, Matrix4f projMatrix) {
         switch(stage) {
             case "camera" -> {
-                currCamera.render(glPrograms, width, height);
                 shader.use();
                 shader.setUniform("uProjection", false, currCamera.projMatrix);
             }

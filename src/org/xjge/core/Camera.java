@@ -33,27 +33,18 @@ public abstract class Camera {
     protected Matrix4f projMatrix = new Matrix4f();
     
     /**
-     * Optional abstract method which can be used to organize camera logic not 
-     * directly related to rendering. Examples of this include applying effects
-     * such as camera shake or dolly motion.
+     * Used to organize camera orientation logic. Examples of this include applying effects such as camera shake or dolly motion.
+     * Ultimately the values of the view and projection matrices should be calculated here so they can be passed to entities and 
+     * objects that require them during rendering.
      * 
      * @param targetDelta a constant value denoting the desired time (in 
      *                    seconds) it should take for one game tick to complete
      * @param trueDelta the actual time (in seconds) it took the current game
      *                  tick to complete
+     * @param viewportWidth the width (in pixels) of the viewport that's currently using this camera
+     * @param viewportHeight the height (in pixels) of the viewport that's currently using this camera
      */
-    protected abstract void update(double targetDelta, double trueDelta);
-    
-    /**
-     * Used to organize calls to the OpenGL API and other code pertaining to
-     * rendering. More specifically, this is where you should upload the new 
-     * value of your view matrix to the graphics card.
-     * 
-     * @param glPrograms an immutable collection containing the shader programs compiled during startup
-     * @param width the width (in pixels) of the viewport that's currently using this camera
-     * @param height the heigth (in pixels) of the viewport that's currently using this camera
-     */
-    protected abstract void render(Map<String, Shader> glPrograms, int width, int height);
+    protected abstract void update(double targetDelta, double trueDelta, int viewportWidth, int viewportHeight);
     
     public Matrix4fc getViewMatrix() {
         return viewMatrix;

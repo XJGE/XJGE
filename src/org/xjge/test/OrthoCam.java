@@ -18,11 +18,7 @@ public class OrthoCam extends Camera {
     private final Vector3f tempFront = new Vector3f();
     
     @Override
-    protected void update(double targetDelta, double trueDelta) {
-    }
-
-    @Override
-    protected void render(Map<String, Shader> glPrograms, int width, int height) {
+    protected void update(double targetDelta, double trueDelta, int width, int height) {
         viewMatrix.setLookAt(position, tempFront.set(direction).add(position), up);
         projMatrix.setOrtho(0, width, 0, height, orthoNear, orthoFar);
     }
