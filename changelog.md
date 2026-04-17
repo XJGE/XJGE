@@ -66,6 +66,7 @@ All notable changes to this project will be documented in this file. The format 
 - KEY_MOUSE_COMBO input device. These are now their own seperate devices InputSystem.KEYBOARD and InputSystem.MOUSE.
 - Instance2D class, it's better to just let the public API provide their own implementation of this.
 - render() method from Camera superclass. Cameras provide read-only access to the view/projection matrices which they calculate internally.
+- glPrograms collection from Scene.render() and XJGE.addGLProgram(). The implementation is responsible for managing its own shaders.
 
 ## [3.1.0] - 2025-01-03
 

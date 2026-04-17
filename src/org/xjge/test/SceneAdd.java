@@ -61,7 +61,7 @@ public class SceneAdd extends Scene {
     }
 
     @Override
-    public void render(Map<String, Shader> glPrograms, int viewportID, Camera camera, int depthTexHandle) {
+    public void render(int viewportID, Camera camera, int depthTexHandle) {
         for(var entity : queryEntities(Prism.class)) {
             entity.getComponent(Prism.class).render(camera);
         }

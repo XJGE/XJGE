@@ -42,8 +42,8 @@ public final class UIManager {
         for(Widget widget : widgets.get(viewportID).values()) widget.update(targetDelta, trueDelta);
     }
     
-    static void renderWidgets(int viewportID, Map<String, Shader> glPrograms) {
-        for(Widget widget : widgets.get(viewportID).values()) widget.render(glPrograms);
+    static void renderWidgets(int viewportID) {
+        for(Widget widget : widgets.get(viewportID).values()) widget.render();
     }
     
     static void relocateWidgets(int viewportID, int viewportWidth, int viewportHeight) {

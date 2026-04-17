@@ -1,17 +1,13 @@
 package org.xjge.core;
 
 import org.xjge.graphics.Texture;
-import org.xjge.graphics.Shader;
 import java.beans.PropertyChangeListener;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.nio.file.Paths;
-import java.util.Collections;
 import java.util.Comparator;
-import java.util.HashMap;
 import java.util.LinkedList;
-import java.util.Map;
 import java.util.PriorityQueue;
 import java.util.Queue;
 import java.util.TreeMap;
@@ -86,9 +82,6 @@ public final class XJGE {
     private static Terminal terminal;
     private static EngineMetrics metrics;
     private static Noclip noclip;
-    
-    private static final Map<String, Shader> userShaders     = new HashMap<>();
-    private static final Map<String, Shader> userShadersView = Collections.unmodifiableMap(userShaders);
     
     private static Color clearColor = new Color(0.467f, 0.533f, 1f);
     private static Scene currentScene;
@@ -342,10 +335,10 @@ public final class XJGE {
                         LightingSystem.render();
                         
                         viewport.bindDrawBuffers(enableBloom);
-                        viewport.render(userShadersView, "camera", projMatrix);
+                        viewport.render("camera", projMatrix);
                         
                         currentScene.renderSkybox(viewport.currCamera);
-                        currentScene.render(userShadersView, viewport.id, viewport.currCamera);
+                        currentScene.render(viewport.id, viewport.currCamera);
                         if(debugModeEnabled) LightingSystem.debug(viewport.currCamera);
                     glBindFramebuffer(GL_FRAMEBUFFER, 0);
                     
@@ -354,8 +347,8 @@ public final class XJGE {
                     
                     glViewport(viewport.botLeft.x, viewport.botLeft.y, viewport.topRight.x, viewport.topRight.y);
                     
-                    viewport.render(userShadersView, "texture", projMatrix);
-                    viewport.render(userShadersView, "ui", projMatrix);
+                    viewport.render("texture", projMatrix);
+                    viewport.render("ui", projMatrix);
                 }
             }
             
@@ -377,18 +370,6 @@ public final class XJGE {
         InputSystem.freeDevices();
         GL.destroy();
         glfwTerminate();
-    }
-    
-    /**
-     * Adds a custom {@link Shader} to an immutable collection which can be 
-     * accessed through a scenes {@linkplain Scene#render render()} method to 
-     * draw the various objects and entities within it.
-     * 
-     * @param name the name that will be used to refer to the program
-     * @param glProgram the object representing the compiled shader program
-     */
-    public static void addGLProgram(String name, Shader glProgram) {
-        userShaders.put(name, glProgram);
     }
     
     /**

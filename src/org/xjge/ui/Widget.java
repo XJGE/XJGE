@@ -1,9 +1,7 @@
 package org.xjge.ui;
 
-import java.util.Map;
 import org.xjge.core.Mouse;
 import org.xjge.core.SplitScreenType;
-import org.xjge.graphics.Shader;
 
 /**
  * Organizes smaller elements (such as buttons, text, menus, etc.) that comprise
@@ -27,11 +25,8 @@ public abstract class Widget {
     
     /**
      * Organizes the rendering logic of elements contained by this widget
-     * 
-     * @param glPrograms an immutable collection containing the shader programs 
-     *                   compiled during startup
      */
-    public abstract void render(Map<String, Shader> glPrograms);
+    public abstract void render();
     
     /**
      * Called automatically anytime a change to the applications viewports 

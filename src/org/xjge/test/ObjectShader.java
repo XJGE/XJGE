@@ -27,7 +27,6 @@ final class ObjectShader {
         }};
         
         shader = new Shader(shaderSourceFiles, "test_object");
-        XJGE.addGLProgram("test_cube", shader);
     }
     
     static ObjectShader getInstance() {

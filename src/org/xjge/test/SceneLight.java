@@ -75,7 +75,7 @@ public class SceneLight extends Scene {
     }
 
     @Override
-    public void render(Map<String, Shader> glPrograms, int viewportID, Camera camera, int depthTexHandle) {
+    public void render(int viewportID, Camera camera, int depthTexHandle) {
         for(var cube : queryEntities(Prism.class)) {
             cube.getComponent(Prism.class).render(camera);
         }

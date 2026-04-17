@@ -80,6 +80,11 @@ final class Noclip extends Camera {
         }
     }
     
+    /**
+     * Used to change the cameras movement speed.
+     * 
+     * @param value the new value of the noclip cameras speed modifier
+     */
     void setSpeedModifier(float value) {
         speedModifier = (value < 1f) ? 1f : value;
     }

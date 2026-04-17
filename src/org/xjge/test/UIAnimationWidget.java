@@ -55,7 +55,7 @@ public class UIAnimationWidget extends Widget {
     }
 
     @Override
-    public void render(Map<String, Shader> glPrograms) {
+    public void render() {
         for(int i = 0; i < backgrounds.length; i++) {
             var background = backgrounds[i];
             

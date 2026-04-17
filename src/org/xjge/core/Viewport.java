@@ -161,7 +161,7 @@ final class Viewport {
      * @param stage the stage denoting the viewports current render pass
      * @param projMatrix the projection matrix managed internally by the engine
      */
-    void render(Map<String, Shader> glPrograms, String stage, Matrix4f projMatrix) {
+    void render(String stage, Matrix4f projMatrix) {
         switch(stage) {
             case "camera" -> {
                 shader.use();
@@ -190,7 +190,7 @@ final class Viewport {
             
             case "ui" -> {
                 UIManager.updateProjectionMatrix(width, height, Short.MIN_VALUE, Short.MAX_VALUE);
-                UIManager.renderWidgets(id, glPrograms);
+                UIManager.renderWidgets(id);
             }
         }
     }

@@ -78,9 +78,9 @@ public final class Window {
     private static GLFWScrollCallback        glfwScrollReference;
     private static GLFWKeyCallback           glfwKeyReference;
     
-    private static final Viewport[] viewports = new Viewport[4];
-    
     private static SplitScreenType splitType = SplitScreenType.NONE;
+    
+    private static final Viewport[] viewports = new Viewport[4];
     
     private static final NavigableMap<Integer, Monitor> monitors = new TreeMap<>();
     
