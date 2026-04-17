@@ -13,7 +13,6 @@ import java.util.Queue;
 import java.util.TreeMap;
 import java.util.regex.Pattern;
 import org.joml.Matrix4f;
-import org.joml.Vector2i;
 import static org.lwjgl.glfw.GLFW.*;
 import org.lwjgl.opengl.GL;
 import static org.lwjgl.opengl.GL32.*;
@@ -125,6 +124,13 @@ public final class XJGE {
      */
     private XJGE() {}
     
+    /**
+     * Used internally by {@linkplain Window#setViewportCamera(int, Camera)} to avoid accidentally overriding the value of the 
+     * noclip camera if it's enabled.
+     * 
+     * @param camera the camera object to evaluate
+     * @return true if this camera object is the engines noclip camera.
+     */
     static boolean isNoclipCamera(Camera camera) {
         return (noclip != null) ? camera.equals(noclip) : false;
     }
@@ -490,41 +496,6 @@ public final class XJGE {
      */
     public static String getSceneName() {
         return currentScene.name;
-    }
-    
-    /**
-     * Initializes the engines assets, compiles the default shader programs, 
-     * and searches for connected peripheral devices. This method must be called 
-     * once before the engine can be used.
-     * <p>
-     * NOTE: If a resolution is provided the value of {@code windowResizable} 
-     * will be ignored. Additionally, the {@code scenesFilepath} should use 
-     * periods for separators instead of slashes akin to how it appears in your 
-     * IDEs package explorer. A call to this method might look something like 
-     * the following:
-     * <blockquote><pre>
-     * init(<i>"/dev/theskidster/game/assets/"</i>, <i>"dev.theskidster.game.scenes."</i>, <b>null</b>, ...);
-     * </pre></blockquote>
-     * 
-     * @param assetsFilepath the relative filepath to the folder that contains 
-     *                       all of the games assets
-     * @param scenesFilepath the relative filepath to the package that contains 
-     *                       all of the games scene subclasses
-     * @param resolution the internal resolution the engine will display the game 
-     *                   at or <b>null</b> to copy the resolution of the window
-     * @param createOpenGLLog if true, the engine will create a text file 
-     *                        containing messages sent by the OpenGL API
-     * @param debugEnabled if true, the engine will provide debugging 
-     *                     utilities at runtime
-     * @param restrict4K if true, the engine will not permit the use of video 
-     *                   modes whos resolution is greater than 1920x1080
-     * @param retainFullscreen if true, the game window will retain its mode 
-     *                         (fullscreen or windowed) between runtime sessions
-     * @param windowResizable if true, the user will be allowed to freely alter 
-     *                        the size of the window at runtime
-     */
-    public static void init(String assetsFilepath, String scenesFilepath, Vector2i resolution, boolean createOpenGLLog, 
-                            boolean debugEnabled, boolean restrict4K, boolean retainFullscreen, boolean windowResizable) {
     }
     
     /**
