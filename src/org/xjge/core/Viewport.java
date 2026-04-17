@@ -143,56 +143,34 @@ final class Viewport {
         glBindFramebuffer(GL_FRAMEBUFFER, 0);
     }
     
-    /**
-     * Renders a scene from the perspective of this viewport. Viewport 
-     * rendering is done in three stages: 
-     * <ol>
-     * <li>The perspective of the camera object used by this viewport is 
-     *     rendered.</li>
-     * <li>The viewports UIManager components will be drawn in order of their 
-     z-positions.</li> 
-     * <li>The texture attachment associated with this viewport by the engines 
-     *     framebuffer will be updated to reflect the changes made in the 
-     *     previous two steps.</li>
-     * </ol>
-     * 
-     * @param glPrograms an immutable collection containing the shader programs 
-     *                   compiled during startup
-     * @param stage the stage denoting the viewports current render pass
-     * @param projMatrix the projection matrix managed internally by the engine
-     */
-    void render(String stage, Matrix4f projMatrix) {
-        switch(stage) {
-            case "camera" -> {
-                shader.use();
-                shader.setUniform("uProjection", false, currCamera.projMatrix);
-            }
-            
-            case "texture" -> {
-                if(postProcessEffect != null) {
-                    postProcessEffect.render(viewTexHandle, bloomTexHandle, projMatrix, graphics);
-                } else {
-                    glActiveTexture(GL_TEXTURE0);
-                    glBindTexture(GL_TEXTURE_2D, viewTexHandle);
-                    glActiveTexture(GL_TEXTURE1);
-                    glBindTexture(GL_TEXTURE_2D, bloom.textures[1]);
-                    glBindVertexArray(graphics.vao);
-                    
-                    shader.use();
-                    shader.setUniform("uTexture", 0);
-                    shader.setUniform("uBloomTexture", 1);
-                    shader.setUniform("uProjection", false, projMatrix);
-                    
-                    glDrawElements(GL_TRIANGLES, graphics.indices.capacity(), GL_UNSIGNED_INT, 0);
-                    ErrorUtils.checkGLError();
-                }
-            }
-            
-            case "ui" -> {
-                UIManager.updateProjectionMatrix(width, height, Short.MIN_VALUE, Short.MAX_VALUE);
-                UIManager.renderWidgets(id);
-            }
+    void renderCamera() {
+        shader.use();
+        shader.setUniform("uProjection", false, currCamera.projMatrix);
+    }
+    
+    void renderTexture(Matrix4f finalProjMatrix) {
+        if(postProcessEffect != null) {
+            postProcessEffect.render(viewTexHandle, bloomTexHandle, finalProjMatrix, graphics);
+        } else {
+            glActiveTexture(GL_TEXTURE0);
+            glBindTexture(GL_TEXTURE_2D, viewTexHandle);
+            glActiveTexture(GL_TEXTURE1);
+            glBindTexture(GL_TEXTURE_2D, bloom.textures[1]);
+            glBindVertexArray(graphics.vao);
+
+            shader.use();
+            shader.setUniform("uTexture", 0);
+            shader.setUniform("uBloomTexture", 1);
+            shader.setUniform("uProjection", false, finalProjMatrix);
+
+            glDrawElements(GL_TRIANGLES, graphics.indices.capacity(), GL_UNSIGNED_INT, 0);
+            ErrorUtils.checkGLError();
         }
+    }
+    
+    void renderUI() {
+        UIManager.updateProjectionMatrix(width, height, Short.MIN_VALUE, Short.MAX_VALUE);
+        UIManager.renderWidgets(id);
     }
     
     /**

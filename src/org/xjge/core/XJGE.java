@@ -247,7 +247,7 @@ public final class XJGE {
         double prevTime = glfwGetTime();
         double currTime;
         double delta = 0;
-        Matrix4f projMatrix = new Matrix4f();
+        Matrix4f finalProjMatrix = new Matrix4f();
         
         while(!Window.closeRequested()) {
             glfwPollEvents();
@@ -335,20 +335,20 @@ public final class XJGE {
                         LightingSystem.render();
                         
                         viewport.bindDrawBuffers(enableBloom);
-                        viewport.render("camera", projMatrix);
+                        viewport.renderCamera();
                         
                         currentScene.renderSkybox(viewport.currCamera);
                         currentScene.render(viewport.id, viewport.currCamera);
                         if(debugModeEnabled) LightingSystem.debug(viewport.currCamera);
                     glBindFramebuffer(GL_FRAMEBUFFER, 0);
                     
-                    projMatrix.setOrtho(viewport.width, 0, 0, viewport.height, 0, 1);
-                    if(enableBloom) viewport.applyBloom(projMatrix);
+                    finalProjMatrix.setOrtho(viewport.width, 0, 0, viewport.height, 0, 1);
+                    if(enableBloom) viewport.applyBloom(finalProjMatrix);
                     
                     glViewport(viewport.botLeft.x, viewport.botLeft.y, viewport.topRight.x, viewport.topRight.y);
                     
-                    viewport.render("texture", projMatrix);
-                    viewport.render("ui", projMatrix);
+                    viewport.renderTexture(finalProjMatrix);
+                    viewport.renderUI();
                 }
             }
             
