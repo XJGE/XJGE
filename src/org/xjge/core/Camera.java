@@ -1,7 +1,6 @@
 package org.xjge.core;
 
 import org.xjge.graphics.Shader;
-import java.util.Map;
 import org.joml.Matrix4f;
 import org.joml.Matrix4fc;
 import org.joml.Vector3f;
@@ -25,12 +24,12 @@ public abstract class Camera {
     
     public float fov = 45.0f;
     
-    public Vector3f position  = new Vector3f();
-    public Vector3f direction = new Vector3f(0, 0,-1);
-    public Vector3f up        = new Vector3f(0, 1, 0);
+    public final Vector3f position  = new Vector3f();
+    public final Vector3f direction = new Vector3f(0, 0,-1);
+    public final Vector3f up        = new Vector3f(0, 1, 0);
     
-    protected Matrix4f viewMatrix = new Matrix4f();
-    protected Matrix4f projMatrix = new Matrix4f();
+    protected final Matrix4f viewMatrix = new Matrix4f();
+    protected final Matrix4f projMatrix = new Matrix4f();
     
     /**
      * Used to organize camera orientation logic. Examples of this include applying effects such as camera shake or dolly motion.

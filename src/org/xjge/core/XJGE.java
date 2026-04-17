@@ -83,6 +83,10 @@ public final class XJGE {
     private static TreeMap<String, TerminalCommand> engineCommands     = new TreeMap<>();
     private static final TreeMap<String, TerminalCommand> userCommands = new TreeMap<>();
     
+    private static Terminal terminal;
+    private static EngineMetrics metrics;
+    private static Noclip noclip;
+    
     private static final Map<String, Shader> userShaders     = new HashMap<>();
     private static final Map<String, Shader> userShadersView = Collections.unmodifiableMap(userShaders);
     
@@ -127,6 +131,10 @@ public final class XJGE {
      * Default constructor defined here to keep it out of the public APIs reach.
      */
     private XJGE() {}
+    
+    static boolean isNoclipCamera(Camera camera) {
+        return (noclip != null) ? camera.equals(noclip) : false;
+    }
     
     /**
      * 
@@ -234,7 +242,11 @@ public final class XJGE {
         engineCommands.putAll(userCommands);
         engineCommands.values().forEach(command -> command.setCommands(engineCommands));
         
-        Window.registerCallbacks(engineCommands, engineIcons);
+        terminal = new Terminal(engineCommands);
+        metrics  = new EngineMetrics(engineIcons);
+        noclip   = new Noclip();
+        
+        Window.registerCallbacks(terminal, metrics, noclip);
         Window.show();
         
         int cycles = 0;
@@ -258,7 +270,7 @@ public final class XJGE {
             //Update time-sensitive engine components
             while(delta >= TARGET_DELTA) {
                 InputSystem.update(TARGET_DELTA, deltaMetric);
-                Window.update(deltaMetric, fps, entityCount);
+                Window.update(deltaMetric, fps, entityCount, terminal, metrics, noclip);
                 
                 if(debugModeEnabled && tick(20)) {
                     deltaMetric = delta;
@@ -347,7 +359,7 @@ public final class XJGE {
                 }
             }
             
-            Window.swapBuffers();
+            Window.swapBuffers(terminal, metrics);
             
             if(!ticked) {
                 try {
@@ -443,6 +455,10 @@ public final class XJGE {
         }
         
         sceneChangeRequests.add(scene);
+    }
+    
+    public static void setNoclipSpeed(float value) {
+        noclip.setSpeedModifier(value);
     }
     
     public static boolean debugModeEnabled() {

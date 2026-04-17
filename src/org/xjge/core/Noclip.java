@@ -1,7 +1,5 @@
 package org.xjge.core;
 
-import org.xjge.graphics.Shader;
-import java.util.Map;
 import org.joml.Vector3f;
 
 /**
@@ -83,7 +81,7 @@ final class Noclip extends Camera {
     }
     
     void setSpeedModifier(float value) {
-        speedModifier = (value < 1f) ? 1f : value; //TODO: let users modify this, move noclip/terminal/metrics out of Window class
+        speedModifier = (value < 1f) ? 1f : value;
     }
     
 }

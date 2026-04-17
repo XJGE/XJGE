@@ -1,6 +1,5 @@
 package org.xjge.core;
 
-import org.xjge.graphics.Texture;
 import java.beans.PropertyChangeListener;
 import java.io.InputStream;
 import java.nio.ByteBuffer;
@@ -60,10 +59,6 @@ public final class Window {
     private static int fboHandle;
     
     private static long handle = NULL;
-    
-    private static Terminal terminal;
-    private static EngineMetrics metrics;
-    private static Noclip noclip;
     
     private static Monitor monitor;
     private static String title = "XJGE v" + XJGE.VERSION;
@@ -194,11 +189,7 @@ public final class Window {
      * @param terminal the command-line terminal used to make state changes during runtime
      * @param metrics a series of collapsible menus containing debug information
      */
-    static void registerCallbacks(TreeMap<String, TerminalCommand> engineCommands, Texture engineIcons) {
-        noclip   = new Noclip();
-        terminal = new Terminal(engineCommands);
-        metrics  = new EngineMetrics(engineIcons);
-        
+    static void registerCallbacks(Terminal terminal, EngineMetrics metrics, Noclip noclip) {
         InputSystem.addTerminalObservers(terminal);
         
         glfwErrorReference = GLFWErrorCallback.create((error, description) -> {
@@ -368,7 +359,7 @@ public final class Window {
         glfwShowWindow(handle);
     }
     
-    static void update(double deltaMetric, int fps, int entityCount) {
+    static void update(double deltaMetric, int fps, int entityCount, Terminal terminal, EngineMetrics metrics, Noclip noclip) {
         if(terminal.show) terminal.update();
         if(metrics.show) metrics.update(deltaMetric, fps, entityCount, noclip);
         
@@ -378,7 +369,7 @@ public final class Window {
     /**
      * Swaps the front and back framebuffers, displaying the most recent rendered frame.
      */
-    static void swapBuffers() {
+    static void swapBuffers(Terminal terminal, EngineMetrics metrics) {
         if(terminal.show || metrics.show) {
             glViewport(0, 0, width, height);
             UIManager.updateProjectionMatrix(width, height, 0, Integer.MAX_VALUE);
@@ -878,7 +869,7 @@ public final class Window {
             Logger.logInfo("Failed to set viewport camera. No viewport "+ 
                            "by the ID of " + viewportID + " exists");
         } else {
-            if(viewports[viewportID].currCamera.equals(noclip)) {
+            if(XJGE.isNoclipCamera(camera)) {
                 //Added in case noclip is enabled when this was called.
                 viewports[viewportID].prevCamera = camera;
             } else {
