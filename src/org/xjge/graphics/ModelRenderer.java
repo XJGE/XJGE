@@ -53,7 +53,7 @@ public class ModelRenderer extends EntityComponent {
         shader.setUniform("uView", false, camera.getViewMatrix());
         shader.setUniform("uProjection", false, camera.getProjectionMatrix());
         shader.setUniform("uNormalMatrix", true, normalMatrix);
-        shader.setUniform("uCamPos", camera.position);
+        shader.setUniform("uCamPos", camera.getPosition());
         shader.setUniform("uNumLights", LightingSystem.getActiveCount());
         
         if(animator != null) shader.setUniform("uBoneTransforms", false, animator.getFinalBoneMatrices());

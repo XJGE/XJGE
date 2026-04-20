@@ -2,6 +2,7 @@ package org.xjge.core;
 
 import java.util.LinkedList;
 import org.joml.Matrix4f;
+import org.joml.Matrix4fc;
 import static org.lwjgl.opengl.GL30.*;
 import org.lwjgl.system.MemoryUtil;
 import org.xjge.graphics.Shader;
@@ -120,7 +121,7 @@ public final class Skybox implements AssetReloadListener {
      * @param projMatrix the projection matrix of the viewport camera currently 
      *                   rendering the scene
      */
-    void render(Matrix4f viewMatrix, Matrix4f projMatrix) {
+    void render(Matrix4fc viewMatrix, Matrix4fc projMatrix) {
         glDepthMask(false);
         glActiveTexture(GL_TEXTURE0);
         glBindTexture(GL_TEXTURE_CUBE_MAP, cubemapHandle);

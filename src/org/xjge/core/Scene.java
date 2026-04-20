@@ -143,7 +143,7 @@ public abstract class Scene {
      * @param camera the camera object of the viewport the scene is currently being rendered from
      */
     void renderSkybox(Camera camera) {
-        if(skybox != null) skybox.render(camera.viewMatrix, camera.projMatrix);
+        if(skybox != null) skybox.render(camera.getViewMatrix(), camera.getProjectionMatrix());
     }
     
     /**

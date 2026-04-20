@@ -44,7 +44,7 @@ public class SceneAdd extends Scene {
         var back   = Texture.load("sky_back.png");
         var back2  = Texture.load("sky_back.png");
         
-        Window.setViewportCamera(GLFW_JOYSTICK_2, new OrthoCam());
+        Window.setViewportCamera(GLFW_JOYSTICK_2, new CameraOrtho());
         
         skybox = new Skybox(right, left, top, bottom, front, back, false);
         setSkybox(skybox);

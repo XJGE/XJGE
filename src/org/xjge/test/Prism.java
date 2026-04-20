@@ -114,7 +114,7 @@ class Prism extends EntityComponent {
         ObjectShader.getInstance().setUniform("uBloomThreshold", bloomThreshold);
         ObjectShader.getInstance().setUniform("uNumLights", LightingSystem.getActiveCount());
         ObjectShader.getInstance().setUniform("uColor", color.asVector3f());
-        ObjectShader.getInstance().setUniform("uCamPos", camera.position);
+        ObjectShader.getInstance().setUniform("uCamPos", camera.getPosition());
         ObjectShader.getInstance().setUniform("uNormal", true, normal);
         ObjectShader.getInstance().setUniform("uMaterial.roughness", roughness);
         ObjectShader.getInstance().setUniform("uMaterial.metallic", metallic);

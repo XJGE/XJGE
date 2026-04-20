@@ -306,7 +306,9 @@ public final class XJGE {
                 //Update viewport cameras and UIManager widgets
                 for(Viewport viewport : Window.getViewports()) {
                     if(viewport.active && viewport.currCamera != null) {
-                        viewport.currCamera.update(TARGET_DELTA, delta, viewport.width, viewport.height);
+                        viewport.currCamera.update(TARGET_DELTA, delta);
+                        viewport.currCamera.buildViewMatrix();
+                        viewport.currCamera.buildProjectionMatrix(viewport.width, viewport.height);
                         UIManager.updateWidgets(viewport.id, TARGET_DELTA, delta);
                         AudioSystem.captureViewportCameraData(viewport.id, viewport.currCamera);
                     }

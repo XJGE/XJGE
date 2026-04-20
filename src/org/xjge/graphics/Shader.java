@@ -2,14 +2,12 @@ package org.xjge.graphics;
 
 import static org.xjge.graphics.ShaderDataType.*;
 import java.nio.Buffer;
-import java.nio.FloatBuffer;
 import java.nio.IntBuffer;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import org.joml.Matrix2fc;
 import org.joml.Matrix3fc;
-import org.joml.Matrix4f;
 import org.joml.Matrix4fc;
 import org.joml.Vector2fc;
 import org.joml.Vector3fc;
@@ -175,10 +173,6 @@ public class Shader implements AssetReloadListener {
      */
     public void setUniform(String name, float value) {
         glUniform1f(uniforms.get(name).location, value);
-    }
-    
-    public void setUniform(String name, boolean transpose, float[] values) {
-        glUniformMatrix4fv(uniforms.get(name).location, transpose, values);
     }
     
     /**

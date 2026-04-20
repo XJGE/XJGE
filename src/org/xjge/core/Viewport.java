@@ -145,7 +145,7 @@ final class Viewport {
     
     void renderCamera() {
         shader.use();
-        shader.setUniform("uProjection", false, currCamera.projMatrix);
+        shader.setUniform("uProjection", false, currCamera.getProjectionMatrix());
     }
     
     void renderTexture(Matrix4f finalProjMatrix) {
