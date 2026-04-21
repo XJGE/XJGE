@@ -32,11 +32,9 @@ public abstract class Camera {
     private final Matrix4f viewMatrix       = new Matrix4f();
     private final Matrix4f projectionMatrix = new Matrix4f();
     
-    void buildViewMatrix() {
+    void update(double targetDelta, double trueDelta, int viewportWidth, int viewportHeight) {
+        update(targetDelta, trueDelta);
         buildViewMatrix(viewMatrix);
-    }
-    
-    void buildProjectionMatrix(int viewportWidth, int viewportHeight) {
         buildProjectionMatrix(projectionMatrix, viewportWidth, viewportHeight);
     }
     
