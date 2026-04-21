@@ -85,8 +85,8 @@ public class SceneLight extends Scene {
         lightC.position.set(4, 5, -5);
         lightC.type = LightType.WORLD;
         
-        camA = new CameraOverhead( 10, 10, 10, -1,-1,-1);
-        camB = new CameraOverhead(-10, 10,-10,  1,-1, 1);
+        camA = new CameraOverhead(-10, 10, 10,  1,-1,-1);
+        camB = new CameraOverhead( 10, 10,-10, -1,-1, 1);
         
         Window.setViewportCamera(GLFW_JOYSTICK_1, camA);
         UIManager.addWidget(GLFW_JOYSTICK_1, "camera_control", new UIChangeCamera(camA, camB));

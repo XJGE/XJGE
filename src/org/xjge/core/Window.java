@@ -869,12 +869,15 @@ public final class Window {
             Logger.logInfo("Failed to set viewport camera. No viewport "+ 
                            "by the ID of " + viewportID + " exists");
         } else {
+            var viewport = viewports[viewportID];
+            
             if(XJGE.isNoclipCamera(camera)) {
-                //Added in case noclip is enabled when this was called.
-                viewports[viewportID].prevCamera = camera;
+                viewport.prevCamera = camera; //Added in case noclip is enabled when this was called.
             } else {
-                viewports[viewportID].currCamera = camera;
+                viewport.currCamera = camera;
             }
+            
+            camera.buildMatrices(viewport.width, viewport.height); //Build matrices in advance to avoid visual bugs during change
         }
     }
     
