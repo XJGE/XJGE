@@ -16,14 +16,11 @@ public class CameraTransition extends Camera {
 
     private final float duration;
     private float deltaTime;
-    private float blendedFOV;
     
     private final Camera previous;
     private final Camera next;
     
-    private final Vector3f blendedPosition  = new Vector3f();
-    private final Vector3f blendedDirection = new Vector3f();
-    private final Vector3f tempFront        = new Vector3f();
+    private final Vector3f tempFront = new Vector3f();
     
     CameraTransition(Camera previous, Camera next, float duration) {
         this.previous = previous;
@@ -37,23 +34,21 @@ public class CameraTransition extends Camera {
         float t = Math.min(1f, deltaTime / duration);
         float eased = easeInOutQuad(t);
         
-        blendedFOV = XJGE.lerp(previous.fov, next.fov, eased);
-        blendedPosition.set(previous.getPosition()).lerp(next.getPosition(), eased);
-        blendedDirection.set(previous.getDirection()).lerp(next.getDirection(), eased);
+        fov = XJGE.lerp(previous.fov, next.fov, eased);
+        position.set(previous.getPosition()).lerp(next.getPosition(), eased);
+        direction.set(previous.getDirection()).lerp(next.getDirection(), eased);
         
         if(eased == 1f) Window.setViewportCamera(GLFW_JOYSTICK_1, next);
     }
 
     @Override
     protected void buildViewMatrix(Matrix4f viewMatrix) {
-        viewMatrix.setLookAt(blendedPosition,
-                            tempFront.set(blendedDirection).add(blendedPosition),
-                            up);
+        viewMatrix.setLookAt(position, tempFront.set(direction).add(position), up);
     }
 
     @Override
     protected void buildProjectionMatrix(Matrix4f projectionMatrix, int viewportWidth, int viewportHeight) {
-        projectionMatrix.setPerspective((float) Math.toRadians(blendedFOV), 
+        projectionMatrix.setPerspective((float) Math.toRadians(fov), 
                                         (float) viewportWidth / viewportHeight, 
                                         0.1f, Float.POSITIVE_INFINITY);
     }
