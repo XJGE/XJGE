@@ -1,0 +1,21 @@
+package org.xjge.test;
+
+import org.xjge.core.XJGE;
+
+/**
+ * 
+ * @author J Hoffman
+ * @since 
+ */
+public class Main {
+    
+    public static void main(String[] args) {
+        
+        XJGE.init(true, "C:/Users/jhoff/Projects/XJGE/art", "org.xjge.test.");
+        new WindowObserver().subscribe();
+        XJGE.setScene(new SceneLight()); //new SceneModel()
+        XJGE.start();
+        
+    }
+    
+}
