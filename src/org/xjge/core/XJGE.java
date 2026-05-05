@@ -69,7 +69,7 @@ public final class XJGE {
     private static int tickCount    = 0;
     final static int TICKS_PER_HOUR = 225000;
     
-    public static final String VERSION = "4.0.0-beta8";
+    public static final String VERSION = "4.0.0-beta9";
     private static String scenesPackage;
     private static String cpuModel;
     
@@ -291,8 +291,7 @@ public final class XJGE {
                 //Process any unresolved events otherwise update the scene normally
                 if(!events.isEmpty()) {
                     Event event = events.peek();
-                    if(!event.resolved) event.resolve();
-                    else                events.poll();
+                    if(event.resolved(TARGET_DELTA, deltaMetric)) events.poll();
                 } else {
                     currentScene.update(TARGET_DELTA, deltaMetric);
                 }

@@ -15,8 +15,6 @@ public abstract class Event {
 
     private final int priority;
     
-    protected boolean resolved;
-    
     /**
      * Creates a new event that will redirect execution until resolved. Events 
      * use numbers to indicate the priority in which they are to be resolved, 
@@ -40,9 +38,8 @@ public abstract class Event {
     
     /**
      * Called continuously until the event is resolved. Provided so events can 
-     * define their own terms for resolution. To resolve an event, set the 
-     * {@code resolved} field to true.
+     * define their own terms for resolution. To resolve an event, return true.
      */
-    public abstract void resolve();
+    public abstract boolean resolved(double targetDelta, double trueDelta);
     
 }
