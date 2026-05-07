@@ -119,6 +119,24 @@ public final class InputSystem {
         observable.removeObserver(observer);
     }
     
+    public static void setVirtualDeviceInput(int deviceID, Control control, float inputValue) {
+        InputDevice device = inputDevices.get(deviceID);
+        
+        if(device == null) {
+            Logger.logWarning("Attempted to change the input state of a virtual " + 
+                              "input device at index " + deviceID + " but it does not exist", null);
+            return;
+        }
+        
+        if(!(device instanceof InputDeviceVirtual)) {
+            Logger.logWarning("Operation ignored. User attempted to change the " + 
+                              "input state of a non-virtual input device at index " + deviceID, null);
+            return;
+        }
+        
+        device.controlValues.put(control, XJGE.clampValue(-1f, 1f, inputValue));
+    }
+    
     public static void destroyVirtualDevice(int deviceID) {
         deviceConnectionEvents.add(() -> {
             InputDevice device = inputDevices.get(deviceID);
