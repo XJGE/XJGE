@@ -26,9 +26,9 @@ public final class InputSystem {
     public static final int KEYBOARD  = 4;
     public static final int MOUSE     = 5;
     
-    private static final Observable observable = new Observable(InputSystem.class);
+    private static final Observable observable              = new Observable(InputSystem.class);
+    private static final AtomicInteger virtualDeviceCounter = new AtomicInteger(100);
     
-    private static final AtomicInteger virtualDeviceCounter     = new AtomicInteger(100);
     private static final Queue<Runnable> deviceConnectionEvents = new ConcurrentLinkedQueue<>();
     private static final Queue<Controllable> controllableQueue  = new LinkedList<>();
     private static final Map<UUID, Controllable> controllables  = new HashMap<>();
@@ -119,29 +119,6 @@ public final class InputSystem {
         observable.removeObserver(observer);
     }
     
-    public static int getGamepadCount() {
-        int count = 0;
-        
-        for(InputDevice device : inputDevices.values()) {
-            if(device instanceof InputDeviceGamepad gamepad && gamepad.connected) count++;
-        }
-        
-        return count;
-    }
-    
-    public static int createVirtualDevice() {
-        int deviceID = virtualDeviceCounter.getAndIncrement();
-        
-        deviceConnectionEvents.add(() -> {
-            var virtualDevice = new InputDeviceVirtual(deviceID);
-            inputDevices.put(deviceID, virtualDevice);
-            observable.notifyObservers("INPUT_DEVICE_" + deviceID + "_CONNECTED", virtualDevice.connected);
-            Logger.logInfo("New virtual input device created and assigned to index " + deviceID);
-        });
-        
-        return deviceID;
-    }
-    
     public static void destroyVirtualDevice(int deviceID) {
         deviceConnectionEvents.add(() -> {
             InputDevice device = inputDevices.get(deviceID);
@@ -165,43 +142,17 @@ public final class InputSystem {
         });
     }
     
-    public static void setVirtualDeviceInput(int deviceID, Control control, float inputValue) {
-        InputDevice device = inputDevices.get(deviceID);
+    public static int createVirtualDevice() {
+        int deviceID = virtualDeviceCounter.getAndIncrement();
         
-        if(device == null) {
-            Logger.logWarning("Attempted to change the input state of a virtual " + 
-                              "input device at index " + deviceID + " but it does not exist", null);
-            return;
-        }
+        deviceConnectionEvents.add(() -> {
+            var virtualDevice = new InputDeviceVirtual(deviceID);
+            inputDevices.put(deviceID, virtualDevice);
+            observable.notifyObservers("INPUT_DEVICE_" + deviceID + "_CONNECTED", virtualDevice.connected);
+            Logger.logInfo("New virtual input device created and assigned to index " + deviceID);
+        });
         
-        if(!(device instanceof InputDeviceVirtual)) {
-            Logger.logWarning("Operation ignored. User attempted to change the " + 
-                              "input state of a non-virtual input device at index " + deviceID, null);
-            return;
-        }
-        
-        device.controlValues.put(control, XJGE.clampValue(-1f, 1f, inputValue));
-    }
-    
-    public static int[] getKeyboardAxisBindings(boolean leftStick) {
-        InputDeviceKeyboard keyboard = (InputDeviceKeyboard) inputDevices.get(KEYBOARD);
-        return (leftStick) ? keyboard.leftAxisBindings.clone() : keyboard.rightAxisBindings.clone();
-    }
-    
-    public static void setKeyboardAxisBindings(boolean leftStick, int upKey, int leftKey, int downKey, int rightKey) {
-        InputDeviceKeyboard keyboard = (InputDeviceKeyboard) inputDevices.get(KEYBOARD);
-        
-        if(leftStick) {
-            keyboard.leftAxisBindings[0] = upKey;
-            keyboard.leftAxisBindings[1] = leftKey;
-            keyboard.leftAxisBindings[2] = downKey;
-            keyboard.leftAxisBindings[3] = rightKey;
-        } else {
-            keyboard.rightAxisBindings[0] = upKey;
-            keyboard.rightAxisBindings[1] = leftKey;
-            keyboard.rightAxisBindings[2] = downKey;
-            keyboard.rightAxisBindings[3] = rightKey;
-        }
+        return deviceID;
     }
     
     public static boolean getDeviceEnabled(int deviceID) {
@@ -224,6 +175,21 @@ public final class InputSystem {
         }
     }
     
+    public static int getGamepadCount() {
+        int count = 0;
+        
+        for(InputDevice device : inputDevices.values()) {
+            if(device instanceof InputDeviceGamepad gamepad && gamepad.connected) count++;
+        }
+        
+        return count;
+    }
+    
+    public static int[] getKeyboardAxisBindings(boolean leftStick) {
+        InputDeviceKeyboard keyboard = (InputDeviceKeyboard) inputDevices.get(KEYBOARD);
+        return (leftStick) ? keyboard.leftAxisBindings.clone() : keyboard.rightAxisBindings.clone();
+    }
+    
     public static String getDeviceName(int deviceID) {
         if(inputDevices.containsKey(deviceID)) {
             return inputDevices.get(deviceID).name;
@@ -238,6 +204,15 @@ public final class InputSystem {
     
     public static Map<Control, Integer> getDeviceControlBindings(int deviceID) {
         return Collections.unmodifiableMap(inputDevices.get(deviceID).controlBindings);
+    }
+    
+    public static void setDeviceEnabled(int deviceID, boolean enabled) {
+        if(inputDevices.containsKey(deviceID)) {
+            inputDevices.get(deviceID).enabled = enabled;
+        } else {
+            Logger.logWarning("Operation ignored. User attempted to change the enabled state for a non-existent input device " + 
+                              "at index " + deviceID, null);
+        }
     }
     
     public static boolean setDeviceSettings(int deviceID, Map<String, Float> settings) {
@@ -295,6 +270,22 @@ public final class InputSystem {
         }
         
         return true;
+    }
+    
+    public static void setKeyboardAxisBindings(boolean leftStick, int upKey, int leftKey, int downKey, int rightKey) {
+        InputDeviceKeyboard keyboard = (InputDeviceKeyboard) inputDevices.get(KEYBOARD);
+        
+        if(leftStick) {
+            keyboard.leftAxisBindings[0] = upKey;
+            keyboard.leftAxisBindings[1] = leftKey;
+            keyboard.leftAxisBindings[2] = downKey;
+            keyboard.leftAxisBindings[3] = rightKey;
+        } else {
+            keyboard.rightAxisBindings[0] = upKey;
+            keyboard.rightAxisBindings[1] = leftKey;
+            keyboard.rightAxisBindings[2] = downKey;
+            keyboard.rightAxisBindings[3] = rightKey;
+        }
     }
     
 }
