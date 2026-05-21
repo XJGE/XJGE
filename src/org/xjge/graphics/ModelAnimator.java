@@ -1,6 +1,7 @@
 package org.xjge.graphics;
 
 import org.joml.Matrix4f;
+import org.joml.Matrix4fc;
 import org.joml.Quaternionf;
 import org.joml.Vector3f;
 import org.xjge.core.EntityComponent;
@@ -20,11 +21,16 @@ public class ModelAnimator extends EntityComponent {
     
     private final Model model;
     
-    private final Matrix4f[] finalBoneMatrices = new Matrix4f[Mesh.MAX_BONES];
+    private final Matrix4f[] boneTransforms    = new Matrix4f[Mesh.MAX_BONES]; //Raw animated bone transforms in model space BEFORE inverse bind pose multiplication
+    private final Matrix4f[] finalBoneMatrices = new Matrix4f[Mesh.MAX_BONES]; //Final skinning matrices used by the renderer
 
     public ModelAnimator(Model model) {
         this.model = model;
-        for(int i = 0; i < Mesh.MAX_BONES; i++) finalBoneMatrices[i] = new Matrix4f().identity();
+        
+        for(int i = 0; i < Mesh.MAX_BONES; i++) {
+            boneTransforms[i]    = new Matrix4f().identity();
+            finalBoneMatrices[i] = new Matrix4f().identity();
+        }
     }
     
     public void play(String animationName) {
@@ -130,6 +136,14 @@ public class ModelAnimator extends EntityComponent {
     public Matrix4f[] getFinalBoneMatrices() {
         return finalBoneMatrices;
     }
+    
+    /**
+     * Returns animated model-space bone transforms BEFORE the inverse bind correction is applied.
+     * @return a matrix array containing the current model-space transforms of every bone in the skeleton
+     */
+    public Matrix4fc[] getBoneTransforms() {
+        return boneTransforms;
+    }
 
     public void update(double deltaTime) {
         if(current == null) return;
@@ -168,15 +182,16 @@ public class ModelAnimator extends EntityComponent {
         calculatePose(next, poseB);
 
         for(int i = 0; i < boneCount; i++) {
-            finalBoneMatrices[i].set(poseA[i]).lerp(poseB[i], alpha);
+            boneTransforms[i].set(poseA[i]).lerp(poseB[i], alpha); //Store blended transform for joint attachments
+            finalBoneMatrices[i].set(boneTransforms[i]).mul(model.getSkeleton().bones.get(i).offsetMatrix); //Mesh skinning matrix
         }
     }
 
     private void calculatePose(AnimationInstance instance, Matrix4f[] output) {
-        var skeleton = model.getSkeleton();
+        var skeleton  = model.getSkeleton();
         int boneCount = skeleton.bones.size();
 
-        Matrix4f[] globalTransforms = new Matrix4f[boneCount];
+        Matrix4f[] globalTransforms = new Matrix4f[boneCount]; //TODO: promotes GC churn since this is called per-frame
         for(int i = 0; i < boneCount; i++) {
             globalTransforms[i] = new Matrix4f();
         }
@@ -189,14 +204,10 @@ public class ModelAnimator extends EntityComponent {
             Matrix4f localTransform;
 
             if(keyframe != null) {
-                Vector3f pos   = sampleVector3(keyframe.positionTimes, keyframe.positions, animationTime);
+                Vector3f pos    = sampleVector3(keyframe.positionTimes, keyframe.positions, animationTime);
                 Quaternionf rot = sampleQuaternion(keyframe.rotationTimes, keyframe.rotations, animationTime);
-                Vector3f scale = sampleVector3(keyframe.scaleTimes, keyframe.scales, animationTime);
-
-                localTransform = new Matrix4f()
-                        .translate(pos)
-                        .rotate(rot)
-                        .scale(scale);
+                Vector3f scale  = sampleVector3(keyframe.scaleTimes, keyframe.scales, animationTime);
+                localTransform  = new Matrix4f().translate(pos).rotate(rot).scale(scale);
             } else {
                 localTransform = new Matrix4f(bone.localBindTransform);
             }
@@ -207,6 +218,7 @@ public class ModelAnimator extends EntityComponent {
                 globalTransforms[i].set(localTransform);
             }
 
+            boneTransforms[i].set(globalTransforms[i]);
             output[i].set(globalTransforms[i]).mul(bone.offsetMatrix);
         }
     }

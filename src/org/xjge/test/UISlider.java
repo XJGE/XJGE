@@ -40,7 +40,7 @@ final class UISlider {
     
     void relocate(Rectangle parent) {
         track.positionX = parent.positionX + 10;
-        track.positionY = parent.positionY + parent.height - 120;
+        track.positionY = parent.positionY + parent.height - 160;
         thumb.positionY = track.positionY - 9;
     }
     

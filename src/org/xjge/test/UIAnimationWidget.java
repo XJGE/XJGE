@@ -1,13 +1,12 @@
 package org.xjge.test;
 
-import java.util.Map;
 import org.joml.Vector2i;
 import org.xjge.core.Mouse;
 import org.xjge.core.SplitScreenType;
 import org.xjge.core.Window;
 import org.xjge.graphics.Color;
+import org.xjge.graphics.JointAttachment;
 import org.xjge.graphics.ModelAnimator;
-import org.xjge.graphics.Shader;
 import org.xjge.graphics.Texture;
 import org.xjge.ui.Font;
 import org.xjge.ui.Rectangle;
@@ -30,16 +29,18 @@ public class UIAnimationWidget extends Widget {
     private final UICheckbox loopingControl;
     private final UISpinbox speedControl;
     private final UISpinbox timeControl;
+    private final UISpinbox jointControl;
     private final UISlider timeSlider;
     private final UILabelButton pausePlayButton;
     private final UILabelButton resetSpeedButton;
     
-    UIAnimationWidget(ModelAnimator animator) {
+    UIAnimationWidget(ModelAnimator animator, JointAttachment joint) {
         for(int i = 0; i < backgrounds.length; i++) backgrounds[i] = new Rectangle();
         
         loopingControl   = new UICheckbox(animator, iconsTexture);
-        speedControl     = new UISpinbox(animator, 90, iconsTexture, "Speed");
-        timeControl      = new UISpinbox(animator, 90, iconsTexture, "Animation Time");
+        speedControl     = new UISpinbox(animator, joint, 90, iconsTexture, "Speed", "%.2f");
+        timeControl      = new UISpinbox(animator, joint, 90, iconsTexture, "Animation Time", "%.2f");
+        jointControl     = new UISpinbox(animator, joint, 90, iconsTexture, "Joint Bone ID", "%.0f");
         timeSlider       = new UISlider(animator);
         pausePlayButton  = new UILabelButton(animator, "Pause", 300);
         resetSpeedButton = new UILabelButton(animator, "Reset Speed", 300);
@@ -51,6 +52,7 @@ public class UIAnimationWidget extends Widget {
     public void update(double targetDelta, double trueDelta) {
         speedControl.update();
         timeControl.update();
+        jointControl.update();
         timeSlider.update();
     }
 
@@ -75,9 +77,14 @@ public class UIAnimationWidget extends Widget {
         textPos.y = backgrounds[2].positionY + backgrounds[2].height - 78;
         Font.FALLBACK.drawString("Animation Time", textPos.x, textPos.y, Color.WHITE, 1f);
         
+        textPos.x = backgrounds[2].positionX + 10;
+        textPos.y = backgrounds[2].positionY + backgrounds[2].height - 124;
+        Font.FALLBACK.drawString("Joint Bone ID", textPos.x, textPos.y, Color.WHITE, 1f);
+        
         loopingControl.render();
         speedControl.render();
         timeControl.render();
+        jointControl.render();
         timeSlider.render();
         pausePlayButton.render();
         resetSpeedButton.render();
@@ -86,7 +93,7 @@ public class UIAnimationWidget extends Widget {
     @Override
     public final void relocate(SplitScreenType splitType, int viewportWidth, int viewportHeight) {
         backgrounds[0].width     = 330;
-        backgrounds[0].height    = 370;
+        backgrounds[0].height    = 400;
         backgrounds[0].positionX = viewportWidth - backgrounds[0].width - 5;
         backgrounds[0].positionY = viewportHeight - backgrounds[0].height - 5;
         
@@ -96,13 +103,14 @@ public class UIAnimationWidget extends Widget {
         backgrounds[1].positionY = (backgrounds[0].positionY + backgrounds[0].height) - (backgrounds[1].height + 5);
         
         backgrounds[2].width     = 320;
-        backgrounds[2].height    = 235;
+        backgrounds[2].height    = 265;
         backgrounds[2].positionX = backgrounds[0].positionX + 5;
         backgrounds[2].positionY = backgrounds[0].positionY + 5;
         
         loopingControl.relocate(backgrounds[1]);
         speedControl.relocate(backgrounds[2], 200, 38);
         timeControl.relocate(backgrounds[2], 200, 86);
+        jointControl.relocate(backgrounds[2], 200, 134);
         timeSlider.relocate(backgrounds[2]);
         pausePlayButton.relocate(backgrounds[2], 10, 55);
         resetSpeedButton.relocate(backgrounds[2], 10, 10);
@@ -112,6 +120,7 @@ public class UIAnimationWidget extends Widget {
     public void processKeyboardInput(int key, int action, int mods, Character character) {
         speedControl.processKeyInput(key, action, mods);
         timeControl.processKeyInput(key, action, mods);
+        jointControl.processKeyInput(key, action, mods);
     }
 
     @Override
@@ -119,6 +128,7 @@ public class UIAnimationWidget extends Widget {
         loopingControl.onClick(mouse);
         speedControl.processMouseInput(mouse);
         timeControl.processMouseInput(mouse);
+        jointControl.processMouseInput(mouse);
         timeSlider.processMouseInput(mouse);
         pausePlayButton.processMouseInput(mouse, speedControl);
         resetSpeedButton.processMouseInput(mouse, speedControl);

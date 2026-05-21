@@ -19,6 +19,8 @@ import static org.lwjgl.opengl.GL11.glScissor;
 import org.xjge.core.Mouse;
 import org.xjge.core.Timer;
 import org.xjge.graphics.Color;
+import org.xjge.graphics.JointAttachment;
+import org.xjge.graphics.Mesh;
 import org.xjge.graphics.ModelAnimator;
 import org.xjge.graphics.Texture;
 import org.xjge.ui.Font;
@@ -39,9 +41,10 @@ class UISpinbox extends UITextInput {
     private int clickCount;
     private int previousCursorX;
     
-    private final String format = "%.2f";
+    private final String format;
     private final String type;
     private final ModelAnimator animator;
+    private final JointAttachment joint;
     
     private final Rectangle buttonUp   = new Rectangle(0, 0, 20, 14);
     private final Rectangle buttonDown = new Rectangle(0, 0, 20, 14);
@@ -57,10 +60,12 @@ class UISpinbox extends UITextInput {
     private Color upButtonColor   = new Color(0.75f);
     private Color downButtonColor = new Color(0.75f);
     
-    public UISpinbox(ModelAnimator animator, int width, Texture iconsTexture, String type) {
+    public UISpinbox(ModelAnimator animator, JointAttachment joint, int width, Texture iconsTexture, String type, String format) {
         super(width, iconsTexture);
         this.animator = animator;
+        this.joint    = joint;
         this.type     = type;
+        this.format   = format;
         
         upArrow   = new Icon(iconsTexture, 24, 24, false, 4, 0);
         downArrow = new Icon(iconsTexture, 24, 24, false, 5, 0);
@@ -68,6 +73,7 @@ class UISpinbox extends UITextInput {
         switch(type) {
             case "Speed"          -> setValue(animator.getSpeed());
             case "Animation Time" -> setValue(animator.getTime());
+            case "Joint Bone ID"  -> setValue(0);
         }
     }
     
@@ -83,11 +89,28 @@ class UISpinbox extends UITextInput {
     
     private void commitText() {
         try {
-            value = Double.parseDouble(typed.toString());
-            
             switch(type) {
-                case "Speed"          -> animator.setSpeed(value);
-                case "Animation Time" -> animator.setTime(value);
+                case "Speed" -> {
+                    value = Double.parseDouble(typed.toString());
+                    animator.setSpeed(value);
+                }
+                case "Animation Time" -> {
+                    value = Double.parseDouble(typed.toString());
+                    animator.setTime(value);
+                }
+                case "Joint Bone ID" -> {
+                    var tempVal = Integer.parseInt(typed.toString());
+                    
+                    if(tempVal < 0) {
+                        value = 0;
+                        throw new NumberFormatException();
+                    } else if(tempVal >= Mesh.MAX_BONES) {
+                        value = Mesh.MAX_BONES - 1;
+                        throw new NumberFormatException();
+                    } else {
+                        joint.boneIndex = (int) (value = tempVal);
+                    }
+                }
             }
         } catch(NumberFormatException ignored) {
             setTextToValue();
@@ -274,12 +297,12 @@ class UISpinbox extends UITextInput {
                 }
                 
                 case GLFW_KEY_UP -> {
-                    value += 0.01;
+                    value += (format.equals("%.0f")) ? 1 : 0.01;
                     validate();
                 }
                 
                 case GLFW_KEY_DOWN -> {
-                    value -= 0.01;
+                    value -= (format.equals("%.0f")) ? 1 : 0.01;
                     validate();
                 }
                 
@@ -315,10 +338,10 @@ class UISpinbox extends UITextInput {
         }
         
         if(mouse.clickedOnce(buttonUp, GLFW_MOUSE_BUTTON_LEFT)) {
-            value += 0.1;
+            value += (format.equals("%.0f")) ? 1 : 0.1;
             validate();
         } else if(mouse.clickedOnce(buttonDown, GLFW_MOUSE_BUTTON_LEFT)) {
-            value -= 0.1;
+            value -= (format.equals("%.0f")) ? 1 : 0.1;
             validate();
         }
         

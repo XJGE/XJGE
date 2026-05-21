@@ -1,7 +1,6 @@
 package org.xjge.test;
 
 import org.xjge.graphics.ModelRenderer;
-import java.util.Map;
 import static org.lwjgl.glfw.GLFW.GLFW_JOYSTICK_1;
 import static org.lwjgl.opengl.GL11.GL_DEPTH_TEST;
 import static org.lwjgl.opengl.GL11.glDisable;
@@ -66,9 +65,11 @@ public class SceneModel extends Scene {
         var transform = new Transform();
         transform.position.z = -1.5f;
         animator = new ModelAnimator(testModel);
+        var jointVis = new JointVisualizer(transform, animator);
         testEntity = new Entity().addComponent(new ModelRenderer(testModel))
                                  .addComponent(transform)
-                                 .addComponent(animator);
+                                 .addComponent(animator)
+                                 .addComponent(jointVis);
         addEntity(testEntity);
         
         outputModelData(testModel2);
@@ -84,13 +85,17 @@ public class SceneModel extends Scene {
         worldLight.position.set(0, 4.5f, 3);
         worldLight.brightness = 7f;
         
-        UIManager.addWidget(GLFW_JOYSTICK_1, "animation_control", new UIAnimationWidget(animator));
+        UIManager.addWidget(GLFW_JOYSTICK_1, "animation_control", new UIAnimationWidget(animator, jointVis.attachment));
     }
 
     @Override
     public void update(double targetDelta, double trueDelta) {
         for(var entity : queryEntities(ModelAnimator.class)) {
             entity.getComponent(ModelAnimator.class).update((float) targetDelta);
+            
+            if(entity.hasComponent(JointVisualizer.class)) { //Order matters here, must come AFTER the animator
+                entity.getComponent(JointVisualizer.class).update();
+            }
         }
     }
 
@@ -100,16 +105,23 @@ public class SceneModel extends Scene {
             entity.getComponent(Prism.class).render(camera);
         }
         
-        glEnable(GL_DEPTH_TEST);
-        //glEnable(GL_CULL_FACE);
         for(var entity : queryEntities(ModelRenderer.class, Transform.class, ModelAnimator.class)) {
+            //glEnable(GL_CULL_FACE);
+            glEnable(GL_DEPTH_TEST);
+            
             entity.getComponent(ModelRenderer.class).render( 
                     entity.getComponent(Transform.class), 
                     entity.getComponent(ModelAnimator.class),
                     camera);
+            
+            //glDisable(GL_CULL_FACE);
+            glDisable(GL_DEPTH_TEST);
+            
+            if(entity.hasComponent(JointVisualizer.class)) {
+                entity.getComponent(JointVisualizer.class).render(camera);
+            }
         }
-        //glDisable(GL_CULL_FACE);
-        glDisable(GL_DEPTH_TEST);
+        
     }
 
     @Override

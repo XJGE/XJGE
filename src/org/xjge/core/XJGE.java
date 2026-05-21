@@ -69,7 +69,7 @@ public final class XJGE {
     private static int tickCount    = 0;
     final static int TICKS_PER_HOUR = 225000;
     
-    public static final String VERSION = "4.0.0-beta9";
+    public static final String VERSION = "4.0.0-beta10";
     private static String scenesPackage;
     private static String cpuModel;
     
