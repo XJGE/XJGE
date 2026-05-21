@@ -72,7 +72,7 @@ public class SceneModel extends Scene {
                                  .addComponent(jointVis);
         addEntity(testEntity);
         
-        outputModelData(testModel2);
+        outputModelData(testModel);
         
         //var testAnimation = testModel.getAnimation("wave");
         

@@ -2,14 +2,6 @@
 <project-private xmlns="http://www.netbeans.org/ns/project-private/1">
     <editor-bookmarks xmlns="http://www.netbeans.org/ns/editor-bookmarks/2" lastBookmarkId="27">
         <file>
-            <url>src/org/xjge/ui/UI.java</url>
-            <bookmark id="9">
-                <name/>
-                <line>52</line>
-                <key/>
-            </bookmark>
-        </file>
-        <file>
             <url>src/org/xjge/graphics/Cubemap2.java</url>
             <bookmark id="25">
                 <name/>
@@ -18,25 +10,23 @@
             </bookmark>
         </file>
         <file>
-            <url>src/org/xjge/graphics/JointAttachment.java</url>
-            <bookmark id="27">
+            <url>src/org/xjge/ui/UI.java</url>
+            <bookmark id="9">
                 <name/>
-                <line>24</line>
+                <line>52</line>
                 <key/>
             </bookmark>
         </file>
     </editor-bookmarks>
     <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
         <group>
-            <file>file:/C:/Users/jhoff/Projects/XJGE/src/org/xjge/graphics/ModelRenderer.java</file>
-            <file>file:/C:/Users/jhoff/Projects/XJGE/src/org/xjge/graphics/Bone.java</file>
+            <file>file:/C:/Users/jhoff/Projects/XJGE/src/org/xjge/test/JointVisualizer.java</file>
+            <file>file:/C:/Users/jhoff/Projects/XJGE/src/org/xjge/test/SceneModel.java</file>
             <file>file:/C:/Users/jhoff/Projects/XJGE/src/org/xjge/graphics/JointAttachment.java</file>
-            <file>file:/C:/Users/jhoff/Projects/XJGE/src/org/xjge/graphics/Keyframe.java</file>
             <file>file:/C:/Users/jhoff/Projects/XJGE/src/org/xjge/graphics/Transform.java</file>
-            <file>file:/C:/Users/jhoff/Projects/XJGE/src/org/xjge/graphics/Skeleton.java</file>
+            <file>file:/C:/Users/jhoff/Projects/XJGE/src/org/xjge/graphics/Mesh.java</file>
             <file>file:/C:/Users/jhoff/Projects/XJGE/src/org/xjge/graphics/ModelAnimator.java</file>
-            <file>file:/C:/Users/jhoff/Projects/XJGE/src/org/xjge/graphics/SkeletalAnimation.java</file>
-            <file>file:/C:/Users/jhoff/Projects/XJGE/src/org/xjge/graphics/Model.java</file>
+            <file>file:/C:/Users/jhoff/Projects/XJGE/src/org/xjge/test/UISpinbox.java</file>
         </group>
     </open-files>
 </project-private>
