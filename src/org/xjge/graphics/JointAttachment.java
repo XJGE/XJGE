@@ -1,6 +1,8 @@
 package org.xjge.graphics;
 
 import org.joml.Matrix4f;
+import org.xjge.core.EntityComponent;
+import org.xjge.core.Logger;
 
 /**
  * Stores the local and world space transforms of a bone so other objects (swords, potions, items, etc.) may be anchored to it
@@ -8,19 +10,34 @@ import org.joml.Matrix4f;
  * @author J Hoffman
  * @since  4.0.0
  */
-public final class JointAttachment {
+public final class JointAttachment extends EntityComponent {
 
-    public int boneIndex;
+    public int boneIndex = -1;
     
     public Matrix4f localOffset    = new Matrix4f().identity();
     public Matrix4f worldTransform = new Matrix4f();
     
+    public void attach(Model model, String boneName) {
+        Integer index = model.getSkeleton().boneMap.get(boneName);
+        
+        if(index == null) {
+            Logger.logWarning("Invalid bone \"" + boneName + "\" used during attachment to model \"" + model.getFilename() +"\"", null);
+        } else {
+            boneIndex = index;
+        }
+    }
+    
+    /**
+     * NOTE: must be called after ModelAnimator.update()
+     * 
+     * @param transform
+     * @param animator 
+     */
     public void update(Transform transform, ModelAnimator animator) {
-        worldTransform
-                .identity()
-                .mul(transform.getModelMatrix())
-                .mul(animator.getBoneTransforms()[boneIndex])
-                .mul(localOffset);
+        worldTransform.identity()
+                      .mul(transform.getModelMatrix())
+                      .mul(animator.getBoneTransforms()[boneIndex])
+                      .mul(localOffset);
     }
     
 }

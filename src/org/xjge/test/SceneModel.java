@@ -171,6 +171,7 @@ public class SceneModel extends Scene {
         }
         System.out.println();
         
+        /*
         System.out.println("Skeleton:");
         System.out.println(" Bones: ");
         for(var bone : model.getSkeleton().bones) {
@@ -182,6 +183,7 @@ public class SceneModel extends Scene {
         System.out.println(" Bone Map:");
         model.getSkeleton().boneMap.forEach((boneName, index) -> System.out.println("  " + boneName + ", " + index));
         System.out.println();
+        */
     }
     
 }

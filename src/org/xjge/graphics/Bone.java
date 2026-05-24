@@ -1,6 +1,7 @@
 package org.xjge.graphics;
 
 import org.joml.Matrix4f;
+import org.joml.Matrix4fc;
 
 /**
  * 
@@ -9,11 +10,27 @@ import org.joml.Matrix4f;
  */
 public final class Bone {
     
-    public int parentIndex;
+    int parentIndex;
     
-    public String name;
+    String name;
     
-    public Matrix4f offsetMatrix; //Inverse bind pose matrix
-    public Matrix4f localBindTransform;
+    Matrix4f offsetMatrix; //Inverse bind pose matrix
+    Matrix4f localBindTransform;
+    
+    public int getParentIndex() {
+        return parentIndex;
+    }
+    
+    public String getName() {
+        return name;
+    }
+    
+    public Matrix4fc getOffsetMatrix() {
+        return offsetMatrix;
+    }
+    
+    public Matrix4fc getLocalBindTransform() {
+        return localBindTransform;
+    }
     
 }

@@ -150,6 +150,10 @@ public final class Model extends Asset {
         );
     }
     
+    public void logData() {
+        //TODO: log extracted model data
+    }
+    
     public final Skeleton getSkeleton() {
         return skeleton;
     }
