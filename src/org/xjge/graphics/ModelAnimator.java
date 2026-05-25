@@ -168,8 +168,8 @@ public class ModelAnimator extends EntityComponent {
     }
     
     private void calculateBlendedPose(float alpha) {
-        int boneCount = model.getSkeleton().bones.size();
-
+        int boneCount = model.getSkeleton().getBoneCount();
+        
         Matrix4f[] poseA = new Matrix4f[boneCount];
         Matrix4f[] poseB = new Matrix4f[boneCount];
 
@@ -183,13 +183,13 @@ public class ModelAnimator extends EntityComponent {
 
         for(int i = 0; i < boneCount; i++) {
             boneTransforms[i].set(poseA[i]).lerp(poseB[i], alpha); //Store blended transform for joint attachments
-            finalBoneMatrices[i].set(boneTransforms[i]).mul(model.getSkeleton().bones.get(i).offsetMatrix); //Mesh skinning matrix
+            finalBoneMatrices[i].set(boneTransforms[i]).mul(model.getSkeleton().getBone(i).offsetMatrix); //Mesh skinning matrix
         }
     }
 
     private void calculatePose(AnimationInstance instance, Matrix4f[] output) {
         var skeleton  = model.getSkeleton();
-        int boneCount = skeleton.bones.size();
+        int boneCount = skeleton.getBoneCount();
 
         Matrix4f[] globalTransforms = new Matrix4f[boneCount]; //TODO: promotes GC churn since this is called per-frame
         for(int i = 0; i < boneCount; i++) {
@@ -199,7 +199,7 @@ public class ModelAnimator extends EntityComponent {
         float animationTime = instance.getAnimationTime();
 
         for(int i = 0; i < boneCount; i++) {
-            Bone bone         = skeleton.bones.get(i);
+            Bone bone         = skeleton.getBone(i);
             Keyframe keyframe = instance.getKeyframe(i);
             Matrix4f localTransform;
 
@@ -268,7 +268,7 @@ public class ModelAnimator extends EntityComponent {
         
         AnimationInstance(SkeletalAnimation animation) {
             this.animation  = animation;
-            keyframesByBone = new Keyframe[model.getSkeleton().bones.size()];
+            keyframesByBone = new Keyframe[model.getSkeleton().getBoneCount()];
 
             for(var keyframe : animation.keyframes) keyframesByBone[keyframe.boneIndex] = keyframe;
         }

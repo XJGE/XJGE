@@ -102,16 +102,16 @@ public final class Mesh {
             int pipe = boneName.indexOf("|");
             if(pipe != -1) boneName = boneName.substring(pipe + 1);
             
-            var mapIndex = skeleton.boneMap.get(boneName);
+            int mapIndex;
             
             //Build resolver list, this helps us convert local mesh space to global space during rendering
-            if(mapIndex == null) {
-                mapIndex          = skeleton.bones.size();
+            if(skeleton.hasBone(boneName)) {
+                mapIndex = skeleton.getBoneIndex(boneName);
+            } else {
                 var bone          = new Bone();
                 bone.name         = boneName;
                 bone.offsetMatrix = Model.convertMatrix(aiBone.mOffsetMatrix());
-                skeleton.bones.add(bone);
-                skeleton.boneMap.put(boneName, mapIndex);
+                mapIndex          = skeleton.registerBone(bone);
             }
             
             for(int w = 0; w < aiBone.mNumWeights(); w++) {

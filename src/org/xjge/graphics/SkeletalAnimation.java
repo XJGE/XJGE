@@ -35,11 +35,10 @@ public final class SkeletalAnimation {
         for(int c = 0; c < aiAnimation.mNumChannels(); c++) {
             var aiChannel = AINodeAnim.create(aiChannels.get(c));
             var boneName  = aiChannel.mNodeName().dataString();
-            var boneIndex = skeleton.boneMap.get(boneName);
-
-            if(boneIndex == null) continue;
-
-            keyframes.add(new Keyframe(aiChannel, boneIndex));
+            
+            if(!skeleton.hasBone(boneName)) continue;
+            
+            keyframes.add(new Keyframe(aiChannel, skeleton.getBoneIndex(boneName)));
         }
     }
     

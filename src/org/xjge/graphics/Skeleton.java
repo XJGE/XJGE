@@ -9,6 +9,7 @@ import org.joml.Matrix4f;
 import org.joml.Matrix4fc;
 import org.lwjgl.PointerBuffer;
 import org.lwjgl.assimp.AINode;
+import org.xjge.core.Logger;
 
 /**
  * 
@@ -19,13 +20,13 @@ public final class Skeleton {
 
     Matrix4f[] inverseBindPose;
     
-    List<Bone> bones = new ArrayList<>();
+    private final List<Bone> bones = new ArrayList<>();
     
-    Map<String, Integer> boneMap = new HashMap<>();
+    private final Map<String, Integer> boneIndices = new HashMap<>();
     
     void buildBoneHierarchy(AINode node, int parentIndex) {
         var nodeName  = node.mName().dataString();
-        var boneIndex = boneMap.get(nodeName);
+        var boneIndex = boneIndices.get(nodeName);
 
         if(boneIndex != null) {
             var bone = bones.get(boneIndex);
@@ -43,12 +44,32 @@ public final class Skeleton {
         }
     }
     
+    void clearBones() {
+        bones.clear();
+        boneIndices.clear();
+    }
+    
+    int registerBone(Bone bone) {
+        if(boneIndices.containsKey(bone.name)) {
+            Logger.logWarning("Duplicate bone \"" + bone.name + "\" detected during import", new IllegalArgumentException());
+        }
+        
+        int index = bones.size();
+        bones.add(bone);
+        boneIndices.put(bone.name, index);
+        return index;
+    }
+    
+    public boolean hasBone(String name) {
+        return boneIndices.containsKey(name);
+    }
+    
     public int getBoneCount() {
         return bones.size();
     }
     
     public int getBoneIndex(String name) {
-        return boneMap.get(name);
+        return boneIndices.get(name);
     }
     
     public String getBoneName(int index) {

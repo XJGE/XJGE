@@ -89,8 +89,7 @@ public final class Model extends Asset {
         materials.clear();
         meshes.clear();
         animations.clear();
-        skeleton.bones.clear();
-        skeleton.boneMap.clear();
+        skeleton.clearBones();
     }
     
     @Override

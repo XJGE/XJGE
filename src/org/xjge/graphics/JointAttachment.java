@@ -18,12 +18,10 @@ public final class JointAttachment extends EntityComponent {
     public Matrix4f worldTransform = new Matrix4f();
     
     public void attach(Model model, String boneName) {
-        Integer index = model.getSkeleton().boneMap.get(boneName);
-        
-        if(index == null) {
-            Logger.logWarning("Invalid bone \"" + boneName + "\" used during attachment to model \"" + model.getFilename() +"\"", null);
+        if(model.getSkeleton().hasBone(boneName)) {
+            boneIndex = model.getSkeleton().getBoneIndex(boneName);
         } else {
-            boneIndex = index;
+            Logger.logWarning("Invalid bone \"" + boneName + "\" used during attachment to model \"" + model.getFilename() +"\"", null);
         }
     }
     
