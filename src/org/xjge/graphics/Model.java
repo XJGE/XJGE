@@ -89,7 +89,7 @@ public final class Model extends Asset {
         materials.clear();
         meshes.clear();
         animations.clear();
-        skeleton.clearBones();
+        skeleton.unregisterBones();
     }
     
     @Override
@@ -147,10 +147,6 @@ public final class Model extends Asset {
             ai.a3(), ai.b3(), ai.c3(), ai.d3(),
             ai.a4(), ai.b4(), ai.c4(), ai.d4()
         );
-    }
-    
-    public void logData() {
-        //TODO: log extracted model data
     }
     
     public final Skeleton getSkeleton() {

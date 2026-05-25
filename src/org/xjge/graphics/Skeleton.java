@@ -44,7 +44,7 @@ public final class Skeleton {
         }
     }
     
-    void clearBones() {
+    void unregisterBones() {
         bones.clear();
         boneIndices.clear();
     }
