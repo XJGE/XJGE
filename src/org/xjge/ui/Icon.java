@@ -115,49 +115,6 @@ public final class Icon {
         glEnableVertexAttribArray(1);
     }
     
-    public Icon(Texture texture, int cellWidth, int cellHeight, boolean fromCenter, int cellX, int cellY) {
-        this(texture, cellWidth, cellHeight, fromCenter);
-        setSubImage(cellX, cellY);
-    }
-    
-    /**
-     * Changes the opacity (or transparency) of the icon.
-     * 
-     * @param opacity a number (between 0 and 1) indicating how transparent the icon is
-     */
-    public void setOpacity(float opacity) {
-        this.opacity = XJGE.clampValue(0, 1, opacity);
-    }
-    
-    /**
-     * Sets the sub-image this icon will use.
-     * 
-     * @param x the horizontal cell location as it appears in the texture atlas
-     * @param y the vertical cell location as it appears in the texture atlas
-     */
-    public void setSubImage(int x, int y) {
-        atlasKey.set(x, y);
-        
-        if(atlas.subImageOffsets.containsKey(atlasKey)) {
-            cellX     = x;
-            cellY     = y;
-            texCoords = atlas.subImageOffsets.get(atlasKey);
-        } else {
-            Logger.logWarning("Failed to set icon sprite. The cell: (" + x +
-                              ", " + y + ") is out of bounds",
-                              null);
-        }
-    }
-    
-    /**
-     * Changes the color of this icon.
-     * 
-     * @param color the color that the icon will be rendered in
-     */
-    public void setColor(Color color) {
-        this.color = color;
-    }
-    
     /**
      * Obtains the current opacity (or transparency) value of this icon.
      * 
@@ -192,6 +149,48 @@ public final class Icon {
      */
     public final Color getColor() {
         return color;
+    }
+    
+    /**
+     * Changes the opacity (or transparency) of the icon.
+     * 
+     * @param opacity a number (between 0 and 1) indicating how transparent the icon is
+     */
+    public final Icon setOpacity(float opacity) {
+        this.opacity = XJGE.clampValue(0, 1, opacity);
+        return this;
+    }
+    
+    /**
+     * Sets the sub-image this icon will use.
+     * 
+     * @param x the horizontal cell location as it appears in the texture atlas
+     * @param y the vertical cell location as it appears in the texture atlas
+     */
+    public final Icon setSubImage(int x, int y) {
+        atlasKey.set(x, y);
+        
+        if(atlas.subImageOffsets.containsKey(atlasKey)) {
+            cellX     = x;
+            cellY     = y;
+            texCoords = atlas.subImageOffsets.get(atlasKey);
+        } else {
+            Logger.logWarning("Failed to set icon sprite. The cell: (" + x +
+                              ", " + y + ") is out of bounds",
+                              null);
+        }
+        
+        return this;
+    }
+    
+    /**
+     * Changes the color of this icon.
+     * 
+     * @param color the color that the icon will be rendered in
+     */
+    public final Icon setColor(Color color) {
+        this.color = color;
+        return this;
     }
     
     /**
