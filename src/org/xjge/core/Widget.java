@@ -62,9 +62,8 @@ public abstract class Widget {
     public abstract void processMouseInput(Mouse mouse);
     
     /**
-     * Called once automatically after a request has been made to remove this 
-     * widget. Any elements which may have allocated memory should free it 
-     * inside this method.
+     * Called once after a request has been made to remove this widget. Any resources that have allocated memory should free it 
+     * inside of this method.
      */
     public abstract void delete();
     

@@ -94,7 +94,7 @@ public final class UIManager {
         while(!widgetRemoveQueue.isEmpty()) {
             WidgetRemoveRequest request = widgetRemoveQueue.poll();
             var viewportWidgets = widgets.get(request.viewportID());
-            viewportWidgets.get(request.name()).delete();
+            if(request.delete()) viewportWidgets.get(request.name()).delete();
             viewportWidgets.remove(request.name());
             renderOrderDirty[request.viewportID()] = true;
             
@@ -133,7 +133,7 @@ public final class UIManager {
         }
     }
     
-    public static final void removeWidget(int viewportID, String name) {
+    public static final void removeWidget(int viewportID, String name, boolean delete) {
         String failureReason = validateInput(viewportID, name);
         
         if(failureReason == null && !widgets.get(viewportID).containsKey(name)) {
@@ -141,15 +141,17 @@ public final class UIManager {
         }
         
         if(failureReason == null) {
-            widgetRemoveQueue.add(new WidgetRemoveRequest(viewportID, name));
+            widgetRemoveQueue.add(new WidgetRemoveRequest(viewportID, name, delete));
         } else {
-            Logger.logWarning("Failed to remove widget from viewport. " + failureReason, null);
+            Logger.logWarning("Failed to remove widget from viewport " + viewportID + ". " + failureReason, null);
         }
     }
     
-    public static final void clearWidgets(int viewportID) {
+    public static final void clearWidgets(int viewportID, boolean delete) {
         if(viewportID > -1 && viewportID < 4) {
+            if(delete) widgets.get(viewportID).values().forEach(Widget::delete);
             widgets.get(viewportID).clear();
+            renderOrderDirty[viewportID] = true;
         } else {
             Logger.logWarning("Invalid ID used (found: " + viewportID + " required: 0-3)", null);
         }

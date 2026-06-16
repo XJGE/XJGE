@@ -8,5 +8,6 @@ package org.xjge.core;
  */
 record WidgetRemoveRequest (
     int viewportID,
-    String name
+    String name,
+    boolean delete
 ) {}
