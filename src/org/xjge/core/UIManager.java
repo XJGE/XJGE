@@ -1,7 +1,7 @@
 package org.xjge.core;
 
-import org.xjge.graphics.Shader;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.LinkedList;
 import java.util.Map;
 import java.util.Queue;
@@ -22,10 +22,10 @@ public final class UIManager {
     private static final Queue<WidgetAddRequest> widgetAddQueue       = new LinkedList<>();
     private static final Queue<WidgetRemoveRequest> widgetRemoveQueue = new LinkedList<>();
     
-    private static final Map<Integer, Map<String, Widget>> widgets = new HashMap<>();
+    private static final Map<Integer, LinkedHashMap<String, Widget>> widgets = new HashMap<>();
     
     static {
-        for(int i = 0; i < 4; i++) widgets.put(i, new HashMap<>());
+        for(int i = 0; i < 4; i++) widgets.put(i, new LinkedHashMap<>());
     }
     
     private static String validateInput(int viewportID, String name) {
