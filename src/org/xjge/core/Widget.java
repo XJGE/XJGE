@@ -1,7 +1,4 @@
-package org.xjge.ui;
-
-import org.xjge.core.Mouse;
-import org.xjge.core.SplitScreenType;
+package org.xjge.core;
 
 /**
  * Organizes smaller elements (such as buttons, text, menus, etc.) that comprise
@@ -11,6 +8,8 @@ import org.xjge.core.SplitScreenType;
  * @since 2.0.0
  */
 public abstract class Widget {
+    
+    int layer;
     
     /**
      * Organizes the internal logic of this widget. Called automatically by the 
@@ -68,5 +67,15 @@ public abstract class Widget {
      * inside this method.
      */
     public abstract void delete();
+    
+    /**
+     * Obtains the number used to determine the rendering order of this widget. Lower values denote less priority whereas higher 
+     * values will take precedence.
+     * 
+     * @return the value of this widgets rendering layer
+     */
+    public final int getLayer() {
+        return layer;
+    }
     
 }

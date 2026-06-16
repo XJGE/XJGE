@@ -55,8 +55,8 @@ public final class ScrollBar {
                                      : (thumb.positionY - trough.positionY) * scaleFactor;
         
         if(!hidden) {
-            trough.render(0.5f, Color.BLACK);
-            thumb.render(1f, thumbColor);
+            trough.render(Color.BLACK, 0.5f);
+            thumb.render(thumbColor, 1f);
         }
     }
     

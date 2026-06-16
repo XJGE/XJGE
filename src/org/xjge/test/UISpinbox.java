@@ -166,11 +166,11 @@ class UISpinbox extends UITextInput {
 
     @Override
     void render() {
-        bounds.render(1f, Color.GRAY);
+        bounds.render(Color.GRAY, 1f);
         
         glEnable(GL_SCISSOR_TEST);
         glScissor((int) bounds.positionX, (int) bounds.positionY, (int) bounds.width, (int) bounds.height);
-            highlight.render(1f, Color.BLUE);
+            highlight.render(Color.BLUE, 1f);
             
             Font.FALLBACK.drawString(typed.toString(), 
                             textPositionX + getTextScrollOffset(), 
@@ -180,8 +180,8 @@ class UISpinbox extends UITextInput {
             if(showCarat && !disabled) carat.render();
         glDisable(GL_SCISSOR_TEST);
         
-        buttonUp.render(1f, upButtonColor);
-        buttonDown.render(1f, downButtonColor);
+        buttonUp.render(upButtonColor, 1f);
+        buttonDown.render(downButtonColor, 1f);
         
         upArrow.setColor(upArrowColor);
         downArrow.setColor(downArrowColor);

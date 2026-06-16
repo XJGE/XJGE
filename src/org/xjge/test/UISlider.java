@@ -34,8 +34,8 @@ final class UISlider {
     }
     
     void render() {
-        track.render(1f, Color.GRAY);
-        thumb.render(1f, thumbColor);
+        track.render(Color.GRAY, 1f);
+        thumb.render(thumbColor, 1f);
     }
     
     void relocate(Rectangle parent) {

@@ -103,9 +103,9 @@ abstract class EngineMetricsGroup {
     }
     
     void render(int cursorPositionX, int cursorPositionY) {
-        titleBar.render(1f, Color.BLACK);
+        titleBar.render(Color.BLACK, 1f);
         Font.FALLBACK.drawString(title, titleBar.positionX + 5, titleBar.positionY + 7, Color.SILVER, 1f);
-        contentArea.render(0.5f, Color.BLACK);
+        contentArea.render(Color.BLACK, 0.5f);
         
         buttonTextColor = (button.contains(cursorPositionX, cursorPositionY))
                         ? Color.WHITE

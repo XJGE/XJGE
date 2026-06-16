@@ -10,7 +10,7 @@ import org.xjge.graphics.ModelAnimator;
 import org.xjge.graphics.Texture;
 import org.xjge.ui.Font;
 import org.xjge.ui.Rectangle;
-import org.xjge.ui.Widget;
+import org.xjge.core.Widget;
 
 /**
  * 
@@ -66,7 +66,7 @@ public class UIAnimationWidget extends Widget {
                 default -> slateGray;
             };
             
-            background.render(1f, color);
+            background.render(color, 1f);
         }
         
         textPos.x = backgrounds[2].positionX + 132;

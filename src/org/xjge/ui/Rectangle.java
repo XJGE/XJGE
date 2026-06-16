@@ -115,10 +115,10 @@ public class Rectangle {
      * NOTE: Anytime a large number of rectangles needs to be drawn efficiently 
      * {@link RectangleBatch} should instead be used in place of this method.
      * 
-     * @param opacity the transparency value of the rectangle
      * @param color the color to draw the rectangle in
+     * @param opacity the transparency value of the rectangle
      */
-    public void render(float opacity, Color color) {
+    public void render(Color color, float opacity) {
         if(vaoHandle == -1) genBuffers();
         
         UIShader.getInstance().use();

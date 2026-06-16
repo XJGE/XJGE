@@ -7,7 +7,7 @@ import org.xjge.core.Camera;
 import org.xjge.core.Mouse;
 import org.xjge.core.SplitScreenType;
 import org.xjge.core.Window;
-import org.xjge.ui.Widget;
+import org.xjge.core.Widget;
 
 /**
  * 

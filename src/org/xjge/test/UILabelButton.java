@@ -38,7 +38,7 @@ class UILabelButton {
             }
         }
         
-        bounds.render(1f, boundsColor);
+        bounds.render(boundsColor, 1f);
         
         textPos.x = (bounds.positionX + (bounds.width / 2)) - (Font.FALLBACK.lengthInPixels(label) / 2);
         Font.FALLBACK.drawString(label, textPos.x, textPos.y, Color.WHITE, 1f);

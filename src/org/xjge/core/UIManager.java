@@ -1,13 +1,14 @@
 package org.xjge.core;
 
+import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.HashMap;
-import java.util.LinkedHashMap;
 import java.util.LinkedList;
+import java.util.List;
 import java.util.Map;
 import java.util.Queue;
 import org.joml.Matrix4f;
 import org.joml.Matrix4fc;
-import org.xjge.ui.Widget;
 
 /**
  * Created: May 9, 2025
@@ -17,15 +18,21 @@ import org.xjge.ui.Widget;
  */
 public final class UIManager {
 
+    private static final boolean[] renderOrderDirty = new boolean[4];
+    
     private static final Matrix4f projectionMatrix = new Matrix4f();
     
     private static final Queue<WidgetAddRequest> widgetAddQueue       = new LinkedList<>();
     private static final Queue<WidgetRemoveRequest> widgetRemoveQueue = new LinkedList<>();
     
-    private static final Map<Integer, LinkedHashMap<String, Widget>> widgets = new HashMap<>();
+    private static final Map<Integer, Map<String, Widget>> widgets = new HashMap<>();
+    private static final Map<Integer, List<Widget>> renderOrder    = new HashMap<>();
     
     static {
-        for(int i = 0; i < 4; i++) widgets.put(i, new LinkedHashMap<>());
+        for(int i = 0; i < 4; i++) {
+            widgets.put(i, new HashMap<>());
+            renderOrder.put(i, new ArrayList<>());
+        }
     }
     
     private static String validateInput(int viewportID, String name) {
@@ -43,7 +50,17 @@ public final class UIManager {
     }
     
     static void renderWidgets(int viewportID) {
-        for(Widget widget : widgets.get(viewportID).values()) widget.render();
+        if(renderOrderDirty[viewportID]) {
+            var list = renderOrder.get(viewportID);
+            
+            list.clear();
+            list.addAll(widgets.get(viewportID).values());
+            list.sort(Comparator.comparingInt(Widget::getLayer));
+            
+            renderOrderDirty[viewportID] = false;
+        }
+        
+        for(Widget widget : renderOrder.get(viewportID)) widget.render();
     }
     
     static void relocateWidgets(int viewportID, int viewportWidth, int viewportHeight) {
@@ -67,6 +84,7 @@ public final class UIManager {
         while(!widgetAddQueue.isEmpty()) {
             WidgetAddRequest request = widgetAddQueue.poll();
             widgets.get(request.viewportID()).put(request.name(), request.widget());
+            renderOrderDirty[request.viewportID()] = true;
             
             Logger.logInfo("Added widget \"" + request.name() + "\" to viewport " + request.viewportID());
         }
@@ -78,8 +96,28 @@ public final class UIManager {
             var viewportWidgets = widgets.get(request.viewportID());
             viewportWidgets.get(request.name()).delete();
             viewportWidgets.remove(request.name());
+            renderOrderDirty[request.viewportID()] = true;
             
             Logger.logInfo("Removed widget \"" + request.name() + "\" from viewport " + request.viewportID());
+        }
+    }
+    
+    public static void setWidgetLayer(int viewportID, String name, int layer) {
+        String failureReason = validateInput(viewportID, name);
+        
+        if(failureReason == null && !widgets.get(viewportID).containsKey(name)) {
+            failureReason = "Viewport " + viewportID + " does not contain a widget by the name \"" + name + "\"";
+        }
+        
+        if(failureReason == null) {
+            var widget = widgets.get(viewportID).get(name);
+        
+            if(widget.layer != layer) {
+                widget.layer = layer;
+                renderOrderDirty[viewportID] = true;
+            }
+        } else {
+            Logger.logWarning("Failed to change widget rendering layer for viewport . " + failureReason, null);
         }
     }
     

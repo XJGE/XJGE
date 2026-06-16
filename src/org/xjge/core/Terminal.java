@@ -291,7 +291,7 @@ final class Terminal {
      * Renders the interface to the window.
      */
     void render() {
-        outputArea.render(0.5f, Color.BLACK);
+        outputArea.render(Color.BLACK, 0.5f);
         
         int yOffset = ((outputArea.positionY + 6) - Font.FALLBACK.getSize()) - scrollBar.getContentOffset();
         
@@ -310,7 +310,7 @@ final class Terminal {
         glDisable(GL_SCISSOR_TEST);
         
         scrollBar.render();
-        commandLine.render(1, Color.BLACK);
+        commandLine.render(Color.BLACK, 1f);
         
         Font.FALLBACK.drawString(">", caretPosition.x, caretPosition.y, Color.WHITE, 1f);
         
