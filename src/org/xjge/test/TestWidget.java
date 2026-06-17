@@ -17,19 +17,20 @@ import org.xjge.ui.Rectangle;
  */
 public class TestWidget extends Widget {
 
-    private boolean toggle;
+    private int count;
     
     private Rectangle bounds = new Rectangle(0, 0, 350, 350);
     
     TestWidget() {
+        super(-1);
         relocate(Window.getSplitScreenType(), Window.getResolutionWidth(), Window.getResolutionHeight());
     }
     
     @Override
     public void update(double targetDelta, double trueDelta) {
         if(XJGE.tick(120)) {
-            toggle = !toggle;
-            UIManager.setWidgetLayer(GLFW_JOYSTICK_1, "layer_test", (toggle) ? 1 : -1);
+            count++;
+            if(count == 2) UIManager.bringToFront(GLFW_JOYSTICK_1, "layer_test");
         }
     }
 

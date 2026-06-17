@@ -130,7 +130,7 @@ public final class UIManager {
                 renderOrderDirty[viewportID] = true;
             }
         } else {
-            Logger.logWarning("Failed to change the rendering layer for " + name +  "." + failureReason, null);
+            Logger.logWarning("Failed to change the rendering layer for " + name +  ". " + failureReason, null);
         }
     }
     
@@ -148,7 +148,7 @@ public final class UIManager {
             topLayer[viewportID] = newLayer;
             renderOrderDirty[viewportID] = true;
         } else {
-            Logger.logWarning("Failed to change the rendering layer for " + name +  "." + failureReason, null);
+            Logger.logWarning("Failed to change the rendering layer for " + name +  ". " + failureReason, null);
         }
     }
     
@@ -160,7 +160,7 @@ public final class UIManager {
         if(failureReason == null) {
             widgetAddQueue.add(new WidgetAddRequest(viewportID, name, widget));
         } else {
-            Logger.logWarning("Failed to add widget to viewport " + viewportID + "." + failureReason, null);
+            Logger.logWarning("Failed to add widget to viewport " + viewportID + ". " + failureReason, null);
         }
     }
     

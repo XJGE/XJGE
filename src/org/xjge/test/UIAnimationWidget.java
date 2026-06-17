@@ -35,6 +35,7 @@ public class UIAnimationWidget extends Widget {
     private final UILabelButton resetSpeedButton;
     
     UIAnimationWidget(ModelAnimator animator, JointAttachment joint) {
+        super(0);
         for(int i = 0; i < backgrounds.length; i++) backgrounds[i] = new Rectangle();
         
         loopingControl   = new UICheckbox(animator, iconsTexture);

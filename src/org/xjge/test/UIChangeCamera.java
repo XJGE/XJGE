@@ -23,6 +23,7 @@ public class UIChangeCamera extends Widget {
     private final Camera next;
     
     UIChangeCamera(Camera previous, Camera next) {
+        super(0);
         this.previous = previous;
         this.next = next;
     }

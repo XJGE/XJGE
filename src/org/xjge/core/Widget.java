@@ -11,6 +11,10 @@ public abstract class Widget {
     
     int layer;
     
+    public Widget(int layer) {
+        this.layer = layer;
+    }
+    
     /**
      * Organizes the internal logic of this widget. Called automatically by the 
      * engine once every game tick. 
