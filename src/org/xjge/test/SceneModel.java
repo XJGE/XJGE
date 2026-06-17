@@ -86,6 +86,7 @@ public class SceneModel extends Scene {
         worldLight.brightness = 7f;
         
         UIManager.addWidget(GLFW_JOYSTICK_1, "animation_control", new UIAnimationWidget(animator, jointVis.attachment));
+        UIManager.addWidget(GLFW_JOYSTICK_1, "layer_test", new TestWidget());
     }
 
     @Override

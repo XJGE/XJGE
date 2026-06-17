@@ -543,6 +543,21 @@ public final class XJGE {
     }
     
     /**
+     * Utility method that finds the total number of times the provided 
+     * character appears in a string of text.
+     * 
+     * @param text the string of text to evaluate
+     * @param character the character to search for
+     * @param index a number denoting which index the search will start from
+     * @return the number of times the character appears in the string
+     */
+    public static int numCharOccurences(CharSequence text, char character, int index) {
+        if(index >= text.length()) return 0;
+        int count = (text.charAt(index) == character) ? 1 : 0;
+        return count + numCharOccurences(text, character, index + 1);
+    }
+    
+    /**
      * Changes the filter type applied to the framebuffer texture of a viewport.
      * 
      * @param viewportID the ID number of the viewport who's framebuffer texture 

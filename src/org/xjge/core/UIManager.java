@@ -18,6 +18,8 @@ import org.joml.Matrix4fc;
  */
 public final class UIManager {
 
+    private static final int[] topLayer = new int[4];
+    
     private static final boolean[] renderOrderDirty = new boolean[4];
     
     private static final Matrix4f projectionMatrix = new Matrix4f();
@@ -33,6 +35,16 @@ public final class UIManager {
             widgets.put(i, new HashMap<>());
             renderOrder.put(i, new ArrayList<>());
         }
+    }
+    
+    private static int findTopLayer(int viewportID) {
+        int result = 0;
+        
+        for(Widget widget : widgets.get(viewportID).values()) {
+            if(widget.layer > result) result = widget.layer;
+        }
+        
+        return result;
     }
     
     private static String validateInput(int viewportID, String name) {
@@ -56,6 +68,7 @@ public final class UIManager {
             list.clear();
             list.addAll(widgets.get(viewportID).values());
             list.sort(Comparator.comparingInt(Widget::getLayer));
+            topLayer[viewportID] = findTopLayer(viewportID);
             
             renderOrderDirty[viewportID] = false;
         }
@@ -117,7 +130,25 @@ public final class UIManager {
                 renderOrderDirty[viewportID] = true;
             }
         } else {
-            Logger.logWarning("Failed to change widget rendering layer for viewport . " + failureReason, null);
+            Logger.logWarning("Failed to change the rendering layer for " + name +  "." + failureReason, null);
+        }
+    }
+    
+    public static void bringToFront(int viewportID, String name) {
+        String failureReason = validateInput(viewportID, name);
+        
+        if(failureReason == null && !widgets.get(viewportID).containsKey(name)) {
+            failureReason = "Viewport " + viewportID + " does not contain a widget by the name \"" + name + "\"";
+        }
+        
+        if(failureReason == null) {
+            int newLayer = topLayer[viewportID] + 1;
+            var widget   = widgets.get(viewportID).get(name);
+            widget.layer         = newLayer;
+            topLayer[viewportID] = newLayer;
+            renderOrderDirty[viewportID] = true;
+        } else {
+            Logger.logWarning("Failed to change the rendering layer for " + name +  "." + failureReason, null);
         }
     }
     
@@ -129,7 +160,7 @@ public final class UIManager {
         if(failureReason == null) {
             widgetAddQueue.add(new WidgetAddRequest(viewportID, name, widget));
         } else {
-            Logger.logWarning("Failed to add widget to viewport. " + failureReason, null);
+            Logger.logWarning("Failed to add widget to viewport " + viewportID + "." + failureReason, null);
         }
     }
     
@@ -166,21 +197,6 @@ public final class UIManager {
             Logger.logWarning(failureReason, null);
             return false;
         }
-    }
-    
-    /**
-     * Utility method that finds the total number of times the provided 
-     * character appears in a string of text.
-     * 
-     * @param text the string of text to evaluate
-     * @param character the character to search for
-     * @param index a number denoting which index the search will start from
-     * @return the number of times the character appears in the string
-     */
-    public static int numCharOccurences(CharSequence text, char character, int index) {
-        if(index >= text.length()) return 0;
-        int count = (text.charAt(index) == character) ? 1 : 0;
-        return count + numCharOccurences(text, character, index + 1);
     }
     
     public static Matrix4fc getProjectionMatrix() {
