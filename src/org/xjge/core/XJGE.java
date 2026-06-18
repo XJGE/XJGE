@@ -285,7 +285,7 @@ public final class XJGE {
                     if(currentScene != null) currentScene.exit();
                     currentScene = sceneChangeRequests.poll();
                     Logger.logInfo("Current scene changed to \"" + currentScene.name + "\"");
-                    observable.notifyObservers("SCENE_CHANGED", currentScene);
+                    observable.notifyObservers("XJGE_SCENE_CHANGED", currentScene);
                 }
                 
                 //Process any unresolved events otherwise update the scene normally

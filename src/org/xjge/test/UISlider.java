@@ -29,7 +29,7 @@ final class UISlider {
     void update() {
         if(!dragging) {
             double time = animator.getNormalizedTime();
-            thumb.positionX = (int) (track.positionX + time * track.width) - 5;
+            thumb.position.x = (int) (track.position.x + time * track.width) - 5;
         }
     }
     
@@ -39,9 +39,9 @@ final class UISlider {
     }
     
     void relocate(Rectangle parent) {
-        track.positionX = parent.positionX + 10;
-        track.positionY = parent.positionY + parent.height - 160;
-        thumb.positionY = track.positionY - 9;
+        track.position.x = parent.position.x + 10;
+        track.position.y = parent.position.y + parent.height - 160;
+        thumb.position.y = track.position.y - 9;
     }
     
     void processMouseInput(Mouse mouse) {
@@ -50,20 +50,20 @@ final class UISlider {
         float mx = (float) mouse.getCursorPositionX();
         float my = (float) mouse.getCursorPositionY();
         
-        boolean hovering = mx >= track.positionX &&
-                           mx <= track.positionX + track.width &&
-                           my >= track.positionY - 10 &&
-                           my <= track.positionY + track.height + 10;
+        boolean hovering = mx >= track.position.x &&
+                           mx <= track.position.x + track.width &&
+                           my >= track.position.y - 10 &&
+                           my <= track.position.y + track.height + 10;
         
         if(mouse.clicked() && mouse.getButtonID() == GLFW_MOUSE_BUTTON_LEFT) {
             if(hovering || dragging) {
                 dragging = true;
                 
-                float time = (mx - track.positionX) / track.width;
+                float time = (mx - track.position.x) / track.width;
                 time = Math.max(0f, Math.min(1f, time));
                 
                 animator.setNormalizedTime(time);
-                thumb.positionX = (int) (track.positionX + time * track.width) - 5;
+                thumb.position.x = (int) (track.position.x + time * track.width) - 5;
                 
                 animator.pause();
             }

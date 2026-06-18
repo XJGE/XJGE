@@ -41,8 +41,8 @@ public class TestWidget extends Widget {
 
     @Override
     public final void relocate(SplitScreenType splitType, int viewportWidth, int viewportHeight) {
-        bounds.positionX = viewportWidth - bounds.width;
-        bounds.positionY = viewportHeight - bounds.height;
+        bounds.position.x = viewportWidth - bounds.width;
+        bounds.position.y = viewportHeight - bounds.height;
     }
 
     @Override

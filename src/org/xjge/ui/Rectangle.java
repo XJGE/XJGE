@@ -22,12 +22,12 @@ public class Rectangle {
     private int vboHandle;
     private int iboHandle;
     
-    public int positionX;
-    public int positionY;
     public int width;
     public int height;
     
     private IntBuffer indices;
+    
+    public final Vector2i position = new Vector2i();
     
     /**
      * Creates a new rectangle object.
@@ -45,10 +45,9 @@ public class Rectangle {
      * @param height the height of the rectangle (in pixels)
      */
     public Rectangle(int positionX, int positionY, int width, int height) {
-        this.positionX = positionX;
-        this.positionY = positionY;
-        this.width     = width;
-        this.height    = height;
+        position.set(positionX, positionY);
+        this.width  = width;
+        this.height = height;
     }
     
     /**
@@ -94,8 +93,8 @@ public class Rectangle {
      * @return true if an intersection was detected
      */
     public boolean contains(int pointX, int pointY) {
-        return (pointX > positionX && pointX < positionX + width) && 
-               (pointY > positionY && pointY < positionY + height);
+        return (pointX > position.x && pointX < position.x + width) && 
+               (pointY > position.y && pointY < position.y + height);
     }
     
     /**
@@ -133,10 +132,10 @@ public class Rectangle {
         try(MemoryStack stack = MemoryStack.stackPush()) {
             FloatBuffer vertices = stack.mallocFloat(28);
             
-            vertices.put(positionX)        .put(positionY + height).put(0).put(color.getRed()).put(color.getGreen()).put(color.getBlue()).put(opacity);
-            vertices.put(positionX + width).put(positionY + height).put(0).put(color.getRed()).put(color.getGreen()).put(color.getBlue()).put(opacity);
-            vertices.put(positionX + width).put(positionY)         .put(0).put(color.getRed()).put(color.getGreen()).put(color.getBlue()).put(opacity);
-            vertices.put(positionX)        .put(positionY)         .put(0).put(color.getRed()).put(color.getGreen()).put(color.getBlue()).put(opacity);
+            vertices.put(position.x)        .put(position.y + height).put(0).put(color.getRed()).put(color.getGreen()).put(color.getBlue()).put(opacity);
+            vertices.put(position.x + width).put(position.y + height).put(0).put(color.getRed()).put(color.getGreen()).put(color.getBlue()).put(opacity);
+            vertices.put(position.x + width).put(position.y)         .put(0).put(color.getRed()).put(color.getGreen()).put(color.getBlue()).put(opacity);
+            vertices.put(position.x)        .put(position.y)         .put(0).put(color.getRed()).put(color.getGreen()).put(color.getBlue()).put(opacity);
             
             vertices.flip();
             

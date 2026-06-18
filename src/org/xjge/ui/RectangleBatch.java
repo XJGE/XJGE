@@ -146,8 +146,8 @@ public final class RectangleBatch {
      */
     public void drawRectangle(Rectangle rectangle, Color color, float opacity) {
         drawRectangle(
-                rectangle.positionX,
-                rectangle.positionY,
+                rectangle.position.x,
+                rectangle.position.y,
                 rectangle.width,
                 rectangle.height,
                 color,

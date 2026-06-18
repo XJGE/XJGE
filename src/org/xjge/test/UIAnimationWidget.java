@@ -70,16 +70,16 @@ public class UIAnimationWidget extends Widget {
             background.render(color, 1f);
         }
         
-        textPos.x = backgrounds[2].positionX + 132;
-        textPos.y = backgrounds[2].positionY + backgrounds[2].height - 32;
+        textPos.x = backgrounds[2].position.x + 132;
+        textPos.y = backgrounds[2].position.y + backgrounds[2].height - 32;
         Font.FALLBACK.drawString("Speed", textPos.x, textPos.y, Color.WHITE, 1f);
         
-        textPos.x = backgrounds[2].positionX + 10;
-        textPos.y = backgrounds[2].positionY + backgrounds[2].height - 78;
+        textPos.x = backgrounds[2].position.x + 10;
+        textPos.y = backgrounds[2].position.y + backgrounds[2].height - 78;
         Font.FALLBACK.drawString("Animation Time", textPos.x, textPos.y, Color.WHITE, 1f);
         
-        textPos.x = backgrounds[2].positionX + 10;
-        textPos.y = backgrounds[2].positionY + backgrounds[2].height - 124;
+        textPos.x = backgrounds[2].position.x + 10;
+        textPos.y = backgrounds[2].position.y + backgrounds[2].height - 124;
         Font.FALLBACK.drawString("Joint Bone ID", textPos.x, textPos.y, Color.WHITE, 1f);
         
         loopingControl.render();
@@ -93,20 +93,20 @@ public class UIAnimationWidget extends Widget {
 
     @Override
     public final void relocate(SplitScreenType splitType, int viewportWidth, int viewportHeight) {
-        backgrounds[0].width     = 330;
-        backgrounds[0].height    = 400;
-        backgrounds[0].positionX = viewportWidth - backgrounds[0].width - 5;
-        backgrounds[0].positionY = viewportHeight - backgrounds[0].height - 5;
+        backgrounds[0].width      = 330;
+        backgrounds[0].height     = 400;
+        backgrounds[0].position.x = viewportWidth - backgrounds[0].width - 5;
+        backgrounds[0].position.y = viewportHeight - backgrounds[0].height - 5;
         
-        backgrounds[1].width     = 320;
-        backgrounds[1].height    = 120;
-        backgrounds[1].positionX = backgrounds[0].positionX + 5;
-        backgrounds[1].positionY = (backgrounds[0].positionY + backgrounds[0].height) - (backgrounds[1].height + 5);
+        backgrounds[1].width      = 320;
+        backgrounds[1].height     = 120;
+        backgrounds[1].position.x = backgrounds[0].position.x + 5;
+        backgrounds[1].position.y = (backgrounds[0].position.y + backgrounds[0].height) - (backgrounds[1].height + 5);
         
-        backgrounds[2].width     = 320;
-        backgrounds[2].height    = 265;
-        backgrounds[2].positionX = backgrounds[0].positionX + 5;
-        backgrounds[2].positionY = backgrounds[0].positionY + 5;
+        backgrounds[2].width      = 320;
+        backgrounds[2].height     = 265;
+        backgrounds[2].position.x = backgrounds[0].position.x + 5;
+        backgrounds[2].position.y = backgrounds[0].position.y + 5;
         
         loopingControl.relocate(backgrounds[1]);
         speedControl.relocate(backgrounds[2], 200, 38);

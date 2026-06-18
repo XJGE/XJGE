@@ -293,10 +293,10 @@ final class Terminal {
     void render() {
         outputArea.render(Color.BLACK, 0.5f);
         
-        int yOffset = ((outputArea.positionY + 6) - Font.FALLBACK.getSize()) - scrollBar.getContentOffset();
+        int yOffset = ((outputArea.position.y + 6) - Font.FALLBACK.getSize()) - scrollBar.getContentOffset();
         
         glEnable(GL_SCISSOR_TEST);
-        glScissor(outputArea.positionX, outputArea.positionY, outputArea.width, outputArea.height);
+        glScissor(outputArea.position.x, outputArea.position.y, outputArea.width, outputArea.height);
         
         for(int i = output.size() - 1; i >= 0; i--) {
             var commandOutput = output.get(i);
@@ -327,9 +327,9 @@ final class Terminal {
         commandLine.width  = windowWidth;
         commandLine.height = Font.FALLBACK.getSize() + 2;
         
-        outputArea.positionY = commandLine.height;
-        outputArea.width     = windowWidth;
-        outputArea.height    = 140;
+        outputArea.position.y = commandLine.height;
+        outputArea.width      = windowWidth;
+        outputArea.height     = 140;
         
         scrollBar.relocate();
         

@@ -47,7 +47,7 @@ public final class Mouse {
      * @return true if the cursor falls within the provided objects boundaries
      */
     public boolean hovered(Rectangle bounds) {
-        return hovered(bounds.positionX, bounds.positionY, bounds.width, bounds.height);
+        return hovered(bounds.position.x, bounds.position.y, bounds.width, bounds.height);
     }
     
     /**

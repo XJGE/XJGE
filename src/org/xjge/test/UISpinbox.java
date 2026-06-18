@@ -169,7 +169,7 @@ class UISpinbox extends UITextInput {
         bounds.render(Color.GRAY, 1f);
         
         glEnable(GL_SCISSOR_TEST);
-        glScissor((int) bounds.positionX, (int) bounds.positionY, (int) bounds.width, (int) bounds.height);
+        glScissor((int) bounds.position.x, (int) bounds.position.y, (int) bounds.width, (int) bounds.height);
             highlight.render(Color.BLUE, 1f);
             
             Font.FALLBACK.drawString(typed.toString(), 
@@ -192,23 +192,23 @@ class UISpinbox extends UITextInput {
 
     @Override
     void relocate(Rectangle parent, int offsetX, int offsetY) {
-        bounds.positionX = parent.positionX + offsetX;
-        bounds.positionY = parent.positionY + parent.height - offsetY;
+        bounds.position.x = parent.position.x + offsetX;
+        bounds.position.y = parent.position.y + parent.height - offsetY;
         
-        textPositionX = bounds.positionX + PADDING;
-        textPositionY = bounds.positionY + PADDING + 2;
+        textPositionX = bounds.position.x + PADDING;
+        textPositionY = bounds.position.y + PADDING + 2;
         
-        highlight.positionY = bounds.positionY + 2;
+        highlight.position.y = bounds.position.y + 2;
         
-        buttonUp.positionX = bounds.positionX + bounds.width;
-        buttonUp.positionY = bounds.positionY + 14;
-        buttonDown.positionX = bounds.positionX + bounds.width;
-        buttonDown.positionY = bounds.positionY;
+        buttonUp.position.x = bounds.position.x + bounds.width;
+        buttonUp.position.y = bounds.position.y + 14;
+        buttonDown.position.x = bounds.position.x + bounds.width;
+        buttonDown.position.y = bounds.position.y;
         
-        upArrow.position.x   = buttonUp.positionX - 2;
-        upArrow.position.y   = buttonUp.positionY - 4;
-        downArrow.position.x = buttonDown.positionX - 2;
-        downArrow.position.y = buttonDown.positionY - 4;
+        upArrow.position.x   = buttonUp.position.x - 2;
+        upArrow.position.y   = buttonUp.position.y - 4;
+        downArrow.position.x = buttonDown.position.x - 2;
+        downArrow.position.y = buttonDown.position.y - 4;
         
         unfocus();
     }
@@ -378,7 +378,7 @@ class UISpinbox extends UITextInput {
 
             if(typed.length() > 0) {
                 if(clickCount == 0) {
-                    int newIndex = findClosestIndex(((float) mouse.getCursorPositionX()) - bounds.positionX - PADDING);
+                    int newIndex = findClosestIndex(((float) mouse.getCursorPositionX()) - bounds.position.x - PADDING);
                     setIndex(newIndex);
                     firstIndex = getIndex();
                     highlight.width = 0;

@@ -35,11 +35,11 @@ final class UICheckbox {
     }
     
     void relocate(Rectangle parent) {
-        textPos.x = parent.positionX + 10;
-        textPos.y = parent.positionY - 35;
-        hitbox.positionX = parent.positionX + 65;
-        hitbox.positionY = parent.positionY - 40;
-        icon.position.set(hitbox.positionX, hitbox.positionY);
+        textPos.x = parent.position.x + 10;
+        textPos.y = parent.position.y - 35;
+        hitbox.position.x = parent.position.x + 65;
+        hitbox.position.y = parent.position.y - 40;
+        icon.position.set(hitbox.position.x, hitbox.position.y);
     }
     
     void onClick(Mouse mouse) {

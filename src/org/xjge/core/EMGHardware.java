@@ -41,8 +41,8 @@ class EMGHardware extends EngineMetricsGroup {
         }
         
         for(int i = 0; i < icons.length; i++) {
-            icons[i].position.x = contentArea.positionX + 10;
-            icons[i].position.y = (contentArea.positionY - (i * 26)) + 74;
+            icons[i].position.x = contentArea.position.x + 10;
+            icons[i].position.y = (contentArea.position.y - (i * 26)) + 74;
         }
     }
 

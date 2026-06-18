@@ -245,12 +245,12 @@ public abstract class UITextInput {
      */
     protected void highlightText(float cursorX) {
         if(typed.length() > 0 && hasFocus) {
-            if(cursorX - bounds.positionX - PADDING >= bounds.width - (PADDING * 3)) {
+            if(cursorX - bounds.position.x - PADDING >= bounds.width - (PADDING * 3)) {
                 setIndex((getIndex() > typed.length() - 1) ? typed.length() : getIndex() + 1);
                 scrollText();
             }
 
-            if(cursorX - bounds.positionX - PADDING <= (PADDING * 3)) {
+            if(cursorX - bounds.position.x - PADDING <= (PADDING * 3)) {
                 setIndex((getIndex() <= 0) ? 0 : getIndex() - 1);
                 scrollText();
             }
@@ -259,7 +259,7 @@ public abstract class UITextInput {
                 firstIndex    = getIndex();
                 firstIndexSet = true;
             } else {
-                int newIndex = findClosestIndex(cursorX - bounds.positionX - PADDING);
+                int newIndex = findClosestIndex(cursorX - bounds.position.x - PADDING);
                 setIndex(newIndex);
                 scrollText();
                 
@@ -271,7 +271,7 @@ public abstract class UITextInput {
                 int minX = Math.min(firstIndexPosX, lastIndexPosX);
                 int maxX = Math.max(firstIndexPosX, lastIndexPosX);
 
-                highlight.positionX = (minX + bounds.positionX + PADDING) + getTextScrollOffset();
+                highlight.position.x = (minX + bounds.position.x + PADDING) + getTextScrollOffset();
                 highlight.width     = (maxX - minX);
             }
         }
@@ -301,22 +301,22 @@ public abstract class UITextInput {
         if(currentIndex == 1) {
             textScrollOffset = 0;
         } else {
-            int result = (int) ((bounds.width - PADDING) - (lengthToIndex + textPositionX - (bounds.positionX + PADDING)));
+            int result = (int) ((bounds.width - PADDING) - (lengthToIndex + textPositionX - (bounds.position.x + PADDING)));
             
             if(previousIndex < currentIndex) {
-                if(carat.position.x >= (bounds.positionX + bounds.width) - (PADDING * 3)) {
+                if(carat.position.x >= (bounds.position.x + bounds.width) - (PADDING * 3)) {
                     textScrollOffset = result - PADDING;
                     if(textScrollOffset > 0) textScrollOffset = 0;
                 }
             } else {
-                if(carat.position.x <= bounds.positionX + (PADDING * 3)) {
+                if(carat.position.x <= bounds.position.x + (PADDING * 3)) {
                     textScrollOffset = (int) (result - bounds.width + PADDING);
                 }
             }
         }
         
-        carat.position.x = bounds.positionX + (lengthToIndex + textScrollOffset) + PADDING;
-        carat.position.y = bounds.positionY + 4;
+        carat.position.x = bounds.position.x + (lengthToIndex + textScrollOffset) + PADDING;
+        carat.position.y = bounds.position.y + 4;
     }
     
     /**

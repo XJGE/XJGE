@@ -37,22 +37,22 @@ public final class ScrollBar {
     private void scroll(double change) {
         change = -change;
         
-        boolean minLimitReached = thumb.positionY + change < trough.positionY;
-        boolean maxLimitReached = (thumb.positionY + thumb.height) + change > trough.positionY + trough.height;
+        boolean minLimitReached = thumb.position.y + change < trough.position.y;
+        boolean maxLimitReached = (thumb.position.y + thumb.height) + change > trough.position.y + trough.height;
         
         if(minLimitReached) {
-            thumb.positionY = trough.positionY;
+            thumb.position.y = trough.position.y;
         } else if(maxLimitReached) {
-            thumb.positionY = trough.positionY + trough.height - thumb.height;
+            thumb.position.y = trough.position.y + trough.height - thumb.height;
         } else {
-            thumb.positionY += change;
+            thumb.position.y += change;
         }
     }
     
     public void render() {
         float scaleFactor = ((currentContentLength / thumb.height) / contentScale);
-        contentOffset = (startAtTop) ? ((thumb.positionY + thumb.height) - (trough.positionY + trough.height)) * scaleFactor
-                                     : (thumb.positionY - trough.positionY) * scaleFactor;
+        contentOffset = (startAtTop) ? ((thumb.position.y + thumb.height) - (trough.position.y + trough.height)) * scaleFactor
+                                     : (thumb.position.y - trough.position.y) * scaleFactor;
         
         if(!hidden) {
             trough.render(Color.BLACK, 0.5f);
@@ -61,10 +61,10 @@ public final class ScrollBar {
     }
     
     public void relocate() {
-        trough.positionX = (contentArea.positionX + contentArea.width) - trough.width;
-        trough.positionY = contentArea.positionY;
-        trough.height    = contentArea.height;
-        thumb.positionX  = trough.positionX;
+        trough.position.x = (contentArea.position.x + contentArea.width) - trough.width;
+        trough.position.y = contentArea.position.y;
+        trough.height     = contentArea.height;
+        thumb.position.x  = trough.position.x;
     }
     
     public void processMouseInput(Mouse mouse) {
@@ -99,7 +99,7 @@ public final class ScrollBar {
         
         if(previousContentLength != currentContentLength) {
             if(startAtTop) {
-                thumb.positionY = (trough.positionY + trough.height) - thumb.height;
+                thumb.position.y = (trough.position.y + trough.height) - thumb.height;
             }
             
             scroll(previousThumbHeight - thumb.height);

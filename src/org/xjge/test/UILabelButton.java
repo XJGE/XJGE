@@ -40,14 +40,14 @@ class UILabelButton {
         
         bounds.render(boundsColor, 1f);
         
-        textPos.x = (bounds.positionX + (bounds.width / 2)) - (Font.FALLBACK.lengthInPixels(label) / 2);
+        textPos.x = (bounds.position.x + (bounds.width / 2)) - (Font.FALLBACK.lengthInPixels(label) / 2);
         Font.FALLBACK.drawString(label, textPos.x, textPos.y, Color.WHITE, 1f);
     }
     
     void relocate(Rectangle parent, int offsetX, int offsetY) {
-        bounds.positionX = parent.positionX + offsetX;
-        bounds.positionY = parent.positionY + offsetY;
-        textPos.y        = bounds.positionY + 8;
+        bounds.position.x = parent.position.x + offsetX;
+        bounds.position.y = parent.position.y + offsetY;
+        textPos.y         = bounds.position.y + 8;
     }
     
     void processMouseInput(Mouse mouse, UISpinbox speedControl) {

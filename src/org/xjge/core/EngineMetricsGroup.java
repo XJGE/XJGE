@@ -88,14 +88,14 @@ abstract class EngineMetricsGroup {
         contentArea.height = (expanded) ? contentAreaHeight : 0;
         
         titleBar.width     = (expanded) ? contentAreaWidth : 300;
-        titleBar.positionY = Window.getHeight() - ((33 * (index + 1)) + contentOffset);
+        titleBar.position.y = Window.getHeight() - ((33 * (index + 1)) + contentOffset);
         
-        contentArea.positionX = titleBar.positionX;
-        contentArea.positionY = titleBar.positionY - contentAreaHeight;
+        contentArea.position.x = titleBar.position.x;
+        contentArea.position.y = titleBar.position.y - contentAreaHeight;
 
         button.width     = !expanded ? 98 : 126;
-        button.positionX = titleBar.positionX + titleBar.width - button.width;
-        button.positionY = titleBar.positionY;
+        button.position.x = titleBar.position.x + titleBar.width - button.width;
+        button.position.y = titleBar.position.y;
         
         update(deltaMetric, fps, entityCount, noclip);
         
@@ -104,7 +104,7 @@ abstract class EngineMetricsGroup {
     
     void render(int cursorPositionX, int cursorPositionY) {
         titleBar.render(Color.BLACK, 1f);
-        Font.FALLBACK.drawString(title, titleBar.positionX + 5, titleBar.positionY + 7, Color.SILVER, 1f);
+        Font.FALLBACK.drawString(title, titleBar.position.x + 5, titleBar.position.y + 7, Color.SILVER, 1f);
         contentArea.render(Color.BLACK, 0.5f);
         
         buttonTextColor = (button.contains(cursorPositionX, cursorPositionY))
@@ -112,18 +112,18 @@ abstract class EngineMetricsGroup {
                         : Color.CYAN;
         
         Font.FALLBACK.drawString(!expanded ? "[expand]" : "[collapse]", 
-                                button.positionX, 
-                                button.positionY + 8, 
+                                button.position.x, 
+                                button.position.y + 8, 
                                 buttonTextColor, 1f);
         
         if(expanded) {
             glEnable(GL_SCISSOR_TEST);
-            glScissor(contentArea.positionX, contentArea.positionY, contentArea.width, contentArea.height);
+            glScissor(contentArea.position.x, contentArea.position.y, contentArea.width, contentArea.height);
             
             for(int i = 0; i < output.size(); i++) {
                 Font.FALLBACK.drawString(output.get(i), 
-                                         contentArea.positionX + 10, 
-                                         (titleBar.positionY - (Font.FALLBACK.getSize() * (i + 1))) - contentOffset, 
+                                         contentArea.position.x + 10, 
+                                         (titleBar.position.y - (Font.FALLBACK.getSize() * (i + 1))) - contentOffset, 
                                          highlight);
             }
             
