@@ -62,12 +62,8 @@ public class UIAnimationWidget extends Widget {
         for(int i = 0; i < backgrounds.length; i++) {
             var background = backgrounds[i];
             
-            var color = switch(i) {
-                case 0  -> Color.BLACK;
-                default -> slateGray;
-            };
-            
-            background.render(color, 1f);
+            background.color.set((i == 0) ? Color.BLACK : slateGray);
+            background.render();
         }
         
         textPos.x = backgrounds[2].position.x + 132;

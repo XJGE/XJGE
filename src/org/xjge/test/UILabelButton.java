@@ -20,15 +20,14 @@ class UILabelButton {
     private final String type;
     private String label;
     
-    private final Vector2i textPos  = new Vector2i();
-    private final Color boundsColor = new Color(0.5f);
+    private final Vector2i textPos = new Vector2i();
     
     UILabelButton(ModelAnimator animator, String label, int width) {
         this.animator = animator;
         this.label    = label;
         
         type   = label;
-        bounds = new Rectangle(0, 0, width, 30);
+        bounds = new Rectangle(width, 30, 0, 0, new Color(0.5f), 1f);
     }
     
     void render() {
@@ -38,7 +37,7 @@ class UILabelButton {
             }
         }
         
-        bounds.render(boundsColor, 1f);
+        bounds.render();
         
         textPos.x = (bounds.position.x + (bounds.width / 2)) - (Font.FALLBACK.lengthInPixels(label) / 2);
         Font.FALLBACK.drawString(label, textPos.x, textPos.y, Color.WHITE, 1f);
@@ -51,7 +50,7 @@ class UILabelButton {
     }
     
     void processMouseInput(Mouse mouse, UISpinbox speedControl) {
-        boundsColor.set(mouse.hovered(bounds) ? 0.75f : 0.5f);
+        bounds.color.set(mouse.hovered(bounds) ? 0.75f : 0.5f);
         
         if(mouse.clickedOnce(bounds, GLFW_MOUSE_BUTTON_LEFT)) {
             switch(type) {

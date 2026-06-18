@@ -530,7 +530,7 @@ public final class Font extends Asset {
                 
                 if(effect == null) {
                     glyph.opacity = XJGE.clampValue(0f, 1f, opacity);
-                    glyph.color.copy(color);
+                    glyph.color.set(color);
                 } else {
                     glyph.opacity = XJGE.clampValue(0f, 1f, glyph.opacity);
                     effect.apply(i, glyph);

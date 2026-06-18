@@ -46,8 +46,8 @@ class UISpinbox extends UITextInput {
     private final ModelAnimator animator;
     private final JointAttachment joint;
     
-    private final Rectangle buttonUp   = new Rectangle(0, 0, 20, 14);
-    private final Rectangle buttonDown = new Rectangle(0, 0, 20, 14);
+    private final Rectangle buttonUp   = new Rectangle(20, 14, 0, 0, new Color(0.75f), 1f);
+    private final Rectangle buttonDown = new Rectangle(20, 14, 0, 0, new Color(0.75f), 1f);
     
     private final Timer clickTimer = new Timer();
     private final Timer caratTimer = new Timer();
@@ -57,8 +57,6 @@ class UISpinbox extends UITextInput {
     private final Icon downArrow;
     private Color upArrowColor    = new Color(0.25f);
     private Color downArrowColor  = new Color(0.25f);
-    private Color upButtonColor   = new Color(0.75f);
-    private Color downButtonColor = new Color(0.75f);
     
     public UISpinbox(ModelAnimator animator, JointAttachment joint, int width, Texture iconsTexture, String type, String format) {
         super(width, iconsTexture);
@@ -75,6 +73,9 @@ class UISpinbox extends UITextInput {
             case "Animation Time" -> setValue(animator.getTime());
             case "Joint Bone ID"  -> setValue(0);
         }
+        
+        bounds.color.set(Color.GRAY);
+        highlight.color.set(Color.BLUE);
     }
     
     private void setValue(double val) {
@@ -166,11 +167,11 @@ class UISpinbox extends UITextInput {
 
     @Override
     void render() {
-        bounds.render(Color.GRAY, 1f);
+        bounds.render();
         
         glEnable(GL_SCISSOR_TEST);
         glScissor((int) bounds.position.x, (int) bounds.position.y, (int) bounds.width, (int) bounds.height);
-            highlight.render(Color.BLUE, 1f);
+            highlight.render();
             
             Font.FALLBACK.drawString(typed.toString(), 
                             textPositionX + getTextScrollOffset(), 
@@ -180,8 +181,8 @@ class UISpinbox extends UITextInput {
             if(showCarat && !disabled) carat.render();
         glDisable(GL_SCISSOR_TEST);
         
-        buttonUp.render(upButtonColor, 1f);
-        buttonDown.render(downButtonColor, 1f);
+        buttonUp.render();
+        buttonDown.render();
         
         upArrow.setColor(upArrowColor);
         downArrow.setColor(downArrowColor);
@@ -322,18 +323,18 @@ class UISpinbox extends UITextInput {
         if(disabled) return null;
         
         if(mouse.hovered(buttonUp)) {
-            upButtonColor.set(1f);
+            buttonUp.color.set(1f);
             upArrowColor.set(0.5f);
         } else {
-            upButtonColor.set(0.75f);
+            buttonUp.color.set(0.75f);
             upArrowColor.set(0.25f);
         }
         
         if(mouse.hovered(buttonDown)) {
-            downButtonColor.set(1f);
+            buttonDown.color.set(1f);
             downArrowColor.set(0.5f);
         } else {
-            downButtonColor.set(0.75f);
+            buttonDown.color.set(0.75f);
             downArrowColor.set(0.25f);
         }
         

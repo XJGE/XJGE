@@ -72,12 +72,12 @@ public class SceneLight extends Scene {
         lightA = LightingSystem.request();
         lightA.position.set(2, 1.5f, 7);
         lightA.brightness = 0.5f;
-        lightA.color.copy(Color.PURPLE);
+        lightA.color.set(Color.PURPLE);
         
         lightB = LightingSystem.request();
         lightB.position.set(-2, 1.5f, -7);
         lightB.type = LightType.SPOT;
-        lightB.color.copy(Color.RED);
+        lightB.color.set(Color.RED);
         
         //LightB = LightingSystem.request();
         lightC = LightingSystem.request(); //TODO: you can assign this to A or B and it will still work

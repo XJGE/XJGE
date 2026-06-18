@@ -52,30 +52,6 @@ public final class Color {
         this(false, shade, shade, shade);
     }
     
-    @Override
-    public boolean equals(Object obj) {
-        if(this == obj) return true;
-        if(obj == null || getClass() != obj.getClass()) return false;
-
-        Color other = (Color) obj;
-        return Float.compare(getRed(), other.getRed()) == 0 &&
-               Float.compare(getGreen(), other.getGreen()) == 0 &&
-               Float.compare(getBlue(), other.getBlue()) == 0;
-    }
-
-    @Override
-    public int hashCode() {
-        int result = Float.hashCode(getRed());
-        result = 31 * result + Float.hashCode(getGreen());
-        result = 31 * result + Float.hashCode(getBlue());
-        return result;
-    }
-    
-    public void copy(Color other) {
-        if(immutable) return;
-        components.set(other.asVector3f());
-    }
-    
     public void randomize() {
         if(immutable) return;
         components.set(random.nextInt(256) / 255f, random.nextInt(256) / 255f, random.nextInt(256) / 255f);
@@ -108,6 +84,22 @@ public final class Color {
         setBlue(blue);
     }
     
+    public void set(Color other) {
+        if(immutable) return;
+        components.set(other.asVector3f());
+    }
+    
+    @Override
+    public boolean equals(Object obj) {
+        if(this == obj) return true;
+        if(obj == null || getClass() != obj.getClass()) return false;
+
+        Color other = (Color) obj;
+        return Float.compare(getRed(), other.getRed()) == 0 &&
+               Float.compare(getGreen(), other.getGreen()) == 0 &&
+               Float.compare(getBlue(), other.getBlue()) == 0;
+    }
+    
     public float getRed() {
         return components.x;
     }
@@ -118,6 +110,14 @@ public final class Color {
     
     public float getBlue() {
         return components.z;
+    }
+    
+    @Override
+    public int hashCode() {
+        int result = Float.hashCode(getRed());
+        result = 31 * result + Float.hashCode(getGreen());
+        result = 31 * result + Float.hashCode(getBlue());
+        return result;
     }
     
     /**

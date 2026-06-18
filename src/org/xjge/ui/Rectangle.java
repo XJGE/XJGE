@@ -7,6 +7,7 @@ import static org.lwjgl.opengl.GL30.*;
 import org.lwjgl.system.MemoryStack;
 import org.xjge.core.ErrorUtils;
 import org.xjge.core.UIManager;
+import org.xjge.core.XJGE;
 import org.xjge.graphics.Color;
 
 /**
@@ -18,6 +19,8 @@ import org.xjge.graphics.Color;
  */
 public class Rectangle {
 
+    private float opacity = 1f;
+    
     private int vaoHandle = -1;
     private int vboHandle;
     private int iboHandle;
@@ -28,26 +31,40 @@ public class Rectangle {
     private IntBuffer indices;
     
     public final Vector2i position = new Vector2i();
+    public final Color color       = new Color(1f);
     
     /**
      * Creates a new rectangle object.
      */
     public Rectangle() {}
     
+    public Rectangle(int width, int height) {
+        this.width  = width;
+        this.height = height;
+    }
+    
     /**
      * Creates a new rectangle object using the data specified. Rectangles are 
      * anchored around their bottom-left corner and use pixels for both 
      * coordinates and scale.
      * 
-     * @param positionX the horizontal position of the rectangle
-     * @param positionY the vertical position of the rectangle
      * @param width the width of the rectangle (in pixels)
      * @param height the height of the rectangle (in pixels)
+     * @param positionX the horizontal position of the rectangle
+     * @param positionY the vertical position of the rectangle
      */
-    public Rectangle(int positionX, int positionY, int width, int height) {
-        position.set(positionX, positionY);
+    public Rectangle(int width, int height, int positionX, int positionY) {
         this.width  = width;
         this.height = height;
+        position.set(positionX, positionY);
+    }
+    
+    public Rectangle(int width, int height, int positionX, int positionY, Color color, float opacity) {
+        this.width   = width;
+        this.height  = height;
+        position.set(positionX, positionY);
+        this.color.set(color);
+        setOpacity(opacity);
     }
     
     /**
@@ -85,39 +102,9 @@ public class Rectangle {
     }
     
     /**
-     * Determines if the specified point has intersected this rectangle.
-     * 
-     * @param pointX a value indicating the horizontal position of the point to check
-     * @param pointY a value indicating the vertical position of the point to check
-     * 
-     * @return true if an intersection was detected
+     * A quick and dirty way to render a rectangle with minimal overhead.
      */
-    public boolean contains(int pointX, int pointY) {
-        return (pointX > position.x && pointX < position.x + width) && 
-               (pointY > position.y && pointY < position.y + height);
-    }
-    
-    /**
-     * Vector2i variant of the {@link contains(int, int)} method.
-     * 
-     * @param point a 2D point inside the game window to check
-     * 
-     * @return true if an intersection was detected
-     */
-    public boolean contains(Vector2i point) {
-        return contains(point.x, point.y);
-    }
-    
-    /**
-     * A quick and dirty way to render a rectangle with little overhead.
-     * <p>
-     * NOTE: Anytime a large number of rectangles needs to be drawn efficiently 
-     * {@link RectangleBatch} should instead be used in place of this method.
-     * 
-     * @param color the color to draw the rectangle in
-     * @param opacity the transparency value of the rectangle
-     */
-    public void render(Color color, float opacity) {
+    public void render() {
         if(vaoHandle == -1) genBuffers();
         
         UIShader.getInstance().use();
@@ -158,6 +145,38 @@ public class Rectangle {
         glDeleteVertexArrays(vaoHandle);
         glDeleteBuffers(vboHandle);
         glDeleteBuffers(iboHandle);
+    }
+    
+    public final void setOpacity(float opacity) {
+        this.opacity = XJGE.clampValue(0f, 1f, opacity);
+    }
+    
+    /**
+     * Determines if the specified point has intersected this rectangle.
+     * 
+     * @param pointX a value indicating the horizontal position of the point to check
+     * @param pointY a value indicating the vertical position of the point to check
+     * 
+     * @return true if an intersection was detected
+     */
+    public boolean contains(int pointX, int pointY) {
+        return (pointX > position.x && pointX < position.x + width) && 
+               (pointY > position.y && pointY < position.y + height);
+    }
+    
+    /**
+     * Vector2i variant of the {@link contains(int, int)} method.
+     * 
+     * @param point a 2D point inside the game window to check
+     * 
+     * @return true if an intersection was detected
+     */
+    public boolean contains(Vector2i point) {
+        return contains(point.x, point.y);
+    }
+    
+    public float getOpacity() {
+        return opacity;
     }
     
 }

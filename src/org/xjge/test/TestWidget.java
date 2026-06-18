@@ -19,7 +19,7 @@ public class TestWidget extends Widget {
 
     private int count;
     
-    private Rectangle bounds = new Rectangle(0, 0, 350, 350);
+    private Rectangle bounds = new Rectangle(350, 350, 0, 0, Color.SILVER, 1f);
     
     TestWidget() {
         super(-1);
@@ -36,7 +36,7 @@ public class TestWidget extends Widget {
 
     @Override
     public void render() {
-        bounds.render(Color.SILVER, 1f);
+        bounds.render();
     }
 
     @Override

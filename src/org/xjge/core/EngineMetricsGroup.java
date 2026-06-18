@@ -31,9 +31,9 @@ abstract class EngineMetricsGroup {
     
     final String title;
     
-    final Rectangle button      = new Rectangle(0, 0, 0, 28);
-    final Rectangle titleBar    = new Rectangle(5, 0, 0, 28);
-    final Rectangle contentArea = new Rectangle();
+    final Rectangle button      = new Rectangle(0, 28, 0, 0);
+    final Rectangle titleBar    = new Rectangle(0, 28, 5, 0, Color.BLACK, 1f);
+    final Rectangle contentArea = new Rectangle(0, 0, 0, 0, Color.BLACK, 0.5f);
     final TextEffect highlight  = new HighlightInfo();
     
     final List<StringBuilder> output = new ArrayList<>();
@@ -45,7 +45,7 @@ abstract class EngineMetricsGroup {
         @Override
         public void apply(int index, Glyph glyph) {
             if(index == 0) colonFound = false;
-            glyph.color.copy((colonFound) ? Color.YELLOW : Color.WHITE);
+            glyph.color.set((colonFound) ? Color.YELLOW : Color.WHITE);
             if(glyph.character == ':') colonFound = true;
         }
 
@@ -103,9 +103,9 @@ abstract class EngineMetricsGroup {
     }
     
     void render(int cursorPositionX, int cursorPositionY) {
-        titleBar.render(Color.BLACK, 1f);
+        titleBar.render();
         Font.FALLBACK.drawString(title, titleBar.position.x + 5, titleBar.position.y + 7, Color.SILVER, 1f);
-        contentArea.render(Color.BLACK, 0.5f);
+        contentArea.render();
         
         buttonTextColor = (button.contains(cursorPositionX, cursorPositionY))
                         ? Color.WHITE

@@ -75,8 +75,8 @@ final class Terminal {
             if(glyph.character == ' ') start = index;
 
             switch(glyph.character) {
-                default -> glyph.color.copy((start != 0 && index > start) ? Color.YELLOW : Color.CYAN);
-                case '(', ')', ',', '<', '>' -> glyph.color.copy(Color.WHITE);
+                default -> glyph.color.set((start != 0 && index > start) ? Color.YELLOW : Color.CYAN);
+                case '(', ')', ',', '<', '>' -> glyph.color.set(Color.WHITE);
             }
         }
 
@@ -101,6 +101,10 @@ final class Terminal {
         glyphAdvance = Font.FALLBACK.getGlyphAdvance('>');
         cursorPosition.x  = glyphAdvance;
         commandPosition.x = glyphAdvance;
+        
+        commandLine.color.set(Color.BLACK);
+        outputArea.color.set(Color.BLACK);
+        outputArea.setOpacity(0.5f);
         
         relocate(Window.getWidth(), Window.getHeight());
     }
@@ -291,7 +295,7 @@ final class Terminal {
      * Renders the interface to the window.
      */
     void render() {
-        outputArea.render(Color.BLACK, 0.5f);
+        outputArea.render();
         
         int yOffset = ((outputArea.position.y + 6) - Font.FALLBACK.getSize()) - scrollBar.getContentOffset();
         
@@ -310,7 +314,7 @@ final class Terminal {
         glDisable(GL_SCISSOR_TEST);
         
         scrollBar.render();
-        commandLine.render(Color.BLACK, 1f);
+        commandLine.render();
         
         Font.FALLBACK.drawString(">", caretPosition.x, caretPosition.y, Color.WHITE, 1f);
         

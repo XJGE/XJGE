@@ -15,12 +15,10 @@ final class UISlider {
     
     private boolean dragging = false;
     
-    public Rectangle track = new Rectangle(0, 0, 300, 6);
-    public Rectangle thumb = new Rectangle(0, 0, 10, 24);
+    public Rectangle track = new Rectangle(300, 6, 0, 0, Color.GRAY, 1f);
+    public Rectangle thumb = new Rectangle(10, 24, 0, 0, new Color(0.75f), 1f);
     
     private final ModelAnimator animator;
-    
-    private final Color thumbColor = new Color(0.75f);
     
     UISlider(ModelAnimator animator) {
         this.animator = animator;
@@ -34,8 +32,8 @@ final class UISlider {
     }
     
     void render() {
-        track.render(Color.GRAY, 1f);
-        thumb.render(thumbColor, 1f);
+        track.render();
+        thumb.render();
     }
     
     void relocate(Rectangle parent) {
@@ -45,7 +43,7 @@ final class UISlider {
     }
     
     void processMouseInput(Mouse mouse) {
-        thumbColor.set(mouse.hovered(thumb) ? 1f : 0.75f);
+        thumb.color.set(mouse.hovered(thumb) ? 1f : 0.75f);
         
         float mx = (float) mouse.getCursorPositionX();
         float my = (float) mouse.getCursorPositionY();

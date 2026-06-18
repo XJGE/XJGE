@@ -23,10 +23,8 @@ public final class ScrollBar {
     private double previousCursorPositionY;
     
     private final Rectangle contentArea;
-    private final Rectangle thumb  = new Rectangle(0, 0, 20, 0);
-    private final Rectangle trough = new Rectangle(0, 0, 20, 0);
-    
-    private Color thumbColor = Color.GRAY;
+    private final Rectangle thumb  = new Rectangle(20, 0, 0, 0);
+    private final Rectangle trough = new Rectangle(20, 0, 0, 0, Color.BLACK, 0.5f);
     
     public ScrollBar(Rectangle contentArea, boolean startAtTop) {
         this.contentArea = contentArea;
@@ -55,8 +53,8 @@ public final class ScrollBar {
                                      : (thumb.position.y - trough.position.y) * scaleFactor;
         
         if(!hidden) {
-            trough.render(Color.BLACK, 0.5f);
-            thumb.render(thumbColor, 1f);
+            trough.render();
+            thumb.render();
         }
     }
     
@@ -69,7 +67,7 @@ public final class ScrollBar {
     
     public void processMouseInput(Mouse mouse) {
         if(!hidden) {
-            thumbColor = (mouse.hovered(thumb)) ? Color.SILVER : Color.GRAY;
+            thumb.color.set((mouse.hovered(thumb)) ? Color.SILVER : Color.GRAY);
             if(!thumbClicked) thumbClicked = mouse.clicked(thumb, GLFW_MOUSE_BUTTON_LEFT);
             double change = 0;
             

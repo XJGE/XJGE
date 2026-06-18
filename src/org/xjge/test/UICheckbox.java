@@ -18,7 +18,7 @@ import org.xjge.ui.Rectangle;
 final class UICheckbox {
 
     private final Vector2i textPos = new Vector2i();
-    private final Rectangle hitbox = new Rectangle(0, 0, 22, 22);
+    private final Rectangle hitbox = new Rectangle(22, 22, 0, 0);
     private final Icon icon;
     private final ModelAnimator animator;
     
