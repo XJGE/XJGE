@@ -184,8 +184,8 @@ class UISpinbox extends UITextInput {
         buttonUp.render();
         buttonDown.render();
         
-        upArrow.setColor(upArrowColor);
-        downArrow.setColor(downArrowColor);
+        upArrow.color.set(upArrowColor);
+        downArrow.color.set(downArrowColor);
         
         upArrow.render();
         downArrow.render();

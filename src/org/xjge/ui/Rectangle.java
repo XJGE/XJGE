@@ -147,10 +147,6 @@ public class Rectangle {
         glDeleteBuffers(iboHandle);
     }
     
-    public final void setOpacity(float opacity) {
-        this.opacity = XJGE.clampValue(0f, 1f, opacity);
-    }
-    
     /**
      * Determines if the specified point has intersected this rectangle.
      * 
@@ -177,6 +173,11 @@ public class Rectangle {
     
     public float getOpacity() {
         return opacity;
+    }
+    
+    public final Rectangle setOpacity(float opacity) {
+        this.opacity = XJGE.clampValue(0f, 1f, opacity);
+        return this;
     }
     
 }
