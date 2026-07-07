@@ -48,6 +48,7 @@ public final class ScrollBar {
     }
     
     public void render() {
+        //TODO: in theory this can drift with large enough content, see the NNCEditors implementation for normalization fix
         float scaleFactor = ((currentContentLength / thumb.height) / contentScale);
         contentOffset = (startAtTop) ? ((thumb.position.y + thumb.height) - (trough.position.y + trough.height)) * scaleFactor
                                      : (thumb.position.y - trough.position.y) * scaleFactor;

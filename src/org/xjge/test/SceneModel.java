@@ -94,7 +94,7 @@ public class SceneModel extends Scene {
         for(var entity : queryEntities(ModelAnimator.class)) {
             entity.getComponent(ModelAnimator.class).update((float) targetDelta);
             
-            if(entity.hasComponent(JointVisualizer.class)) { //Order matters here, must come AFTER the animator
+            if(entity.hasComponents(JointVisualizer.class)) { //Order matters here, must come AFTER the animator
                 entity.getComponent(JointVisualizer.class).update();
             }
         }
@@ -118,7 +118,7 @@ public class SceneModel extends Scene {
             //glDisable(GL_CULL_FACE);
             glDisable(GL_DEPTH_TEST);
             
-            if(entity.hasComponent(JointVisualizer.class)) {
+            if(entity.hasComponents(JointVisualizer.class)) {
                 entity.getComponent(JointVisualizer.class).render(camera);
             }
         }

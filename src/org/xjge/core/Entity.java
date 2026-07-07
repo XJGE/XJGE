@@ -108,13 +108,14 @@ public final class Entity {
     }
     
     /**
-     * Checks to see if this entity has the specified component attached.
+     * Checks to see if this entity has the specified components attached.
      * 
-     * @param subclass the subclass object representing the component to check for
+     * @param subclasses a  subclasses representing the component to check for
      * @return true, if the entity has a component of the specified type
-     */
-    public final boolean hasComponent(Class<? extends EntityComponent> subclass) {
-        return components.containsKey(subclass);
+     */    
+    public final boolean hasComponents(Class<? extends EntityComponent>... subclasses) {
+        for(var type : subclasses) if(!components.containsKey(type)) return false;
+        return true;
     }
     
     /**
