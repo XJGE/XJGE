@@ -43,6 +43,10 @@ public final class JointAttachment {
             .mul(localOffset);
     }
     
+    public String getBoneName() {
+        return boneName;
+    }
+    
     public Matrix4fc getLocalOffset() {
         return localOffset;
     }
