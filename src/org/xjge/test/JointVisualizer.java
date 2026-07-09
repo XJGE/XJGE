@@ -21,23 +21,19 @@ import org.xjge.graphics.Transform;
  */
 public class JointVisualizer extends EntityComponent {
 
-    private final Transform transform;
-    private final ModelAnimator animator;
-    private final Shader shader;
+    private final static Shader shader;
     private final Graphics graphics = new Graphics();
-    final JointAttachment attachment = new JointAttachment();
     
-    JointVisualizer(Transform transform, ModelAnimator animator) {
-        this.transform = transform;
-        this.animator  = animator;
-        
+    static {
         var shaderSourceFiles = new LinkedList<ShaderStage>() {{
             add(ShaderStage.load("shader_joint_vertex.glsl", GL_VERTEX_SHADER));
             add(ShaderStage.load("shader_joint_fragment.glsl", GL_FRAGMENT_SHADER));
         }};
         
         shader = new Shader(shaderSourceFiles, "joint");
-        
+    }
+    
+    JointVisualizer() {
         try(MemoryStack stack = MemoryStack.stackPush()) {
             graphics.vertices = stack.mallocFloat(3);
             graphics.vertices.put(0).put(0).put(0);
@@ -50,12 +46,8 @@ public class JointVisualizer extends EntityComponent {
         glEnableVertexAttribArray(0);
     }
     
-    void update() {
-        attachment.update(transform, animator);
-    }
-    
-    void render(Camera camera) {
-        graphics.modelMatrix.set(attachment.worldTransform);
+    void render(Camera camera, JointAttachment joint) {
+        graphics.modelMatrix.set(joint.getWorldTransform());
         
         shader.use();
         

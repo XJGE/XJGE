@@ -8,6 +8,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import org.joml.Matrix4f;
+import org.joml.Matrix4fc;
 import org.lwjgl.PointerBuffer;
 import org.lwjgl.assimp.AIAnimation;
 import org.lwjgl.assimp.AIMaterial;
@@ -155,6 +156,10 @@ public final class Model extends Asset {
     
     public final SkeletalAnimation getAnimation(String name) {
         return animations.get(name);
+    }
+    
+    public final Matrix4fc getRootTransform() {
+        return rootTransform;
     }
     
     public final Set<String> getAnimaitonNames() {

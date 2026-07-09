@@ -1,7 +1,6 @@
 package org.xjge.test;
 
 import org.xjge.graphics.ModelRenderer;
-import static org.lwjgl.glfw.GLFW.GLFW_JOYSTICK_1;
 import static org.lwjgl.opengl.GL11.GL_DEPTH_TEST;
 import static org.lwjgl.opengl.GL11.glDisable;
 import static org.lwjgl.opengl.GL11.glEnable;
@@ -12,7 +11,8 @@ import org.xjge.core.LightType;
 import org.xjge.core.LightingSystem;
 import org.xjge.core.Scene;
 import org.xjge.core.Skybox;
-import org.xjge.core.UIManager;
+import org.xjge.graphics.JointAttachment;
+import org.xjge.graphics.JointRig;
 import org.xjge.graphics.Shader;
 import org.xjge.graphics.Texture;
 import org.xjge.graphics.Model;
@@ -53,29 +53,41 @@ public class SceneModel extends Scene {
         floor = new Entity().addComponent(prism);
         addEntity(floor);
         
+        /*
         var transform2 = new Transform();
-        testModel2  = Model.load("person.fbx");
+        testModel2  = Model.load("model_player_catgirl.fbx"); //person.fbx
         testEntity2 = new Entity().addComponent(new ModelRenderer(testModel2))
                                   .addComponent(new ModelAnimator(testModel2))
                                   .addComponent(transform2);
         transform2.rotation.rotateX((float) Math.toRadians(-90));
         addEntity(testEntity2);
+        */
         
-        testModel = Model.load("yshtola.fbx");
-        var transform = new Transform();
-        transform.position.z = -1.5f;
-        animator = new ModelAnimator(testModel);
-        var jointVis = new JointVisualizer(transform, animator);
+        testModel     = Model.load("yshtola.fbx");
+        animator      = new ModelAnimator(testModel);
+        var transform = new Transform(0, 0, -1.5f);
+        var jointRig  = new JointRig();
         testEntity = new Entity().addComponent(new ModelRenderer(testModel))
                                  .addComponent(transform)
                                  .addComponent(animator)
-                                 .addComponent(jointVis);
+                                 .addComponent(jointRig)
+                                 .addComponent(new JointVisualizer());
+        
+        //Add attachments for each bone
+        for(var bone : testModel.getSkeleton().getBones()) {
+            var jointAttachment = new JointAttachment();
+            jointAttachment.attach(testModel, bone.getName());
+            jointRig.add(bone.getName(), jointAttachment);
+        }
+        
         addEntity(testEntity);
         
-        outputModelData(testModel);
+        //outputModelData(testModel);
+        //outputModelData(testModel2);
         
         //var testAnimation = testModel.getAnimation("wave");
         
+        //testEntity2.getComponent(ModelAnimator.class).play("idle");
         testEntity.getComponent(ModelAnimator.class).play("wave");
         //testEntity.getComponent(ModelAnimator.class).setLooping(false);
         //testEntity.getComponent(ModelAnimator.class).setSpeed(0.5f);
@@ -85,8 +97,7 @@ public class SceneModel extends Scene {
         worldLight.position.set(0, 4.5f, 3);
         worldLight.brightness = 7f;
         
-        UIManager.addWidget(GLFW_JOYSTICK_1, "animation_control", new UIAnimationWidget(animator, jointVis.attachment));
-        UIManager.addWidget(GLFW_JOYSTICK_1, "layer_test", new TestWidget());
+        //UIManager.addWidget(GLFW_JOYSTICK_1, "animation_control", new UIAnimationWidget(animator, jointVis.attachment));
     }
 
     @Override
@@ -94,8 +105,9 @@ public class SceneModel extends Scene {
         for(var entity : queryEntities(ModelAnimator.class)) {
             entity.getComponent(ModelAnimator.class).update((float) targetDelta);
             
-            if(entity.hasComponents(JointVisualizer.class)) { //Order matters here, must come AFTER the animator
-                entity.getComponent(JointVisualizer.class).update();
+            if(entity.hasComponents(JointRig.class, Transform.class)) {
+                //Order matters here, must come AFTER the animator
+                entity.getComponent(JointRig.class).update(entity.getComponent(Transform.class), animator);
             }
         }
     }
@@ -118,8 +130,10 @@ public class SceneModel extends Scene {
             //glDisable(GL_CULL_FACE);
             glDisable(GL_DEPTH_TEST);
             
-            if(entity.hasComponents(JointVisualizer.class)) {
-                entity.getComponent(JointVisualizer.class).render(camera);
+            if(entity.hasComponents(JointVisualizer.class, JointRig.class)) {
+                for(var joint : entity.getComponent(JointRig.class).getAll()) {
+                    entity.getComponent(JointVisualizer.class).render(camera, joint);
+                }
             }
         }
         

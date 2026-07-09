@@ -109,7 +109,7 @@ class UISpinbox extends UITextInput {
                         value = Mesh.MAX_BONES - 1;
                         throw new NumberFormatException();
                     } else {
-                        joint.boneIndex = (int) (value = tempVal);
+                        //joint.boneIndex = (int) (value = tempVal);
                     }
                 }
             }

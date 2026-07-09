@@ -202,7 +202,7 @@ public class ModelAnimator extends EntityComponent {
             Bone bone         = skeleton.getBone(i);
             Keyframe keyframe = instance.getKeyframe(i);
             Matrix4f localTransform;
-
+            
             if(keyframe != null) {
                 Vector3f pos    = sampleVector3(keyframe.positionTimes, keyframe.positions, animationTime);
                 Quaternionf rot = sampleQuaternion(keyframe.rotationTimes, keyframe.rotations, animationTime);

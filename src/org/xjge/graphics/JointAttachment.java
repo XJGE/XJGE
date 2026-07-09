@@ -1,7 +1,7 @@
 package org.xjge.graphics;
 
 import org.joml.Matrix4f;
-import org.xjge.core.EntityComponent;
+import org.joml.Matrix4fc;
 import org.xjge.core.Logger;
 
 /**
@@ -10,21 +10,23 @@ import org.xjge.core.Logger;
  * @author J Hoffman
  * @since  4.0.0
  */
-public final class JointAttachment extends EntityComponent {
+public final class JointAttachment {
 
-    public int boneIndex = -1;
+    private int boneIndex = -1;
     
-    public String boneName;
+    private String boneName;
     
-    public Matrix4f localOffset    = new Matrix4f().identity();
-    public Matrix4f worldTransform = new Matrix4f();
+    private final Matrix4f localOffset    = new Matrix4f().identity();
+    private final Matrix4f worldTransform = new Matrix4f();
     
     public void attach(Model model, String boneName) {
         if(model.getSkeleton().hasBone(boneName)) {
             this.boneName = boneName;
             boneIndex     = model.getSkeleton().getBoneIndex(boneName);
         } else {
-            Logger.logWarning("Invalid bone \"" + boneName + "\" used during attachment to model \"" + model.getFilename() +"\"", null);
+            Logger.logWarning(
+                "Invalid bone \"" + boneName + "\" used during joint attachment to model \"" + model.getFilename() +"\"", 
+                null);
         }
     }
     
@@ -36,9 +38,17 @@ public final class JointAttachment extends EntityComponent {
      */
     public void update(Transform transform, ModelAnimator animator) {
         worldTransform.identity()
-                      .mul(transform.getModelMatrix())
-                      .mul(animator.getBoneTransforms()[boneIndex])
-                      .mul(localOffset);
+            .mul(transform.getModelMatrix())
+            .mul(animator.getBoneTransforms()[boneIndex])
+            .mul(localOffset);
+    }
+    
+    public Matrix4fc getLocalOffset() {
+        return localOffset;
+    }
+    
+    public Matrix4fc getWorldTransform() {
+        return worldTransform;
     }
     
 }
