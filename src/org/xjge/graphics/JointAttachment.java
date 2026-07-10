@@ -4,6 +4,8 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 import org.joml.Matrix4f;
 import org.joml.Matrix4fc;
+import org.xjge.core.Asset;
+import org.xjge.core.AssetReloadListener;
 import org.xjge.core.EntityComponent;
 
 /**
@@ -11,10 +13,13 @@ import org.xjge.core.EntityComponent;
  * @author J Hoffman
  * @since 4.0.0
  */
-public final class JointAttachment extends EntityComponent {
+public final class JointAttachment extends EntityComponent implements AssetReloadListener {
 
     private final Map<String, Joint> joints = new LinkedHashMap<>();
     
+    /**
+     * Serves as an attachment point
+     */
     private static final class Joint {
         
         final int boneIndex;
@@ -27,7 +32,13 @@ public final class JointAttachment extends EntityComponent {
         }
     }
     
-    public void generate(Model model) {
+    public JointAttachment(Model model) {
+        generate(model);
+    }
+    
+    private void generate(Model model) {
+        model.addReloadListener(this);
+        
         for(var bone : model.getSkeleton().getBones()) {
             var joint = new Joint(model.getSkeleton().getBoneIndex(bone.name));
             joints.put(bone.name, joint);
@@ -49,6 +60,11 @@ public final class JointAttachment extends EntityComponent {
     
     public Matrix4fc getWorldTransform(String boneName) {
         return joints.get(boneName).worldTransform;
+    }
+    
+    @Override
+    public void onAssetReload(Asset asset) {
+        if(asset instanceof Model model) generate(model);
     }
     
 }

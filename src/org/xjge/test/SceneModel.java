@@ -65,12 +65,10 @@ public class SceneModel extends Scene {
         testModel     = Model.load("yshtola.fbx");
         animator      = new ModelAnimator(testModel);
         var transform = new Transform(0, 0, -1.5f);
-        var jointRig  = new JointAttachment();
-        jointRig.generate(testModel);
         testEntity = new Entity().addComponent(new ModelRenderer(testModel))
                                  .addComponent(transform)
                                  .addComponent(animator)
-                                 .addComponent(jointRig)
+                                 .addComponent(new JointAttachment(testModel))
                                  .addComponent(new JointVisualizer());
         
         addEntity(testEntity);
