@@ -57,6 +57,7 @@ public final class Skeleton {
         int index = bones.size();
         bones.add(bone);
         boneIndices.put(bone.name, index);
+        
         return index;
     }
     

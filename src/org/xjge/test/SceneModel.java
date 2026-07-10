@@ -12,7 +12,6 @@ import org.xjge.core.LightingSystem;
 import org.xjge.core.Scene;
 import org.xjge.core.Skybox;
 import org.xjge.graphics.JointAttachment;
-import org.xjge.graphics.JointRig;
 import org.xjge.graphics.Shader;
 import org.xjge.graphics.Texture;
 import org.xjge.graphics.Model;
@@ -66,19 +65,13 @@ public class SceneModel extends Scene {
         testModel     = Model.load("yshtola.fbx");
         animator      = new ModelAnimator(testModel);
         var transform = new Transform(0, 0, -1.5f);
-        var jointRig  = new JointRig();
+        var jointRig  = new JointAttachment();
+        jointRig.generate(testModel);
         testEntity = new Entity().addComponent(new ModelRenderer(testModel))
                                  .addComponent(transform)
                                  .addComponent(animator)
                                  .addComponent(jointRig)
                                  .addComponent(new JointVisualizer());
-        
-        //Add attachments for each bone
-        for(var bone : testModel.getSkeleton().getBones()) {
-            var jointAttachment = new JointAttachment();
-            jointAttachment.attach(testModel, bone.getName());
-            jointRig.add(bone.getName(), jointAttachment);
-        }
         
         addEntity(testEntity);
         
@@ -105,9 +98,9 @@ public class SceneModel extends Scene {
         for(var entity : queryEntities(ModelAnimator.class)) {
             entity.getComponent(ModelAnimator.class).update((float) targetDelta);
             
-            if(entity.hasComponents(JointRig.class, Transform.class)) {
+            if(entity.hasComponents(JointAttachment.class, Transform.class)) {
                 //Order matters here, must come AFTER the animator
-                entity.getComponent(JointRig.class).update(entity.getComponent(Transform.class), animator);
+                entity.getComponent(JointAttachment.class).update(entity.getComponent(Transform.class), animator);
             }
         }
     }
@@ -130,9 +123,9 @@ public class SceneModel extends Scene {
             //glDisable(GL_CULL_FACE);
             glDisable(GL_DEPTH_TEST);
             
-            if(entity.hasComponents(JointVisualizer.class, JointRig.class)) {
-                for(var joint : entity.getComponent(JointRig.class).getAll()) {
-                    entity.getComponent(JointVisualizer.class).render(camera, joint);
+            if(entity.hasComponents(JointVisualizer.class, JointAttachment.class)) {
+                for(var bone : testModel.getSkeleton().getBones()) {
+                    entity.getComponent(JointVisualizer.class).render(camera, bone.getName(), entity.getComponent(JointAttachment.class));
                 }
             }
         }

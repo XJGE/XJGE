@@ -9,10 +9,8 @@ import org.xjge.core.ErrorUtils;
 import org.xjge.graphics.Color;
 import org.xjge.graphics.Graphics;
 import org.xjge.graphics.JointAttachment;
-import org.xjge.graphics.ModelAnimator;
 import org.xjge.graphics.Shader;
 import org.xjge.graphics.ShaderStage;
-import org.xjge.graphics.Transform;
 
 /**
  * 
@@ -46,8 +44,8 @@ public class JointVisualizer extends EntityComponent {
         glEnableVertexAttribArray(0);
     }
     
-    void render(Camera camera, JointAttachment joint) {
-        graphics.modelMatrix.set(joint.getWorldTransform());
+    void render(Camera camera, String boneName, JointAttachment jointRig) {
+        graphics.modelMatrix.set(jointRig.getWorldTransform(boneName));
         
         shader.use();
         
