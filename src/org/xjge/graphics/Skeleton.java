@@ -25,9 +25,8 @@ public final class Skeleton {
     private final Map<String, Integer> boneIndices = new HashMap<>();
     
     void buildBoneHierarchy(AINode node, int parentIndex) {
-        var nodeName  = node.mName().dataString();
-        var boneIndex = boneIndices.get(nodeName);
-
+        var boneIndex = boneIndices.get(node.mName().dataString());
+        
         if(boneIndex != null) {
             var bone = bones.get(boneIndex);
             

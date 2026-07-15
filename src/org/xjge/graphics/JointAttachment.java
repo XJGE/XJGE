@@ -55,11 +55,11 @@ public final class JointAttachment extends EntityComponent implements AssetReloa
     }
     
     public Matrix4fc getLocalOffset(String boneName) {
-        return joints.get(boneName).localOffset;
+        return joints.containsKey(boneName) ? joints.get(boneName).localOffset : null;
     }
     
     public Matrix4fc getWorldTransform(String boneName) {
-        return joints.get(boneName).worldTransform;
+        return joints.containsKey(boneName) ? joints.get(boneName).worldTransform : null;
     }
     
     @Override
