@@ -60,7 +60,7 @@ public class SceneModel extends Scene {
                                   .addComponent(new JointVisualizer())
                                   .addComponent(transform2);
         //transform2.rotation.rotateX((float) Math.toRadians(-90));
-        //testEntity2.getComponent(ModelAnimator.class).play("wave");
+        testEntity2.getComponent(ModelAnimator.class).play("wave");
         addEntity(testEntity2);
         
         /*
@@ -106,8 +106,6 @@ public class SceneModel extends Scene {
             }
         }
     }
-
-    float angle = 0;
     
     @Override
     public void render(int viewportID, Camera camera, int depthTexHandle) {
@@ -118,9 +116,6 @@ public class SceneModel extends Scene {
         for(var entity : queryEntities(ModelRenderer.class, Transform.class, ModelAnimator.class)) {
             //glEnable(GL_CULL_FACE);
             glEnable(GL_DEPTH_TEST);
-            
-            angle += 0.01f;
-            entity.getComponent(Transform.class).rotation.rotationY(angle);
             
             entity.getComponent(ModelRenderer.class).render( 
                     entity.getComponent(Transform.class), 

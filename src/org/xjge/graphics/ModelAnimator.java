@@ -21,11 +21,20 @@ public class ModelAnimator extends EntityComponent {
     
     private final Model model;
     
+    private final Matrix4f[] tempPoseA         = new Matrix4f[Mesh.MAX_BONES];
+    private final Matrix4f[] tempPoseB         = new Matrix4f[Mesh.MAX_BONES];
+    private final Matrix4f[] globalTransforms  = new Matrix4f[Mesh.MAX_BONES];
     private final Matrix4f[] boneTransforms    = new Matrix4f[Mesh.MAX_BONES]; //Raw animated bone transforms in model space BEFORE inverse bind pose multiplication
     private final Matrix4f[] finalBoneMatrices = new Matrix4f[Mesh.MAX_BONES]; //Final skinning matrices used by the renderer
 
     public ModelAnimator(Model model) {
         this.model = model;
+        
+        for(int i = 0; i < model.getSkeleton().getBoneCount(); i++) {
+            tempPoseA[i]        = new Matrix4f().identity();
+            tempPoseB[i]        = new Matrix4f().identity();
+            globalTransforms[i] = new Matrix4f().identity();
+        }
         
         for(int i = 0; i < Mesh.MAX_BONES; i++) {
             boneTransforms[i]    = new Matrix4f().identity();
@@ -169,20 +178,17 @@ public class ModelAnimator extends EntityComponent {
     
     private void calculateBlendedPose(float alpha) {
         int boneCount = model.getSkeleton().getBoneCount();
-        
-        Matrix4f[] poseA = new Matrix4f[boneCount];
-        Matrix4f[] poseB = new Matrix4f[boneCount];
 
         for(int i = 0; i < boneCount; i++) {
-            poseA[i] = new Matrix4f();
-            poseB[i] = new Matrix4f();
+            tempPoseA[i].identity();
+            tempPoseB[i].identity();
         }
 
-        calculatePose(current, poseA);
-        calculatePose(next, poseB);
+        calculatePose(current, tempPoseA);
+        calculatePose(next, tempPoseB);
 
         for(int i = 0; i < boneCount; i++) {
-            boneTransforms[i].set(poseA[i]).lerp(poseB[i], alpha); //Store blended transform for joint attachments
+            boneTransforms[i].set(tempPoseA[i]).lerp(tempPoseB[i], alpha); //Store blended transform for joint attachments
             finalBoneMatrices[i].set(boneTransforms[i]).mul(model.getSkeleton().getBone(i).offsetMatrix); //Mesh skinning matrix
         }
     }
@@ -190,11 +196,8 @@ public class ModelAnimator extends EntityComponent {
     private void calculatePose(AnimationInstance instance, Matrix4f[] output) {
         var skeleton  = model.getSkeleton();
         int boneCount = skeleton.getBoneCount();
-
-        Matrix4f[] globalTransforms = new Matrix4f[boneCount]; //TODO: promotes GC churn since this is called per-frame
-        for(int i = 0; i < boneCount; i++) {
-            globalTransforms[i] = new Matrix4f();
-        }
+        
+        for(int i = 0; i < boneCount; i++) globalTransforms[i].identity();
 
         float animationTime = instance.getAnimationTime();
 
