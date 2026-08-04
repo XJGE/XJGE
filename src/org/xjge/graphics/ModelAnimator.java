@@ -16,8 +16,8 @@ public class ModelAnimator extends EntityComponent {
     private double blendTime     = 0f;
     private double blendDuration = 0f;
     
-    private AnimationInstance current;
-    private AnimationInstance next;
+    private SkeletalAnimation current;
+    private SkeletalAnimation next;
     
     private final Model model;
     
@@ -46,7 +46,7 @@ public class ModelAnimator extends EntityComponent {
         var animation = model.getAnimation(animationName);
         if(animation == null) return;
 
-        current   = new AnimationInstance(animation);
+        current   = new SkeletalAnimation(animation, model);
         next      = null;
         blendTime = 0f;
     }
@@ -60,7 +60,7 @@ public class ModelAnimator extends EntityComponent {
             return;
         }
 
-        next          = new AnimationInstance(animation);
+        next          = new SkeletalAnimation(animation, model);
         blendDuration = Math.max(duration, 0.0001f);
         blendTime     = 0f;
     }
@@ -88,7 +88,7 @@ public class ModelAnimator extends EntityComponent {
     
     public void setNormalizedTime(float time) {
         if(current != null) {
-            double durationSeconds = current.animation.duration / current.animation.ticksPerSecond;
+            double durationSeconds = current.animationData.duration / current.animationData.ticksPerSecond;
             current.time = time * durationSeconds;
         }
     }
@@ -132,14 +132,14 @@ public class ModelAnimator extends EntityComponent {
     public double getNormalizedTime() {
         if(current == null) return 0f;
 
-        double durationSeconds = current.animation.duration / current.animation.ticksPerSecond;
+        double durationSeconds = current.animationData.duration / current.animationData.ticksPerSecond;
         if(durationSeconds == 0) return 0f;
 
         return current.time / durationSeconds; //TODO: clamp for saftey? Values can be negative (when speed is negative)
     }
     
     public String getCurrentAnimation() {
-        return current != null ? current.animation.name : null;
+        return current != null ? current.animationData.name : null;
     }
     
     public Matrix4f[] getFinalBoneMatrices() {
@@ -193,7 +193,7 @@ public class ModelAnimator extends EntityComponent {
         }
     }
 
-    private void calculatePose(AnimationInstance instance, Matrix4f[] output) {
+    private void calculatePose(SkeletalAnimation instance, Matrix4f[] output) {
         var skeleton  = model.getSkeleton();
         int boneCount = skeleton.getBoneCount();
         
@@ -254,75 +254,6 @@ public class ModelAnimator extends EntityComponent {
         factor = Math.min(Math.max(factor, 0f), 1f);
 
         return new Quaternionf(values[i]).slerp(values[nextTime], factor);
-    }
-    
-    private class AnimationInstance {
-        
-        boolean playing     = true;
-        boolean looping     = true;
-        boolean wasFinished = false;
-        
-        double time  = 0.0;
-        double speed = 1.0;
-        
-        SkeletalAnimation animation;
-        
-        Keyframe[] keyframesByBone;
-        
-        AnimationInstance(SkeletalAnimation animation) {
-            this.animation  = animation;
-            keyframesByBone = new Keyframe[model.getSkeleton().getBoneCount()];
-
-            for(var keyframe : animation.keyframes) keyframesByBone[keyframe.boneIndex] = keyframe;
-        }
-        
-        void update(double deltaTime) {
-            if(!playing) return;
-            
-            time += deltaTime * speed;
-            
-            double durationSeconds = animation.duration / animation.ticksPerSecond;
-            
-            if(looping) {
-                time %= durationSeconds;
-                if(time < 0.0) time += durationSeconds;
-            } else {
-                if(time < 0.0) time = 0.0;
-                else if(time > durationSeconds) time = durationSeconds;
-            }
-        }
-        
-        boolean isFinished() {
-            if(looping) return false;
-            double durationSeconds = animation.duration / animation.ticksPerSecond;
-            return time >= durationSeconds;
-        }
-        
-        boolean justFinished() {
-            boolean nowFinished = isFinished();
-            boolean result      = nowFinished && !wasFinished;
-            wasFinished         = nowFinished;
-            return result;
-        }
-        
-        float getAnimationTime() {
-            double ticks = getTimeInTicks();
-            
-            if(!looping) {
-                ticks = Math.max(0.0, Math.min(ticks, animation.duration));
-            }
-            
-            return (float) ticks;
-        }
-        
-        double getTimeInTicks() {
-            return time * animation.ticksPerSecond;
-        }
-
-        Keyframe getKeyframe(int boneIndex) {
-            return keyframesByBone[boneIndex];
-        }
-        
     }
     
 }

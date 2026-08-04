@@ -36,7 +36,7 @@ public final class Model extends Asset {
     
     private List<Material> materials;
     private List<Mesh> meshes;
-    private Map<String, SkeletalAnimation> animations;
+    private Map<String, SkeletalAnimationData> animations;
     
     public static final Model load(String filename) {
         var defaultFlags = Assimp.aiProcess_Triangulate | Assimp.aiProcess_GenSmoothNormals |
@@ -126,15 +126,15 @@ public final class Model extends Asset {
         return result;
     }
     
-    private Map<String, SkeletalAnimation> parseAnimations(AIScene aiScene) {
-        var result       = new HashMap<String, SkeletalAnimation>();
+    private Map<String, SkeletalAnimationData> parseAnimations(AIScene aiScene) {
+        var result       = new HashMap<String, SkeletalAnimationData>();
         var aiAnimations = aiScene.mAnimations();
         
         if(aiAnimations == null) return result;
         
         for(int i = 0; i < aiScene.mNumAnimations(); i++) {
             var aiAnimation = AIAnimation.create(aiAnimations.get(i));
-            var animation   = new SkeletalAnimation(aiAnimation, skeleton);
+            var animation   = new SkeletalAnimationData(aiAnimation, skeleton);
             result.put(animation.name, animation);
         }
         
@@ -154,7 +154,7 @@ public final class Model extends Asset {
         return skeleton;
     }
     
-    public final SkeletalAnimation getAnimation(String name) {
+    public final SkeletalAnimationData getAnimation(String name) {
         return animations.get(name);
     }
     

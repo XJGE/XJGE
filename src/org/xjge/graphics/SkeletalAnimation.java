@@ -1,45 +1,75 @@
 package org.xjge.graphics;
 
-import java.util.ArrayList;
-import java.util.List;
-import org.lwjgl.assimp.AIAnimation;
-import org.lwjgl.assimp.AINodeAnim;
-
 /**
  * 
  * @author J Hoffman
- * @since 2.0.0
+ * @since 4.0.0
  */
-public final class SkeletalAnimation {
+public class SkeletalAnimation {
 
-    public final float duration;
-    public float ticksPerSecond;
-    
-    public final String name;
-    
-    public List<Keyframe> keyframes = new ArrayList<>();
-    
-    SkeletalAnimation(AIAnimation aiAnimation, Skeleton skeleton) {
-        var aiChannels  = aiAnimation.mChannels();
-        
-        duration       = (float) aiAnimation.mDuration();
-        ticksPerSecond = (float) (aiAnimation.mTicksPerSecond());
-        var tempName   = aiAnimation.mName().dataString();
+    boolean playing     = true;
+    boolean looping     = true;
+    boolean wasFinished = false;
 
-        int pipe = tempName.indexOf("|");
-        name = (pipe != -1) ? tempName.substring(pipe + 1) : tempName;
+    double time  = 0.0;
+    double speed = 1.0;
 
-        if(ticksPerSecond == 0f) ticksPerSecond = 25f;
-        
-        //Extract keyframes
-        for(int c = 0; c < aiAnimation.mNumChannels(); c++) {
-            var aiChannel = AINodeAnim.create(aiChannels.get(c));
-            var boneName  = aiChannel.mNodeName().dataString();
-            
-            if(!skeleton.hasBone(boneName)) continue;
-            
-            keyframes.add(new Keyframe(aiChannel, skeleton.getBoneIndex(boneName)));
+    SkeletalAnimationData animationData;
+
+    Keyframe[] keyframesByBone;
+
+    SkeletalAnimation(SkeletalAnimationData animationData, Model model) {
+        this.animationData = animationData;
+        keyframesByBone    = new Keyframe[model.getSkeleton().getBoneCount()];
+
+        for(var keyframe : animationData.keyframes) keyframesByBone[keyframe.boneIndex] = keyframe;
+    }
+
+    void update(double deltaTime) {
+        if(!playing) return;
+
+        time += deltaTime * speed;
+
+        double durationSeconds = animationData.duration / animationData.ticksPerSecond;
+
+        if(looping) {
+            time %= durationSeconds;
+            if(time < 0.0) time += durationSeconds;
+        } else {
+            if(time < 0.0) time = 0.0;
+            else if(time > durationSeconds) time = durationSeconds;
         }
+    }
+
+    boolean isFinished() {
+        if(looping) return false;
+        double durationSeconds = animationData.duration / animationData.ticksPerSecond;
+        return time >= durationSeconds;
+    }
+
+    boolean justFinished() {
+        boolean nowFinished = isFinished();
+        boolean result      = nowFinished && !wasFinished;
+        wasFinished         = nowFinished;
+        return result;
+    }
+
+    float getAnimationTime() {
+        double ticks = getTimeInTicks();
+
+        if(!looping) {
+            ticks = Math.max(0.0, Math.min(ticks, animationData.duration));
+        }
+
+        return (float) ticks;
+    }
+
+    double getTimeInTicks() {
+        return time * animationData.ticksPerSecond;
+    }
+
+    Keyframe getKeyframe(int boneIndex) {
+        return keyframesByBone[boneIndex];
     }
     
 }
