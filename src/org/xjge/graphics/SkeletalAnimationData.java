@@ -1,7 +1,5 @@
 package org.xjge.graphics;
 
-import java.util.ArrayList;
-import java.util.List;
 import org.lwjgl.assimp.AIAnimation;
 import org.lwjgl.assimp.AINodeAnim;
 
@@ -17,27 +15,28 @@ public final class SkeletalAnimationData {
     
     public final String name;
     
-    public final List<Keyframe> keyframes = new ArrayList<>();
+    public final BoneTrack[] boneTracks;
     
     SkeletalAnimationData(AIAnimation aiAnimation, Skeleton skeleton) {
         var aiChannels  = aiAnimation.mChannels();
-        float aiTPS     = (float) (aiAnimation.mTicksPerSecond());
+        float tempTPS   = (float) (aiAnimation.mTicksPerSecond());
+        var tempName    = aiAnimation.mName().dataString();
+        int pipeIndex   = tempName.indexOf("|");
         
         duration       = (float) aiAnimation.mDuration();
-        ticksPerSecond = (aiTPS == 0f) ? 25f : aiTPS;
-        var tempName   = aiAnimation.mName().dataString();
-
-        int pipe = tempName.indexOf("|");
-        name = (pipe != -1) ? tempName.substring(pipe + 1) : tempName;
+        ticksPerSecond = (tempTPS == 0f) ? 25f : tempTPS;
+        name           = (pipeIndex != -1) ? tempName.substring(pipeIndex + 1) : tempName;
+        boneTracks     = new BoneTrack[skeleton.getBoneCount()];
         
-        //Extract keyframes
+        //Extract keyframe data from every bone and store it as a new track
         for(int c = 0; c < aiAnimation.mNumChannels(); c++) {
             var aiChannel = AINodeAnim.create(aiChannels.get(c));
             var boneName  = aiChannel.mNodeName().dataString();
             
             if(!skeleton.hasBone(boneName)) continue;
             
-            keyframes.add(new Keyframe(aiChannel, skeleton.getBoneIndex(boneName)));
+            var boneIndex = skeleton.getBoneIndex(boneName);
+            boneTracks[boneIndex] = new BoneTrack(aiChannel, boneIndex);
         }
     }
     

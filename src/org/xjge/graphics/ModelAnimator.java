@@ -46,7 +46,7 @@ public class ModelAnimator extends EntityComponent {
         var animation = model.getAnimation(animationName);
         if(animation == null) return;
 
-        current   = new SkeletalAnimation(animation, model);
+        current   = new SkeletalAnimation(animation);
         next      = null;
         blendTime = 0f;
     }
@@ -60,7 +60,7 @@ public class ModelAnimator extends EntityComponent {
             return;
         }
 
-        next          = new SkeletalAnimation(animation, model);
+        next          = new SkeletalAnimation(animation);
         blendDuration = Math.max(duration, 0.0001f);
         blendTime     = 0f;
     }
@@ -202,14 +202,14 @@ public class ModelAnimator extends EntityComponent {
         float animationTime = instance.getAnimationTime();
 
         for(int i = 0; i < boneCount; i++) {
-            Bone bone         = skeleton.getBone(i);
-            Keyframe keyframe = instance.getKeyframe(i);
+            Bone bone       = skeleton.getBone(i);
+            BoneTrack track = instance.getBoneTrack(i);
             Matrix4f localTransform;
             
-            if(keyframe != null) {
-                Vector3f pos    = sampleVector3(keyframe.positionTimes, keyframe.positions, animationTime);
-                Quaternionf rot = sampleQuaternion(keyframe.rotationTimes, keyframe.rotations, animationTime);
-                Vector3f scale  = sampleVector3(keyframe.scaleTimes, keyframe.scales, animationTime);
+            if(track != null) {
+                Vector3f pos    = sampleVector3(track.positionTimes, track.positions, animationTime);
+                Quaternionf rot = sampleQuaternion(track.rotationTimes, track.rotations, animationTime);
+                Vector3f scale  = sampleVector3(track.scaleTimes, track.scales, animationTime);
                 localTransform  = new Matrix4f().translate(pos).rotate(rot).scale(scale);
             } else {
                 localTransform = new Matrix4f(bone.localBindTransform);

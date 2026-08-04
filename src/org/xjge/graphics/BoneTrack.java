@@ -9,7 +9,7 @@ import org.lwjgl.assimp.AINodeAnim;
  * @author J Hoffman
  * @since 2.0.0
  */
-public final class Keyframe {
+public final class BoneTrack {
 
     public int boneIndex;
     
@@ -21,7 +21,7 @@ public final class Keyframe {
     public Vector3f[] scales;
     public Quaternionf[] rotations;
     
-    Keyframe(AINodeAnim aiChannel, int boneIndex) {
+    BoneTrack(AINodeAnim aiChannel, int boneIndex) {
         this.boneIndex = boneIndex;
         extractPositionFrames(aiChannel);
         extractRotationFrames(aiChannel);

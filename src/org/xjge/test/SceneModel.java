@@ -179,7 +179,7 @@ public class SceneModel extends Scene {
             System.out.println(" Name: " + animName);
             System.out.println("  Duration: " + animation.duration);
             System.out.println("  Ticks Per Second: " + animation.ticksPerSecond);
-            System.out.println("  Num Keyframes: " + animation.keyframes.size());
+            //System.out.println("  Num Keyframes: " + animation.keyframes.size());
         }
         System.out.println();
         

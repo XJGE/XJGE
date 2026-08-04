@@ -16,13 +16,8 @@ public class SkeletalAnimation {
 
     SkeletalAnimationData animationData;
 
-    Keyframe[] keyframesByBone;
-
-    SkeletalAnimation(SkeletalAnimationData animationData, Model model) {
+    SkeletalAnimation(SkeletalAnimationData animationData) {
         this.animationData = animationData;
-        keyframesByBone    = new Keyframe[model.getSkeleton().getBoneCount()];
-
-        for(var keyframe : animationData.keyframes) keyframesByBone[keyframe.boneIndex] = keyframe;
     }
 
     void update(double deltaTime) {
@@ -68,8 +63,8 @@ public class SkeletalAnimation {
         return time * animationData.ticksPerSecond;
     }
 
-    Keyframe getKeyframe(int boneIndex) {
-        return keyframesByBone[boneIndex];
+    BoneTrack getBoneTrack(int boneIndex) {
+        return animationData.boneTracks[boneIndex];
     }
     
 }
