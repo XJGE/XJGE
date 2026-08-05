@@ -1,5 +1,6 @@
 package org.xjge.test;
 
+import static org.lwjgl.glfw.GLFW.GLFW_JOYSTICK_1;
 import org.xjge.graphics.ModelRenderer;
 import static org.lwjgl.opengl.GL11.GL_DEPTH_TEST;
 import static org.lwjgl.opengl.GL11.glDisable;
@@ -11,6 +12,7 @@ import org.xjge.core.LightType;
 import org.xjge.core.LightingSystem;
 import org.xjge.core.Scene;
 import org.xjge.core.Skybox;
+import org.xjge.core.UIManager;
 import org.xjge.graphics.JointAttachment;
 import org.xjge.graphics.Shader;
 import org.xjge.graphics.Texture;
@@ -26,13 +28,15 @@ import org.xjge.graphics.Transform;
 public class SceneModel extends Scene {
 
     private Model testModel;
-    private Model testModel2;
     private Entity floor;
     private Entity testEntity;
-    private Entity testEntity2;
+    private Transform transform;
+    private JointAttachment jointAttachment;
     private ModelAnimator animator;
     private Light worldLight;
     private Skybox skybox;
+    
+    private UIAnimationWidget animControl;
     
     public SceneModel() {
         super("test_model3");
@@ -48,50 +52,31 @@ public class SceneModel extends Scene {
         setSkybox(skybox);
         
         var prism = new Prism(1, -0.5f, 0, 10, 1, 10);
-        //prism.color.copy(Color.BLUE);
         floor = new Entity().addComponent(prism);
         addEntity(floor);
         
-        var transform2 = new Transform(0, 0, -1.5f);
-        testModel2  = Model.load("model_person.fbx"); //person.fbx
-        testEntity2 = new Entity().addComponent(new ModelRenderer(testModel2))
-                                  .addComponent(new ModelAnimator(testModel2))
-                                  .addComponent(new JointAttachment(testModel2))
-                                  .addComponent(new JointVisualizer())
-                                  .addComponent(transform2);
-        //transform2.rotation.rotateX((float) Math.toRadians(-90));
-        testEntity2.getComponent(ModelAnimator.class).play("wave");
-        addEntity(testEntity2);
+        testModel       = Model.load("model_person.fbx"); //yshtola.fbx
+        transform       = new Transform(0, 0, -3f);
+        jointAttachment = new JointAttachment(testModel);
+        animator        = new ModelAnimator(testModel);
         
-        /*
-        testModel     = Model.load("yshtola.fbx");
-        animator      = new ModelAnimator(testModel);
-        var transform = new Transform(0, 0, -1.5f);
-        testEntity = new Entity().addComponent(new ModelRenderer(testModel))
-                                 .addComponent(transform)
+        testEntity = new Entity().addComponent(transform)
+                                 .addComponent(jointAttachment)
                                  .addComponent(animator)
-                                 .addComponent(new JointAttachment(testModel))
+                                 .addComponent(new ModelRenderer(testModel))
                                  .addComponent(new JointVisualizer());
+                                 
+        testEntity.getComponent(ModelAnimator.class).play("wave");
         
         addEntity(testEntity);
-        */
-        
-        //outputModelData(testModel);
-        //outputModelData(testModel2);
-        
-        //var testAnimation = testModel.getAnimation("wave");
-        
-        //testEntity2.getComponent(ModelAnimator.class).play("idle");
-        //testEntity.getComponent(ModelAnimator.class).play("wave");
-        //testEntity.getComponent(ModelAnimator.class).setLooping(false);
-        //testEntity.getComponent(ModelAnimator.class).setSpeed(0.5f);
         
         worldLight = LightingSystem.request();
         worldLight.type = LightType.WORLD;
         worldLight.position.set(0, 4.5f, 3);
         worldLight.brightness = 7f;
         
-        //UIManager.addWidget(GLFW_JOYSTICK_1, "animation_control", new UIAnimationWidget(animator, jointVis.attachment));
+        animControl = new UIAnimationWidget(animator, jointAttachment);
+        UIManager.addWidget(GLFW_JOYSTICK_1, "animation_control", animControl);
     }
 
     @Override
@@ -126,7 +111,7 @@ public class SceneModel extends Scene {
             glDisable(GL_DEPTH_TEST);
             
             if(entity.hasComponents(JointVisualizer.class, JointAttachment.class)) {
-                for(var bone : testModel2.getSkeleton().getBones()) {
+                for(var bone : testModel.getSkeleton().getBones()) {
                     //System.out.println(bone.getName());
                     entity.getComponent(JointVisualizer.class).render(camera, bone.getName(), entity.getComponent(JointAttachment.class));
                 }
