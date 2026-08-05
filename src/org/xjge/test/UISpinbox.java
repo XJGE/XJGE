@@ -70,7 +70,7 @@ class UISpinbox extends UITextInput {
         
         switch(type) {
             case "Speed"          -> setValue(animator.getSpeed());
-            case "Animation Time" -> setValue(animator.getTime());
+            case "Animation Time" -> setValue(animator.getNormalizedTime());
             case "Joint Bone ID"  -> setValue(0);
         }
         
@@ -131,7 +131,7 @@ class UISpinbox extends UITextInput {
                 if(hasFocus()) {
                     if(animator.isPlaying()) animator.pause();
                 } else {
-                    value = animator.getTime();
+                    value = animator.getNormalizedTime();
                     setText(String.format(format, value));
                 }
             }

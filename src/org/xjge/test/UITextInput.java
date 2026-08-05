@@ -151,7 +151,7 @@ public abstract class UITextInput {
      * @param width the width of the visible text area
      */
     UITextInput(int width, Texture iconsTexture) {
-        bounds = new Rectangle(0, 0, width, HEIGHT);
+        bounds = new Rectangle(width, HEIGHT, 0, 0);
         carat  = new Icon(iconsTexture, 24, 24, false);
         carat.setSubImage(6, 0);
     }
