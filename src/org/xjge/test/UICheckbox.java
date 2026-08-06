@@ -4,7 +4,7 @@ import org.joml.Vector2i;
 import static org.lwjgl.glfw.GLFW.GLFW_MOUSE_BUTTON_LEFT;
 import org.xjge.core.Mouse;
 import org.xjge.graphics.Color;
-import org.xjge.graphics.ModelAnimator;
+import org.xjge.graphics.SkeletalAnimationLayer;
 import org.xjge.graphics.Texture;
 import org.xjge.ui.Font;
 import org.xjge.ui.Icon;
@@ -20,17 +20,17 @@ final class UICheckbox {
     private final Vector2i textPos = new Vector2i();
     private final Rectangle hitbox = new Rectangle(22, 22, 0, 0);
     private final Icon icon;
-    private final ModelAnimator animator;
+    private final SkeletalAnimationLayer layer;
     
-    UICheckbox(ModelAnimator animator, Texture iconsTexture) {
-        this.animator = animator;
+    UICheckbox(SkeletalAnimationLayer layer, Texture iconsTexture) {
+        this.layer = layer;
         icon = new Icon(iconsTexture, 24, 24, false);
     }
     
     void render() {
         //TODO: gray out if no anim is selected or playing
         Font.FALLBACK.drawString("Loop", textPos.x, textPos.y, Color.WHITE, 1f);
-        icon.setSubImage(animator.isLooping() ? 2 : 3, 0);
+        icon.setSubImage(layer.isLooping() ? 2 : 3, 0);
         icon.render();
     }
     
@@ -44,7 +44,7 @@ final class UICheckbox {
     
     void onClick(Mouse mouse) {
         if(mouse.clickedOnce(hitbox, GLFW_MOUSE_BUTTON_LEFT)) {
-            animator.setLooping(!animator.isLooping());
+            layer.setLooping(!layer.isLooping());
         }
     }
     

@@ -6,11 +6,11 @@ import org.xjge.core.SplitScreenType;
 import org.xjge.core.Window;
 import org.xjge.graphics.Color;
 import org.xjge.graphics.JointAttachment;
-import org.xjge.graphics.ModelAnimator;
 import org.xjge.graphics.Texture;
 import org.xjge.ui.Font;
 import org.xjge.ui.Rectangle;
 import org.xjge.core.Widget;
+import org.xjge.graphics.SkeletalAnimationLayer;
 
 /**
  * 
@@ -34,17 +34,17 @@ public class UIAnimationWidget extends Widget {
     private final UILabelButton pausePlayButton;
     private final UILabelButton resetSpeedButton;
     
-    UIAnimationWidget(ModelAnimator animator, JointAttachment joint) {
+    UIAnimationWidget(SkeletalAnimationLayer layer, JointAttachment joint) {
         super(0);
         for(int i = 0; i < backgrounds.length; i++) backgrounds[i] = new Rectangle();
         
-        loopingControl   = new UICheckbox(animator, iconsTexture);
-        speedControl     = new UISpinbox(animator, joint, 90, iconsTexture, "Speed", "%.2f");
-        timeControl      = new UISpinbox(animator, joint, 90, iconsTexture, "Animation Time", "%.2f");
-        jointControl     = new UISpinbox(animator, joint, 90, iconsTexture, "Joint Bone ID", "%.0f");
-        timeSlider       = new UISlider(animator);
-        pausePlayButton  = new UILabelButton(animator, "Pause", 300);
-        resetSpeedButton = new UILabelButton(animator, "Reset Speed", 300);
+        loopingControl   = new UICheckbox(layer, iconsTexture);
+        speedControl     = new UISpinbox(layer, joint, 90, iconsTexture, "Speed", "%.2f");
+        timeControl      = new UISpinbox(layer, joint, 90, iconsTexture, "Animation Time", "%.2f");
+        jointControl     = new UISpinbox(layer, joint, 90, iconsTexture, "Joint Bone ID", "%.0f");
+        timeSlider       = new UISlider(layer);
+        pausePlayButton  = new UILabelButton(layer, "Pause", 300);
+        resetSpeedButton = new UILabelButton(layer, "Reset Speed", 300);
         
         relocate(Window.getSplitScreenType(), Window.getWidth(), Window.getHeight());
     }

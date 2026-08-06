@@ -4,7 +4,7 @@ import org.joml.Vector2i;
 import static org.lwjgl.glfw.GLFW.GLFW_MOUSE_BUTTON_LEFT;
 import org.xjge.core.Mouse;
 import org.xjge.graphics.Color;
-import org.xjge.graphics.ModelAnimator;
+import org.xjge.graphics.SkeletalAnimationLayer;
 import org.xjge.ui.Font;
 import org.xjge.ui.Rectangle;
 
@@ -15,15 +15,15 @@ import org.xjge.ui.Rectangle;
  */
 class UILabelButton {
     
-    private final ModelAnimator animator;
+    private final SkeletalAnimationLayer layer;
     private final Rectangle bounds;
     private final String type;
     private String label;
     
     private final Vector2i textPos = new Vector2i();
     
-    UILabelButton(ModelAnimator animator, String label, int width) {
-        this.animator = animator;
+    UILabelButton(SkeletalAnimationLayer layer, String label, int width) {
+        this.layer = layer;
         this.label    = label;
         
         type   = label;
@@ -33,7 +33,7 @@ class UILabelButton {
     void render() {
         switch(type) {
             case "Pause" -> {
-                label = animator.isPlaying() ? "Pause" : "Play";
+                label = layer.isPlaying() ? "Pause" : "Play";
             }
         }
         
@@ -55,11 +55,11 @@ class UILabelButton {
         if(mouse.clickedOnce(bounds, GLFW_MOUSE_BUTTON_LEFT)) {
             switch(type) {
                 case "Pause" -> {
-                    if(animator.isPlaying()) animator.pause();
-                    else animator.play();
+                    if(layer.isPlaying()) layer.pause();
+                    else layer.resume();
                 }
                 case "Reset Speed" -> {
-                    animator.setSpeed(1.0);
+                    layer.setSpeed(1.0);
                 }
             }
         }

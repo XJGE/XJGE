@@ -21,7 +21,7 @@ import org.xjge.core.Timer;
 import org.xjge.graphics.Color;
 import org.xjge.graphics.JointAttachment;
 import org.xjge.graphics.Mesh;
-import org.xjge.graphics.ModelAnimator;
+import org.xjge.graphics.SkeletalAnimationLayer;
 import org.xjge.graphics.Texture;
 import org.xjge.ui.Font;
 import org.xjge.ui.Icon;
@@ -43,7 +43,7 @@ class UISpinbox extends UITextInput {
     
     private final String format;
     private final String type;
-    private final ModelAnimator animator;
+    private final SkeletalAnimationLayer layer;
     private final JointAttachment joint;
     
     private final Rectangle buttonUp   = new Rectangle(20, 14, 0, 0, new Color(0.75f), 1f);
@@ -58,9 +58,9 @@ class UISpinbox extends UITextInput {
     private Color upArrowColor    = new Color(0.25f);
     private Color downArrowColor  = new Color(0.25f);
     
-    public UISpinbox(ModelAnimator animator, JointAttachment joint, int width, Texture iconsTexture, String type, String format) {
+    public UISpinbox(SkeletalAnimationLayer layer, JointAttachment joint, int width, Texture iconsTexture, String type, String format) {
         super(width, iconsTexture);
-        this.animator = animator;
+        this.layer = layer;
         this.joint    = joint;
         this.type     = type;
         this.format   = format;
@@ -69,8 +69,8 @@ class UISpinbox extends UITextInput {
         downArrow = new Icon(iconsTexture, 24, 24, false).setSubImage(5, 0);
         
         switch(type) {
-            case "Speed"          -> setValue(animator.getSpeed());
-            case "Animation Time" -> setValue(animator.getNormalizedTime());
+            case "Speed"          -> setValue(layer.getSpeed());
+            case "Animation Time" -> setValue(layer.getNormalizedTime());
             case "Joint Bone ID"  -> setValue(0);
         }
         
@@ -93,11 +93,11 @@ class UISpinbox extends UITextInput {
             switch(type) {
                 case "Speed" -> {
                     value = Double.parseDouble(typed.toString());
-                    animator.setSpeed(value);
+                    layer.setSpeed(value);
                 }
                 case "Animation Time" -> {
                     value = Double.parseDouble(typed.toString());
-                    animator.setTime(value);
+                    layer.setTime(value);
                 }
                 case "Joint Bone ID" -> {
                     var tempVal = Integer.parseInt(typed.toString());
@@ -123,15 +123,15 @@ class UISpinbox extends UITextInput {
         switch(type) {
             case "Speed" -> {
                 if(!hasFocus()) {
-                    value = animator.getSpeed();
+                    value = layer.getSpeed();
                     setText(String.format(format, value));
                 }
             }
             case "Animation Time" -> {
                 if(hasFocus()) {
-                    if(animator.isPlaying()) animator.pause();
+                    if(layer.isPlaying()) layer.pause();
                 } else {
-                    value = animator.getNormalizedTime();
+                    value = layer.getNormalizedTime();
                     setText(String.format(format, value));
                 }
             }

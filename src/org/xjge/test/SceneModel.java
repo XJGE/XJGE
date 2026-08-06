@@ -18,6 +18,7 @@ import org.xjge.graphics.Shader;
 import org.xjge.graphics.Texture;
 import org.xjge.graphics.Model;
 import org.xjge.graphics.ModelAnimator;
+import org.xjge.graphics.SkeletalAnimationLayer;
 import org.xjge.graphics.Transform;
 
 /**
@@ -35,6 +36,7 @@ public class SceneModel extends Scene {
     private ModelAnimator animator;
     private Light worldLight;
     private Skybox skybox;
+    private SkeletalAnimationLayer animLayer;
     
     private UIAnimationWidget animControl;
     
@@ -59,14 +61,15 @@ public class SceneModel extends Scene {
         transform       = new Transform(0, 0, -3f);
         jointAttachment = new JointAttachment(testModel);
         animator        = new ModelAnimator(testModel);
+        animLayer       = new SkeletalAnimationLayer();
+        
+        animLayer.play(testModel.getAnimation("wave"));
         
         testEntity = new Entity().addComponent(transform)
                                  .addComponent(jointAttachment)
                                  .addComponent(animator)
                                  .addComponent(new ModelRenderer(testModel))
                                  .addComponent(new JointVisualizer());
-                                 
-        testEntity.getComponent(ModelAnimator.class).play("wave");
         
         addEntity(testEntity);
         
@@ -75,14 +78,14 @@ public class SceneModel extends Scene {
         worldLight.position.set(0, 4.5f, 3);
         worldLight.brightness = 7f;
         
-        animControl = new UIAnimationWidget(animator, jointAttachment);
+        animControl = new UIAnimationWidget(animLayer, jointAttachment);
         UIManager.addWidget(GLFW_JOYSTICK_1, "animation_control", animControl);
     }
 
     @Override
     public void update(double targetDelta, double trueDelta) {
         for(var entity : queryEntities(ModelAnimator.class)) {
-            entity.getComponent(ModelAnimator.class).update((float) targetDelta);
+            entity.getComponent(ModelAnimator.class).update((float) targetDelta, animLayer);
             
             if(entity.hasComponents(JointAttachment.class, Transform.class)) {
                 //Order matters here, must come AFTER the animator
