@@ -23,12 +23,12 @@ public final class BoneTrack {
     
     BoneTrack(AINodeAnim aiChannel, int boneIndex) {
         this.boneIndex = boneIndex;
-        extractPositionFrames(aiChannel);
-        extractRotationFrames(aiChannel);
-        extractScaleFrames(aiChannel);
+        extractPositionKeyframes(aiChannel);
+        extractRotationKeyframes(aiChannel);
+        extractScaleKeyframes(aiChannel);
     }
     
-    private void extractPositionFrames(AINodeAnim aiChannel) {
+    private void extractPositionKeyframes(AINodeAnim aiChannel) {
         int count     = aiChannel.mNumPositionKeys();
         var aiKeys    = aiChannel.mPositionKeys();
         positionTimes = new float[count];
@@ -42,7 +42,7 @@ public final class BoneTrack {
         }
     }
     
-    private void extractRotationFrames(AINodeAnim aiChannel) {
+    private void extractRotationKeyframes(AINodeAnim aiChannel) {
         int count     = aiChannel.mNumRotationKeys();
         var aiKeys    = aiChannel.mRotationKeys();
         rotationTimes = new float[count];
@@ -56,7 +56,7 @@ public final class BoneTrack {
         }
     }
     
-    private void extractScaleFrames(AINodeAnim aiChannel) {
+    private void extractScaleKeyframes(AINodeAnim aiChannel) {
         int count  = aiChannel.mNumScalingKeys();
         var aiKeys = aiChannel.mScalingKeys();
         scaleTimes = new float[count];

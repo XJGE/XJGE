@@ -49,7 +49,7 @@ public final class JointAttachment extends EntityComponent implements AssetReloa
         for(var joint : joints.values()) {
             joint.worldTransform.identity()
                 .mul(transform.getModelMatrix())
-                .mul(animator.getBoneTransforms()[joint.boneIndex])
+                .mul(animator.getJointTransforms()[joint.boneIndex])
                 .mul(joint.localOffset);
         }
     }
