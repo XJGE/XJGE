@@ -6,19 +6,20 @@ import org.joml.Vector3f;
 import org.joml.Vector3fc;
 
 /**
+ * Represents the runtime transform of a single bone in a models skeleton
  * 
  * @author J Hoffman
  * @since 2.0.0
  */
-public final class Keyframe {
+public final class BonePose {
 
     public final Vector3f position    = new Vector3f();
     public final Quaternionf rotation = new Quaternionf();
     public final Vector3f scale       = new Vector3f(1f);
     
-    public Keyframe() {}
+    public BonePose() {}
     
-    public Keyframe set(Vector3fc position, Quaternionfc rotation, Vector3fc scale) {
+    public BonePose set(Vector3fc position, Quaternionfc rotation, Vector3fc scale) {
         this.position.set(position);
         this.rotation.set(rotation);
         this.scale.set(scale);
@@ -26,11 +27,11 @@ public final class Keyframe {
         return this;
     }
     
-    public Keyframe set(Keyframe other) {
+    public BonePose set(BonePose other) {
         return set(other.position, other.rotation, other.scale);
     }
     
-    public Keyframe interpolate(Keyframe other, float t) {
+    public BonePose interpolate(BonePose other, float t) {
         position.lerp(other.position, t);
         rotation.slerp(other.rotation, t);
         scale.lerp(other.scale, t);

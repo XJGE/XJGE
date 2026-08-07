@@ -15,33 +15,33 @@ public class ModelAnimator extends EntityComponent {
     
     private final Model model;
     
-    private final Keyframe[] tempPoseA;
-    private final Keyframe[] tempPoseB;
-    private final Keyframe[] finalPose;
+    private final BonePose[] tempPoseA;
+    private final BonePose[] tempPoseB;
+    private final BonePose[] finalPose;
     
-    private final Matrix4f[] modelTransforms = new Matrix4f[Mesh.MAX_BONES]; 
-    private final Matrix4f[] jointTransforms = new Matrix4f[Mesh.MAX_BONES]; //Resolved heirarchy matrix
-    private final Matrix4f[] finalTransforms = new Matrix4f[Mesh.MAX_BONES]; //Final skinning matrices used by the renderer
+    private final Matrix4f[] localTransforms  = new Matrix4f[Mesh.MAX_BONES]; //Local transform for each bone relative to their parent
+    private final Matrix4f[] jointTransforms  = new Matrix4f[Mesh.MAX_BONES]; //Resolved heirarchy matrices for joint attachment
+    private final Matrix4f[] skinningMatrices = new Matrix4f[Mesh.MAX_BONES]; //Final skinning matrices used by the renderer
 
     public ModelAnimator(Model model) {
         this.model = model;
         
         int boneCount = model.getSkeleton().getBoneCount();
         
-        tempPoseA = new Keyframe[boneCount];
-        tempPoseB = new Keyframe[boneCount];
-        finalPose = new Keyframe[boneCount];
+        tempPoseA = new BonePose[boneCount];
+        tempPoseB = new BonePose[boneCount];
+        finalPose = new BonePose[boneCount];
         
         for(int i = 0; i < boneCount; i++) {
-            tempPoseA[i] = new Keyframe();
-            tempPoseB[i] = new Keyframe();
-            finalPose[i] = new Keyframe();
+            tempPoseA[i] = new BonePose();
+            tempPoseB[i] = new BonePose();
+            finalPose[i] = new BonePose();
         }
         
         for(int i = 0; i < Mesh.MAX_BONES; i++) {
-            modelTransforms[i]   = new Matrix4f().identity();
+            localTransforms[i]  = new Matrix4f().identity();
             jointTransforms[i]  = new Matrix4f().identity();
-            finalTransforms[i] = new Matrix4f().identity();
+            skinningMatrices[i] = new Matrix4f().identity();
         }
     }
 
@@ -63,18 +63,18 @@ public class ModelAnimator extends EntityComponent {
     
     private void blendPoses(float factor) {
         for(int i = 0; i < model.getSkeleton().getBoneCount(); i++) {
-            finalPose[i].set(tempPoseA[i]).interpolate(tempPoseB[i], factor); //Store blended transform for joint attachments
+            finalPose[i].set(tempPoseA[i]).interpolate(tempPoseB[i], factor);
         }
     }
 
-    private void calculatePose(SkeletalAnimation instance, Keyframe[] output) {
+    private void calculatePose(SkeletalAnimation instance, BonePose[] output) {
         var skeleton      = model.getSkeleton();
         var animationTime = instance.getAnimationTime();
 
         for(int i = 0; i < skeleton.getBoneCount(); i++) {
             Bone bone       = skeleton.getBone(i);
             BoneTrack track = instance.getBoneTrack(i);
-            Keyframe pose   = output[i];
+            BonePose pose   = output[i];
             
             if(track != null) {
                 pose.position.set(sampleVector3(track.positionTimes, track.positions, animationTime));
@@ -88,29 +88,21 @@ public class ModelAnimator extends EntityComponent {
         }
     }
     
-    private void buildMatrices(Keyframe[] pose) {
+    private void buildMatrices(BonePose[] pose) {
         Skeleton skeleton = model.getSkeleton();
         
         for(int i = 0; i < skeleton.getBoneCount(); i++) {
             Bone bone = skeleton.getBone(i);
-
-            modelTransforms[i]
-                .identity()
-                .translate(pose[i].position)
-                .rotate(pose[i].rotation)
-                .scale(pose[i].scale);
+            
+            localTransforms[i].identity().translate(pose[i].position).rotate(pose[i].rotation).scale(pose[i].scale);
 
             if(bone.parentIndex >= 0) {
-                jointTransforms[i]
-                    .set(jointTransforms[bone.parentIndex])
-                    .mul(modelTransforms[i]);
+                jointTransforms[i].set(jointTransforms[bone.parentIndex]).mul(localTransforms[i]);
             } else {
-                jointTransforms[i].set(modelTransforms[i]);
+                jointTransforms[i].set(localTransforms[i]);
             }
 
-            finalTransforms[i]
-                .set(jointTransforms[i])
-                .mul(bone.offsetMatrix);
+            skinningMatrices[i].set(jointTransforms[i]).mul(bone.offsetMatrix);
         }
     }
     
@@ -144,16 +136,16 @@ public class ModelAnimator extends EntityComponent {
         return new Quaternionf(values[i]).slerp(values[nextTime], factor);
     }
     
-    public Matrix4f[] getFinalTransforms() { //TODO: getSkinningMatrices?
-        return finalTransforms;
-    }
-    
     /**
      * Returns animated model-space bone transforms BEFORE the inverse bind correction is applied.
      * @return a matrix array containing the current model-space transforms of every bone in the skeleton
      */
     public Matrix4fc[] getJointTransforms() {
         return jointTransforms;
+    }
+    
+    public Matrix4fc[] getSkinningMatrices() {
+        return skinningMatrices;
     }
     
 }

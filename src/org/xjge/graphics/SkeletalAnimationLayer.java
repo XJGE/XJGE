@@ -1,6 +1,7 @@
 package org.xjge.graphics;
 
 /**
+ * Represents a single animation layer that can be used to change animation playback settings during runtime
  * 
  * @author J Hoffman
  * @since 4.0.0

@@ -56,7 +56,7 @@ public class ModelRenderer extends EntityComponent {
         shader.setUniform("uCamPos", camera.getPosition());
         shader.setUniform("uNumLights", LightingSystem.getActiveCount());
         
-        if(animator != null) shader.setUniform("uBoneTransforms", false, animator.getFinalTransforms());
+        if(animator != null) shader.setUniform("uBoneTransforms", false, animator.getSkinningMatrices());
         
         for(var mesh : model.getMeshes()) {
             var material = model.getMaterials().get(mesh.materialIndex);

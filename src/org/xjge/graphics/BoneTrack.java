@@ -5,6 +5,7 @@ import org.joml.Vector3f;
 import org.lwjgl.assimp.AINodeAnim;
 
 /**
+ * Contains keyframe data of a single animation for each bone in the model
  * 
  * @author J Hoffman
  * @since 2.0.0

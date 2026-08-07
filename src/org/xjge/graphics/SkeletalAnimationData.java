@@ -4,6 +4,7 @@ import org.lwjgl.assimp.AIAnimation;
 import org.lwjgl.assimp.AINodeAnim;
 
 /**
+ * Immutable animation data pulled directly from the model asset file
  * 
  * @author J Hoffman
  * @since 2.0.0

@@ -1,6 +1,7 @@
 package org.xjge.graphics;
 
 /**
+ * Contains animation playback state
  * 
  * @author J Hoffman
  * @since 4.0.0
