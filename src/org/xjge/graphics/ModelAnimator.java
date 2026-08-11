@@ -81,7 +81,7 @@ public class ModelAnimator extends EntityComponent {
         
         var skeleton      = model.getSkeleton();
         var animationTime = instance.getAnimationTime();
-
+        
         for(int i = 0; i < skeleton.getBoneCount(); i++) {
             Bone bone       = skeleton.getBone(i);
             BoneTrack track = instance.getBoneTrack(i);

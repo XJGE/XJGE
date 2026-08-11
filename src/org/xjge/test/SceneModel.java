@@ -15,6 +15,7 @@ import org.xjge.core.LightingSystem;
 import org.xjge.core.Scene;
 import org.xjge.core.Skybox;
 import org.xjge.core.UIManager;
+import org.xjge.graphics.BoneMask;
 import org.xjge.graphics.JointAttachment;
 import org.xjge.graphics.Shader;
 import org.xjge.graphics.Texture;
@@ -78,7 +79,21 @@ public class SceneModel extends Scene {
             add(layer2);
         }};
         
-        layer0.play(testModel.getAnimation("walk"));
+        layer1.play(testModel.getAnimation("walk"));
+        layer2.play(testModel.getAnimation("wave"));
+        
+        var mask = new BoneMask();
+        
+        mask.add(testModel.getSkeleton().getBoneIndex("upper_arm.L"));
+        mask.add(testModel.getSkeleton().getBoneIndex("forearm.L"));
+        mask.add(testModel.getSkeleton().getBoneIndex("hand.L"));
+        mask.add(testModel.getSkeleton().getBoneIndex("fingers.L"));
+        
+        layer1.setWeight(1.0f);
+        layer2.setWeight(1.0f);
+        layer2.setMask(mask);
+        
+        layer1.setSpeed(0.5f);
         
         testEntity = new Entity().addComponent(transform)
                                  .addComponent(jointAttachment)
