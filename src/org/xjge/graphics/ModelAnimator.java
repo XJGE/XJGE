@@ -1,5 +1,6 @@
 package org.xjge.graphics;
 
+import java.util.List;
 import org.joml.Matrix4f;
 import org.joml.Matrix4fc;
 import org.joml.Quaternionf;
@@ -17,6 +18,7 @@ public class ModelAnimator extends EntityComponent {
     
     private final BonePose[] tempPoseA;
     private final BonePose[] tempPoseB;
+    private final BonePose[] layerPose;
     private final BonePose[] finalPose;
     
     private final Matrix4f[] localTransforms  = new Matrix4f[Mesh.MAX_BONES]; //Local transform for each bone relative to their parent
@@ -30,11 +32,13 @@ public class ModelAnimator extends EntityComponent {
         
         tempPoseA = new BonePose[boneCount];
         tempPoseB = new BonePose[boneCount];
+        layerPose = new BonePose[boneCount];
         finalPose = new BonePose[boneCount];
         
         for(int i = 0; i < boneCount; i++) {
             tempPoseA[i] = new BonePose();
             tempPoseB[i] = new BonePose();
+            layerPose[i] = new BonePose();
             finalPose[i] = new BonePose();
         }
         
@@ -45,29 +49,36 @@ public class ModelAnimator extends EntityComponent {
         }
     }
 
-    public void update(double deltaTime, SkeletalAnimationLayer layer) {
-        if(layer == null) return;
+    public void update(double deltaTime, List<SkeletalAnimationLayer> layers) {
+        if(layers == null || layers.isEmpty()) return;
 
-        layer.update(deltaTime);
+        var firstLayer = true;
         
-        if(layer.isBlending()) {
-            calculatePose(layer.getCurrent(), tempPoseA);
-            calculatePose(layer.getNext(), tempPoseB);
-            blendPoses(layer.getBlendFactor());
-            buildMatrices(finalPose);
-        } else {
-            calculatePose(layer.getCurrent(), finalPose);
-            buildMatrices(finalPose);
+        for(var layer : layers) {
+            layer.update(deltaTime);
+            
+            if(layer.isBlending()) {
+                calculatePose(layer.getCurrent(), tempPoseA);
+                calculatePose(layer.getNext(), tempPoseB);
+                blendPoses(layer.getBlendFactor(), layerPose);
+            } else {
+                calculatePose(layer.getCurrent(), layerPose);
+            }
+            
+            if(firstLayer) {
+                for(int i = 0; i < model.getSkeleton().getBoneCount(); i++) finalPose[i].set(layerPose[i]);
+                firstLayer = false;
+            } else {
+                blendLayer(layer);
+            }
         }
-    }
-    
-    private void blendPoses(float factor) {
-        for(int i = 0; i < model.getSkeleton().getBoneCount(); i++) {
-            finalPose[i].set(tempPoseA[i]).interpolate(tempPoseB[i], factor);
-        }
+        
+        buildMatrices(finalPose);
     }
 
     private void calculatePose(SkeletalAnimation instance, BonePose[] output) {
+        if(instance == null) return;
+        
         var skeleton      = model.getSkeleton();
         var animationTime = instance.getAnimationTime();
 
@@ -85,6 +96,19 @@ public class ModelAnimator extends EntityComponent {
                 bone.localBindTransform.getUnnormalizedRotation(pose.rotation);
                 bone.localBindTransform.getScale(pose.scale);
             }
+        }
+    }
+    
+    private void blendPoses(float factor, BonePose[] output) {
+        for(int i = 0; i < model.getSkeleton().getBoneCount(); i++) {
+            output[i].set(tempPoseA[i]).interpolate(tempPoseB[i], factor);
+        }
+    }
+    
+    private void blendLayer(SkeletalAnimationLayer layer) {
+        for(int i = 0; i < model.getSkeleton().getBoneCount(); i++) {
+            if(layer.getMask() != null && !layer.getMask().contains(i)) continue;
+            finalPose[i].interpolate(layerPose[i], layer.getWeight());
         }
     }
     

@@ -1,5 +1,7 @@
 package org.xjge.test;
 
+import java.util.ArrayList;
+import java.util.List;
 import static org.lwjgl.glfw.GLFW.GLFW_JOYSTICK_1;
 import org.xjge.graphics.ModelRenderer;
 import static org.lwjgl.opengl.GL11.GL_DEPTH_TEST;
@@ -36,9 +38,13 @@ public class SceneModel extends Scene {
     private ModelAnimator animator;
     private Light worldLight;
     private Skybox skybox;
-    private SkeletalAnimationLayer animLayer;
+    private SkeletalAnimationLayer layer0;
+    private SkeletalAnimationLayer layer1;
+    private SkeletalAnimationLayer layer2;
     
     private UIAnimationWidget animControl;
+    
+    private List<SkeletalAnimationLayer> layers;
     
     public SceneModel() {
         super("test_model3");
@@ -61,15 +67,24 @@ public class SceneModel extends Scene {
         transform       = new Transform(0, 0, -3f);
         jointAttachment = new JointAttachment(testModel);
         animator        = new ModelAnimator(testModel);
-        animLayer       = new SkeletalAnimationLayer();
         
-        animLayer.play(testModel.getAnimation("wave"));
+        layer0 = new SkeletalAnimationLayer();
+        layer1 = new SkeletalAnimationLayer();
+        layer2 = new SkeletalAnimationLayer();
+        
+        layers = new ArrayList<>() {{
+            add(layer0);
+            add(layer1);
+            add(layer2);
+        }};
+        
+        layer0.play(testModel.getAnimation("walk"));
         
         testEntity = new Entity().addComponent(transform)
                                  .addComponent(jointAttachment)
                                  .addComponent(animator)
-                                 .addComponent(new ModelRenderer(testModel))
-                                 .addComponent(new JointVisualizer());
+                                 .addComponent(new ModelRenderer(testModel));
+                                 //.addComponent(new JointVisualizer());
         
         addEntity(testEntity);
         
@@ -78,14 +93,16 @@ public class SceneModel extends Scene {
         worldLight.position.set(0, 4.5f, 3);
         worldLight.brightness = 7f;
         
-        animControl = new UIAnimationWidget(animLayer, jointAttachment);
+        animControl = new UIAnimationWidget(layer0, jointAttachment);
         UIManager.addWidget(GLFW_JOYSTICK_1, "animation_control", animControl);
+        
+        UIManager.addWidget(GLFW_JOYSTICK_1, "layer_control", new UIAnimationWidget2());
     }
 
     @Override
     public void update(double targetDelta, double trueDelta) {
         for(var entity : queryEntities(ModelAnimator.class)) {
-            entity.getComponent(ModelAnimator.class).update((float) targetDelta, animLayer);
+            entity.getComponent(ModelAnimator.class).update((float) targetDelta, layers);
             
             if(entity.hasComponents(JointAttachment.class, Transform.class)) {
                 //Order matters here, must come AFTER the animator
@@ -115,11 +132,9 @@ public class SceneModel extends Scene {
             
             if(entity.hasComponents(JointVisualizer.class, JointAttachment.class)) {
                 for(var bone : testModel.getSkeleton().getBones()) {
-                    //System.out.println(bone.getName());
                     entity.getComponent(JointVisualizer.class).render(camera, bone.getName(), entity.getComponent(JointAttachment.class));
                 }
             }
-            //System.out.println("");
         }
         
     }

@@ -1,5 +1,7 @@
 package org.xjge.graphics;
 
+import org.xjge.core.XJGE;
+
 /**
  * Represents a single animation layer that can be used to change animation playback settings during runtime
  * 
@@ -8,13 +10,17 @@ package org.xjge.graphics;
  */
 public final class SkeletalAnimationLayer {
 
+    private float weight = 1f;
+    
     private double blendTime;
     private double blendDuration;
 
     private SkeletalAnimation current;
     private SkeletalAnimation next;
+    
+    private BoneMask mask;
 
-    public void update(double deltaTime) {
+    void update(double deltaTime) {
         if(current == null) return;
 
         current.update(deltaTime);
@@ -64,8 +70,8 @@ public final class SkeletalAnimationLayer {
         if(current != null) current.looping = looping;
     }
     
-    public void setTime(double time) { //TODO: What good is this really? Normalized time is way better
-        if(current != null) current.time = time;
+    public void setWeight(float weight) {
+        this.weight = XJGE.clampValue(0f, 1f, weight);
     }
     
     public void setNormalizedTime(float time) {
@@ -75,8 +81,16 @@ public final class SkeletalAnimationLayer {
         }
     }
     
+    public void setTime(double time) { //TODO: What good is this really? Normalized time is way better
+        if(current != null) current.time = time;
+    }
+    
     public void setSpeed(double speed) {
         if(current != null) current.speed = speed;
+    }
+    
+    public void setMask(BoneMask mask) {
+        this.mask = mask;
     }
     
     public boolean isPlaying() {
@@ -108,16 +122,14 @@ public final class SkeletalAnimationLayer {
         return (float) Math.min(blendTime / blendDuration, 1.0);
     }
     
+    public float getWeight() {
+        return weight;
+    }
+    
     public double getTime() {
         if(current == null) return 0;
         if(next != null) return next.time;
         return current.time;
-    }
-    
-    public double getSpeed() {
-        if(current == null) return 0;
-        if(next != null) return next.speed;
-        return current.speed;
     }
     
     public double getNormalizedTime() {
@@ -128,6 +140,12 @@ public final class SkeletalAnimationLayer {
 
         return current.time / durationSeconds; //TODO: clamp for saftey? Values can be negative (when speed is negative)
     }
+    
+    public double getSpeed() {
+        if(current == null) return 0;
+        if(next != null) return next.speed;
+        return current.speed;
+    }
 
     public SkeletalAnimation getCurrent() {
         return current;
@@ -135,6 +153,10 @@ public final class SkeletalAnimationLayer {
 
     public SkeletalAnimation getNext() {
         return next;
+    }
+    
+    public BoneMask getMask() {
+        return mask;
     }
     
 }
