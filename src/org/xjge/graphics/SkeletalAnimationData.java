@@ -37,7 +37,7 @@ public final class SkeletalAnimationData {
             if(!skeleton.hasBone(boneName)) continue;
             
             var boneIndex = skeleton.getBoneIndex(boneName);
-            boneTracks[boneIndex] = new BoneTrack(aiChannel, boneIndex);
+            boneTracks[boneIndex] = new BoneTrack(aiChannel);
         }
     }
     

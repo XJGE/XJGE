@@ -12,7 +12,7 @@ import org.xjge.core.EntityComponent;
  * @author J Hoffman
  * @since 4.0.0
  */
-public class ModelAnimator extends EntityComponent {
+public final class ModelAnimator extends EntityComponent {
     
     private final Model model;
     
@@ -48,34 +48,7 @@ public class ModelAnimator extends EntityComponent {
             skinningMatrices[i] = new Matrix4f().identity();
         }
     }
-
-    public void update(double deltaTime, List<SkeletalAnimationLayer> layers) {
-        if(layers == null || layers.isEmpty()) return;
-
-        var firstLayer = true;
-        
-        for(var layer : layers) {
-            layer.update(deltaTime);
-            
-            if(layer.isBlending()) {
-                calculatePose(layer.getCurrent(), tempPoseA);
-                calculatePose(layer.getNext(), tempPoseB);
-                blendPoses(layer.getBlendFactor(), layerPose);
-            } else {
-                calculatePose(layer.getCurrent(), layerPose);
-            }
-            
-            if(firstLayer) {
-                for(int i = 0; i < model.getSkeleton().getBoneCount(); i++) finalPose[i].set(layerPose[i]);
-                firstLayer = false;
-            } else {
-                blendLayer(layer);
-            }
-        }
-        
-        buildMatrices(finalPose);
-    }
-
+    
     private void calculatePose(SkeletalAnimation instance, BonePose[] output) {
         if(instance == null) return;
         
@@ -158,6 +131,39 @@ public class ModelAnimator extends EntityComponent {
         factor = Math.min(Math.max(factor, 0f), 1f);
 
         return new Quaternionf(values[i]).slerp(values[nextTime], factor);
+    }
+
+    /**
+     * The first layer in the list is the base layer, all subsequent layers are evaluated over it in order
+     * 
+     * @param deltaTime
+     * @param layers 
+     */
+    public void update(double deltaTime, List<SkeletalAnimationLayer> layers) {
+        if(layers == null || layers.isEmpty()) return;
+
+        var firstLayer = true;
+        
+        for(var layer : layers) {
+            layer.update(deltaTime);
+            
+            if(layer.isBlending()) {
+                calculatePose(layer.getCurrent(), tempPoseA);
+                calculatePose(layer.getNext(), tempPoseB);
+                blendPoses(layer.getBlendFactor(), layerPose);
+            } else {
+                calculatePose(layer.getCurrent(), layerPose);
+            }
+            
+            if(firstLayer) {
+                for(int i = 0; i < model.getSkeleton().getBoneCount(); i++) finalPose[i].set(layerPose[i]);
+                firstLayer = false;
+            } else {
+                blendLayer(layer);
+            }
+        }
+        
+        buildMatrices(finalPose);
     }
     
     /**

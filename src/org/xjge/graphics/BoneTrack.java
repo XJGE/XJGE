@@ -11,8 +11,6 @@ import org.lwjgl.assimp.AINodeAnim;
  * @since 2.0.0
  */
 public final class BoneTrack {
-
-    public int boneIndex;
     
     public float[] positionTimes;
     public float[] rotationTimes;
@@ -22,8 +20,7 @@ public final class BoneTrack {
     public Vector3f[] scales;
     public Quaternionf[] rotations;
     
-    BoneTrack(AINodeAnim aiChannel, int boneIndex) {
-        this.boneIndex = boneIndex;
+    BoneTrack(AINodeAnim aiChannel) {
         extractPositionKeyframes(aiChannel);
         extractRotationKeyframes(aiChannel);
         extractScaleKeyframes(aiChannel);
