@@ -162,7 +162,7 @@ public final class Model extends Asset {
         return rootTransform;
     }
     
-    public final Set<String> getAnimaitonNames() {
+    public final Set<String> getAnimationNames() {
         return animations.keySet();
     }
     

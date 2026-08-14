@@ -12,6 +12,7 @@ public final class SkeletalAnimationLayer {
 
     private float weight = 1f;
     
+    private double speed = 1f;
     private double blendTime;
     private double blendDuration;
 
@@ -23,10 +24,10 @@ public final class SkeletalAnimationLayer {
     void update(double deltaTime) {
         if(current == null) return;
 
-        current.update(deltaTime);
+        current.update(deltaTime, speed);
 
         if(next != null) {
-            next.update(deltaTime);
+            next.update(deltaTime, speed);
             blendTime += deltaTime;
 
             if(blendTime >= blendDuration) {
@@ -36,8 +37,16 @@ public final class SkeletalAnimationLayer {
         }
     }
     
+    SkeletalAnimation getCurrent() {
+        return current;
+    }
+    
+    SkeletalAnimation getNext() {
+        return next;
+    }
+    
     public void play(SkeletalAnimationData animationData) {
-        current   = new SkeletalAnimation(animationData);
+        current   = new SkeletalAnimation(animationData); //TODO: promotes gc churn? Maybe provide one that accepts initialized animation?
         next      = null;
         blendTime = 0;
     }
@@ -48,7 +57,7 @@ public final class SkeletalAnimationLayer {
             return;
         }
 
-        next          = new SkeletalAnimation(animationData);
+        next          = new SkeletalAnimation(animationData); //TODO: promotes gc churn? Maybe provide one that accepts initialized animation?
         blendTime     = 0;
         blendDuration = Math.max(duration, 0.0001);
     }
@@ -86,7 +95,7 @@ public final class SkeletalAnimationLayer {
     }
     
     public void setSpeed(double speed) {
-        if(current != null) current.speed = speed;
+        this.speed = speed;
     }
     
     public void setMask(BoneMask mask) {
@@ -142,17 +151,7 @@ public final class SkeletalAnimationLayer {
     }
     
     public double getSpeed() {
-        if(current == null) return 0;
-        if(next != null) return next.speed;
-        return current.speed;
-    }
-
-    public SkeletalAnimation getCurrent() {
-        return current;
-    }
-
-    public SkeletalAnimation getNext() {
-        return next;
+        return speed;
     }
     
     public BoneMask getMask() {

@@ -6,14 +6,13 @@ package org.xjge.graphics;
  * @author J Hoffman
  * @since 4.0.0
  */
-public class SkeletalAnimation {
+class SkeletalAnimation {
 
     boolean playing     = true;
     boolean looping     = true;
     boolean wasFinished = false;
 
-    double time  = 0.0;
-    double speed = 1.0;
+    double time = 0.0;
 
     SkeletalAnimationData animationData;
 
@@ -21,7 +20,7 @@ public class SkeletalAnimation {
         this.animationData = animationData;
     }
 
-    void update(double deltaTime) {
+    void update(double deltaTime, double speed) {
         if(!playing) return;
 
         time += deltaTime * speed;

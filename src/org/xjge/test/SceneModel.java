@@ -192,7 +192,7 @@ public class SceneModel extends Scene {
         System.out.println();
         
         System.out.println("Animations:");
-        for(var animName : model.getAnimaitonNames()) {
+        for(var animName : model.getAnimationNames()) {
             var animation = model.getAnimation(animName);
             System.out.println(" Name: " + animName);
             System.out.println("  Duration: " + animation.duration);
