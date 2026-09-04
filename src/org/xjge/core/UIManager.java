@@ -1,6 +1,7 @@
 package org.xjge.core;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.LinkedList;
@@ -201,7 +202,7 @@ public final class UIManager {
     }
     
     public static Set<String> getWidgetList(int viewportID) {
-        return widgets.get(viewportID).keySet();
+        return Collections.unmodifiableSet(widgets.get(viewportID).keySet());
     }
     
     public static Matrix4fc getProjectionMatrix() {
