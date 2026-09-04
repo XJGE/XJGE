@@ -7,6 +7,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Queue;
+import java.util.Set;
 import org.joml.Matrix4f;
 import org.joml.Matrix4fc;
 
@@ -197,6 +198,10 @@ public final class UIManager {
             Logger.logWarning(failureReason, null);
             return false;
         }
+    }
+    
+    public static Set<String> getWidgetList(int viewportID) {
+        return widgets.get(viewportID).keySet();
     }
     
     public static Matrix4fc getProjectionMatrix() {
